@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { Exercise } from '../shared/types.ts'
 import { EXERCISES } from './exercises.ts'
-import { EXERCISES_800 } from './exercises800.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import {
@@ -28,7 +27,7 @@ export function ExerciseLibraryModal({
   )
 
   const allExercises = useMemo(
-    () => [...EXERCISES, ...EXERCISES_800, ...customExercises],
+    () => [...EXERCISES, ...customExercises],
     [customExercises],
   )
 

@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { Exercise } from '../shared/types.ts'
 import { EXERCISES } from './exercises.ts'
-import { EXERCISES_800 } from './exercises800.ts'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 
@@ -26,7 +25,7 @@ export function ExerciseSwapModal({
   )
 
   const candidates = useMemo(() => {
-    const all = [...EXERCISES, ...EXERCISES_800, ...customExercises]
+    const all = [...EXERCISES, ...customExercises]
     return all.filter((e) => {
       if (e.id === currentExercise.id) return false
       // Filter out exercises that conflict with user injuries
