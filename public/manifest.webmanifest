@@ -1,0 +1,18 @@
+{
+  "name": "د. مجانص",
+  "short_name": "مجانص",
+  "description": "مدربك وطبيبك الرياضي — كل بياناتك تُحفظ على جهازك فقط.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#F95700",
+  "icons": [
+    {
+      "src": "branding/app-icon-outer.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
