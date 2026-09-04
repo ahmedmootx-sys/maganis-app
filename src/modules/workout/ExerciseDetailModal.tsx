@@ -6,6 +6,7 @@ import {
 } from '../shared/types.ts'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
+import { simplifyMuscleList, formatHowToStep } from './muscleHelper.ts'
 
 interface ExerciseDetailModalProps {
   exercise: Exercise | null
@@ -153,18 +154,24 @@ function getEnrichedExercise(ex: Exercise): {
   ) as MuscleGroup
   const defaults = categoryDefaults[cat]
 
+  const rawMuscles =
+    ex.targetMusclesAr && ex.targetMusclesAr.length > 0
+      ? ex.targetMusclesAr
+      : defaults.targetMuscles
+
+  const rawSteps =
+    ex.howToStepsAr && ex.howToStepsAr.length > 0
+      ? ex.howToStepsAr
+      : defaults.howToSteps
+
   return {
     description: ex.descriptionAr || defaults.description,
     mechanics: ex.mechanicsAr || defaults.mechanics,
     benefit: ex.benefitAr || defaults.benefit,
-    targetMuscles:
-      ex.targetMusclesAr && ex.targetMusclesAr.length > 0
-        ? ex.targetMusclesAr
-        : defaults.targetMuscles,
-    howToSteps:
-      ex.howToStepsAr && ex.howToStepsAr.length > 0
-        ? ex.howToStepsAr
-        : defaults.howToSteps,
+    targetMuscles: simplifyMuscleList(rawMuscles),
+    howToSteps: rawSteps.map((step, idx) =>
+      formatHowToStep(step, idx, ex.category),
+    ),
     avoidInjuries: ex.avoidForInjuries || [],
   }
 }
@@ -176,6 +183,11 @@ export function ExerciseDetailModal({
   if (!exercise) return null
 
   const details = getEnrichedExercise(exercise)
+  const primaryTitle = exercise.name || exercise.nameAr
+  const subtitleAr =
+    exercise.name && exercise.nameAr && exercise.name !== exercise.nameAr
+      ? exercise.nameAr
+      : ''
 
   return (
     <div
@@ -192,12 +204,25 @@ export function ExerciseDetailModal({
             <ExerciseVisual
               category={exercise.category}
               exerciseId={exercise.id}
-              exerciseName={exercise.nameAr}
+              exerciseName={primaryTitle}
               imageUrl={exercise.imageUrl}
               size="medium"
             />
             <div>
-              <h2>{exercise.nameAr}</h2>
+              <h2 style={{ fontSize: '18px', margin: '0 0 2px' }}>
+                {primaryTitle}
+              </h2>
+              {subtitleAr && (
+                <div
+                  style={{
+                    color: 'var(--primary)',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {subtitleAr}
+                </div>
+              )}
               <span className="muted-small">
                 {MUSCLE_GROUP_LABELS[exercise.category] || exercise.category} •{' '}
                 {EQUIPMENT_LABELS[exercise.equipment] || exercise.equipment} •{' '}

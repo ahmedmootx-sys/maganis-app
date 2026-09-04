@@ -40,15 +40,40 @@ function uniqueId(): string {
   }
 }
 
+const ACTIVE_SESSION_STORAGE_KEY = 'maganis:active_session'
+
+interface SavedSessionState {
+  programDay: ProgramDay
+  dayIndex: number
+  exercisesState: ActiveExerciseState[]
+  elapsedSeconds: number
+  savedAt: number
+}
+
 export function ActiveWorkoutSession({
   programDay,
   customExercises = [],
   onFinish,
   onCancel,
 }: ActiveWorkoutSessionProps) {
-  // --- Initialize Exercises & Sets ---
+  // --- Initialize Exercises & Sets with Refresh Recovery ---
   const [exercisesState, setExercisesState] = useState<ActiveExerciseState[]>(
     () => {
+      try {
+        const raw = localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
+        if (raw) {
+          const parsed = JSON.parse(raw) as SavedSessionState
+          if (
+            parsed.dayIndex === programDay.dayIndex &&
+            Array.isArray(parsed.exercisesState) &&
+            Date.now() - parsed.savedAt < 1000 * 60 * 60 * 12
+          ) {
+            return parsed.exercisesState
+          }
+        }
+      } catch {
+        // fallback
+      }
       return programDay.exercises.map((pe) => {
         const defaultSetsCount = Math.max(1, pe.sets || 3)
         const defaultReps = pe.reps > 0 ? pe.reps : 10
@@ -70,13 +95,60 @@ export function ActiveWorkoutSession({
     },
   )
 
-  // --- Session Stopwatch (Elapsed Time) ---
-  const [elapsedSeconds, setElapsedSeconds] = useState(0)
+  // --- Session Stopwatch (Elapsed Time) with Refresh Recovery ---
+  const [elapsedSeconds, setElapsedSeconds] = useState(() => {
+    try {
+      const raw = localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw) as SavedSessionState
+        if (
+          parsed.dayIndex === programDay.dayIndex &&
+          typeof parsed.elapsedSeconds === 'number' &&
+          Date.now() - parsed.savedAt < 1000 * 60 * 60 * 12
+        ) {
+          return parsed.elapsedSeconds
+        }
+      }
+    } catch {
+      // fallback
+    }
+    return 0
+  })
+
   useEffect(() => {
     const timer = setInterval(() => {
       setElapsedSeconds((prev) => prev + 1)
     }, 1000)
     return () => clearInterval(timer)
+  }, [])
+
+  // Auto-persist active session state on every update
+  useEffect(() => {
+    try {
+      const dataToSave: SavedSessionState = {
+        programDay,
+        dayIndex: programDay.dayIndex,
+        exercisesState,
+        elapsedSeconds,
+        savedAt: Date.now(),
+      }
+      localStorage.setItem(
+        ACTIVE_SESSION_STORAGE_KEY,
+        JSON.stringify(dataToSave),
+      )
+    } catch {
+      // ignore
+    }
+  }, [programDay, exercisesState, elapsedSeconds])
+
+  // Prevent accidental back/refresh during active workout
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [])
 
   // --- Smart Rest Timer ---
@@ -242,6 +314,12 @@ export function ActiveWorkoutSession({
       exercises: sessionExercises,
       notes: `جلسة تدريب مكتملة في ${formatTime(elapsedSeconds)} — إجمالي الحجم: ${totalVolumeKg} كجم`,
       createdAt: Date.now(),
+    }
+
+    try {
+      localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
+    } catch {
+      // ignore
     }
 
     onFinish(newSession)
@@ -605,6 +683,11 @@ export function ActiveWorkoutSession({
                 type="button"
                 className="danger"
                 onClick={() => {
+                  try {
+                    localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
+                  } catch {
+                    // ignore
+                  }
                   setShowConfirmCancel(false)
                   onCancel()
                 }}

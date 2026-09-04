@@ -325,6 +325,135 @@ export const EGYPTIAN_MEALS: EgyptianMeal[] = [
     scientificTipAr:
       'الترمس من أعلى البقوليات نسبة بالبروتين والألياف ويعمل على تنظيم مستويات السكر في الدم.',
   },
+  // --- BUDGET SUPERMARKET READY-TO-EAT (وجبات سوبرماركت سريعة واقتصادية تؤكل مباشرة) ---
+  {
+    id: 'eg-super-1',
+    nameAr: 'سوبرماركت: علبة تونة قطعة واحدة مصفاة + رغيف بلدي',
+    category: 'lunch',
+    descriptionAr:
+      'سناك أو غداء سوبرماركت سريع واقتصادي وعالي البروتين يؤكل مباشرة خارج المنزل.',
+    calories: 340,
+    proteinGrams: 34,
+    carbsGrams: 32,
+    fatsGrams: 4,
+    portionAr: 'علبة تونة 140ج مصفاة + رغيف بلدي أسمر بالردة + ليمونة',
+    ingredientsAr: [
+      'علبة تونة مصفاة من الزيت',
+      'رغيف خبز بلدي أسمر',
+      'عصير ليمون',
+    ],
+    recipeStepsAr: [
+      'افتح علبة التونة وصفّها جيداً وضع عصرة ليمون وتناولها مباشرة بالخبز البلدي بدون أي طهي.',
+    ],
+    suitableGoals: ['hypertrophy', 'cut', 'calisthenics', 'flexibility'],
+    isBudgetSupermarket: true,
+    isReadyToEat: true,
+    scientificTipAr:
+      'التونة المعلبة مصفاة من الزيت توفر أعلى تركيز بروتين بأقل تكلفة وسعرات، ومثالية لمن يقضي وقته خارج المنزل.',
+  },
+  {
+    id: 'eg-super-2',
+    nameAr: 'سوبرماركت: زبادي يوناني / لبن رايب طبيعي + ثمرة موز',
+    category: 'snack',
+    descriptionAr:
+      'وجبة بروتين وإنعاش فورية من السوبرماركت للهضم والاستشفاء السريع أثناء التنقل.',
+    calories: 220,
+    proteinGrams: 17,
+    carbsGrams: 32,
+    fatsGrams: 2.5,
+    portionAr: 'عبوة زبادي يوناني 170ج أو زجاجة رايب صغيرة + ثمرة موز',
+    ingredientsAr: ['زبادي يوناني سادة قليل الدسم', 'موزة طازجة'],
+    recipeStepsAr: [
+      'تناول الزبادي أو الرايب مباشرة مع ثمرة الموز كسناك طاقة واستشفاء فوري.',
+    ],
+    suitableGoals: ['hypertrophy', 'cut', 'calisthenics', 'flexibility'],
+    isBudgetSupermarket: true,
+    isReadyToEat: true,
+    scientificTipAr:
+      'اللبن الرايب والزبادي اليوناني يحتويان على البروبيوتيك لصحة الجهاز الهضمي وبوتاسيوم من الموز لمنع الشد العضلي.',
+  },
+  {
+    id: 'eg-super-3',
+    nameAr: 'سوبرماركت: جبنة قريش جاهزة + طماطم وخيار جاهز للأكل',
+    category: 'dinner',
+    descriptionAr:
+      'وجبة عشاء اقتصادية متوفرة في قسم الألبان بالسوبرماركت، كازين نقي لبناء العضلات أثناء النوم.',
+    calories: 210,
+    proteinGrams: 28,
+    carbsGrams: 12,
+    fatsGrams: 4,
+    portionAr: 'علبة جبنة قريش 200ج + خيارة وثمرة طماطم',
+    ingredientsAr: ['جبنة قريش معبأة 200ج', 'خيار طازج', 'طماطم'],
+    recipeStepsAr: [
+      'افتح علبة الجبنة القريش وتناولها مع الخيار والطماطم الطازجة بدون تحضير.',
+    ],
+    suitableGoals: ['cut', 'hypertrophy', 'calisthenics', 'flexibility'],
+    isBudgetSupermarket: true,
+    isReadyToEat: true,
+    scientificTipAr:
+      'الجبنة القريش الجاهزة أرخص وأنقى مصدر بروتين بطيء الامتصاص في مصر، ممتازة كعشاء خفيف ومشبع.',
+  },
+  {
+    id: 'eg-super-4',
+    nameAr: 'سوبرماركت: بيض مسلوق جاهز + خبز سن أو توست أسمر',
+    category: 'breakfast',
+    descriptionAr:
+      'بيضتان مسلوقتان جاهزتان من ثلاجة السوبرماركت، بروتين كامل وقيمة غذائية عالية.',
+    calories: 260,
+    proteinGrams: 16,
+    carbsGrams: 24,
+    fatsGrams: 10,
+    portionAr: '2 بيضة مسلوقة جاهزة + 2 شريحة توست أسمر أو رغيف سن',
+    ingredientsAr: ['2 بيضة مسلوقة', 'رغيف سن أو توست أسمر'],
+    recipeStepsAr: ['قشّر البيض وتناوله مباشرة مع الخبز الأسمر.'],
+    suitableGoals: ['cut', 'hypertrophy', 'calisthenics', 'flexibility'],
+    isBudgetSupermarket: true,
+    isReadyToEat: true,
+    scientificTipAr:
+      'البيض المسلوق هو المعيار الذهبي للبروتين الكامل الحيوي بنسبة كفاءة امتصاص 100%.',
+  },
+  {
+    id: 'eg-super-5',
+    nameAr: 'سوبرماركت: حليب قليل الدسم + شوفان فوري بالمعلقة',
+    category: 'breakfast',
+    descriptionAr:
+      'كوب شوفان فوري سريع التحضير مع الحليب، طاقة بطيئة الاحتراق طوال اليوم.',
+    calories: 340,
+    proteinGrams: 20,
+    carbsGrams: 52,
+    fatsGrams: 4.5,
+    portionAr: 'كوب حليب 250 مل + 50ج شوفان فوري سريع التحضير',
+    ingredientsAr: ['حليب قليل الدسم', 'شوفان فوري الحبة الكاملة'],
+    recipeStepsAr: [
+      'أفرغ كيس الشوفان في كوب اللبن وقلّبه لدقيقة واحدة وتناوله مباشرة بالملعقة.',
+    ],
+    suitableGoals: ['hypertrophy', 'calisthenics', 'cut', 'flexibility'],
+    isBudgetSupermarket: true,
+    isReadyToEat: true,
+    scientificTipAr:
+      'الشوفان الفوري مع الحليب يوفر كاربوهيدرات معقدة تحافظ على استقرار سكر الدم وتمدك بطاقة لساعات.',
+  },
+  {
+    id: 'eg-super-6',
+    nameAr: 'سوبرماركت: علبة فول سادة مصفى + رغيف بلدي',
+    category: 'dinner',
+    descriptionAr:
+      'علبة فول جاهزة مصفاة من المواد الحافظة مع عصرة ليمون ورغيف بلدي غني بالألياف.',
+    calories: 290,
+    proteinGrams: 16,
+    carbsGrams: 46,
+    fatsGrams: 3,
+    portionAr: 'علبة فول مدمس جاهز مصفى + رغيف بلدي أسمر',
+    ingredientsAr: ['علبة فول مدمس جاهزة', 'رغيف بلدي أسمر'],
+    recipeStepsAr: [
+      'صفّ علبة الفول واغسلها بالماء، أضف رشة ملح وكمون وتناولها بالخبز البلدي.',
+    ],
+    suitableGoals: ['cut', 'hypertrophy', 'calisthenics', 'flexibility'],
+    isBudgetSupermarket: true,
+    isReadyToEat: true,
+    scientificTipAr:
+      'الفول المعلب بعد غسله وتصفيته يصبح خفيفاً وصحياً ومصدراً ممتازاً للألياف المشبعة.',
+  },
 ]
 
 export function getMealsByGoal(goal: Goal): EgyptianMeal[] {

@@ -40,7 +40,9 @@ export function ExerciseLibraryModal({
         return false
       if (searchTerm.trim()) {
         const query = searchTerm.toLowerCase()
+        const matchName = e.name ? e.name.toLowerCase().includes(query) : false
         return (
+          matchName ||
           e.nameAr.toLowerCase().includes(query) ||
           e.descriptionAr.toLowerCase().includes(query) ||
           e.targetMusclesAr?.some((m) => m.toLowerCase().includes(query))
@@ -158,12 +160,24 @@ export function ExerciseLibraryModal({
                       }}
                     >
                       <strong style={{ fontSize: '14.5px' }}>
-                        {ex.nameAr}
+                        {ex.name || ex.nameAr}
                       </strong>
                       {'isCustom' in ex && (
                         <span className="chip highlight">مخصص ✨</span>
                       )}
                     </div>
+                    {ex.name && ex.nameAr && ex.name !== ex.nameAr && (
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          color: 'var(--primary)',
+                          fontWeight: 600,
+                          marginTop: '2px',
+                        }}
+                      >
+                        {ex.nameAr}
+                      </div>
+                    )}
                     <span className="muted-small">
                       {MUSCLE_GROUP_LABELS[ex.category as MuscleGroup] ||
                         ex.category}

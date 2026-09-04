@@ -8,69 +8,157 @@ import type {
   ProgramDay,
   ProgramExercise,
   WorkoutProgram,
+  WorkoutSplitType,
 } from '../shared/types.ts'
 import { DAY_NAMES_AR, MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import { EXERCISES, filterByInjuries } from './exercises.ts'
 
 // ============================================================
 // منهجية بناء البرنامج وفق إرشادات ACSM/NSCA:
-// - تقسيم عضلي منظم حسب عدد أيام التمرين (لا توزيع عشوائي)
-// - كل مجموعة عضلية تُدرَّب 1-2 مرة أسبوعياً
-// - ترتيب التمارين: الأساسيات متعددة المفاصل أولاً ثم العزل
-// - حجم التدريب (مجموعات/تكرارات) حسب الهدف
-// مراجع: ACSM's Guidelines for Exercise Testing and Prescription (11th ed.)
-//         NSCA's Essentials of Strength Training and Conditioning (4th ed.)
+// - دعم أنظمة التمرين العلمية: PPL، علوي/سفلي، أرنولد، برو سبليت، جسم كامل
+// - استهداف العضلة مرتين أسبوعياً (2x Frequency) للأنظمة المناسبة
+// - ترتيب التمارين: الأساسيات متعددة المفاصل أولاً ثم التكميلية فالعزل والبطن
+// - عدد التمارين: 5 إلى 6 تمارين لكل يوم تدريبي
 // ============================================================
 
-// --------------- تقسيم العضلات حسب عدد الأيام ---------------
-
-/**
- * أنماط التقسيم العلمي الشائعة:
- * - يومان: جسم كامل ×2 (توصية ACSM للمبتدئين)
- * - 3 أيام: دفع / سحب / أرجل+بطن
- * - 4 أيام: علوي / سفلي ×2
- * - 5 أيام: تقسيم عضلي يومي (Bro Split) مع يوم بطن مستقل
- * - 6 أيام: دفع/سحب/أرجل ×2 (للمتقدمين)
- */
-const SPLITS: Record<number, MuscleGroup[][]> = {
-  2: [
-    ['chest', 'back', 'legs', 'shoulders', 'arms', 'core'],
-    ['chest', 'back', 'legs', 'shoulders', 'arms', 'core'],
-  ],
-  3: [
-    ['chest', 'shoulders', 'arms'],
-    ['back', 'core'],
-    ['legs', 'arms', 'core'],
-  ],
-  4: [
-    ['chest', 'back', 'shoulders'],
-    ['legs', 'core'],
-    ['back', 'chest', 'arms'],
-    ['legs', 'core', 'shoulders'],
-  ],
-  5: [['chest'], ['back'], ['legs'], ['shoulders', 'arms'], ['core', 'arms']],
-  6: [
-    ['chest', 'shoulders'],
-    ['back', 'arms'],
-    ['legs', 'core'],
-    ['chest', 'arms'],
-    ['back', 'shoulders'],
-    ['legs', 'core'],
-  ],
+export const SPLIT_CONFIGS: Record<
+  WorkoutSplitType,
+  {
+    splits: MuscleGroup[][]
+    dayLabels: string[]
+  }
+> = {
+  ppl: {
+    splits: [
+      ['chest', 'shoulders', 'arms'],
+      ['back', 'arms', 'core'],
+      ['legs', 'core'],
+      ['chest', 'shoulders', 'arms'],
+      ['back', 'arms', 'core'],
+      ['legs', 'core'],
+    ],
+    dayLabels: [
+      'دفع (أ) — صدر / كتف / ترايسبس',
+      'سحب (أ) — ظهر / بايسبس / بطن',
+      'أرجل (أ) — فخذ أمامي / خلفيات / سمانة',
+      'دفع (ب) — ضغط مائل / رفرفة / تراي',
+      'سحب (ب) — سحب لأسفل / سحب أرضي / بطن',
+      'أرجل (ب) — سكوات / طعنات / جلوتس',
+    ],
+  },
+  upper_lower: {
+    splits: [
+      ['chest', 'back', 'shoulders', 'arms'],
+      ['legs', 'core'],
+      ['back', 'chest', 'shoulders', 'arms'],
+      ['legs', 'core'],
+    ],
+    dayLabels: [
+      'علوي (أ) — صدر / ظهر / كتف / ذراعين',
+      'سفلي (أ) — أرجل / سمانة / بطن',
+      'علوي (ب) — تركيز سحب ودفع متوازن',
+      'سفلي (ب) — قوة واستقرار الجزء السفلي',
+    ],
+  },
+  arnold: {
+    splits: [
+      ['chest', 'back'],
+      ['shoulders', 'arms'],
+      ['legs', 'core'],
+      ['chest', 'back'],
+      ['shoulders', 'arms'],
+      ['legs', 'core'],
+    ],
+    dayLabels: [
+      'أرنولد (أ) — صدر وظهر',
+      'أرنولد (أ) — كتف وذراعين',
+      'أرنولد (أ) — أرجل وجذع',
+      'أرنولد (ب) — صدر وظهر',
+      'أرنولد (ب) — كتف وذراعين',
+      'أرنولد (ب) — أرجل وبطن',
+    ],
+  },
+  bro_split: {
+    splits: [
+      ['chest', 'core'],
+      ['back'],
+      ['shoulders', 'core'],
+      ['legs'],
+      ['arms', 'core'],
+    ],
+    dayLabels: [
+      'يوم الصدر والبطن',
+      'يوم الظهر والمجانص',
+      'يوم الأكتاف والترابيس',
+      'يوم الأرجل الشامل',
+      'يوم الذراعين (بايسبس + ترايسبس)',
+    ],
+  },
+  full_body: {
+    splits: [
+      ['chest', 'back', 'legs', 'shoulders', 'core'],
+      ['legs', 'back', 'chest', 'arms', 'core'],
+      ['back', 'chest', 'legs', 'arms', 'core'],
+    ],
+    dayLabels: [
+      'جسم كامل (أ) — تركيز القوة والأساسيات',
+      'جسم كامل (ب) — حجم تدريبي متوازن',
+      'جسم كامل (ج) — استطالة وتحمل عضلي',
+    ],
+  },
 }
 
-/** وصف عربي مختصر لنمط كل يوم */
-const SPLIT_DAY_LABELS: Record<number, string[]> = {
-  2: ['جسم كامل (أ)', 'جسم كامل (ب)'],
-  3: ['دفع (صدر/كتف/ذراعين)', 'سحب (ظهر/بطن)', 'أرجل وبطن'],
-  4: [
-    'علوي (صدر/ظهر/كتف)',
-    'سفلي (أرجل/بطن)',
-    'علوي (ظهر/صدر/ذراعين)',
-    'سفلي (أرجل/بطن/كتف)',
-  ],
-  5: ['صدر', 'ظهر', 'أرجل', 'كتف وذراعين', 'بطن وذراعين'],
-  6: ['دفع (أ)', 'سحب (أ)', 'أرجل (أ)', 'دفع (ب)', 'سحب (ب)', 'أرجل (ب)'],
+function resolveSplit(
+  daysCount: number,
+  splitType?: WorkoutSplitType,
+): {
+  type: WorkoutSplitType
+  groups: MuscleGroup[][]
+  labels: string[]
+} {
+  if (splitType && SPLIT_CONFIGS[splitType]) {
+    const config = SPLIT_CONFIGS[splitType]
+    const needed = Math.min(daysCount, config.splits.length)
+    return {
+      type: splitType,
+      groups: config.splits.slice(0, needed),
+      labels: config.dayLabels.slice(0, needed),
+    }
+  }
+
+  if (daysCount >= 6) {
+    return {
+      type: 'ppl',
+      groups: SPLIT_CONFIGS.ppl.splits,
+      labels: SPLIT_CONFIGS.ppl.dayLabels,
+    }
+  }
+  if (daysCount === 5) {
+    return {
+      type: 'bro_split',
+      groups: SPLIT_CONFIGS.bro_split.splits,
+      labels: SPLIT_CONFIGS.bro_split.dayLabels,
+    }
+  }
+  if (daysCount === 4) {
+    return {
+      type: 'upper_lower',
+      groups: SPLIT_CONFIGS.upper_lower.splits,
+      labels: SPLIT_CONFIGS.upper_lower.dayLabels,
+    }
+  }
+  if (daysCount === 3) {
+    return {
+      type: 'ppl',
+      groups: SPLIT_CONFIGS.ppl.splits.slice(0, 3),
+      labels: SPLIT_CONFIGS.ppl.dayLabels.slice(0, 3),
+    }
+  }
+  return {
+    type: 'full_body',
+    groups: SPLIT_CONFIGS.full_body.splits.slice(0, 2),
+    labels: SPLIT_CONFIGS.full_body.dayLabels.slice(0, 2),
+  }
 }
 
 // --------------- الحجم التدريبي حسب الهدف (ACSM) ---------------
@@ -184,6 +272,7 @@ function buildProgramExercise(
 interface GenerateParams {
   goal: Goal
   trainingDaysPerWeek: number
+  splitType?: WorkoutSplitType
   injuries?: string[]
   customExercises?: CustomExercise[]
 }
@@ -192,6 +281,7 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
   const {
     goal,
     trainingDaysPerWeek,
+    splitType,
     injuries = [],
     customExercises = [],
   } = params
@@ -203,42 +293,63 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
     [...basePool, ...customExercises].filter((e) => equipmentOk(e.equipment)),
   )
 
-  // 2. نمط التقسيم العلمي حسب عدد الأيام
+  // 2. تحديد نمط التقسيم العلمي
   const normalizedDays = Math.min(6, Math.max(2, trainingDaysPerWeek))
-  const splits = SPLITS[normalizedDays] ?? SPLITS[3]
-  const dayLabels = SPLIT_DAY_LABELS[normalizedDays] ?? []
+  const resolved = resolveSplit(normalizedDays, splitType)
+  const splits = resolved.groups
+  const dayLabels = resolved.labels
   const config = GOAL_CONFIG[goal]
 
-  // 3. بناء كل يوم تدريبي
-  const usedIds = new Set<string>()
+  // 3. بناء كل يوم تدريبي بعدد 5 إلى 6 تمارين
   const days: ProgramDay[] = splits.map((groups, dayIdx) => {
     const exercises: ProgramExercise[] = []
-    const targetCount = groups.length === 1 ? 5 : groups.length === 2 ? 4 : 6
+    const targetCount = groups.length === 1 ? 5 : 6
+    const usedToday = new Set<string>()
 
-    // الترتيب داخل اليوم: حسب ترتيب المجموعات في النمط العلمي
+    // المرحلة الأولى: اختيار تمارين متوازنة لكل مجموعة عضلية باليوم
     for (const group of groups) {
       if (exercises.length >= targetCount) break
-      const perGroup = Math.max(
-        1,
-        Math.ceil((targetCount - exercises.length) / 1),
+      const remainingSlots = targetCount - exercises.length
+      const countForGroup = Math.min(
+        Math.max(1, Math.ceil(remainingSlots / Math.max(1, groups.length))),
+        remainingSlots,
       )
-      const picks = selectForGroup(group, pool, Math.min(perGroup, 2), usedIds)
+      const picks = selectForGroup(group, pool, countForGroup, usedToday)
       for (const pick of picks) {
         if (exercises.length >= targetCount) break
-        usedIds.add(pick.id)
+        usedToday.add(pick.id)
         exercises.push(
           buildProgramExercise(pick.id, pick.difficulty, config, goal),
         )
       }
     }
 
-    // ملء النقص من أي مجموعة في نفس اليوم
-    if (exercises.length < 3) {
+    // المرحلة الثانية: استكمال باقي التمارين حتى 5-6 تمارين
+    if (exercises.length < targetCount) {
+      for (const group of groups) {
+        if (exercises.length >= targetCount) break
+        const picks = selectForGroup(
+          group,
+          pool,
+          targetCount - exercises.length,
+          usedToday,
+        )
+        for (const pick of picks) {
+          if (exercises.length >= targetCount) break
+          usedToday.add(pick.id)
+          exercises.push(
+            buildProgramExercise(pick.id, pick.difficulty, config, goal),
+          )
+        }
+      }
+    }
+
+    // المرحلة الثالثة: ضمان ألا يقل اليوم عن 5 تمارين إطلاقاً
+    if (exercises.length < 5) {
       for (const e of pool) {
-        if (exercises.length >= 3) break
-        if (usedIds.has(e.id)) continue
-        if (!groups.includes(e.category)) continue
-        usedIds.add(e.id)
+        if (exercises.length >= 5) break
+        if (usedToday.has(e.id)) continue
+        usedToday.add(e.id)
         exercises.push(buildProgramExercise(e.id, e.difficulty, config, goal))
       }
     }
@@ -260,6 +371,7 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
     createdAt: Date.now(),
     primaryGoal: goal,
     trainingDaysPerWeek,
+    splitType: resolved.type,
     days,
   }
 }

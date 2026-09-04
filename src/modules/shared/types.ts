@@ -12,6 +12,7 @@ export type MeasurementType = 'reps' | 'duration' | 'bodyweight' | 'weight'
 
 export interface Exercise {
   id: string
+  name?: string
   nameAr: string
   descriptionAr: string
   category: MuscleGroup
@@ -55,11 +56,23 @@ export interface ProgramDay {
   exercises: ProgramExercise[]
 }
 
+export type WorkoutSplitType =
+  'ppl' | 'upper_lower' | 'arnold' | 'bro_split' | 'full_body'
+
+export const WORKOUT_SPLIT_LABELS: Record<WorkoutSplitType, string> = {
+  ppl: 'دفع / سحب / أرجل (PPL)',
+  upper_lower: 'علوي / سفلي (Upper / Lower)',
+  arnold: 'أرنولد سبليت (Arnold Split)',
+  bro_split: 'تقسيم عضلة باليوم (Bro Split)',
+  full_body: 'جسم كامل (Full Body)',
+}
+
 export interface WorkoutProgram {
   id: string
   createdAt: number
   primaryGoal: Goal
   trainingDaysPerWeek: number
+  splitType?: WorkoutSplitType
   days: ProgramDay[]
 }
 

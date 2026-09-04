@@ -35,4 +35,9 @@ describe('egyptianMeals', () => {
     expect(lunches.length).toBeGreaterThan(0)
     expect(lunches.every((m) => m.category === 'lunch')).toBe(true)
   })
+
+  it('contains budget supermarket ready-to-eat meals', () => {
+    const budgetMeals = EGYPTIAN_MEALS.filter((m) => m.isBudgetSupermarket)
+    expect(budgetMeals.length).toBeGreaterThanOrEqual(4)
+  })
 })

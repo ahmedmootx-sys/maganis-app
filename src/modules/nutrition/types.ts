@@ -27,4 +27,23 @@ export interface EgyptianMeal {
   recipeStepsAr?: string[]
   suitableGoals: Goal[]
   scientificTipAr?: string
+  isBudgetSupermarket?: boolean
+  isReadyToEat?: boolean
+}
+
+export interface DailyNutritionLog {
+  date: string
+  consumedCalories: number
+  consumedProtein: number
+  consumedCarbs: number
+  consumedFats: number
+  loggedMeals: {
+    mealId: string
+    nameAr: string
+    calories: number
+    protein: number
+    carbs: number
+    fats: number
+    timestamp: number
+  }[]
 }

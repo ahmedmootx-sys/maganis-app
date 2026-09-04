@@ -1,18 +1,22 @@
 import { useState } from 'react'
 import type {
+  CustomExercise,
   Exercise,
   ProgramDay,
   ProgramExercise,
   WorkoutProgram,
+  WorkoutSplitType,
 } from '../shared/types.ts'
+import { WORKOUT_SPLIT_LABELS } from '../shared/types.ts'
 import { EXERCISES, getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
+import { generateProgram } from './programGenerator.ts'
 
 interface WeeklyPlanViewProps {
   program: WorkoutProgram
-  customExercises?: Exercise[]
+  customExercises?: CustomExercise[]
   userInjuries?: string[]
   onUpdateProgram?: (updatedProgram: WorkoutProgram) => void
   onStartRoutine?: (day: ProgramDay) => void
@@ -93,11 +97,63 @@ export function WeeklyPlanView({
   return (
     <div className="weekly-plan" data-testid="weekly-plan-view">
       <div className="weekly-plan__header">
-        <h2 className="weekly-plan__title">🗓️ الخطة الأسبوعية المخصصة</h2>
-        <p className="muted">
-          يمكنك النقر على أي تمرين لمشاهدة الميكانيكا والـ GIF، أو استبدال
-          وإضافة تمارين يومية.
-        </p>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '12px',
+          }}
+        >
+          <div>
+            <h2 className="weekly-plan__title" style={{ margin: 0 }}>
+              🗓️ الخطة الأسبوعية المخصصة
+            </h2>
+            <p className="muted" style={{ margin: '4px 0 0' }}>
+              نظام التمرين:{' '}
+              <strong>
+                {WORKOUT_SPLIT_LABELS[program.splitType || 'ppl'] ||
+                  program.splitType}
+              </strong>{' '}
+              (5-6 تمارين يومياً)
+            </p>
+          </div>
+
+          {onUpdateProgram && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="muted-small">تغيير النظام:</span>
+              <select
+                value={program.splitType || 'ppl'}
+                onChange={(e) => {
+                  const newSplit = e.target.value as WorkoutSplitType
+                  const newProg = generateProgram({
+                    goal: program.primaryGoal,
+                    trainingDaysPerWeek: program.trainingDaysPerWeek,
+                    splitType: newSplit,
+                    injuries: userInjuries,
+                    customExercises,
+                  })
+                  onUpdateProgram(newProg)
+                }}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  border: '1.5px solid var(--primary)',
+                }}
+              >
+                {Object.entries(WORKOUT_SPLIT_LABELS).map(([val, label]) => (
+                  <option key={val} value={val}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="weekly-plan__days">
@@ -198,8 +254,20 @@ export function WeeklyPlanView({
                       />
                       <div className="exercise-text-meta">
                         <span className="weekly-plan__exercise-name">
-                          {exerciseName}
+                          {ex?.name || exerciseName}
                         </span>
+                        {ex?.name && ex?.nameAr && ex.name !== ex.nameAr && (
+                          <div
+                            style={{
+                              fontSize: '12px',
+                              color: 'var(--primary)',
+                              fontWeight: 600,
+                              marginTop: '2px',
+                            }}
+                          >
+                            {ex.nameAr}
+                          </div>
+                        )}
                         <span className="muted weekly-plan__exercise-meta">
                           <strong>{pe.sets}</strong> مجموعات ×{' '}
                           <strong>

@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { assetUrl } from '../../utils/assetUrl.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { calculateCalorieMacroTargets } from './calorieCalculator.ts'
 import { EGYPTIAN_MEALS } from './egyptianMeals.ts'
-import type { EgyptianMeal, MealCategory } from './types.ts'
+import type { DailyNutritionLog, EgyptianMeal, MealCategory } from './types.ts'
 
 interface NutritionModuleProps {
   profile: UserProfile | null
@@ -16,20 +16,168 @@ const CATEGORY_LABELS: Record<MealCategory, string> = {
   snack: '🥗 خفايف وسناكس مصرية',
 }
 
+const PANTRY_STAPLES = [
+  'بيض',
+  'شوفان',
+  'تونة',
+  'جبنة قريش',
+  'لبن',
+  'فول',
+  'أرز',
+  'فراخ',
+  'زبادي',
+  'مكرونة',
+  'بطاطس',
+  'لحم مفروم',
+  'عدس',
+  'خيار',
+  'طماطم',
+  'عيش بلدي',
+]
+
 export function NutritionModule({ profile }: NutritionModuleProps) {
-  const [selectedCategory, setSelectedCategory] =
-    useState<MealCategory>('lunch')
+  const [selectedCategory, setSelectedCategory] = useState<
+    MealCategory | 'supermarket' | 'pantry'
+  >('lunch')
   const [activeMealDetail, setActiveMealDetail] = useState<EgyptianMeal | null>(
     null,
   )
+  const [selectedPantryIngredients, setSelectedPantryIngredients] = useState<
+    string[]
+  >([])
+  const [pantrySearchInput, setPantrySearchInput] = useState('')
+  const [recentlyLoggedId, setRecentlyLoggedId] = useState<string | null>(null)
+
+  const todayKey = useMemo(() => new Date().toISOString().split('T')[0], [])
+  const storageKey = `maganis:daily_nutrition_${todayKey}`
+
+  // Daily tracker state
+  const [dailyLog, setDailyLog] = useState<DailyNutritionLog>(() => {
+    try {
+      const raw = localStorage.getItem(storageKey)
+      if (raw) {
+        return JSON.parse(raw) as DailyNutritionLog
+      }
+    } catch {
+      // ignore
+    }
+    return {
+      date: todayKey,
+      consumedCalories: 0,
+      consumedProtein: 0,
+      consumedCarbs: 0,
+      consumedFats: 0,
+      loggedMeals: [],
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(dailyLog))
+    } catch {
+      // ignore
+    }
+  }, [dailyLog, storageKey])
 
   const targets = useMemo(() => {
     if (!profile) return null
     return calculateCalorieMacroTargets(profile)
   }, [profile])
 
+  function handleLogMeal(meal: EgyptianMeal) {
+    setDailyLog((prev) => {
+      const newCalories = Math.round(prev.consumedCalories + meal.calories)
+      const newProtein = Math.round(prev.consumedProtein + meal.proteinGrams)
+      const newCarbs = Math.round(prev.consumedCarbs + meal.carbsGrams)
+      const newFats = Math.round(prev.consumedFats + meal.fatsGrams)
+
+      return {
+        ...prev,
+        consumedCalories: newCalories,
+        consumedProtein: newProtein,
+        consumedCarbs: newCarbs,
+        consumedFats: newFats,
+        loggedMeals: [
+          ...prev.loggedMeals,
+          {
+            mealId: meal.id,
+            nameAr: meal.nameAr,
+            calories: meal.calories,
+            protein: meal.proteinGrams,
+            carbs: meal.carbsGrams,
+            fats: meal.fatsGrams,
+            timestamp: Date.now(),
+          },
+        ],
+      }
+    })
+
+    setRecentlyLoggedId(meal.id)
+    setTimeout(() => {
+      setRecentlyLoggedId(null)
+    }, 2000)
+  }
+
+  function handleResetDailyLog() {
+    if (window.confirm('هل تريد تصفير عداد السعرات والماكروز لهذا اليوم؟')) {
+      const resetState: DailyNutritionLog = {
+        date: todayKey,
+        consumedCalories: 0,
+        consumedProtein: 0,
+        consumedCarbs: 0,
+        consumedFats: 0,
+        loggedMeals: [],
+      }
+      setDailyLog(resetState)
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(resetState))
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  function togglePantryIngredient(item: string) {
+    setSelectedPantryIngredients((prev) =>
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item],
+    )
+  }
+
   const filteredMeals = useMemo(() => {
     if (!profile) return EGYPTIAN_MEALS
+
+    // Supermarket filter
+    if (selectedCategory === 'supermarket') {
+      return EGYPTIAN_MEALS.filter((m) => m.isBudgetSupermarket)
+    }
+
+    // Pantry ingredient filter
+    if (selectedCategory === 'pantry') {
+      const allSelected = [
+        ...selectedPantryIngredients,
+        ...(pantrySearchInput.trim() ? [pantrySearchInput.trim()] : []),
+      ]
+
+      if (allSelected.length === 0) {
+        return EGYPTIAN_MEALS
+      }
+
+      return EGYPTIAN_MEALS.filter((m) => {
+        const textToSearch = (
+          m.nameAr +
+          ' ' +
+          m.descriptionAr +
+          ' ' +
+          m.ingredientsAr.join(' ')
+        ).toLowerCase()
+
+        return allSelected.some((ing) =>
+          textToSearch.includes(ing.toLowerCase()),
+        )
+      })
+    }
+
+    // Standard category filter
     return EGYPTIAN_MEALS.filter((m) => {
       const matchCat =
         m.category === selectedCategory ||
@@ -37,7 +185,7 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
       const matchGoal = m.suitableGoals.includes(profile.primaryGoal)
       return matchCat && matchGoal
     })
-  }, [profile, selectedCategory])
+  }, [profile, selectedCategory, selectedPantryIngredients, pantrySearchInput])
 
   if (!profile || !targets) {
     return (
@@ -49,6 +197,23 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
       </div>
     )
   }
+
+  const calPercent = Math.min(
+    100,
+    Math.round((dailyLog.consumedCalories / targets.targetCalories) * 100),
+  )
+  const proteinPercent = Math.min(
+    100,
+    Math.round((dailyLog.consumedProtein / targets.proteinGrams) * 100),
+  )
+  const carbsPercent = Math.min(
+    100,
+    Math.round((dailyLog.consumedCarbs / targets.carbsGrams) * 100),
+  )
+  const fatsPercent = Math.min(
+    100,
+    Math.round((dailyLog.consumedFats / targets.fatsGrams) * 100),
+  )
 
   return (
     <div className="nutrition-module" data-testid="nutrition-module">
@@ -67,124 +232,263 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
           </h3>
           <div className="maganis-speech-bubble">
             <strong>نسف السعرات بالشوكة والسكينة!</strong> د. مجانص حسبلك
-            الكالوريز بالجرام، كُل فول وكشري وفراخ بلدية براحتك بس بحساب
-            الماكروز، عشان نبني فورمة متخرّش المية!
+            الكالوريز بالجرام، كُل فول وكشري وفراخ وسوبرماركت بس اضغط "أكلت
+            الوجبة" وشوف شريطك بيتملي عشان فورمتك تكون حديد!
           </div>
         </div>
       </div>
 
-      {/* Header Summary */}
-      <div className="card nutrition-hero-card">
-        <div className="hero-header">
-          <h2>🥗 قسم التغذية وحساب السعرات (المطبخ المصري)</h2>
-          <span className="chip highlight">{targets.goalLabelAr}</span>
+      {/* Interactive Daily Macro Tracker Bar (المستهلك الفعلي / الاحتياج اليومي) */}
+      <div
+        className="card highlight-box"
+        style={{ marginBottom: '16px', border: '2px solid var(--primary)' }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '8px',
+            marginBottom: '12px',
+          }}
+        >
+          <div>
+            <h3 style={{ margin: 0, fontSize: '17px' }}>
+              📊 متتبع التغذية اليومي (اليوم: {todayKey})
+            </h3>
+            <span className="muted-small">
+              سجل وجباتك بضغطة زر وشاهد نسبة اكتمال احتياجك
+            </span>
+          </div>
+          {dailyLog.consumedCalories > 0 && (
+            <button
+              type="button"
+              className="ghost-danger tiny"
+              onClick={handleResetDailyLog}
+              title="تصفير العداد لليوم"
+            >
+              🔄 تصفير عداد اليوم
+            </button>
+          )}
         </div>
 
-        <div className="calorie-stats-grid">
-          <div className="stat-card">
-            <span className="stat-label">معدل الأيض الأساسي (BMR)</span>
-            <span className="stat-value">{targets.bmr}</span>
-            <span className="stat-unit">سعرة/يوم</span>
+        {/* Calories Progress Bar */}
+        <div style={{ marginBottom: '14px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: '14px',
+              marginBottom: '4px',
+            }}
+          >
+            <span>
+              🔥 <strong>السعرات الحرارية:</strong> {dailyLog.consumedCalories}{' '}
+              / {targets.targetCalories} كالوِري
+            </span>
+            <strong
+              style={{
+                color: calPercent >= 100 ? '#22c55e' : 'var(--primary)',
+              }}
+            >
+              {calPercent}%
+            </strong>
+          </div>
+          <div
+            style={{
+              height: '10px',
+              background: '#e2e8f0',
+              borderRadius: '8px',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                width: `${calPercent}%`,
+                height: '100%',
+                background:
+                  calPercent >= 100
+                    ? '#22c55e'
+                    : 'linear-gradient(90deg, #F95700, #ff8a3d)',
+                transition: 'width 0.3s ease',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* 3 Macro Bars (Protein, Carbs, Fats) */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: '10px',
+          }}
+        >
+          {/* Protein */}
+          <div
+            style={{
+              background: '#ffffff',
+              padding: '10px',
+              borderRadius: '10px',
+              border: '1px solid #e2e8f0',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '12.5px',
+                marginBottom: '4px',
+              }}
+            >
+              <span style={{ fontWeight: 700, color: '#3b82f6' }}>
+                🥩 البروتين
+              </span>
+              <strong>{proteinPercent}%</strong>
+            </div>
+            <div
+              style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
+            >
+              {dailyLog.consumedProtein} / {targets.proteinGrams} جم
+            </div>
+            <div
+              style={{
+                height: '6px',
+                background: '#f1f5f9',
+                borderRadius: '6px',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width: `${proteinPercent}%`,
+                  height: '100%',
+                  background: '#3b82f6',
+                  transition: 'width 0.3s ease',
+                }}
+              />
+            </div>
           </div>
 
-          <div className="stat-card">
-            <span className="stat-label">احتياج النشاط (TDEE)</span>
-            <span className="stat-value">{targets.tdee}</span>
-            <span className="stat-unit">سعرة/يوم</span>
+          {/* Carbs */}
+          <div
+            style={{
+              background: '#ffffff',
+              padding: '10px',
+              borderRadius: '10px',
+              border: '1px solid #e2e8f0',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '12.5px',
+                marginBottom: '4px',
+              }}
+            >
+              <span style={{ fontWeight: 700, color: '#eab308' }}>
+                🍞 الكارب
+              </span>
+              <strong>{carbsPercent}%</strong>
+            </div>
+            <div
+              style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
+            >
+              {dailyLog.consumedCarbs} / {targets.carbsGrams} جم
+            </div>
+            <div
+              style={{
+                height: '6px',
+                background: '#f1f5f9',
+                borderRadius: '6px',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width: `${carbsPercent}%`,
+                  height: '100%',
+                  background: '#eab308',
+                  transition: 'width 0.3s ease',
+                }}
+              />
+            </div>
           </div>
 
-          <div className="stat-card accent">
-            <span className="stat-label">هدف السعرات اليومي</span>
-            <span className="stat-value">{targets.targetCalories}</span>
-            <span className="stat-unit">كالوِري</span>
-          </div>
-
-          <div className="stat-card water">
-            <span className="stat-label">احتياج الماء اليومي</span>
-            <span className="stat-value">{targets.waterLiters}</span>
-            <span className="stat-unit">لتر 💧</span>
+          {/* Fats */}
+          <div
+            style={{
+              background: '#ffffff',
+              padding: '10px',
+              borderRadius: '10px',
+              border: '1px solid #e2e8f0',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '12.5px',
+                marginBottom: '4px',
+              }}
+            >
+              <span style={{ fontWeight: 700, color: '#ef4444' }}>
+                🥑 الدهون
+              </span>
+              <strong>{fatsPercent}%</strong>
+            </div>
+            <div
+              style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
+            >
+              {dailyLog.consumedFats} / {targets.fatsGrams} جم
+            </div>
+            <div
+              style={{
+                height: '6px',
+                background: '#f1f5f9',
+                borderRadius: '6px',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width: `${fatsPercent}%`,
+                  height: '100%',
+                  background: '#ef4444',
+                  transition: 'width 0.3s ease',
+                }}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Macro Breakdown */}
-        <div className="macros-breakdown-box">
-          <h3>📊 توزيع الماكروز الدقيق (Macro Split)</h3>
-          <div className="macros-bars-grid">
-            <div className="macro-item protein">
-              <div className="macro-info">
-                <span>البروتين اليومي (هدف دقيق)</span>
-                <strong>{targets.proteinGrams} جرام</strong>
-              </div>
-              <div className="macro-bar-track">
-                <div
-                  className="macro-bar-fill protein"
-                  style={{ width: '100%' }}
-                />
-              </div>
-              <span className="muted-small">
-                حوالي {targets.proteinGrams * 4} سعرة (
-                {Math.round(
-                  ((targets.proteinGrams * 4) / targets.targetCalories) * 100,
-                )}
-                %)
-              </span>
-            </div>
-
-            <div className="macro-item carbs">
-              <div className="macro-info">
-                <span>الكاربوهيدرات</span>
-                <strong>{targets.carbsGrams} جرام</strong>
-              </div>
-              <div className="macro-bar-track">
-                <div
-                  className="macro-bar-fill carbs"
-                  style={{ width: '100%' }}
-                />
-              </div>
-              <span className="muted-small">
-                حوالي {targets.carbsGrams * 4} سعرة (
-                {Math.round(
-                  ((targets.carbsGrams * 4) / targets.targetCalories) * 100,
-                )}
-                %)
-              </span>
-            </div>
-
-            <div className="macro-item fats">
-              <div className="macro-info">
-                <span>الدهون الصحية</span>
-                <strong>{targets.fatsGrams} جرام</strong>
-              </div>
-              <div className="macro-bar-track">
-                <div
-                  className="macro-bar-fill fats"
-                  style={{ width: '100%' }}
-                />
-              </div>
-              <span className="muted-small">
-                حوالي {targets.fatsGrams * 9} سعرة (
-                {Math.round(
-                  ((targets.fatsGrams * 9) / targets.targetCalories) * 100,
-                )}
-                %)
-              </span>
-            </div>
+        {dailyLog.loggedMeals.length > 0 && (
+          <div
+            style={{ marginTop: '10px', fontSize: '12px', color: '#64748b' }}
+          >
+            الوجبات المسجلة اليوم:{' '}
+            {dailyLog.loggedMeals.map((m) => m.nameAr).join(' • ')}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Egyptian Cuisine Meal Generator */}
       <div className="card egyptian-meals-section">
         <div className="meals-section-header">
-          <h2>🇪🇬 اقتراحات وجبات المطبخ المصري المتوازنة</h2>
+          <h2>🇪🇬 وصفات المطبخ المصري واقتراحات الوجبات</h2>
           <p className="muted">
-            وجبات مصرية أصيلة محسوبة البروتين والسعرات لملائمة هدفك الرياضي
-            (تضخيم/تنشيف/مرونة).
+            اختر وجبتك أو مكونات بيتك أو وجبات السوبرماركت السريعة وسجلها بضغطة
+            زر.
           </p>
         </div>
 
-        {/* Category Tabs */}
-        <div className="chips-row meal-category-chips">
+        {/* Category & Feature Tabs */}
+        <div
+          className="chips-row meal-category-chips"
+          style={{ flexWrap: 'wrap', gap: '6px' }}
+        >
           {(Object.keys(CATEGORY_LABELS) as MealCategory[]).map((cat) => (
             <button
               key={cat}
@@ -197,43 +501,199 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
               {CATEGORY_LABELS[cat]}
             </button>
           ))}
+
+          {/* Supermarket Ready Meals Tab */}
+          <button
+            type="button"
+            className={
+              'chip-btn' +
+              (selectedCategory === 'supermarket' ? ' selected' : '')
+            }
+            onClick={() => setSelectedCategory('supermarket')}
+            style={{
+              background:
+                selectedCategory === 'supermarket'
+                  ? 'var(--primary)'
+                  : '#fef3c7',
+              color: selectedCategory === 'supermarket' ? '#fff' : '#92400e',
+              fontWeight: 700,
+            }}
+          >
+            🛒 سوبرماركت اقتصادي جاهز
+          </button>
+
+          {/* Pantry Search Tab */}
+          <button
+            type="button"
+            className={
+              'chip-btn' + (selectedCategory === 'pantry' ? ' selected' : '')
+            }
+            onClick={() => setSelectedCategory('pantry')}
+            style={{
+              background:
+                selectedCategory === 'pantry' ? 'var(--primary)' : '#dcfce7',
+              color: selectedCategory === 'pantry' ? '#fff' : '#166534',
+              fontWeight: 700,
+            }}
+          >
+            🍳 المتاح في البيت (اقترح لي)
+          </button>
         </div>
 
-        {/* Meals Cards List */}
-        <div className="egyptian-meals-grid">
-          {filteredMeals.map((meal) => (
-            <div key={meal.id} className="egyptian-meal-card card">
-              <div className="meal-card-header">
-                <h3>{meal.nameAr}</h3>
-                <span className="badge-cal">{meal.calories} كالوِري</span>
-              </div>
-
-              <p className="meal-desc">{meal.descriptionAr}</p>
-
-              <div className="meal-portion-box">
-                <strong>الحصة المحسوبة:</strong> {meal.portionAr}
-              </div>
-
-              <div className="meal-macros-mini">
-                <span className="macro-pill protein">
-                  بروتين: {meal.proteinGrams}ج
-                </span>
-                <span className="macro-pill carbs">
-                  كارب: {meal.carbsGrams}ج
-                </span>
-                <span className="macro-pill fats">دهون: {meal.fatsGrams}ج</span>
-              </div>
-
-              <button
-                type="button"
-                className="button-primary tiny"
-                style={{ marginTop: '12px', width: '100%' }}
-                onClick={() => setActiveMealDetail(meal)}
-              >
-                📖 طريقة التحضير والنصيحة العلمية ↵
-              </button>
+        {/* Pantry Interactive Matcher Tool */}
+        {selectedCategory === 'pantry' && (
+          <div
+            className="card"
+            style={{
+              background: '#f8fafc',
+              border: '1.5px dashed #cbd5e1',
+              padding: '14px',
+              margin: '14px 0',
+            }}
+          >
+            <h4 style={{ margin: '0 0 8px', fontSize: '15px' }}>
+              🔍 حدد ما هو متوفر لديك في المطبخ وسيقترح عليك التطبيق الوصفات
+              المناسبة:
+            </h4>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '6px',
+                marginBottom: '10px',
+              }}
+            >
+              {PANTRY_STAPLES.map((staple) => {
+                const isSelected = selectedPantryIngredients.includes(staple)
+                return (
+                  <button
+                    key={staple}
+                    type="button"
+                    onClick={() => togglePantryIngredient(staple)}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: '999px',
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      border: isSelected
+                        ? '1.5px solid var(--primary)'
+                        : '1px solid #cbd5e1',
+                      background: isSelected ? 'var(--primary)' : '#ffffff',
+                      color: isSelected ? '#ffffff' : '#334155',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {isSelected ? `✓ ${staple}` : `+ ${staple}`}
+                  </button>
+                )
+              })}
             </div>
-          ))}
+            <input
+              type="text"
+              placeholder="أو اكتب مكوناً آخر متاح عندك في البيت (مثل: جبن، تونة، عدس...)"
+              value={pantrySearchInput}
+              onChange={(e) => setPantrySearchInput(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                fontSize: '13px',
+              }}
+            />
+          </div>
+        )}
+
+        {/* Meals Cards List */}
+        <div className="egyptian-meals-grid" style={{ marginTop: '16px' }}>
+          {filteredMeals.length === 0 ? (
+            <div
+              className="card"
+              style={{
+                gridColumn: '1 / -1',
+                textAlign: 'center',
+                padding: '24px',
+              }}
+            >
+              <p className="muted">
+                لم نجد وجبات مطابقة للمكونات المختارة. جرب اختيار مكونات أخرى!
+              </p>
+            </div>
+          ) : (
+            filteredMeals.map((meal) => {
+              const isJustLogged = recentlyLoggedId === meal.id
+              return (
+                <div key={meal.id} className="egyptian-meal-card card">
+                  <div className="meal-card-header">
+                    <div>
+                      <h3 style={{ margin: '0 0 4px', fontSize: '15px' }}>
+                        {meal.nameAr}
+                      </h3>
+                      {meal.isBudgetSupermarket && (
+                        <span
+                          className="chip"
+                          style={{
+                            background: '#fef3c7',
+                            color: '#92400e',
+                            fontSize: '11px',
+                            padding: '2px 6px',
+                          }}
+                        >
+                          ⚡ سريع من السوبرماركت
+                        </span>
+                      )}
+                    </div>
+                    <span className="badge-cal">{meal.calories} كالوِري</span>
+                  </div>
+
+                  <p className="meal-desc">{meal.descriptionAr}</p>
+
+                  <div className="meal-portion-box">
+                    <strong>الحصة المحسوبة:</strong> {meal.portionAr}
+                  </div>
+
+                  <div className="meal-macros-mini">
+                    <span className="macro-pill protein">
+                      بروتين: {meal.proteinGrams}ج
+                    </span>
+                    <span className="macro-pill carbs">
+                      كارب: {meal.carbsGrams}ج
+                    </span>
+                    <span className="macro-pill fats">
+                      دهون: {meal.fatsGrams}ج
+                    </span>
+                  </div>
+
+                  <div
+                    style={{ display: 'flex', gap: '8px', marginTop: '12px' }}
+                  >
+                    <button
+                      type="button"
+                      className="button-primary tiny"
+                      style={{
+                        flex: 1,
+                        background: isJustLogged ? '#22c55e' : undefined,
+                        borderColor: isJustLogged ? '#22c55e' : undefined,
+                      }}
+                      onClick={() => handleLogMeal(meal)}
+                    >
+                      {isJustLogged
+                        ? '✓ تم تسجيل الوجبة!'
+                        : '🍽️ أكلت الوجبة (+ضيف للماكروز)'}
+                    </button>
+                    <button
+                      type="button"
+                      className="ghost tiny"
+                      onClick={() => setActiveMealDetail(meal)}
+                      title="طريقة التحضير"
+                    >
+                      📖 الوصفة
+                    </button>
+                  </div>
+                </div>
+              )
+            })
+          )}
         </div>
       </div>
 
@@ -274,16 +734,9 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
                 </span>
               </div>
 
-              <div className="detail-section highlight-box">
-                <h3>🍽️ الحصة المقترحة</h3>
-                <p>
-                  <strong>{activeMealDetail.portionAr}</strong>
-                </p>
-              </div>
-
-              <div className="detail-section">
-                <h3>🛒 المكونات المصرية المقادير</h3>
-                <ul className="bullets-list">
+              <div className="recipe-section">
+                <h3>🛒 المكونات والمقادير:</h3>
+                <ul>
                   {activeMealDetail.ingredientsAr.map((ing, idx) => (
                     <li key={idx}>{ing}</li>
                   ))}
@@ -291,9 +744,9 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
               </div>
 
               {activeMealDetail.recipeStepsAr && (
-                <div className="detail-section">
-                  <h3>👨‍🍳 طريقة التحضير الصحية</h3>
-                  <ol className="steps-list">
+                <div className="recipe-section">
+                  <h3>🍳 طريقة التحضير والإعداد:</h3>
+                  <ol>
                     {activeMealDetail.recipeStepsAr.map((step, idx) => (
                       <li key={idx}>{step}</li>
                     ))}
@@ -302,15 +755,29 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
               )}
 
               {activeMealDetail.scientificTipAr && (
-                <div className="detail-section source-box">
-                  <h3>🔬 النصيحة الغذائية العلمية</h3>
+                <div className="scientific-tip-card card highlight-box">
+                  <h4>💡 نصيحة د. مجانص العلمية:</h4>
                   <p>{activeMealDetail.scientificTipAr}</p>
                 </div>
               )}
             </div>
 
             <div className="modal-footer actions-row">
-              <button type="button" onClick={() => setActiveMealDetail(null)}>
+              <button
+                type="button"
+                className="button-primary"
+                onClick={() => {
+                  handleLogMeal(activeMealDetail)
+                  setActiveMealDetail(null)
+                }}
+              >
+                🍽️ أكلت هذه الوجبة (سجلها في اليوم)
+              </button>
+              <button
+                type="button"
+                className="ghost"
+                onClick={() => setActiveMealDetail(null)}
+              >
                 إغلاق
               </button>
             </div>

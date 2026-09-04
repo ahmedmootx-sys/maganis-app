@@ -40,7 +40,13 @@ export function ExerciseVisual({
   let frame0 = imageUrl
   let frame1 = imageUrl
 
-  if (!frame0 && exerciseId) {
+  if (imageUrl) {
+    if (imageUrl.endsWith('/0.jpg')) {
+      frame1 = imageUrl.replace(/\/0\.jpg$/i, '/1.jpg')
+    } else if (imageUrl.endsWith('_0.jpg')) {
+      frame1 = imageUrl.replace(/_0\.jpg$/i, '_1.jpg')
+    }
+  } else if (exerciseId) {
     frame0 = `exercises/${exerciseId}_0.jpg`
     frame1 = `exercises/${exerciseId}_1.jpg`
   }
@@ -52,12 +58,26 @@ export function ExerciseVisual({
     frame1 = catDefaults[1]
   }
 
-  // Smooth animation loop for modal showcase (switches between start and contraction frames)
+  // Preload frame1 to avoid blinking
+  useEffect(() => {
+    if (frame1 && frame1 !== frame0) {
+      const resolved =
+        frame1.startsWith('http://') ||
+        frame1.startsWith('https://') ||
+        frame1.startsWith('data:')
+          ? frame1
+          : assetUrl(frame1)
+      const preloadImg = new Image()
+      preloadImg.src = resolved
+    }
+  }, [frame0, frame1])
+
+  // Smooth animation loop for movement showcase (toggles between start and contraction frames)
   useEffect(() => {
     if (!isAnimated || !frame1 || frame0 === frame1) return
     const interval = setInterval(() => {
       setFrameIndex((prev) => (prev === 0 ? 1 : 0))
-    }, 900)
+    }, 850)
     return () => clearInterval(interval)
   }, [isAnimated, frame0, frame1])
 
