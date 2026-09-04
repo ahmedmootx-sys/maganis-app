@@ -32,6 +32,7 @@ import { Reports } from './modules/reports/Reports.tsx'
 import { BackupPanel } from './modules/backup/BackupPanel.tsx'
 import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
 import type { CustomExercise } from './modules/shared/types.ts'
+import { SplashScreen } from './components/SplashScreen.tsx'
 import './styles/app.css'
 
 type TabId =
@@ -83,6 +84,22 @@ export function App({ config }: AppProps) {
     null,
   )
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false)
+  const [showSplash, setShowSplash] = useState(() => {
+    try {
+      return !sessionStorage.getItem('maganis_splash_shown')
+    } catch {
+      return true
+    }
+  })
+
+  const handleFinishSplash = useCallback(() => {
+    try {
+      sessionStorage.setItem('maganis_splash_shown', 'true')
+    } catch {
+      // ignore
+    }
+    setShowSplash(false)
+  }, [])
 
   // --- Handlers ---
 
@@ -233,6 +250,7 @@ export function App({ config }: AppProps) {
   if (activeWorkoutDay) {
     return (
       <div className="app app--workout-active">
+        {showSplash && <SplashScreen onFinish={handleFinishSplash} />}
         <ActiveWorkoutSession
           programDay={activeWorkoutDay}
           customExercises={workoutStore.getCustomExercises()}
@@ -247,6 +265,7 @@ export function App({ config }: AppProps) {
   if (!profile || editing) {
     return (
       <div className="app">
+        {showSplash && <SplashScreen onFinish={handleFinishSplash} />}
         <header className="app-header">
           <h1 data-testid="app-title">{config.appName}</h1>
           <span
@@ -476,6 +495,7 @@ export function App({ config }: AppProps) {
 
   return (
     <div className="app app--shell">
+      {showSplash && <SplashScreen onFinish={handleFinishSplash} />}
       <header className="app-header">
         <div className="maganis-header-brand">
           <img
