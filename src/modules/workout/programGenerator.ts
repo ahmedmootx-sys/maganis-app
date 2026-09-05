@@ -275,6 +275,7 @@ interface GenerateParams {
   splitType?: WorkoutSplitType
   injuries?: string[]
   customExercises?: CustomExercise[]
+  excludedExerciseIds?: string[]
 }
 
 export function generateProgram(params: GenerateParams): WorkoutProgram {
@@ -284,13 +285,16 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
     splitType,
     injuries = [],
     customExercises = [],
+    excludedExerciseIds = [],
   } = params
 
-  // 1. بناء مجمّع التمارين المتاحة
+  // 1. بناء مجمّع التمارين المتاحة (مع استبعاد التمارين المحذوفة والإصابات)
   const basePool = filterByInjuries(EXERCISES, injuries)
   const equipmentOk = goalEquipmentFilter(goal)
   const pool = shuffle(
-    [...basePool, ...customExercises].filter((e) => equipmentOk(e.equipment)),
+    [...basePool, ...customExercises].filter(
+      (e) => equipmentOk(e.equipment) && !excludedExerciseIds.includes(e.id),
+    ),
   )
 
   // 2. تحديد نمط التقسيم العلمي

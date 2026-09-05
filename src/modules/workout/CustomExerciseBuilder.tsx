@@ -14,6 +14,7 @@ import {
 import { sanitizeInput } from '../../lib/sanitizer.ts'
 
 interface CustomExerciseBuilderProps {
+  initialExercise?: CustomExercise
   onSave: (exercise: CustomExercise) => void
   onCancel?: () => void
 }
@@ -63,21 +64,37 @@ function uniqueId(): string {
 }
 
 export function CustomExerciseBuilder({
+  initialExercise,
   onSave,
   onCancel,
 }: CustomExerciseBuilderProps) {
-  const [nameAr, setNameAr] = useState('')
-  const [descriptionAr, setDescriptionAr] = useState('')
-  const [category, setCategory] = useState<MuscleGroup>('chest')
-  const [difficulty, setDifficulty] = useState<Difficulty>('beginner')
-  const [equipment, setEquipment] = useState<Equipment>('bodyweight')
-  const [measurementType, setMeasurementType] =
-    useState<MeasurementType>('reps')
-  const [imageUrl, setImageUrl] = useState('')
-  const [mechanicsAr, setMechanicsAr] = useState('')
-  const [targetMusclesAr, setTargetMusclesAr] = useState('')
-  const [benefitAr, setBenefitAr] = useState('')
-  const [howToStepsRaw, setHowToStepsRaw] = useState('')
+  const [nameAr, setNameAr] = useState(initialExercise?.nameAr ?? '')
+  const [descriptionAr, setDescriptionAr] = useState(
+    initialExercise?.descriptionAr ?? '',
+  )
+  const [category, setCategory] = useState<MuscleGroup>(
+    initialExercise?.category ?? 'chest',
+  )
+  const [difficulty, setDifficulty] = useState<Difficulty>(
+    initialExercise?.difficulty ?? 'beginner',
+  )
+  const [equipment, setEquipment] = useState<Equipment>(
+    initialExercise?.equipment ?? 'bodyweight',
+  )
+  const [measurementType, setMeasurementType] = useState<MeasurementType>(
+    initialExercise?.measurementType ?? 'reps',
+  )
+  const [imageUrl, setImageUrl] = useState(initialExercise?.imageUrl ?? '')
+  const [mechanicsAr, setMechanicsAr] = useState(
+    initialExercise?.mechanicsAr ?? '',
+  )
+  const [targetMusclesAr, setTargetMusclesAr] = useState(
+    initialExercise?.targetMusclesAr?.join('، ') ?? '',
+  )
+  const [benefitAr, setBenefitAr] = useState(initialExercise?.benefitAr ?? '')
+  const [howToStepsRaw, setHowToStepsRaw] = useState(
+    initialExercise?.howToStepsAr?.join('\n') ?? '',
+  )
   const [error, setError] = useState('')
 
   function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
@@ -120,7 +137,7 @@ export function CustomExerciseBuilder({
       .filter((s) => s.length > 0)
 
     const exercise: CustomExercise = {
-      id: uniqueId(),
+      id: initialExercise?.id || uniqueId(),
       nameAr: trimmed,
       descriptionAr: sanitizeInput(descriptionAr),
       category,
@@ -144,7 +161,11 @@ export function CustomExerciseBuilder({
       onSubmit={handleSubmit}
       data-testid="custom-exercise-form"
     >
-      <h2>✨ إضافة تمرين مخصص جديد</h2>
+      <h2>
+        {initialExercise
+          ? '✏️ تعديل التمرين المخصص'
+          : '✨ إضافة تمرين مخصص جديد'}
+      </h2>
 
       {error && (
         <div className="error-list">

@@ -34,6 +34,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'chest-4',
@@ -61,6 +63,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'chest-13',
@@ -88,6 +92,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Barbell_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Barbell_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'صدر سفلي (قصي)',
+    targetSubMusclesAr: ['صدر سفلي (قصي)'],
   },
   {
     id: 'chest-18',
@@ -115,6 +121,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Barbell_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Barbell_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Barbell_Guillotine_Bench_Press',
@@ -143,6 +151,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Guillotine_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Guillotine_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'chest-2',
@@ -170,6 +180,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'chest-5',
@@ -197,6 +209,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Dumbbell_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Dumbbell_Press/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'chest-15',
@@ -224,6 +238,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Dumbbell_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Dumbbell_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'صدر سفلي (قصي)',
+    targetSubMusclesAr: ['صدر سفلي (قصي)'],
   },
   {
     id: 'chest-6',
@@ -247,6 +263,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Flyes/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Flyes/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'chest-9',
@@ -270,6 +288,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Dumbbell_Flyes/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Dumbbell_Flyes/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'chest-12',
@@ -293,6 +313,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Dumbbell_Flyes/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Dumbbell_Flyes/0.jpg',
+    targetSubMuscleAr: 'صدر سفلي (قصي)',
+    targetSubMusclesAr: ['صدر سفلي (قصي)'],
   },
   {
     id: 'chest-16',
@@ -321,6 +343,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Straight-Arm_Dumbbell_Pullover/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Straight-Arm_Dumbbell_Pullover/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'chest-17',
@@ -344,6 +368,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Flat_Bench_Dumbbell_Flye/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Flat_Bench_Dumbbell_Flye/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Hammer_Grip_Incline_DB_Bench_Press',
@@ -371,6 +397,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Grip_Incline_DB_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Grip_Incline_DB_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'chest-7',
@@ -394,6 +422,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Crossover/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Crossover/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'chest-14',
@@ -417,6 +447,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Low_Cable_Crossover/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Low_Cable_Crossover/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'chest-8',
@@ -444,6 +476,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Chest_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Chest_Press/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Cable_Iron_Cross',
@@ -467,6 +501,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Iron_Cross/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Iron_Cross/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Single-Arm_Cable_Crossover',
@@ -490,6 +526,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single-Arm_Cable_Crossover/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single-Arm_Cable_Crossover/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'chest-20',
@@ -513,6 +551,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Butterfly/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Butterfly/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'chest-10',
@@ -540,6 +580,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Chest_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Chest_Press/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Leverage_Incline_Chest_Press',
@@ -567,6 +609,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Incline_Chest_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Incline_Chest_Press/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'Leverage_Decline_Chest_Press',
@@ -594,6 +638,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Decline_Chest_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Decline_Chest_Press/0.jpg',
+    targetSubMuscleAr: 'صدر سفلي (قصي)',
+    targetSubMusclesAr: ['صدر سفلي (قصي)'],
   },
   {
     id: 'Smith_Machine_Bench_Press',
@@ -621,6 +667,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Smith_Machine_Incline_Bench_Press',
@@ -648,6 +696,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Incline_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Incline_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'Smith_Machine_Decline_Press',
@@ -675,6 +725,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Decline_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Decline_Press/0.jpg',
+    targetSubMuscleAr: 'صدر سفلي (قصي)',
+    targetSubMusclesAr: ['صدر سفلي (قصي)'],
   },
   {
     id: 'chest-11',
@@ -703,6 +755,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Chest_Version/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Chest_Version/0.jpg',
+    targetSubMuscleAr: 'صدر سفلي (قصي)',
+    targetSubMusclesAr: ['صدر سفلي (قصي)'],
   },
   {
     id: 'chest-3',
@@ -731,6 +785,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pushups/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pushups/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'chest-19',
@@ -759,6 +815,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Push-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Push-Up/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'Decline_Push-Up',
@@ -787,6 +845,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Push-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Push-Up/0.jpg',
+    targetSubMuscleAr: 'صدر علوي (ترقوي)',
+    targetSubMusclesAr: ['صدر علوي (ترقوي)'],
   },
   {
     id: 'Svend_Press',
@@ -815,6 +875,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Svend_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Svend_Press/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Clock_Push-Up',
@@ -843,6 +905,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Clock_Push-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Clock_Push-Up/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'back-14',
@@ -877,6 +941,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Deadlift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Deadlift/0.jpg',
+    targetSubMuscleAr: 'أسفل الظهر والفقرات القطنية',
+    targetSubMusclesAr: ['أسفل الظهر والفقرات القطنية'],
   },
   {
     id: 'back-4',
@@ -905,6 +971,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Barbell_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Barbell_Row/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'back-5',
@@ -933,6 +1001,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Two-Dumbbell_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Two-Dumbbell_Row/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'back-13',
@@ -961,6 +1031,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'back-8',
@@ -988,6 +1060,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/T-Bar_Row_with_Handle/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/T-Bar_Row_with_Handle/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'back-1',
@@ -1016,6 +1090,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Lat_Pulldown/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Lat_Pulldown/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'back-7',
@@ -1044,6 +1120,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Front_Lat_Pulldown/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Front_Lat_Pulldown/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'back-3',
@@ -1072,6 +1150,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Underhand_Cable_Pulldowns/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Underhand_Cable_Pulldowns/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'One_Arm_Lat_Pulldown',
@@ -1099,6 +1179,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One_Arm_Lat_Pulldown/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One_Arm_Lat_Pulldown/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'Full_Range-Of-Motion_Lat_Pulldown',
@@ -1127,6 +1209,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Full_Range-Of-Motion_Lat_Pulldown/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Full_Range-Of-Motion_Lat_Pulldown/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'back-6',
@@ -1155,6 +1239,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Cable_Rows/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Cable_Rows/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Elevated_Cable_Rows',
@@ -1182,6 +1268,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Elevated_Cable_Rows/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Elevated_Cable_Rows/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'back-11',
@@ -1205,6 +1293,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Straight-Arm_Pulldown/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Straight-Arm_Pulldown/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'back-10',
@@ -1232,6 +1322,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pullups/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pullups/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'Wide-Grip_Rear_Pull-Up',
@@ -1260,6 +1352,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Rear_Pull-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Rear_Pull-Up/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'back-17',
@@ -1288,6 +1382,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Chin-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Chin-Up/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'back-16',
@@ -1314,6 +1410,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Inverted_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Inverted_Row/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'Rope_Climb',
@@ -1343,6 +1441,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rope_Climb/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rope_Climb/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'back-20',
@@ -1366,6 +1466,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Shrug/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Shrug/0.jpg',
+    targetSubMuscleAr: 'عضلات الترابيس (Traps)',
+    targetSubMusclesAr: ['عضلات الترابيس (Traps)'],
   },
   {
     id: 'Dumbbell_Shrug',
@@ -1389,6 +1491,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Shrug/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Shrug/0.jpg',
+    targetSubMuscleAr: 'عضلات الترابيس (Traps)',
+    targetSubMusclesAr: ['عضلات الترابيس (Traps)'],
   },
   {
     id: 'Cable_Shrugs',
@@ -1412,6 +1516,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Shrugs/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Shrugs/0.jpg',
+    targetSubMuscleAr: 'عضلات الترابيس (Traps)',
+    targetSubMusclesAr: ['عضلات الترابيس (Traps)'],
   },
   {
     id: 'Middle_Back_Shrug',
@@ -1435,6 +1541,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Middle_Back_Shrug/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Middle_Back_Shrug/0.jpg',
+    targetSubMuscleAr: 'عضلات الترابيس (Traps)',
+    targetSubMusclesAr: ['عضلات الترابيس (Traps)'],
   },
   {
     id: 'back-9',
@@ -1462,6 +1570,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hyperextensions_Back_Extensions/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hyperextensions_Back_Extensions/0.jpg',
+    targetSubMuscleAr: 'أسفل الظهر والفقرات القطنية',
+    targetSubMusclesAr: ['أسفل الظهر والفقرات القطنية'],
   },
   {
     id: 'Good_Morning',
@@ -1491,6 +1601,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Good_Morning/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Good_Morning/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'Stiff_Leg_Barbell_Good_Morning',
@@ -1519,6 +1631,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Stiff_Leg_Barbell_Good_Morning/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Stiff_Leg_Barbell_Good_Morning/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Smith_Machine_Bent_Over_Row',
@@ -1547,6 +1661,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Bent_Over_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Bent_Over_Row/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'back-18',
@@ -1573,6 +1689,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_High_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_High_Row/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'back-19',
@@ -1600,6 +1718,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Shotgun_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Shotgun_Row/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Bent_Over_Two-Arm_Long_Bar_Row',
@@ -1627,6 +1747,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Two-Arm_Long_Bar_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Two-Arm_Long_Bar_Row/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Sumo_Deadlift',
@@ -1660,6 +1782,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Sumo_Deadlift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Sumo_Deadlift/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Trap_Bar_Deadlift',
@@ -1688,6 +1812,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Trap_Bar_Deadlift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Trap_Bar_Deadlift/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Deadlift_with_Bands',
@@ -1720,6 +1846,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Deadlift_with_Bands/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Deadlift_with_Bands/0.jpg',
+    targetSubMuscleAr: 'أسفل الظهر والفقرات القطنية',
+    targetSubMusclesAr: ['أسفل الظهر والفقرات القطنية'],
   },
   {
     id: 'back-15',
@@ -1750,6 +1878,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift_from_Deficit/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift_from_Deficit/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'Kettlebell_One-Legged_Deadlift',
@@ -1778,6 +1908,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_One-Legged_Deadlift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_One-Legged_Deadlift/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'core-19',
@@ -1805,6 +1937,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Superman/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Superman/0.jpg',
+    targetSubMuscleAr: 'أسفل الظهر والفقرات القطنية',
+    targetSubMusclesAr: ['أسفل الظهر والفقرات القطنية'],
   },
   {
     id: 'shoulder-12',
@@ -1831,6 +1965,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Face_Pull/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Face_Pull/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'Side_Laterals_to_Front_Raise',
@@ -1854,6 +1990,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Laterals_to_Front_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Laterals_to_Front_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الجانبي (Side Delt)',
+    targetSubMusclesAr: ['الكتف الجانبي (Side Delt)'],
   },
   {
     id: 'Upright_Row_-_With_Bands',
@@ -1877,6 +2015,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Upright_Row_-_With_Bands/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Upright_Row_-_With_Bands/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Standing_Cable_Lift',
@@ -1903,6 +2043,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Cable_Lift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Cable_Lift/0.jpg',
+    targetSubMuscleAr: 'ثبات الجذع والكور العميق',
+    targetSubMusclesAr: ['ثبات الجذع والكور العميق'],
   },
   {
     id: 'leg-1',
@@ -1933,6 +2075,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Full_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Full_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'leg-11',
@@ -1962,6 +2106,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Barbell_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Barbell_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-14',
@@ -1993,6 +2139,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Box_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Box_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Narrow_Stance_Squats',
@@ -2023,6 +2171,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Narrow_Stance_Squats/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Narrow_Stance_Squats/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Wide_Stance_Barbell_Squat',
@@ -2053,6 +2203,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide_Stance_Barbell_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide_Stance_Barbell_Squat/0.jpg',
+    targetSubMuscleAr: 'عضلات الفخذ الداخلية (الضامة)',
+    targetSubMusclesAr: ['عضلات الفخذ الداخلية (الضامة)'],
   },
   {
     id: 'Overhead_Squat',
@@ -2086,6 +2238,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Overhead_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Overhead_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-12',
@@ -2115,6 +2269,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hack_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hack_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-8',
@@ -2144,6 +2300,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Lunge/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Lunge/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Barbell_Walking_Lunge',
@@ -2173,6 +2331,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Walking_Lunge/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Walking_Lunge/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Barbell_Side_Split_Squat',
@@ -2202,6 +2362,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Side_Split_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Side_Split_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-2',
@@ -2232,6 +2394,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Goblet_Squat',
@@ -2262,6 +2426,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Goblet_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Goblet_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-7',
@@ -2291,6 +2457,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lunges/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lunges/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-3',
@@ -2319,6 +2487,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squat_with_Dumbbells/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squat_with_Dumbbells/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-13',
@@ -2347,6 +2517,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Step_Ups/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Step_Ups/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Step-up_with_Knee_Raise',
@@ -2374,6 +2546,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Step-up_with_Knee_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Step-up_with_Knee_Raise/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-16',
@@ -2404,6 +2578,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plie_Dumbbell_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plie_Dumbbell_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-4',
@@ -2432,6 +2608,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Press/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-18',
@@ -2456,6 +2634,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Extensions/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Extensions/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-5',
@@ -2479,6 +2659,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Leg_Curls/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Leg_Curls/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'leg-17',
@@ -2502,6 +2684,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Leg_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Leg_Curl/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'Standing_Leg_Curl',
@@ -2525,6 +2709,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Leg_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Leg_Curl/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'leg-6',
@@ -2554,6 +2740,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'leg-15',
@@ -2582,6 +2770,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Stiff-Legged_Barbell_Deadlift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Stiff-Legged_Barbell_Deadlift/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'Stiff-Legged_Dumbbell_Deadlift',
@@ -2610,6 +2800,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Stiff-Legged_Dumbbell_Deadlift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Stiff-Legged_Dumbbell_Deadlift/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'leg-20',
@@ -2637,6 +2829,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Hip_Thrust/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Hip_Thrust/0.jpg',
+    targetSubMuscleAr: 'عضلات المؤخرة والألوية (الجلوتس)',
+    targetSubMusclesAr: ['عضلات المؤخرة والألوية (الجلوتس)'],
   },
   {
     id: 'leg-21',
@@ -2664,6 +2858,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Glute_Bridge/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Glute_Bridge/0.jpg',
+    targetSubMuscleAr: 'عضلات المؤخرة والألوية (الجلوتس)',
+    targetSubMusclesAr: ['عضلات المؤخرة والألوية (الجلوتس)'],
   },
   {
     id: 'Single_Leg_Glute_Bridge',
@@ -2690,6 +2886,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single_Leg_Glute_Bridge/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single_Leg_Glute_Bridge/0.jpg',
+    targetSubMuscleAr: 'عضلات المؤخرة والألوية (الجلوتس)',
+    targetSubMusclesAr: ['عضلات المؤخرة والألوية (الجلوتس)'],
   },
   {
     id: 'Glute_Ham_Raise',
@@ -2717,6 +2915,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Glute_Ham_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Glute_Ham_Raise/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'Glute_Kickback',
@@ -2743,6 +2943,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Glute_Kickback/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Glute_Kickback/0.jpg',
+    targetSubMuscleAr: 'الفخذ الخلفي (الهمسترنج)',
+    targetSubMusclesAr: ['الفخذ الخلفي (الهمسترنج)'],
   },
   {
     id: 'Thigh_Abductor',
@@ -2769,6 +2971,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Thigh_Abductor/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Thigh_Abductor/0.jpg',
+    targetSubMuscleAr: 'عضلات المؤخرة والألوية (الجلوتس)',
+    targetSubMusclesAr: ['عضلات المؤخرة والألوية (الجلوتس)'],
   },
   {
     id: 'Thigh_Adductor',
@@ -2796,6 +3000,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Thigh_Adductor/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Thigh_Adductor/0.jpg',
+    targetSubMuscleAr: 'عضلات الفخذ الداخلية (الضامة)',
+    targetSubMusclesAr: ['عضلات الفخذ الداخلية (الضامة)'],
   },
   {
     id: 'leg-9',
@@ -2819,6 +3025,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Calf_Raises/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Calf_Raises/0.jpg',
+    targetSubMuscleAr: 'عضلات السمانة (الكاحل)',
+    targetSubMusclesAr: ['عضلات السمانة (الكاحل)'],
   },
   {
     id: 'leg-10',
@@ -2842,6 +3050,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Calf_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Calf_Raise/0.jpg',
+    targetSubMuscleAr: 'عضلات السمانة (الكاحل)',
+    targetSubMusclesAr: ['عضلات السمانة (الكاحل)'],
   },
   {
     id: 'Calf_Press_On_The_Leg_Press_Machine',
@@ -2865,6 +3075,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Calf_Press_On_The_Leg_Press_Machine/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Calf_Press_On_The_Leg_Press_Machine/0.jpg',
+    targetSubMuscleAr: 'عضلات السمانة (الكاحل)',
+    targetSubMusclesAr: ['عضلات السمانة (الكاحل)'],
   },
   {
     id: 'Smith_Machine_Calf_Raise',
@@ -2888,6 +3100,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Calf_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Calf_Raise/0.jpg',
+    targetSubMuscleAr: 'عضلات السمانة (الكاحل)',
+    targetSubMusclesAr: ['عضلات السمانة (الكاحل)'],
   },
   {
     id: 'Rocking_Standing_Calf_Raise',
@@ -2911,6 +3125,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rocking_Standing_Calf_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rocking_Standing_Calf_Raise/0.jpg',
+    targetSubMuscleAr: 'عضلات السمانة (الكاحل)',
+    targetSubMusclesAr: ['عضلات السمانة (الكاحل)'],
   },
   {
     id: 'Donkey_Calf_Raises',
@@ -2934,6 +3150,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Donkey_Calf_Raises/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Donkey_Calf_Raises/0.jpg',
+    targetSubMuscleAr: 'عضلات السمانة (الكاحل)',
+    targetSubMusclesAr: ['عضلات السمانة (الكاحل)'],
   },
   {
     id: 'Smith_Machine_Squat',
@@ -2964,6 +3182,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Smith_Single-Leg_Split_Squat',
@@ -2993,6 +3213,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Single-Leg_Split_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Single-Leg_Split_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'leg-19',
@@ -3021,6 +3243,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Bodyweight_Walking_Lunge',
@@ -3050,6 +3274,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Walking_Lunge/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Walking_Lunge/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Scissors_Jump',
@@ -3077,6 +3303,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Scissors_Jump/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Scissors_Jump/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Side_Leg_Raises',
@@ -3100,6 +3328,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Leg_Raises/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Leg_Raises/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'One-Arm_Side_Deadlift',
@@ -3132,6 +3362,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Side_Deadlift/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Side_Deadlift/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Band_Hip_Adductions',
@@ -3155,6 +3387,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Band_Hip_Adductions/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Band_Hip_Adductions/0.jpg',
+    targetSubMuscleAr: 'عضلات الفخذ الداخلية (الضامة)',
+    targetSubMusclesAr: ['عضلات الفخذ الداخلية (الضامة)'],
   },
   {
     id: 'Reverse_Band_Box_Squat',
@@ -3188,6 +3422,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Band_Box_Squat/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Band_Box_Squat/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'Calf-Machine_Shoulder_Shrug',
@@ -3211,6 +3447,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Calf-Machine_Shoulder_Shrug/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Calf-Machine_Shoulder_Shrug/0.jpg',
+    targetSubMuscleAr: 'عضلات الترابيس (Traps)',
+    targetSubMusclesAr: ['عضلات الترابيس (Traps)'],
   },
   {
     id: 'Knee_Tuck_Jump',
@@ -3241,6 +3479,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Knee_Tuck_Jump/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Knee_Tuck_Jump/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'shoulder-1',
@@ -3264,6 +3504,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Military_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Military_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'shoulder-11',
@@ -3287,6 +3529,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Barbell_Military_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Barbell_Military_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'shoulder-15',
@@ -3310,6 +3554,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Shoulder_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Shoulder_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Seated_Dumbbell_Press',
@@ -3333,6 +3579,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Dumbbell_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Dumbbell_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'shoulder-6',
@@ -3356,6 +3604,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Arnold_Dumbbell_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Arnold_Dumbbell_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'shoulder-16',
@@ -3379,6 +3629,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Shoulder_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Shoulder_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'shoulder-19',
@@ -3413,6 +3665,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Clean_and_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Clean_and_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف والترابيس',
+    targetSubMusclesAr: ['الكتف والترابيس'],
   },
   {
     id: 'Push_Press',
@@ -3440,6 +3694,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'shoulder-3',
@@ -3463,6 +3719,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Lateral_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Lateral_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الجانبي (Side Delt)',
+    targetSubMusclesAr: ['الكتف الجانبي (Side Delt)'],
   },
   {
     id: 'shoulder-9',
@@ -3486,6 +3744,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Side_Lateral_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Side_Lateral_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الجانبي (Side Delt)',
+    targetSubMusclesAr: ['الكتف الجانبي (Side Delt)'],
   },
   {
     id: 'shoulder-14',
@@ -3509,6 +3769,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Side_Laterals/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Side_Laterals/0.jpg',
+    targetSubMuscleAr: 'الكتف الجانبي (Side Delt)',
+    targetSubMusclesAr: ['الكتف الجانبي (Side Delt)'],
   },
   {
     id: 'shoulder-5',
@@ -3536,6 +3798,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Seated_Lateral_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Seated_Lateral_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الجانبي (Side Delt)',
+    targetSubMusclesAr: ['الكتف الجانبي (Side Delt)'],
   },
   {
     id: 'shoulder-4',
@@ -3559,6 +3823,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Dumbbell_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Dumbbell_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'shoulder-13',
@@ -3582,6 +3848,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Cable_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Cable_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Front_Two-Dumbbell_Raise',
@@ -3605,6 +3873,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Two-Dumbbell_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Two-Dumbbell_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Standing_Front_Barbell_Raise_Over_Head',
@@ -3628,6 +3898,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Front_Barbell_Raise_Over_Head/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Front_Barbell_Raise_Over_Head/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'back-12',
@@ -3651,6 +3923,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Flyes/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Flyes/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'shoulder-7',
@@ -3674,6 +3948,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'Lying_Rear_Delt_Raise',
@@ -3697,6 +3973,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Rear_Delt_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Rear_Delt_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'Cable_Rear_Delt_Fly',
@@ -3720,6 +3998,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Rear_Delt_Fly/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Rear_Delt_Fly/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'shoulder-18',
@@ -3748,6 +4028,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Rear_Delt_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Rear_Delt_Row/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'Cable_Rope_Rear-Delt_Rows',
@@ -3775,6 +4057,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Rope_Rear-Delt_Rows/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Rope_Rear-Delt_Rows/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'shoulder-17',
@@ -3798,6 +4082,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Upright_Barbell_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Upright_Barbell_Row/0.jpg',
+    targetSubMuscleAr: 'الكتف والترابيس',
+    targetSubMusclesAr: ['الكتف والترابيس'],
   },
   {
     id: 'Upright_Cable_Row',
@@ -3821,6 +4107,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Upright_Cable_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Upright_Cable_Row/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Dumbbell_One-Arm_Upright_Row',
@@ -3849,6 +4137,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_One-Arm_Upright_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_One-Arm_Upright_Row/0.jpg',
+    targetSubMuscleAr: 'الكتف والترابيس',
+    targetSubMusclesAr: ['الكتف والترابيس'],
   },
   {
     id: 'shoulder-10',
@@ -3872,6 +4162,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Scaption/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Scaption/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Dumbbell_Raise',
@@ -3895,6 +4187,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Alternating_Deltoid_Raise',
@@ -3918,6 +4212,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternating_Deltoid_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternating_Deltoid_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Car_Drivers',
@@ -3941,6 +4237,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Car_Drivers/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Car_Drivers/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Cuban_Press',
@@ -3964,6 +4262,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cuban_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cuban_Press/0.jpg',
+    targetSubMuscleAr: 'الكفة المدورة (Rotator Cuff)',
+    targetSubMusclesAr: ['الكفة المدورة (Rotator Cuff)'],
   },
   {
     id: 'Iron_Cross',
@@ -3995,6 +4295,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Iron_Cross/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Iron_Cross/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Standing_Low-Pulley_Deltoid_Raise',
@@ -4018,6 +4320,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Low-Pulley_Deltoid_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Low-Pulley_Deltoid_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'shoulder-20',
@@ -4042,6 +4346,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Handstand_Push-Ups/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Handstand_Push-Ups/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Kettlebell_Thruster',
@@ -4069,6 +4375,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_Thruster/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_Thruster/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'External_Rotation_with_Band',
@@ -4092,6 +4400,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/External_Rotation_with_Band/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/External_Rotation_with_Band/0.jpg',
+    targetSubMuscleAr: 'الكفة المدورة (Rotator Cuff)',
+    targetSubMusclesAr: ['الكفة المدورة (Rotator Cuff)'],
   },
   {
     id: 'Side_Wrist_Pull',
@@ -4120,6 +4430,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Wrist_Pull/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Wrist_Pull/0.jpg',
+    targetSubMuscleAr: 'الكتف الجانبي (Side Delt)',
+    targetSubMusclesAr: ['الكتف الجانبي (Side Delt)'],
   },
   {
     id: 'arm-1',
@@ -4143,6 +4455,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس الطويل',
+    targetSubMusclesAr: ['بايسبس - الرأس الطويل'],
   },
   {
     id: 'EZ-Bar_Curl',
@@ -4166,6 +4480,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس الطويل',
+    targetSubMusclesAr: ['بايسبس - الرأس الطويل'],
   },
   {
     id: 'Close-Grip_Standing_Barbell_Curl',
@@ -4189,6 +4505,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Standing_Barbell_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Standing_Barbell_Curl/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Wide-Grip_Standing_Barbell_Curl',
@@ -4212,6 +4530,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Standing_Barbell_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Standing_Barbell_Curl/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'arm-2',
@@ -4235,6 +4555,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bicep_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bicep_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس الطويل',
+    targetSubMusclesAr: ['بايسبس - الرأس الطويل'],
   },
   {
     id: 'arm-5',
@@ -4258,6 +4580,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Dumbbell_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Dumbbell_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس القصير (عضلة القمة)',
+    targetSubMusclesAr: ['بايسبس - الرأس القصير (عضلة القمة)'],
   },
   {
     id: 'Incline_Inner_Biceps_Curl',
@@ -4281,6 +4605,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Inner_Biceps_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Inner_Biceps_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس القصير (عضلة القمة)',
+    targetSubMusclesAr: ['بايسبس - الرأس القصير (عضلة القمة)'],
   },
   {
     id: 'arm-3',
@@ -4304,6 +4630,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Curls/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Curls/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Cross_Body_Hammer_Curl',
@@ -4327,6 +4655,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cross_Body_Hammer_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cross_Body_Hammer_Curl/0.jpg',
+    targetSubMuscleAr: 'العضدية والساعد (البريكيالس)',
+    targetSubMusclesAr: ['العضدية والساعد (البريكيالس)'],
   },
   {
     id: 'Preacher_Curl',
@@ -4350,6 +4680,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Preacher_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Preacher_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس القصير (عضلة القمة)',
+    targetSubMusclesAr: ['بايسبس - الرأس القصير (عضلة القمة)'],
   },
   {
     id: 'arm-4',
@@ -4373,6 +4705,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Concentration_Curls/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Concentration_Curls/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس الطويل',
+    targetSubMusclesAr: ['بايسبس - الرأس الطويل'],
   },
   {
     id: 'Spider_Curl',
@@ -4396,6 +4730,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Spider_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Spider_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس الطويل',
+    targetSubMusclesAr: ['بايسبس - الرأس الطويل'],
   },
   {
     id: 'Zottman_Curl',
@@ -4419,6 +4755,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Zottman_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Zottman_Curl/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Seated_Close-Grip_Concentration_Barbell_Curl',
@@ -4442,6 +4780,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Close-Grip_Concentration_Barbell_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Close-Grip_Concentration_Barbell_Curl/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'arm-6',
@@ -4465,6 +4805,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Preacher_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Preacher_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس القصير (عضلة القمة)',
+    targetSubMusclesAr: ['بايسبس - الرأس القصير (عضلة القمة)'],
   },
   {
     id: 'arm-7',
@@ -4488,6 +4830,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/0.jpg',
+    targetSubMuscleAr: 'العضدية والساعد (البريكيالس)',
+    targetSubMusclesAr: ['العضدية والساعد (البريكيالس)'],
   },
   {
     id: 'arm-8',
@@ -4511,6 +4855,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Overhead_Cable_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Overhead_Cable_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس الطويل',
+    targetSubMusclesAr: ['بايسبس - الرأس الطويل'],
   },
   {
     id: 'arm-9',
@@ -4534,6 +4880,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Machine_Bicep_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Machine_Bicep_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس الطويل',
+    targetSubMusclesAr: ['بايسبس - الرأس الطويل'],
   },
   {
     id: 'arm-10',
@@ -4557,6 +4905,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Barbell_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Barbell_Curl/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Reverse_Cable_Curl',
@@ -4580,6 +4930,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Cable_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Cable_Curl/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'arm-11',
@@ -4607,6 +4959,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Barbell_Bench_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Barbell_Bench_Press/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'JM_Press',
@@ -4634,6 +4988,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/JM_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/JM_Press/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'arm-14',
@@ -4657,6 +5013,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Triceps_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Triceps_Press/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الطويل (Long Head)',
+    targetSubMusclesAr: ['ترايسبس - الرأس الطويل (Long Head)'],
   },
   {
     id: 'Decline_EZ_Bar_Triceps_Extension',
@@ -4680,6 +5038,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_EZ_Bar_Triceps_Extension/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_EZ_Bar_Triceps_Extension/0.jpg',
+    targetSubMuscleAr: 'العضدية والساعد (البريكيالس)',
+    targetSubMusclesAr: ['العضدية والساعد (البريكيالس)'],
   },
   {
     id: 'Incline_Barbell_Triceps_Extension',
@@ -4703,6 +5063,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Barbell_Triceps_Extension/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Barbell_Triceps_Extension/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس القصير (عضلة القمة)',
+    targetSubMusclesAr: ['بايسبس - الرأس القصير (عضلة القمة)'],
   },
   {
     id: 'Decline_Close-Grip_Bench_To_Skull_Crusher',
@@ -4730,6 +5092,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Close-Grip_Bench_To_Skull_Crusher/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Close-Grip_Bench_To_Skull_Crusher/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الطويل (Long Head)',
+    targetSubMusclesAr: ['ترايسبس - الرأس الطويل (Long Head)'],
   },
   {
     id: 'arm-15',
@@ -4753,6 +5117,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Overhead_Barbell_Triceps_Extension/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Overhead_Barbell_Triceps_Extension/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الطويل (Long Head)',
+    targetSubMusclesAr: ['ترايسبس - الرأس الطويل (Long Head)'],
   },
   {
     id: 'arm-17',
@@ -4776,6 +5142,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Triceps_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Triceps_Press/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'Standing_Dumbbell_Triceps_Extension',
@@ -4799,6 +5167,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Dumbbell_Triceps_Extension/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Dumbbell_Triceps_Extension/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الطويل (Long Head)',
+    targetSubMusclesAr: ['ترايسبس - الرأس الطويل (Long Head)'],
   },
   {
     id: 'arm-16',
@@ -4822,6 +5192,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Tricep_Dumbbell_Kickback/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Tricep_Dumbbell_Kickback/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'Tate_Press',
@@ -4849,6 +5221,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Tate_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Tate_Press/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'arm-12',
@@ -4872,6 +5246,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'arm-13',
@@ -4895,6 +5271,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown_-_Rope_Attachment/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown_-_Rope_Attachment/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'Triceps_Pushdown_-_V-Bar_Attachment',
@@ -4918,6 +5296,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown_-_V-Bar_Attachment/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown_-_V-Bar_Attachment/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'Reverse_Grip_Triceps_Pushdown',
@@ -4941,6 +5321,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Grip_Triceps_Pushdown/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Grip_Triceps_Pushdown/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Cable_One_Arm_Tricep_Extension',
@@ -4964,6 +5346,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_One_Arm_Tricep_Extension/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_One_Arm_Tricep_Extension/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'Cable_Lying_Triceps_Extension',
@@ -4987,6 +5371,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Lying_Triceps_Extension/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Lying_Triceps_Extension/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'arm-19',
@@ -5014,6 +5400,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Triceps_Version/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Triceps_Version/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'arm-18',
@@ -5041,6 +5429,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bench_Dips/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bench_Dips/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'Seated_Palm-Up_Barbell_Wrist_Curl',
@@ -5065,6 +5455,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Palm-Up_Barbell_Wrist_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Palm-Up_Barbell_Wrist_Curl/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench',
@@ -5089,6 +5481,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench',
@@ -5113,6 +5507,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Farmers_Walk',
@@ -5144,6 +5540,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Farmers_Walk/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Farmers_Walk/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Wrist_Roller',
@@ -5168,6 +5566,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wrist_Roller/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wrist_Roller/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Plate_Pinch',
@@ -5191,6 +5591,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plate_Pinch/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plate_Pinch/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'Cable_Wrist_Curl',
@@ -5215,6 +5617,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Wrist_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Wrist_Curl/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'core-1',
@@ -5238,6 +5642,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/0.jpg',
+    targetSubMuscleAr: 'ثبات الجذع والكور العميق',
+    targetSubMusclesAr: ['ثبات الجذع والكور العميق'],
   },
   {
     id: 'core-5',
@@ -5266,6 +5672,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push_Up_to_Side_Plank/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push_Up_to_Side_Plank/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'core-2',
@@ -5289,6 +5697,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Crunches/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Crunches/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'core-18',
@@ -5312,6 +5722,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Crunch/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Crunch/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'core-12',
@@ -5335,6 +5747,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Crunch/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Crunch/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن السفلية',
+    targetSubMusclesAr: ['عضلات البطن السفلية'],
   },
   {
     id: 'core-10',
@@ -5358,6 +5772,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cross-Body_Crunch/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cross-Body_Crunch/0.jpg',
+    targetSubMuscleAr: 'عضلات الخواصر والجانبية (Obliques)',
+    targetSubMusclesAr: ['عضلات الخواصر والجانبية (Obliques)'],
   },
   {
     id: 'Tuck_Crunch',
@@ -5381,6 +5797,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Tuck_Crunch/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Tuck_Crunch/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'core-14',
@@ -5404,6 +5822,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Exercise_Ball_Crunch/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Exercise_Ball_Crunch/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'core-20',
@@ -5427,6 +5847,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Crunch/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Crunch/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'Kneeling_Cable_Triceps_Extension',
@@ -5450,6 +5872,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kneeling_Cable_Triceps_Extension/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kneeling_Cable_Triceps_Extension/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الجانبي والأوسط',
+    targetSubMusclesAr: ['ترايسبس - الرأس الجانبي والأوسط'],
   },
   {
     id: 'core-17',
@@ -5473,6 +5897,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hanging_Leg_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hanging_Leg_Raise/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن السفلية',
+    targetSubMusclesAr: ['عضلات البطن السفلية'],
   },
   {
     id: 'core-4',
@@ -5496,6 +5922,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Flat_Bench_Lying_Leg_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Flat_Bench_Lying_Leg_Raise/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن السفلية',
+    targetSubMusclesAr: ['عضلات البطن السفلية'],
   },
   {
     id: 'Seated_Flat_Bench_Leg_Pull-In',
@@ -5519,6 +5947,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Flat_Bench_Leg_Pull-In/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Flat_Bench_Leg_Pull-In/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'Leg_Pull-In',
@@ -5542,6 +5972,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Pull-In/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Pull-In/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن السفلية',
+    targetSubMusclesAr: ['عضلات البطن السفلية'],
   },
   {
     id: 'core-16',
@@ -5568,6 +6000,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Ab_Roller/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Ab_Roller/0.jpg',
+    targetSubMuscleAr: 'ثبات الجذع والكور العميق',
+    targetSubMusclesAr: ['ثبات الجذع والكور العميق'],
   },
   {
     id: 'core-7',
@@ -5594,6 +6028,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Russian_Twist/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Russian_Twist/0.jpg',
+    targetSubMuscleAr: 'عضلات الخواصر والجانبية (Obliques)',
+    targetSubMusclesAr: ['عضلات الخواصر والجانبية (Obliques)'],
   },
   {
     id: 'core-6',
@@ -5617,6 +6053,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Air_Bike/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Air_Bike/0.jpg',
+    targetSubMuscleAr: 'عضلات الخواصر والجانبية (Obliques)',
+    targetSubMusclesAr: ['عضلات الخواصر والجانبية (Obliques)'],
   },
   {
     id: 'core-8',
@@ -5645,6 +6083,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Mountain_Climbers/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Mountain_Climbers/0.jpg',
+    targetSubMuscleAr: 'الفخذ الأمامي (العضلة الرباعية)',
+    targetSubMusclesAr: ['الفخذ الأمامي (العضلة الرباعية)'],
   },
   {
     id: 'core-13',
@@ -5668,6 +6108,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dead_Bug/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dead_Bug/0.jpg',
+    targetSubMuscleAr: 'ثبات الجذع والكور العميق',
+    targetSubMusclesAr: ['ثبات الجذع والكور العميق'],
   },
   {
     id: 'core-15',
@@ -5694,6 +6136,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Cable_Wood_Chop/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Cable_Wood_Chop/0.jpg',
+    targetSubMuscleAr: 'عضلات الخواصر والجانبية (Obliques)',
+    targetSubMusclesAr: ['عضلات الخواصر والجانبية (Obliques)'],
   },
   {
     id: 'Pallof_Press',
@@ -5722,6 +6166,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pallof_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pallof_Press/0.jpg',
+    targetSubMuscleAr: 'ثبات الجذع والكور العميق',
+    targetSubMusclesAr: ['ثبات الجذع والكور العميق'],
   },
   {
     id: 'Plate_Twist',
@@ -5745,6 +6191,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plate_Twist/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plate_Twist/0.jpg',
+    targetSubMuscleAr: 'عضلات الخواصر والجانبية (Obliques)',
+    targetSubMusclesAr: ['عضلات الخواصر والجانبية (Obliques)'],
   },
   {
     id: 'Medicine_Ball_Full_Twist',
@@ -5771,6 +6219,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Medicine_Ball_Full_Twist/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Medicine_Ball_Full_Twist/0.jpg',
+    targetSubMuscleAr: 'عضلات الخواصر والجانبية (Obliques)',
+    targetSubMusclesAr: ['عضلات الخواصر والجانبية (Obliques)'],
   },
   {
     id: 'Dumbbell_Side_Bend',
@@ -5794,6 +6244,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Side_Bend/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Side_Bend/0.jpg',
+    targetSubMuscleAr: 'عضلات الخواصر والجانبية (Obliques)',
+    targetSubMusclesAr: ['عضلات الخواصر والجانبية (Obliques)'],
   },
   {
     id: 'Bottoms_Up',
@@ -5817,6 +6269,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bottoms_Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bottoms_Up/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'Alternating_Floor_Press',
@@ -5845,6 +6299,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternating_Floor_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternating_Floor_Press/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Bench_Press_-_With_Bands',
@@ -5872,6 +6328,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bench_Press_-_With_Bands/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bench_Press_-_With_Bands/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Bent-Arm_Dumbbell_Pullover',
@@ -5900,6 +6358,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent-Arm_Dumbbell_Pullover/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent-Arm_Dumbbell_Pullover/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Bodyweight_Flyes',
@@ -5928,6 +6388,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Flyes/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Flyes/0.jpg',
+    targetSubMuscleAr: 'صدر أوسط ومستوٍ',
+    targetSubMusclesAr: ['صدر أوسط ومستوٍ'],
   },
   {
     id: 'Barbell_Shrug_Behind_The_Back',
@@ -5955,6 +6417,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Shrug_Behind_The_Back/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Shrug_Behind_The_Back/0.jpg',
+    targetSubMuscleAr: 'عضلات الترابيس (Traps)',
+    targetSubMusclesAr: ['عضلات الترابيس (Traps)'],
   },
   {
     id: 'Bent_Over_One-Arm_Long_Bar_Row',
@@ -5984,6 +6448,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_One-Arm_Long_Bar_Row/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_One-Arm_Long_Bar_Row/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Bent_Over_Two-Dumbbell_Row_With_Palms_In',
@@ -6011,6 +6477,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Two-Dumbbell_Row_With_Palms_In/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Two-Dumbbell_Row_With_Palms_In/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Cable_Incline_Pushdown',
@@ -6034,6 +6502,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Incline_Pushdown/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Incline_Pushdown/0.jpg',
+    targetSubMuscleAr: 'أعلى ومنتصف الظهر (الرومبويدز)',
+    targetSubMusclesAr: ['أعلى ومنتصف الظهر (الرومبويدز)'],
   },
   {
     id: 'Band_Assisted_Pull-Up',
@@ -6062,6 +6532,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Band_Assisted_Pull-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Band_Assisted_Pull-Up/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'Rocky_Pull-Ups_Pulldowns',
@@ -6090,6 +6562,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rocky_Pull-Ups_Pulldowns/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rocky_Pull-Ups_Pulldowns/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'Scapular_Pull-Up',
@@ -6117,6 +6591,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Scapular_Pull-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Scapular_Pull-Up/0.jpg',
+    targetSubMuscleAr: 'المجانص والظهر العريض (Lats)',
+    targetSubMusclesAr: ['المجانص والظهر العريض (Lats)'],
   },
   {
     id: 'Alternating_Cable_Shoulder_Press',
@@ -6140,6 +6616,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternating_Cable_Shoulder_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternating_Cable_Shoulder_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Alternating_Kettlebell_Press',
@@ -6163,6 +6641,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternating_Kettlebell_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternating_Kettlebell_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Band_Pull_Apart',
@@ -6190,6 +6670,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Band_Pull_Apart/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Band_Pull_Apart/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'Barbell_Shoulder_Press',
@@ -6217,6 +6699,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Shoulder_Press/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Shoulder_Press/0.jpg',
+    targetSubMuscleAr: 'الكتف الأمامي (Front Delt)',
+    targetSubMusclesAr: ['الكتف الأمامي (Front Delt)'],
   },
   {
     id: 'Bent_Over_Low-Pulley_Side_Lateral',
@@ -6245,6 +6729,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Low-Pulley_Side_Lateral/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Low-Pulley_Side_Lateral/0.jpg',
+    targetSubMuscleAr: 'الكتف الجانبي (Side Delt)',
+    targetSubMusclesAr: ['الكتف الجانبي (Side Delt)'],
   },
   {
     id: 'Dumbbell_Lying_One-Arm_Rear_Lateral_Raise',
@@ -6271,6 +6757,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'Dumbbell_Lying_Rear_Lateral_Raise',
@@ -6294,6 +6782,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lying_Rear_Lateral_Raise/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lying_Rear_Lateral_Raise/0.jpg',
+    targetSubMuscleAr: 'الكتف الخلفي (Rear Delt)',
+    targetSubMusclesAr: ['الكتف الخلفي (Rear Delt)'],
   },
   {
     id: 'Lateral_Raise_-_With_Bands',
@@ -6317,6 +6807,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lateral_Raise_-_With_Bands/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lateral_Raise_-_With_Bands/0.jpg',
+    targetSubMuscleAr: 'الكتف الجانبي (Side Delt)',
+    targetSubMusclesAr: ['الكتف الجانبي (Side Delt)'],
   },
   {
     id: 'Alternate_Hammer_Curl',
@@ -6340,6 +6832,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternate_Hammer_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternate_Hammer_Curl/0.jpg',
+    targetSubMuscleAr: 'العضدية والساعد (البريكيالس)',
+    targetSubMusclesAr: ['العضدية والساعد (البريكيالس)'],
   },
   {
     id: 'Alternate_Incline_Dumbbell_Curl',
@@ -6363,6 +6857,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternate_Incline_Dumbbell_Curl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternate_Incline_Dumbbell_Curl/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس القصير (عضلة القمة)',
+    targetSubMusclesAr: ['بايسبس - الرأس القصير (عضلة القمة)'],
   },
   {
     id: 'Band_Skull_Crusher',
@@ -6386,6 +6882,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Band_Skull_Crusher/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Band_Skull_Crusher/0.jpg',
+    targetSubMuscleAr: 'ترايسبس - الرأس الطويل (Long Head)',
+    targetSubMusclesAr: ['ترايسبس - الرأس الطويل (Long Head)'],
   },
   {
     id: 'Barbell_Curls_Lying_Against_An_Incline',
@@ -6409,6 +6907,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Curls_Lying_Against_An_Incline/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Curls_Lying_Against_An_Incline/0.jpg',
+    targetSubMuscleAr: 'بايسبس - الرأس القصير (عضلة القمة)',
+    targetSubMusclesAr: ['بايسبس - الرأس القصير (عضلة القمة)'],
   },
   {
     id: 'Palms-Down_Wrist_Curl_Over_A_Bench',
@@ -6433,6 +6933,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Palms-Down_Wrist_Curl_Over_A_Bench/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Palms-Down_Wrist_Curl_Over_A_Bench/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: 'arm-20',
@@ -6462,6 +6964,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Push-Up_off_of_a_Dumbbell/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Push-Up_off_of_a_Dumbbell/0.jpg',
+    targetSubMuscleAr: 'عضلات الساعد والقبضة (Forearms)',
+    targetSubMusclesAr: ['عضلات الساعد والقبضة (Forearms)'],
   },
   {
     id: '3_4_Sit-Up',
@@ -6485,6 +6989,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/3_4_Sit-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/3_4_Sit-Up/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'Ab_Crunch_Machine',
@@ -6508,6 +7014,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Ab_Crunch_Machine/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Ab_Crunch_Machine/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'Alternate_Heel_Touchers',
@@ -6531,6 +7039,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternate_Heel_Touchers/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Alternate_Heel_Touchers/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'Barbell_Ab_Rollout_-_On_Knees',
@@ -6558,6 +7068,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Ab_Rollout_-_On_Knees/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Ab_Rollout_-_On_Knees/0.jpg',
+    targetSubMuscleAr: 'ثبات الجذع والكور العميق',
+    targetSubMusclesAr: ['ثبات الجذع والكور العميق'],
   },
   {
     id: 'Cocoons',
@@ -6581,6 +7093,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cocoons/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cocoons/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'Gorilla_Chin_Crunch',
@@ -6608,6 +7122,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Gorilla_Chin_Crunch/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Gorilla_Chin_Crunch/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
   {
     id: 'core-9',
@@ -6631,6 +7147,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Jackknife_Sit-Up/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Jackknife_Sit-Up/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن السفلية',
+    targetSubMusclesAr: ['عضلات البطن السفلية'],
   },
   {
     id: 'Scissor_Kick',
@@ -6654,6 +7172,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Scissor_Kick/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Scissor_Kick/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن السفلية',
+    targetSubMusclesAr: ['عضلات البطن السفلية'],
   },
   {
     id: 'Spider_Crawl',
@@ -6682,6 +7202,8 @@ export const EXERCISES: Exercise[] = [
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Spider_Crawl/0.jpg',
     imageUrl:
       'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Spider_Crawl/0.jpg',
+    targetSubMuscleAr: 'عضلات البطن العلوية',
+    targetSubMusclesAr: ['عضلات البطن العلوية'],
   },
 ]
 

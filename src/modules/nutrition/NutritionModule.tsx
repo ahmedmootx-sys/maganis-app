@@ -2,8 +2,15 @@ import { useEffect, useMemo, useState } from 'react'
 import { assetUrl } from '../../utils/assetUrl.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { calculateCalorieMacroTargets } from './calorieCalculator.ts'
+import { CustomMealModal } from './CustomMealModal.tsx'
 import { EGYPTIAN_MEALS } from './egyptianMeals.ts'
-import type { DailyNutritionLog, EgyptianMeal, MealCategory } from './types.ts'
+import { calculateIngredientMacros, getFoodItemById } from './foodDatabase.ts'
+import type {
+  CustomMeal,
+  DailyNutritionLog,
+  EgyptianMeal,
+  MealCategory,
+} from './types.ts'
 
 interface NutritionModuleProps {
   profile: UserProfile | null
@@ -37,7 +44,7 @@ const PANTRY_STAPLES = [
 
 export function NutritionModule({ profile }: NutritionModuleProps) {
   const [selectedCategory, setSelectedCategory] = useState<
-    MealCategory | 'supermarket' | 'pantry'
+    MealCategory | 'supermarket' | 'pantry' | 'custom'
   >('lunch')
   const [activeMealDetail, setActiveMealDetail] = useState<EgyptianMeal | null>(
     null,
@@ -47,6 +54,29 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
   >([])
   const [pantrySearchInput, setPantrySearchInput] = useState('')
   const [recentlyLoggedId, setRecentlyLoggedId] = useState<string | null>(null)
+
+  // Custom Meals State
+  const [customMeals, setCustomMeals] = useState<CustomMeal[]>(() => {
+    try {
+      const raw = localStorage.getItem('maganis:custom_meals')
+      if (raw) return JSON.parse(raw) as CustomMeal[]
+    } catch {
+      // ignore
+    }
+    return []
+  })
+  const [isCustomMealModalOpen, setIsCustomMealModalOpen] = useState(false)
+  const [editingCustomMeal, setEditingCustomMeal] = useState<CustomMeal | null>(
+    null,
+  )
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('maganis:custom_meals', JSON.stringify(customMeals))
+    } catch {
+      // ignore
+    }
+  }, [customMeals])
 
   const todayKey = useMemo(() => new Date().toISOString().split('T')[0], [])
   const storageKey = `maganis:daily_nutrition_${todayKey}`
@@ -118,6 +148,58 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
     }, 2000)
   }
 
+  function handleLogCustomMeal(meal: CustomMeal) {
+    setDailyLog((prev) => {
+      const newCalories = Math.round(prev.consumedCalories + meal.calories)
+      const newProtein = Math.round(prev.consumedProtein + meal.proteinGrams)
+      const newCarbs = Math.round(prev.consumedCarbs + meal.carbsGrams)
+      const newFats = Math.round(prev.consumedFats + meal.fatsGrams)
+
+      return {
+        ...prev,
+        consumedCalories: newCalories,
+        consumedProtein: newProtein,
+        consumedCarbs: newCarbs,
+        consumedFats: newFats,
+        loggedMeals: [
+          ...prev.loggedMeals,
+          {
+            mealId: meal.id,
+            nameAr: meal.nameAr,
+            calories: meal.calories,
+            protein: meal.proteinGrams,
+            carbs: meal.carbsGrams,
+            fats: meal.fatsGrams,
+            timestamp: Date.now(),
+          },
+        ],
+      }
+    })
+
+    setRecentlyLoggedId(meal.id)
+    setTimeout(() => {
+      setRecentlyLoggedId(null)
+    }, 2000)
+  }
+
+  function handleSaveCustomMeal(meal: CustomMeal) {
+    setCustomMeals((prev) => {
+      const exists = prev.some((m) => m.id === meal.id)
+      if (exists) {
+        return prev.map((m) => (m.id === meal.id ? meal : m))
+      }
+      return [meal, ...prev]
+    })
+    setIsCustomMealModalOpen(false)
+    setEditingCustomMeal(null)
+  }
+
+  function handleDeleteCustomMeal(id: string) {
+    if (window.confirm('هل أنت متأكد من حذف هذه الوجبة المخصصة؟')) {
+      setCustomMeals((prev) => prev.filter((m) => m.id !== id))
+    }
+  }
+
   function handleResetDailyLog() {
     if (window.confirm('هل تريد تصفير عداد السعرات والماكروز لهذا اليوم؟')) {
       const resetState: DailyNutritionLog = {
@@ -178,6 +260,10 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
     }
 
     // Standard category filter
+    if (selectedCategory === 'custom') {
+      return []
+    }
+
     return EGYPTIAN_MEALS.filter((m) => {
       const matchCat =
         m.category === selectedCategory ||
@@ -232,13 +318,14 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
           </h3>
           <div className="maganis-speech-bubble">
             <strong>نسف السعرات بالشوكة والسكينة!</strong> د. مجانص حسبلك
-            الكالوريز بالجرام، كُل فول وكشري وفراخ وسوبرماركت بس اضغط "أكلت
-            الوجبة" وشوف شريطك بيتملي عشان فورمتك تكون حديد!
+            الكالوريز بالجرام، كُل فول وكشري وفراخ وسوبرماركت أو صمم وجبتك
+            الخاصة بدقة، بس اضغط "أكلت الوجبة" وشوف شريطك بيتملي عشان فورمتك
+            تكون حديد!
           </div>
         </div>
       </div>
 
-      {/* Interactive Daily Macro Tracker Bar (المستهلك الفعلي / الاحتياج اليومي) */}
+      {/* Interactive Daily Macro Tracker Bar */}
       <div
         className="card highlight-box"
         style={{ marginBottom: '16px', border: '2px solid var(--primary)' }}
@@ -474,21 +561,59 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
         )}
       </div>
 
-      {/* Egyptian Cuisine Meal Generator */}
+      {/* Egyptian Cuisine & Custom Meals Section */}
       <div className="card egyptian-meals-section">
-        <div className="meals-section-header">
-          <h2>🇪🇬 وصفات المطبخ المصري واقتراحات الوجبات</h2>
-          <p className="muted">
-            اختر وجبتك أو مكونات بيتك أو وجبات السوبرماركت السريعة وسجلها بضغطة
-            زر.
-          </p>
+        <div
+          className="meals-section-header"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '10px',
+          }}
+        >
+          <div>
+            <h2>🇪🇬 الوجبات ووصفات المطبخ والمكونات المخصصة</h2>
+            <p className="muted" style={{ margin: 0 }}>
+              اختر وجبتك أو صمّم وجبتك الخاصة بمكوناتها وغراماتها وسجلها بضغطة
+              زر.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="button-primary small"
+            onClick={() => {
+              setEditingCustomMeal(null)
+              setIsCustomMealModalOpen(true)
+            }}
+          >
+            ✨ + صمّم وجبة خاصة جديدة
+          </button>
         </div>
 
         {/* Category & Feature Tabs */}
         <div
           className="chips-row meal-category-chips"
-          style={{ flexWrap: 'wrap', gap: '6px' }}
+          style={{ flexWrap: 'wrap', gap: '6px', marginTop: '14px' }}
         >
+          {/* Custom Meals Tab */}
+          <button
+            type="button"
+            className={
+              'chip-btn' + (selectedCategory === 'custom' ? ' selected' : '')
+            }
+            onClick={() => setSelectedCategory('custom')}
+            style={{
+              background:
+                selectedCategory === 'custom' ? 'var(--primary)' : '#ede9fe',
+              color: selectedCategory === 'custom' ? '#fff' : '#6d28d9',
+              fontWeight: 700,
+            }}
+          >
+            ✨ وجباتي الخاصة ({customMeals.length})
+          </button>
+
           {(Object.keys(CATEGORY_LABELS) as MealCategory[]).map((cat) => (
             <button
               key={cat}
@@ -604,98 +729,261 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
           </div>
         )}
 
-        {/* Meals Cards List */}
-        <div className="egyptian-meals-grid" style={{ marginTop: '16px' }}>
-          {filteredMeals.length === 0 ? (
-            <div
-              className="card"
-              style={{
-                gridColumn: '1 / -1',
-                textAlign: 'center',
-                padding: '24px',
-              }}
-            >
-              <p className="muted">
-                لم نجد وجبات مطابقة للمكونات المختارة. جرب اختيار مكونات أخرى!
-              </p>
-            </div>
-          ) : (
-            filteredMeals.map((meal) => {
-              const isJustLogged = recentlyLoggedId === meal.id
-              return (
-                <div key={meal.id} className="egyptian-meal-card card">
-                  <div className="meal-card-header">
-                    <div>
-                      <h3 style={{ margin: '0 0 4px', fontSize: '15px' }}>
-                        {meal.nameAr}
-                      </h3>
-                      {meal.isBudgetSupermarket && (
+        {/* Custom Meals Grid */}
+        {selectedCategory === 'custom' && (
+          <div className="egyptian-meals-grid" style={{ marginTop: '16px' }}>
+            {customMeals.length === 0 ? (
+              <div
+                className="card"
+                style={{
+                  gridColumn: '1 / -1',
+                  textAlign: 'center',
+                  padding: '32px',
+                  background: '#f8fafc',
+                  border: '1.5px dashed #cbd5e1',
+                }}
+              >
+                <h3 style={{ margin: '0 0 8px' }}>لم تضف وجبات خاصة بعد! 🥗</h3>
+                <p className="muted" style={{ margin: '0 0 16px' }}>
+                  يمكنك تصميم وجبتك الخاصة بتحديد جرامات المكونات (شوفان، فراخ،
+                  أرز، بيض، مكسرات...) أو إدخال السعرات والماكروز يدوياً.
+                </p>
+                <button
+                  type="button"
+                  className="button-primary"
+                  onClick={() => {
+                    setEditingCustomMeal(null)
+                    setIsCustomMealModalOpen(true)
+                  }}
+                >
+                  ✨ أضف أول وجبة مخصصة الآن
+                </button>
+              </div>
+            ) : (
+              customMeals.map((meal) => {
+                const isJustLogged = recentlyLoggedId === meal.id
+                return (
+                  <div key={meal.id} className="egyptian-meal-card card">
+                    <div className="meal-card-header">
+                      <div>
+                        <h3 style={{ margin: '0 0 4px', fontSize: '15px' }}>
+                          {meal.nameAr}
+                        </h3>
                         <span
                           className="chip"
                           style={{
-                            background: '#fef3c7',
-                            color: '#92400e',
+                            background: '#ede9fe',
+                            color: '#6d28d9',
                             fontSize: '11px',
                             padding: '2px 6px',
                           }}
                         >
-                          ⚡ سريع من السوبرماركت
+                          ✨ وجبة خاصة •{' '}
+                          {CATEGORY_LABELS[meal.category] || meal.category}
                         </span>
-                      )}
+                      </div>
+                      <span className="badge-cal">{meal.calories} كالوِري</span>
                     </div>
-                    <span className="badge-cal">{meal.calories} كالوِري</span>
-                  </div>
 
-                  <p className="meal-desc">{meal.descriptionAr}</p>
+                    {meal.notesAr && (
+                      <p className="meal-desc">{meal.notesAr}</p>
+                    )}
 
-                  <div className="meal-portion-box">
-                    <strong>الحصة المحسوبة:</strong> {meal.portionAr}
-                  </div>
+                    {meal.ingredients && meal.ingredients.length > 0 && (
+                      <div
+                        style={{
+                          margin: '8px 0',
+                          padding: '8px',
+                          background: '#f8fafc',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                        }}
+                      >
+                        <strong>المكونات:</strong>
+                        <ul
+                          style={{
+                            margin: '4px 0 0',
+                            paddingRight: '18px',
+                            color: '#475569',
+                          }}
+                        >
+                          {meal.ingredients.map((ing, i) => {
+                            const food = getFoodItemById(ing.foodItemId)
+                            if (!food) return null
+                            const m = calculateIngredientMacros(food, ing.grams)
+                            return (
+                              <li key={i}>
+                                {ing.grams} جم {food.nameAr} ({m.calories}{' '}
+                                كالوِري • {m.protein}ج بروتين)
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </div>
+                    )}
 
-                  <div className="meal-macros-mini">
-                    <span className="macro-pill protein">
-                      بروتين: {meal.proteinGrams}ج
-                    </span>
-                    <span className="macro-pill carbs">
-                      كارب: {meal.carbsGrams}ج
-                    </span>
-                    <span className="macro-pill fats">
-                      دهون: {meal.fatsGrams}ج
-                    </span>
-                  </div>
+                    <div className="meal-macros-mini">
+                      <span className="macro-pill protein">
+                        بروتين: {meal.proteinGrams}ج
+                      </span>
+                      <span className="macro-pill carbs">
+                        كارب: {meal.carbsGrams}ج
+                      </span>
+                      <span className="macro-pill fats">
+                        دهون: {meal.fatsGrams}ج
+                      </span>
+                    </div>
 
-                  <div
-                    style={{ display: 'flex', gap: '8px', marginTop: '12px' }}
-                  >
-                    <button
-                      type="button"
-                      className="button-primary tiny"
-                      style={{
-                        flex: 1,
-                        background: isJustLogged ? '#22c55e' : undefined,
-                        borderColor: isJustLogged ? '#22c55e' : undefined,
-                      }}
-                      onClick={() => handleLogMeal(meal)}
+                    <div
+                      style={{ display: 'flex', gap: '6px', marginTop: '12px' }}
                     >
-                      {isJustLogged
-                        ? '✓ تم تسجيل الوجبة!'
-                        : '🍽️ أكلت الوجبة (+ضيف للماكروز)'}
-                    </button>
-                    <button
-                      type="button"
-                      className="ghost tiny"
-                      onClick={() => setActiveMealDetail(meal)}
-                      title="طريقة التحضير"
-                    >
-                      📖 الوصفة
-                    </button>
+                      <button
+                        type="button"
+                        className="button-primary tiny"
+                        style={{
+                          flex: 2,
+                          background: isJustLogged ? '#22c55e' : undefined,
+                          borderColor: isJustLogged ? '#22c55e' : undefined,
+                        }}
+                        onClick={() => handleLogCustomMeal(meal)}
+                      >
+                        {isJustLogged
+                          ? '✓ تم تسجيل الوجبة!'
+                          : '🍽️ أكلت الوجبة (+ضيف للماكروز)'}
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost tiny"
+                        onClick={() => {
+                          setEditingCustomMeal(meal)
+                          setIsCustomMealModalOpen(true)
+                        }}
+                        title="تعديل الوجبة"
+                      >
+                        ✏️ تعديل
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost-danger tiny"
+                        onClick={() => handleDeleteCustomMeal(meal.id)}
+                        title="حذف الوجبة"
+                      >
+                        🗑️
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )
-            })
-          )}
-        </div>
+                )
+              })
+            )}
+          </div>
+        )}
+
+        {/* Egyptian Meals Cards List */}
+        {selectedCategory !== 'custom' && (
+          <div className="egyptian-meals-grid" style={{ marginTop: '16px' }}>
+            {filteredMeals.length === 0 ? (
+              <div
+                className="card"
+                style={{
+                  gridColumn: '1 / -1',
+                  textAlign: 'center',
+                  padding: '24px',
+                }}
+              >
+                <p className="muted">
+                  لم نجد وجبات مطابقة للمكونات المختارة. جرب اختيار مكونات أخرى!
+                </p>
+              </div>
+            ) : (
+              filteredMeals.map((meal) => {
+                const isJustLogged = recentlyLoggedId === meal.id
+                return (
+                  <div key={meal.id} className="egyptian-meal-card card">
+                    <div className="meal-card-header">
+                      <div>
+                        <h3 style={{ margin: '0 0 4px', fontSize: '15px' }}>
+                          {meal.nameAr}
+                        </h3>
+                        {meal.isBudgetSupermarket && (
+                          <span
+                            className="chip"
+                            style={{
+                              background: '#fef3c7',
+                              color: '#92400e',
+                              fontSize: '11px',
+                              padding: '2px 6px',
+                            }}
+                          >
+                            ⚡ سريع من السوبرماركت
+                          </span>
+                        )}
+                      </div>
+                      <span className="badge-cal">{meal.calories} كالوِري</span>
+                    </div>
+
+                    <p className="meal-desc">{meal.descriptionAr}</p>
+
+                    <div className="meal-portion-box">
+                      <strong>الحصة المحسوبة:</strong> {meal.portionAr}
+                    </div>
+
+                    <div className="meal-macros-mini">
+                      <span className="macro-pill protein">
+                        بروتين: {meal.proteinGrams}ج
+                      </span>
+                      <span className="macro-pill carbs">
+                        كارب: {meal.carbsGrams}ج
+                      </span>
+                      <span className="macro-pill fats">
+                        دهون: {meal.fatsGrams}ج
+                      </span>
+                    </div>
+
+                    <div
+                      style={{ display: 'flex', gap: '8px', marginTop: '12px' }}
+                    >
+                      <button
+                        type="button"
+                        className="button-primary tiny"
+                        style={{
+                          flex: 1,
+                          background: isJustLogged ? '#22c55e' : undefined,
+                          borderColor: isJustLogged ? '#22c55e' : undefined,
+                        }}
+                        onClick={() => handleLogMeal(meal)}
+                      >
+                        {isJustLogged
+                          ? '✓ تم تسجيل الوجبة!'
+                          : '🍽️ أكلت الوجبة (+ضيف للماكروز)'}
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost tiny"
+                        onClick={() => setActiveMealDetail(meal)}
+                        title="طريقة التحضير"
+                      >
+                        📖 الوصفة
+                      </button>
+                    </div>
+                  </div>
+                )
+              })
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Custom Meal Creator/Editor Modal */}
+      {isCustomMealModalOpen && (
+        <CustomMealModal
+          initialMeal={editingCustomMeal}
+          onSave={handleSaveCustomMeal}
+          onClose={() => {
+            setIsCustomMealModalOpen(false)
+            setEditingCustomMeal(null)
+          }}
+        />
+      )}
 
       {/* Meal Recipe & Tip Modal */}
       {activeMealDetail && (

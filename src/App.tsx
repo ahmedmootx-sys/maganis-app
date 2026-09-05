@@ -76,6 +76,14 @@ export function App({ config }: AppProps) {
   const [dayNotes, setDayNotes] = useState<DayNote[]>(() =>
     trackingStore.loadDayNotes(),
   )
+  const [deletedExerciseIds, setDeletedExerciseIds] = useState<string[]>(() =>
+    workoutStore.getDeletedExerciseIds(),
+  )
+  const [customExercisesList, setCustomExercisesList] = useState<
+    CustomExercise[]
+  >(() => workoutStore.getCustomExercises())
+  const [editingCustomExercise, setEditingCustomExercise] =
+    useState<CustomExercise | null>(null)
   const [showCustomBuilder, setShowCustomBuilder] = useState(false)
   const [showLogger, setShowLogger] = useState(false)
   const [showExerciseLibrary, setShowExerciseLibrary] = useState(false)
@@ -116,7 +124,10 @@ export function App({ config }: AppProps) {
     storage.remove('tracking.body-log')
     storage.remove('tracking.notes')
     storage.remove('workout.custom-exercises')
+    storage.remove('workout.deleted-exercises')
     storage.remove('backup.last-export')
+    setDeletedExerciseIds([])
+    setCustomExercisesList([])
     setProfile(null)
     setEditing(false)
     setProgram(null)
@@ -135,6 +146,7 @@ export function App({ config }: AppProps) {
       trainingDaysPerWeek: profile.trainingDaysPerWeek,
       injuries: profile.medical.hasIssues ? profile.medical.injuryTags : [],
       customExercises: workoutStore.getCustomExercises(),
+      excludedExerciseIds: workoutStore.getDeletedExerciseIds(),
     })
     workoutStore.saveProgram(p)
     setProgram(p)
@@ -171,13 +183,43 @@ export function App({ config }: AppProps) {
     [trackingStore],
   )
 
-  const handleAddCustomExercise = useCallback(
+  const handleSaveCustomExercise = useCallback(
     (ex: CustomExercise) => {
-      workoutStore.addCustomExercise(ex)
+      if (editingCustomExercise) {
+        workoutStore.updateCustomExercise(ex)
+      } else {
+        workoutStore.addCustomExercise(ex)
+      }
+      setCustomExercisesList(workoutStore.getCustomExercises())
       setShowCustomBuilder(false)
+      setEditingCustomExercise(null)
+    },
+    [workoutStore, editingCustomExercise],
+  )
+
+  const handleDeleteExercise = useCallback(
+    (id: string) => {
+      workoutStore.deleteExercise(id)
+      workoutStore.removeCustomExercise(id)
+      setDeletedExerciseIds(workoutStore.getDeletedExerciseIds())
+      setCustomExercisesList(workoutStore.getCustomExercises())
     },
     [workoutStore],
   )
+
+  const handleRestoreExercise = useCallback(
+    (id: string) => {
+      workoutStore.restoreExercise(id)
+      setDeletedExerciseIds(workoutStore.getDeletedExerciseIds())
+    },
+    [workoutStore],
+  )
+
+  const handleEditCustomExercise = useCallback((ex: CustomExercise) => {
+    setEditingCustomExercise(ex)
+    setShowExerciseLibrary(false)
+    setShowCustomBuilder(true)
+  }, [])
 
   const handleBackupData = useCallback((): BackupData => {
     return {
@@ -343,15 +385,23 @@ export function App({ config }: AppProps) {
 
             {showExerciseLibrary && (
               <ExerciseLibraryModal
-                customExercises={workoutStore.getCustomExercises()}
+                customExercises={customExercisesList}
+                deletedExerciseIds={deletedExerciseIds}
+                onDeleteExercise={handleDeleteExercise}
+                onRestoreExercise={handleRestoreExercise}
+                onEditCustomExercise={handleEditCustomExercise}
                 onClose={() => setShowExerciseLibrary(false)}
               />
             )}
 
             {showCustomBuilder && (
               <CustomExerciseBuilder
-                onSave={handleAddCustomExercise}
-                onCancel={() => setShowCustomBuilder(false)}
+                initialExercise={editingCustomExercise || undefined}
+                onSave={handleSaveCustomExercise}
+                onCancel={() => {
+                  setShowCustomBuilder(false)
+                  setEditingCustomExercise(null)
+                }}
               />
             )}
 

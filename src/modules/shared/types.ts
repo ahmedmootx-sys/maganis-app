@@ -33,6 +33,10 @@ export interface Exercise {
   benefitAr?: string
   /** العضلات المستهدفة الرئيسية والمساعدة */
   targetMusclesAr?: string[]
+  /** الرأس العضلي أو الجزء المستهدف التفصيلي (مثل: صدر علوي، بريكيالس، رأس طويل) */
+  targetSubMuscleAr?: string
+  /** قائمة الأجزاء العضلية التفصيلية */
+  targetSubMusclesAr?: string[]
   /** المرجع العلمي الموثوق */
   medicalSource?: string
 }

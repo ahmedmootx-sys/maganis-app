@@ -47,3 +47,5 @@ export interface DailyNutritionLog {
     timestamp: number
   }[]
 }
+
+export type { CustomMeal, CustomMealIngredient } from './foodDatabase.ts'
