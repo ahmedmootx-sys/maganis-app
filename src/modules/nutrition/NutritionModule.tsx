@@ -69,6 +69,7 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
   const [editingCustomMeal, setEditingCustomMeal] = useState<CustomMeal | null>(
     null,
   )
+  const [showMacroGuide, setShowMacroGuide] = useState(false)
 
   useEffect(() => {
     try {
@@ -313,10 +314,36 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
           <span className="maganis-coach-badge">د. مجانص</span>
         </div>
         <div className="maganis-coach-body">
-          <h3 className="maganis-coach-title">
-            🍎 مطبخ د. مجانص — كل مصري واعمل فورمة!
-          </h3>
-          <div className="maganis-speech-bubble">
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '6px',
+            }}
+          >
+            <h3 className="maganis-coach-title" style={{ margin: 0 }}>
+              🍎 مطبخ د. مجانص — كل مصري واعمل فورمة!
+            </h3>
+            <button
+              type="button"
+              className="chip highlight"
+              onClick={() => setShowMacroGuide((prev) => !prev)}
+              style={{
+                cursor: 'pointer',
+                fontWeight: 700,
+                fontSize: '12px',
+                padding: '4px 10px',
+                border: '1px solid var(--primary)',
+              }}
+            >
+              {showMacroGuide
+                ? '✕ إخفاء الدليل التعليمي'
+                : '💡 كيف أحسب الماكروز؟ (دليل مبسط)'}
+            </button>
+          </div>
+          <div className="maganis-speech-bubble" style={{ marginTop: '8px' }}>
             <strong>نسف السعرات بالشوكة والسكينة!</strong> د. مجانص حسبلك
             الكالوريز بالجرام، كُل فول وكشري وفراخ وسوبرماركت أو صمم وجبتك
             الخاصة بدقة، بس اضغط "أكلت الوجبة" وشوف شريطك بيتملي عشان فورمتك
@@ -324,6 +351,169 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
           </div>
         </div>
       </div>
+
+      {/* Interactive Macro Educational Guide */}
+      {showMacroGuide && (
+        <div
+          className="card highlight-box"
+          style={{
+            marginBottom: '16px',
+            background: '#ffffff',
+            border: '2px solid #3b82f6',
+            padding: '16px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '12px',
+            }}
+          >
+            <h3
+              style={{
+                margin: 0,
+                fontSize: '16px',
+                color: '#1e3a8a',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              📖 دليل د. مجانص العلمي: ما هي الماكروز وكيف تتابعها؟
+            </h3>
+            <button
+              type="button"
+              className="ghost-secondary tiny"
+              onClick={() => setShowMacroGuide(false)}
+            >
+              ✕
+            </button>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '10px',
+              marginBottom: '14px',
+            }}
+          >
+            {/* Protein Box */}
+            <div
+              style={{
+                background: '#eff6ff',
+                padding: '12px',
+                borderRadius: '10px',
+                border: '1px solid #bfdbfe',
+              }}
+            >
+              <h4 style={{ margin: '0 0 6px', color: '#1d4ed8' }}>
+                🥩 1. البروتين (Protein)
+              </h4>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '12px',
+                  color: '#1e40af',
+                  lineHeight: '1.5',
+                }}
+              >
+                • <strong>وظيفته:</strong> البناء العضلي وترميم الألياف بعد
+                التمرين.
+                <br />• <strong>قاعدته:</strong> 1 جم بروتين = 4 سعرات حرارية.
+                <br />• <strong>أهم مصادره:</strong> صدور الفراخ، البيض، الجبنة
+                القريش، التونة، اللحم، الواي بروتين.
+              </p>
+            </div>
+
+            {/* Carbs Box */}
+            <div
+              style={{
+                background: '#fefce8',
+                padding: '12px',
+                borderRadius: '10px',
+                border: '1px solid #fef08a',
+              }}
+            >
+              <h4 style={{ margin: '0 0 6px', color: '#a16207' }}>
+                🍞 2. الكاربوهيدرات (Carbs)
+              </h4>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '12px',
+                  color: '#854d0e',
+                  lineHeight: '1.5',
+                }}
+              >
+                • <strong>وظيفته:</strong> الوقود الأساسي لتمارين الأوزان وطاقة
+                الجسم.
+                <br />• <strong>قاعدته:</strong> 1 جم كارب = 4 سعرات حرارية.
+                <br />• <strong>أهم مصادره:</strong> الأرز، الشوفان، البطاطس،
+                المكرونة، العيش البلدي، الفاكهة.
+              </p>
+            </div>
+
+            {/* Fats Box */}
+            <div
+              style={{
+                background: '#fef2f2',
+                padding: '12px',
+                borderRadius: '10px',
+                border: '1px solid #fecaca',
+              }}
+            >
+              <h4 style={{ margin: '0 0 6px', color: '#b91c1c' }}>
+                🥑 3. الدهون الصحية (Fats)
+              </h4>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '12px',
+                  color: '#991b1b',
+                  lineHeight: '1.5',
+                }}
+              >
+                • <strong>وظيفتها:</strong> إنتاج الهرمونات وصحة المفاصل
+                والدماغ.
+                <br />• <strong>قاعدتها:</strong> 1 جم دهون = 9 سعرات حرارية.
+                <br />• <strong>أهم مصادرها:</strong> زيت الزيتون، المكسرات،
+                صفار البيض، زبدة الفول السوداني.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: '#f8fafc',
+              padding: '10px 14px',
+              borderRadius: '8px',
+              fontSize: '12.5px',
+              color: '#334155',
+              lineHeight: '1.6',
+            }}
+          >
+            <strong>⚡ كيف تستخدم أدوات التغذية في 3 خطوات؟</strong>
+            <ol style={{ margin: '6px 0 0', paddingRight: '20px' }}>
+              <li>
+                <strong>اختر أو صمم وجبتك:</strong> تصفح الوجبات المصرية
+                المقترحة، أو اضغط على <strong>"✨ + صمّم وجبة خاصة"</strong>{' '}
+                لتحديد مكوناتك بالجرامات.
+              </li>
+              <li>
+                <strong>سجل بضغطة زر:</strong> اضغط على{' '}
+                <strong>"🍽️ أكلت الوجبة"</strong> في أي وجبة تأكلها.
+              </li>
+              <li>
+                <strong>راقب عدادك اليومي:</strong> شاهد شريط السعرات والماكروز
+                أعلاه وهو يمتلئ نحو هدفك اليومي!
+              </li>
+            </ol>
+          </div>
+        </div>
+      )}
 
       {/* Interactive Daily Macro Tracker Bar */}
       <div

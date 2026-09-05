@@ -454,22 +454,110 @@ export function CustomMealModal({
                   style={{
                     fontSize: '12.5px',
                     fontWeight: 700,
-                    marginBottom: '6px',
+                    marginBottom: '8px',
                     color: '#0f172a',
                   }}
                 >
-                  + إضافة مكوّن جديد للوجبة:
+                  + إضافة مكوّن سريع أو اختر من القائمة:
                 </div>
-                <div style={{ marginBottom: '6px' }}>
+
+                {/* Quick Staples Chips */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '5px',
+                    marginBottom: '10px',
+                  }}
+                >
+                  {[
+                    {
+                      id: 'chicken-breast-cooked',
+                      name: '🍗 فراخ',
+                      grams: 150,
+                    },
+                    { id: 'cooked-white-rice', name: '🍚 أرز', grams: 200 },
+                    { id: 'raw-rolled-oats', name: '🥣 شوفان', grams: 60 },
+                    { id: 'whole-eggs-boiled', name: '🥚 بيضتين', grams: 100 },
+                    { id: 'canned-tuna-drained', name: '🐟 تونة', grams: 140 },
+                    {
+                      id: 'cottage-cheese-kareesh',
+                      name: '🧀 جبنة قريش',
+                      grams: 150,
+                    },
+                    { id: 'boiled-potatoes', name: '🥔 بطاطس', grams: 200 },
+                    {
+                      id: 'whey-protein-isolate',
+                      name: '🥤 سكوب بروتين',
+                      grams: 30,
+                    },
+                    { id: 'olive-oil', name: '🫒 زيت زيتون', grams: 10 },
+                  ].map((quick) => (
+                    <button
+                      key={quick.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedFoodIdToAdd(quick.id)
+                        setGramsToAdd(quick.grams)
+                        setIngredients((prev) => {
+                          const existingIdx = prev.findIndex(
+                            (i) => i.foodItemId === quick.id,
+                          )
+                          if (existingIdx >= 0) {
+                            const updated = [...prev]
+                            updated[existingIdx] = {
+                              ...updated[existingIdx],
+                              grams: updated[existingIdx].grams + quick.grams,
+                            }
+                            return updated
+                          }
+                          return [
+                            ...prev,
+                            { foodItemId: quick.id, grams: quick.grams },
+                          ]
+                        })
+                      }}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '11.5px',
+                        fontWeight: 600,
+                        borderRadius: '6px',
+                        border: '1px solid #cbd5e1',
+                        background: '#f8fafc',
+                        cursor: 'pointer',
+                        color: '#334155',
+                      }}
+                    >
+                      + {quick.name} ({quick.grams}ج)
+                    </button>
+                  ))}
+                </div>
+
+                <div style={{ marginBottom: '8px' }}>
                   <input
                     type="text"
                     placeholder="🔍 ابحث في المكونات (فراخ، بيض، أرز، شوفان، تونة...)"
                     value={ingredientSearch}
-                    onChange={(e) => setIngredientSearch(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setIngredientSearch(val)
+                      const q = val.toLowerCase().trim()
+                      if (q) {
+                        const firstMatch = FOOD_DATABASE.find(
+                          (f) =>
+                            f.nameAr.toLowerCase().includes(q) ||
+                            f.categoryAr.toLowerCase().includes(q),
+                        )
+                        if (firstMatch) {
+                          setSelectedFoodIdToAdd(firstMatch.id)
+                          setGramsToAdd(firstMatch.defaultGrams)
+                        }
+                      }
+                    }}
                     style={{
                       width: '100%',
-                      padding: '6px 8px',
-                      fontSize: '12px',
+                      padding: '8px 10px',
+                      fontSize: '13px',
                       borderRadius: '6px',
                       border: '1px solid #cbd5e1',
                       marginBottom: '6px',
@@ -548,7 +636,7 @@ export function CustomMealModal({
                       cursor: 'pointer',
                     }}
                   >
-                    + أضف للوجبة
+                    + أضف المكون المحدد للوجبة
                   </button>
                 </div>
               </div>
