@@ -437,7 +437,15 @@ export function App({ config }: AppProps) {
         )
 
       case 'nutrition':
-        return <NutritionModule profile={profile} />
+        return (
+          <NutritionModule
+            profile={profile}
+            onUpdateProfile={(updated) => {
+              const saved = profileStore.saveProfile(updated)
+              setProfile(saved)
+            }}
+          />
+        )
 
       case 'tracking':
         return (

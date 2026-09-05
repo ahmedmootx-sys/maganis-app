@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { assetUrl } from '../../utils/assetUrl.ts'
-import type { UserProfile } from '../onboarding/types.ts'
+import type {
+  ActivityLevel,
+  Goal,
+  Sex,
+  UserProfile,
+} from '../onboarding/types.ts'
+import { ACTIVITY_LEVELS, GOALS } from '../onboarding/types.ts'
 import { calculateCalorieMacroTargets } from './calorieCalculator.ts'
 import { CustomMealModal } from './CustomMealModal.tsx'
 import { EGYPTIAN_MEALS } from './egyptianMeals.ts'
@@ -14,6 +20,7 @@ import type {
 
 interface NutritionModuleProps {
   profile: UserProfile | null
+  onUpdateProfile?: (profile: UserProfile) => void
 }
 
 const CATEGORY_LABELS: Record<MealCategory, string> = {
@@ -42,7 +49,10 @@ const PANTRY_STAPLES = [
   'عيش بلدي',
 ]
 
-export function NutritionModule({ profile }: NutritionModuleProps) {
+export function NutritionModule({
+  profile,
+  onUpdateProfile,
+}: NutritionModuleProps) {
   const [selectedCategory, setSelectedCategory] = useState<
     MealCategory | 'supermarket' | 'pantry' | 'custom'
   >('lunch')
@@ -71,6 +81,47 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
   )
   const [showMacroGuide, setShowMacroGuide] = useState(false)
 
+  // Deleted Egyptian Meals State
+  const [deletedEgyptianMealIds, setDeletedEgyptianMealIds] = useState<
+    string[]
+  >(() => {
+    try {
+      const raw = localStorage.getItem('maganis:deleted_egyptian_meals')
+      if (raw) return JSON.parse(raw) as string[]
+    } catch {
+      // ignore
+    }
+    return []
+  })
+
+  // Profile Editor Modal State
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const [editWeight, setEditWeight] = useState<number>(
+    profile?.body?.weightKg ?? 70,
+  )
+  const [editHeight, setEditHeight] = useState<number>(
+    profile?.body?.heightCm ?? 170,
+  )
+  const [editAge, setEditAge] = useState<number>(profile?.body?.age ?? 25)
+  const [editSex, setEditSex] = useState<Sex>(profile?.body?.sex ?? 'male')
+  const [editActivity, setEditActivity] = useState<ActivityLevel>(
+    profile?.body?.activityLevel ?? 'moderate',
+  )
+  const [editGoal, setEditGoal] = useState<Goal>(
+    profile?.primaryGoal ?? 'hypertrophy',
+  )
+
+  useEffect(() => {
+    if (profile) {
+      setEditWeight(profile.body.weightKg)
+      setEditHeight(profile.body.heightCm)
+      setEditAge(profile.body.age)
+      setEditSex(profile.body.sex)
+      setEditActivity(profile.body.activityLevel)
+      setEditGoal(profile.primaryGoal)
+    }
+  }, [profile])
+
   useEffect(() => {
     try {
       localStorage.setItem('maganis:custom_meals', JSON.stringify(customMeals))
@@ -78,6 +129,17 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
       // ignore
     }
   }, [customMeals])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        'maganis:deleted_egyptian_meals',
+        JSON.stringify(deletedEgyptianMealIds),
+      )
+    } catch {
+      // ignore
+    }
+  }, [deletedEgyptianMealIds])
 
   const todayKey = useMemo(() => new Date().toISOString().split('T')[0], [])
   const storageKey = `maganis:daily_nutrition_${todayKey}`
@@ -201,6 +263,67 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
     }
   }
 
+  function handleDeleteEgyptianMeal(mealId: string) {
+    if (
+      window.confirm(
+        'هل تريد حذف هذه الوصفة من قائمة الوجبات المعروضة؟ (يمكنك استعادتها لاحقاً في أي وقت)',
+      )
+    ) {
+      setDeletedEgyptianMealIds((prev) =>
+        prev.includes(mealId) ? prev : [...prev, mealId],
+      )
+      if (activeMealDetail?.id === mealId) {
+        setActiveMealDetail(null)
+      }
+    }
+  }
+
+  function handleRestoreDeletedEgyptianMeals() {
+    if (window.confirm('هل تريد استعادة جميع الوصفات المصرية المحذوفة؟')) {
+      setDeletedEgyptianMealIds([])
+    }
+  }
+
+  function handleEditEgyptianMeal(meal: EgyptianMeal) {
+    setEditingCustomMeal({
+      id: `custom_edit_${meal.id}_${Date.now()}`,
+      nameAr: `${meal.nameAr} (معدلة)`,
+      category: meal.category,
+      calories: meal.calories,
+      proteinGrams: meal.proteinGrams,
+      carbsGrams: meal.carbsGrams,
+      fatsGrams: meal.fatsGrams,
+      notesAr: `وصفة معدلة من: ${meal.nameAr}. المقدار الأصلي: ${meal.portionAr}`,
+      isCustom: true,
+      createdAt: new Date().toISOString(),
+    })
+    setIsCustomMealModalOpen(true)
+  }
+
+  function handleSaveProfileChanges(e: React.FormEvent) {
+    e.preventDefault()
+    if (!profile) return
+
+    const updatedProfile: UserProfile = {
+      ...profile,
+      primaryGoal: editGoal,
+      body: {
+        ...profile.body,
+        sex: editSex,
+        weightKg: Number(editWeight) || profile.body.weightKg,
+        heightCm: Number(editHeight) || profile.body.heightCm,
+        age: Number(editAge) || profile.body.age,
+        activityLevel: editActivity,
+      },
+      updatedAt: Date.now(),
+    }
+
+    if (onUpdateProfile) {
+      onUpdateProfile(updatedProfile)
+    }
+    setIsProfileModalOpen(false)
+  }
+
   function handleResetDailyLog() {
     if (window.confirm('هل تريد تصفير عداد السعرات والماكروز لهذا اليوم؟')) {
       const resetState: DailyNutritionLog = {
@@ -227,11 +350,16 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
   }
 
   const filteredMeals = useMemo(() => {
-    if (!profile) return EGYPTIAN_MEALS
+    if (!profile) return []
+
+    // Filter out deleted recipes
+    const availableEgyptianMeals = EGYPTIAN_MEALS.filter(
+      (m) => !deletedEgyptianMealIds.includes(m.id),
+    )
 
     // Supermarket filter
     if (selectedCategory === 'supermarket') {
-      return EGYPTIAN_MEALS.filter((m) => m.isBudgetSupermarket)
+      return availableEgyptianMeals.filter((m) => m.isBudgetSupermarket)
     }
 
     // Pantry ingredient filter
@@ -242,10 +370,10 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
       ]
 
       if (allSelected.length === 0) {
-        return EGYPTIAN_MEALS
+        return availableEgyptianMeals
       }
 
-      return EGYPTIAN_MEALS.filter((m) => {
+      return availableEgyptianMeals.filter((m) => {
         const textToSearch = (
           m.nameAr +
           ' ' +
@@ -265,14 +393,20 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
       return []
     }
 
-    return EGYPTIAN_MEALS.filter((m) => {
+    return availableEgyptianMeals.filter((m) => {
       const matchCat =
         m.category === selectedCategory ||
         (selectedCategory === 'dinner' && m.category === 'snack')
       const matchGoal = m.suitableGoals.includes(profile.primaryGoal)
       return matchCat && matchGoal
     })
-  }, [profile, selectedCategory, selectedPantryIngredients, pantrySearchInput])
+  }, [
+    profile,
+    selectedCategory,
+    selectedPantryIngredients,
+    pantrySearchInput,
+    deletedEgyptianMealIds,
+  ])
 
   if (!profile || !targets) {
     return (
@@ -302,8 +436,14 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
     Math.round((dailyLog.consumedFats / targets.fatsGrams) * 100),
   )
 
+  const currentGoalObj = GOALS.find((g) => g.value === profile.primaryGoal)
+  const currentActivityObj = ACTIVITY_LEVELS.find(
+    (a) => a.value === profile.body.activityLevel,
+  )
+
   return (
     <div className="nutrition-module" data-testid="nutrition-module">
+      {/* Dr. Maganis Coach Header */}
       <div className="maganis-coach-card" style={{ marginBottom: '16px' }}>
         <div className="maganis-coach-avatar-wrapper">
           <img
@@ -348,6 +488,162 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
             الكالوريز بالجرام، كُل فول وكشري وفراخ وسوبرماركت أو صمم وجبتك
             الخاصة بدقة، بس اضغط "أكلت الوجبة" وشوف شريطك بيتملي عشان فورمتك
             تكون حديد!
+          </div>
+        </div>
+      </div>
+
+      {/* Body Profile & Daily Calorie Science Card */}
+      <div
+        className="card highlight-box"
+        style={{
+          marginBottom: '16px',
+          background: '#ffffff',
+          border: '1.5px solid #cbd5e1',
+          padding: '14px 16px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '8px',
+            marginBottom: '10px',
+          }}
+        >
+          <div>
+            <h4
+              style={{
+                margin: 0,
+                fontSize: '15px',
+                color: '#1e293b',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              🎯 ملف جسمك واحتياجك اليومي العلمي
+            </h4>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              معادلة ميفلين سانت جيور (Mifflin-St Jeor) الأدق علمياً لحساب BMR و
+              TDEE
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="chip-btn"
+            onClick={() => setIsProfileModalOpen(true)}
+            style={{
+              background: 'var(--primary)',
+              color: '#ffffff',
+              border: 'none',
+              padding: '6px 12px',
+              fontWeight: 700,
+              fontSize: '12.5px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+            }}
+          >
+            ✏️ تعديل بيانات وزني وهدفي
+          </button>
+        </div>
+
+        {/* Profile Metrics Row */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '8px',
+            fontSize: '12.5px',
+            background: '#f8fafc',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            marginBottom: '10px',
+            border: '1px solid #e2e8f0',
+          }}
+        >
+          <span>
+            ⚖️ <strong>الوزن:</strong> {profile.body.weightKg} كجم
+          </span>
+          <span>•</span>
+          <span>
+            📏 <strong>الطول:</strong> {profile.body.heightCm} سم
+          </span>
+          <span>•</span>
+          <span>
+            🎂 <strong>السن:</strong> {profile.body.age} سنة
+          </span>
+          <span>•</span>
+          <span>
+            ⚡ <strong>النشاط:</strong> {currentActivityObj?.labelAr || 'متوسط'}
+          </span>
+          <span>•</span>
+          <span>
+            🏆 <strong>الهدف:</strong> {currentGoalObj?.labelAr || 'تضخيم'}
+          </span>
+        </div>
+
+        {/* Calculation Details */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+            gap: '8px',
+            fontSize: '12px',
+            color: '#334155',
+          }}
+        >
+          <div
+            style={{
+              background: '#f1f5f9',
+              padding: '8px 10px',
+              borderRadius: '6px',
+            }}
+          >
+            <strong>الحرق الأساسي (BMR):</strong>
+            <div>{targets.bmr} كالوِري (أثناء الراحة التامة)</div>
+          </div>
+          <div
+            style={{
+              background: '#f1f5f9',
+              padding: '8px 10px',
+              borderRadius: '6px',
+            }}
+          >
+            <strong>استهلاكك بالنشاط (TDEE):</strong>
+            <div>{targets.tdee} كالوِري (مع التمرين وحركتك)</div>
+          </div>
+          <div
+            style={{
+              background: '#fef3c7',
+              color: '#92400e',
+              padding: '8px 10px',
+              borderRadius: '6px',
+              fontWeight: 700,
+            }}
+          >
+            <strong>الهدف النهائي:</strong>
+            <div>
+              {targets.targetCalories} كالوِري ({targets.goalLabelAr})
+            </div>
+          </div>
+          <div
+            style={{
+              background: '#eff6ff',
+              color: '#1e40af',
+              padding: '8px 10px',
+              borderRadius: '6px',
+              fontWeight: 700,
+            }}
+          >
+            <strong>البروتين المستهدف:</strong>
+            <div>
+              {targets.proteinGrams} جم (
+              {(targets.proteinGrams / profile.body.weightKg).toFixed(1)}{' '}
+              جم/كجم)
+            </div>
           </div>
         </div>
       </div>
@@ -500,7 +796,7 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
               <li>
                 <strong>اختر أو صمم وجبتك:</strong> تصفح الوجبات المصرية
                 المقترحة، أو اضغط على <strong>"✨ + صمّم وجبة خاصة"</strong>{' '}
-                لتحديد مكوناتك بالجرامات.
+                لتحديد مكوناتك بالجرامات أو تعديل أي وصفة مصرية.
               </li>
               <li>
                 <strong>سجل بضغطة زر:</strong> اضغط على{' '}
@@ -770,16 +1066,36 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
               زر.
             </p>
           </div>
-          <button
-            type="button"
-            className="button-primary small"
-            onClick={() => {
-              setEditingCustomMeal(null)
-              setIsCustomMealModalOpen(true)
-            }}
-          >
-            ✨ + صمّم وجبة خاصة جديدة
-          </button>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {deletedEgyptianMealIds.length > 0 && (
+              <button
+                type="button"
+                className="chip-btn"
+                onClick={handleRestoreDeletedEgyptianMeals}
+                style={{
+                  background: '#f1f5f9',
+                  color: '#475569',
+                  border: '1px solid #cbd5e1',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  borderRadius: '8px',
+                }}
+                title="استعادة جميع الوصفات المحذوفة"
+              >
+                🔄 استعادة الوصفات المحذوفة ({deletedEgyptianMealIds.length})
+              </button>
+            )}
+            <button
+              type="button"
+              className="button-primary small"
+              onClick={() => {
+                setEditingCustomMeal(null)
+                setIsCustomMealModalOpen(true)
+              }}
+            >
+              ✨ + صمّم وجبة خاصة جديدة
+            </button>
+          </div>
         </div>
 
         {/* Category & Feature Tabs */}
@@ -1048,7 +1364,7 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
                           setEditingCustomMeal(meal)
                           setIsCustomMealModalOpen(true)
                         }}
-                        title="تعديل الوجبة"
+                        title="تعديل الوجبة والمكونات"
                       >
                         ✏️ تعديل
                       </button>
@@ -1130,13 +1446,18 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
                     </div>
 
                     <div
-                      style={{ display: 'flex', gap: '8px', marginTop: '12px' }}
+                      style={{
+                        display: 'flex',
+                        gap: '6px',
+                        marginTop: '12px',
+                        flexWrap: 'wrap',
+                      }}
                     >
                       <button
                         type="button"
                         className="button-primary tiny"
                         style={{
-                          flex: 1,
+                          flex: 2,
                           background: isJustLogged ? '#22c55e' : undefined,
                           borderColor: isJustLogged ? '#22c55e' : undefined,
                         }}
@@ -1154,6 +1475,22 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
                       >
                         📖 الوصفة
                       </button>
+                      <button
+                        type="button"
+                        className="ghost tiny"
+                        onClick={() => handleEditEgyptianMeal(meal)}
+                        title="تعديل مقادير هذه الوجبة وحساب سعراتها بدقة"
+                      >
+                        ✏️ تعديل
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost-danger tiny"
+                        onClick={() => handleDeleteEgyptianMeal(meal.id)}
+                        title="حذف هذه الوصفة من القائمة"
+                      >
+                        🗑️
+                      </button>
                     </div>
                   </div>
                 )
@@ -1162,6 +1499,247 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
           </div>
         )}
       </div>
+
+      {/* Quick Body Profile & Target Editor Modal */}
+      {isProfileModalOpen && (
+        <div
+          className="modal-backdrop"
+          onClick={() => setIsProfileModalOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.65)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '16px',
+          }}
+        >
+          <div
+            className="card"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: '480px',
+              background: '#ffffff',
+              borderRadius: '16px',
+              padding: '20px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '16px',
+                borderBottom: '1px solid #e2e8f0',
+                paddingBottom: '10px',
+              }}
+            >
+              <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 800 }}>
+                ⚙️ تعديل بيانات وزني وهدفي واحتياجي
+              </h3>
+              <button
+                type="button"
+                className="ghost-secondary tiny"
+                onClick={() => setIsProfileModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveProfileChanges}>
+              {/* Weight & Height */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '10px',
+                  marginBottom: '12px',
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '12.5px',
+                      fontWeight: 700,
+                      marginBottom: '4px',
+                    }}
+                  >
+                    ⚖️ الوزن (كجم):
+                  </label>
+                  <input
+                    type="number"
+                    min="30"
+                    max="300"
+                    step="0.5"
+                    className="field-input"
+                    value={editWeight}
+                    onChange={(e) => setEditWeight(Number(e.target.value))}
+                    required
+                    style={{ width: '100%', padding: '8px', fontWeight: 700 }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '12.5px',
+                      fontWeight: 700,
+                      marginBottom: '4px',
+                    }}
+                  >
+                    📏 الطول (سم):
+                  </label>
+                  <input
+                    type="number"
+                    min="100"
+                    max="250"
+                    className="field-input"
+                    value={editHeight}
+                    onChange={(e) => setEditHeight(Number(e.target.value))}
+                    required
+                    style={{ width: '100%', padding: '8px', fontWeight: 700 }}
+                  />
+                </div>
+              </div>
+
+              {/* Age & Sex */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '10px',
+                  marginBottom: '12px',
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '12.5px',
+                      fontWeight: 700,
+                      marginBottom: '4px',
+                    }}
+                  >
+                    🎂 العمر (بالسنوات):
+                  </label>
+                  <input
+                    type="number"
+                    min="12"
+                    max="100"
+                    className="field-input"
+                    value={editAge}
+                    onChange={(e) => setEditAge(Number(e.target.value))}
+                    required
+                    style={{ width: '100%', padding: '8px', fontWeight: 700 }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '12.5px',
+                      fontWeight: 700,
+                      marginBottom: '4px',
+                    }}
+                  >
+                    👤 الجنس:
+                  </label>
+                  <select
+                    className="field-input"
+                    value={editSex}
+                    onChange={(e) => setEditSex(e.target.value as Sex)}
+                    style={{ width: '100%', padding: '8px' }}
+                  >
+                    <option value="male">ذكر (Male)</option>
+                    <option value="female">أنثى (Female)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Activity Level */}
+              <div style={{ marginBottom: '12px' }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    marginBottom: '4px',
+                  }}
+                >
+                  ⚡ مستوى النشاط البدني:
+                </label>
+                <select
+                  className="field-input"
+                  value={editActivity}
+                  onChange={(e) =>
+                    setEditActivity(e.target.value as ActivityLevel)
+                  }
+                  style={{ width: '100%', padding: '8px' }}
+                >
+                  {ACTIVITY_LEVELS.map((act) => (
+                    <option key={act.value} value={act.value}>
+                      {act.labelAr} (معامل {act.multiplier}x)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Primary Goal */}
+              <div style={{ marginBottom: '16px' }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    marginBottom: '4px',
+                  }}
+                >
+                  🏆 الهدف الأساسي:
+                </label>
+                <select
+                  className="field-input"
+                  value={editGoal}
+                  onChange={(e) => setEditGoal(e.target.value as Goal)}
+                  style={{ width: '100%', padding: '8px' }}
+                >
+                  {GOALS.map((g) => (
+                    <option key={g.value} value={g.value}>
+                      {g.labelAr}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '8px',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <button
+                  type="button"
+                  className="ghost"
+                  onClick={() => setIsProfileModalOpen(false)}
+                >
+                  إلغاء
+                </button>
+                <button type="submit" className="button-primary">
+                  ✓ حفظ وتحديث السعرات فوراً
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Custom Meal Creator/Editor Modal */}
       {isCustomMealModalOpen && (
@@ -1240,7 +1818,10 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
               )}
             </div>
 
-            <div className="modal-footer actions-row">
+            <div
+              className="modal-footer actions-row"
+              style={{ flexWrap: 'wrap', gap: '8px' }}
+            >
               <button
                 type="button"
                 className="button-primary"
@@ -1250,6 +1831,26 @@ export function NutritionModule({ profile }: NutritionModuleProps) {
                 }}
               >
                 🍽️ أكلت هذه الوجبة (سجلها في اليوم)
+              </button>
+              <button
+                type="button"
+                className="ghost"
+                onClick={() => {
+                  const toEdit = activeMealDetail
+                  setActiveMealDetail(null)
+                  handleEditEgyptianMeal(toEdit)
+                }}
+              >
+                ✏️ تعديل المقادير والماكروز
+              </button>
+              <button
+                type="button"
+                className="ghost-danger"
+                onClick={() => {
+                  handleDeleteEgyptianMeal(activeMealDetail.id)
+                }}
+              >
+                🗑️ حذف من القائمة
               </button>
               <button
                 type="button"

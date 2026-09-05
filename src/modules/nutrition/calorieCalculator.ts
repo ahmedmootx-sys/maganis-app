@@ -13,25 +13,33 @@ export function calculateBMR(
   heightCm: number,
   age: number,
 ): number {
-  const base = 10 * weightKg + 6.25 * heightCm - 5 * age
-  return Math.round(sex === 'male' ? base + 5 : base - 161)
+  const safeWeight = Number(weightKg) || 70
+  const safeHeight = Number(heightCm) || 170
+  const safeAge = Number(age) || 25
+
+  const base = 10 * safeWeight + 6.25 * safeHeight - 5 * safeAge
+  return Math.round(sex === 'female' ? base - 161 : base + 5)
 }
 
 export function getActivityMultiplier(level: ActivityLevel): number {
   const found = ACTIVITY_LEVELS.find((a) => a.value === level)
-  return found ? found.multiplier : 1.2
+  return found ? Number(found.multiplier) || 1.2 : 1.2
 }
 
 /**
  * Calculates TDEE, Calorie targets, and Protein/Carb/Fat Macros based on scientific standards:
- * - Protein: 2.0g/kg for Hypertrophy/Cut, 1.8g/kg for Calisthenics, 1.6g/kg for Flexibility.
+ * - Protein: 2.0g/kg for Hypertrophy, 2.2g/kg for Cut, 1.8g/kg for Calisthenics, 1.6g/kg for Flexibility.
  * - Calorie Adjustment: Hypertrophy +400 kcal (Surplus), Cut -500 kcal (Deficit), Others Maintenance.
  */
 export function calculateCalorieMacroTargets(
   profile: UserProfile,
 ): CalorieMacroTarget {
-  const { sex, weightKg, heightCm, age, activityLevel } = profile.body
-  const goal = profile.primaryGoal
+  const sex = profile.body.sex || 'male'
+  const weightKg = Number(profile.body.weightKg) || 70
+  const heightCm = Number(profile.body.heightCm) || 170
+  const age = Number(profile.body.age) || 25
+  const activityLevel = profile.body.activityLevel || 'moderate'
+  const goal = profile.primaryGoal || 'hypertrophy'
 
   const bmr = calculateBMR(sex, weightKg, heightCm, age)
   const multiplier = getActivityMultiplier(activityLevel)

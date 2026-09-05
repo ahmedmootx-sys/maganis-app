@@ -8,11 +8,13 @@ import type {
   WorkoutSplitType,
 } from '../shared/types.ts'
 import { WORKOUT_SPLIT_LABELS } from '../shared/types.ts'
-import { EXERCISES, getExerciseById } from './exercises.ts'
+import { getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
+import { ExercisePickerModal } from './ExercisePickerModal.tsx'
 import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { generateProgram } from './programGenerator.ts'
+import { convertDayToHomeWorkout } from './workoutUtils.ts'
 
 interface WeeklyPlanViewProps {
   program: WorkoutProgram
@@ -38,6 +40,7 @@ export function WeeklyPlanView({
     exercise: Exercise
   } | null>(null)
   const [addingToDayIndex, setAddingToDayIndex] = useState<number | null>(null)
+  const [homeToast, setHomeToast] = useState<string | null>(null)
 
   function handleOpenDetail(exerciseId: string) {
     const custom = customExercises.find((c) => c.id === exerciseId)
@@ -94,8 +97,47 @@ export function WeeklyPlanView({
     setAddingToDayIndex(null)
   }
 
+  function handleConvertToHomeWorkout(targetDay: ProgramDay) {
+    if (!onUpdateProgram) return
+    const converted = convertDayToHomeWorkout(
+      targetDay,
+      customExercises,
+      userInjuries,
+    )
+    const newDays = program.days.map((d) =>
+      d.dayIndex === targetDay.dayIndex ? converted : d,
+    )
+    onUpdateProgram({ ...program, days: newDays })
+    setHomeToast(
+      `✓ تم تحويل تمارين (${targetDay.labelAr}) لتمارين منزلية بوزن الجسم بنجاح! 🏠✨`,
+    )
+    setTimeout(() => setHomeToast(null), 3500)
+  }
+
   return (
     <div className="weekly-plan" data-testid="weekly-plan-view">
+      {homeToast && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#16a34a',
+            color: '#ffffff',
+            padding: '10px 20px',
+            borderRadius: '999px',
+            fontWeight: 700,
+            fontSize: '13.5px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            zIndex: 10000,
+            textAlign: 'center',
+          }}
+        >
+          {homeToast}
+        </div>
+      )}
+
       <div className="weekly-plan__header">
         <div
           style={{
@@ -165,68 +207,59 @@ export function WeeklyPlanView({
                 <span className="chip weekly-plan__day-focus">{day.focus}</span>
               </div>
 
-              <div className="day-header-actions">
+              <div
+                className="day-header-actions"
+                style={{
+                  display: 'flex',
+                  gap: '6px',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                }}
+              >
                 {onStartRoutine && (
                   <button
                     type="button"
-                    className="button-primary start-routine-btn"
+                    className="button-primary start-routine-btn tiny"
                     onClick={() => onStartRoutine(day)}
                   >
-                    ▶ ابدأ التمرين (Start Routine)
+                    ▶ ابدأ التمرين
                   </button>
                 )}
 
                 {onUpdateProgram && (
-                  <button
-                    type="button"
-                    className="ghost-primary tiny"
-                    onClick={() =>
-                      setAddingToDayIndex(
-                        addingToDayIndex === day.dayIndex ? null : day.dayIndex,
-                      )
-                    }
-                  >
-                    ➕ إضافة تمرين
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      className="ghost tiny"
+                      style={{
+                        borderColor: '#16a34a',
+                        color: '#166534',
+                        background: '#f0fdf4',
+                        fontWeight: 700,
+                      }}
+                      title="تحويل تمارين اليوم لتمارين في المنزل فقط (بوزن الجسم والدمبل)"
+                      onClick={() => handleConvertToHomeWorkout(day)}
+                    >
+                      🏠 تمرن في البيت اليوم
+                    </button>
+
+                    <button
+                      type="button"
+                      className="ghost-primary tiny"
+                      onClick={() =>
+                        setAddingToDayIndex(
+                          addingToDayIndex === day.dayIndex
+                            ? null
+                            : day.dayIndex,
+                        )
+                      }
+                    >
+                      ➕ إضافة تمرين
+                    </button>
+                  </>
                 )}
               </div>
             </div>
-
-            {/* Quick Add Form */}
-            {addingToDayIndex === day.dayIndex && (
-              <div
-                className="quick-add-box card highlight-box"
-                style={{ marginBottom: '12px' }}
-              >
-                <p className="muted-small">
-                  اختر تمرينًا لإضافته إلى {day.labelAr}:
-                </p>
-                <div className="actions-row">
-                  <select
-                    onChange={(e) =>
-                      handleAddExerciseToDay(day.dayIndex, e.target.value)
-                    }
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      -- اختر من قاعدة التمارين --
-                    </option>
-                    {[...EXERCISES, ...customExercises].map((ex) => (
-                      <option key={ex.id} value={ex.id}>
-                        {ex.nameAr} ({ex.category})
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    type="button"
-                    className="ghost tiny"
-                    onClick={() => setAddingToDayIndex(null)}
-                  >
-                    إلغاء
-                  </button>
-                </div>
-              </div>
-            )}
 
             <ul className="weekly-plan__exercise-list">
               {day.exercises.map((pe, idx) => {
@@ -336,6 +369,22 @@ export function WeeklyPlanView({
           </div>
         ))}
       </div>
+
+      {/* Visual Exercise Picker Modal */}
+      {addingToDayIndex !== null && (
+        <ExercisePickerModal
+          dayLabelAr={
+            program.days.find((d) => d.dayIndex === addingToDayIndex)
+              ?.labelAr ?? ''
+          }
+          customExercises={customExercises}
+          userInjuries={userInjuries}
+          onSelectExercise={(exerciseId) =>
+            handleAddExerciseToDay(addingToDayIndex, exerciseId)
+          }
+          onClose={() => setAddingToDayIndex(null)}
+        />
+      )}
 
       {/* Detail Modal */}
       {selectedExercise && (
