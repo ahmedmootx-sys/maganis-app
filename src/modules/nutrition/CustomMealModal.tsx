@@ -199,12 +199,12 @@ export function CustomMealModal({
   const QUICK_STAPLES = [
     { id: 'chicken-breast-cooked', name: '🍗 صدور فراخ', grams: 150 },
     { id: 'cooked-white-rice', name: '🍚 أرز مطبوخ', grams: 200 },
-    { id: 'raw-rolled-oats', name: '🥣 شوفان', grams: 60 },
-    { id: 'whole-eggs-boiled', name: '🥚 بيض مسلوق', grams: 100 },
-    { id: 'canned-tuna-drained', name: '🐟 تونة مصفاة', grams: 140 },
-    { id: 'cottage-cheese-kareesh', name: '🧀 جبنة قريش', grams: 150 },
-    { id: 'boiled-potatoes', name: '🥔 بطاطس مسلوقة', grams: 200 },
-    { id: 'whey-protein-isolate', name: '🥤 واي بروتين', grams: 30 },
+    { id: 'raw-oats', name: '🥣 شوفان', grams: 60 },
+    { id: 'egg-whole', name: '🥚 بيض مسلوق', grams: 100 },
+    { id: 'tuna-water', name: '🐟 تونة مصفاة', grams: 140 },
+    { id: 'cottage-cheese', name: '🧀 جبنة قريش', grams: 150 },
+    { id: 'boiled-potato', name: '🥔 بطاطس مسلوقة', grams: 200 },
+    { id: 'whey-protein', name: '🥤 واي بروتين', grams: 30 },
     { id: 'olive-oil', name: '🫒 زيت زيتون', grams: 10 },
   ]
 

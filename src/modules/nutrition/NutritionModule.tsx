@@ -444,8 +444,9 @@ export function NutritionModule({
           </div>
           <div
             style={{
-              background: '#fef3c7',
-              color: '#92400e',
+              background: 'var(--accent-soft)',
+              color: 'var(--accent)',
+              border: '1px solid rgba(249, 87, 0, 0.3)',
               padding: '8px 10px',
               borderRadius: '6px',
               fontWeight: 700,
@@ -458,8 +459,9 @@ export function NutritionModule({
           </div>
           <div
             style={{
-              background: '#eff6ff',
-              color: '#1e40af',
+              background: 'var(--card-subtle)',
+              color: 'var(--ink)',
+              border: '1px solid var(--line)',
               padding: '8px 10px',
               borderRadius: '6px',
               fontWeight: 700,
@@ -865,7 +867,7 @@ export function NutritionModule({
             </button>
             <button
               type="button"
-              className="button-primary small"
+              className="button-secondary small"
               onClick={() => {
                 setEditingCustomMeal(null)
                 setIsCustomMealModalOpen(true)

@@ -225,15 +225,7 @@ export function ExerciseSwapModal({
                           {exercise.name || exercise.nameAr}
                         </strong>
                         {exercise.targetSubMuscleAr && (
-                          <span
-                            className="chip"
-                            style={{
-                              fontSize: '11px',
-                              background: '#fef3c7',
-                              color: '#92400e',
-                              padding: '2px 6px',
-                            }}
-                          >
+                          <span className="submuscle-badge">
                             🎯 {exercise.targetSubMuscleAr}
                           </span>
                         )}

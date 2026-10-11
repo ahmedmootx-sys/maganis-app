@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { MuscleGroup } from '../shared/types.ts'
 
 interface AnatomyMuscleMapProps {
@@ -7,18 +8,33 @@ interface AnatomyMuscleMapProps {
   isFullView?: boolean
 }
 
+interface MuscleDetail {
+  nameAr: string
+  nameLatin: string
+  role: 'primary' | 'secondary'
+  percentage: number
+  descriptionAr: string
+  heads?: string[]
+}
+
 /**
- * High-precision Anatomical Human Body Map (Front & Back Views).
- * Highlights the primary and secondary target muscle groups in vivid anatomical crimson red
- * matching professional medical/fitness anatomy illustrations.
+ * 3D-Realistic Anatomical Muscle Targeting System (Hevy / MuscleWiki Style).
+ * Renders full-physique anterior and posterior athletic human models with 3D volumetric shaders,
+ * precise muscle group highlighting in gym crimson red, and an accompanying muscle involvement breakdown.
  */
 export function AnatomyMuscleMap({
   category,
-  exerciseName: _exerciseName = '',
+  exerciseName = '',
   targetMuscles = [],
   isFullView = true,
 }: AnatomyMuscleMapProps) {
-  // Determine highlighted muscle groups based on category & target muscles
+  // Detection logic for each anatomical muscle group
+  const nameAndTargets = (
+    exerciseName +
+    ' ' +
+    targetMuscles.join(' ')
+  ).toLowerCase()
+
   const isChest =
     category === 'chest' ||
     targetMuscles.some(
@@ -26,29 +42,25 @@ export function AnatomyMuscleMap({
         m.includes('صدر') ||
         m.toLowerCase().includes('chest') ||
         m.toLowerCase().includes('pec'),
-    )
+    ) ||
+    nameAndTargets.includes('بنش') ||
+    nameAndTargets.includes('صدر')
+
   const isBack =
     category === 'back' ||
     targetMuscles.some(
       (m) =>
         m.includes('ظهر') ||
         m.includes('لاتس') ||
+        m.includes('سحب') ||
         m.toLowerCase().includes('lat') ||
-        m.toLowerCase().includes('back'),
-    )
-  const isLegs =
-    category === 'legs' ||
-    targetMuscles.some(
-      (m) =>
-        m.includes('أرجل') ||
-        m.includes('فخذ') ||
-        m.includes('ألوية') ||
-        m.includes('ركبة') ||
-        m.toLowerCase().includes('leg') ||
-        m.toLowerCase().includes('glute') ||
-        m.toLowerCase().includes('quad') ||
-        m.toLowerCase().includes('hamstring'),
-    )
+        m.toLowerCase().includes('back') ||
+        m.toLowerCase().includes('row'),
+    ) ||
+    nameAndTargets.includes('ظهر') ||
+    nameAndTargets.includes('سحب') ||
+    nameAndTargets.includes('عقلة')
+
   const isShoulders =
     category === 'shoulders' ||
     targetMuscles.some(
@@ -57,18 +69,47 @@ export function AnatomyMuscleMap({
         m.includes('دالية') ||
         m.toLowerCase().includes('shoulder') ||
         m.toLowerCase().includes('delt'),
+    ) ||
+    nameAndTargets.includes('كتف') ||
+    nameAndTargets.includes('رفرفة')
+
+  const isBiceps =
+    (category === 'arms' &&
+      (nameAndTargets.includes('باي') ||
+        nameAndTargets.includes('تبادل') ||
+        nameAndTargets.includes('كيرل') ||
+        nameAndTargets.includes('bicep'))) ||
+    targetMuscles.some(
+      (m) => m.includes('باي') || m.toLowerCase().includes('bicep'),
     )
-  const isArms =
-    category === 'arms' ||
+
+  const isTriceps =
+    (category === 'arms' &&
+      (nameAndTargets.includes('تراي') ||
+        nameAndTargets.includes('فرنسي') ||
+        nameAndTargets.includes('tricep') ||
+        nameAndTargets.includes('غطس'))) ||
+    targetMuscles.some(
+      (m) => m.includes('تراي') || m.toLowerCase().includes('tricep'),
+    )
+
+  const isArms = category === 'arms' || isBiceps || isTriceps
+
+  const isLegs =
+    category === 'legs' ||
     targetMuscles.some(
       (m) =>
-        m.includes('ذراع') ||
-        m.includes('باي') ||
-        m.includes('تراي') ||
-        m.toLowerCase().includes('arm') ||
-        m.toLowerCase().includes('bicep') ||
-        m.toLowerCase().includes('tricep'),
-    )
+        m.includes('أرجل') ||
+        m.includes('فخذ') ||
+        m.includes('ألوية') ||
+        m.includes('سمانة') ||
+        m.toLowerCase().includes('leg') ||
+        m.toLowerCase().includes('squat'),
+    ) ||
+    nameAndTargets.includes('سكوات') ||
+    nameAndTargets.includes('أرجل') ||
+    nameAndTargets.includes('سمانة')
+
   const isCore =
     category === 'core' ||
     targetMuscles.some(
@@ -77,271 +118,731 @@ export function AnatomyMuscleMap({
         m.includes('جذع') ||
         m.includes('معدة') ||
         m.toLowerCase().includes('core') ||
-        m.toLowerCase().includes('ab'),
-    )
+        m.toLowerCase().includes('ab') ||
+        m.toLowerCase().includes('plank'),
+    ) ||
+    nameAndTargets.includes('بطن') ||
+    nameAndTargets.includes('بلانك')
 
-  const highlightColor = '#ef4444' // Vivid crimson red
-  const secondaryHighlight = '#f87171' // Light crimson
-  const bodyBaseColor = '#94a3b8' // Anatomical silver-grey (white background theme)
-  const bodyDarkColor = '#64748b' // Deep muscle shadow
+  // Secondary muscles synergy detection
+  const isChestSynergyTriceps = isChest && !isTriceps
+  const isChestSynergyShoulders = isChest && !isShoulders
+  const isBackSynergyBiceps = isBack && !isBiceps
+  const isLegsSynergyGlutes = isLegs
+  const isLegsSynergyCalves = isLegs
+
+  // Compute breakdown cards data
+  const muscleBreakdown = useMemo<{
+    primary: MuscleDetail[]
+    secondary: MuscleDetail[]
+  }>(() => {
+    const primary: MuscleDetail[] = []
+    const secondary: MuscleDetail[] = []
+
+    if (isChest) {
+      const isUpper =
+        nameAndTargets.includes('عالي') ||
+        nameAndTargets.includes('مائل') ||
+        nameAndTargets.includes('علوي') ||
+        nameAndTargets.includes('ترقوي')
+      const isLower =
+        nameAndTargets.includes('مقلوب') || nameAndTargets.includes('سفلي')
+      primary.push({
+        nameAr: isUpper
+          ? 'عضلة الصدر العلوي'
+          : isLower
+            ? 'عضلة الصدر السفلي'
+            : 'عضلة الصدر الكبرى',
+        nameLatin: isUpper
+          ? 'Pectoralis Major (Clavicular Head)'
+          : 'Pectoralis Major (Sternal Head)',
+        role: 'primary',
+        percentage: 100,
+        descriptionAr: 'العضلة المحركة الأساسية للحركة وتوليد القوة الدافعة.',
+        heads: isUpper
+          ? ['الرأس الترقوي', 'الألياف العلوية']
+          : isLower
+            ? ['الرأس القصي', 'الألياف السفلية']
+            : ['الرأس القصي', 'الرأس الترقوي'],
+      })
+      secondary.push({
+        nameAr: 'العضلة الدالية الأمامية',
+        nameLatin: 'Anterior Deltoid',
+        role: 'secondary',
+        percentage: 75,
+        descriptionAr: 'تثبيت مفصل الكتف والمساعدة في الدفع.',
+      })
+      secondary.push({
+        nameAr: 'عضلة الترايسبس (الذراع الخلفي)',
+        nameLatin: 'Triceps Brachii',
+        role: 'secondary',
+        percentage: 70,
+        descriptionAr: 'المسؤولة عن مد المرفق في نهاية مدى الحركة.',
+      })
+    } else if (isBack) {
+      primary.push({
+        nameAr: 'عضلات الظهر العريضة (المجنص)',
+        nameLatin: 'Latissimus Dorsi',
+        role: 'primary',
+        percentage: 100,
+        descriptionAr: 'العضلة الرئيسية لسحب الوزن وبناء العرض والقوة.',
+        heads: ['الألياف العريضة', 'عضلات المجنص'],
+      })
+      primary.push({
+        nameAr: 'عضلات الترابيس وأعلى الظهر',
+        nameLatin: 'Trapezius & Rhomboids',
+        role: 'primary',
+        percentage: 85,
+        descriptionAr: 'ضم لوحي الكتف وتثبيت أعلى الجذع.',
+      })
+      secondary.push({
+        nameAr: 'عضلة البايسبس (الذراع الأمامي)',
+        nameLatin: 'Biceps Brachii',
+        role: 'secondary',
+        percentage: 65,
+        descriptionAr: 'مساعدة ثني المرفق أثناء حركة السحب.',
+      })
+      secondary.push({
+        nameAr: 'الساعد وعضلات القبضة',
+        nameLatin: 'Brachioradialis',
+        role: 'secondary',
+        percentage: 60,
+        descriptionAr: 'تثبيت الوزن وإحكام القبضة.',
+      })
+    } else if (isShoulders) {
+      primary.push({
+        nameAr: 'عضلات الكتف (الدالية)',
+        nameLatin: 'Deltoid Muscle',
+        role: 'primary',
+        percentage: 100,
+        descriptionAr: 'المحرك الأساسي لرفع وتدوير الذراع ومنح المظهر الدائري.',
+        heads: ['الرأس الجانبي', 'الرأس الأمامي', 'الرأس الخلفي'],
+      })
+      secondary.push({
+        nameAr: 'عضلة الترايسبس والترابيس العلوية',
+        nameLatin: 'Triceps & Upper Trapezius',
+        role: 'secondary',
+        percentage: 70,
+        descriptionAr: 'تثبيت مفصل الكتف وقفل الذراع في أعلى نقطة.',
+      })
+    } else if (isArms) {
+      if (isBiceps) {
+        primary.push({
+          nameAr: 'عضلة البايسبس والبريكيالس',
+          nameLatin: 'Biceps Brachii & Brachialis',
+          role: 'primary',
+          percentage: 100,
+          descriptionAr: 'ثني المرفق ولف الساعد وبناء ذروة الذراع (Peak).',
+          heads: ['الرأس الطويل', 'الرأس القصير', 'العضلة العضدية'],
+        })
+        secondary.push({
+          nameAr: 'عضلات الساعد',
+          nameLatin: 'Forearm Flexors',
+          role: 'secondary',
+          percentage: 65,
+          descriptionAr: 'تثبيت القبضة ونقل القوة.',
+        })
+      } else if (isTriceps || !isBiceps) {
+        primary.push({
+          nameAr: 'عضلة الترايسبس (الذراع الخلفي)',
+          nameLatin: 'Triceps Brachii',
+          role: 'primary',
+          percentage: 100,
+          descriptionAr: 'المسؤولة عن ثلثي حجم الذراع ومد مفصل المرفق.',
+          heads: ['الرأس الطويل', 'الرأس الجانبي', 'الرأس الأوسط'],
+        })
+        secondary.push({
+          nameAr: 'عضلات الصدر والكتف المساعدة',
+          nameLatin: 'Anterior Deltoid & Core',
+          role: 'secondary',
+          percentage: 55,
+          descriptionAr: 'تثبيت الجذع واستقرار المفاصل.',
+        })
+      }
+    } else if (isLegs) {
+      primary.push({
+        nameAr: 'عضلات الفخذ الرباعية (الأمامية)',
+        nameLatin: 'Quadriceps Femoris',
+        role: 'primary',
+        percentage: 100,
+        descriptionAr: 'العضلة الأكبر في الجسم لتوليد الدفع ومد الركبة.',
+        heads: ['الفخذية المستقيمة', 'المتسعة الوحشية', 'المتسعة الإنسية'],
+      })
+      primary.push({
+        nameAr: 'عضلات الألوية (المؤخرة)',
+        nameLatin: 'Gluteus Maximus',
+        role: 'primary',
+        percentage: 90,
+        descriptionAr: 'مد مفصل الورك وتثبيت الحوض والعمود الفقري.',
+      })
+      secondary.push({
+        nameAr: 'أوتار الركبة وعضلات السمانة',
+        nameLatin: 'Hamstrings & Calves',
+        role: 'secondary',
+        percentage: 70,
+        descriptionAr: 'الحفاظ على التوازن والامتصاص الحركي.',
+      })
+    } else if (isCore) {
+      primary.push({
+        nameAr: 'عضلات البطن المستقيمة (Six-Pack)',
+        nameLatin: 'Rectus Abdominis',
+        role: 'primary',
+        percentage: 100,
+        descriptionAr: 'ثني الجذع وحماية العمود الفقري وتنسيق القوة.',
+        heads: ['البطن العلوية', 'البطن السفلية'],
+      })
+      secondary.push({
+        nameAr: 'العضلات المائلة والجذع العرضي',
+        nameLatin: 'Obliques & Transverse Abdominis',
+        role: 'secondary',
+        percentage: 80,
+        descriptionAr: 'مقاومة الالتواء ودعم الحزام البطني.',
+      })
+    }
+
+    return { primary, secondary }
+  }, [
+    isChest,
+    isBack,
+    isShoulders,
+    isArms,
+    isBiceps,
+    isTriceps,
+    isLegs,
+    isCore,
+    nameAndTargets,
+  ])
 
   return (
     <div
-      className={`anatomy-map-container white-theme ${isFullView ? 'full-view' : 'compact-view'}`}
+      className={`anatomy-3d-card ${isFullView ? 'full-view' : 'compact-view'}`}
     >
-      <div className="anatomy-views-wrapper">
-        {/* ===== FRONT VIEW (المنظر الأمامي) ===== */}
-        <div className="anatomy-figure-box">
-          <span className="figure-label">المنظر الأمامي (Anterior)</span>
-          <svg viewBox="0 0 100 200" className="anatomy-svg" fill="none">
-            {/* Head & Neck */}
-            <circle cx="50" cy="18" r="10" fill={bodyBaseColor} />
-            <path d="M46 27 L54 27 L56 36 L44 36 Z" fill={bodyBaseColor} />
-
-            {/* Shoulders (Deltoids - Anterior) */}
-            <path
-              d="M36 36 C32 36, 26 40, 26 46 L32 56 L38 48 Z"
-              fill={isShoulders ? highlightColor : bodyBaseColor}
-              className={isShoulders ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M64 36 C68 36, 74 40, 74 46 L68 56 L62 48 Z"
-              fill={isShoulders ? highlightColor : bodyBaseColor}
-              className={isShoulders ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Chest (Pectoralis Major) */}
-            <path
-              d="M38 37 C44 37, 49 39, 49 48 C43 48, 38 46, 36 43 Z"
-              fill={isChest ? highlightColor : bodyBaseColor}
-              className={isChest ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M62 37 C56 37, 51 39, 51 48 C57 48, 62 46, 64 43 Z"
-              fill={isChest ? highlightColor : bodyBaseColor}
-              className={isChest ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Arms (Biceps Anterior) */}
-            <path
-              d="M26 48 L32 57 L30 72 L23 60 Z"
-              fill={isArms ? highlightColor : bodyBaseColor}
-              className={isArms ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M74 48 L68 57 L70 72 L77 60 Z"
-              fill={isArms ? highlightColor : bodyBaseColor}
-              className={isArms ? 'muscle-active pulse' : ''}
-            />
-            {/* Forearms */}
-            <path d="M29 73 L27 94 L22 93 L24 73 Z" fill={bodyBaseColor} />
-            <path d="M71 73 L73 94 L78 93 L76 73 Z" fill={bodyBaseColor} />
-
-            {/* Core / Abs (Rectus Abdominis & Obliques) */}
-            <g className={isCore ? 'muscle-active pulse' : ''}>
-              {/* Six pack blocks */}
-              <rect
-                x="44"
-                y="50"
-                width="5.5"
-                height="6.5"
-                rx="1.5"
-                fill={isCore ? highlightColor : bodyDarkColor}
-              />
-              <rect
-                x="50.5"
-                y="50"
-                width="5.5"
-                height="6.5"
-                rx="1.5"
-                fill={isCore ? highlightColor : bodyDarkColor}
-              />
-              <rect
-                x="44"
-                y="58"
-                width="5.5"
-                height="6.5"
-                rx="1.5"
-                fill={isCore ? highlightColor : bodyDarkColor}
-              />
-              <rect
-                x="50.5"
-                y="58"
-                width="5.5"
-                height="6.5"
-                rx="1.5"
-                fill={isCore ? highlightColor : bodyDarkColor}
-              />
-              <rect
-                x="44"
-                y="66"
-                width="5.5"
-                height="6.5"
-                rx="1.5"
-                fill={isCore ? highlightColor : bodyDarkColor}
-              />
-              <rect
-                x="50.5"
-                y="66"
-                width="5.5"
-                height="6.5"
-                rx="1.5"
-                fill={isCore ? highlightColor : bodyDarkColor}
-              />
-              {/* Obliques */}
-              <path
-                d="M37 52 L43 52 L43 72 L38 68 Z"
-                fill={isCore ? secondaryHighlight : bodyBaseColor}
-              />
-              <path
-                d="M63 52 L57 52 L57 72 L62 68 Z"
-                fill={isCore ? secondaryHighlight : bodyBaseColor}
-              />
-            </g>
-
-            {/* Pelvis */}
-            <path d="M38 74 L62 74 L58 84 L42 84 Z" fill={bodyBaseColor} />
-
-            {/* Thighs / Quads (Quadriceps Femoris) */}
-            <path
-              d="M38 85 C38 85, 48 85, 48 95 L46 130 C44 133, 40 133, 38 130 L36 95 Z"
-              fill={isLegs ? highlightColor : bodyBaseColor}
-              className={isLegs ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M62 85 C62 85, 52 85, 52 95 L54 130 C56 133, 60 133, 62 130 L64 95 Z"
-              fill={isLegs ? highlightColor : bodyBaseColor}
-              className={isLegs ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Knees */}
-            <circle cx="42" cy="135" r="4.5" fill={bodyBaseColor} />
-            <circle cx="58" cy="135" r="4.5" fill={bodyBaseColor} />
-
-            {/* Shins & Calves (Anterior) */}
-            <path
-              d="M39 141 L45 141 L43 182 L38 182 Z"
-              fill={isLegs ? secondaryHighlight : bodyBaseColor}
-            />
-            <path
-              d="M61 141 L55 141 L57 182 L62 182 Z"
-              fill={isLegs ? secondaryHighlight : bodyBaseColor}
-            />
-            {/* Feet */}
-            <path d="M36 183 L44 183 L46 192 L34 192 Z" fill={bodyBaseColor} />
-            <path d="M64 183 L56 183 L54 192 L66 192 Z" fill={bodyBaseColor} />
-          </svg>
+      <div className="anatomy-3d-header">
+        <div className="anatomy-3d-title">
+          <span className="anatomy-icon">🧬</span>
+          <div>
+            <h4>المجسم التشريحي لاستهداف العضلات (3D Muscle Map)</h4>
+            <p>توضيح عضلي واقعي للعضلات المستهدفة والمساعدة في هذا التمرين</p>
+          </div>
         </div>
-
-        {/* ===== BACK VIEW (المنظر الخلفي) ===== */}
-        <div className="anatomy-figure-box">
-          <span className="figure-label">المنظر الخلفي (Posterior)</span>
-          <svg viewBox="0 0 100 200" className="anatomy-svg" fill="none">
-            {/* Head & Neck Posterior */}
-            <circle cx="50" cy="18" r="10" fill={bodyBaseColor} />
-            <path d="M46 27 L54 27 L57 37 L43 37 Z" fill={bodyBaseColor} />
-
-            {/* Trapezius (الترابيس) */}
-            <polygon
-              points="50,28 38,38 50,56 62,38"
-              fill={isBack ? secondaryHighlight : bodyBaseColor}
-              className={isBack ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Rear Deltoids (الكتف الخلفي) */}
-            <path
-              d="M36 36 C32 36, 26 40, 26 46 L32 54 L38 46 Z"
-              fill={isShoulders ? highlightColor : bodyBaseColor}
-              className={isShoulders ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M64 36 C68 36, 74 40, 74 46 L68 54 L62 46 Z"
-              fill={isShoulders ? highlightColor : bodyBaseColor}
-              className={isShoulders ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Latissimus Dorsi (عضلات الظهر العريضة - اللاتس) */}
-            <path
-              d="M36 44 L48 56 L48 72 L36 64 Z"
-              fill={isBack ? highlightColor : bodyBaseColor}
-              className={isBack ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M64 44 L52 56 L52 72 L64 64 Z"
-              fill={isBack ? highlightColor : bodyBaseColor}
-              className={isBack ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Triceps (الترايسبس الخلفية) */}
-            <path
-              d="M26 48 L32 57 L30 72 L23 60 Z"
-              fill={isArms ? highlightColor : bodyBaseColor}
-              className={isArms ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M74 48 L68 57 L70 72 L77 60 Z"
-              fill={isArms ? highlightColor : bodyBaseColor}
-              className={isArms ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Lower Back (Erector Spinae) */}
-            <path
-              d="M45 58 L55 58 L54 75 L46 75 Z"
-              fill={isBack || isCore ? secondaryHighlight : bodyDarkColor}
-            />
-
-            {/* Glutes (عضلات الألوية الكبرى - Gluteus Maximus) */}
-            <path
-              d="M36 75 C43 75, 49 76, 49 88 C49 96, 42 98, 36 96 C34 90, 34 82, 36 75 Z"
-              fill={isLegs ? highlightColor : bodyBaseColor}
-              className={isLegs ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M64 75 C57 75, 51 76, 51 88 C51 96, 58 98, 64 96 C66 90, 66 82, 64 75 Z"
-              fill={isLegs ? highlightColor : bodyBaseColor}
-              className={isLegs ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Hamstrings (أوتار الركبة الخلفية) */}
-            <path
-              d="M37 98 L48 98 L46 131 L37 131 Z"
-              fill={isLegs ? highlightColor : bodyBaseColor}
-              className={isLegs ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M63 98 L52 98 L54 131 L63 131 Z"
-              fill={isLegs ? highlightColor : bodyBaseColor}
-              className={isLegs ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Calves (عضلات السمانة الخلفية - Gastrocnemius) */}
-            <path
-              d="M37 138 C44 138, 45 146, 44 165 L40 182 L36 182 C34 165, 34 146, 37 138 Z"
-              fill={isLegs ? secondaryHighlight : bodyBaseColor}
-              className={isLegs ? 'muscle-active pulse' : ''}
-            />
-            <path
-              d="M63 138 C56 138, 55 146, 56 165 L60 182 L64 182 C66 165, 66 146, 63 138 Z"
-              fill={isLegs ? secondaryHighlight : bodyBaseColor}
-              className={isLegs ? 'muscle-active pulse' : ''}
-            />
-
-            {/* Heels */}
-            <path d="M37 183 L43 183 L42 192 L36 192 Z" fill={bodyBaseColor} />
-            <path d="M63 183 L57 183 L58 192 L64 192 Z" fill={bodyBaseColor} />
-          </svg>
+        <div className="anatomy-badges">
+          <span className="badge-primary-target">🔴 هدف رئيسي</span>
+          <span className="badge-synergy-target">🟠 عضلة مساعدة</span>
         </div>
       </div>
 
-      {/* Muscle Focus Legend */}
-      <div className="anatomy-legend">
-        <div className="legend-item">
-          <span className="legend-dot primary"></span>
-          <span>العضلة المستهدفة الأساسية (Primary Active)</span>
+      <div className="anatomy-3d-content">
+        {/* ===== 3D FIGURES WRAPPER (ANTERIOR & POSTERIOR) ===== */}
+        <div className="anatomy-models-grid">
+          {/* ----- ANTERIOR VIEW (المنظر الأمامي) ----- */}
+          <div className="model-figure-card">
+            <div className="figure-caption">المنظر الأمامي (Anterior)</div>
+            <div className="svg-container">
+              <svg viewBox="0 0 160 310" className="realistic-anatomy-svg">
+                <defs>
+                  {/* Inactive Realistic Muscle Shaders */}
+                  <linearGradient
+                    id="skinBase"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stopColor="#475569" />
+                    <stop offset="50%" stopColor="#334155" />
+                    <stop offset="100%" stopColor="#1e293b" />
+                  </linearGradient>
+
+                  <linearGradient
+                    id="skinShadow"
+                    x1="0%"
+                    y1="0%"
+                    x2="0%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stopColor="#64748b" />
+                    <stop offset="100%" stopColor="#334155" />
+                  </linearGradient>
+
+                  {/* Active Crimson 3D Muscle Shaders */}
+                  <linearGradient
+                    id="activeMuscle3D"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stopColor="#ff4d4d" />
+                    <stop offset="40%" stopColor="#ef4444" />
+                    <stop offset="85%" stopColor="#b91c1c" />
+                    <stop offset="100%" stopColor="#7f1d1d" />
+                  </linearGradient>
+
+                  <linearGradient
+                    id="synergyMuscle3D"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stopColor="#fb923c" />
+                    <stop offset="50%" stopColor="#ea580c" />
+                    <stop offset="100%" stopColor="#9a3412" />
+                  </linearGradient>
+
+                  {/* Drop glow filter for active muscles */}
+                  <filter
+                    id="muscleGlow"
+                    x="-20%"
+                    y="-20%"
+                    width="140%"
+                    height="140%"
+                  >
+                    <feDropShadow
+                      dx="0"
+                      dy="2"
+                      stdDeviation="3"
+                      floodColor="#ef4444"
+                      floodOpacity="0.5"
+                    />
+                  </filter>
+                </defs>
+
+                {/* --- HEAD & NECK --- */}
+                <ellipse
+                  cx="80"
+                  cy="24"
+                  rx="14"
+                  ry="17"
+                  fill="url(#skinBase)"
+                />
+                {/* Sternocleidomastoid (Neck) */}
+                <path
+                  d="M72 38 C75 42, 75 50, 70 55 L90 55 C85 50, 85 42, 88 38 Z"
+                  fill="url(#skinShadow)"
+                />
+
+                {/* --- SHOULDERS (DELTOIDS - ANTERIOR & LATERAL) --- */}
+                {/* Left Deltoid */}
+                <path
+                  d="M58 53 C50 54, 40 59, 38 70 C36 80, 42 88, 48 89 C52 83, 56 75, 59 66 Z"
+                  fill={
+                    isShoulders
+                      ? 'url(#activeMuscle3D)'
+                      : isChestSynergyShoulders
+                        ? 'url(#synergyMuscle3D)'
+                        : 'url(#skinBase)'
+                  }
+                  filter={isShoulders ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Deltoid */}
+                <path
+                  d="M102 53 C110 54, 120 59, 122 70 C124 80, 118 88, 112 89 C108 83, 104 75, 101 66 Z"
+                  fill={
+                    isShoulders
+                      ? 'url(#activeMuscle3D)'
+                      : isChestSynergyShoulders
+                        ? 'url(#synergyMuscle3D)'
+                        : 'url(#skinBase)'
+                  }
+                  filter={isShoulders ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* --- CHEST (PECTORALIS MAJOR) --- */}
+                {/* Left Pec */}
+                <path
+                  d="M60 55 C70 54, 78 57, 78 78 C70 82, 60 82, 53 74 C54 66, 56 60, 60 55 Z"
+                  fill={isChest ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isChest ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Pec */}
+                <path
+                  d="M100 55 C90 54, 82 57, 82 78 C90 82, 100 82, 107 74 C106 66, 104 60, 100 55 Z"
+                  fill={isChest ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isChest ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* --- BICEPS & BRACHIALIS (ANTERIOR ARMS) --- */}
+                {/* Left Bicep */}
+                <path
+                  d="M48 87 C44 94, 43 108, 48 116 C53 113, 56 104, 55 92 Z"
+                  fill={
+                    isBiceps
+                      ? 'url(#activeMuscle3D)'
+                      : isArms && !isTriceps
+                        ? 'url(#activeMuscle3D)'
+                        : isBackSynergyBiceps
+                          ? 'url(#synergyMuscle3D)'
+                          : 'url(#skinBase)'
+                  }
+                  filter={isBiceps ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Bicep */}
+                <path
+                  d="M112 87 C116 94, 117 108, 112 116 C107 113, 104 104, 105 92 Z"
+                  fill={
+                    isBiceps
+                      ? 'url(#activeMuscle3D)'
+                      : isArms && !isTriceps
+                        ? 'url(#activeMuscle3D)'
+                        : isBackSynergyBiceps
+                          ? 'url(#synergyMuscle3D)'
+                          : 'url(#skinBase)'
+                  }
+                  filter={isBiceps ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* --- FOREARMS (BRACHIORADIALIS) --- */}
+                {/* Left Forearm */}
+                <path
+                  d="M46 118 C40 126, 38 142, 42 154 C46 153, 49 146, 51 130 C52 124, 49 120, 46 118 Z"
+                  fill="url(#skinShadow)"
+                />
+                {/* Right Forearm */}
+                <path
+                  d="M114 118 C120 126, 122 142, 118 154 C114 153, 111 146, 109 130 C108 124, 111 120, 114 118 Z"
+                  fill="url(#skinShadow)"
+                />
+
+                {/* --- ABDOMINALS (6-PACK RECTUS ABDOMINIS & OBLIQUES) --- */}
+                <g filter={isCore ? 'url(#muscleGlow)' : undefined}>
+                  {/* Top pack */}
+                  <rect
+                    x="71"
+                    y="83"
+                    width="8"
+                    height="10"
+                    rx="2"
+                    fill={isCore ? 'url(#activeMuscle3D)' : 'url(#skinShadow)'}
+                  />
+                  <rect
+                    x="81"
+                    y="83"
+                    width="8"
+                    height="10"
+                    rx="2"
+                    fill={isCore ? 'url(#activeMuscle3D)' : 'url(#skinShadow)'}
+                  />
+                  {/* Mid pack */}
+                  <rect
+                    x="71"
+                    y="95"
+                    width="8"
+                    height="10"
+                    rx="2"
+                    fill={isCore ? 'url(#activeMuscle3D)' : 'url(#skinShadow)'}
+                  />
+                  <rect
+                    x="81"
+                    y="95"
+                    width="8"
+                    height="10"
+                    rx="2"
+                    fill={isCore ? 'url(#activeMuscle3D)' : 'url(#skinShadow)'}
+                  />
+                  {/* Lower pack */}
+                  <rect
+                    x="71"
+                    y="107"
+                    width="8"
+                    height="11"
+                    rx="2"
+                    fill={isCore ? 'url(#activeMuscle3D)' : 'url(#skinShadow)'}
+                  />
+                  <rect
+                    x="81"
+                    y="107"
+                    width="8"
+                    height="11"
+                    rx="2"
+                    fill={isCore ? 'url(#activeMuscle3D)' : 'url(#skinShadow)'}
+                  />
+                  {/* External Obliques */}
+                  <path
+                    d="M57 85 C64 88, 68 98, 68 116 C63 115, 59 105, 57 85 Z"
+                    fill={isCore ? 'url(#synergyMuscle3D)' : 'url(#skinBase)'}
+                  />
+                  <path
+                    d="M103 85 C96 88, 92 98, 92 116 C97 115, 101 105, 103 85 Z"
+                    fill={isCore ? 'url(#synergyMuscle3D)' : 'url(#skinBase)'}
+                  />
+                </g>
+
+                {/* --- PELVIS & HIPS --- */}
+                <path
+                  d="M68 120 C75 125, 85 125, 92 120 C96 130, 88 136, 80 136 C72 136, 64 130, 68 120 Z"
+                  fill="url(#skinBase)"
+                />
+
+                {/* --- QUADRICEPS (THIGHS - ANTERIOR) --- */}
+                {/* Left Quad (Vastus Medialis, Lateralis, Rectus Femoris) */}
+                <path
+                  d="M62 135 C54 148, 52 175, 58 198 C65 204, 71 200, 75 188 C76 168, 74 145, 62 135 Z"
+                  fill={isLegs ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isLegs ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Quad */}
+                <path
+                  d="M98 135 C106 148, 108 175, 102 198 C95 204, 89 200, 85 188 C84 168, 86 145, 98 135 Z"
+                  fill={isLegs ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isLegs ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* Knees */}
+                <circle cx="68" cy="207" r="6" fill="url(#skinShadow)" />
+                <circle cx="92" cy="207" r="6" fill="url(#skinShadow)" />
+
+                {/* --- SHINS & TIBIALIS ANTERIOR / CALVES --- */}
+                {/* Left Shin & Calf */}
+                <path
+                  d="M64 215 C59 228, 60 255, 64 275 C68 277, 72 268, 72 245 C73 230, 70 218, 64 215 Z"
+                  fill={
+                    isLegsSynergyCalves
+                      ? 'url(#synergyMuscle3D)'
+                      : 'url(#skinBase)'
+                  }
+                />
+                {/* Right Shin & Calf */}
+                <path
+                  d="M96 215 C101 228, 100 255, 96 275 C92 277, 88 268, 88 245 C87 230, 90 218, 96 215 Z"
+                  fill={
+                    isLegsSynergyCalves
+                      ? 'url(#synergyMuscle3D)'
+                      : 'url(#skinBase)'
+                  }
+                />
+
+                {/* Feet */}
+                <path
+                  d="M60 277 L69 277 L71 292 L58 292 Z"
+                  fill="url(#skinShadow)"
+                />
+                <path
+                  d="M100 277 L91 277 L89 292 L102 292 Z"
+                  fill="url(#skinShadow)"
+                />
+              </svg>
+            </div>
+          </div>
+
+          {/* ----- POSTERIOR VIEW (المنظر الخلفي) ----- */}
+          <div className="model-figure-card">
+            <div className="figure-caption">المنظر الخلفي (Posterior)</div>
+            <div className="svg-container">
+              <svg viewBox="0 0 160 310" className="realistic-anatomy-svg">
+                {/* --- HEAD & NECK POSTERIOR --- */}
+                <ellipse
+                  cx="80"
+                  cy="24"
+                  rx="14"
+                  ry="17"
+                  fill="url(#skinBase)"
+                />
+
+                {/* --- TRAPEZIUS (UPPER & MID BACK) --- */}
+                <path
+                  d="M80 38 L65 52 C72 65, 78 78, 80 82 C82 78, 88 65, 95 52 Z"
+                  fill={isBack ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isBack ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* --- REAR DELTOIDS (الكتف الخلفي) --- */}
+                {/* Left Rear Delt */}
+                <path
+                  d="M58 53 C50 54, 40 59, 38 70 C36 80, 42 88, 48 89 C52 83, 56 75, 59 66 Z"
+                  fill={isShoulders ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isShoulders ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Rear Delt */}
+                <path
+                  d="M102 53 C110 54, 120 59, 122 70 C124 80, 118 88, 112 89 C108 83, 104 75, 101 66 Z"
+                  fill={isShoulders ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isShoulders ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* --- LATISSIMUS DORSI & RHOMBOIDS (عضلات الظهر العريضة) --- */}
+                {/* Left Lat */}
+                <path
+                  d="M59 68 C68 76, 75 88, 75 112 C68 116, 62 108, 56 86 Z"
+                  fill={isBack ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isBack ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Lat */}
+                <path
+                  d="M101 68 C92 76, 85 88, 85 112 C92 116, 98 108, 104 86 Z"
+                  fill={isBack ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isBack ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* --- TRICEPS (POSTERIOR ARM - HORSESHOE) --- */}
+                {/* Left Tricep */}
+                <path
+                  d="M48 87 C44 94, 43 108, 48 116 C53 113, 56 104, 55 92 Z"
+                  fill={
+                    isTriceps
+                      ? 'url(#activeMuscle3D)'
+                      : isArms && !isBiceps
+                        ? 'url(#activeMuscle3D)'
+                        : isChestSynergyTriceps
+                          ? 'url(#synergyMuscle3D)'
+                          : 'url(#skinBase)'
+                  }
+                  filter={isTriceps ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Tricep */}
+                <path
+                  d="M112 87 C116 94, 117 108, 112 116 C107 113, 104 104, 105 92 Z"
+                  fill={
+                    isTriceps
+                      ? 'url(#activeMuscle3D)'
+                      : isArms && !isBiceps
+                        ? 'url(#activeMuscle3D)'
+                        : isChestSynergyTriceps
+                          ? 'url(#synergyMuscle3D)'
+                          : 'url(#skinBase)'
+                  }
+                  filter={isTriceps ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* Forearms Back */}
+                <path
+                  d="M46 118 C40 126, 38 142, 42 154 C46 153, 49 146, 51 130 C52 124, 49 120, 46 118 Z"
+                  fill="url(#skinShadow)"
+                />
+                <path
+                  d="M114 118 C120 126, 122 142, 118 154 C114 153, 111 146, 109 130 C108 124, 111 120, 114 118 Z"
+                  fill="url(#skinShadow)"
+                />
+
+                {/* --- LOWER BACK (ERECTOR SPINAE) --- */}
+                <path
+                  d="M74 106 L86 106 L84 126 L76 126 Z"
+                  fill={isBack ? 'url(#synergyMuscle3D)' : 'url(#skinShadow)'}
+                />
+
+                {/* --- GLUTEUS MAXIMUS (عضلات الألوية / المؤخرة) --- */}
+                {/* Left Glute */}
+                <path
+                  d="M62 125 C72 124, 78 128, 78 145 C78 158, 68 158, 60 152 C56 142, 57 132, 62 125 Z"
+                  fill={
+                    isLegsSynergyGlutes
+                      ? 'url(#synergyMuscle3D)'
+                      : 'url(#skinBase)'
+                  }
+                  filter={isLegs ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Glute */}
+                <path
+                  d="M98 125 C88 124, 82 128, 82 145 C82 158, 92 158, 100 152 C104 142, 103 132, 98 125 Z"
+                  fill={
+                    isLegsSynergyGlutes
+                      ? 'url(#synergyMuscle3D)'
+                      : 'url(#skinBase)'
+                  }
+                  filter={isLegs ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* --- HAMSTRINGS (POSTERIOR THIGHS) --- */}
+                {/* Left Hamstring */}
+                <path
+                  d="M60 155 C54 168, 55 185, 60 200 C66 202, 73 198, 76 182 C77 168, 74 158, 60 155 Z"
+                  fill={isLegs ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isLegs ? 'url(#muscleGlow)' : undefined}
+                />
+                {/* Right Hamstring */}
+                <path
+                  d="M100 155 C106 168, 105 185, 100 200 C94 202, 87 198, 84 182 C83 168, 86 158, 100 155 Z"
+                  fill={isLegs ? 'url(#activeMuscle3D)' : 'url(#skinBase)'}
+                  filter={isLegs ? 'url(#muscleGlow)' : undefined}
+                />
+
+                {/* Knee Backs */}
+                <circle cx="68" cy="207" r="5" fill="url(#skinShadow)" />
+                <circle cx="92" cy="207" r="5" fill="url(#skinShadow)" />
+
+                {/* --- CALVES (GASTROCNEMIUS DIAMOND & SOLEUS) --- */}
+                {/* Left Calf */}
+                <path
+                  d="M62 215 C54 225, 54 246, 62 262 C68 262, 72 250, 72 230 C72 220, 68 215, 62 215 Z"
+                  fill={isLegs ? 'url(#synergyMuscle3D)' : 'url(#skinBase)'}
+                />
+                {/* Right Calf */}
+                <path
+                  d="M98 215 C106 225, 106 246, 98 262 C92 262, 88 250, 88 230 C88 220, 92 215, 98 215 Z"
+                  fill={isLegs ? 'url(#synergyMuscle3D)' : 'url(#skinBase)'}
+                />
+
+                {/* Heels */}
+                <path
+                  d="M60 277 L69 277 L71 292 L58 292 Z"
+                  fill="url(#skinShadow)"
+                />
+                <path
+                  d="M100 277 L91 277 L89 292 L102 292 Z"
+                  fill="url(#skinShadow)"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className="legend-item">
-          <span className="legend-dot secondary"></span>
-          <span>العضلات المساعدة والمثبتة (Stabilizers)</span>
+
+        {/* ===== DETAILED MUSCLE INVOLVEMENT BREAKDOWN (ACCORDING TO USER SELECTION) ===== */}
+        <div className="anatomy-details-panel">
+          {/* Primary Muscles */}
+          <div className="detail-section">
+            <h5 className="section-title primary-title">
+              <span className="dot dot-primary"></span>
+              العضلات المستهدفة الأساسية (Primary Active Focus)
+            </h5>
+            <div className="cards-stack">
+              {muscleBreakdown.primary.map((m, idx) => (
+                <div key={idx} className="muscle-info-card card-primary">
+                  <div className="card-top-row">
+                    <strong className="muscle-name">{m.nameAr}</strong>
+                    <span className="involvement-pill primary-pill">
+                      {m.percentage}% تركيز رئيسي
+                    </span>
+                  </div>
+                  <div className="latin-name">{m.nameLatin}</div>
+                  <p className="muscle-desc">{m.descriptionAr}</p>
+                  {m.heads && m.heads.length > 0 && (
+                    <div className="heads-tags">
+                      <span className="heads-label">الرؤوس المفعلة:</span>
+                      {m.heads.map((head, hIdx) => (
+                        <span key={hIdx} className="head-tag">
+                          {head}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Secondary / Synergist Muscles */}
+          {muscleBreakdown.secondary.length > 0 && (
+            <div className="detail-section">
+              <h5 className="section-title secondary-title">
+                <span className="dot dot-secondary"></span>
+                العضلات المساعدة والمثبتة (Synergists & Stabilizers)
+              </h5>
+              <div className="cards-stack">
+                {muscleBreakdown.secondary.map((m, idx) => (
+                  <div key={idx} className="muscle-info-card card-secondary">
+                    <div className="card-top-row">
+                      <strong className="muscle-name">{m.nameAr}</strong>
+                      <span className="involvement-pill secondary-pill">
+                        {m.percentage}% مساعدة
+                      </span>
+                    </div>
+                    <div className="latin-name">{m.nameLatin}</div>
+                    <p className="muscle-desc">{m.descriptionAr}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

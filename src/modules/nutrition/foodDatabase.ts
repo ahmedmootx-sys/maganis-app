@@ -369,13 +369,23 @@ export function saveCustomFoodItem(item: FoodItem): void {
   }
 }
 
+const FOOD_ID_ALIASES: Record<string, string> = {
+  'canned-tuna-drained': 'tuna-water',
+  'raw-rolled-oats': 'raw-oats',
+  'whole-eggs-boiled': 'egg-whole',
+  'cottage-cheese-kareesh': 'cottage-cheese',
+  'boiled-potatoes': 'boiled-potato',
+  'whey-protein-isolate': 'whey-protein',
+}
+
 export function getAllFoodItems(): FoodItem[] {
   const custom = getCustomFoodItems()
   return [...custom, ...FOOD_DATABASE]
 }
 
 export function getFoodItemById(id: string): FoodItem | undefined {
-  return getAllFoodItems().find((item) => item.id === id)
+  const resolvedId = FOOD_ID_ALIASES[id] || id
+  return getAllFoodItems().find((item) => item.id === resolvedId)
 }
 
 export function calculateIngredientMacros(

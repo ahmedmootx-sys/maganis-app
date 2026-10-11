@@ -236,15 +236,7 @@ export function ExercisePickerModal({
                           {ex.name || ex.nameAr}
                         </strong>
                         {ex.targetSubMuscleAr && (
-                          <span
-                            className="chip"
-                            style={{
-                              fontSize: '11px',
-                              background: '#fef3c7',
-                              color: '#92400e',
-                              padding: '2px 6px',
-                            }}
-                          >
+                          <span className="submuscle-badge">
                             🎯 {ex.targetSubMuscleAr}
                           </span>
                         )}

@@ -8,6 +8,8 @@ const STATIC_ASSETS = [
   BASE,
   BASE + 'index.html',
   BASE + 'manifest.webmanifest',
+  BASE + 'branding/app-icon.png',
+  BASE + 'branding/app-icon-maskable.png',
   BASE + 'branding/app-icon-outer.png',
   BASE + 'branding/maganis-mascot-inner.png',
 ]

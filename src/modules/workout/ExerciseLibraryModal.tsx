@@ -435,16 +435,7 @@ export function ExerciseLibraryModal({
                         {/* Sub-Muscle Specificity Badge */}
                         {ex.targetSubMuscleAr && (
                           <div style={{ marginBottom: '6px' }}>
-                            <span
-                              className="chip"
-                              style={{
-                                background: '#fef3c7',
-                                color: '#92400e',
-                                fontWeight: 700,
-                                fontSize: '11px',
-                                padding: '2px 8px',
-                              }}
-                            >
+                            <span className="submuscle-badge">
                               🎯 {ex.targetSubMuscleAr}
                             </span>
                           </div>
