@@ -7,9 +7,39 @@
   --accent-soft: #fff7ed;
   --accent-gold: #f59e0b;
   --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --card-subtle: #f8fafc;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --bubble-bg: #ffffff;
+  --bubble-border: #fed7aa;
   --danger: #b91c1c;
   --danger-soft: #fef2f2;
   --danger-line: #fecaca;
+  --primary: #f95700;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --ink: #f8fafc;
+  --muted: #94a3b8;
+  --line: #334155;
+  --accent: #ff6b1a;
+  --accent-soft: #271a0e;
+  --accent-gold: #fbbf24;
+  --bg: #0b0f19;
+  --card-bg: #151e2e;
+  --card-subtle: #1e293b;
+  --input-bg: #1e293b;
+  --input-border: #475569;
+  --nav-bg: rgba(15, 23, 42, 0.95);
+  --bubble-bg: #1e293b;
+  --bubble-border: #9a3412;
+  --danger: #ef4444;
+  --danger-soft: #381616;
+  --danger-line: #7f1d1d;
+  --primary: #ff6b1a;
 }
 
 * {
@@ -2381,4 +2411,124 @@ button.ghost-danger {
 .sync-status-badge.inactive {
   background: #f1f5f9;
   color: #64748b;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  background: var(--card-bg, #ffffff);
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 700;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.05);
+  border-color: var(--accent);
+}
+
+/* Dark Mode Overrides */
+[data-theme='dark'] .card,
+[data-theme='dark'] .modal-content,
+[data-theme='dark'] .live-sync-card {
+  background-color: var(--card-bg);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+[data-theme='dark']
+  button:not(.button-primary):not(.danger):not(.chip-btn):not(
+    .bottom-nav__item
+  ) {
+  background-color: var(--card-bg);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+[data-theme='dark'] input,
+[data-theme='dark'] select,
+[data-theme='dark'] textarea,
+[data-theme='dark'] .field-input {
+  background-color: var(--input-bg);
+  color: var(--ink);
+  border-color: var(--input-border);
+}
+
+[data-theme='dark'] .bottom-nav {
+  background: var(--nav-bg);
+  border-top-color: var(--line);
+}
+
+[data-theme='dark'] .maganis-speech-bubble {
+  background-color: var(--bubble-bg);
+  border-color: var(--bubble-border);
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .maganis-coach-card {
+  border-color: #7c2d12;
+  background: linear-gradient(135deg, #1c1917 0%, #292524 100%);
+}
+
+[data-theme='dark'] .highlight-box {
+  background-color: var(--card-bg) !important;
+  border-color: var(--line) !important;
+  color: var(--ink);
+}
+
+[data-theme='dark'] .weekly-plan__day-card {
+  background-color: var(--card-bg);
+  border-color: var(--line);
+}
+
+[data-theme='dark'] .option-btn,
+[data-theme='dark'] .chip-btn {
+  background-color: var(--card-bg);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+[data-theme='dark'] .option-btn.selected,
+[data-theme='dark'] .chip-btn.selected {
+  background-color: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+[data-theme='dark'] .meal-portion-box,
+[data-theme='dark'] .scientific-tip-card {
+  background-color: var(--card-subtle);
+  color: var(--ink);
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  color: var(--ink);
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.08);
+  border-color: var(--accent);
 }

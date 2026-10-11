@@ -1,5 +1,9 @@
 import type { Storage } from '../../lib/storage.ts'
-import type { CustomExercise, WorkoutProgram } from '../shared/types.ts'
+import type {
+  CustomExercise,
+  SavedWorkoutProgram,
+  WorkoutProgram,
+} from '../shared/types.ts'
 
 export interface WorkoutStore {
   saveProgram(program: WorkoutProgram): void
@@ -12,11 +16,19 @@ export interface WorkoutStore {
   getDeletedExerciseIds(): string[]
   deleteExercise(id: string): void
   restoreExercise(id: string): void
+  getSavedPrograms(): SavedWorkoutProgram[]
+  saveProgramToVault(
+    title: string,
+    program: WorkoutProgram,
+  ): SavedWorkoutProgram
+  deleteSavedProgram(id: string): void
+  renameSavedProgram(id: string, newTitle: string): void
 }
 
 const PROGRAM_KEY = 'workout.program'
 const CUSTOM_EXERCISES_KEY = 'workout.custom-exercises'
 const DELETED_EXERCISES_KEY = 'workout.deleted-exercises'
+const SAVED_PROGRAMS_KEY = 'workout.saved-programs'
 
 export function createWorkoutStore(storage: Storage): WorkoutStore {
   function saveProgram(program: WorkoutProgram): void {
@@ -75,6 +87,43 @@ export function createWorkoutStore(storage: Storage): WorkoutStore {
     )
   }
 
+  function getSavedPrograms(): SavedWorkoutProgram[] {
+    return storage.get<SavedWorkoutProgram[]>(SAVED_PROGRAMS_KEY, [])
+  }
+
+  function saveProgramToVault(
+    title: string,
+    program: WorkoutProgram,
+  ): SavedWorkoutProgram {
+    const existing = getSavedPrograms()
+    const newEntry: SavedWorkoutProgram = {
+      id: `vault-prog-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      title: title.trim() || `جدول ${existing.length + 1}`,
+      savedAt: Date.now(),
+      program: JSON.parse(JSON.stringify(program)),
+    }
+    storage.set(SAVED_PROGRAMS_KEY, [newEntry, ...existing])
+    return newEntry
+  }
+
+  function deleteSavedProgram(id: string): void {
+    const existing = getSavedPrograms()
+    storage.set(
+      SAVED_PROGRAMS_KEY,
+      existing.filter((p) => p.id !== id),
+    )
+  }
+
+  function renameSavedProgram(id: string, newTitle: string): void {
+    const existing = getSavedPrograms()
+    storage.set(
+      SAVED_PROGRAMS_KEY,
+      existing.map((p) =>
+        p.id === id ? { ...p, title: newTitle.trim() || p.title } : p,
+      ),
+    )
+  }
+
   return {
     saveProgram,
     loadProgram,
@@ -86,5 +135,9 @@ export function createWorkoutStore(storage: Storage): WorkoutStore {
     getDeletedExerciseIds,
     deleteExercise,
     restoreExercise,
+    getSavedPrograms,
+    saveProgramToVault,
+    deleteSavedProgram,
+    renameSavedProgram,
   }
 }

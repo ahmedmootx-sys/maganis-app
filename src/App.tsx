@@ -15,6 +15,8 @@ import type {
   BodyLogEntry,
   DayNote,
   BackupData,
+  SavedWorkoutProgram,
+  CustomExercise,
 } from './modules/shared/types.ts'
 import type { UserProfile } from './modules/onboarding/types.ts'
 import { GOALS } from './modules/onboarding/types.ts'
@@ -22,6 +24,8 @@ import { ACTIVITY_LEVELS } from './modules/onboarding/types.ts'
 import { WeeklyPlanView } from './modules/workout/WeeklyPlanView.tsx'
 import { CustomExerciseBuilder } from './modules/workout/CustomExerciseBuilder.tsx'
 import { ExerciseLibraryModal } from './modules/workout/ExerciseLibraryModal.tsx'
+import { CustomScheduleModal } from './modules/workout/CustomScheduleModal.tsx'
+import { ProgramVaultModal } from './modules/workout/ProgramVaultModal.tsx'
 import { ActiveWorkoutSession } from './modules/workout/ActiveWorkoutSession.tsx'
 import { generateProgram } from './modules/workout/programGenerator.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
@@ -31,7 +35,6 @@ import { TrainingCalendar } from './modules/tracking/TrainingCalendar.tsx'
 import { Reports } from './modules/reports/Reports.tsx'
 import { BackupPanel } from './modules/backup/BackupPanel.tsx'
 import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
-import type { CustomExercise } from './modules/shared/types.ts'
 import './styles/app.css'
 
 type TabId =
@@ -108,6 +111,36 @@ export function App({ config }: AppProps) {
     },
   )
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false)
+  const [showCustomScheduleModal, setShowCustomScheduleModal] = useState(false)
+  const [showProgramVaultModal, setShowProgramVaultModal] = useState(false)
+  const [savedProgramsList, setSavedProgramsList] = useState<
+    SavedWorkoutProgram[]
+  >(() => workoutStore.getSavedPrograms())
+
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    try {
+      const stored = localStorage.getItem('maganis:theme')
+      if (stored === 'dark' || stored === 'light') return stored
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+    } catch {
+      return 'light'
+    }
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    try {
+      localStorage.setItem('maganis:theme', theme)
+    } catch {
+      // ignore
+    }
+  }, [theme])
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }, [])
 
   // --- Handlers ---
 
@@ -125,9 +158,11 @@ export function App({ config }: AppProps) {
     storage.remove('tracking.notes')
     storage.remove('workout.custom-exercises')
     storage.remove('workout.deleted-exercises')
+    storage.remove('workout.program-vault')
     storage.remove('backup.last-export')
     setDeletedExerciseIds([])
     setCustomExercisesList([])
+    setSavedProgramsList([])
     setProfile(null)
     setEditing(false)
     setProgram(null)
@@ -141,6 +176,12 @@ export function App({ config }: AppProps) {
 
   const handleGenerateProgram = useCallback(() => {
     if (!profile) return
+    if (program && (program.isLocked || program.isCustom)) {
+      const confirmed = window.confirm(
+        '⚠️ لديك جدول تدريبي مخصص أو مقفل! هل أنت متأكد من إنشاء جدول تلقائي جديد واستبدال الحالي؟\n(ننصح بحفظ جدولك الحالي في "حافظة الجداول 📁" أولاً)',
+      )
+      if (!confirmed) return
+    }
     const p = generateProgram({
       goal: profile.primaryGoal,
       trainingDaysPerWeek: profile.trainingDaysPerWeek,
@@ -150,7 +191,59 @@ export function App({ config }: AppProps) {
     })
     workoutStore.saveProgram(p)
     setProgram(p)
-  }, [profile, workoutStore])
+  }, [profile, program, workoutStore])
+
+  const handleSaveCustomSchedule = useCallback(
+    (customProgram: WorkoutProgram) => {
+      workoutStore.saveProgram(customProgram)
+      setProgram(customProgram)
+      setShowCustomScheduleModal(false)
+    },
+    [workoutStore],
+  )
+
+  const handleDeleteProgram = useCallback(() => {
+    const confirmed = window.confirm(
+      'هل أنت متأكد من حذف الجدول التدريبي بالكامل؟ يمكنك إنشاء جدول جديد أو استرجاعه من الحافظة في أي وقت.',
+    )
+    if (!confirmed) return
+    workoutStore.clearProgram()
+    setProgram(null)
+  }, [workoutStore])
+
+  const handleSaveCurrentToVault = useCallback(
+    (title: string) => {
+      if (!program) return
+      workoutStore.saveProgramToVault(title, program)
+      setSavedProgramsList(workoutStore.getSavedPrograms())
+    },
+    [workoutStore, program],
+  )
+
+  const handleApplyProgramFromVault = useCallback(
+    (saved: SavedWorkoutProgram) => {
+      workoutStore.saveProgram(saved.program)
+      setProgram(saved.program)
+      setShowProgramVaultModal(false)
+    },
+    [workoutStore],
+  )
+
+  const handleDeleteFromVault = useCallback(
+    (id: string) => {
+      workoutStore.deleteSavedProgram(id)
+      setSavedProgramsList(workoutStore.getSavedPrograms())
+    },
+    [workoutStore],
+  )
+
+  const handleRenameInVault = useCallback(
+    (id: string, newTitle: string) => {
+      workoutStore.renameSavedProgram(id, newTitle)
+      setSavedProgramsList(workoutStore.getSavedPrograms())
+    },
+    [workoutStore],
+  )
 
   const handleSaveSession = useCallback(
     (session: TrackingSession) => {
@@ -320,13 +413,23 @@ export function App({ config }: AppProps) {
       <div className="app">
         <header className="app-header">
           <h1 data-testid="app-title">{config.appName}</h1>
-          <span
-            className="env-badge"
-            data-testid="env-badge"
-            data-env={config.appEnv}
-          >
-            {config.appEnv}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <button
+              type="button"
+              className="theme-toggle-btn"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'الوضع المضيء' : 'الوضع الليلي'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+            <span
+              className="env-badge"
+              data-testid="env-badge"
+              data-env={config.appEnv}
+            >
+              {config.appEnv}
+            </span>
+          </div>
         </header>
         <main className="app-main">
           <OnboardingWizard
@@ -369,6 +472,18 @@ export function App({ config }: AppProps) {
               <button type="button" onClick={handleGenerateProgram}>
                 {program ? '🔄 إنشاء برنامج جديد' : '⚡ إنشاء برنامج تدريبي'}
               </button>
+              <button
+                type="button"
+                onClick={() => setShowCustomScheduleModal(true)}
+              >
+                🗓️ جدولي بالأيام
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowProgramVaultModal(true)}
+              >
+                📁 حافظة الجداول ({savedProgramsList.length})
+              </button>
               <button type="button" onClick={() => setShowCustomBuilder(true)}>
                 ➕ تمرين مخصص
               </button>
@@ -405,6 +520,26 @@ export function App({ config }: AppProps) {
               />
             )}
 
+            {showCustomScheduleModal && profile && (
+              <CustomScheduleModal
+                primaryGoal={profile.primaryGoal}
+                onSaveSchedule={handleSaveCustomSchedule}
+                onClose={() => setShowCustomScheduleModal(false)}
+              />
+            )}
+
+            {showProgramVaultModal && (
+              <ProgramVaultModal
+                savedPrograms={savedProgramsList}
+                activeProgram={program}
+                onSaveCurrentProgram={handleSaveCurrentToVault}
+                onApplyProgram={handleApplyProgramFromVault}
+                onDeleteProgram={handleDeleteFromVault}
+                onRenameProgram={handleRenameInVault}
+                onClose={() => setShowProgramVaultModal(false)}
+              />
+            )}
+
             {showLogger && (
               <SessionLogger
                 programDay={todayProgramDay}
@@ -425,12 +560,60 @@ export function App({ config }: AppProps) {
                   workoutStore.saveProgram(updated)
                   setProgram(updated)
                 }}
+                onDeleteProgram={handleDeleteProgram}
+                onOpenScheduleModal={() => setShowCustomScheduleModal(true)}
+                onOpenVaultModal={() => setShowProgramVaultModal(true)}
               />
             ) : (
-              <div className="card">
-                <p className="muted">
-                  لم يتم إنشاء برنامج بعد. اضغط "إنشاء برنامج تدريبي".
+              <div
+                className="card"
+                style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}
+              >
+                <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>
+                  📋
+                </div>
+                <h3 style={{ margin: '0 0 0.5rem 0' }}>
+                  لا يوجد جدول تدريبي نشط حالياً
+                </h3>
+                <p
+                  className="muted"
+                  style={{
+                    maxWidth: '440px',
+                    margin: '0 auto 1.5rem auto',
+                    lineHeight: '1.6',
+                  }}
+                >
+                  لقد قمت بحذف الجدول أو لم يتم إنشاؤه بعد. يمكنك تصميم جدولك
+                  الخاص وتحديد أيام تدريبك، أو استرجاع جدول محفوظ، أو توليد جدول
+                  آلي.
                 </p>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '0.75rem',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <button
+                    type="button"
+                    className="primary"
+                    onClick={() => setShowCustomScheduleModal(true)}
+                  >
+                    🗓️ تصميم جدول مخصص بالأيام
+                  </button>
+                  {savedProgramsList.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowProgramVaultModal(true)}
+                    >
+                      📁 استرجاع من الحافظة ({savedProgramsList.length})
+                    </button>
+                  )}
+                  <button type="button" onClick={handleGenerateProgram}>
+                    ⚡ توليد برنامج تلقائي
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -516,6 +699,37 @@ export function App({ config }: AppProps) {
             />
 
             <div className="card">
+              <h2>المظهر (Dark Mode)</h2>
+              <p className="muted">
+                اختر نمط الألوان المناسب لعينيك أثناء أداء التمارين والتصفح:
+              </p>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '0.75rem',
+                  marginTop: '0.75rem',
+                }}
+              >
+                <button
+                  type="button"
+                  className={theme === 'light' ? 'primary' : ''}
+                  onClick={() => setTheme('light')}
+                  style={{ flex: 1, padding: '0.75rem' }}
+                >
+                  ☀️ الوضع المضيء (فاتح)
+                </button>
+                <button
+                  type="button"
+                  className={theme === 'dark' ? 'primary' : ''}
+                  onClick={() => setTheme('dark')}
+                  style={{ flex: 1, padding: '0.75rem' }}
+                >
+                  🌙 الوضع الليلي (Dark Mode)
+                </button>
+              </div>
+            </div>
+
+            <div className="card">
               <h2>عن التطبيق</h2>
               <p>مجانص — الإصدار 0.2.0</p>
               <p className="muted">مدربك الشخصي وخبير التغذية على جهازك.</p>
@@ -577,13 +791,28 @@ export function App({ config }: AppProps) {
             </span>
           </div>
         </div>
-        <span
-          className="env-badge"
-          data-testid="env-badge"
-          data-env={config.appEnv}
-        >
-          {config.appEnv}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            title={
+              theme === 'dark'
+                ? 'تفعيل الوضع المضيء'
+                : 'تفعيل الوضع الليلي (Dark Mode)'
+            }
+            aria-label="تبديل الوضع الليلي والنهاري"
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+          <span
+            className="env-badge"
+            data-testid="env-badge"
+            data-env={config.appEnv}
+          >
+            {config.appEnv}
+          </span>
+        </div>
       </header>
 
       <main className="app-main">{renderContent()}</main>

@@ -1,4 +1,5 @@
 import type { Goal } from '../onboarding/types'
+export type { Goal }
 
 export type MuscleGroup =
   'chest' | 'back' | 'shoulders' | 'arms' | 'legs' | 'core'
@@ -78,6 +79,16 @@ export interface WorkoutProgram {
   trainingDaysPerWeek: number
   splitType?: WorkoutSplitType
   days: ProgramDay[]
+  isCustom?: boolean
+  isLocked?: boolean
+}
+
+export interface SavedWorkoutProgram {
+  id: string
+  title: string
+  savedAt: number
+  program: WorkoutProgram
+  notes?: string
 }
 
 export interface SessionExercise {

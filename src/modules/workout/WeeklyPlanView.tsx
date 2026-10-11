@@ -21,7 +21,10 @@ interface WeeklyPlanViewProps {
   customExercises?: CustomExercise[]
   userInjuries?: string[]
   onUpdateProgram?: (updatedProgram: WorkoutProgram) => void
+  onDeleteProgram?: () => void
   onStartRoutine?: (day: ProgramDay) => void
+  onOpenScheduleModal?: () => void
+  onOpenVaultModal?: () => void
 }
 
 export function WeeklyPlanView({
@@ -29,7 +32,10 @@ export function WeeklyPlanView({
   customExercises = [],
   userInjuries = [],
   onUpdateProgram,
+  onDeleteProgram,
   onStartRoutine,
+  onOpenScheduleModal,
+  onOpenVaultModal,
 }: WeeklyPlanViewProps) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null,
@@ -41,6 +47,10 @@ export function WeeklyPlanView({
   } | null>(null)
   const [addingToDayIndex, setAddingToDayIndex] = useState<number | null>(null)
   const [homeToast, setHomeToast] = useState<string | null>(null)
+  const [editingFocusDayIndex, setEditingFocusDayIndex] = useState<
+    number | null
+  >(null)
+  const [editingFocusText, setEditingFocusText] = useState('')
 
   function handleOpenDetail(exerciseId: string) {
     const custom = customExercises.find((c) => c.id === exerciseId)
@@ -81,6 +91,28 @@ export function WeeklyPlanView({
     onUpdateProgram({ ...program, days: newDays })
   }
 
+  function handleMoveExercise(
+    dayIndex: number,
+    fromIdx: number,
+    direction: 'up' | 'down',
+  ) {
+    if (!onUpdateProgram) return
+    const targetIdx = direction === 'up' ? fromIdx - 1 : fromIdx + 1
+
+    const newDays = program.days.map((day) => {
+      if (day.dayIndex !== dayIndex) return day
+      if (targetIdx < 0 || targetIdx >= day.exercises.length) return day
+
+      const updated = [...day.exercises]
+      const temp = updated[fromIdx]
+      updated[fromIdx] = updated[targetIdx]
+      updated[targetIdx] = temp
+      return { ...day, exercises: updated }
+    })
+
+    onUpdateProgram({ ...program, days: newDays })
+  }
+
   function handleAddExerciseToDay(dayIndex: number, newExId: string) {
     if (!onUpdateProgram || !newExId) return
     const newDays = program.days.map((day) => {
@@ -114,6 +146,44 @@ export function WeeklyPlanView({
     setTimeout(() => setHomeToast(null), 3500)
   }
 
+  function handleToggleLock() {
+    if (!onUpdateProgram) return
+    const isNowLocked = !program.isLocked
+    onUpdateProgram({
+      ...program,
+      isLocked: isNowLocked,
+    })
+    setHomeToast(
+      isNowLocked
+        ? '🔒 تم قفل الجدول لحمايته من أي استبدال عشوائي!'
+        : '🔓 تم فتح قفل الجدول للتعديل.',
+    )
+    setTimeout(() => setHomeToast(null), 2500)
+  }
+
+  function handleSaveDayFocus(dayIndex: number) {
+    if (!onUpdateProgram) return
+    const newDays = program.days.map((d) =>
+      d.dayIndex === dayIndex
+        ? { ...d, focus: editingFocusText.trim() || d.focus }
+        : d,
+    )
+    onUpdateProgram({ ...program, days: newDays })
+    setEditingFocusDayIndex(null)
+  }
+
+  function handlePromptDeleteProgram() {
+    if (
+      window.confirm(
+        '⚠️ هل أنت متأكد من حذف الجدول الحالي بالكامل والبدء من الصفر؟ (يمكنك حفظه في الحافظة أولاً إذا أردت الرجوع إليه).',
+      )
+    ) {
+      if (onDeleteProgram) {
+        onDeleteProgram()
+      }
+    }
+  }
+
   return (
     <div className="weekly-plan" data-testid="weekly-plan-view">
       {homeToast && (
@@ -138,6 +208,7 @@ export function WeeklyPlanView({
         </div>
       )}
 
+      {/* Program Header with Controls & Protection */}
       <div className="weekly-plan__header">
         <div
           style={{
@@ -149,62 +220,213 @@ export function WeeklyPlanView({
           }}
         >
           <div>
-            <h2 className="weekly-plan__title" style={{ margin: 0 }}>
-              🗓️ الخطة الأسبوعية المخصصة
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h2 className="weekly-plan__title" style={{ margin: 0 }}>
+                🗓️ الخطة التدريبية
+              </h2>
+              {program.isLocked ? (
+                <span
+                  style={{
+                    background: '#15803d',
+                    color: '#ffffff',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: '999px',
+                  }}
+                >
+                  🔒 محمي من التغيير
+                </span>
+              ) : (
+                <span
+                  style={{
+                    background: 'var(--accent-soft)',
+                    color: 'var(--accent)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: '999px',
+                  }}
+                >
+                  ✏️ قيد التعديل
+                </span>
+              )}
+            </div>
             <p className="muted" style={{ margin: '4px 0 0' }}>
-              نظام التمرين:{' '}
-              <strong>
-                {WORKOUT_SPLIT_LABELS[program.splitType || 'ppl'] ||
-                  program.splitType}
-              </strong>{' '}
-              (5-6 تمارين يومياً)
+              {program.days.length} أيام تمرين أسبوعياً •{' '}
+              {program.days.reduce((acc, d) => acc + d.exercises.length, 0)}{' '}
+              تمرين إجمالي
             </p>
           </div>
 
-          {onUpdateProgram && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="muted-small">تغيير النظام:</span>
-              <select
-                value={program.splitType || 'ppl'}
-                onChange={(e) => {
-                  const newSplit = e.target.value as WorkoutSplitType
-                  const newProg = generateProgram({
-                    goal: program.primaryGoal,
-                    trainingDaysPerWeek: program.trainingDaysPerWeek,
-                    splitType: newSplit,
-                    injuries: userInjuries,
-                    customExercises,
-                  })
-                  onUpdateProgram(newProg)
-                }}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  border: '1.5px solid var(--primary)',
-                }}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              flexWrap: 'wrap',
+            }}
+          >
+            {onOpenScheduleModal && (
+              <button
+                type="button"
+                className="chip-btn"
+                onClick={onOpenScheduleModal}
+                style={{ fontWeight: 700, fontSize: '12px' }}
+                title="تحديد أيام الأسبوع وإعادة ترتيب الجدول"
               >
-                {Object.entries(WORKOUT_SPLIT_LABELS).map(([val, label]) => (
-                  <option key={val} value={val}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+                🗓️ تخصيص الأيام
+              </button>
+            )}
+
+            {onOpenVaultModal && (
+              <button
+                type="button"
+                className="chip-btn"
+                onClick={onOpenVaultModal}
+                style={{ fontWeight: 700, fontSize: '12px' }}
+                title="فتح حافظة الجداول المحفوظة"
+              >
+                📁 الحافظة
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="chip-btn"
+              onClick={handleToggleLock}
+              style={{
+                fontWeight: 700,
+                fontSize: '12px',
+                borderColor: program.isLocked ? '#16a34a' : 'var(--line)',
+                color: program.isLocked ? '#16a34a' : 'var(--ink)',
+              }}
+              title="قفل أو فتح تعديل الجدول"
+            >
+              {program.isLocked ? '🔓 إلغاء القفل' : '🔒 قفل الجدول'}
+            </button>
+
+            {onDeleteProgram && (
+              <button
+                type="button"
+                className="ghost-danger tiny"
+                onClick={handlePromptDeleteProgram}
+                title="حذف الجدول الحالي بالكامل"
+              >
+                🗑️ حذف الجدول
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Change Split Type Dropdown (only when not custom-locked) */}
+        {!program.isCustom && onUpdateProgram && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginTop: '10px',
+            }}
+          >
+            <span className="muted-small">تغيير النظام التلقائي:</span>
+            <select
+              value={program.splitType || 'ppl'}
+              onChange={(e) => {
+                const newSplit = e.target.value as WorkoutSplitType
+                const newProg = generateProgram({
+                  goal: program.primaryGoal,
+                  trainingDaysPerWeek: program.trainingDaysPerWeek,
+                  splitType: newSplit,
+                  injuries: userInjuries,
+                  customExercises,
+                })
+                onUpdateProgram(newProg)
+              }}
+              style={{
+                padding: '4px 8px',
+                borderRadius: '6px',
+                fontSize: '12.5px',
+                border: '1px solid var(--line)',
+              }}
+            >
+              {Object.entries(WORKOUT_SPLIT_LABELS).map(([val, label]) => (
+                <option key={val} value={val}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
+      {/* Days List */}
       <div className="weekly-plan__days">
         {program.days.map((day) => (
           <div key={day.dayIndex} className="card weekly-plan__day-card">
             <div className="weekly-plan__day-header">
               <div className="day-title-box">
                 <h3 className="weekly-plan__day-label">{day.labelAr}</h3>
-                <span className="chip weekly-plan__day-focus">{day.focus}</span>
+                {editingFocusDayIndex === day.dayIndex ? (
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      marginRight: '8px',
+                    }}
+                  >
+                    <input
+                      type="text"
+                      value={editingFocusText}
+                      onChange={(e) => setEditingFocusText(e.target.value)}
+                      style={{ padding: '2px 6px', fontSize: '12px' }}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      className="button-primary tiny"
+                      onClick={() => handleSaveDayFocus(day.dayIndex)}
+                    >
+                      ✓
+                    </button>
+                    <button
+                      type="button"
+                      className="ghost tiny"
+                      onClick={() => setEditingFocusDayIndex(null)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    <span className="chip weekly-plan__day-focus">
+                      {day.focus}
+                    </span>
+                    <button
+                      type="button"
+                      className="ghost tiny"
+                      style={{
+                        padding: '2px 4px',
+                        fontSize: '11px',
+                        border: 'none',
+                      }}
+                      onClick={() => {
+                        setEditingFocusDayIndex(day.dayIndex)
+                        setEditingFocusText(day.focus)
+                      }}
+                      title="تعديل مسمى هذا اليوم"
+                    >
+                      ✏️
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div
@@ -246,126 +468,158 @@ export function WeeklyPlanView({
                     <button
                       type="button"
                       className="ghost-primary tiny"
-                      onClick={() =>
-                        setAddingToDayIndex(
-                          addingToDayIndex === day.dayIndex
-                            ? null
-                            : day.dayIndex,
-                        )
-                      }
+                      onClick={() => setAddingToDayIndex(day.dayIndex)}
                     >
-                      ➕ إضافة تمرين
+                      + إضافة تمرين
                     </button>
                   </>
                 )}
               </div>
             </div>
 
-            <ul className="weekly-plan__exercise-list">
-              {day.exercises.map((pe, idx) => {
-                const custom = customExercises.find(
-                  (c) => c.id === pe.exerciseId,
-                )
-                const ex = custom ?? getExerciseById(pe.exerciseId)
-                const exerciseName =
-                  ex?.nameAr ??
-                  (pe.exerciseId.length > 20 ? 'تمرين مخصص' : pe.exerciseId)
+            {day.exercises.length === 0 ? (
+              <div
+                style={{
+                  padding: '20px',
+                  textAlign: 'center',
+                  color: 'var(--muted)',
+                  fontSize: '13px',
+                  border: '1px dashed var(--line)',
+                  borderRadius: '8px',
+                  margin: '10px 0',
+                }}
+              >
+                لا توجد تمارين مضافة لهذا اليوم بعد.{' '}
+                <button
+                  type="button"
+                  className="ghost-primary tiny"
+                  style={{ display: 'inline-block', margin: '0 4px' }}
+                  onClick={() => setAddingToDayIndex(day.dayIndex)}
+                >
+                  + اضغط هنا لإضافة تمارين مصورة
+                </button>
+              </div>
+            ) : (
+              <ul className="weekly-plan__exercise-list">
+                {day.exercises.map((pe, idx) => {
+                  const custom = customExercises.find(
+                    (c) => c.id === pe.exerciseId,
+                  )
+                  const ex = custom ?? getExerciseById(pe.exerciseId)
+                  if (!ex) return null
 
-                return (
-                  <li key={idx} className="weekly-plan__exercise-item">
-                    <div
-                      className="weekly-plan__exercise-main"
-                      onClick={() => handleOpenDetail(pe.exerciseId)}
-                      style={{ cursor: 'pointer' }}
+                  return (
+                    <li
+                      key={`${pe.exerciseId}-${idx}`}
+                      className="weekly-plan__exercise-item"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '8px',
+                        padding: '10px 12px',
+                        borderRadius: '10px',
+                        background: 'var(--card-subtle)',
+                        border: '1px solid var(--line)',
+                        marginBottom: '8px',
+                      }}
                     >
-                      <ExerciseVisual
-                        category={ex?.category ?? 'chest'}
-                        exerciseId={pe.exerciseId}
-                        exerciseName={exerciseName}
-                        imageUrl={ex?.imageUrl}
-                        size="small"
-                      />
-                      <div className="exercise-text-meta">
-                        <span className="weekly-plan__exercise-name">
-                          {ex?.name || exerciseName}
-                        </span>
-                        {ex?.name && ex?.nameAr && ex.name !== ex.nameAr && (
-                          <div
-                            style={{
-                              fontSize: '12px',
-                              color: 'var(--primary)',
-                              fontWeight: 600,
-                              marginTop: '2px',
-                            }}
-                          >
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          flex: 1,
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => handleOpenDetail(ex.id)}
+                      >
+                        <ExerciseVisual
+                          category={ex.category}
+                          exerciseId={ex.id}
+                          exerciseName={ex.nameAr}
+                          size="small"
+                        />
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: '13.5px' }}>
                             {ex.nameAr}
                           </div>
-                        )}
-                        <span className="muted weekly-plan__exercise-meta">
-                          <strong>{pe.sets}</strong> مجموعات ×{' '}
-                          <strong>
-                            {pe.reps === 0
-                              ? 'أقصى عدد (AMRAP)'
-                              : `${pe.reps} تكرار`}
-                          </strong>
-                          {' • '}
-                          <span className="rest-chip">
-                            ⏳ راحة {pe.restSeconds} ثانية
-                          </span>
-                        </span>
+                          <div
+                            style={{ fontSize: '12px', color: 'var(--muted)' }}
+                          >
+                            {pe.sets} مجموعات × {pe.reps} تكرار • راحة{' '}
+                            {pe.restSeconds}ث
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="exercise-item-actions">
-                      <button
-                        type="button"
-                        className="ghost-primary tiny"
-                        title="عرض الشرح التفصيلي والصورة"
-                        onClick={() => handleOpenDetail(pe.exerciseId)}
+                      <div
+                        style={{
+                          display: 'flex',
+                          gap: '4px',
+                          alignItems: 'center',
+                        }}
                       >
-                        ℹ️ الشرح والصورة
-                      </button>
-
-                      {onUpdateProgram && (
-                        <>
-                          <button
-                            type="button"
-                            className="ghost tiny"
-                            title="استبدال التمرين بآخر"
-                            onClick={() =>
-                              setSwapTarget({
-                                dayIndex: day.dayIndex,
-                                exerciseIndex: idx,
-                                exercise: ex ?? {
-                                  id: pe.exerciseId,
-                                  nameAr: exerciseName,
-                                  descriptionAr: '',
-                                  category: 'chest',
-                                  difficulty: 'beginner',
-                                  equipment: 'bodyweight',
-                                },
-                              })
-                            }
-                          >
-                            🔄 استبدال
-                          </button>
-                          <button
-                            type="button"
-                            className="ghost-danger tiny"
-                            title="حذف التمرين"
-                            onClick={() =>
-                              handleRemoveExercise(day.dayIndex, idx)
-                            }
-                          >
-                            🗑️
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
+                        {onUpdateProgram && (
+                          <>
+                            {idx > 0 && (
+                              <button
+                                type="button"
+                                className="ghost tiny"
+                                style={{ padding: '2px 6px', fontSize: '11px' }}
+                                onClick={() =>
+                                  handleMoveExercise(day.dayIndex, idx, 'up')
+                                }
+                                title="تحريك لأعلى"
+                              >
+                                ▲
+                              </button>
+                            )}
+                            {idx < day.exercises.length - 1 && (
+                              <button
+                                type="button"
+                                className="ghost tiny"
+                                style={{ padding: '2px 6px', fontSize: '11px' }}
+                                onClick={() =>
+                                  handleMoveExercise(day.dayIndex, idx, 'down')
+                                }
+                                title="تحريك لأسفل"
+                              >
+                                ▼
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              className="ghost tiny"
+                              onClick={() =>
+                                setSwapTarget({
+                                  dayIndex: day.dayIndex,
+                                  exerciseIndex: idx,
+                                  exercise: ex,
+                                })
+                              }
+                              title="استبدال بتمرين آخر"
+                            >
+                              🔄 استبدال
+                            </button>
+                            <button
+                              type="button"
+                              className="ghost-danger tiny"
+                              onClick={() =>
+                                handleRemoveExercise(day.dayIndex, idx)
+                              }
+                              title="حذف هذا التمرين"
+                            >
+                              ✕
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
           </div>
         ))}
       </div>
@@ -375,7 +629,7 @@ export function WeeklyPlanView({
         <ExercisePickerModal
           dayLabelAr={
             program.days.find((d) => d.dayIndex === addingToDayIndex)
-              ?.labelAr ?? ''
+              ?.labelAr || 'اليوم التدريبي'
           }
           customExercises={customExercises}
           userInjuries={userInjuries}
@@ -386,15 +640,7 @@ export function WeeklyPlanView({
         />
       )}
 
-      {/* Detail Modal */}
-      {selectedExercise && (
-        <ExerciseDetailModal
-          exercise={selectedExercise}
-          onClose={() => setSelectedExercise(null)}
-        />
-      )}
-
-      {/* Swap Modal */}
+      {/* Exercise Swap Modal */}
       {swapTarget && (
         <ExerciseSwapModal
           currentExercise={swapTarget.exercise}
@@ -402,6 +648,14 @@ export function WeeklyPlanView({
           userInjuries={userInjuries}
           onSelectSwap={handleSwapExercise}
           onClose={() => setSwapTarget(null)}
+        />
+      )}
+
+      {/* Exercise Detail Modal */}
+      {selectedExercise && (
+        <ExerciseDetailModal
+          exercise={selectedExercise}
+          onClose={() => setSelectedExercise(null)}
         />
       )}
     </div>

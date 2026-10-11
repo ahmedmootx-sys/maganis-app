@@ -349,8 +349,33 @@ export const FOOD_DATABASE: FoodItem[] = [
   },
 ]
 
+export function getCustomFoodItems(): FoodItem[] {
+  try {
+    const raw = localStorage.getItem('maganis:custom_food_items')
+    if (raw) return JSON.parse(raw) as FoodItem[]
+  } catch {
+    // ignore
+  }
+  return []
+}
+
+export function saveCustomFoodItem(item: FoodItem): void {
+  try {
+    const existing = getCustomFoodItems()
+    const updated = [item, ...existing.filter((f) => f.id !== item.id)]
+    localStorage.setItem('maganis:custom_food_items', JSON.stringify(updated))
+  } catch {
+    // ignore
+  }
+}
+
+export function getAllFoodItems(): FoodItem[] {
+  const custom = getCustomFoodItems()
+  return [...custom, ...FOOD_DATABASE]
+}
+
 export function getFoodItemById(id: string): FoodItem | undefined {
-  return FOOD_DATABASE.find((item) => item.id === id)
+  return getAllFoodItems().find((item) => item.id === id)
 }
 
 export function calculateIngredientMacros(
