@@ -35,6 +35,7 @@ import { TrainingCalendar } from './modules/tracking/TrainingCalendar.tsx'
 import { Reports } from './modules/reports/Reports.tsx'
 import { BackupPanel } from './modules/backup/BackupPanel.tsx'
 import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
+import { MuscleAtlasDebug } from './modules/workout/MuscleAtlasDebug.tsx'
 import './styles/app.css'
 
 type TabId =
@@ -47,7 +48,7 @@ interface AppProps {
 const TABS: { id: TabId; label: string; icon: string }[] = [
   { id: 'dashboard', label: 'لوحة التحكم', icon: '📊' },
   { id: 'workouts', label: 'التدريبات', icon: '💪' },
-  { id: 'nutrition', label: 'التغذية 🇪🇬', icon: '🥗' },
+  { id: 'nutrition', label: 'التغذية', icon: '🥗' },
   { id: 'tracking', label: 'التتبع', icon: '📝' },
   { id: 'reports', label: 'التقارير', icon: '📈' },
   { id: 'settings', label: 'الإعدادات', icon: '⚙️' },
@@ -113,6 +114,7 @@ export function App({ config }: AppProps) {
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false)
   const [showCustomScheduleModal, setShowCustomScheduleModal] = useState(false)
   const [showProgramVaultModal, setShowProgramVaultModal] = useState(false)
+  const [showAtlasDebugModal, setShowAtlasDebugModal] = useState(false)
   const [savedProgramsList, setSavedProgramsList] = useState<
     SavedWorkoutProgram[]
   >(() => workoutStore.getSavedPrograms())
@@ -623,6 +625,8 @@ export function App({ config }: AppProps) {
         return (
           <NutritionModule
             profile={profile}
+            bodyLog={bodyLog}
+            onAddBodyWeight={handleAddWeight}
             onUpdateProfile={(updated) => {
               const saved = profileStore.saveProfile(updated)
               setProfile(saved)
@@ -640,7 +644,9 @@ export function App({ config }: AppProps) {
         )
 
       case 'reports':
-        return <Reports sessions={sessions} bodyLog={bodyLog} />
+        return (
+          <Reports sessions={sessions} bodyLog={bodyLog} profile={profile} />
+        )
 
       case 'settings': {
         if (!profile) return null
@@ -727,6 +733,27 @@ export function App({ config }: AppProps) {
                   🌙 الوضع الليلي (Dark Mode)
                 </button>
               </div>
+            </div>
+
+            <div className="card">
+              <h2>🧬 فحص ومراجعة الخريطة التشريحية</h2>
+              <p className="muted">
+                استعراض الرؤوس العضلية الـ 48 تشريحياً والتأكد من حدود كل رأس
+                عضلي على حدة.
+              </p>
+              <button
+                type="button"
+                className="chip-btn"
+                onClick={() => setShowAtlasDebugModal(true)}
+                style={{
+                  marginTop: '8px',
+                  fontWeight: 800,
+                  color: 'var(--accent)',
+                  borderColor: 'var(--accent)',
+                }}
+              >
+                🔬 فتح أداة فحص الرؤوس العضلية (Muscle Atlas Inspector)
+              </button>
             </div>
 
             <div className="card">
@@ -831,6 +858,35 @@ export function App({ config }: AppProps) {
           </button>
         ))}
       </nav>
+
+      {showAtlasDebugModal && (
+        <div
+          className="modal-backdrop"
+          onClick={() => setShowAtlasDebugModal(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '16px',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: '720px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+            }}
+          >
+            <MuscleAtlasDebug onClose={() => setShowAtlasDebugModal(false)} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

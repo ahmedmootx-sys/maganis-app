@@ -1,19 +1,22 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { TrackingSession, BodyLogEntry } from '../shared/types.ts'
+import type { UserProfile } from '../onboarding/types.ts'
 import { getExerciseById } from '../workout/exercises.ts'
+import { calculateCalorieMacroTargets } from '../nutrition/calorieCalculator.ts'
 import { SvgLineChart } from './SvgLineChart.tsx'
 
 interface ReportsProps {
   sessions: TrackingSession[]
   bodyLog: BodyLogEntry[]
+  profile?: UserProfile | null
 }
 
-type DateRange = '4w' | '8w' | '12w' | 'all'
+type DateRange = '4w' | '12w' | '1y' | 'all'
 
 const RANGE_LABELS: Record<DateRange, string> = {
-  '4w': '4 أسابيع',
-  '8w': '8 أسابيع',
-  '12w': '12 أسبوعاً',
+  '4w': 'شهر (4 أسابيع)',
+  '12w': '3 شهور (12 أسبوعاً)',
+  '1y': 'سنة كاملة (52 أسبوعاً)',
   all: 'الكل',
 }
 
@@ -36,13 +39,130 @@ function weekLabel(weekStart: string): string {
   return `${d.getDate()}/${d.getMonth() + 1}`
 }
 
-export function Reports({ sessions, bodyLog }: ReportsProps) {
-  const [range, setRange] = useState<DateRange>('8w')
+export function Reports({ sessions, bodyLog, profile }: ReportsProps) {
+  const [range, setRange] = useState<DateRange>('4w')
 
-  const cutoff =
-    range === 'all'
-      ? new Date(0)
-      : weeksAgo(range === '4w' ? 4 : range === '8w' ? 8 : 12)
+  const cutoff = useMemo(() => {
+    if (range === 'all') return new Date(0)
+    return weeksAgo(range === '4w' ? 4 : range === '12w' ? 12 : 52)
+  }, [range])
+
+  const targets = useMemo(() => {
+    if (!profile) return null
+    return calculateCalorieMacroTargets(profile)
+  }, [profile])
+
+  // --- Nutrition Tracking & Adherence Data ---
+  const nutritionLogs = useMemo(() => {
+    const list: {
+      date: string
+      consumedCalories: number
+      consumedProtein: number
+      consumedCarbs: number
+      consumedFats: number
+      loggedMeals: {
+        mealId: string
+        nameAr: string
+        calories: number
+        protein: number
+        carbs: number
+        fats: number
+      }[]
+    }[] = []
+
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith('maganis:daily_nutrition_')) {
+          const raw = localStorage.getItem(k)
+          if (raw) {
+            const parsed = JSON.parse(raw)
+            if (parsed.date) {
+              const entryDate = new Date(parsed.date)
+              if (entryDate >= cutoff) {
+                list.push(parsed)
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    return list.sort((a, b) => a.date.localeCompare(b.date))
+  }, [cutoff])
+
+  const targetCalories = targets?.targetCalories ?? 2000
+  const targetProtein = targets?.proteinGrams ?? 140
+
+  const daysWithNutrition = nutritionLogs.filter((l) => l.consumedCalories > 0)
+  const totalDaysLogged = daysWithNutrition.length
+
+  const calorieHitDays = daysWithNutrition.filter(
+    (l) =>
+      Math.abs(l.consumedCalories - targetCalories) <= targetCalories * 0.15,
+  ).length
+  const calorieAdherencePct =
+    totalDaysLogged > 0
+      ? Math.round((calorieHitDays / totalDaysLogged) * 100)
+      : 0
+
+  const proteinHitDays = daysWithNutrition.filter(
+    (l) => l.consumedProtein >= targetProtein * 0.9,
+  ).length
+  const proteinAdherencePct =
+    totalDaysLogged > 0
+      ? Math.round((proteinHitDays / totalDaysLogged) * 100)
+      : 0
+
+  const avgCalories =
+    totalDaysLogged > 0
+      ? Math.round(
+          daysWithNutrition.reduce((sum, l) => sum + l.consumedCalories, 0) /
+            totalDaysLogged,
+        )
+      : 0
+  const avgProtein =
+    totalDaysLogged > 0
+      ? Math.round(
+          daysWithNutrition.reduce((sum, l) => sum + l.consumedProtein, 0) /
+            totalDaysLogged,
+        )
+      : 0
+
+  // Aggregate top confirmed / eaten foods in this period
+  const topFoods = useMemo(() => {
+    const foodMap: Record<
+      string,
+      { nameAr: string; count: number; totalCalories: number }
+    > = {}
+    for (const log of daysWithNutrition) {
+      for (const meal of log.loggedMeals || []) {
+        const key = meal.nameAr || meal.mealId
+        if (!foodMap[key]) {
+          foodMap[key] = {
+            nameAr: meal.nameAr || 'وجبة مجهولة',
+            count: 0,
+            totalCalories: 0,
+          }
+        }
+        foodMap[key].count += 1
+        foodMap[key].totalCalories += Math.round(meal.calories || 0)
+      }
+    }
+    return Object.values(foodMap).sort((a, b) => b.count - a.count)
+  }, [daysWithNutrition])
+
+  const calorieData = daysWithNutrition.map((l) => ({
+    label: l.date.slice(5),
+    value: l.consumedCalories,
+  }))
+
+  const proteinData = daysWithNutrition.map((l) => ({
+    label: l.date.slice(5),
+    value: l.consumedProtein,
+  }))
 
   const filteredSessions = sessions.filter((s) => new Date(s.date) >= cutoff)
 
@@ -125,7 +245,7 @@ export function Reports({ sessions, bodyLog }: ReportsProps) {
 
   return (
     <div className="reports">
-      <h2 className="reports__title">التقارير والإحصائيات</h2>
+      <h2 className="reports__title">📈 التقارير والإحصائيات الشاملة</h2>
 
       <div className="reports__range-selector">
         {(Object.keys(RANGE_LABELS) as DateRange[]).map((r) => (
@@ -138,6 +258,307 @@ export function Reports({ sessions, bodyLog }: ReportsProps) {
             {RANGE_LABELS[r]}
           </button>
         ))}
+      </div>
+
+      {/* ===== SECTION: NUTRITION & MACROS ADHERENCE TRACKING ===== */}
+      <div
+        className="card reports__section"
+        style={{ border: '2px solid var(--accent)' }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '8px',
+            marginBottom: '14px',
+          }}
+        >
+          <div>
+            <h3 style={{ margin: 0, fontSize: '17px', color: 'var(--accent)' }}>
+              🥗 تقارير الالتزام بالتغذية والسعرات والماكروز
+            </h3>
+            <p className="muted-small" style={{ margin: '4px 0 0' }}>
+              متابعة مدى تحقيقك للأهداف الغذائية خلال ({RANGE_LABELS[range]})
+            </p>
+          </div>
+          <span
+            style={{
+              padding: '4px 10px',
+              borderRadius: '999px',
+              fontSize: '12px',
+              fontWeight: 800,
+              background: calorieAdherencePct >= 70 ? '#f0fdf4' : '#fffbeb',
+              color: calorieAdherencePct >= 70 ? '#166534' : '#b45309',
+              border: `1px solid ${calorieAdherencePct >= 70 ? '#86efac' : '#fde68a'}`,
+            }}
+          >
+            {calorieAdherencePct >= 70
+              ? '🌟 التزام ممتاز بالدايت'
+              : '⚠️ بحاجة لزيادة الالتزام'}
+          </span>
+        </div>
+
+        {/* Adherence Score Cards */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+            gap: '10px',
+            marginBottom: '16px',
+          }}
+        >
+          <div
+            style={{
+              background: 'var(--card-subtle)',
+              padding: '12px',
+              borderRadius: '10px',
+              textAlign: 'center',
+              border: '1px solid var(--line)',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              أيام تسجيل الوجبات
+            </span>
+            <strong style={{ fontSize: '20px', color: 'var(--ink)' }}>
+              {totalDaysLogged}
+            </strong>
+            <span
+              style={{
+                fontSize: '11px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              يوم مسجل
+            </span>
+          </div>
+
+          <div
+            style={{
+              background: 'var(--card-subtle)',
+              padding: '12px',
+              borderRadius: '10px',
+              textAlign: 'center',
+              border: '1px solid var(--line)',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              نسبة الالتزام بالسعرات
+            </span>
+            <strong
+              style={{
+                fontSize: '20px',
+                color: calorieAdherencePct >= 70 ? '#16a34a' : '#d97706',
+              }}
+            >
+              {calorieAdherencePct}%
+            </strong>
+            <span
+              style={{
+                fontSize: '11px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              الهدف: {targetCalories} سعرة
+            </span>
+          </div>
+
+          <div
+            style={{
+              background: 'var(--card-subtle)',
+              padding: '12px',
+              borderRadius: '10px',
+              textAlign: 'center',
+              border: '1px solid var(--line)',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              نسبة تحقيق البروتين
+            </span>
+            <strong
+              style={{
+                fontSize: '20px',
+                color: proteinAdherencePct >= 70 ? '#16a34a' : '#d97706',
+              }}
+            >
+              {proteinAdherencePct}%
+            </strong>
+            <span
+              style={{
+                fontSize: '11px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              الهدف: {targetProtein} جم
+            </span>
+          </div>
+
+          <div
+            style={{
+              background: 'var(--card-subtle)',
+              padding: '12px',
+              borderRadius: '10px',
+              textAlign: 'center',
+              border: '1px solid var(--line)',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              متوسط السعرات اليومي
+            </span>
+            <strong style={{ fontSize: '20px', color: 'var(--ink)' }}>
+              {avgCalories}
+            </strong>
+            <span
+              style={{
+                fontSize: '11px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              سعرة حرارية
+            </span>
+          </div>
+
+          <div
+            style={{
+              background: 'var(--card-subtle)',
+              padding: '12px',
+              borderRadius: '10px',
+              textAlign: 'center',
+              border: '1px solid var(--line)',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              متوسط البروتين اليومي
+            </span>
+            <strong style={{ fontSize: '20px', color: 'var(--ink)' }}>
+              {avgProtein}
+            </strong>
+            <span
+              style={{
+                fontSize: '11px',
+                color: 'var(--muted)',
+                display: 'block',
+              }}
+            >
+              جرام بروتين
+            </span>
+          </div>
+        </div>
+
+        {/* Calorie Intake Chart */}
+        <div style={{ marginTop: '12px', marginBottom: '14px' }}>
+          <h4 style={{ fontSize: '13.5px', margin: '0 0 8px' }}>
+            🔥 السعرات الحرارية المسجلة يومياً (الهدف: {targetCalories} ك.س)
+          </h4>
+          <BarChart data={calorieData} />
+        </div>
+
+        {/* Protein Intake Chart */}
+        <div style={{ marginTop: '12px', marginBottom: '14px' }}>
+          <h4 style={{ fontSize: '13.5px', margin: '0 0 8px' }}>
+            🥩 كمية البروتين اليومية (الهدف: {targetProtein} جم)
+          </h4>
+          <BarChart data={proteinData} />
+        </div>
+
+        {/* Top Confirmed / Logged Foods */}
+        <div
+          style={{
+            marginTop: '14px',
+            paddingTop: '12px',
+            borderTop: '1px solid var(--line)',
+          }}
+        >
+          <h4 style={{ fontSize: '14px', margin: '0 0 8px' }}>
+            🍲 أكثر الأغذية والوجبات التي تم تناولها وتأكيدها في هذا النطاق:
+          </h4>
+          {topFoods.length === 0 ? (
+            <p className="muted" style={{ fontSize: '12.5px' }}>
+              لم يتم تسجيل وجبات في هذا النطاق الزمني بعد. يمكنك تسجيل وجباتك من
+              قسم "التغذية".
+            </p>
+          ) : (
+            <ul
+              style={{
+                listStyle: 'none',
+                margin: 0,
+                padding: 0,
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '8px',
+              }}
+            >
+              {topFoods.slice(0, 10).map((food, idx) => (
+                <li
+                  key={idx}
+                  style={{
+                    background: 'var(--card-subtle)',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--line)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div>
+                    <strong style={{ fontSize: '13px' }}>{food.nameAr}</strong>
+                    <div style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
+                      إجمالي: {food.totalCalories} سعرة
+                    </div>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: '11px',
+                      background: 'var(--accent)',
+                      color: '#fff',
+                      padding: '2px 8px',
+                      borderRadius: '999px',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {food.count} مرات
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
       <div className="card reports__section">

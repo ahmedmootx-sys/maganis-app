@@ -1,10 +1,11 @@
-import { useState, type ChangeEvent } from 'react'
+import { useState, useMemo, type ChangeEvent } from 'react'
 import type {
   CustomExercise,
   Difficulty,
   Equipment,
   MeasurementType,
   MuscleGroup,
+  ExerciseMuscleTarget,
 } from '../shared/types.ts'
 import {
   DIFFICULTY_LABELS,
@@ -12,6 +13,13 @@ import {
   MUSCLE_GROUP_LABELS,
 } from '../shared/types.ts'
 import { sanitizeInput } from '../../lib/sanitizer.ts'
+import {
+  MUSCLE_ATLAS,
+  MUSCLE_REGIONS_AR,
+  type MuscleRegion,
+} from './muscleAtlasData.ts'
+import { resolveExerciseMuscles } from './legacyMuscleMapper.ts'
+import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
 
 interface CustomExerciseBuilderProps {
   initialExercise?: CustomExercise
@@ -88,9 +96,25 @@ export function CustomExerciseBuilder({
   const [mechanicsAr, setMechanicsAr] = useState(
     initialExercise?.mechanicsAr ?? '',
   )
-  const [targetMusclesAr, setTargetMusclesAr] = useState(
-    initialExercise?.targetMusclesAr?.join('، ') ?? '',
-  )
+
+  // Initial head-level muscles
+  const initialResolved = useMemo(() => {
+    return resolveExerciseMuscles(initialExercise || {})
+  }, [initialExercise])
+
+  const [primaryMuscleIds, setPrimaryMuscleIds] = useState<string[]>(() => {
+    const p = initialResolved.muscles
+      .filter((m) => m.role === 'primary')
+      .map((m) => m.id)
+    return p.length > 0 ? p : ['pec_clavicular']
+  })
+
+  const [secondaryMuscleIds, setSecondaryMuscleIds] = useState<string[]>(() => {
+    return initialResolved.muscles
+      .filter((m) => m.role === 'secondary')
+      .map((m) => m.id)
+  })
+
   const [benefitAr, setBenefitAr] = useState(initialExercise?.benefitAr ?? '')
   const [howToStepsRaw, setHowToStepsRaw] = useState(
     initialExercise?.howToStepsAr?.join('\n') ?? '',
@@ -116,6 +140,37 @@ export function CustomExerciseBuilder({
     reader.readAsDataURL(file)
   }
 
+  function handleTogglePrimary(id: string) {
+    if (primaryMuscleIds.includes(id)) {
+      if (primaryMuscleIds.length === 1) {
+        setError('يجب تحديد عضلة رئيسية واحدة على الأقل')
+        return
+      }
+      setPrimaryMuscleIds((prev) => prev.filter((m) => m !== id))
+    } else {
+      setError('')
+      setPrimaryMuscleIds((prev) => [...prev, id])
+      setSecondaryMuscleIds((prev) => prev.filter((m) => m !== id))
+    }
+  }
+
+  function handleToggleSecondary(id: string) {
+    if (secondaryMuscleIds.includes(id)) {
+      setSecondaryMuscleIds((prev) => prev.filter((m) => m !== id))
+    } else {
+      setError('')
+      setSecondaryMuscleIds((prev) => [...prev, id])
+      setPrimaryMuscleIds((prev) => prev.filter((m) => m !== id))
+    }
+  }
+
+  const currentMuscles: ExerciseMuscleTarget[] = useMemo(() => {
+    return [
+      ...primaryMuscleIds.map((id) => ({ id, role: 'primary' as const })),
+      ...secondaryMuscleIds.map((id) => ({ id, role: 'secondary' as const })),
+    ]
+  }, [primaryMuscleIds, secondaryMuscleIds])
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
@@ -125,16 +180,19 @@ export function CustomExerciseBuilder({
       return
     }
 
+    if (primaryMuscleIds.length === 0) {
+      setError('يجب تحديد عضلة رئيسية واحدة على الأقل لهذا التمرين')
+      return
+    }
+
     const steps = howToStepsRaw
       .split('\n')
       .map((s) => sanitizeInput(s))
       .filter((s) => s.length > 0)
 
-    const muscles = targetMusclesAr
-      .split('،')
-      .flatMap((s) => s.split(','))
-      .map((s) => sanitizeInput(s))
-      .filter((s) => s.length > 0)
+    const targetNames = currentMuscles.map(
+      (m) => MUSCLE_ATLAS[m.id]?.nameAr || m.id,
+    )
 
     const exercise: CustomExercise = {
       id: initialExercise?.id || uniqueId(),
@@ -146,7 +204,8 @@ export function CustomExerciseBuilder({
       measurementType,
       imageUrl: sanitizeInput(imageUrl) || undefined,
       mechanicsAr: sanitizeInput(mechanicsAr) || undefined,
-      targetMusclesAr: muscles.length > 0 ? muscles : undefined,
+      muscles: currentMuscles,
+      targetMusclesAr: targetNames,
       benefitAr: sanitizeInput(benefitAr) || undefined,
       howToStepsAr: steps.length > 0 ? steps : undefined,
       isCustom: true,
@@ -320,16 +379,252 @@ export function CustomExerciseBuilder({
         />
       </div>
 
-      <div className="field">
-        <label htmlFor="ce-muscles">العضلات المستهدفة (مفصولة بـ "،")</label>
-        <input
-          id="ce-muscles"
-          type="text"
-          placeholder="مثال: العضلة الصدرية الكبرى، العضلة الترقوية، الترايسبس"
-          value={targetMusclesAr}
-          onChange={(e) => setTargetMusclesAr(e.target.value)}
-          dir="rtl"
-        />
+      {/* Head-Level Muscle Targeting System */}
+      <div
+        className="field"
+        style={{
+          background: 'var(--card-subtle)',
+          padding: '14px',
+          borderRadius: '12px',
+          border: '1px solid var(--line)',
+        }}
+      >
+        <div style={{ marginBottom: '10px' }}>
+          <h3 style={{ margin: 0, fontSize: '15px', color: 'var(--ink)' }}>
+            🧬 تحديد العضلات والرؤوس التشريحية المستهدفة
+          </h3>
+          <p className="muted-small" style={{ margin: '2px 0 0' }}>
+            اختر الرؤوس العضلية المستهدفة بدقة تشريحية (الرئيسية والمساعدة)
+          </p>
+        </div>
+
+        {/* 1. Primary Muscles Picker */}
+        <div style={{ marginBottom: '14px' }}>
+          <label
+            style={{
+              display: 'block',
+              fontWeight: 800,
+              color: '#E53935',
+              fontSize: '13px',
+              marginBottom: '6px',
+            }}
+          >
+            🎯 العضلة / الرأس الأساسي (Primary Target) *
+          </label>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '6px',
+              marginBottom: '8px',
+            }}
+          >
+            {primaryMuscleIds.map((id) => (
+              <span
+                key={id}
+                style={{
+                  background: '#E53935',
+                  color: '#fff',
+                  padding: '3px 8px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                {MUSCLE_ATLAS[id]?.nameAr || id}
+                <button
+                  type="button"
+                  onClick={() => handleTogglePrimary(id)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    padding: 0,
+                    fontSize: '12px',
+                    lineHeight: 1,
+                  }}
+                >
+                  ✕
+                </button>
+              </span>
+            ))}
+          </div>
+
+          <select
+            onChange={(e) => {
+              if (e.target.value) {
+                handleTogglePrimary(e.target.value)
+                e.target.value = ''
+              }
+            }}
+            style={{
+              width: '100%',
+              padding: '8px',
+              fontSize: '13px',
+              borderRadius: '8px',
+            }}
+          >
+            <option value="">+ اضغط لإضافة رأس عضلي رئيسي...</option>
+            {(
+              [
+                'chest',
+                'shoulders',
+                'arms',
+                'back',
+                'core',
+                'legs',
+              ] as MuscleRegion[]
+            ).map((reg) => (
+              <optgroup key={reg} label={MUSCLE_REGIONS_AR[reg]}>
+                {Object.values(MUSCLE_ATLAS)
+                  .filter((m) => m.region === reg)
+                  .map((m) => (
+                    <option
+                      key={m.id}
+                      value={m.id}
+                      disabled={primaryMuscleIds.includes(m.id)}
+                    >
+                      {m.nameAr} ({m.nameEn})
+                    </option>
+                  ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+
+        {/* 2. Secondary Muscles Picker */}
+        <div style={{ marginBottom: '14px' }}>
+          <label
+            style={{
+              display: 'block',
+              fontWeight: 800,
+              color: '#d97706',
+              fontSize: '13px',
+              marginBottom: '6px',
+            }}
+          >
+            ⚡ العضلات المساعدة (Secondary Involvement)
+          </label>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '6px',
+              marginBottom: '8px',
+            }}
+          >
+            {secondaryMuscleIds.length === 0 ? (
+              <span className="muted-small">لم يتم تحديد عضلات مساعدة بعد</span>
+            ) : (
+              secondaryMuscleIds.map((id) => (
+                <span
+                  key={id}
+                  style={{
+                    background: '#FDD835',
+                    color: '#000',
+                    border: '1px solid #F9A825',
+                    padding: '3px 8px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                >
+                  {MUSCLE_ATLAS[id]?.nameAr || id}
+                  <button
+                    type="button"
+                    onClick={() => handleToggleSecondary(id)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#000',
+                      cursor: 'pointer',
+                      padding: 0,
+                      fontSize: '12px',
+                      lineHeight: 1,
+                    }}
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))
+            )}
+          </div>
+
+          <select
+            onChange={(e) => {
+              if (e.target.value) {
+                handleToggleSecondary(e.target.value)
+                e.target.value = ''
+              }
+            }}
+            style={{
+              width: '100%',
+              padding: '8px',
+              fontSize: '13px',
+              borderRadius: '8px',
+            }}
+          >
+            <option value="">+ اضغط لإضافة عضلة مساعدة...</option>
+            {(
+              [
+                'chest',
+                'shoulders',
+                'arms',
+                'back',
+                'core',
+                'legs',
+              ] as MuscleRegion[]
+            ).map((reg) => (
+              <optgroup key={reg} label={MUSCLE_REGIONS_AR[reg]}>
+                {Object.values(MUSCLE_ATLAS)
+                  .filter((m) => m.region === reg)
+                  .map((m) => (
+                    <option
+                      key={m.id}
+                      value={m.id}
+                      disabled={secondaryMuscleIds.includes(m.id)}
+                    >
+                      {m.nameAr} ({m.nameEn})
+                    </option>
+                  ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+
+        {/* Live Anatomy Map Preview */}
+        <div
+          style={{
+            marginTop: '12px',
+            borderTop: '1px solid var(--line)',
+            paddingTop: '10px',
+          }}
+        >
+          <span
+            style={{
+              fontSize: '12px',
+              fontWeight: 700,
+              color: 'var(--muted)',
+              display: 'block',
+              marginBottom: '6px',
+            }}
+          >
+            👁️ معاينة مباشرة للخريطة التشريحية:
+          </span>
+          <AnatomyMuscleMap
+            muscles={currentMuscles}
+            category={category}
+            exerciseName={nameAr || 'تمرين مخصص'}
+            isFullView={false}
+          />
+        </div>
       </div>
 
       <div className="field">

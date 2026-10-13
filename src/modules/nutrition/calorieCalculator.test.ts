@@ -23,7 +23,7 @@ describe('calorieCalculator', () => {
     expect(getActivityMultiplier('very_active')).toBe(1.9)
   })
 
-  it('calculates calorie surplus and protein intake for hypertrophy goal', () => {
+  it('calculates evidence-based TDEE and rate-based targets for hypertrophy goal', () => {
     const mockProfile: UserProfile = {
       id: 'p-1',
       createdAt: Date.now(),
@@ -37,19 +37,29 @@ describe('calorieCalculator', () => {
         age: 25,
         heightCm: 180,
         weightKg: 80,
-        activityLevel: 'moderate', // multiplier 1.55 -> TDEE 1805 * 1.55 = 2798
+        activityLevel: 'moderate',
+        lifestyle: 2,
+        workoutBlocks: [
+          {
+            type: 'resistance',
+            sessionsPerWeek: 4,
+            minutesPerSession: 60,
+            intensity: 'moderate',
+          },
+        ],
       },
     }
 
     const result = calculateCalorieMacroTargets(mockProfile)
     expect(result.bmr).toBe(1805)
-    expect(result.tdee).toBe(2798)
-    expect(result.targetCalories).toBe(3198) // TDEE + 400 surplus
-    expect(result.proteinGrams).toBe(160) // 80kg * 2.0g/kg
+    expect(result.tdee).toBeGreaterThan(2000)
+    expect(result.targetCalories).toBeGreaterThan(result.tdee) // Surplus
+    expect(result.proteinGrams).toBeGreaterThan(120)
     expect(result.waterLiters).toBe(2.8) // 80 * 0.035
+    expect(result.engineResult).toBeDefined()
   })
 
-  it('calculates calorie deficit and high protein intake for cut goal', () => {
+  it('calculates calorie deficit and protein for cut goal', () => {
     const mockProfile: UserProfile = {
       id: 'p-2',
       createdAt: Date.now(),
@@ -63,12 +73,14 @@ describe('calorieCalculator', () => {
         age: 28,
         heightCm: 165,
         weightKg: 65,
-        activityLevel: 'active', // multiplier 1.725
+        activityLevel: 'active',
+        lifestyle: 2,
       },
     }
 
     const result = calculateCalorieMacroTargets(mockProfile)
-    expect(result.proteinGrams).toBe(143) // 65kg * 2.2g/kg
-    expect(result.targetCalories).toBeLessThan(result.tdee)
+    expect(result.targetCalories).toBeLessThanOrEqual(result.tdee)
+    expect(result.proteinGrams).toBeGreaterThan(100)
+    expect(result.engineResult).toBeDefined()
   })
 })

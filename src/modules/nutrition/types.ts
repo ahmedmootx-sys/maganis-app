@@ -1,14 +1,17 @@
 import type { Goal } from '../onboarding/types.ts'
+import type { NutritionCalculationResult } from './nutritionEngine.ts'
 
 export interface CalorieMacroTarget {
   bmr: number
   tdee: number
   targetCalories: number
+  displayCalories?: number
   proteinGrams: number
   carbsGrams: number
   fatsGrams: number
   goalLabelAr: string
   waterLiters: number
+  engineResult?: NutritionCalculationResult
 }
 
 export type MealCategory = 'breakfast' | 'lunch' | 'dinner' | 'snack'

@@ -1,0 +1,117 @@
+{
+  "incline_bench_press": {
+    "muscles": [
+      { "id": "pec_clavicular", "role": "primary" },
+      { "id": "pec_sternal", "role": "secondary" },
+      { "id": "delt_anterior", "role": "secondary" },
+      { "id": "triceps_lateral", "role": "secondary" },
+      { "id": "triceps_long", "role": "secondary" }
+    ]
+  },
+  "barbell_incline_bench_press": {
+    "muscles": [
+      { "id": "pec_clavicular", "role": "primary" },
+      { "id": "pec_sternal", "role": "secondary" },
+      { "id": "delt_anterior", "role": "secondary" },
+      { "id": "triceps_lateral", "role": "secondary" },
+      { "id": "triceps_long", "role": "secondary" }
+    ]
+  },
+  "overhead_dumbbell_triceps_extension": {
+    "muscles": [
+      { "id": "triceps_long", "role": "primary" },
+      { "id": "triceps_lateral", "role": "secondary" },
+      { "id": "triceps_medial", "role": "secondary" }
+    ]
+  },
+  "face_pull": {
+    "muscles": [
+      { "id": "delt_posterior", "role": "primary" },
+      { "id": "trap_middle", "role": "primary" },
+      { "id": "rhomboids", "role": "secondary" },
+      { "id": "infraspinatus", "role": "secondary" },
+      { "id": "teres_minor", "role": "secondary" }
+    ]
+  },
+  "romanian_deadlift": {
+    "muscles": [
+      { "id": "hamstring_bf_long", "role": "primary" },
+      { "id": "hamstring_semitendinosus", "role": "primary" },
+      { "id": "hamstring_semimembranosus", "role": "primary" },
+      { "id": "glute_max", "role": "primary" },
+      { "id": "erector_spinae", "role": "secondary" },
+      { "id": "adductors", "role": "secondary" }
+    ]
+  },
+  "standing_calf_raise": {
+    "muscles": [
+      { "id": "gastrocnemius_medial", "role": "primary" },
+      { "id": "gastrocnemius_lateral", "role": "primary" },
+      { "id": "soleus", "role": "secondary" }
+    ]
+  },
+  "dumbbell_lateral_raise": {
+    "muscles": [
+      { "id": "delt_lateral", "role": "primary" },
+      { "id": "delt_anterior", "role": "secondary" },
+      { "id": "trap_upper", "role": "secondary" },
+      { "id": "supraspinatus", "role": "secondary" }
+    ]
+  },
+  "lateral_raise": {
+    "muscles": [
+      { "id": "delt_lateral", "role": "primary" },
+      { "id": "delt_anterior", "role": "secondary" },
+      { "id": "trap_upper", "role": "secondary" },
+      { "id": "supraspinatus", "role": "secondary" }
+    ]
+  },
+  "dumbbell_biceps_curl": {
+    "muscles": [
+      { "id": "biceps_long", "role": "primary" },
+      { "id": "biceps_short", "role": "primary" },
+      { "id": "brachialis", "role": "secondary" },
+      { "id": "brachioradialis", "role": "secondary" },
+      { "id": "forearm_flexors", "role": "secondary" }
+    ]
+  },
+  "bicep_curl": {
+    "muscles": [
+      { "id": "biceps_long", "role": "primary" },
+      { "id": "biceps_short", "role": "primary" },
+      { "id": "brachialis", "role": "secondary" },
+      { "id": "brachioradialis", "role": "secondary" },
+      { "id": "forearm_flexors", "role": "secondary" }
+    ]
+  },
+  "flat_bench_press": {
+    "muscles": [
+      { "id": "pec_sternal", "role": "primary" },
+      { "id": "pec_clavicular", "role": "secondary" },
+      { "id": "delt_anterior", "role": "secondary" },
+      { "id": "triceps_lateral", "role": "secondary" },
+      { "id": "triceps_long", "role": "secondary" }
+    ]
+  },
+  "barbell_squat": {
+    "muscles": [
+      { "id": "rectus_femoris", "role": "primary" },
+      { "id": "vastus_lateralis", "role": "primary" },
+      { "id": "vastus_medialis", "role": "primary" },
+      { "id": "glute_max", "role": "primary" },
+      { "id": "adductors", "role": "secondary" },
+      { "id": "erector_spinae", "role": "secondary" }
+    ]
+  },
+  "pull_ups": {
+    "muscles": [
+      { "id": "lats", "role": "primary" },
+      { "id": "teres_major", "role": "primary" },
+      { "id": "biceps_long", "role": "secondary" },
+      { "id": "biceps_short", "role": "secondary" },
+      { "id": "brachialis", "role": "secondary" },
+      { "id": "trap_lower", "role": "secondary" },
+      { "id": "rhomboids", "role": "secondary" }
+    ]
+  }
+}

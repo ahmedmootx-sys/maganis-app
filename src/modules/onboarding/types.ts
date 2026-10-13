@@ -19,12 +19,25 @@ export interface MedicalAssessment {
   notes: string
 }
 
+export interface WorkoutBlock {
+  type: 'resistance' | 'cardio'
+  sessionsPerWeek: number
+  minutesPerSession: number
+  intensity: 'light' | 'moderate' | 'hard'
+}
+
 export interface BodyMetrics {
   sex: Sex
   age: number
   heightCm: number
   weightKg: number
   activityLevel: ActivityLevel
+  bodyFatPercent?: number
+  lifestyle?: 1 | 2 | 3 | 4
+  workoutBlocks?: WorkoutBlock[]
+  pace?: 'slow' | 'standard' | 'fast'
+  formulaOverride?: 'auto' | 'mifflin' | 'katch'
+  proteinPerKgOverride?: number
 }
 
 export interface UserProfile {

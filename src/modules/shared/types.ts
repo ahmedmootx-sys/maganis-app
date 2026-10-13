@@ -40,6 +40,28 @@ export interface Exercise {
   targetSubMusclesAr?: string[]
   /** المرجع العلمي الموثوق */
   medicalSource?: string
+  /** العضلات المستهدفة على مستوى الرؤوس التشريحية */
+  muscles?: ExerciseMuscleTarget[]
+  /** علامة تدل على أن توزيع العضلات مؤقت وموسع من التصنيف القديم */
+  isProvisionalMuscles?: boolean
+}
+
+export type ExerciseSection = 'warmup' | 'primary' | 'flexibility_core'
+
+export const EXERCISE_SECTION_LABELS: Record<
+  ExerciseSection,
+  { labelAr: string; icon: string }
+> = {
+  warmup: { labelAr: 'تمارين الإحماء والتسخين', icon: '🔥' },
+  primary: { labelAr: 'التمارين الأساسية', icon: '🏋️' },
+  flexibility_core: { labelAr: 'المرونة، الثبات والتهدئة', icon: '🧘' },
+}
+
+export type MuscleRole = 'primary' | 'secondary'
+
+export interface ExerciseMuscleTarget {
+  id: string
+  role: MuscleRole
 }
 
 export interface CustomExercise extends Exercise {
@@ -52,6 +74,7 @@ export interface ProgramExercise {
   reps: number
   restSeconds: number
   notes?: string
+  section?: ExerciseSection
 }
 
 export interface ProgramDay {

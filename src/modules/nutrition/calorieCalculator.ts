@@ -1,24 +1,23 @@
 import type { ActivityLevel, Sex, UserProfile } from '../onboarding/types.ts'
 import { ACTIVITY_LEVELS } from '../onboarding/types.ts'
 import type { CalorieMacroTarget } from './types.ts'
+import {
+  calculateNutritionTargets,
+  calculateBMR as engineCalculateBMR,
+  type LifestyleLevel,
+  type NutritionGoal,
+  type WorkoutBlockInput,
+} from './nutritionEngine.ts'
 
-/**
- * Mifflin-St Jeor BMR Formula:
- * Male: (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5
- * Female: (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161
- */
 export function calculateBMR(
   sex: Sex,
   weightKg: number,
   heightCm: number,
   age: number,
+  bodyFatPercent?: number,
 ): number {
-  const safeWeight = Number(weightKg) || 70
-  const safeHeight = Number(heightCm) || 170
-  const safeAge = Number(age) || 25
-
-  const base = 10 * safeWeight + 6.25 * safeHeight - 5 * safeAge
-  return Math.round(sex === 'female' ? base - 161 : base + 5)
+  const res = engineCalculateBMR(sex, weightKg, heightCm, age, bodyFatPercent)
+  return Math.round(res.bmr)
 }
 
 export function getActivityMultiplier(level: ActivityLevel): number {
@@ -27,9 +26,7 @@ export function getActivityMultiplier(level: ActivityLevel): number {
 }
 
 /**
- * Calculates TDEE, Calorie targets, and Protein/Carb/Fat Macros based on scientific standards:
- * - Protein: 2.0g/kg for Hypertrophy, 2.2g/kg for Cut, 1.8g/kg for Calisthenics, 1.6g/kg for Flexibility.
- * - Calorie Adjustment: Hypertrophy +400 kcal (Surplus), Cut -500 kcal (Deficit), Others Maintenance.
+ * Maps UserProfile to the Evidence-Based Nutrition Engine
  */
 export function calculateCalorieMacroTargets(
   profile: UserProfile,
@@ -38,69 +35,70 @@ export function calculateCalorieMacroTargets(
   const weightKg = Number(profile.body.weightKg) || 70
   const heightCm = Number(profile.body.heightCm) || 170
   const age = Number(profile.body.age) || 25
-  const activityLevel = profile.body.activityLevel || 'moderate'
-  const goal = profile.primaryGoal || 'hypertrophy'
 
-  const bmr = calculateBMR(sex, weightKg, heightCm, age)
-  const multiplier = getActivityMultiplier(activityLevel)
-  const tdee = Math.round(bmr * multiplier)
-
-  let targetCalories = tdee
-  let proteinPerKg = 2.0
-  let goalLabelAr = 'المحافظة على الوزن'
-
-  switch (goal) {
-    case 'hypertrophy':
-      targetCalories = Math.round(tdee + 400)
-      proteinPerKg = 2.0
-      goalLabelAr = 'تضخيم وبناء عضلات (فائض سعرات +400)'
-      break
-    case 'cut':
-      targetCalories = Math.round(tdee - 500)
-      proteinPerKg = 2.2 // High protein to preserve lean muscle during deficit
-      goalLabelAr = 'تنشيف وحرق دهون (عجز سعرات -500)'
-      break
-    case 'calisthenics':
-      targetCalories = tdee
-      proteinPerKg = 1.8
-      goalLabelAr = 'تقوية التحكم بالجسم (سعرات المحافظة)'
-      break
-    case 'flexibility':
-      targetCalories = tdee
-      proteinPerKg = 1.6
-      goalLabelAr = 'مرونة وصحة عامة (سعرات المحافظة)'
-      break
+  // Map or read lifestyle
+  let lifestyle: LifestyleLevel = profile.body.lifestyle ?? 2
+  if (!profile.body.lifestyle) {
+    const act = profile.body.activityLevel
+    if (act === 'sedentary') lifestyle = 1
+    else if (act === 'light' || act === 'moderate') lifestyle = 2
+    else if (act === 'active') lifestyle = 3
+    else if (act === 'very_active') lifestyle = 4
   }
 
-  // Ensure minimum calories don't drop below safe BMR floor
-  const safeMinCalories = Math.max(targetCalories, Math.round(bmr * 0.95))
+  // Map or read workout blocks
+  let workoutBlocks: WorkoutBlockInput[] = profile.body.workoutBlocks ?? []
+  if (workoutBlocks.length === 0) {
+    const sessions = profile.trainingDaysPerWeek || 4
+    workoutBlocks = [
+      {
+        type: 'resistance',
+        sessionsPerWeek: sessions,
+        minutesPerSession: 60,
+        intensity: 'moderate',
+      },
+    ]
+  }
 
-  // Protein calculation: weightKg * proteinPerKg
-  const proteinGrams = Math.round(weightKg * proteinPerKg)
-  const proteinCalories = proteinGrams * 4
+  // Map goal
+  let goal: NutritionGoal = 'maintain'
+  if (profile.primaryGoal === 'hypertrophy') {
+    goal = 'gain'
+  } else if (profile.primaryGoal === 'cut') {
+    goal = 'lose'
+  }
 
-  // Fats: 25% of total calories
-  const fatCalories = safeMinCalories * 0.25
-  const fatsGrams = Math.round(fatCalories / 9)
+  const engineRes = calculateNutritionTargets({
+    sex,
+    age,
+    weightKg,
+    heightCm,
+    bodyFatPercent: profile.body.bodyFatPercent,
+    lifestyle,
+    workoutBlocks,
+    goal,
+    pace: profile.body.pace || 'standard',
+    formulaOverride: profile.body.formulaOverride,
+    proteinPerKgOverride: profile.body.proteinPerKgOverride,
+  })
 
-  // Remaining calories go to Carbohydrates
-  const remainingCalories = Math.max(
-    0,
-    safeMinCalories - (proteinCalories + fatCalories),
-  )
-  const carbsGrams = Math.round(remainingCalories / 4)
-
-  // Daily Water Intake (liters) = weightKg * 0.035
-  const waterLiters = Number((weightKg * 0.035).toFixed(1))
+  let goalLabelAr = 'المحافظة على الوزن'
+  if (goal === 'gain') {
+    goalLabelAr = `بناء عضلات وتضخيم (فائض +${engineRes.adjustmentKcal} كالوِري)`
+  } else if (goal === 'lose') {
+    goalLabelAr = `تنشيف وحرق دهون (عجز ${engineRes.adjustmentKcal} كالوِري)`
+  }
 
   return {
-    bmr,
-    tdee,
-    targetCalories: safeMinCalories,
-    proteinGrams,
-    carbsGrams,
-    fatsGrams,
+    bmr: engineRes.bmr,
+    tdee: engineRes.tdee,
+    targetCalories: engineRes.targetCalories,
+    displayCalories: engineRes.displayCalories,
+    proteinGrams: engineRes.protein.grams,
+    carbsGrams: engineRes.carbs.grams,
+    fatsGrams: engineRes.fat.grams,
     goalLabelAr,
-    waterLiters,
+    waterLiters: engineRes.waterLiters,
+    engineResult: engineRes,
   }
 }

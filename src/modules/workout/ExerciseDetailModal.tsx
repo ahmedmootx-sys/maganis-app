@@ -281,8 +281,10 @@ export function ExerciseDetailModal({
             </p>
             <AnatomyMuscleMap
               category={exercise.category}
-              exerciseName={exercise.nameAr}
+              exerciseName={exercise.name || exercise.nameAr}
+              exerciseId={exercise.id}
               targetMuscles={details.targetMuscles}
+              muscles={exercise.muscles}
             />
 
             <div className="muscle-tags-grid" style={{ marginTop: '14px' }}>

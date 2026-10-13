@@ -2,19 +2,27 @@ import { useState } from 'react'
 import type {
   CustomExercise,
   Exercise,
+  ExerciseSection,
   ProgramDay,
   ProgramExercise,
   WorkoutProgram,
   WorkoutSplitType,
 } from '../shared/types.ts'
-import { WORKOUT_SPLIT_LABELS } from '../shared/types.ts'
+import {
+  EXERCISE_SECTION_LABELS,
+  WORKOUT_SPLIT_LABELS,
+} from '../shared/types.ts'
 import { getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExercisePickerModal } from './ExercisePickerModal.tsx'
 import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { generateProgram } from './programGenerator.ts'
-import { convertDayToHomeWorkout } from './workoutUtils.ts'
+import {
+  convertDayToHomeWorkout,
+  downloadRoutineFile,
+  parseAndValidateRoutineJson,
+} from './workoutUtils.ts'
 
 interface WeeklyPlanViewProps {
   program: WorkoutProgram
@@ -46,6 +54,10 @@ export function WeeklyPlanView({
     exercise: Exercise
   } | null>(null)
   const [addingToDayIndex, setAddingToDayIndex] = useState<number | null>(null)
+  const [addingSection, setAddingSection] = useState<ExerciseSection>('primary')
+  const [collapsedSections, setCollapsedSections] = useState<
+    Record<string, boolean>
+  >({})
   const [homeToast, setHomeToast] = useState<string | null>(null)
   const [editingFocusDayIndex, setEditingFocusDayIndex] = useState<
     number | null
@@ -113,7 +125,11 @@ export function WeeklyPlanView({
     onUpdateProgram({ ...program, days: newDays })
   }
 
-  function handleAddExerciseToDay(dayIndex: number, newExId: string) {
+  function handleAddExerciseToDay(
+    dayIndex: number,
+    newExId: string,
+    section: ExerciseSection = addingSection,
+  ) {
     if (!onUpdateProgram || !newExId) return
     const newDays = program.days.map((day) => {
       if (day.dayIndex !== dayIndex) return day
@@ -122,11 +138,61 @@ export function WeeklyPlanView({
         sets: 3,
         reps: 10,
         restSeconds: 60,
+        section,
       }
       return { ...day, exercises: [...day.exercises, newPe] }
     })
     onUpdateProgram({ ...program, days: newDays })
     setAddingToDayIndex(null)
+  }
+
+  function handleChangeExerciseSection(
+    dayIndex: number,
+    exerciseIdx: number,
+    newSection: ExerciseSection,
+  ) {
+    if (!onUpdateProgram) return
+    const newDays = program.days.map((day) => {
+      if (day.dayIndex !== dayIndex) return day
+      const updatedExercises = day.exercises.map((pe, idx) =>
+        idx === exerciseIdx ? { ...pe, section: newSection } : pe,
+      )
+      return { ...day, exercises: updatedExercises }
+    })
+    onUpdateProgram({ ...program, days: newDays })
+  }
+
+  function handleToggleSection(dayIndex: number, section: ExerciseSection) {
+    const key = `${dayIndex}_${section}`
+    setCollapsedSections((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }))
+  }
+
+  function handleImportRoutineFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const text = event.target?.result
+      if (typeof text === 'string') {
+        const result = parseAndValidateRoutineJson(text)
+        if (result.success) {
+          const confirmMsg = `تم العثور على "${result.title}" ويحتوي على ${result.program.days.length} أيام تمرين.\nهل تريد اعتماده وتطبيقه كجدولك الحالي الآن؟`
+          if (window.confirm(confirmMsg)) {
+            onUpdateProgram?.(result.program)
+            setHomeToast(`✓ تم استيراد "${result.title}" وتطبيقه بنجاح! 📥🎉`)
+            setTimeout(() => setHomeToast(null), 3500)
+          }
+        } else {
+          alert(`فشل استيراد جدول التمارين:\n${result.error}`)
+        }
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
   }
 
   function handleConvertToHomeWorkout(targetDay: ProgramDay) {
@@ -290,6 +356,49 @@ export function WeeklyPlanView({
                 📁 الحافظة
               </button>
             )}
+
+            <button
+              type="button"
+              className="chip-btn"
+              onClick={() => {
+                const title = program.splitType
+                  ? WORKOUT_SPLIT_LABELS[program.splitType]
+                  : 'جدول تمارين مخصص'
+                downloadRoutineFile(program, title)
+                setHomeToast('✓ تم تصدير ملف جدول التمارين بنجاح! 📤')
+                setTimeout(() => setHomeToast(null), 3000)
+              }}
+              style={{
+                fontWeight: 700,
+                fontSize: '12px',
+                borderColor: 'var(--accent)',
+              }}
+              title="تصدير جدول التمارين كملف لمشاركته مع الآخرين"
+            >
+              📤 تصدير
+            </button>
+
+            <label
+              className="chip-btn"
+              style={{
+                fontWeight: 700,
+                fontSize: '12px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                borderColor: '#10b981',
+                color: '#059669',
+              }}
+              title="استيراد جدول تمارين تم إرساله لك من مستخدم آخر"
+            >
+              📥 استيراد
+              <input
+                type="file"
+                accept=".json,application/json"
+                style={{ display: 'none' }}
+                onChange={handleImportRoutineFile}
+              />
+            </label>
 
             <button
               type="button"
@@ -477,149 +586,336 @@ export function WeeklyPlanView({
               </div>
             </div>
 
-            {day.exercises.length === 0 ? (
-              <div
-                style={{
-                  padding: '20px',
-                  textAlign: 'center',
-                  color: 'var(--muted)',
-                  fontSize: '13px',
-                  border: '1px dashed var(--line)',
-                  borderRadius: '8px',
-                  margin: '10px 0',
-                }}
-              >
-                لا توجد تمارين مضافة لهذا اليوم بعد.{' '}
-                <button
-                  type="button"
-                  className="ghost-primary tiny"
-                  style={{ display: 'inline-block', margin: '0 4px' }}
-                  onClick={() => setAddingToDayIndex(day.dayIndex)}
-                >
-                  + اضغط هنا لإضافة تمارين مصورة
-                </button>
-              </div>
-            ) : (
-              <ul className="weekly-plan__exercise-list">
-                {day.exercises.map((pe, idx) => {
-                  const custom = customExercises.find(
-                    (c) => c.id === pe.exerciseId,
-                  )
-                  const ex = custom ?? getExerciseById(pe.exerciseId)
-                  if (!ex) return null
+            {/* Collapsible Exercise Sections (Warmup, Primary, Flexibility & Core) */}
+            <div
+              className="weekly-plan__sections-container"
+              style={{ marginTop: '10px' }}
+            >
+              {(
+                ['warmup', 'primary', 'flexibility_core'] as ExerciseSection[]
+              ).map((secKey) => {
+                const secConfig = EXERCISE_SECTION_LABELS[secKey]
+                const secItems = day.exercises
+                  .map((pe, originalIdx) => ({ pe, originalIdx }))
+                  .filter(({ pe }) => (pe.section || 'primary') === secKey)
 
-                  return (
-                    <li
-                      key={`${pe.exerciseId}-${idx}`}
-                      className="weekly-plan__exercise-item"
+                const isCollapsed =
+                  collapsedSections[`${day.dayIndex}_${secKey}`] ??
+                  (secKey !== 'primary' && secItems.length === 0)
+
+                return (
+                  <div
+                    key={secKey}
+                    className="weekly-plan__section-block"
+                    style={{ marginBottom: '10px' }}
+                  >
+                    {/* Section Accordion Header */}
+                    <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        gap: '8px',
-                        padding: '10px 12px',
-                        borderRadius: '10px',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
                         background: 'var(--card-subtle)',
                         border: '1px solid var(--line)',
-                        marginBottom: '8px',
+                        cursor: 'pointer',
+                        userSelect: 'none',
                       }}
+                      onClick={() => handleToggleSection(day.dayIndex, secKey)}
                     >
                       <div
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '10px',
-                          flex: 1,
-                          cursor: 'pointer',
+                          gap: '8px',
                         }}
-                        onClick={() => handleOpenDetail(ex.id)}
                       >
-                        <ExerciseVisual
-                          category={ex.category}
-                          exerciseId={ex.id}
-                          exerciseName={ex.nameAr}
-                          size="small"
-                        />
-                        <div>
-                          <div style={{ fontWeight: 700, fontSize: '13.5px' }}>
-                            {ex.nameAr}
-                          </div>
-                          <div
-                            style={{ fontSize: '12px', color: 'var(--muted)' }}
-                          >
-                            {pe.sets} مجموعات × {pe.reps} تكرار • راحة{' '}
-                            {pe.restSeconds}ث
-                          </div>
-                        </div>
+                        <span style={{ fontSize: '15px' }}>
+                          {secConfig.icon}
+                        </span>
+                        <strong style={{ fontSize: '13px' }}>
+                          {secConfig.labelAr}
+                        </strong>
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            padding: '1px 8px',
+                            borderRadius: '999px',
+                            background:
+                              secItems.length > 0
+                                ? 'var(--accent)'
+                                : 'var(--line)',
+                            color:
+                              secItems.length > 0 ? '#fff' : 'var(--muted)',
+                            fontWeight: 700,
+                          }}
+                        >
+                          {secItems.length > 0
+                            ? `${secItems.length} تمارين`
+                            : 'فارغ'}
+                        </span>
                       </div>
 
                       <div
                         style={{
                           display: 'flex',
-                          gap: '4px',
                           alignItems: 'center',
+                          gap: '6px',
                         }}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         {onUpdateProgram && (
-                          <>
-                            {idx > 0 && (
+                          <button
+                            type="button"
+                            className="ghost-primary tiny"
+                            style={{ padding: '2px 8px', fontSize: '11px' }}
+                            onClick={() => {
+                              setAddingSection(secKey)
+                              setAddingToDayIndex(day.dayIndex)
+                            }}
+                            title={`إضافة تمرين إلى قسم ${secConfig.labelAr}`}
+                          >
+                            + إضافة
+                          </button>
+                        )}
+                        <span
+                          style={{
+                            fontSize: '12px',
+                            color: 'var(--muted)',
+                            padding: '2px 4px',
+                            cursor: 'pointer',
+                            fontWeight: 700,
+                          }}
+                          onClick={() =>
+                            handleToggleSection(day.dayIndex, secKey)
+                          }
+                        >
+                          {isCollapsed ? '▼ فتح' : '▲ طي'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Section Content */}
+                    {!isCollapsed && (
+                      <div style={{ marginTop: '6px' }}>
+                        {secItems.length === 0 ? (
+                          <div
+                            style={{
+                              padding: '10px 14px',
+                              textAlign: 'center',
+                              color: 'var(--muted)',
+                              fontSize: '12px',
+                              border: '1px dashed var(--line)',
+                              borderRadius: '8px',
+                            }}
+                          >
+                            لا توجد تمارين مضافة في ({secConfig.labelAr}) بعد.{' '}
+                            {onUpdateProgram && (
                               <button
                                 type="button"
-                                className="ghost tiny"
-                                style={{ padding: '2px 6px', fontSize: '11px' }}
-                                onClick={() =>
-                                  handleMoveExercise(day.dayIndex, idx, 'up')
-                                }
-                                title="تحريك لأعلى"
+                                className="ghost-primary tiny"
+                                style={{
+                                  display: 'inline-block',
+                                  margin: '0 4px',
+                                }}
+                                onClick={() => {
+                                  setAddingSection(secKey)
+                                  setAddingToDayIndex(day.dayIndex)
+                                }}
                               >
-                                ▲
+                                + اضغط لإضافة تمرين
                               </button>
                             )}
-                            {idx < day.exercises.length - 1 && (
-                              <button
-                                type="button"
-                                className="ghost tiny"
-                                style={{ padding: '2px 6px', fontSize: '11px' }}
-                                onClick={() =>
-                                  handleMoveExercise(day.dayIndex, idx, 'down')
-                                }
-                                title="تحريك لأسفل"
-                              >
-                                ▼
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              className="ghost tiny"
-                              onClick={() =>
-                                setSwapTarget({
-                                  dayIndex: day.dayIndex,
-                                  exerciseIndex: idx,
-                                  exercise: ex,
-                                })
-                              }
-                              title="استبدال بتمرين آخر"
-                            >
-                              🔄 استبدال
-                            </button>
-                            <button
-                              type="button"
-                              className="ghost-danger tiny"
-                              onClick={() =>
-                                handleRemoveExercise(day.dayIndex, idx)
-                              }
-                              title="حذف هذا التمرين"
-                            >
-                              ✕
-                            </button>
-                          </>
+                          </div>
+                        ) : (
+                          <ul
+                            className="weekly-plan__exercise-list"
+                            style={{ margin: 0, padding: 0, listStyle: 'none' }}
+                          >
+                            {secItems.map(({ pe, originalIdx }) => {
+                              const custom = customExercises.find(
+                                (c) => c.id === pe.exerciseId,
+                              )
+                              const ex =
+                                custom ?? getExerciseById(pe.exerciseId)
+                              if (!ex) return null
+
+                              return (
+                                <li
+                                  key={`${pe.exerciseId}-${originalIdx}`}
+                                  className="weekly-plan__exercise-item"
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: '8px',
+                                    padding: '10px 12px',
+                                    borderRadius: '10px',
+                                    background: 'var(--card-subtle)',
+                                    border: '1px solid var(--line)',
+                                    marginBottom: '6px',
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '10px',
+                                      flex: 1,
+                                      cursor: 'pointer',
+                                    }}
+                                    onClick={() => handleOpenDetail(ex.id)}
+                                  >
+                                    <ExerciseVisual
+                                      category={ex.category}
+                                      exerciseId={ex.id}
+                                      exerciseName={ex.nameAr}
+                                      size="small"
+                                    />
+                                    <div>
+                                      <div
+                                        style={{
+                                          fontWeight: 700,
+                                          fontSize: '13.5px',
+                                        }}
+                                      >
+                                        {ex.nameAr}
+                                      </div>
+                                      <div
+                                        style={{
+                                          fontSize: '12px',
+                                          color: 'var(--muted)',
+                                        }}
+                                      >
+                                        {pe.sets} مجموعات × {pe.reps} تكرار •
+                                        راحة {pe.restSeconds}ث
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      gap: '4px',
+                                      alignItems: 'center',
+                                      flexWrap: 'wrap',
+                                    }}
+                                  >
+                                    {onUpdateProgram && (
+                                      <>
+                                        <select
+                                          value={pe.section || 'primary'}
+                                          onChange={(e) =>
+                                            handleChangeExerciseSection(
+                                              day.dayIndex,
+                                              originalIdx,
+                                              e.target.value as ExerciseSection,
+                                            )
+                                          }
+                                          style={{
+                                            fontSize: '11px',
+                                            padding: '2px 4px',
+                                            borderRadius: '6px',
+                                            border: '1px solid var(--line)',
+                                            background: 'var(--card-bg)',
+                                            color: 'var(--ink)',
+                                          }}
+                                          title="نقل التمرين لقسم آخر"
+                                        >
+                                          <option value="warmup">
+                                            🔥 إحماء
+                                          </option>
+                                          <option value="primary">
+                                            🏋️ أساسي
+                                          </option>
+                                          <option value="flexibility_core">
+                                            🧘 مرونة وثبات
+                                          </option>
+                                        </select>
+
+                                        {originalIdx > 0 && (
+                                          <button
+                                            type="button"
+                                            className="ghost tiny"
+                                            style={{
+                                              padding: '2px 6px',
+                                              fontSize: '11px',
+                                            }}
+                                            onClick={() =>
+                                              handleMoveExercise(
+                                                day.dayIndex,
+                                                originalIdx,
+                                                'up',
+                                              )
+                                            }
+                                            title="تحريك لأعلى"
+                                          >
+                                            ▲
+                                          </button>
+                                        )}
+                                        {originalIdx <
+                                          day.exercises.length - 1 && (
+                                          <button
+                                            type="button"
+                                            className="ghost tiny"
+                                            style={{
+                                              padding: '2px 6px',
+                                              fontSize: '11px',
+                                            }}
+                                            onClick={() =>
+                                              handleMoveExercise(
+                                                day.dayIndex,
+                                                originalIdx,
+                                                'down',
+                                              )
+                                            }
+                                            title="تحريك لأسفل"
+                                          >
+                                            ▼
+                                          </button>
+                                        )}
+                                        <button
+                                          type="button"
+                                          className="ghost tiny"
+                                          onClick={() =>
+                                            setSwapTarget({
+                                              dayIndex: day.dayIndex,
+                                              exerciseIndex: originalIdx,
+                                              exercise: ex,
+                                            })
+                                          }
+                                          title="استبدال بتمرين آخر"
+                                        >
+                                          🔄
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="ghost-danger tiny"
+                                          onClick={() =>
+                                            handleRemoveExercise(
+                                              day.dayIndex,
+                                              originalIdx,
+                                            )
+                                          }
+                                          title="حذف هذا التمرين"
+                                        >
+                                          ✕
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
+                                </li>
+                              )
+                            })}
+                          </ul>
                         )}
                       </div>
-                    </li>
-                  )
-                })}
-              </ul>
-            )}
+                    )}
+                  </div>
+                )
+              })}
+            </div>
           </div>
         ))}
       </div>
