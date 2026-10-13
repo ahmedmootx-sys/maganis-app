@@ -1573,7 +1573,8 @@ button.ghost-danger:hover {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-bg);
+  color: var(--ink);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
@@ -1581,12 +1582,26 @@ button.ghost-danger:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] .active-workout-header {
+  background: rgba(21, 30, 46, 0.98);
+  border-bottom-color: var(--line);
+}
+
+.active-workout-header .ghost-danger {
+  color: var(--danger) !important;
+  border: 1px solid var(--danger-line) !important;
+  background: var(--danger-soft) !important;
+  border-radius: 6px;
 }
 
 .routine-title {
   margin: 0;
   font-size: 16px;
   text-align: center;
+  color: var(--ink);
 }
 
 .routine-focus {
@@ -1599,7 +1614,8 @@ button.ghost-danger:hover {
 .stopwatch-badge {
   font-size: 13px;
   font-weight: 700;
-  background: var(--bg);
+  background: var(--card-subtle);
+  color: var(--ink);
   padding: 4px 8px;
   border-radius: 6px;
   border: 1px solid var(--line);
@@ -1619,6 +1635,123 @@ button.ghost-danger:hover {
   background: #059669;
   border-color: #059669;
   color: #ffffff;
+}
+
+/* ===== Active Workout Sticky Banner (When Minimized) ===== */
+
+.active-workout-sticky-banner {
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  background: linear-gradient(
+    135deg,
+    rgba(249, 87, 0, 0.12) 0%,
+    var(--card-bg) 100%
+  );
+  border: 1.5px solid var(--accent);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 0 0 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(249, 87, 0, 0.16);
+  animation: slideDown 0.25s ease-out;
+}
+
+[data-theme='dark'] .active-workout-sticky-banner {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 26, 0.18) 0%,
+    #151e2e 100%
+  );
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.banner-info-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.banner-pulse-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulseGreen 1.8s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulseGreen {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.banner-timer-badge {
+  font-size: 13px;
+  font-weight: 800;
+  background: var(--card-subtle);
+  color: var(--ink);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.banner-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-title {
+  font-size: 13.5px;
+  color: var(--ink);
+}
+
+.banner-focus {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.banner-actions-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.banner-resume-btn {
+  font-weight: 800 !important;
+}
+
+.button-success {
+  background: #10b981 !important;
+  border-color: #10b981 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button-success:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
 }
 
 /* Floating Rest Timer */
@@ -2478,7 +2611,11 @@ button.ghost-danger:hover {
   margin: 0;
   font-size: 22px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--ink);
+}
+
+[data-theme='dark'] .maganis-brand-title h1 {
+  color: #f8fafc;
 }
 
 .maganis-brand-subtitle {
@@ -2509,6 +2646,15 @@ button.ghost-danger:hover {
   gap: 16px;
   align-items: center;
   box-shadow: 0 8px 24px rgba(249, 87, 0, 0.08);
+}
+
+[data-theme='dark'] .maganis-coach-card {
+  background: linear-gradient(
+    135deg,
+    rgba(39, 26, 14, 0.7) 0%,
+    var(--card-bg) 100%
+  );
+  border-color: #9a3412;
 }
 
 .maganis-coach-avatar-wrapper {
@@ -2549,20 +2695,80 @@ button.ghost-danger:hover {
   gap: 6px;
 }
 
+[data-theme='dark'] .maganis-coach-title {
+  color: var(--accent);
+}
+
 .maganis-speech-bubble {
-  background: #ffffff;
-  border: 1px solid #fed7aa;
+  background: var(--bubble-bg);
+  border: 1px solid var(--bubble-border);
   border-radius: 12px;
   padding: 12px 16px;
   font-size: 14px;
   line-height: 1.6;
-  color: #334155;
+  color: var(--ink);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   position: relative;
 }
 
+[data-theme='dark'] .maganis-speech-bubble {
+  background: #151e2e;
+  border-color: #9a3412;
+  color: #f8fafc;
+}
+
 .maganis-speech-bubble strong {
   color: #ea580c;
+}
+
+/* Theme Toggle Switch in Settings */
+.theme-switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--card-subtle);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.theme-switch-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-switch-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.theme-switch-desc {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.theme-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--accent);
+  background: var(--card-bg);
+  color: var(--ink);
+  transition: all 0.2s ease-in-out;
+}
+
+.theme-switch-btn:hover {
+  background: var(--accent-soft);
+  transform: scale(1.02);
 }
 
 .maganis-callout-toast {

@@ -17,6 +17,8 @@ interface ActiveWorkoutSessionProps {
   customExercises?: Exercise[]
   onFinish: (session: TrackingSession) => void
   onCancel: () => void
+  onMinimize?: () => void
+  onElapsedSecondsUpdate?: (seconds: number) => void
 }
 
 interface ActiveSet {
@@ -55,6 +57,8 @@ export function ActiveWorkoutSession({
   customExercises = [],
   onFinish,
   onCancel,
+  onMinimize,
+  onElapsedSecondsUpdate,
 }: ActiveWorkoutSessionProps) {
   // --- Initialize Exercises & Sets with Refresh Recovery ---
   const [exercisesState, setExercisesState] = useState<ActiveExerciseState[]>(
@@ -121,6 +125,10 @@ export function ActiveWorkoutSession({
     }, 1000)
     return () => clearInterval(timer)
   }, [])
+
+  useEffect(() => {
+    onElapsedSecondsUpdate?.(elapsedSeconds)
+  }, [elapsedSeconds, onElapsedSecondsUpdate])
 
   // Auto-persist active session state on every update
   useEffect(() => {
@@ -333,6 +341,17 @@ export function ActiveWorkoutSession({
       {/* Top Header */}
       <header className="active-workout-header">
         <div className="header-left">
+          {onMinimize && (
+            <button
+              type="button"
+              className="button-secondary tiny"
+              onClick={onMinimize}
+              title="تصغير ومتابعة التصفح مع إبقاء الجلسة نشطة"
+              style={{ fontWeight: 700 }}
+            >
+              🔽 تصغير الجلسة
+            </button>
+          )}
           <button
             type="button"
             className="ghost-danger tiny"

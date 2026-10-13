@@ -28,6 +28,7 @@ import { ExerciseLibraryModal } from './modules/workout/ExerciseLibraryModal.tsx
 import { CustomScheduleModal } from './modules/workout/CustomScheduleModal.tsx'
 import { ProgramVaultModal } from './modules/workout/ProgramVaultModal.tsx'
 import { ActiveWorkoutSession } from './modules/workout/ActiveWorkoutSession.tsx'
+import { formatTime } from './modules/workout/workoutUtils.ts'
 import { generateProgram } from './modules/workout/programGenerator.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
 import { BodyWeightTracker } from './modules/tracking/BodyWeightTracker.tsx'
@@ -112,6 +113,13 @@ export function App({ config }: AppProps) {
       return null
     },
   )
+  const [isWorkoutSessionExpanded, setIsWorkoutSessionExpanded] = useState(
+    () => {
+      // If there's an ongoing restored session, keep it available
+      return false
+    },
+  )
+  const [activeSessionSeconds, setActiveSessionSeconds] = useState(0)
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false)
   const [showCustomScheduleModal, setShowCustomScheduleModal] = useState(false)
   const [showProgramVaultModal, setShowProgramVaultModal] = useState(false)
@@ -157,9 +165,15 @@ export function App({ config }: AppProps) {
 
   useEffect(() => {
     if (activeTab !== 'dashboard') {
-      return navigationHistory.push(`tab-${activeTab}`, () => {
+      navigationHistory.setTabBackHandler(() => {
         setActiveTab('dashboard')
+        return true
       })
+    } else {
+      navigationHistory.setTabBackHandler(undefined)
+    }
+    return () => {
+      navigationHistory.setTabBackHandler(undefined)
     }
   }, [activeTab])
 
@@ -211,17 +225,13 @@ export function App({ config }: AppProps) {
   }, [showLogger])
 
   useEffect(() => {
-    if (activeWorkoutDay) {
-      return navigationHistory.push('activeWorkoutDay', () => {
-        setActiveWorkoutDay(null)
-        try {
-          localStorage.removeItem('maganis:active_session')
-        } catch {
-          // ignore
-        }
+    if (activeWorkoutDay && isWorkoutSessionExpanded) {
+      return navigationHistory.push('activeWorkoutSession', () => {
+        // Pressing back or swipe gesture minimizes the workout without cancelling it!
+        setIsWorkoutSessionExpanded(false)
       })
     }
-  }, [activeWorkoutDay])
+  }, [activeWorkoutDay, isWorkoutSessionExpanded])
 
   useEffect(() => {
     if (editing) {
@@ -236,17 +246,16 @@ export function App({ config }: AppProps) {
     setEditing(false)
   }, [])
 
-  const handleDeleted = useCallback(() => {
+  const handleFactoryReset = useCallback(() => {
+    try {
+      localStorage.clear()
+    } catch {
+      // ignore
+    }
     profileStore.clearProfile()
     profileStore.clearDraft()
     workoutStore.clearProgram()
-    storage.remove('tracking.sessions')
-    storage.remove('tracking.body-log')
-    storage.remove('tracking.notes')
-    storage.remove('workout.custom-exercises')
-    storage.remove('workout.deleted-exercises')
-    storage.remove('workout.program-vault')
-    storage.remove('backup.last-export')
+    storage.keys().forEach((k) => storage.remove(k))
     setDeletedExerciseIds([])
     setCustomExercisesList([])
     setSavedProgramsList([])
@@ -257,6 +266,8 @@ export function App({ config }: AppProps) {
     setBodyLog([])
     setDayNotes([])
     setActiveWorkoutDay(null)
+    setIsWorkoutSessionExpanded(false)
+    setActiveSessionSeconds(0)
     setConfirmDeleteAll(false)
     setActiveTab('dashboard')
   }, [profileStore, workoutStore, storage])
@@ -473,27 +484,6 @@ export function App({ config }: AppProps) {
     [profileStore, workoutStore, storage, handleImported],
   )
 
-  // --- Active live workout session overlay ---
-  if (activeWorkoutDay) {
-    return (
-      <div className="app app--workout-active">
-        <ActiveWorkoutSession
-          programDay={activeWorkoutDay}
-          customExercises={workoutStore.getCustomExercises()}
-          onFinish={handleSaveSession}
-          onCancel={() => {
-            setActiveWorkoutDay(null)
-            try {
-              localStorage.removeItem('maganis:active_session')
-            } catch {
-              // ignore
-            }
-          }}
-        />
-      </div>
-    )
-  }
-
   // --- Onboarding state ---
   if (!profile || editing) {
     return (
@@ -501,14 +491,6 @@ export function App({ config }: AppProps) {
         <header className="app-header">
           <h1 data-testid="app-title">{config.appName}</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <button
-              type="button"
-              className="theme-toggle-btn"
-              onClick={toggleTheme}
-              title={theme === 'dark' ? 'الوضع المضيء' : 'الوضع الليلي'}
-            >
-              {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
             <span
               className="env-badge"
               data-testid="env-badge"
@@ -548,7 +530,10 @@ export function App({ config }: AppProps) {
             program={program}
             recentSessions={sessions}
             bodyLog={bodyLog}
-            onStartWorkout={(day) => setActiveWorkoutDay(day)}
+            onStartWorkout={(day) => {
+              setActiveWorkoutDay(day)
+              setIsWorkoutSessionExpanded(true)
+            }}
           />
         )
 
@@ -642,7 +627,10 @@ export function App({ config }: AppProps) {
                 userInjuries={
                   profile?.medical.hasIssues ? profile.medical.injuryTags : []
                 }
-                onStartRoutine={(day) => setActiveWorkoutDay(day)}
+                onStartRoutine={(day) => {
+                  setActiveWorkoutDay(day)
+                  setIsWorkoutSessionExpanded(true)
+                }}
                 onUpdateProgram={(updated) => {
                   workoutStore.saveProgram(updated)
                   setProgram(updated)
@@ -730,7 +718,19 @@ export function App({ config }: AppProps) {
 
       case 'reports':
         return (
-          <Reports sessions={sessions} bodyLog={bodyLog} profile={profile} />
+          <Reports
+            sessions={sessions}
+            bodyLog={bodyLog}
+            profile={profile}
+            onUpdateSessions={(updated) => {
+              setSessions(updated)
+              storage.set('tracking.sessions', updated)
+            }}
+            onUpdateBodyLog={(updated) => {
+              setBodyLog(updated)
+              storage.set('tracking.body-log', updated)
+            }}
+          />
         )
 
       case 'settings': {
@@ -790,32 +790,30 @@ export function App({ config }: AppProps) {
             />
 
             <div className="card">
-              <h2>المظهر (Dark Mode)</h2>
-              <p className="muted">
-                اختر نمط الألوان المناسب لعينيك أثناء أداء التمارين والتصفح:
-              </p>
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '0.75rem',
-                  marginTop: '0.75rem',
-                }}
-              >
+              <h2>المظهر والثيم (Dark Mode)</h2>
+              <p className="muted">التحكم في الوضع الليلي والنهاري للتطبيق:</p>
+              <div className="theme-switch-container">
+                <div className="theme-switch-label">
+                  <span className="theme-switch-title">
+                    {theme === 'dark'
+                      ? 'الوضع الليلي مفعّل 🌙'
+                      : 'الوضع المضيء مفعّل ☀️'}
+                  </span>
+                  <span className="theme-switch-desc">
+                    {theme === 'dark'
+                      ? 'مظهر ليلي مريح للعينين أثناء التمرين في الإضاءة الخافتة'
+                      : 'مظهر نهاري بألوان واضحة ومتباينة'}
+                  </span>
+                </div>
                 <button
                   type="button"
-                  className={theme === 'light' ? 'primary' : ''}
-                  onClick={() => setTheme('light')}
-                  style={{ flex: 1, padding: '0.75rem' }}
+                  className="theme-switch-btn"
+                  onClick={toggleTheme}
+                  aria-label="تبديل الوضع الليلي والنهاري"
                 >
-                  ☀️ الوضع المضيء (فاتح)
-                </button>
-                <button
-                  type="button"
-                  className={theme === 'dark' ? 'primary' : ''}
-                  onClick={() => setTheme('dark')}
-                  style={{ flex: 1, padding: '0.75rem' }}
-                >
-                  🌙 الوضع الليلي (Dark Mode)
+                  {theme === 'dark'
+                    ? '☀️ التبديل إلى النهاري'
+                    : '🌙 التبديل إلى الليلي'}
                 </button>
               </div>
             </div>
@@ -848,36 +846,57 @@ export function App({ config }: AppProps) {
             </div>
 
             <div className="card settings-tab__danger">
-              <h2>منطقة الخطر</h2>
+              <h2>منطقة الخطر — إعادة ضبط المصنع الشاملة</h2>
+              <p className="muted">
+                إعادة ضبط التطبيق بالكامل ومسح كافة البيانات واستعادة الحالة
+                الأولية:
+              </p>
               {confirmDeleteAll ? (
-                <>
-                  <p style={{ color: 'var(--danger)' }}>
-                    ⚠️ سيتم حذف جميع بياناتك نهائياً. هذا الإجراء لا يمكن
-                    التراجع عنه.
+                <div
+                  style={{
+                    background: 'var(--danger-soft)',
+                    border: '1.5px solid var(--danger)',
+                    borderRadius: '10px',
+                    padding: '14px',
+                    marginTop: '10px',
+                  }}
+                >
+                  <p
+                    style={{
+                      color: 'var(--danger)',
+                      fontWeight: 700,
+                      margin: '0 0 10px',
+                    }}
+                  >
+                    ⚠️ تحذير نهائي: سيتم مسح حسابك والجدول التدريبي والتمارين
+                    المخصصة وكل سجلات التغذية والوزن بشكل نهائي، وسيعود التطبيق
+                    كما لو كنت تفتحه لأول مرة.
                   </p>
                   <div className="actions-row">
                     <button
                       type="button"
                       className="danger"
-                      onClick={handleDeleted}
+                      onClick={handleFactoryReset}
+                      style={{ fontWeight: 800 }}
                     >
-                      متأكد — احذف كل شيء
+                      🔄 تأكيد إعادة ضبط المصنع الشاملة (Factory Reset)
                     </button>
                     <button
                       type="button"
                       onClick={() => setConfirmDeleteAll(false)}
                     >
-                      إلغاء
+                      إلغاء التراجع
                     </button>
                   </div>
-                </>
+                </div>
               ) : (
                 <button
                   type="button"
                   className="ghost-danger"
                   onClick={() => setConfirmDeleteAll(true)}
+                  style={{ marginTop: '10px', fontWeight: 800 }}
                 >
-                  حذف كل البيانات
+                  🔄 إعادة ضبط المصنع الشاملة (Factory Reset)
                 </button>
               )}
             </div>
@@ -888,116 +907,192 @@ export function App({ config }: AppProps) {
   }
 
   return (
-    <div className="app app--shell">
-      <header className="app-header">
-        <div className="maganis-header-brand">
-          <img
-            src={assetUrl('branding/maganis-mascot-inner.png')}
-            alt="د. مجانص"
-            className="maganis-header-mascot"
+    <>
+      {activeWorkoutDay && (
+        <div
+          className="app app--workout-active"
+          style={{ display: isWorkoutSessionExpanded ? 'block' : 'none' }}
+        >
+          <ActiveWorkoutSession
+            programDay={activeWorkoutDay}
+            customExercises={workoutStore.getCustomExercises()}
+            onFinish={(session) => {
+              handleSaveSession(session)
+              setActiveWorkoutDay(null)
+              setIsWorkoutSessionExpanded(false)
+            }}
+            onCancel={() => {
+              setActiveWorkoutDay(null)
+              setIsWorkoutSessionExpanded(false)
+              try {
+                localStorage.removeItem('maganis:active_session')
+              } catch {
+                // ignore
+              }
+            }}
+            onMinimize={() => setIsWorkoutSessionExpanded(false)}
+            onElapsedSecondsUpdate={(secs) => setActiveSessionSeconds(secs)}
           />
-          <div className="maganis-brand-title">
-            <h1 data-testid="app-title">{config.appName}</h1>
-            <span className="maganis-brand-subtitle">
-              💪 الطبيب والمدرب الرياضي الشخصي
+        </div>
+      )}
+
+      <div
+        className="app app--shell"
+        style={{ display: isWorkoutSessionExpanded ? 'none' : 'flex' }}
+      >
+        <header className="app-header">
+          <div className="maganis-header-brand">
+            <img
+              src={assetUrl('branding/maganis-mascot-inner.png')}
+              alt="د. مجانص"
+              className="maganis-header-mascot"
+            />
+            <div className="maganis-brand-title">
+              <h1 data-testid="app-title">{config.appName}</h1>
+              <span className="maganis-brand-subtitle">
+                💪 الطبيب والمدرب الرياضي الشخصي
+              </span>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span
+              className="env-badge"
+              data-testid="env-badge"
+              data-env={config.appEnv}
+            >
+              {config.appEnv}
             </span>
           </div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <button
-            type="button"
-            className="theme-toggle-btn"
-            onClick={toggleTheme}
-            title={
-              theme === 'dark'
-                ? 'تفعيل الوضع المضيء'
-                : 'تفعيل الوضع الليلي (Dark Mode)'
-            }
-            aria-label="تبديل الوضع الليلي والنهاري"
-          >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
-          <span
-            className="env-badge"
-            data-testid="env-badge"
-            data-env={config.appEnv}
-          >
-            {config.appEnv}
-          </span>
-        </div>
-      </header>
+        </header>
 
-      <main className="app-main">{renderContent()}</main>
-
-      <nav className="bottom-nav" data-testid="bottom-nav">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            data-testid={`tab-${tab.id}`}
-            className={`bottom-nav__item${activeTab === tab.id ? ' bottom-nav__item--active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            <span className="bottom-nav__icon">{tab.icon}</span>
-            <span className="bottom-nav__label">{tab.label}</span>
-          </button>
-        ))}
-      </nav>
-
-      {showAtlasDebugModal && (
-        <div
-          className="modal-backdrop"
-          onClick={() => setShowAtlasDebugModal(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '16px',
-          }}
-        >
+        {activeWorkoutDay && !isWorkoutSessionExpanded && (
           <div
-            onClick={(e) => e.stopPropagation()}
+            className="active-workout-sticky-banner"
+            data-testid="active-workout-sticky-banner"
+          >
+            <div className="banner-info-section">
+              <span className="banner-pulse-dot" />
+              <div className="banner-timer-badge">
+                ⏱️ {formatTime(activeSessionSeconds)}
+              </div>
+              <div className="banner-text">
+                <strong className="banner-title">
+                  {activeWorkoutDay.labelAr}
+                </strong>
+                <span className="banner-focus">{activeWorkoutDay.focus}</span>
+              </div>
+            </div>
+            <div className="banner-actions-section">
+              <button
+                type="button"
+                className="button-primary small banner-resume-btn"
+                onClick={() => setIsWorkoutSessionExpanded(true)}
+              >
+                📲 العودة للجلسة
+              </button>
+              <button
+                type="button"
+                className="button-success small"
+                onClick={() => setIsWorkoutSessionExpanded(true)}
+              >
+                🏁 إنهاء وحفظ
+              </button>
+              <button
+                type="button"
+                className="ghost-danger tiny"
+                onClick={() => {
+                  const confirmed = window.confirm(
+                    'هل أنت متأكد من إلغاء جلسة التمرين الحالية؟ سيتم مسح بيانات هذه الجلسة.',
+                  )
+                  if (confirmed) {
+                    setActiveWorkoutDay(null)
+                    setIsWorkoutSessionExpanded(false)
+                    try {
+                      localStorage.removeItem('maganis:active_session')
+                    } catch {
+                      // ignore
+                    }
+                  }
+                }}
+              >
+                ✕ إلغاء
+              </button>
+            </div>
+          </div>
+        )}
+
+        <main className="app-main">{renderContent()}</main>
+
+        <nav className="bottom-nav" data-testid="bottom-nav">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              data-testid={`tab-${tab.id}`}
+              className={`bottom-nav__item${activeTab === tab.id ? ' bottom-nav__item--active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <span className="bottom-nav__icon">{tab.icon}</span>
+              <span className="bottom-nav__label">{tab.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {showAtlasDebugModal && (
+          <div
+            className="modal-backdrop"
+            onClick={() => setShowAtlasDebugModal(false)}
             style={{
-              width: '100%',
-              maxWidth: '720px',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.7)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9999,
+              padding: '16px',
             }}
           >
-            <MuscleAtlasDebug onClose={() => setShowAtlasDebugModal(false)} />
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: '100%',
+                maxWidth: '720px',
+                maxHeight: '90vh',
+                overflowY: 'auto',
+              }}
+            >
+              <MuscleAtlasDebug onClose={() => setShowAtlasDebugModal(false)} />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {backToastMessage && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: '75px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(15, 23, 42, 0.94)',
-            color: '#ffffff',
-            padding: '10px 22px',
-            borderRadius: '999px',
-            fontSize: '13px',
-            fontWeight: 700,
-            zIndex: 99999,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-            pointerEvents: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          <span>👈</span>
-          <span>{backToastMessage}</span>
-        </div>
-      )}
-    </div>
+        {backToastMessage && (
+          <div
+            style={{
+              position: 'fixed',
+              bottom: '75px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(15, 23, 42, 0.94)',
+              color: '#ffffff',
+              padding: '10px 22px',
+              borderRadius: '999px',
+              fontSize: '13px',
+              fontWeight: 700,
+              zIndex: 99999,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+              pointerEvents: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <span>👈</span>
+            <span>{backToastMessage}</span>
+          </div>
+        )}
+      </div>
+    </>
   )
 }

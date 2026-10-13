@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maganis-v3'
+const CACHE_NAME = 'maganis-v4'
 
 // Use the service worker's own scope to determine the base path
 // This makes it work on both localhost (/) and GitHub Pages (/maganis-app/)

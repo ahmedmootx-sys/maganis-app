@@ -10,9 +10,11 @@ type BackHandler = () => boolean | void // return false to prevent default pop
 class NavigationHistoryManager {
   private handlerStack: Array<{ id: string; handler: BackHandler }> = []
   private isPushing = false
+  private isProgrammaticBack = false
   private lastBackPressTime = 0
   private exitToastTimeout: ReturnType<typeof setTimeout> | null = null
   private onShowToast?: (msg: string) => void
+  private tabBackHandler?: () => boolean | void
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -22,6 +24,10 @@ class NavigationHistoryManager {
 
   public setOnShowToast(cb: (msg: string) => void) {
     this.onShowToast = cb
+  }
+
+  public setTabBackHandler(handler?: () => boolean | void) {
+    this.tabBackHandler = handler
   }
 
   /**
@@ -50,11 +56,12 @@ class NavigationHistoryManager {
     if (idx !== -1) {
       this.handlerStack.splice(idx, 1)
       // If the top state was removed manually (e.g. user clicked Close button),
-      // we can optionally step back in history if the current state matched it
+      // step back in history without triggering handler execution
       if (
         typeof window !== 'undefined' &&
         window.history.state?.maganisBackId === id
       ) {
+        this.isProgrammaticBack = true
         window.history.back()
       }
     }
@@ -62,6 +69,11 @@ class NavigationHistoryManager {
 
   private handlePopState = () => {
     if (this.isPushing) return
+
+    if (this.isProgrammaticBack) {
+      this.isProgrammaticBack = false
+      return
+    }
 
     // 1. If there's an active modal or overlay handler in the stack, pop and execute it
     if (this.handlerStack.length > 0) {
@@ -76,7 +88,16 @@ class NavigationHistoryManager {
       return
     }
 
-    // 2. If stack is empty, check root back behavior
+    // 2. If no modal is open, check if tab back handler wants to return to dashboard
+    if (this.tabBackHandler) {
+      const handled = this.tabBackHandler()
+      if (handled) {
+        window.history.pushState({ maganisRoot: true }, '')
+        return
+      }
+    }
+
+    // 3. If stack is empty and at root, check double-press exit behavior
     const now = Date.now()
     if (now - this.lastBackPressTime < 2000) {
       // Second back press within 2s: allow normal exit / back

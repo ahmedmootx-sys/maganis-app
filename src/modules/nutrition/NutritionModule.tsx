@@ -20,6 +20,7 @@ import {
   type WorkoutBlockInput,
 } from './nutritionEngine.ts'
 import { QuickManualMealModal } from './QuickManualMealModal.tsx'
+import { MacroGuideModal } from './MacroGuideModal.tsx'
 import type { CustomMeal, DailyNutritionLog, MealCategory } from './types.ts'
 
 interface NutritionModuleProps {
@@ -2427,6 +2428,10 @@ export function NutritionModule({
             </div>
           </div>
         </div>
+      )}
+
+      {showMacroGuide && (
+        <MacroGuideModal onClose={() => setShowMacroGuide(false)} />
       )}
     </div>
   )

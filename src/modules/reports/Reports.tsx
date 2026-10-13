@@ -9,6 +9,8 @@ interface ReportsProps {
   sessions: TrackingSession[]
   bodyLog: BodyLogEntry[]
   profile?: UserProfile | null
+  onUpdateSessions?: (sessions: TrackingSession[]) => void
+  onUpdateBodyLog?: (bodyLog: BodyLogEntry[]) => void
 }
 
 type DateRange = '4w' | '12w' | '1y' | 'all'
@@ -39,8 +41,134 @@ function weekLabel(weekStart: string): string {
   return `${d.getDate()}/${d.getMonth() + 1}`
 }
 
-export function Reports({ sessions, bodyLog, profile }: ReportsProps) {
+export function Reports({
+  sessions,
+  bodyLog,
+  profile,
+  onUpdateSessions,
+  onUpdateBodyLog,
+}: ReportsProps) {
   const [range, setRange] = useState<DateRange>('4w')
+  const [resetNonce, setResetNonce] = useState(0)
+  const [reportStatusMessage, setReportStatusMessage] = useState<string | null>(
+    null,
+  )
+
+  function showMessage(msg: string) {
+    setReportStatusMessage(msg)
+    setTimeout(() => setReportStatusMessage(null), 3500)
+  }
+
+  function handleExportReports() {
+    try {
+      const allNutritionLogs: { key: string; value: unknown }[] = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith('maganis:daily_nutrition_')) {
+          const raw = localStorage.getItem(k)
+          if (raw) {
+            allNutritionLogs.push({ key: k, value: JSON.parse(raw) })
+          }
+        }
+      }
+
+      const exportPayload = {
+        type: 'maganis-reports-backup',
+        version: 1,
+        exportedAt: Date.now(),
+        exportedDate: new Date().toISOString(),
+        sessions,
+        bodyLog,
+        nutritionLogs: allNutritionLogs,
+      }
+
+      const jsonStr = JSON.stringify(exportPayload, null, 2)
+      const blob = new Blob([jsonStr], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      const todayStr = new Date().toISOString().split('T')[0]
+      a.href = url
+      a.download = `maganis-reports-${todayStr}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      showMessage('✓ تم تصدير ملف التقارير بنجاح!')
+    } catch (e) {
+      console.error(e)
+      alert('حدث خطأ أثناء تصدير التقارير.')
+    }
+  }
+
+  function handleImportReports(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (evt) => {
+      try {
+        const content = evt.target?.result as string
+        const parsed = JSON.parse(content)
+        if (
+          parsed.type !== 'maganis-reports-backup' ||
+          !Array.isArray(parsed.sessions)
+        ) {
+          alert(
+            'ملف غير صالح! يرجى اختيار ملف تقارير صالح تم تصديره من تطبيق مجانص.',
+          )
+          return
+        }
+
+        if (Array.isArray(parsed.sessions) && onUpdateSessions) {
+          onUpdateSessions(parsed.sessions)
+        }
+        if (Array.isArray(parsed.bodyLog) && onUpdateBodyLog) {
+          onUpdateBodyLog(parsed.bodyLog)
+        }
+        if (Array.isArray(parsed.nutritionLogs)) {
+          for (const item of parsed.nutritionLogs) {
+            if (item.key && item.value) {
+              localStorage.setItem(item.key, JSON.stringify(item.value))
+            }
+          }
+        }
+        setResetNonce((p) => p + 1)
+        showMessage('✓ تم استيراد بيانات وسجلات التقارير بنجاح!')
+      } catch (err) {
+        console.error(err)
+        alert('تعذر قراءة ملف التقارير. تأكد من سلامة ملف JSON.')
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
+
+  function handleResetReports() {
+    const confirmed = window.confirm(
+      '⚠️ هل أنت متأكد من تصفير (Reset) كافة بيانات وسجلات التقارير والتغذية والوزن؟\nلن يتم المساس بملفك الشخصي أو جدولك التدريبي.',
+    )
+    if (!confirmed) return
+
+    try {
+      if (onUpdateSessions) onUpdateSessions([])
+      if (onUpdateBodyLog) onUpdateBodyLog([])
+
+      const keysToRemove: string[] = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith('maganis:daily_nutrition_')) {
+          keysToRemove.push(k)
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k))
+
+      setResetNonce((p) => p + 1)
+      showMessage('✓ تم تصفير سجلات التقارير بنجاح.')
+    } catch (e) {
+      console.error(e)
+      alert('حدث خطأ أثناء تصفير التقارير.')
+    }
+  }
 
   const cutoff = useMemo(() => {
     if (range === 'all') return new Date(0)
@@ -70,6 +198,9 @@ export function Reports({ sessions, bodyLog, profile }: ReportsProps) {
       }[]
     }[] = []
 
+    // Re-read storage whenever resetNonce changes
+    void resetNonce
+
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i)
@@ -91,7 +222,7 @@ export function Reports({ sessions, bodyLog, profile }: ReportsProps) {
     }
 
     return list.sort((a, b) => a.date.localeCompare(b.date))
-  }, [cutoff])
+  }, [cutoff, resetNonce])
 
   const targetCalories = targets?.targetCalories ?? 2000
   const targetProtein = targets?.proteinGrams ?? 140
@@ -245,7 +376,112 @@ export function Reports({ sessions, bodyLog, profile }: ReportsProps) {
 
   return (
     <div className="reports">
-      <h2 className="reports__title">📈 التقارير والإحصائيات الشاملة</h2>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px',
+          marginBottom: '16px',
+        }}
+      >
+        <h2 className="reports__title" style={{ margin: 0 }}>
+          📈 التقارير والإحصائيات الشاملة
+        </h2>
+        {reportStatusMessage && (
+          <span
+            style={{
+              fontSize: '12.5px',
+              fontWeight: 700,
+              color: 'var(--accent)',
+              background: 'var(--accent-soft)',
+              padding: '4px 12px',
+              borderRadius: '999px',
+              border: '1px solid var(--accent)',
+            }}
+          >
+            {reportStatusMessage}
+          </span>
+        )}
+      </div>
+
+      {/* Reports Data Management (Export / Import / Reset) */}
+      <div
+        className="card reports-management-card"
+        style={{
+          border: '1.5px solid var(--accent)',
+          background: 'var(--card-bg)',
+          padding: '14px 16px',
+          marginBottom: '16px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '10px',
+          }}
+        >
+          <div>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: '15px',
+                color: 'var(--accent)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              📊 إدارة بيانات وسجلات التقارير
+            </h3>
+            <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+              تصدير واستيراد وإعادة تعيين سجلات التمارين والتغذية والوزن بشكل
+              منفصل
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="button-primary small"
+              onClick={handleExportReports}
+              style={{ fontWeight: 700 }}
+            >
+              💾 تصدير التقارير (JSON)
+            </button>
+            <label
+              className="button-secondary small"
+              style={{
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                margin: 0,
+                fontWeight: 700,
+              }}
+            >
+              📥 استيراد تقارير
+              <input
+                type="file"
+                accept=".json"
+                style={{ display: 'none' }}
+                onChange={handleImportReports}
+              />
+            </label>
+            <button
+              type="button"
+              className="ghost-danger tiny"
+              onClick={handleResetReports}
+              style={{ fontWeight: 700 }}
+            >
+              🗑️ تصفير التقارير (Reset)
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div className="reports__range-selector">
         {(Object.keys(RANGE_LABELS) as DateRange[]).map((r) => (
