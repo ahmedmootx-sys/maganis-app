@@ -2455,13 +2455,18 @@ button.ghost-danger:hover {
 }
 
 .maganis-header-mascot {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  object-fit: cover;
-  border: 2px solid #f95700;
-  box-shadow: 0 4px 12px rgba(249, 87, 0, 0.25);
-  background: #ffffff;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  object-fit: contain;
+  border: none;
+  background: transparent;
+  box-shadow: 0 4px 14px rgba(249, 87, 0, 0.25);
+  transition: transform 0.2s ease-in-out;
+}
+
+.maganis-header-mascot:hover {
+  transform: scale(1.06);
 }
 
 .maganis-brand-title {
@@ -2483,22 +2488,16 @@ button.ghost-danger:hover {
 }
 
 .maganis-transparent-mascot {
-  height: 110px;
-  width: auto;
+  width: 96px;
+  height: 96px;
   object-fit: contain;
-  filter: drop-shadow(0 6px 14px rgba(249, 87, 0, 0.25));
+  border-radius: 18px;
+  filter: drop-shadow(0 6px 16px rgba(249, 87, 0, 0.25));
   transition: transform 0.2s ease-in-out;
 }
 
 .maganis-transparent-mascot:hover {
-  transform: scale(1.04) rotate(1deg);
-}
-
-.maganis-header-mascot {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(249, 87, 0, 0.3));
+  transform: scale(1.05) rotate(1deg);
 }
 
 .maganis-coach-card {

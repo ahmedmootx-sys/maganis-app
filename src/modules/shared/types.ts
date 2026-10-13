@@ -46,15 +46,40 @@ export interface Exercise {
   isProvisionalMuscles?: boolean
 }
 
-export type ExerciseSection = 'warmup' | 'primary' | 'flexibility_core'
+export type ExerciseSection =
+  'warmup' | 'primary' | 'flexibility_core' | (string & {})
+
+export interface DaySectionConfig {
+  id: string
+  labelAr: string
+  icon: string
+}
+
+export const DEFAULT_DAY_SECTIONS: DaySectionConfig[] = [
+  { id: 'warmup', labelAr: 'تمارين الإحماء والتسخين', icon: '🔥' },
+  { id: 'primary', labelAr: 'التمارين الأساسية', icon: '🏋️' },
+  { id: 'flexibility_core', labelAr: 'المرونة، الثبات والتهدئة', icon: '🧘' },
+]
+
+export const PRESET_DAY_SECTIONS: DaySectionConfig[] = [
+  { id: 'warmup', labelAr: 'تمارين الإحماء والتسخين', icon: '🔥' },
+  { id: 'primary', labelAr: 'التمارين الأساسية', icon: '🏋️' },
+  { id: 'cardio', labelAr: 'تمارين الكارديو واللياقة', icon: '🏃' },
+  { id: 'flexibility_core', labelAr: 'المرونة، الثبات والتهدئة', icon: '🧘' },
+  { id: 'core_abs', labelAr: 'تمارين البطن والكور', icon: '🍫' },
+  { id: 'arms_grip', labelAr: 'تمارين الساعد والقبضة', icon: '🦾' },
+]
 
 export const EXERCISE_SECTION_LABELS: Record<
-  ExerciseSection,
+  string,
   { labelAr: string; icon: string }
 > = {
   warmup: { labelAr: 'تمارين الإحماء والتسخين', icon: '🔥' },
   primary: { labelAr: 'التمارين الأساسية', icon: '🏋️' },
   flexibility_core: { labelAr: 'المرونة، الثبات والتهدئة', icon: '🧘' },
+  cardio: { labelAr: 'تمارين الكارديو واللياقة', icon: '🏃' },
+  core_abs: { labelAr: 'تمارين البطن والكور', icon: '🍫' },
+  arms_grip: { labelAr: 'تمارين الساعد والقبضة', icon: '🦾' },
 }
 
 export type MuscleRole = 'primary' | 'secondary'
@@ -82,6 +107,7 @@ export interface ProgramDay {
   labelAr: string
   focus: string
   exercises: ProgramExercise[]
+  sections?: DaySectionConfig[]
 }
 
 export type WorkoutSplitType =

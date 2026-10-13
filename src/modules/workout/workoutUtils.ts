@@ -162,6 +162,48 @@ export function downloadRoutineFile(
 }
 
 /**
+ * Shares the routine file directly via Web Share API (WhatsApp, Telegram, etc.)
+ * Falls back to standard download if Web Share API is not supported.
+ */
+export async function shareRoutineFile(
+  program: WorkoutProgram,
+  title = 'جدول تمارين مجانص',
+): Promise<{ shared: boolean; method: 'native' | 'download' }> {
+  const json = exportRoutineToJson(program, title)
+  const safeTitle = title.replace(/[^\w\u0600-\u06FF-]/g, '_')
+  const fileName = `maganis-routine-${safeTitle}-${new Date().toISOString().split('T')[0]}.json`
+  const blob = new Blob([json], { type: 'application/json' })
+
+  if (
+    typeof navigator !== 'undefined' &&
+    typeof navigator.share === 'function'
+  ) {
+    try {
+      const file = new File([blob], fileName, { type: 'application/json' })
+      if (
+        typeof navigator.canShare === 'function' &&
+        navigator.canShare({ files: [file] })
+      ) {
+        await navigator.share({
+          files: [file],
+          title: `جدول تمارين مجانص: ${title}`,
+          text: `إليك جدول تمارين (${title}) من تطبيق مجانص — يمكنك استيراده في التطبيق مباشرة!`,
+        })
+        return { shared: true, method: 'native' }
+      }
+    } catch (err: unknown) {
+      if ((err as Error)?.name === 'AbortError') {
+        return { shared: false, method: 'native' }
+      }
+    }
+  }
+
+  // Fallback to downloading
+  downloadRoutineFile(program, title)
+  return { shared: true, method: 'download' }
+}
+
+/**
  * Validates and parses an imported routine JSON string.
  */
 export function parseAndValidateRoutineJson(

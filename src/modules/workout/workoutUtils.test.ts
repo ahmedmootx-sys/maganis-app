@@ -77,4 +77,53 @@ describe('workoutUtils', () => {
     const syntaxError = parseAndValidateRoutineJson('not json at all')
     expect(syntaxError.success).toBe(false)
   })
+
+  it('shares routine file via Web Share API when supported or falls back to download', async () => {
+    const sampleProgram = {
+      id: 'test-prog-share',
+      createdAt: 12345678,
+      primaryGoal: 'hypertrophy' as const,
+      trainingDaysPerWeek: 1,
+      days: [
+        {
+          dayIndex: 0,
+          labelAr: 'اليوم الأول',
+          focus: 'كارديو',
+          exercises: [],
+        },
+      ],
+    }
+
+    // Mock navigator.share
+    const originalShare = navigator.share
+    const originalCanShare = navigator.canShare
+    let sharedPayload: unknown = null
+
+    Object.defineProperty(navigator, 'canShare', {
+      value: () => true,
+      configurable: true,
+    })
+    Object.defineProperty(navigator, 'share', {
+      value: async (data: unknown) => {
+        sharedPayload = data
+      },
+      configurable: true,
+    })
+
+    const { shareRoutineFile } = await import('./workoutUtils.ts')
+    const res = await shareRoutineFile(sampleProgram, 'جدول مشاركة')
+    expect(res.shared).toBe(true)
+    expect(res.method).toBe('native')
+    expect(sharedPayload).not.toBeNull()
+
+    // Restore
+    Object.defineProperty(navigator, 'share', {
+      value: originalShare,
+      configurable: true,
+    })
+    Object.defineProperty(navigator, 'canShare', {
+      value: originalCanShare,
+      configurable: true,
+    })
+  })
 })

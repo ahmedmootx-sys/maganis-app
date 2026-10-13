@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { AppConfig } from './config/appConfig.ts'
 import { assetUrl } from './utils/assetUrl.ts'
 import { createStorage } from './lib/storage.ts'
+import { navigationHistory } from './utils/navigationHistory.ts'
 import { createLiveFileSyncManager } from './lib/liveFileSync.ts'
 import { createProfileStore } from './modules/onboarding/profileStore.ts'
 import { OnboardingWizard } from './modules/onboarding/OnboardingWizard.tsx'
@@ -143,6 +144,90 @@ export function App({ config }: AppProps) {
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }, [])
+
+  // --- Mobile Back Gesture & Hardware Back Button Handling ---
+  const [backToastMessage, setBackToastMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    navigationHistory.setOnShowToast((msg) => {
+      setBackToastMessage(msg)
+      setTimeout(() => setBackToastMessage(null), 2500)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (activeTab !== 'dashboard') {
+      return navigationHistory.push(`tab-${activeTab}`, () => {
+        setActiveTab('dashboard')
+      })
+    }
+  }, [activeTab])
+
+  useEffect(() => {
+    if (showExerciseLibrary) {
+      return navigationHistory.push('exerciseLibrary', () =>
+        setShowExerciseLibrary(false),
+      )
+    }
+  }, [showExerciseLibrary])
+
+  useEffect(() => {
+    if (showCustomBuilder) {
+      return navigationHistory.push('customBuilder', () => {
+        setShowCustomBuilder(false)
+        setEditingCustomExercise(null)
+      })
+    }
+  }, [showCustomBuilder])
+
+  useEffect(() => {
+    if (showCustomScheduleModal) {
+      return navigationHistory.push('scheduleModal', () =>
+        setShowCustomScheduleModal(false),
+      )
+    }
+  }, [showCustomScheduleModal])
+
+  useEffect(() => {
+    if (showProgramVaultModal) {
+      return navigationHistory.push('vaultModal', () =>
+        setShowProgramVaultModal(false),
+      )
+    }
+  }, [showProgramVaultModal])
+
+  useEffect(() => {
+    if (showAtlasDebugModal) {
+      return navigationHistory.push('atlasDebugModal', () =>
+        setShowAtlasDebugModal(false),
+      )
+    }
+  }, [showAtlasDebugModal])
+
+  useEffect(() => {
+    if (showLogger) {
+      return navigationHistory.push('loggerModal', () => setShowLogger(false))
+    }
+  }, [showLogger])
+
+  useEffect(() => {
+    if (activeWorkoutDay) {
+      return navigationHistory.push('activeWorkoutDay', () => {
+        setActiveWorkoutDay(null)
+        try {
+          localStorage.removeItem('maganis:active_session')
+        } catch {
+          // ignore
+        }
+      })
+    }
+  }, [activeWorkoutDay])
+
+  useEffect(() => {
+    if (editing) {
+      return navigationHistory.push('editingProfile', () => setEditing(false))
+    }
+  }, [editing])
 
   // --- Handlers ---
 
@@ -885,6 +970,32 @@ export function App({ config }: AppProps) {
           >
             <MuscleAtlasDebug onClose={() => setShowAtlasDebugModal(false)} />
           </div>
+        </div>
+      )}
+
+      {backToastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '75px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(15, 23, 42, 0.94)',
+            color: '#ffffff',
+            padding: '10px 22px',
+            borderRadius: '999px',
+            fontSize: '13px',
+            fontWeight: 700,
+            zIndex: 99999,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <span>👈</span>
+          <span>{backToastMessage}</span>
         </div>
       )}
     </div>

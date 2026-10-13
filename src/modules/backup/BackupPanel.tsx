@@ -68,6 +68,22 @@ export function BackupPanel({
     }
   }
 
+  async function handleShare() {
+    setError('')
+    setStatus('جاري فتح خيارات المشاركة...')
+    try {
+      const ok = await store.shareData(backupData())
+      if (ok) {
+        setStatus('تمت المشاركة بنجاح ✓')
+      } else {
+        setStatus('')
+      }
+    } catch (e) {
+      setError(String(e))
+      setStatus('')
+    }
+  }
+
   async function handleExport() {
     setError('')
     setStatus('جاري تصدير البيانات...')
@@ -169,14 +185,26 @@ export function BackupPanel({
       )}
 
       <h3 style={{ marginTop: '16px', marginBottom: '8px' }}>
-        تصدير واستيراد يدوي:
+        تصدير ومشاركة أو استيراد يدوي:
       </h3>
       <div className="actions-row">
-        <button type="button" onClick={handleExport}>
-          📤 تصدير ملف النسخة
+        <button
+          type="button"
+          className="button-primary"
+          onClick={handleShare}
+          title="مشاركة ملف النسخة الاحتياطية مباشرة عبر واتساب أو تليجرام أو تطبيقات المراسلة"
+        >
+          📲 مشاركة مباشرة (واتساب/تليجرام)
+        </button>
+        <button
+          type="button"
+          onClick={handleExport}
+          title="حفظ وتنزيل ملف النسخة كملف على جهازك"
+        >
+          💾 حفظ وتنزيل كملف
         </button>
         <button type="button" onClick={triggerFileInput}>
-          📥 استيراد ملف النسخة
+          📥 استيراد ملف
         </button>
       </div>
 

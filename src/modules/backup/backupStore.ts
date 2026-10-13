@@ -2,6 +2,7 @@ import type { BackupData } from '../shared/types.ts'
 
 export interface BackupStore {
   exportData(allData: BackupData): Promise<boolean>
+  shareData(allData: BackupData): Promise<boolean>
   importData(
     file: File,
   ): Promise<{ ok: boolean; data?: BackupData; error?: string }>
@@ -91,6 +92,38 @@ export function createBackupStore(): BackupStore {
     return true
   }
 
+  async function shareData(allData: BackupData): Promise<boolean> {
+    const json = JSON.stringify(allData, null, 2)
+    const blob = new Blob([json], { type: 'application/json' })
+    const filename = `maganis-backup-${new Date().toISOString().slice(0, 10)}.json`
+
+    if (
+      typeof navigator !== 'undefined' &&
+      typeof navigator.share === 'function'
+    ) {
+      try {
+        const file = new File([blob], filename, { type: 'application/json' })
+        if (
+          typeof navigator.canShare === 'function' &&
+          navigator.canShare({ files: [file] })
+        ) {
+          await navigator.share({
+            files: [file],
+            title: 'نسخة احتياطية من تطبيق مجانص',
+            text: 'إليك ملف النسخة الاحتياطية لبياناتك من تطبيق مجانص (Maganis).',
+          })
+          recordExport()
+          return true
+        }
+      } catch (err: unknown) {
+        if ((err as Error)?.name === 'AbortError') {
+          return false
+        }
+      }
+    }
+    return exportData(allData)
+  }
+
   async function importData(
     file: File,
   ): Promise<{ ok: boolean; data?: BackupData; error?: string }> {
@@ -172,6 +205,7 @@ export function createBackupStore(): BackupStore {
 
   return {
     exportData,
+    shareData,
     importData,
     shouldShowReminder,
     recordExport,
