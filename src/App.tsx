@@ -38,6 +38,7 @@ import { Reports } from './modules/reports/Reports.tsx'
 import { BackupPanel } from './modules/backup/BackupPanel.tsx'
 import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
 import { MuscleAtlasDebug } from './modules/workout/MuscleAtlasDebug.tsx'
+import { Toast } from './components/Toast.tsx'
 import './styles/app.css'
 
 type TabId =
@@ -159,7 +160,7 @@ export function App({ config }: AppProps) {
   useEffect(() => {
     navigationHistory.setOnShowToast((msg) => {
       setBackToastMessage(msg)
-      setTimeout(() => setBackToastMessage(null), 2500)
+      setTimeout(() => setBackToastMessage(null), 3000)
     })
   }, [])
 
@@ -1067,31 +1068,11 @@ export function App({ config }: AppProps) {
           </div>
         )}
 
-        {backToastMessage && (
-          <div
-            style={{
-              position: 'fixed',
-              bottom: '75px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              background: 'rgba(15, 23, 42, 0.94)',
-              color: '#ffffff',
-              padding: '10px 22px',
-              borderRadius: '999px',
-              fontSize: '13px',
-              fontWeight: 700,
-              zIndex: 99999,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-              pointerEvents: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <span>👈</span>
-            <span>{backToastMessage}</span>
-          </div>
-        )}
+        <Toast
+          message={backToastMessage}
+          icon="👈"
+          onDismiss={() => setBackToastMessage(null)}
+        />
       </div>
     </>
   )

@@ -9,6 +9,7 @@ import {
   MUSCLE_GROUP_LABELS,
   type MuscleGroup,
 } from '../shared/types.ts'
+import { Select } from '../../components/Select'
 
 interface ExerciseLibraryModalProps {
   customExercises?: Exercise[]
@@ -283,49 +284,63 @@ export function ExerciseLibraryModal({
                   }}
                 >
                   {/* Category Filter */}
-                  <select
+                  <Select
+                    id="library-category-filter"
                     value={categoryFilter}
-                    onChange={(e) => {
-                      setCategoryFilter(e.target.value)
-                      setSubMuscleFilter('all') // Reset submuscle filter when category changes
+                    onChange={(val) => {
+                      setCategoryFilter(val)
+                      setSubMuscleFilter('all')
                     }}
-                  >
-                    <option value="all">
-                      جميع العضلات ({activeExercises.length})
-                    </option>
-                    {Object.entries(MUSCLE_GROUP_LABELS).map(([val, label]) => (
-                      <option key={val} value={val}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
+                    options={[
+                      {
+                        value: 'all',
+                        labelAr: `جميع العضلات (${activeExercises.length})`,
+                      },
+                      ...Object.entries(MUSCLE_GROUP_LABELS).map(
+                        ([val, label]) => ({
+                          value: val,
+                          labelAr: label,
+                        }),
+                      ),
+                    ]}
+                    sheetTitle="تصفية حسب المجموعة العضلية"
+                  />
 
                   {/* Sub-Muscle Specificity Filter */}
-                  <select
+                  <Select
+                    id="library-submuscle-filter"
                     value={subMuscleFilter}
-                    onChange={(e) => setSubMuscleFilter(e.target.value)}
+                    onChange={(val) => setSubMuscleFilter(val)}
                     disabled={availableSubMuscles.length === 0}
-                  >
-                    <option value="all">🎯 كل الرؤوس العضلية التفصيلية</option>
-                    {availableSubMuscles.map((sub) => (
-                      <option key={sub} value={sub}>
-                        🎯 {sub}
-                      </option>
-                    ))}
-                  </select>
+                    options={[
+                      {
+                        value: 'all',
+                        labelAr: 'كل الرؤوس العضلية التفصيلية',
+                      },
+                      ...availableSubMuscles.map((sub) => ({
+                        value: sub,
+                        labelAr: sub,
+                      })),
+                    ]}
+                    sheetTitle="تصفية حسب الرأس العضلي التفصيلي"
+                  />
 
                   {/* Equipment Filter */}
-                  <select
+                  <Select
+                    id="library-equipment-filter"
                     value={equipmentFilter}
-                    onChange={(e) => setEquipmentFilter(e.target.value)}
-                  >
-                    <option value="all">جميع المعدات</option>
-                    {Object.entries(EQUIPMENT_LABELS).map(([val, label]) => (
-                      <option key={val} value={val}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val) => setEquipmentFilter(val)}
+                    options={[
+                      { value: 'all', labelAr: 'جميع المعدات' },
+                      ...Object.entries(EQUIPMENT_LABELS).map(
+                        ([val, label]) => ({
+                          value: val,
+                          labelAr: label,
+                        }),
+                      ),
+                    ]}
+                    sheetTitle="تصفية حسب المعدات والأجهزة"
+                  />
                 </div>
               </div>
 

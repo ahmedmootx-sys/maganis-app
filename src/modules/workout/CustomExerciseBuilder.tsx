@@ -1,4 +1,4 @@
-import { useState, useMemo, type ChangeEvent } from 'react'
+import { useState, useMemo } from 'react'
 import type {
   CustomExercise,
   Difficulty,
@@ -13,13 +13,11 @@ import {
   MUSCLE_GROUP_LABELS,
 } from '../shared/types.ts'
 import { sanitizeInput } from '../../lib/sanitizer.ts'
-import {
-  MUSCLE_ATLAS,
-  MUSCLE_REGIONS_AR,
-  type MuscleRegion,
-} from './muscleAtlasData.ts'
+import { MUSCLE_ATLAS, MUSCLE_REGIONS_AR } from './muscleAtlasData.ts'
 import { resolveExerciseMuscles } from './legacyMuscleMapper.ts'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
+import { Select } from '../../components/Select'
+import { FileField } from '../../components/FileField'
 
 interface CustomExerciseBuilderProps {
   initialExercise?: CustomExercise
@@ -120,25 +118,6 @@ export function CustomExerciseBuilder({
     initialExercise?.howToStepsAr?.join('\n') ?? '',
   )
   const [error, setError] = useState('')
-
-  function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (file.size > 4 * 1024 * 1024) {
-      setError('حجم الصورة/GIF يجب ألا يتجاوز 4 ميجابايت')
-      return
-    }
-
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      if (typeof event.target?.result === 'string') {
-        setImageUrl(event.target.result)
-        setError('')
-      }
-    }
-    reader.readAsDataURL(file)
-  }
 
   function handleTogglePrimary(id: string) {
     if (primaryMuscleIds.includes(id)) {
@@ -282,13 +261,26 @@ export function CustomExerciseBuilder({
 
       <div className="field">
         <label>صورة أو GIF متحرك للتمرين (رفع ملف أو رابط URL)</label>
-        <div className="image-upload-box">
-          <input
-            type="file"
-            accept="image/*,.gif"
-            onChange={handleFileUpload}
+        <div
+          className="image-upload-box"
+          style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+        >
+          <FileField
             id="ce-file-input"
-            style={{ marginBottom: '8px' }}
+            accept="image/*,.gif"
+            buttonText="رفع ملف صورة أو GIF"
+            readAs="dataURL"
+            onFileLoaded={(dataUrl) => {
+              setImageUrl(dataUrl)
+              setError('')
+            }}
+            onChange={(file) => {
+              if (!file && imageUrl.startsWith('data:')) {
+                setImageUrl('')
+              } else if (file && file.size > 4 * 1024 * 1024) {
+                setError('حجم الصورة/GIF يجب ألا يتجاوز 4 ميجابايت')
+              }
+            }}
           />
           <input
             type="url"
@@ -320,49 +312,46 @@ export function CustomExerciseBuilder({
 
       <div className="field-grid-2">
         <div className="field">
-          <label htmlFor="ce-category">المجموعة العضلية</label>
-          <select
+          <Select
             id="ce-category"
+            label="المجموعة العضلية"
             value={category}
-            onChange={(e) => setCategory(e.target.value as MuscleGroup)}
-          >
-            {MUSCLE_OPTIONS.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => setCategory(val as MuscleGroup)}
+            options={MUSCLE_OPTIONS.map(([value, label]) => ({
+              value,
+              labelAr: label,
+            }))}
+            sheetTitle="اختر المجموعة العضلية"
+          />
         </div>
 
         <div className="field">
-          <label htmlFor="ce-difficulty">المستوى</label>
-          <select
+          <Select
             id="ce-difficulty"
+            label="المستوى"
             value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-          >
-            {DIFFICULTY_OPTIONS.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => setDifficulty(val as Difficulty)}
+            options={DIFFICULTY_OPTIONS.map(([value, label]) => ({
+              value,
+              labelAr: label,
+            }))}
+            sheetTitle="اختر المستوى"
+          />
         </div>
       </div>
 
       <div className="field">
-        <label htmlFor="ce-equipment">المعدّات</label>
-        <select
+        <Select
           id="ce-equipment"
+          label="المعدّات"
           value={equipment}
-          onChange={(e) => setEquipment(e.target.value as Equipment)}
-        >
-          {EQUIPMENT_OPTIONS.map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          onChange={(val) => setEquipment(val as Equipment)}
+          options={EQUIPMENT_OPTIONS.map(([value, label]) => ({
+            value,
+            labelAr: label,
+          }))}
+          sheetTitle="اختر نوع المعدات"
+        />
       </div>
 
       <div className="field">
@@ -454,46 +443,22 @@ export function CustomExerciseBuilder({
             ))}
           </div>
 
-          <select
-            onChange={(e) => {
-              if (e.target.value) {
-                handleTogglePrimary(e.target.value)
-                e.target.value = ''
-              }
+          <Select
+            id="ce-primary-muscle-picker"
+            value=""
+            placeholder="+ اضغط لإضافة رأس عضلي رئيسي..."
+            onChange={(val) => {
+              if (val) handleTogglePrimary(val)
             }}
-            style={{
-              width: '100%',
-              padding: '8px',
-              fontSize: '13px',
-              borderRadius: '8px',
-            }}
-          >
-            <option value="">+ اضغط لإضافة رأس عضلي رئيسي...</option>
-            {(
-              [
-                'chest',
-                'shoulders',
-                'arms',
-                'back',
-                'core',
-                'legs',
-              ] as MuscleRegion[]
-            ).map((reg) => (
-              <optgroup key={reg} label={MUSCLE_REGIONS_AR[reg]}>
-                {Object.values(MUSCLE_ATLAS)
-                  .filter((m) => m.region === reg)
-                  .map((m) => (
-                    <option
-                      key={m.id}
-                      value={m.id}
-                      disabled={primaryMuscleIds.includes(m.id)}
-                    >
-                      {m.nameAr} ({m.nameEn})
-                    </option>
-                  ))}
-              </optgroup>
-            ))}
-          </select>
+            options={Object.values(MUSCLE_ATLAS).map((m) => ({
+              value: m.id,
+              labelAr: m.nameAr,
+              labelEn: m.nameEn,
+              description: MUSCLE_REGIONS_AR[m.region],
+              disabled: primaryMuscleIds.includes(m.id),
+            }))}
+            sheetTitle="اختر رأس عضلي رئيسي"
+          />
         </div>
 
         {/* 2. Secondary Muscles Picker */}
@@ -557,46 +522,22 @@ export function CustomExerciseBuilder({
             )}
           </div>
 
-          <select
-            onChange={(e) => {
-              if (e.target.value) {
-                handleToggleSecondary(e.target.value)
-                e.target.value = ''
-              }
+          <Select
+            id="ce-secondary-muscle-picker"
+            value=""
+            placeholder="+ اضغط لإضافة عضلة مساعدة..."
+            onChange={(val) => {
+              if (val) handleToggleSecondary(val)
             }}
-            style={{
-              width: '100%',
-              padding: '8px',
-              fontSize: '13px',
-              borderRadius: '8px',
-            }}
-          >
-            <option value="">+ اضغط لإضافة عضلة مساعدة...</option>
-            {(
-              [
-                'chest',
-                'shoulders',
-                'arms',
-                'back',
-                'core',
-                'legs',
-              ] as MuscleRegion[]
-            ).map((reg) => (
-              <optgroup key={reg} label={MUSCLE_REGIONS_AR[reg]}>
-                {Object.values(MUSCLE_ATLAS)
-                  .filter((m) => m.region === reg)
-                  .map((m) => (
-                    <option
-                      key={m.id}
-                      value={m.id}
-                      disabled={secondaryMuscleIds.includes(m.id)}
-                    >
-                      {m.nameAr} ({m.nameEn})
-                    </option>
-                  ))}
-              </optgroup>
-            ))}
-          </select>
+            options={Object.values(MUSCLE_ATLAS).map((m) => ({
+              value: m.id,
+              labelAr: m.nameAr,
+              labelEn: m.nameEn,
+              description: MUSCLE_REGIONS_AR[m.region],
+              disabled: secondaryMuscleIds.includes(m.id),
+            }))}
+            sheetTitle="اختر عضلة مساعدة"
+          />
         </div>
 
         {/* Live Anatomy Map Preview */}

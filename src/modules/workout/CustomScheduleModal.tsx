@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Goal, ProgramDay, WorkoutProgram } from '../shared/types.ts'
+import { ToggleChipRow } from '../../components/ToggleChipRow'
 
 interface CustomScheduleModalProps {
   primaryGoal: Goal
@@ -35,14 +36,6 @@ export function CustomScheduleModal({
     4: 'عضلات الأرجل والسمانة',
     5: 'راحة واستشفاء',
   })
-
-  function toggleDay(dayIndex: number) {
-    setSelectedDayIndexes((prev) =>
-      prev.includes(dayIndex)
-        ? prev.filter((d) => d !== dayIndex)
-        : [...prev, dayIndex],
-    )
-  }
 
   function handleFocusChange(dayIndex: number, text: string) {
     setDayFocuses((prev) => ({
@@ -176,42 +169,15 @@ export function CustomScheduleModal({
               حدد الأيام التي تريد التمرين فيها ({selectedDayIndexes.length}{' '}
               أيام مختارة):
             </label>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(70px, 1fr))',
-                gap: '6px',
-              }}
-            >
-              {WEEKDAYS.map((w) => {
-                const isSelected = selectedDayIndexes.includes(w.dayIndex)
-                return (
-                  <button
-                    key={w.dayIndex}
-                    type="button"
-                    onClick={() => toggleDay(w.dayIndex)}
-                    style={{
-                      padding: '10px 4px',
-                      borderRadius: '10px',
-                      fontWeight: 700,
-                      fontSize: '13px',
-                      cursor: 'pointer',
-                      border: isSelected
-                        ? '2px solid var(--accent)'
-                        : '1.5px solid var(--line)',
-                      background: isSelected
-                        ? 'var(--accent)'
-                        : 'var(--card-subtle)',
-                      color: isSelected ? '#ffffff' : 'var(--ink)',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    {w.nameAr}
-                    {isSelected && <span style={{ display: 'block' }}>✓</span>}
-                  </button>
-                )
-              })}
-            </div>
+            <ToggleChipRow
+              options={WEEKDAYS.map((w) => ({
+                value: w.dayIndex,
+                label: w.nameAr,
+              }))}
+              selectedValues={selectedDayIndexes}
+              onChange={(newSelected) => setSelectedDayIndexes(newSelected)}
+              aria-label="أيام التمرين"
+            />
           </div>
 
           {/* Customized Day Focus */}

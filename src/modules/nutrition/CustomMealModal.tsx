@@ -10,6 +10,7 @@ import {
   type FoodItem,
 } from './foodDatabase.ts'
 import type { MealCategory } from './types.ts'
+import { Select } from '../../components/Select'
 
 interface CustomMealModalProps {
   initialMeal?: CustomMeal | null
@@ -475,28 +476,25 @@ export function CustomMealModal({
                         style={{ width: '100%', padding: '6px 8px' }}
                       />
                     </div>
-                    <div>
-                      <label style={{ fontSize: '12px', display: 'block' }}>
-                        التصنيف الغذائي:
-                      </label>
-                      <select
-                        className="field-input"
+                    <div style={{ width: '100%' }}>
+                      <Select
+                        id="new-food-category-select"
+                        label="التصنيف الغذائي:"
                         value={newFoodCategory}
-                        onChange={(e) =>
-                          setNewFoodCategory(
-                            e.target.value as FoodItem['categoryAr'],
-                          )
+                        onChange={(val) =>
+                          setNewFoodCategory(val as FoodItem['categoryAr'])
                         }
-                        style={{ width: '100%', padding: '6px 8px' }}
-                      >
-                        <option value="بروتين ولحوم">بروتين ولحوم</option>
-                        <option value="نشويات وكارب">نشويات وكارب</option>
-                        <option value="ألبان وأجبان">ألبان وأجبان</option>
-                        <option value="بقوليات">بقوليات</option>
-                        <option value="دهون ومكسرات">دهون ومكسرات</option>
-                        <option value="فواكه وخضار">فواكه وخضار</option>
-                        <option value="مكملات وسناكس">مكملات وسناكس</option>
-                      </select>
+                        options={[
+                          'بروتين ولحوم',
+                          'نشويات وكارب',
+                          'ألبان وأجبان',
+                          'بقوليات',
+                          'دهون ومكسرات',
+                          'فواكه وخضار',
+                          'مكملات وسناكس',
+                        ]}
+                        sheetTitle="اختر التصنيف الغذائي"
+                      />
                     </div>
                   </div>
                   <div

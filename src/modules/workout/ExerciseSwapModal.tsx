@@ -7,6 +7,7 @@ import {
   EQUIPMENT_LABELS,
   MUSCLE_GROUP_LABELS,
 } from '../shared/types.ts'
+import { Select } from '../../components/Select'
 
 interface ExerciseSwapModalProps {
   currentExercise: Exercise
@@ -108,53 +109,39 @@ export function ExerciseSwapModal({
             }}
           >
             <div>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  marginBottom: '4px',
-                }}
-              >
-                المجموعة العضلية:
-              </label>
-              <select
+              <Select
+                id="swap-category-filter"
+                label="المجموعة العضلية:"
                 value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                style={{ width: '100%' }}
-              >
-                <option value="">جميع المجموعات العضلية</option>
-                {Object.entries(MUSCLE_GROUP_LABELS).map(([val, label]) => (
-                  <option key={val} value={val}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setSelectedCategory(val)}
+                options={[
+                  { value: '', labelAr: 'جميع المجموعات العضلية' },
+                  ...Object.entries(MUSCLE_GROUP_LABELS).map(
+                    ([val, label]) => ({
+                      value: val,
+                      labelAr: label,
+                    }),
+                  ),
+                ]}
+                sheetTitle="تصفية حسب المجموعة العضلية"
+              />
             </div>
 
             <div>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  marginBottom: '4px',
-                }}
-              >
-                الأدوات والمعدات المستخدمة:
-              </label>
-              <select
+              <Select
+                id="swap-equipment-filter"
+                label="الأدوات والمعدات المستخدمة:"
                 value={selectedEquipment}
-                onChange={(e) => setSelectedEquipment(e.target.value)}
-                style={{ width: '100%' }}
-              >
-                <option value="all">جميع المعدات</option>
-                {Object.entries(EQUIPMENT_LABELS).map(([val, label]) => (
-                  <option key={val} value={val}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setSelectedEquipment(val)}
+                options={[
+                  { value: 'all', labelAr: 'جميع المعدات' },
+                  ...Object.entries(EQUIPMENT_LABELS).map(([val, label]) => ({
+                    value: val,
+                    labelAr: label,
+                  })),
+                ]}
+                sheetTitle="تصفية حسب الأدوات والمعدات"
+              />
             </div>
           </div>
 

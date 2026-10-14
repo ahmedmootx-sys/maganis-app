@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { DayNote } from '../shared/types.ts'
 import { sanitizeInput } from '../../lib/sanitizer.ts'
 import { formatDateOnly } from '../../lib/dateUtils.ts'
+import { DateField } from '../../components/DateField'
 
 interface DayNotesProps {
   notes: DayNote[]
@@ -39,15 +40,12 @@ export function DayNotes({ notes, onAdd }: DayNotesProps) {
             </ul>
           </div>
         )}
-        <div className="field">
-          <label htmlFor="dn-date">التاريخ</label>
-          <input
-            id="dn-date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </div>
+        <DateField
+          id="dn-date"
+          label="التاريخ"
+          value={date}
+          onChange={(val) => setDate(val)}
+        />
         <div className="field">
           <label htmlFor="dn-text">الملاحظة</label>
           <textarea
@@ -59,9 +57,16 @@ export function DayNotes({ notes, onAdd }: DayNotesProps) {
             }}
             rows={3}
             dir="rtl"
+            style={{ width: '100%', boxSizing: 'border-box' }}
           />
         </div>
-        <button type="submit">حفظ</button>
+        <button
+          type="submit"
+          className="button-primary"
+          style={{ width: '100%', height: '48px', marginTop: '4px' }}
+        >
+          حفظ
+        </button>
       </form>
 
       {sorted.length > 0 && (

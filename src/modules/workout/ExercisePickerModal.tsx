@@ -8,6 +8,7 @@ import {
   MUSCLE_GROUP_LABELS,
   type MuscleGroup,
 } from '../shared/types.ts'
+import { Select } from '../../components/Select'
 
 interface ExercisePickerModalProps {
   dayLabelAr: string
@@ -123,47 +124,56 @@ export function ExercisePickerModal({
             }}
           >
             {/* Category Filter */}
-            <select
+            <Select
+              id="picker-category-filter"
               value={categoryFilter}
-              onChange={(e) => {
-                setCategoryFilter(e.target.value)
+              onChange={(val) => {
+                setCategoryFilter(val)
                 setSubMuscleFilter('all')
               }}
-            >
-              <option value="all">جميع العضلات ({allExercises.length})</option>
-              {Object.entries(MUSCLE_GROUP_LABELS).map(([val, label]) => (
-                <option key={val} value={val}>
-                  {label}
-                </option>
-              ))}
-            </select>
+              options={[
+                {
+                  value: 'all',
+                  labelAr: `جميع العضلات (${allExercises.length})`,
+                },
+                ...Object.entries(MUSCLE_GROUP_LABELS).map(([val, label]) => ({
+                  value: val,
+                  labelAr: label,
+                })),
+              ]}
+              sheetTitle="تصفية حسب المجموعة العضلية"
+            />
 
             {/* Sub-Muscle Specificity Filter */}
-            <select
+            <Select
+              id="picker-submuscle-filter"
               value={subMuscleFilter}
-              onChange={(e) => setSubMuscleFilter(e.target.value)}
+              onChange={(val) => setSubMuscleFilter(val)}
               disabled={availableSubMuscles.length === 0}
-            >
-              <option value="all">🎯 كل الرؤوس العضلية</option>
-              {availableSubMuscles.map((sub) => (
-                <option key={sub} value={sub}>
-                  🎯 {sub}
-                </option>
-              ))}
-            </select>
+              options={[
+                { value: 'all', labelAr: 'كل الرؤوس العضلية' },
+                ...availableSubMuscles.map((sub) => ({
+                  value: sub,
+                  labelAr: sub,
+                })),
+              ]}
+              sheetTitle="تصفية حسب الرأس العضلي المستهدف"
+            />
 
             {/* Equipment Filter */}
-            <select
+            <Select
+              id="picker-equipment-filter"
               value={equipmentFilter}
-              onChange={(e) => setEquipmentFilter(e.target.value)}
-            >
-              <option value="all">جميع المعدات</option>
-              {Object.entries(EQUIPMENT_LABELS).map(([val, label]) => (
-                <option key={val} value={val}>
-                  {label}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setEquipmentFilter(val)}
+              options={[
+                { value: 'all', labelAr: 'جميع المعدات' },
+                ...Object.entries(EQUIPMENT_LABELS).map(([val, label]) => ({
+                  value: val,
+                  labelAr: label,
+                })),
+              ]}
+              sheetTitle="تصفية حسب المعدات والأجهزة"
+            />
           </div>
 
           <div className="muted-small" style={{ marginBottom: '8px' }}>

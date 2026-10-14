@@ -22,6 +22,8 @@ import {
 import { QuickManualMealModal } from './QuickManualMealModal.tsx'
 import { MacroGuideModal } from './MacroGuideModal.tsx'
 import type { CustomMeal, DailyNutritionLog, MealCategory } from './types.ts'
+import { Select } from '../../components/Select'
+import { DateField } from '../../components/DateField'
 
 interface NutritionModuleProps {
   profile: UserProfile | null
@@ -1692,25 +1694,17 @@ export function NutritionModule({
                 </div>
 
                 <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      marginBottom: '4px',
-                    }}
-                  >
-                    👤 الجنس:
-                  </label>
-                  <select
-                    className="field-input"
+                  <Select
+                    id="calc-sex-select"
+                    label="👤 الجنس:"
                     value={editSex}
-                    onChange={(e) => setEditSex(e.target.value as Sex)}
-                    style={{ width: '100%', padding: '8px' }}
-                  >
-                    <option value="male">ذكر (Male)</option>
-                    <option value="female">أنثى (Female)</option>
-                  </select>
+                    onChange={(val) => setEditSex(val as Sex)}
+                    options={[
+                      { value: 'male', labelAr: 'ذكر', labelEn: 'Male' },
+                      { value: 'female', labelAr: 'أنثى', labelEn: 'Female' },
+                    ]}
+                    sheetTitle="اختر الجنس"
+                  />
                 </div>
 
                 <div>
@@ -1744,37 +1738,37 @@ export function NutritionModule({
 
               {/* Lifestyle (excluding workouts) */}
               <div style={{ marginBottom: '14px' }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    marginBottom: '4px',
-                  }}
-                >
-                  🚶 نمط نشاطك اليومي (خارج أوقات التمرين):
-                </label>
-                <select
-                  className="field-input"
-                  value={editLifestyle}
-                  onChange={(e) =>
-                    setEditLifestyle(Number(e.target.value) as LifestyleLevel)
+                <Select
+                  id="calc-lifestyle-select"
+                  label="🚶 نمط نشاطك اليومي (خارج أوقات التمرين):"
+                  value={String(editLifestyle)}
+                  onChange={(val) =>
+                    setEditLifestyle(Number(val) as LifestyleLevel)
                   }
-                  style={{ width: '100%', padding: '8px' }}
-                >
-                  <option value={1}>
-                    1 = مكتبي / طالب (خامل غالباً، معامل 1.20)
-                  </option>
-                  <option value={2}>
-                    2 = حركة يومية خفيفة مع مشي متقطع (معامل 1.35)
-                  </option>
-                  <option value={3}>
-                    3 = وقوف وحركة نشطة أغلب اليوم (معامل 1.50)
-                  </option>
-                  <option value={4}>
-                    4 = عمل بدني شاق ومجهود مستمر (معامل 1.65)
-                  </option>
-                </select>
+                  options={[
+                    {
+                      value: '1',
+                      labelAr: '1 = مكتبي / طالب',
+                      description: 'خامل غالباً، معامل 1.20',
+                    },
+                    {
+                      value: '2',
+                      labelAr: '2 = حركة يومية خفيفة مع مشي متقطع',
+                      description: 'معامل 1.35',
+                    },
+                    {
+                      value: '3',
+                      labelAr: '3 = وقوف وحركة نشطة أغلب اليوم',
+                      description: 'معامل 1.50',
+                    },
+                    {
+                      value: '4',
+                      labelAr: '4 = عمل بدني شاق ومجهود مستمر',
+                      description: 'معامل 1.65',
+                    },
+                  ]}
+                  sheetTitle="اختر نمط نشاطك اليومي"
+                />
               </div>
 
               {/* Workout Blocks (up to 3) */}
@@ -1835,35 +1829,24 @@ export function NutritionModule({
                     }}
                   >
                     <div>
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          display: 'block',
-                          color: 'var(--muted)',
-                        }}
-                      >
-                        النوع
-                      </span>
-                      <select
-                        className="field-input"
+                      <Select
+                        id={`block-type-${idx}`}
+                        label="النوع"
                         value={block.type}
-                        onChange={(e) => {
+                        onChange={(val) => {
                           const updated = [...editWorkoutBlocks]
                           updated[idx] = {
                             ...updated[idx],
-                            type: e.target.value as 'resistance' | 'cardio',
+                            type: val as 'resistance' | 'cardio',
                           }
                           setEditWorkoutBlocks(updated)
                         }}
-                        style={{
-                          width: '100%',
-                          padding: '4px',
-                          fontSize: '11px',
-                        }}
-                      >
-                        <option value="resistance">حديد ومقاومة</option>
-                        <option value="cardio">كارديو وجري</option>
-                      </select>
+                        options={[
+                          { value: 'resistance', labelAr: 'حديد ومقاومة' },
+                          { value: 'cardio', labelAr: 'كارديو وجري' },
+                        ]}
+                        sheetTitle="اختر نوع التمرين"
+                      />
                     </div>
 
                     <div>
@@ -1932,37 +1915,25 @@ export function NutritionModule({
                     </div>
 
                     <div>
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          display: 'block',
-                          color: 'var(--muted)',
-                        }}
-                      >
-                        الشدة
-                      </span>
-                      <select
-                        className="field-input"
+                      <Select
+                        id={`block-intensity-${idx}`}
+                        label="الشدة"
                         value={block.intensity}
-                        onChange={(e) => {
+                        onChange={(val) => {
                           const updated = [...editWorkoutBlocks]
                           updated[idx] = {
                             ...updated[idx],
-                            intensity: e.target.value as
-                              'light' | 'moderate' | 'hard',
+                            intensity: val as 'light' | 'moderate' | 'hard',
                           }
                           setEditWorkoutBlocks(updated)
                         }}
-                        style={{
-                          width: '100%',
-                          padding: '4px',
-                          fontSize: '11px',
-                        }}
-                      >
-                        <option value="light">خفيفة</option>
-                        <option value="moderate">متوسطة</option>
-                        <option value="hard">شاقة وعالية</option>
-                      </select>
+                        options={[
+                          { value: 'light', labelAr: 'خفيفة' },
+                          { value: 'moderate', labelAr: 'متوسطة' },
+                          { value: 'hard', labelAr: 'شاقة وعالية' },
+                        ]}
+                        sheetTitle="اختر شدة التمرين"
+                      />
                     </div>
 
                     {editWorkoutBlocks.length > 1 && (
@@ -1994,58 +1965,62 @@ export function NutritionModule({
                 }}
               >
                 <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '12.5px',
-                      fontWeight: 700,
-                      marginBottom: '4px',
-                    }}
-                  >
-                    🏆 الهدف الأساسي:
-                  </label>
-                  <select
-                    className="field-input"
+                  <Select
+                    id="calc-goal-select"
+                    label="🏆 الهدف الأساسي:"
                     value={editGoal}
-                    onChange={(e) => setEditGoal(e.target.value as Goal)}
-                    style={{ width: '100%', padding: '8px' }}
-                  >
-                    <option value="hypertrophy">
-                      بناء عضلات وتضخيم (فائض سعرات)
-                    </option>
-                    <option value="cut">تنشيف وخسارة دهون (عجز سعرات)</option>
-                    <option value="calisthenics">
-                      كاليستينكس (سعرات المحافظة)
-                    </option>
-                    <option value="flexibility">
-                      صحة ومرونة (سعرات المحافظة)
-                    </option>
-                  </select>
+                    onChange={(val) => setEditGoal(val as Goal)}
+                    options={[
+                      {
+                        value: 'hypertrophy',
+                        labelAr: 'بناء عضلات وتضخيم',
+                        description: 'فائض سعرات',
+                      },
+                      {
+                        value: 'cut',
+                        labelAr: 'تنشيف وخسارة دهون',
+                        description: 'عجز سعرات',
+                      },
+                      {
+                        value: 'calisthenics',
+                        labelAr: 'كاليستينكس',
+                        description: 'سعرات المحافظة',
+                      },
+                      {
+                        value: 'flexibility',
+                        labelAr: 'صحة ومرونة',
+                        description: 'سعرات المحافظة',
+                      },
+                    ]}
+                    sheetTitle="اختر هدفك الأساسي"
+                  />
                 </div>
 
                 <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '12.5px',
-                      fontWeight: 700,
-                      marginBottom: '4px',
-                    }}
-                  >
-                    ⚡ وتيرة الهدف (Pace):
-                  </label>
-                  <select
-                    className="field-input"
+                  <Select
+                    id="calc-pace-select"
+                    label="⚡ وتيرة الهدف (Pace):"
                     value={editPace}
-                    onChange={(e) =>
-                      setEditPace(e.target.value as NutritionPace)
-                    }
-                    style={{ width: '100%', padding: '8px' }}
-                  >
-                    <option value="slow">هادئة وتدريجية (Slow)</option>
-                    <option value="standard">قياسية ومعتدلة (Standard)</option>
-                    <option value="fast">سريعة ومكثفة (Fast)</option>
-                  </select>
+                    onChange={(val) => setEditPace(val as NutritionPace)}
+                    options={[
+                      {
+                        value: 'slow',
+                        labelAr: 'هادئة وتدريجية',
+                        labelEn: 'Slow',
+                      },
+                      {
+                        value: 'standard',
+                        labelAr: 'قياسية ومعتدلة',
+                        labelEn: 'Standard',
+                      },
+                      {
+                        value: 'fast',
+                        labelAr: 'سريعة ومكثفة',
+                        labelEn: 'Fast',
+                      },
+                    ]}
+                    sheetTitle="اختر وتيرة الهدف"
+                  />
                 </div>
               </div>
 
@@ -2076,39 +2051,32 @@ export function NutritionModule({
                     }}
                   >
                     <div>
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '11.5px',
-                          marginBottom: '3px',
-                        }}
-                      >
-                        معادلة BMR:
-                      </label>
-                      <select
-                        className="field-input"
+                      <Select
+                        id="calc-formula-select"
+                        label="معادلة BMR:"
                         value={editFormulaOverride}
-                        onChange={(e) =>
-                          setEditFormulaOverride(
-                            e.target.value as FormulaChoice,
-                          )
+                        onChange={(val) =>
+                          setEditFormulaOverride(val as FormulaChoice)
                         }
-                        style={{
-                          width: '100%',
-                          padding: '6px',
-                          fontSize: '12px',
-                        }}
-                      >
-                        <option value="auto">
-                          تلقائي (Katch عند توفر الدهون وإلا Mifflin)
-                        </option>
-                        <option value="mifflin">
-                          Mifflin-St Jeor (معيار الوزن والطول)
-                        </option>
-                        <option value="katch">
-                          Katch-McArdle (معيار الكتلة اللادهنية LBM)
-                        </option>
-                      </select>
+                        options={[
+                          {
+                            value: 'auto',
+                            labelAr: 'تلقائي',
+                            description: 'Katch عند توفر الدهون وإلا Mifflin',
+                          },
+                          {
+                            value: 'mifflin',
+                            labelAr: 'Mifflin-St Jeor',
+                            description: 'معيار الوزن والطول',
+                          },
+                          {
+                            value: 'katch',
+                            labelAr: 'Katch-McArdle',
+                            description: 'معيار الكتلة اللادهنية LBM',
+                          },
+                        ]}
+                        sheetTitle="اختر معادلة BMR"
+                      />
                     </div>
 
                     <div>
@@ -2248,17 +2216,19 @@ export function NutritionModule({
               <div
                 style={{
                   display: 'flex',
-                  gap: '8px',
-                  alignItems: 'flex-end',
-                  flexWrap: 'wrap',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  width: '100%',
                 }}
               >
-                <div style={{ flex: 1, minWidth: '110px' }}>
+                <div style={{ width: '100%' }}>
                   <label
                     style={{
                       display: 'block',
-                      fontSize: '11px',
-                      color: 'var(--muted)',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      marginBottom: '4px',
+                      color: 'var(--ink)',
                     }}
                   >
                     الوزن (كجم):
@@ -2270,30 +2240,21 @@ export function NutritionModule({
                     value={quickWeight}
                     onChange={(e) => setQuickWeight(e.target.value)}
                     placeholder="مثال: 72.5"
-                    style={{ width: '100%', padding: '6px' }}
+                    style={{ width: '100%' }}
                   />
                 </div>
-                <div style={{ flex: 1, minWidth: '110px' }}>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '11px',
-                      color: 'var(--muted)',
-                    }}
-                  >
-                    التاريخ:
-                  </label>
-                  <input
-                    type="date"
-                    className="field-input"
+                <div style={{ width: '100%' }}>
+                  <DateField
+                    id="quick-weight-date"
+                    label="التاريخ:"
                     value={quickWeightDate}
-                    onChange={(e) => setQuickWeightDate(e.target.value)}
-                    style={{ width: '100%', padding: '6px' }}
+                    onChange={(val) => setQuickWeightDate(val)}
                   />
                 </div>
                 <button
                   type="button"
-                  className="button-primary small"
+                  className="button-primary"
+                  style={{ width: '100%', height: '48px' }}
                   onClick={handleQuickWeightSave}
                 >
                   حفظ الوزن

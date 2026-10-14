@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { BodyLogEntry } from '../shared/types.ts'
+import { DateField } from '../../components/DateField'
 
 interface BodyWeightTrackerProps {
   bodyLog: BodyLogEntry[]
@@ -42,15 +43,12 @@ export function BodyWeightTracker({ bodyLog, onAdd }: BodyWeightTrackerProps) {
             </ul>
           </div>
         )}
-        <div className="field">
-          <label htmlFor="bw-date">التاريخ</label>
-          <input
-            id="bw-date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </div>
+        <DateField
+          id="bw-date"
+          label="التاريخ"
+          value={date}
+          onChange={(val) => setDate(val)}
+        />
         <div className="field">
           <label htmlFor="bw-weight">الوزن (كجم)</label>
           <input
@@ -66,7 +64,13 @@ export function BodyWeightTracker({ bodyLog, onAdd }: BodyWeightTrackerProps) {
             }}
           />
         </div>
-        <button type="submit">تسجيل</button>
+        <button
+          type="submit"
+          className="button-primary"
+          style={{ width: '100%', height: '48px', marginTop: '4px' }}
+        >
+          تسجيل
+        </button>
       </form>
 
       {sorted.length > 0 && (

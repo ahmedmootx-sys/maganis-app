@@ -3008,3 +3008,129 @@ button.ghost-danger:hover {
   background: rgba(245, 158, 11, 0.15);
   color: #fbbf24;
 }
+
+/* ==========================================================================
+   MOBILE-FIRST DESIGN SYSTEM (STEP 4 & STEP 7 GATE ENFORCEMENT)
+   ========================================================================== */
+
+:root {
+  --bottom-nav-height: 64px;
+}
+
+/* Keyframe Animations */
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 14px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Form Rules:
+   1. All inputs 48px, full width.
+   2. Label strictly above the input.
+   3. A button never sits beside an input (it gets its own full-width row).
+*/
+.field,
+.maganis-field,
+.form-group,
+.form-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  width: 100% !important;
+  align-items: stretch !important;
+  box-sizing: border-box !important;
+}
+
+.field > label,
+.maganis-field > label,
+.form-group > label,
+.form-field > label,
+.field-label {
+  display: block !important;
+  width: 100% !important;
+  margin-bottom: 4px !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+  color: var(--ink) !important;
+  text-align: right !important;
+}
+
+/* Inputs standard 48px height and full width */
+input[type='text'],
+input[type='number'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
+.field-input,
+.select-trigger,
+.date-field-trigger {
+  width: 100% !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure buttons never sit beside an input on the same horizontal row */
+.field-inline,
+.input-with-button,
+.form-inline-action {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.field-inline > button,
+.input-with-button > button,
+.form-inline-action > button {
+  width: 100% !important;
+}
+
+/* Select Trigger States */
+.select-trigger:focus-visible,
+.date-field-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.select-radio-row:hover:not(:disabled) {
+  background: var(--accent-soft) !important;
+}
+
+/* Toast container positioning */
+.maganis-toast-portal {
+  position: fixed !important;
+  bottom: calc(
+    var(--bottom-nav-height, 64px) + 16px + env(safe-area-inset-bottom, 0px)
+  ) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 99999 !important;
+  pointer-events: none !important;
+}

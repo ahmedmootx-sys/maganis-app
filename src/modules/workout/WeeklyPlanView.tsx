@@ -27,6 +27,8 @@ import {
   parseAndValidateRoutineJson,
   shareRoutineFile,
 } from './workoutUtils.ts'
+import { Select } from '../../components/Select'
+import { Toast } from '../../components/Toast'
 
 interface WeeklyPlanViewProps {
   program: WorkoutProgram
@@ -453,26 +455,7 @@ export function WeeklyPlanView({
 
   return (
     <div className="weekly-plan">
-      {homeToast && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'var(--accent)',
-            color: '#fff',
-            padding: '10px 20px',
-            borderRadius: '999px',
-            fontSize: '13px',
-            fontWeight: 700,
-            zIndex: 9999,
-            boxShadow: '0 4px 14px rgba(0,0,0,0.2)',
-          }}
-        >
-          {homeToast}
-        </div>
-      )}
+      <Toast message={homeToast} onDismiss={() => setHomeToast(null)} />
 
       {/* Program Header */}
       <div className="weekly-plan__header">
@@ -651,19 +634,13 @@ export function WeeklyPlanView({
 
         {/* Change Split Type Dropdown */}
         {!program.isCustom && onUpdateProgram && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginTop: '10px',
-            }}
-          >
-            <span className="muted-small">تغيير النظام التلقائي:</span>
-            <select
+          <div style={{ marginTop: '12px', width: '100%' }}>
+            <Select
+              id="split-type-select"
+              label="تغيير النظام التلقائي:"
               value={program.splitType || 'ppl'}
-              onChange={(e) => {
-                const newSplit = e.target.value as WorkoutSplitType
+              onChange={(val) => {
+                const newSplit = val as WorkoutSplitType
                 const newProg = generateProgram({
                   goal: program.primaryGoal,
                   trainingDaysPerWeek: program.trainingDaysPerWeek,
@@ -673,19 +650,14 @@ export function WeeklyPlanView({
                 })
                 onUpdateProgram(newProg)
               }}
-              style={{
-                padding: '4px 8px',
-                borderRadius: '6px',
-                fontSize: '12.5px',
-                border: '1px solid var(--line)',
-              }}
-            >
-              {Object.entries(WORKOUT_SPLIT_LABELS).map(([val, label]) => (
-                <option key={val} value={val}>
-                  {label}
-                </option>
-              ))}
-            </select>
+              options={Object.entries(WORKOUT_SPLIT_LABELS).map(
+                ([val, label]) => ({
+                  value: val,
+                  labelAr: label,
+                }),
+              )}
+              sheetTitle="اختر النظام التدريبي التلقائي"
+            />
           </div>
         )}
       </div>
@@ -1092,35 +1064,32 @@ export function WeeklyPlanView({
                                     >
                                       {onUpdateProgram && (
                                         <>
-                                          <select
-                                            value={pe.section || 'primary'}
-                                            onChange={(e) =>
-                                              handleChangeExerciseSection(
-                                                day.dayIndex,
-                                                originalIdx,
-                                                e.target
-                                                  .value as ExerciseSection,
-                                              )
-                                            }
+                                          <div
                                             style={{
-                                              fontSize: '11px',
-                                              padding: '2px 4px',
-                                              borderRadius: '6px',
-                                              border: '1px solid var(--line)',
-                                              background: 'var(--card-bg)',
-                                              color: 'var(--ink)',
+                                              width: '100%',
+                                              margin: '4px 0',
                                             }}
-                                            title="نقل التمرين لقسم آخر"
                                           >
-                                            {daySections.map((sec) => (
-                                              <option
-                                                key={sec.id}
-                                                value={sec.id}
-                                              >
-                                                {sec.icon} {sec.labelAr}
-                                              </option>
-                                            ))}
-                                          </select>
+                                            <Select
+                                              id={`move-ex-${day.dayIndex}-${originalIdx}`}
+                                              aria-label="نقل التمرين لقسم آخر"
+                                              value={pe.section || 'primary'}
+                                              onChange={(val) =>
+                                                handleChangeExerciseSection(
+                                                  day.dayIndex,
+                                                  originalIdx,
+                                                  val as ExerciseSection,
+                                                )
+                                              }
+                                              options={daySections.map(
+                                                (sec) => ({
+                                                  value: sec.id,
+                                                  labelAr: sec.labelAr,
+                                                }),
+                                              )}
+                                              sheetTitle="نقل التمرين إلى قسم:"
+                                            />
+                                          </div>
 
                                           {originalIdx > 0 && (
                                             <button
@@ -1411,32 +1380,17 @@ export function WeeklyPlanView({
                         border: '1px solid var(--line)',
                       }}
                     >
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          marginBottom: '6px',
-                        }}
-                      >
-                        ➡️ خيار 1: نقل التمارين إلى قسم آخر:
-                      </label>
-                      <select
+                      <Select
+                        id="move-target-section-select"
+                        label="➡️ خيار 1: نقل التمارين إلى قسم آخر:"
                         value={moveTargetSectionId}
-                        onChange={(e) => setMoveTargetSectionId(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px',
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                        }}
-                      >
-                        {otherSections.map((s) => (
-                          <option key={s.id} value={s.id}>
-                            {s.icon} {s.labelAr}
-                          </option>
-                        ))}
-                      </select>
+                        onChange={(val) => setMoveTargetSectionId(val)}
+                        options={otherSections.map((s) => ({
+                          value: s.id,
+                          labelAr: s.labelAr,
+                        }))}
+                        sheetTitle="اختر القسم البديل لنقل التمارين"
+                      />
                       <button
                         type="button"
                         className="button-primary"

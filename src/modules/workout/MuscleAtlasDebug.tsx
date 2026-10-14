@@ -5,6 +5,7 @@ import {
   type MuscleRegion,
 } from './muscleAtlasData.ts'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
+import { Select } from '../../components/Select'
 
 export function MuscleAtlasDebug({ onClose }: { onClose?: () => void }) {
   const muscleList = Object.values(MUSCLE_ATLAS)
@@ -87,20 +88,22 @@ export function MuscleAtlasDebug({ onClose }: { onClose?: () => void }) {
           </button>
         </div>
 
-        <select
-          value={currentMuscle.id}
-          onChange={(e) => {
-            const idx = muscleList.findIndex((m) => m.id === e.target.value)
-            if (idx >= 0) setCurrentIndex(idx)
-          }}
-          style={{ padding: '6px 10px', fontSize: '13px', borderRadius: '8px' }}
-        >
-          {muscleList.map((m, idx) => (
-            <option key={m.id} value={m.id}>
-              {idx + 1}. {m.nameAr} ({m.id})
-            </option>
-          ))}
-        </select>
+        <div style={{ width: '100%', maxWidth: '320px' }}>
+          <Select
+            id="muscle-select"
+            value={currentMuscle.id}
+            onChange={(val) => {
+              const idx = muscleList.findIndex((m) => m.id === val)
+              if (idx >= 0) setCurrentIndex(idx)
+            }}
+            options={muscleList.map((m, idx) => ({
+              value: m.id,
+              labelAr: `${idx + 1}. ${m.nameAr}`,
+              labelEn: m.id,
+            }))}
+            sheetTitle="اختر العضلة للاختبار"
+          />
+        </div>
 
         <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
           {currentIndex + 1} / {muscleList.length}
