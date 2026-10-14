@@ -1,28 +1,24 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { Goal, ProgramDay, WorkoutProgram } from '../shared/types.ts'
-import { ToggleChipRow } from '../../components/ToggleChipRow'
+import { getOrderedWeekdays } from '../../lib/dateUtils.ts'
+import { ToggleChipRow } from '../../components/ToggleChipRow.tsx'
+import { TopBar } from '../../components/TopBar.tsx'
+import { Callout } from '../../components/Callout.tsx'
 
-interface CustomScheduleModalProps {
+export interface CustomScheduleModalProps {
   primaryGoal: Goal
+  weekStartDay?: number
   onSaveSchedule: (program: WorkoutProgram) => void
   onClose: () => void
 }
 
-const WEEKDAYS: { dayIndex: number; nameAr: string }[] = [
-  { dayIndex: 6, nameAr: 'السبت' },
-  { dayIndex: 0, nameAr: 'الأحد' },
-  { dayIndex: 1, nameAr: 'الإثنين' },
-  { dayIndex: 2, nameAr: 'الثلاثاء' },
-  { dayIndex: 3, nameAr: 'الأربعاء' },
-  { dayIndex: 4, nameAr: 'الخميس' },
-  { dayIndex: 5, nameAr: 'الجمعة' },
-]
-
 export function CustomScheduleModal({
   primaryGoal,
+  weekStartDay = 6,
   onSaveSchedule,
   onClose,
 }: CustomScheduleModalProps) {
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1)
   const [scheduleTitle, setScheduleTitle] = useState('جدولي التدريبي الخاص')
   const [selectedDayIndexes, setSelectedDayIndexes] = useState<number[]>([
     6, 1, 3, 4,
@@ -36,6 +32,12 @@ export function CustomScheduleModal({
     4: 'عضلات الأرجل والسمانة',
     5: 'راحة واستشفاء',
   })
+  const [error, setError] = useState('')
+
+  const orderedWeekdays = useMemo(
+    () => getOrderedWeekdays(weekStartDay),
+    [weekStartDay],
+  )
 
   function handleFocusChange(dayIndex: number, text: string) {
     setDayFocuses((prev) => ({
@@ -44,15 +46,21 @@ export function CustomScheduleModal({
     }))
   }
 
-  function handleCreate(e: React.FormEvent) {
-    e.preventDefault()
-    if (selectedDayIndexes.length === 0) {
-      alert('يرجى اختيار يوم واحد على الأقل للتمرين!')
+  function handleCreate() {
+    if (!scheduleTitle.trim()) {
+      setError('يرجى إدخال اسم للجدول التدريبي')
+      setCurrentStep(1)
       return
     }
 
-    // Sort days starting with Saturday (index 6, then 0..5)
-    const sortedDays = WEEKDAYS.filter((w) =>
+    if (selectedDayIndexes.length === 0) {
+      setError('يرجى اختيار يوم واحد على الأقل للتمرين!')
+      setCurrentStep(2)
+      return
+    }
+
+    // Sort days according to weekStartDay order
+    const sortedDays = orderedWeekdays.filter((w) =>
       selectedDayIndexes.includes(w.dayIndex),
     )
 
@@ -61,7 +69,7 @@ export function CustomScheduleModal({
         dayFocuses[w.dayIndex]?.trim() || `تمرين ${orderIdx + 1}`
       return {
         dayIndex: w.dayIndex,
-        labelAr: `يوم ${w.nameAr}`,
+        labelAr: `يوم ${w.full}`,
         focus: focusText,
         exercises: [],
       }
@@ -84,203 +92,327 @@ export function CustomScheduleModal({
 
   return (
     <div
-      className="modal-backdrop"
-      onClick={onClose}
+      className="fullscreen-route designer-screen"
+      dir="rtl"
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0,0,0,0.7)',
+        zIndex: 500,
+        background: 'var(--bg)',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '16px',
+        flexDirection: 'column',
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
       }}
     >
+      {/* TopBar with Back */}
+      <TopBar
+        title="جدولي بالأيام"
+        subtitle={`خطوة ${currentStep} من 3`}
+        onBack={
+          currentStep > 1
+            ? () => setCurrentStep((prev) => (prev - 1) as 1 | 2)
+            : onClose
+        }
+      />
+
       <div
-        className="card"
-        onClick={(e) => e.stopPropagation()}
+        className="screen-content"
         style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '16px 16px 100px',
+          maxWidth: '720px',
+          margin: '0 auto',
           width: '100%',
-          maxWidth: '540px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          borderRadius: '16px',
-          padding: '20px',
+          boxSizing: 'border-box',
         }}
       >
+        {/* Step Indicator */}
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '16px',
-            borderBottom: '1px solid var(--line)',
-            paddingBottom: '12px',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '8px',
+            marginBottom: '4px',
           }}
         >
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
-            🗓️ تصميم وتخصيص جدول التمارين بالأيام
-          </h2>
-          <button
-            type="button"
-            className="ghost-secondary tiny"
-            onClick={onClose}
-            style={{ fontSize: '18px', lineHeight: 1 }}
-          >
-            ✕
-          </button>
+          {[
+            { step: 1, title: '1. التسمية' },
+            { step: 2, title: '2. الأيام' },
+            { step: 3, title: '3. التركيز' },
+          ].map((s) => (
+            <div
+              key={s.step}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+              }}
+            >
+              <div
+                style={{
+                  height: '4px',
+                  borderRadius: '999px',
+                  background:
+                    currentStep >= s.step ? 'var(--accent)' : 'var(--line)',
+                  transition: 'background 0.2s ease',
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontWeight: currentStep === s.step ? 700 : 500,
+                  color:
+                    currentStep === s.step ? 'var(--accent)' : 'var(--muted)',
+                  textAlign: 'center',
+                }}
+              >
+                {s.title}
+              </span>
+            </div>
+          ))}
         </div>
 
-        <form onSubmit={handleCreate}>
-          {/* Schedule Title */}
-          <div style={{ marginBottom: '16px' }}>
-            <label
-              style={{
-                display: 'block',
-                fontWeight: 700,
-                fontSize: '13px',
-                marginBottom: '4px',
-              }}
-            >
-              اسم الجدول التدريبي:
-            </label>
-            <input
-              type="text"
-              className="field-input"
-              value={scheduleTitle}
-              onChange={(e) => setScheduleTitle(e.target.value)}
-              placeholder="مثال: جدولي الخاص (4 أيام) أو جدول الضخامة..."
-              required
-              style={{ width: '100%', padding: '10px' }}
-            />
+        {error && (
+          <div
+            style={{
+              background: 'var(--danger-soft)',
+              color: 'var(--danger)',
+              border: '1px solid var(--danger-line)',
+              borderRadius: '10px',
+              padding: '12px 14px',
+              fontSize: '13px',
+              fontWeight: 700,
+            }}
+          >
+            {error}
           </div>
+        )}
 
-          {/* Weekday Selection */}
-          <div style={{ marginBottom: '16px' }}>
-            <label
-              style={{
-                display: 'block',
-                fontWeight: 700,
-                fontSize: '13px',
-                marginBottom: '6px',
-              }}
-            >
-              حدد الأيام التي تريد التمرين فيها ({selectedDayIndexes.length}{' '}
-              أيام مختارة):
-            </label>
-            <ToggleChipRow
-              options={WEEKDAYS.map((w) => ({
-                value: w.dayIndex,
-                label: w.nameAr,
-              }))}
-              selectedValues={selectedDayIndexes}
-              onChange={(newSelected) => setSelectedDayIndexes(newSelected)}
-              aria-label="أيام التمرين"
-            />
-          </div>
-
-          {/* Customized Day Focus */}
-          {selectedDayIndexes.length > 0 && (
+        {/* STEP 1: Name Field */}
+        {currentStep === 1 && (
+          <section className="screen-section">
+            <div className="section-title">
+              <span>اسم الجدول التدريبي</span>
+            </div>
             <div
+              className="card"
               style={{
-                background: 'var(--card-subtle)',
-                padding: '12px',
-                borderRadius: '10px',
-                border: '1px solid var(--line)',
-                marginBottom: '18px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+                padding: '16px',
               }}
             >
-              <h4 style={{ margin: '0 0 10px', fontSize: '13px' }}>
-                💪 حدد استهداف كل يوم من الأيام المختارة:
-              </h4>
+              <div className="field">
+                <label htmlFor="designer-name">اسم الجدول *</label>
+                <input
+                  id="designer-name"
+                  type="text"
+                  className="field-input"
+                  value={scheduleTitle}
+                  onChange={(e) => {
+                    setScheduleTitle(e.target.value)
+                    setError('')
+                  }}
+                  placeholder="مثال: جدولي الخاص (4 أيام) أو جدول الضخامة..."
+                  required
+                  dir="rtl"
+                  autoFocus
+                />
+              </div>
+
+              <button
+                type="button"
+                className="button-primary full-width"
+                style={{ height: '48px', fontSize: '15px', fontWeight: 700 }}
+                onClick={() => {
+                  if (!scheduleTitle.trim()) {
+                    setError('يرجى إدخال اسم الجدول')
+                    return
+                  }
+                  setError('')
+                  setCurrentStep(2)
+                }}
+              >
+                التالي: اختيار الأيام
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* STEP 2: ONE row of 7 equal-width ToggleChips + count */}
+        {currentStep === 2 && (
+          <section className="screen-section">
+            <div className="section-title">
+              <span>أيام التمرين في الأسبوع</span>
+              <span className="section-title-counter">
+                {selectedDayIndexes.length} أيام مختارة
+              </span>
+            </div>
+            <div
+              className="card"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+                padding: '16px',
+              }}
+            >
+              <div className="field">
+                <label>اختر أيام التمرين:</label>
+                <ToggleChipRow
+                  options={orderedWeekdays.map((w) => ({
+                    value: w.dayIndex,
+                    label: w.short,
+                  }))}
+                  selectedValues={selectedDayIndexes}
+                  onChange={(newSelected) => {
+                    setSelectedDayIndexes(newSelected)
+                    setError('')
+                  }}
+                  aria-label="أيام التمرين في الأسبوع"
+                />
+              </div>
+
+              <div
+                style={{
+                  fontSize: '12.5px',
+                  color: 'var(--muted)',
+                  lineHeight: '1.4',
+                }}
+              >
+                💡 تم تحديد {selectedDayIndexes.length} أيام تمرين، وباقي أيام
+                الأسبوع ستكون أيام راحة واستشفاء.
+              </div>
+
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '8px',
-                  maxHeight: '220px',
-                  overflowY: 'auto',
                 }}
               >
-                {WEEKDAYS.filter((w) =>
-                  selectedDayIndexes.includes(w.dayIndex),
-                ).map((w) => (
+                <button
+                  type="button"
+                  className="button-primary full-width"
+                  style={{ height: '48px', fontSize: '15px', fontWeight: 700 }}
+                  disabled={selectedDayIndexes.length === 0}
+                  onClick={() => {
+                    if (selectedDayIndexes.length === 0) {
+                      setError('يرجى اختيار يوم واحد على الأقل')
+                      return
+                    }
+                    setError('')
+                    setCurrentStep(3)
+                  }}
+                >
+                  التالي: تحديد تركيز الأيام
+                </button>
+                <button
+                  type="button"
+                  className="ghost-secondary full-width"
+                  onClick={() => setCurrentStep(1)}
+                >
+                  رجوع للسابق
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* STEP 3: ListRow per selected day with full-width auto-grow field + Callout + Primary */}
+        {currentStep === 3 && (
+          <section className="screen-section">
+            <div className="section-title">
+              <span>تحديد التركيز العضلي لكل يوم</span>
+              <span className="section-title-counter">
+                {selectedDayIndexes.length} أيام
+              </span>
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+              }}
+            >
+              {orderedWeekdays
+                .filter((w) => selectedDayIndexes.includes(w.dayIndex))
+                .map((w) => (
                   <div
                     key={w.dayIndex}
+                    className="card"
                     style={{
                       display: 'flex',
-                      alignItems: 'center',
+                      flexDirection: 'column',
                       gap: '8px',
-                      background: 'var(--card-bg)',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
-                      border: '1px solid var(--line)',
+                      padding: '12px 14px',
                     }}
                   >
-                    <span
+                    <label
+                      htmlFor={`focus-${w.dayIndex}`}
                       style={{
-                        fontWeight: 800,
-                        fontSize: '13px',
-                        minWidth: '55px',
-                        color: 'var(--accent)',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        color: 'var(--ink)',
                       }}
                     >
-                      {w.nameAr}:
-                    </span>
-                    <input
-                      type="text"
+                      يوم {w.full}
+                    </label>
+                    <textarea
+                      id={`focus-${w.dayIndex}`}
                       className="field-input"
                       value={dayFocuses[w.dayIndex] || ''}
                       onChange={(e) =>
                         handleFocusChange(w.dayIndex, e.target.value)
                       }
-                      placeholder="مثال: صدر وبايسبس، ظهر وتراي..."
+                      placeholder="مثال: عضلات الصدر والترايسبس..."
+                      dir="rtl"
+                      rows={2}
                       style={{
-                        flex: 1,
-                        padding: '6px 8px',
-                        fontSize: '12.5px',
+                        width: '100%',
+                        resize: 'vertical',
+                        minHeight: '48px',
+                        lineHeight: '1.4',
+                        boxSizing: 'border-box',
                       }}
                     />
                   </div>
                 ))}
-              </div>
             </div>
-          )}
 
-          <div
-            style={{
-              padding: '10px',
-              background: 'var(--accent-soft)',
-              borderRadius: '8px',
-              fontSize: '12px',
-              color: 'var(--accent)',
-              marginBottom: '16px',
-            }}
-          >
-            🔒 سيتم قفل الجدول لحمايته تلقائياً ولن يتم استبداله بأي توليد
-            عشوائي. يمكنك بعد ذلك إضافة وتخصيص تمارين كل يوم بكل حرية!
-          </div>
+            {/* Callout explaining lock */}
+            <Callout variant="accent" title="قفل وحماية الجدول">
+              سيتم قفل الجدول التدريبي تلقائياً لحمايته من أي استبدال عشوائي أو
+              توليد آلي. يمكنك بعد ذلك إضافة وتعديل تمارين كل يوم بكل حرية.
+            </Callout>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              type="submit"
-              className="button-primary"
-              style={{ flex: 1, padding: '12px', fontWeight: 800 }}
-            >
-              🚀 إنشاء وترتيب الجدول التدريبي
-            </button>
-            <button
-              type="button"
-              className="ghost"
-              onClick={onClose}
-              style={{ padding: '12px 16px' }}
-            >
-              إلغاء
-            </button>
-          </div>
-        </form>
+            {/* Actions */}
+            <div className="sticky-bottom-bar">
+              <button
+                type="button"
+                className="button-primary full-width"
+                onClick={handleCreate}
+              >
+                إنشاء الجدول
+              </button>
+              <button
+                type="button"
+                className="ghost-secondary full-width"
+                onClick={() => setCurrentStep(2)}
+              >
+                رجوع للسابق
+              </button>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   )
 }
+
+export default CustomScheduleModal
