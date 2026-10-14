@@ -1,7 +1,19 @@
 import { useState } from 'react'
 import type { SavedWorkoutProgram, WorkoutProgram } from '../shared/types.ts'
+import { formatArabicDate } from '../../lib/dateUtils.ts'
+import { Sheet } from '../../components/Sheet.tsx'
+import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
+import { ListRow } from '../../components/ListRow.tsx'
+import { EmptyState } from '../../components/EmptyState.tsx'
+import {
+  IconMoreVertical,
+  IconClipboard,
+  IconEdit,
+  IconTrash,
+  IconCheck,
+} from '../../components/Icons.tsx'
 
-interface ProgramVaultModalProps {
+export interface ProgramVaultModalProps {
   savedPrograms: SavedWorkoutProgram[]
   activeProgram: WorkoutProgram | null
   onSaveCurrentProgram: (title: string) => void
@@ -21,321 +33,300 @@ export function ProgramVaultModal({
   onClose,
 }: ProgramVaultModalProps) {
   const [newTitleToSave, setNewTitleToSave] = useState('')
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editingTitleText, setEditingTitleText] = useState('')
+  const [selectedProgram, setSelectedProgram] =
+    useState<SavedWorkoutProgram | null>(null)
+  const [isRenaming, setIsRenaming] = useState(false)
+  const [renameText, setRenameText] = useState('')
+
+  // Confirmation Sheets
+  const [confirmApply, setConfirmApply] =
+    useState<SavedWorkoutProgram | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
   function handleSaveCurrent(e: React.FormEvent) {
     e.preventDefault()
-    if (!activeProgram) {
-      alert('لا يوجد جدول نشط حالياً لحفظه!')
-      return
-    }
+    if (!activeProgram) return
     const title =
       newTitleToSave.trim() || `جدولي المحفوظ (${savedPrograms.length + 1})`
     onSaveCurrentProgram(title)
     setNewTitleToSave('')
   }
 
-  function handleRenameSubmit(id: string) {
-    if (!editingTitleText.trim()) return
-    onRenameProgram(id, editingTitleText.trim())
-    setEditingId(null)
+  function handleRenameSubmit() {
+    if (!selectedProgram || !renameText.trim()) return
+    onRenameProgram(selectedProgram.id, renameText.trim())
+    setIsRenaming(false)
+    setSelectedProgram(null)
   }
 
   return (
-    <div
-      className="modal-backdrop"
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '16px',
-      }}
-    >
-      <div
-        className="card"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          width: '100%',
-          maxWidth: '560px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          borderRadius: '16px',
-          padding: '20px',
-        }}
+    <>
+      <Sheet
+        isOpen={true}
+        onClose={onClose}
+        title="حافظة الجداول"
+        subtitle={`${savedPrograms.length} جداول محفوظة`}
       >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '16px',
-            borderBottom: '1px solid var(--line)',
-            paddingBottom: '12px',
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
-            📁 حافظة الجداول التدريبية المحفوظة
-          </h2>
-          <button
-            type="button"
-            className="ghost-secondary tiny"
-            onClick={onClose}
-            style={{ fontSize: '18px', lineHeight: 1 }}
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Save Current Program Form */}
-        {activeProgram && (
-          <form
-            onSubmit={handleSaveCurrent}
-            style={{
-              background: 'var(--card-subtle)',
-              border: '1.5px solid var(--line)',
-              borderRadius: '12px',
-              padding: '14px',
-              marginBottom: '18px',
-            }}
-          >
-            <h4 style={{ margin: '0 0 6px', fontSize: '14px' }}>
-              💾 حفظ الجدول الحالي كنسخة في الحافظة:
-            </h4>
-            <p
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Save Current Program Section */}
+          {activeProgram && (
+            <form
+              onSubmit={handleSaveCurrent}
+              className="screen-section"
               style={{
-                margin: '0 0 10px',
-                fontSize: '12px',
-                color: 'var(--muted)',
+                background: 'var(--card-subtle)',
+                padding: '14px',
+                borderRadius: '12px',
+                border: '1px solid var(--line)',
+                gap: '10px',
               }}
             >
-              احفظ جدولك النشط باسم مخصص للرجوع إليه أو استدعائه في أي وقت.
-            </p>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input
-                type="text"
-                className="field-input"
-                value={newTitleToSave}
-                onChange={(e) => setNewTitleToSave(e.target.value)}
-                placeholder="اسم الجدول (مثال: جدول التضخيم 4 أيام، جدول أرنولد...)"
-                style={{ flex: 1, padding: '8px 10px', fontSize: '13px' }}
-              />
+              <div className="field">
+                <label htmlFor="vault-save-title">
+                  حفظ الجدول الحالي في الحافظة:
+                </label>
+                <input
+                  id="vault-save-title"
+                  type="text"
+                  className="field-input"
+                  value={newTitleToSave}
+                  onChange={(e) => setNewTitleToSave(e.target.value)}
+                  placeholder="اسم مخصص للجدول (مثال: جدول 4 أيام تضخيم)..."
+                  dir="rtl"
+                />
+              </div>
+
+              {/* On its OWN row a full-width primary button */}
               <button
                 type="submit"
-                className="button-primary"
+                className="button-primary full-width"
+                style={{ height: '48px', fontSize: '14.5px', fontWeight: 700 }}
+              >
+                حفظ في الحافظة
+              </button>
+            </form>
+          )}
+
+          {/* Saved Programs List */}
+          <div className="screen-section">
+            <div className="section-title">
+              <span>الجداول المحفوظة</span>
+              <span className="section-title-counter">
+                {savedPrograms.length}
+              </span>
+            </div>
+
+            {savedPrograms.length === 0 ? (
+              <EmptyState
+                icon={<IconClipboard size={36} />}
+                title="لا توجد جداول محفوظة"
+                message="احفظ جدولك النشط أو جداولك المفضلة هنا للرجوع إليها وتطبيقها في أي وقت دون فقدان أي تمرين."
+              />
+            ) : (
+              <div
                 style={{
-                  padding: '8px 14px',
-                  fontSize: '13px',
-                  fontWeight: 700,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
                 }}
               >
-                + حفظ في الحافظة
-              </button>
-            </div>
-          </form>
-        )}
+                {savedPrograms.map((item) => {
+                  const isCurrentlyActive =
+                    activeProgram && activeProgram.id === item.program.id
+                  const dateStr = formatArabicDate(item.savedAt)
+                  const daysStr = `${item.program.days.length} أيام أسبوعياً`
 
-        {/* Saved Programs List */}
-        <div>
-          <h4 style={{ margin: '0 0 10px', fontSize: '14px' }}>
-            📋 الجداول المحفوظة ({savedPrograms.length}):
-          </h4>
-
-          {savedPrograms.length === 0 ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '30px 16px',
-                background: 'var(--card-subtle)',
-                borderRadius: '10px',
-                border: '1px dashed var(--line)',
-                color: 'var(--muted)',
-                fontSize: '13px',
-              }}
-            >
-              لم تقم بحفظ أي جداول بعد. صمّم جدولك واحفظه هنا حتى لا تفقد أي
-              تمرين!
-            </div>
-          ) : (
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
-            >
-              {savedPrograms.map((item) => {
-                const totalExercises = item.program.days.reduce(
-                  (sum, d) => sum + d.exercises.length,
-                  0,
-                )
-                const isCurrentlyActive =
-                  activeProgram && activeProgram.id === item.program.id
-
-                return (
-                  <div
-                    key={item.id}
-                    style={{
-                      background: 'var(--card-bg)',
-                      border: isCurrentlyActive
-                        ? '2px solid var(--accent)'
-                        : '1px solid var(--line)',
-                      borderRadius: '12px',
-                      padding: '14px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '8px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                        gap: '6px',
+                  return (
+                    <ListRow
+                      key={item.id}
+                      className={isCurrentlyActive ? 'list-row--active' : ''}
+                      onClick={() => {
+                        setSelectedProgram(item)
+                        setRenameText(item.title)
+                        setIsRenaming(false)
                       }}
-                    >
-                      {editingId === item.id ? (
-                        <div style={{ display: 'flex', gap: '6px', flex: 1 }}>
-                          <input
-                            type="text"
-                            value={editingTitleText}
-                            onChange={(e) =>
-                              setEditingTitleText(e.target.value)
-                            }
-                            style={{
-                              flex: 1,
-                              padding: '4px 8px',
-                              fontSize: '13px',
-                            }}
-                            autoFocus
-                          />
-                          <button
-                            type="button"
-                            className="button-primary tiny"
-                            onClick={() => handleRenameSubmit(item.id)}
-                          >
-                            ✓ حفظ
-                          </button>
-                          <button
-                            type="button"
-                            className="ghost tiny"
-                            onClick={() => setEditingId(null)}
-                          >
-                            إلغاء
-                          </button>
-                        </div>
-                      ) : (
+                      title={
                         <div
                           style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '8px',
+                            gap: '6px',
                           }}
                         >
-                          <h3
-                            style={{
-                              margin: 0,
-                              fontSize: '15px',
-                              fontWeight: 800,
-                            }}
-                          >
-                            {item.title}
-                          </h3>
+                          <span>{item.title}</span>
                           {isCurrentlyActive && (
                             <span
                               style={{
+                                fontSize: '10.5px',
                                 background: 'var(--accent)',
                                 color: '#fff',
-                                fontSize: '10.5px',
-                                padding: '2px 8px',
-                                borderRadius: '999px',
+                                padding: '2px 6px',
+                                borderRadius: '6px',
                                 fontWeight: 700,
                               }}
                             >
-                              ✓ الجدول النشط حالياً
+                              النشط
                             </span>
                           )}
                         </div>
-                      )}
-
-                      <span style={{ fontSize: '11px', color: 'var(--muted)' }}>
-                        {new Date(item.savedAt).toLocaleDateString('ar-EG')}
-                      </span>
-                    </div>
-
-                    <div style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
-                      ⚡ {item.program.days.length} أيام تمرين •{' '}
-                      {totalExercises} تمرين إجمالي
-                      {item.program.days.length > 0 && (
-                        <div style={{ marginTop: '4px', fontSize: '11.5px' }}>
-                          الأيام:{' '}
-                          {item.program.days.map((d) => d.labelAr).join(' • ')}
-                        </div>
-                      )}
-                    </div>
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        gap: '6px',
-                        justifyContent: 'flex-end',
-                        marginTop: '4px',
-                      }}
-                    >
-                      {!isCurrentlyActive && (
+                      }
+                      secondary={daysStr}
+                      tertiary={dateStr}
+                      trailing={
                         <button
                           type="button"
-                          className="button-primary tiny"
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                `هل تريد استدعاء وتطبيق "${item.title}" كجدول التمارين النشط الآن؟`,
-                              )
-                            ) {
-                              onApplyProgram(item)
-                              onClose()
-                            }
+                          className="topbar-icon-btn"
+                          style={{
+                            width: '38px',
+                            height: '38px',
+                            minWidth: '38px',
+                            minHeight: '38px',
                           }}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedProgram(item)
+                            setRenameText(item.title)
+                            setIsRenaming(false)
+                          }}
+                          aria-label={`خيارات ${item.title}`}
                         >
-                          ⚡ تطبيق هذا الجدول الآن
+                          <IconMoreVertical size={18} />
                         </button>
-                      )}
-                      <button
-                        type="button"
-                        className="ghost tiny"
-                        onClick={() => {
-                          setEditingId(item.id)
-                          setEditingTitleText(item.title)
-                        }}
-                      >
-                        ✏️ إعادة تسمية
-                      </button>
-                      <button
-                        type="button"
-                        className="ghost-danger tiny"
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              `هل أنت متأكد من حذف "${item.title}" من الحافظة؟`,
-                            )
-                          ) {
-                            onDeleteProgram(item.id)
-                          }
-                        }}
-                      >
-                        🗑️ حذف
-                      </button>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
+                      }
+                    />
+                  )
+                })}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </Sheet>
+
+      {/* Row Action Sheet */}
+      <Sheet
+        isOpen={Boolean(selectedProgram) && !isRenaming}
+        onClose={() => setSelectedProgram(null)}
+        title={selectedProgram?.title}
+        subtitle={`${selectedProgram?.program.days.length} أيام تدريبية`}
+      >
+        {selectedProgram && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <button
+              type="button"
+              className="button-primary full-width"
+              style={{ height: '48px', gap: '10px' }}
+              onClick={() => {
+                const prog = selectedProgram
+                setSelectedProgram(null)
+                setConfirmApply(prog)
+              }}
+            >
+              <IconCheck size={18} />
+              <span>تطبيق هذا الجدول كجدول نشط الآن</span>
+            </button>
+
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => setIsRenaming(true)}
+            >
+              <IconEdit size={18} />
+              <span>إعادة تسمية الجدول</span>
+            </button>
+
+            <button
+              type="button"
+              className="danger full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                const progId = selectedProgram.id
+                setSelectedProgram(null)
+                setConfirmDelete(progId)
+              }}
+            >
+              <IconTrash size={18} />
+              <span>حذف من الحافظة</span>
+            </button>
+          </div>
+        )}
+      </Sheet>
+
+      {/* Rename Sheet */}
+      <Sheet
+        isOpen={isRenaming}
+        onClose={() => {
+          setIsRenaming(false)
+          setSelectedProgram(null)
+        }}
+        title="إعادة تسمية الجدول"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div className="field">
+            <label htmlFor="rename-input">اسم الجدول الجديد:</label>
+            <input
+              id="rename-input"
+              type="text"
+              className="field-input"
+              value={renameText}
+              onChange={(e) => setRenameText(e.target.value)}
+              dir="rtl"
+              autoFocus
+            />
+          </div>
+          <button
+            type="button"
+            className="button-primary full-width"
+            onClick={handleRenameSubmit}
+          >
+            حفظ التسمية الجديدة
+          </button>
+        </div>
+      </Sheet>
+
+      {/* Confirm Apply Sheet */}
+      <ConfirmSheet
+        isOpen={Boolean(confirmApply)}
+        onClose={() => setConfirmApply(null)}
+        onConfirm={() => {
+          if (confirmApply) {
+            onApplyProgram(confirmApply)
+            setConfirmApply(null)
+            onClose()
+          }
+        }}
+        title="تأكيد تطبيق الجدول"
+        message={`سيتم استبدال جدولك النشط الحالي بالجدول المحفوظ: "${confirmApply?.title}" (${confirmApply?.program.days.length} أيام). هل أنت متأكد؟`}
+        confirmLabel="تطبيق الجدول"
+        cancelLabel="إلغاء"
+      />
+
+      {/* Confirm Delete Sheet */}
+      <ConfirmSheet
+        isOpen={Boolean(confirmDelete)}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={() => {
+          if (confirmDelete) {
+            onDeleteProgram(confirmDelete)
+            setConfirmDelete(null)
+          }
+        }}
+        title="حذف الجدول من الحافظة"
+        message="هل أنت متأكد من حذف هذا الجدول نهائياً من الحافظة؟ لن تتمكن من استرجاعه لاحقاً."
+        confirmLabel="حذف نهائي"
+        cancelLabel="إلغاء"
+        isDestructive={true}
+      />
+    </>
   )
 }
+
+export default ProgramVaultModal
