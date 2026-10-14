@@ -632,6 +632,8 @@ export function App({ config }: AppProps) {
                 programDay={todayProgramDay}
                 dayIndex={todayDayIndex}
                 onSave={handleSaveSession}
+                onClose={() => setShowLogger(false)}
+                customExercises={workoutStore.getCustomExercises()}
               />
             )}
 
