@@ -1,27 +1,45 @@
-import { assetUrl } from '../../utils/assetUrl.ts'
+import { useMemo } from 'react'
+import { assetUrl } from '../../utils/assetUrl'
+import { formatArabicDate, getOrderedWeekdays } from '../../lib/dateUtils'
 import type {
   TrackingSession,
   BodyLogEntry,
   WorkoutProgram,
   ProgramDay,
-} from '../shared/types.ts'
-import type { UserProfile } from '../onboarding/types.ts'
-import { GOALS } from '../onboarding/types.ts'
-import { getExerciseById } from '../workout/exercises.ts'
+} from '../shared/types'
+import type { UserProfile } from '../onboarding/types'
+import { GOALS } from '../onboarding/types'
+import { getExerciseById } from '../workout/exercises'
+import { ExerciseVisual } from '../workout/ExerciseVisual'
+import { TopBar } from '../../components/TopBar'
+import { Callout } from '../../components/Callout'
+import { Stat } from '../../components/Stat'
+import { ListRow } from '../../components/ListRow'
+import { ProgressBar } from '../../components/ProgressBar'
+import { calculateCalorieMacroTargets } from '../nutrition/calorieCalculator'
 
-interface DashboardProps {
+export interface DashboardProps {
   profile: UserProfile | null
   program: WorkoutProgram | null
   recentSessions: TrackingSession[]
   bodyLog: BodyLogEntry[]
   onStartWorkout?: (day: ProgramDay) => void
+  onViewDay?: (day: ProgramDay) => void
+  onOpenNutrition?: () => void
 }
 
-function getGreeting(): string {
+function getGreeting(name?: string): string {
   const hour = new Date().getHours()
-  if (hour < 12) return 'صباح الخير'
-  if (hour >= 18) return 'مساء الخير'
-  return 'مرحباً'
+  let prefix = 'مرحباً'
+  if (hour >= 5 && hour < 12) {
+    prefix = 'صباح الخير'
+  } else if (hour >= 12 && hour < 18) {
+    prefix = 'أهلاً بك'
+  } else {
+    prefix = 'مساء الخير'
+  }
+  const cleanName = name?.trim()
+  return cleanName ? `${prefix} يا ${cleanName}` : prefix
 }
 
 function toDateOnly(dateStr: string): Date {
@@ -29,48 +47,45 @@ function toDateOnly(dateStr: string): Date {
   return new Date(y, m - 1, d)
 }
 
-function getStartOfWeek(): Date {
+function getStartOfWeek(startDayIndex: number = 6): Date {
   const now = new Date()
-  const day = now.getDay()
+  const currentDay = now.getDay()
+  const diff = (currentDay - startDayIndex + 7) % 7
   const start = new Date(now)
-  start.setDate(now.getDate() - day)
+  start.setDate(now.getDate() - diff)
   start.setHours(0, 0, 0, 0)
   return start
 }
 
-function calcStreak(sessions: TrackingSession[]): number {
-  if (sessions.length === 0) return 0
-
-  const uniqueDates = [...new Set(sessions.map((s) => s.date))]
-    .map(toDateOnly)
-    .sort((a, b) => a.getTime() - b.getTime())
-
-  let maxStreak = 1
-  let currentStreak = 1
-
-  for (let i = 1; i < uniqueDates.length; i++) {
-    const diffMs = uniqueDates[i].getTime() - uniqueDates[i - 1].getTime()
-    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24))
-    if (diffDays === 1) {
-      currentStreak++
-      if (currentStreak > maxStreak) maxStreak = currentStreak
-    } else {
-      currentStreak = 1
-    }
-  }
-
-  return maxStreak
-}
-
-function getSessionsThisWeek(sessions: TrackingSession[]): number {
-  const weekStart = getStartOfWeek()
+function getSessionsThisWeek(
+  sessions: TrackingSession[],
+  startDayIndex: number = 6,
+): number {
+  const weekStart = getStartOfWeek(startDayIndex)
   return sessions.filter((s) => toDateOnly(s.date) >= weekStart).length
 }
 
-function getLatestWeight(bodyLog: BodyLogEntry[]): string {
-  if (bodyLog.length === 0) return '—'
-  const sorted = [...bodyLog].sort((a, b) => b.date.localeCompare(a.date))
-  return `${sorted[0].weightKg} كجم`
+function getCurrentWeightDisplay(
+  bodyLog: BodyLogEntry[],
+  profile: UserProfile | null,
+): { value: string; source: string } {
+  if (bodyLog.length > 0) {
+    const sorted = [...bodyLog].sort((a, b) => b.date.localeCompare(a.date))
+    return {
+      value: `${sorted[0].weightKg} كجم`,
+      source: 'من سجل الوزن',
+    }
+  }
+  if (profile?.body?.weightKg) {
+    return {
+      value: `${profile.body.weightKg} كجم`,
+      source: 'من الملف الشخصي',
+    }
+  }
+  return {
+    value: '—',
+    source: 'غير محدد',
+  }
 }
 
 function getGoalLabel(profile: UserProfile | null): string {
@@ -96,19 +111,21 @@ function getCompletedDayIndices(
   return completed
 }
 
-export default function Dashboard({
+export function Dashboard({
   profile,
   program,
   recentSessions,
   bodyLog,
   onStartWorkout,
+  onViewDay,
+  onOpenNutrition,
 }: DashboardProps) {
-  const greeting = getGreeting()
-  const sessionsThisWeek = getSessionsThisWeek(recentSessions)
-  const totalSessions = recentSessions.length
-  const latestWeight = getLatestWeight(bodyLog)
+  const weekStartDay = profile?.weekStartDay ?? 6
+  const greeting = getGreeting(profile?.name)
+  const arabicDate = useMemo(() => formatArabicDate(new Date()), [])
+  const sessionsThisWeek = getSessionsThisWeek(recentSessions, weekStartDay)
+  const currentWeight = getCurrentWeightDisplay(bodyLog, profile)
   const goalLabel = getGoalLabel(profile)
-  const streak = calcStreak(recentSessions)
 
   const todayDayIndex = new Date().getDay()
   const todayProgramDay = program?.days.find(
@@ -119,12 +136,14 @@ export default function Dashboard({
     ? getCompletedDayIndices(recentSessions, program)
     : null
 
-  const nextWorkoutLabel =
-    program && completedDays && completedDays.size < program.days.length
-      ? (program.days.find((d) => !completedDays.has(d.dayIndex))?.labelAr ??
-        null)
-      : null
+  const nextWorkoutDay = useMemo(() => {
+    if (!program || program.days.length === 0) return null
+    if (!completedDays) return program.days[0]
+    const uncompleted = program.days.find((d) => !completedDays.has(d.dayIndex))
+    return uncompleted ?? program.days[0]
+  }, [program, completedDays])
 
+  // Mascot tips verbatim from coachTips
   const coachTips = [
     'يا أسطى العضلات! د. مجانص بيقولك: اللي يفوّت تمرين الرجلين يروح يتمرن زومبا أحسن! الأرجل هي أساس هرمون التستوستيرون يا بطل!',
     'البروتين ثم البروتين! سيبك من الفسيخ والمقليات وركّز في الفراخ والبيض والتونة، عشان الألياف العضلية تبات شبعانة وتصحى عملاقة!',
@@ -141,108 +160,426 @@ export default function Dashboard({
     ) % coachTips.length
   const dailyTip = coachTips[tipIndex]
 
+  // Nutrition summary for today
+  const todayKey = useMemo(() => new Date().toISOString().split('T')[0], [])
+  const dailyNutrition = useMemo(() => {
+    try {
+      const raw = localStorage.getItem(`maganis:daily_nutrition_${todayKey}`)
+      if (raw) return JSON.parse(raw)
+    } catch {
+      // ignore
+    }
+    return {
+      consumedCalories: 0,
+      consumedProtein: 0,
+    }
+  }, [todayKey])
+
+  const targets = useMemo(() => {
+    if (!profile) return null
+    try {
+      return calculateCalorieMacroTargets(profile)
+    } catch {
+      return null
+    }
+  }, [profile])
+
+  const targetCalories = targets?.targetCalories ?? 2555
+  const targetProtein = targets?.proteinGrams ?? 140
+  const consumedCalories = dailyNutrition.consumedCalories ?? 0
+  const consumedProtein = dailyNutrition.consumedProtein ?? 0
+
+  // 7-Day Week Strip calculation
+  const orderedWeekdays = useMemo(
+    () => getOrderedWeekdays(weekStartDay),
+    [weekStartDay],
+  )
+  const sessionDatesThisWeek = useMemo(() => {
+    const weekStart = getStartOfWeek(weekStartDay)
+    return new Set(
+      recentSessions
+        .filter((s) => toDateOnly(s.date) >= weekStart)
+        .map((s) => toDateOnly(s.date).getDay()),
+    )
+  }, [recentSessions, weekStartDay])
+
   return (
-    <div className="dashboard">
-      <div className="dashboard__header">
-        <h1 className="dashboard__greeting">{greeting}</h1>
-      </div>
-
-      <div className="maganis-coach-card" style={{ marginBottom: '16px' }}>
-        <div className="maganis-coach-avatar-wrapper">
-          <img
-            src={assetUrl('branding/maganis-dumbbell-transparent.png')}
-            alt="د. مجانص"
-            className="maganis-transparent-mascot"
-          />
-          <span className="maganis-coach-badge">د. مجانص</span>
-        </div>
-        <div className="maganis-coach-body">
-          <h3 className="maganis-coach-title">
-            💡 كبسولة د. مجانص (نار وجيم مصري)
-          </h3>
-          <div className="maganis-speech-bubble">{dailyTip}</div>
-        </div>
-      </div>
-
-      <div className="card dashboard__stats">
-        <div className="dashboard__stats-grid">
-          <div className="dashboard__stat">
-            <span className="dashboard__stat-value">{sessionsThisWeek}</span>
-            <span className="dashboard__stat-label">
-              أيام التدريب هذا الأسبوع
+    <div className="screen-container home-screen" dir="rtl">
+      {/* TopBar */}
+      <TopBar
+        leading={
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}
+          >
+            <img
+              src={assetUrl('branding/maganis-mascot-inner.png')}
+              alt="Maganis"
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                objectFit: 'contain',
+              }}
+            />
+            <span
+              data-testid="app-title"
+              style={{
+                fontWeight: 800,
+                fontSize: '17px',
+                color: 'var(--ink)',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              مجانص
             </span>
           </div>
-          <div className="dashboard__stat">
-            <span className="dashboard__stat-value">{totalSessions}</span>
-            <span className="dashboard__stat-label">الجلسات الإجمالية</span>
-          </div>
-          <div className="dashboard__stat">
-            <span className="dashboard__stat-value">{latestWeight}</span>
-            <span className="dashboard__stat-label">الوزن الحالي</span>
-          </div>
-          <div className="dashboard__stat">
-            <span className="dashboard__stat-value">{goalLabel}</span>
-            <span className="dashboard__stat-label">الهدف</span>
-          </div>
-        </div>
-      </div>
+        }
+        title={greeting}
+        subtitle={arabicDate}
+      />
 
-      {streak > 0 && (
-        <div className="card dashboard__streak">
-          <span>🔥 {streak} يوم متتالي</span>
-        </div>
-      )}
-
-      {program && completedDays && (
-        <div className="card dashboard__progress">
-          <h2 className="dashboard__section-title">التقدم في البرنامج</h2>
-          <p>
-            {completedDays.size} / {program.days.length} يوم مكتمل
-          </p>
-          {nextWorkoutLabel && (
-            <p className="muted">التمرين القادم: {nextWorkoutLabel}</p>
-          )}
-        </div>
-      )}
-
-      {todayProgramDay && (
-        <div className="card dashboard__today">
-          <div className="dashboard__today-header">
-            <div>
-              <h2 className="dashboard__section-title">
-                تمرين اليوم: {todayProgramDay.labelAr}
-              </h2>
-              <span className="chip highlight">{todayProgramDay.focus}</span>
-            </div>
-
-            {onStartWorkout && (
-              <button
-                type="button"
-                className="button-primary start-routine-btn"
-                onClick={() => onStartWorkout(todayProgramDay)}
-              >
-                ▶ ابدأ تمرين اليوم (Start)
-              </button>
+      <div
+        className="screen-content"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '18px',
+          padding: '16px',
+        }}
+      >
+        {/* Card تمرين اليوم */}
+        <section className="screen-section">
+          <div className="section-title">
+            <span>تمرين اليوم</span>
+            {todayProgramDay && (
+              <span className="section-title-counter">
+                {todayProgramDay.exercises.length} تمارين
+              </span>
             )}
           </div>
-          <ul
-            className="dashboard__today-exercises"
-            style={{ marginTop: '12px' }}
+
+          <div
+            className="card"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px',
+              padding: '16px',
+            }}
           >
-            {todayProgramDay.exercises.map((pe, idx) => {
-              const ex = getExerciseById(pe.exerciseId)
+            {todayProgramDay ? (
+              <>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    justifyContent: 'space-between',
+                    gap: '8px',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: '17px',
+                      fontWeight: 800,
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    {todayProgramDay.labelAr} — {todayProgramDay.focus}
+                  </div>
+                </div>
+
+                {onStartWorkout && (
+                  <button
+                    type="button"
+                    className="button-primary"
+                    style={{
+                      width: '100%',
+                      height: '48px',
+                      fontSize: '15.5px',
+                      fontWeight: 700,
+                    }}
+                    onClick={() => onStartWorkout(todayProgramDay)}
+                  >
+                    ابدأ التمرين
+                  </button>
+                )}
+
+                {/* First 3 exercises as ListRows */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
+                  {todayProgramDay.exercises.slice(0, 3).map((pe, idx) => {
+                    const ex = getExerciseById(pe.exerciseId)
+                    const arabicName = ex?.nameAr ?? pe.exerciseId
+                    const englishName = ex?.nameEn ?? ''
+                    const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى عدد' : pe.reps}`
+                    return (
+                      <ListRow
+                        key={idx}
+                        leading={
+                          <div
+                            style={{
+                              width: '56px',
+                              height: '56px',
+                              borderRadius: '10px',
+                              overflow: 'hidden',
+                              background: 'var(--card-subtle)',
+                              border: '1px solid var(--line)',
+                              flexShrink: 0,
+                            }}
+                          >
+                            <ExerciseVisual
+                              category={ex?.category ?? 'chest'}
+                              exerciseId={pe.exerciseId}
+                              exerciseName={arabicName}
+                              size="small"
+                            />
+                          </div>
+                        }
+                        title={arabicName}
+                        secondary={englishName}
+                        secondaryIsLtr={true}
+                        trailing={
+                          <span
+                            style={{
+                              fontWeight: 700,
+                              fontSize: '13.5px',
+                              color: 'var(--ink)',
+                              fontVariantNumeric: 'tabular-nums',
+                            }}
+                          >
+                            {setsReps}
+                          </span>
+                        }
+                      />
+                    )
+                  })}
+                </div>
+
+                {todayProgramDay.exercises.length > 0 && (
+                  <button
+                    type="button"
+                    className="ghost-secondary full-width"
+                    style={{ height: '40px', fontSize: '13.5px' }}
+                    onClick={() => onViewDay?.(todayProgramDay)}
+                  >
+                    عرض اليوم كاملًا
+                  </button>
+                )}
+              </>
+            ) : (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  padding: '8px 0',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: 800,
+                    color: 'var(--ink)',
+                  }}
+                >
+                  يوم راحة
+                </div>
+                {nextWorkoutDay ? (
+                  <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                    التمرين القادم: {nextWorkoutDay.labelAr} (
+                    {nextWorkoutDay.focus})
+                  </div>
+                ) : (
+                  <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                    استمتع بالاستشفاء ونم جيداً لبناء الألياف العضلية
+                  </div>
+                )}
+                {nextWorkoutDay && onStartWorkout && (
+                  <button
+                    type="button"
+                    className="ghost-secondary full-width"
+                    style={{ marginTop: '8px', height: '44px' }}
+                    onClick={() => onStartWorkout(nextWorkoutDay)}
+                  >
+                    بدء تمرين مبكر ({nextWorkoutDay.labelAr})
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* 1 Row of 3 Stats */}
+        <section className="screen-section">
+          <div className="stats-strip">
+            <Stat
+              label="الجلسات هذا الأسبوع"
+              value={sessionsThisWeek}
+              secondary={`${recentSessions.length} إجمالي`}
+            />
+            <Stat
+              label="الوزن الحالي"
+              value={currentWeight.value}
+              secondary={currentWeight.source}
+            />
+            <Stat
+              label="الهدف"
+              value={goalLabel}
+              secondary={profile?.body?.sex === 'female' ? 'أنثى' : 'ذكر'}
+            />
+          </div>
+        </section>
+
+        {/* 7-day strip (done / today / rest) */}
+        <section className="screen-section">
+          <div className="section-title">
+            <span>أيام الأسبوع</span>
+          </div>
+          <div className="week-strip">
+            {orderedWeekdays.map((w) => {
+              const isToday = w.dayIndex === todayDayIndex
+              const isDone = sessionDatesThisWeek.has(w.dayIndex)
+              const hasWorkout = program?.days.some(
+                (d) => d.dayIndex === w.dayIndex,
+              )
+              const statusClass = isDone
+                ? 'week-strip__day--done'
+                : isToday
+                  ? 'week-strip__day--today'
+                  : ''
               return (
-                <li key={idx} className="dashboard__today-exercise">
-                  <span>{ex?.nameAr ?? pe.exerciseId}</span>
-                  <span className="muted">
-                    {pe.sets} × {pe.reps === 0 ? 'أقصى عدد' : pe.reps}
-                  </span>
-                </li>
+                <div
+                  key={w.dayIndex}
+                  className={`week-strip__day ${statusClass}`}
+                >
+                  <span>{w.short}</span>
+                  <div
+                    className="week-strip__dot"
+                    style={{
+                      opacity: isDone || isToday || hasWorkout ? 1 : 0.25,
+                    }}
+                  />
+                </div>
               )
             })}
-          </ul>
-        </div>
-      )}
+          </div>
+        </section>
+
+        {/* Nutrition Today */}
+        <section className="screen-section">
+          <div className="section-title">
+            <span>التغذية اليوم</span>
+          </div>
+          <div
+            className="card list-row--clickable"
+            onClick={onOpenNutrition}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onOpenNutrition?.()
+              }
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              padding: '14px 16px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'baseline',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '20px',
+                  fontWeight: 800,
+                  color: 'var(--ink)',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {consumedCalories} / {targetCalories}{' '}
+                <span
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    color: 'var(--muted)',
+                  }}
+                >
+                  سعرة
+                </span>
+              </div>
+              <div
+                style={{
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  color: 'var(--accent)',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {consumedProtein} / {targetProtein} جم بروتين
+              </div>
+            </div>
+
+            <ProgressBar
+              value={consumedCalories}
+              max={targetCalories}
+              height={8}
+            />
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+              }}
+            >
+              <span>اضغط لعرض الوجبات وحساب السعرات</span>
+              <span>
+                {Math.round(
+                  targetCalories > 0
+                    ? (consumedCalories / targetCalories) * 100
+                    : 0,
+                )}
+                %
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* Mascot Tip: Callout with 56px avatar */}
+        <section className="screen-section">
+          <Callout
+            variant="accent"
+            avatar={
+              <img
+                src={assetUrl('branding/maganis-mascot-inner.png')}
+                alt="د. مجانص"
+              />
+            }
+            title="نصيحة د. مجانص"
+          >
+            {dailyTip}
+          </Callout>
+        </section>
+      </div>
     </div>
   )
 }
+
+export default Dashboard

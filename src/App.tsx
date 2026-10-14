@@ -39,22 +39,35 @@ import { BackupPanel } from './modules/backup/BackupPanel.tsx'
 import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
 import { MuscleAtlasDebug } from './modules/workout/MuscleAtlasDebug.tsx'
 import { Toast } from './components/Toast.tsx'
+import {
+  IconUser,
+  IconDumbbell,
+  IconUtensils,
+  IconClipboard,
+  IconTrendingUp,
+  IconSettings,
+} from './components/Icons.tsx'
 import './styles/app.css'
 
 type TabId =
-  'dashboard' | 'workouts' | 'nutrition' | 'tracking' | 'reports' | 'settings'
+  | 'dashboard'
+  | 'workouts'
+  | 'nutrition'
+  | 'tracking'
+  | 'reports'
+  | 'settings'
 
 interface AppProps {
   config: AppConfig
 }
 
-const TABS: { id: TabId; label: string; icon: string }[] = [
-  { id: 'dashboard', label: 'لوحة التحكم', icon: '📊' },
-  { id: 'workouts', label: 'التدريبات', icon: '💪' },
-  { id: 'nutrition', label: 'التغذية', icon: '🥗' },
-  { id: 'tracking', label: 'التتبع', icon: '📝' },
-  { id: 'reports', label: 'التقارير', icon: '📈' },
-  { id: 'settings', label: 'الإعدادات', icon: '⚙️' },
+const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
+  { id: 'dashboard', label: 'الرئيسية', icon: <IconUser size={20} /> },
+  { id: 'workouts', label: 'التدريب', icon: <IconDumbbell size={20} /> },
+  { id: 'nutrition', label: 'التغذية', icon: <IconUtensils size={20} /> },
+  { id: 'tracking', label: 'التتبع', icon: <IconClipboard size={20} /> },
+  { id: 'reports', label: 'التقارير', icon: <IconTrendingUp size={20} /> },
+  { id: 'settings', label: 'الإعدادات', icon: <IconSettings size={20} /> },
 ]
 
 export function App({ config }: AppProps) {
@@ -535,6 +548,12 @@ export function App({ config }: AppProps) {
               setActiveWorkoutDay(day)
               setIsWorkoutSessionExpanded(true)
             }}
+            onViewDay={() => {
+              setActiveTab('workouts')
+            }}
+            onOpenNutrition={() => {
+              setActiveTab('nutrition')
+            }}
           />
         )
 
@@ -941,7 +960,7 @@ export function App({ config }: AppProps) {
         className="app app--shell"
         style={{ display: isWorkoutSessionExpanded ? 'none' : 'flex' }}
       >
-        <header className="app-header">
+        <header className="app-header" style={{ display: 'none' }}>
           <div className="maganis-header-brand">
             <img
               src={assetUrl('branding/maganis-mascot-inner.png')}

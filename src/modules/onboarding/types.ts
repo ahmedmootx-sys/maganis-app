@@ -44,6 +44,11 @@ export interface UserProfile {
   id: string
   createdAt: number
   updatedAt: number
+  name?: string
+  experienceLevel?: 'beginner' | 'intermediate' | 'advanced'
+  trainingLocation?: 'gym' | 'home' | 'both'
+  restrictions?: string
+  weekStartDay?: number
   goals: Goal[]
   primaryGoal: Goal
   trainingDaysPerWeek: number
