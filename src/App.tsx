@@ -560,36 +560,6 @@ export function App({ config }: AppProps) {
       case 'workouts':
         return (
           <div className="workouts-tab">
-            <div className="actions-row">
-              <button type="button" onClick={handleGenerateProgram}>
-                {program ? '🔄 إنشاء برنامج جديد' : '⚡ إنشاء برنامج تدريبي'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowCustomScheduleModal(true)}
-              >
-                🗓️ جدولي بالأيام
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowProgramVaultModal(true)}
-              >
-                📁 حافظة الجداول ({savedProgramsList.length})
-              </button>
-              <button type="button" onClick={() => setShowCustomBuilder(true)}>
-                ➕ تمرين مخصص
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowExerciseLibrary(true)}
-              >
-                🔍 مكتبة التمارين
-              </button>
-              <button type="button" onClick={() => setShowLogger(!showLogger)}>
-                📝 تسجيل يدوي
-              </button>
-            </div>
-
             {showExerciseLibrary && (
               <ExerciseLibraryModal
                 customExercises={customExercisesList}
@@ -640,77 +610,28 @@ export function App({ config }: AppProps) {
               />
             )}
 
-            {program ? (
-              <WeeklyPlanView
-                program={program}
-                customExercises={workoutStore.getCustomExercises()}
-                userInjuries={
-                  profile?.medical.hasIssues ? profile.medical.injuryTags : []
-                }
-                onStartRoutine={(day) => {
-                  setActiveWorkoutDay(day)
-                  setIsWorkoutSessionExpanded(true)
-                }}
-                onUpdateProgram={(updated) => {
-                  workoutStore.saveProgram(updated)
-                  setProgram(updated)
-                }}
-                onDeleteProgram={handleDeleteProgram}
-                onOpenScheduleModal={() => setShowCustomScheduleModal(true)}
-                onOpenVaultModal={() => setShowProgramVaultModal(true)}
-              />
-            ) : (
-              <div
-                className="card"
-                style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}
-              >
-                <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>
-                  📋
-                </div>
-                <h3 style={{ margin: '0 0 0.5rem 0' }}>
-                  لا يوجد جدول تدريبي نشط حالياً
-                </h3>
-                <p
-                  className="muted"
-                  style={{
-                    maxWidth: '440px',
-                    margin: '0 auto 1.5rem auto',
-                    lineHeight: '1.6',
-                  }}
-                >
-                  لقد قمت بحذف الجدول أو لم يتم إنشاؤه بعد. يمكنك تصميم جدولك
-                  الخاص وتحديد أيام تدريبك، أو استرجاع جدول محفوظ، أو توليد جدول
-                  آلي.
-                </p>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '0.75rem',
-                    justifyContent: 'center',
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  <button
-                    type="button"
-                    className="primary"
-                    onClick={() => setShowCustomScheduleModal(true)}
-                  >
-                    🗓️ تصميم جدول مخصص بالأيام
-                  </button>
-                  {savedProgramsList.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setShowProgramVaultModal(true)}
-                    >
-                      📁 استرجاع من الحافظة ({savedProgramsList.length})
-                    </button>
-                  )}
-                  <button type="button" onClick={handleGenerateProgram}>
-                    ⚡ توليد برنامج تلقائي
-                  </button>
-                </div>
-              </div>
-            )}
+            <WeeklyPlanView
+              program={program}
+              customExercises={workoutStore.getCustomExercises()}
+              userInjuries={
+                profile?.medical.hasIssues ? profile.medical.injuryTags : []
+              }
+              onStartRoutine={(day) => {
+                setActiveWorkoutDay(day)
+                setIsWorkoutSessionExpanded(true)
+              }}
+              onUpdateProgram={(updated) => {
+                workoutStore.saveProgram(updated)
+                setProgram(updated)
+              }}
+              onDeleteProgram={handleDeleteProgram}
+              onOpenScheduleModal={() => setShowCustomScheduleModal(true)}
+              onOpenVaultModal={() => setShowProgramVaultModal(true)}
+              onOpenLibrary={() => setShowExerciseLibrary(true)}
+              onOpenCustomBuilder={() => setShowCustomBuilder(true)}
+              onOpenSessionLogger={() => setShowLogger(true)}
+              onGenerateProgram={handleGenerateProgram}
+            />
           </div>
         )
 
