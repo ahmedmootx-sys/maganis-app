@@ -562,11 +562,36 @@ export function App({ config }: AppProps) {
           <div className="workouts-tab">
             {showExerciseLibrary && (
               <ExerciseLibraryModal
+                program={program}
                 customExercises={customExercisesList}
                 deletedExerciseIds={deletedExerciseIds}
                 onDeleteExercise={handleDeleteExercise}
                 onRestoreExercise={handleRestoreExercise}
                 onEditCustomExercise={handleEditCustomExercise}
+                onAddExerciseToDay={(dayIndex, exerciseId) => {
+                  if (program) {
+                    const newDays = program.days.map((d) =>
+                      d.dayIndex === dayIndex
+                        ? {
+                            ...d,
+                            exercises: [
+                              ...d.exercises,
+                              {
+                                exerciseId,
+                                sets: 3,
+                                reps: 10,
+                                restSeconds: 60,
+                                section: 'primary' as const,
+                              },
+                            ],
+                          }
+                        : d,
+                    )
+                    const updated = { ...program, days: newDays }
+                    workoutStore.saveProgram(updated)
+                    setProgram(updated)
+                  }
+                }}
                 onClose={() => setShowExerciseLibrary(false)}
               />
             )}
