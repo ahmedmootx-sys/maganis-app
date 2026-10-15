@@ -1,0 +1,178 @@
+{
+  "reviewed": false,
+  "groups": [
+    {
+      "key": "chest",
+      "ar": "الصدر",
+      "muscles": [
+        "pec_clavicular",
+        "pec_sternal",
+        "pec_costal",
+        "pec_minor",
+        "serratus_anterior"
+      ]
+    },
+    {
+      "key": "shoulders",
+      "ar": "الكتف",
+      "muscles": [
+        "delt_anterior",
+        "delt_lateral",
+        "delt_posterior",
+        "supraspinatus",
+        "infraspinatus",
+        "teres_minor"
+      ]
+    },
+    {
+      "key": "biceps",
+      "ar": "الباي",
+      "muscles": ["biceps_long", "biceps_short", "brachialis"]
+    },
+    {
+      "key": "triceps",
+      "ar": "الترايسبس",
+      "muscles": ["triceps_long", "triceps_lateral", "triceps_medial"]
+    },
+    {
+      "key": "forearms",
+      "ar": "الساعد",
+      "muscles": ["brachioradialis", "forearm_flexors", "forearm_extensors"]
+    },
+    {
+      "key": "core",
+      "ar": "البطن والجذع",
+      "muscles": [
+        "rectus_abdominis_upper",
+        "rectus_abdominis_lower",
+        "obliques_external",
+        "transversus_abdominis"
+      ]
+    },
+    {
+      "key": "hips",
+      "ar": "الحوض",
+      "muscles": ["iliopsoas", "tfl", "sartorius"]
+    },
+    {
+      "key": "quads",
+      "ar": "الفخذ الأمامي",
+      "muscles": [
+        "rectus_femoris",
+        "vastus_lateralis",
+        "vastus_medialis",
+        "vastus_intermedius"
+      ]
+    },
+    {
+      "key": "adductors",
+      "ar": "الفخذ الداخلي",
+      "muscles": ["adductors"]
+    },
+    {
+      "key": "glutes",
+      "ar": "المؤخرة",
+      "muscles": ["glute_max", "glute_med", "glute_min"]
+    },
+    {
+      "key": "hamstrings",
+      "ar": "الفخذ الخلفي",
+      "muscles": [
+        "hamstring_bf_long",
+        "hamstring_bf_short",
+        "hamstring_semitendinosus",
+        "hamstring_semimembranosus"
+      ]
+    },
+    {
+      "key": "calves",
+      "ar": "السمانة والساق",
+      "muscles": [
+        "gastrocnemius_medial",
+        "gastrocnemius_lateral",
+        "soleus",
+        "tibialis_anterior"
+      ]
+    },
+    {
+      "key": "traps",
+      "ar": "الترابيس",
+      "muscles": [
+        "trap_upper",
+        "trap_middle",
+        "trap_lower",
+        "levator_scapulae"
+      ]
+    },
+    {
+      "key": "neck",
+      "ar": "الرقبة",
+      "muscles": ["neck_scm"]
+    },
+    {
+      "key": "back",
+      "ar": "الظهر",
+      "muscles": ["lats", "teres_major", "rhomboids"]
+    },
+    {
+      "key": "lower_back",
+      "ar": "أسفل الظهر",
+      "muscles": ["erector_spinae", "quadratus_lumborum"]
+    }
+  ],
+  "mapping": {
+    "pec_clavicular": { "key": "chest", "ar": "الصدر" },
+    "pec_sternal": { "key": "chest", "ar": "الصدر" },
+    "pec_costal": { "key": "chest", "ar": "الصدر" },
+    "pec_minor": { "key": "chest", "ar": "الصدر" },
+    "serratus_anterior": { "key": "chest", "ar": "الصدر" },
+    "delt_anterior": { "key": "shoulders", "ar": "الكتف" },
+    "delt_lateral": { "key": "shoulders", "ar": "الكتف" },
+    "delt_posterior": { "key": "shoulders", "ar": "الكتف" },
+    "supraspinatus": { "key": "shoulders", "ar": "الكتف" },
+    "infraspinatus": { "key": "shoulders", "ar": "الكتف" },
+    "teres_minor": { "key": "shoulders", "ar": "الكتف" },
+    "biceps_long": { "key": "biceps", "ar": "الباي" },
+    "biceps_short": { "key": "biceps", "ar": "الباي" },
+    "brachialis": { "key": "biceps", "ar": "الباي" },
+    "triceps_long": { "key": "triceps", "ar": "الترايسبس" },
+    "triceps_lateral": { "key": "triceps", "ar": "الترايسبس" },
+    "triceps_medial": { "key": "triceps", "ar": "الترايسبس" },
+    "brachioradialis": { "key": "forearms", "ar": "الساعد" },
+    "forearm_flexors": { "key": "forearms", "ar": "الساعد" },
+    "forearm_extensors": { "key": "forearms", "ar": "الساعد" },
+    "rectus_abdominis_upper": { "key": "core", "ar": "البطن والجذع" },
+    "rectus_abdominis_lower": { "key": "core", "ar": "البطن والجذع" },
+    "obliques_external": { "key": "core", "ar": "البطن والجذع" },
+    "transversus_abdominis": { "key": "core", "ar": "البطن والجذع" },
+    "iliopsoas": { "key": "hips", "ar": "الحوض" },
+    "tfl": { "key": "hips", "ar": "الحوض" },
+    "sartorius": { "key": "hips", "ar": "الحوض" },
+    "rectus_femoris": { "key": "quads", "ar": "الفخذ الأمامي" },
+    "vastus_lateralis": { "key": "quads", "ar": "الفخذ الأمامي" },
+    "vastus_medialis": { "key": "quads", "ar": "الفخذ الأمامي" },
+    "vastus_intermedius": { "key": "quads", "ar": "الفخذ الأمامي" },
+    "adductors": { "key": "adductors", "ar": "الفخذ الداخلي" },
+    "glute_max": { "key": "glutes", "ar": "المؤخرة" },
+    "glute_med": { "key": "glutes", "ar": "المؤخرة" },
+    "glute_min": { "key": "glutes", "ar": "المؤخرة" },
+    "hamstring_bf_long": { "key": "hamstrings", "ar": "الفخذ الخلفي" },
+    "hamstring_bf_short": { "key": "hamstrings", "ar": "الفخذ الخلفي" },
+    "hamstring_semitendinosus": { "key": "hamstrings", "ar": "الفخذ الخلفي" },
+    "hamstring_semimembranosus": { "key": "hamstrings", "ar": "الفخذ الخلفي" },
+    "gastrocnemius_medial": { "key": "calves", "ar": "السمانة والساق" },
+    "gastrocnemius_lateral": { "key": "calves", "ar": "السمانة والساق" },
+    "soleus": { "key": "calves", "ar": "السمانة والساق" },
+    "tibialis_anterior": { "key": "calves", "ar": "السمانة والساق" },
+    "trap_upper": { "key": "traps", "ar": "الترابيس" },
+    "trap_middle": { "key": "traps", "ar": "الترابيس" },
+    "trap_lower": { "key": "traps", "ar": "الترابيس" },
+    "levator_scapulae": { "key": "traps", "ar": "الترابيس" },
+    "neck_scm": { "key": "neck", "ar": "الرقبة" },
+    "lats": { "key": "back", "ar": "الظهر" },
+    "teres_major": { "key": "back", "ar": "الظهر" },
+    "rhomboids": { "key": "back", "ar": "الظهر" },
+    "erector_spinae": { "key": "lower_back", "ar": "أسفل الظهر" },
+    "quadratus_lumborum": { "key": "lower_back", "ar": "أسفل الظهر" }
+  }
+}
