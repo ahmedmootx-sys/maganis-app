@@ -296,9 +296,7 @@ export function ExerciseDetailModal({
                   className={`muscle-tag-card ${idx === 0 ? 'primary-muscle' : 'secondary-muscle'}`}
                 >
                   <span className="muscle-type-badge">
-                    {idx === 0
-                      ? 'عضلة أساسية'
-                      : 'عضلة مساعدة'}
+                    {idx === 0 ? 'عضلة أساسية' : 'عضلة مساعدة'}
                   </span>
                   <strong>{muscle}</strong>
                 </div>

@@ -1,4 +1,5 @@
 import React, { useId, useRef } from 'react'
+import { Icon } from '../ui/Icon.tsx'
 
 export interface DateFieldProps {
   id?: string
@@ -169,12 +170,11 @@ export const DateField: React.FC<DateFieldProps> = ({
             <span
               aria-hidden="true"
               style={{
-                fontSize: '18px',
                 display: 'inline-flex',
                 alignItems: 'center',
               }}
             >
-              📅
+              <Icon name="calendar" size={18} />
             </span>
             <span
               style={{

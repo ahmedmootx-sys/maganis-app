@@ -1,4 +1,5 @@
 import React, { useId, useRef, useState } from 'react'
+import { Icon } from '../ui/Icon.tsx'
 
 export interface FileFieldProps {
   id?: string
@@ -158,7 +159,7 @@ export const FileField: React.FC<FileFieldProps> = ({
             transition: 'all 0.15s ease',
           }}
         >
-          <span style={{ fontSize: '18px' }}>📁</span>
+          <Icon name="folder" size={18} />
           <span>{buttonText}</span>
         </button>
       ) : (
@@ -193,7 +194,7 @@ export const FileField: React.FC<FileFieldProps> = ({
               cursor: disabled ? 'default' : 'pointer',
             }}
           >
-            <span style={{ fontSize: '18px' }}>📄</span>
+            <Icon name="file-text" size={18} />
             <span
               style={{
                 overflow: 'hidden',

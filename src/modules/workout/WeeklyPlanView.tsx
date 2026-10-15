@@ -894,8 +894,8 @@ export function WeeklyPlanView({
               }}
             >
               {isEditMode
-                ? '✓ إنهاء وضع التعديل والترتيب'
-                : '✏️ ترتيب وتعديل التمارين'}
+                ? 'إنهاء وضع التعديل والترتيب'
+                : 'ترتيب وتعديل التمارين'}
             </button>
             <button
               type="button"
@@ -903,7 +903,7 @@ export function WeeklyPlanView({
               style={{ justifyContent: 'flex-start', height: '48px' }}
               onClick={handleConvertToHome}
             >
-              🏠 تحويل التمارين لبدائل منزلية
+              تحويل التمارين لبدائل منزلية
             </button>
           </div>
         </Sheet>

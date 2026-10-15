@@ -46,7 +46,10 @@ export function fmtDate(
   },
 ): string {
   if (!dateInput) return ''
-  const date = typeof dateInput === 'object' && dateInput instanceof Date ? dateInput : new Date(dateInput)
+  const date =
+    typeof dateInput === 'object' && dateInput instanceof Date
+      ? dateInput
+      : new Date(dateInput)
   if (isNaN(date.getTime())) return ''
   return new Intl.DateTimeFormat('ar-EG-u-nu-latn', options).format(date)
 }
@@ -72,6 +75,9 @@ export function fmtDuration(secondsInput: number | null | undefined): string {
 /**
  * Format weight with unit in a bidi-safe string.
  */
-export function fmtWeight(kg: number | string | null | undefined, unit = 'كجم'): string {
+export function fmtWeight(
+  kg: number | string | null | undefined,
+  unit = 'كجم',
+): string {
   return `${fmtNumber(kg)} ${unit}`
 }

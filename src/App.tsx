@@ -41,6 +41,9 @@ import {
   IconTrendingUp,
   IconSettings,
 } from './components/Icons.tsx'
+import { IconSprite } from './ui/IconSprite.tsx'
+import { Styleguide } from './shell/Styleguide.tsx'
+import { useRouter } from './shell/router.ts'
 import './styles/app.css'
 
 type TabId =
@@ -77,7 +80,76 @@ export function App({ config }: AppProps) {
     profileStore.loadProfile(),
   )
   const [editing, setEditing] = useState(false)
-  const [activeTab, setActiveTab] = useState<TabId>('dashboard')
+  const { route, navigate } = useRouter()
+  const [activeTab, setActiveTab] = useState<TabId>(() => {
+    switch (route.path) {
+      case '/training':
+      case '/training/day/:id':
+      case '/exercise/:id':
+      case '/library':
+        return 'workouts'
+      case '/nutrition':
+        return 'nutrition'
+      case '/progress':
+        return 'progress'
+      case '/settings':
+        return 'settings'
+      default:
+        return 'dashboard'
+    }
+  })
+
+  useEffect(() => {
+    switch (route.path) {
+      case '/home':
+        setActiveTab('dashboard')
+        break
+      case '/training':
+      case '/training/day/:id':
+      case '/exercise/:id':
+      case '/library':
+        setActiveTab('workouts')
+        if (route.path === '/library') {
+          setShowExerciseLibrary(true)
+        }
+        break
+      case '/nutrition':
+        setActiveTab('nutrition')
+        break
+      case '/progress':
+        setActiveTab('progress')
+        break
+      case '/settings':
+        setActiveTab('settings')
+        break
+    }
+  }, [route])
+
+  const handleTabChange = useCallback(
+    (tabId: TabId) => {
+      setActiveTab(tabId)
+      switch (tabId) {
+        case 'dashboard':
+          navigate('/home')
+          break
+        case 'workouts':
+          navigate('/training')
+          break
+        case 'nutrition':
+          navigate('/nutrition')
+          break
+        case 'progress':
+        case 'tracking':
+        case 'reports':
+          navigate('/progress')
+          break
+        case 'settings':
+          navigate('/settings')
+          break
+      }
+    },
+    [navigate],
+  )
   const [program, setProgram] = useState<WorkoutProgram | null>(() =>
     workoutStore.loadProgram(),
   )
@@ -290,7 +362,7 @@ export function App({ config }: AppProps) {
     if (!profile) return
     if (program && (program.isLocked || program.isCustom)) {
       const confirmed = window.confirm(
-        '⚠️ لديك جدول تدريبي مخصص أو مقفل! هل أنت متأكد من إنشاء جدول تلقائي جديد واستبدال الحالي؟\n(ننصح بحفظ جدولك الحالي في "حافظة الجداول 📁" أولاً)',
+        'لديك جدول تدريبي مخصص أو مقفل! هل أنت متأكد من إنشاء جدول تلقائي جديد واستبدال الحالي؟\n(ننصح بحفظ جدولك الحالي في "حافظة الجداول" أولاً)',
       )
       if (!confirmed) return
     }
@@ -520,21 +592,38 @@ export function App({ config }: AppProps) {
     [profileStore, workoutStore, storage, handleImported],
   )
 
+  // --- Styleguide dev route ---
+  if (route.path === '/styleguide') {
+    return (
+      <div className="maganis-shell">
+        <IconSprite />
+        <Styleguide />
+      </div>
+    )
+  }
+
   // --- Onboarding state ---
   if (!profile || editing) {
     return (
-      <div className="app">
+      <div className="maganis-shell app">
+        <IconSprite />
         <header className="app-header">
           <h1 data-testid="app-title">{config.appName}</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span
-              className="env-badge"
-              data-testid="env-badge"
-              data-env={config.appEnv}
-            >
-              {config.appEnv}
-            </span>
-          </div>
+          {typeof window !== 'undefined' &&
+            new URLSearchParams(window.location.search).get('debug') ===
+              '1' && (
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}
+              >
+                <span
+                  className="env-badge"
+                  data-testid="env-badge"
+                  data-env={config.appEnv}
+                >
+                  {config.appEnv}
+                </span>
+              </div>
+            )}
         </header>
         <main className="app-main">
           <OnboardingWizard
@@ -774,9 +863,10 @@ export function App({ config }: AppProps) {
       )}
 
       <div
-        className="app app--shell"
+        className="maganis-shell app app--shell"
         style={{ display: isWorkoutSessionExpanded ? 'none' : 'flex' }}
       >
+        <IconSprite />
         <header className="app-header" style={{ display: 'none' }}>
           <div className="maganis-header-brand">
             <img
@@ -787,19 +877,25 @@ export function App({ config }: AppProps) {
             <div className="maganis-brand-title">
               <h1 data-testid="app-title">{config.appName}</h1>
               <span className="maganis-brand-subtitle">
-                💪 الطبيب والمدرب الرياضي الشخصي
+                الطبيب والمدرب الرياضي الشخصي
               </span>
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span
-              className="env-badge"
-              data-testid="env-badge"
-              data-env={config.appEnv}
-            >
-              {config.appEnv}
-            </span>
-          </div>
+          {typeof window !== 'undefined' &&
+            new URLSearchParams(window.location.search).get('debug') ===
+              '1' && (
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}
+              >
+                <span
+                  className="env-badge"
+                  data-testid="env-badge"
+                  data-env={config.appEnv}
+                >
+                  {config.appEnv}
+                </span>
+              </div>
+            )}
         </header>
 
         {activeWorkoutDay && !isWorkoutSessionExpanded && (
@@ -810,7 +906,7 @@ export function App({ config }: AppProps) {
             <div className="banner-info-section">
               <span className="banner-pulse-dot" />
               <div className="banner-timer-badge">
-                ⏱️ {formatTime(activeSessionSeconds)}
+                {formatTime(activeSessionSeconds)}
               </div>
               <div className="banner-text">
                 <strong className="banner-title">
@@ -825,14 +921,14 @@ export function App({ config }: AppProps) {
                 className="button-primary small banner-resume-btn"
                 onClick={() => setIsWorkoutSessionExpanded(true)}
               >
-                📲 العودة للجلسة
+                العودة للجلسة
               </button>
               <button
                 type="button"
                 className="button-success small"
                 onClick={() => setIsWorkoutSessionExpanded(true)}
               >
-                🏁 إنهاء وحفظ
+                إنهاء وحفظ
               </button>
               <button
                 type="button"
@@ -866,11 +962,13 @@ export function App({ config }: AppProps) {
               key={tab.id}
               type="button"
               data-testid={`tab-${tab.id}`}
-              className={`bottom-nav__item${activeTab === tab.id ? ' bottom-nav__item--active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
+              className={`bottom-nav__item bottom-nav__tab${activeTab === tab.id ? ' bottom-nav__item--active bottom-nav__tab--active' : ''}`}
+              onClick={() => handleTabChange(tab.id)}
             >
               <span className="bottom-nav__icon">{tab.icon}</span>
-              <span className="bottom-nav__label">{tab.label}</span>
+              <span className="bottom-nav__label bottom-nav__tab-label">
+                {tab.label}
+              </span>
             </button>
           ))}
         </nav>
@@ -906,7 +1004,6 @@ export function App({ config }: AppProps) {
 
         <Toast
           message={backToastMessage}
-          icon="👈"
           onDismiss={() => setBackToastMessage(null)}
         />
       </div>

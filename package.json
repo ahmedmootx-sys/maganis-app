@@ -21,7 +21,9 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -b",
     "check:env": "node scripts/check-env.mjs development",
-    "gates": "npm run lint && npm run format:check && npm run typecheck && npm run test && npm run build",
+    "check:emoji": "node scripts/check-emoji.mjs",
+    "check:ui": "node scripts/check-ui.mjs",
+    "gates": "npm run check:emoji && npm run lint && npm run format:check && npm run typecheck && npm run test && npm run build",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -47,6 +49,7 @@
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^5.0.0",
     "@vitest/coverage-v8": "^3.2.0",
+    "axe-core": "^4.14.0",
     "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.0",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -56,6 +59,7 @@
     "jsdom": "^26.1.0",
     "lint-staged": "^15.5.0",
     "lucide-static": "^1.57.0",
+    "playwright": "^1.64.1",
     "potrace": "^2.1.8",
     "prettier": "^3.6.0",
     "three": "^0.186.1",

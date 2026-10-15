@@ -58,14 +58,22 @@ export interface DaySectionConfig {
 export const DEFAULT_DAY_SECTIONS: DaySectionConfig[] = [
   { id: 'warmup', labelAr: 'تمارين الإحماء والتسخين', icon: 'flame' },
   { id: 'primary', labelAr: 'التمارين الأساسية', icon: 'dumbbell' },
-  { id: 'flexibility_core', labelAr: 'المرونة، الثبات والتهدئة', icon: 'heart' },
+  {
+    id: 'flexibility_core',
+    labelAr: 'المرونة، الثبات والتهدئة',
+    icon: 'heart',
+  },
 ]
 
 export const PRESET_DAY_SECTIONS: DaySectionConfig[] = [
   { id: 'warmup', labelAr: 'تمارين الإحماء والتسخين', icon: 'flame' },
   { id: 'primary', labelAr: 'التمارين الأساسية', icon: 'dumbbell' },
   { id: 'cardio', labelAr: 'تمارين الكارديو واللياقة', icon: 'activity' },
-  { id: 'flexibility_core', labelAr: 'المرونة، الثبات والتهدئة', icon: 'heart' },
+  {
+    id: 'flexibility_core',
+    labelAr: 'المرونة، الثبات والتهدئة',
+    icon: 'heart',
+  },
   { id: 'core_abs', labelAr: 'تمارين البطن والكور', icon: 'shield' },
   { id: 'arms_grip', labelAr: 'تمارين الساعد والقبضة', icon: 'zap' },
 ]

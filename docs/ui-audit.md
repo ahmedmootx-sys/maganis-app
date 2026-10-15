@@ -8,7 +8,9 @@
 ## 1. Inventory of Screens, Routes, and Modals
 
 ### 1.1 Screens & Primary Views
+
 Currently, the application manages navigation primarily through local tab state in `src/App.tsx`, with legacy sub-screens:
+
 1. **Dashboard (`/home`, tab: `dashboard`):**
    - Active user profile summary, caloric balance ring, workout day teaser, streak counters, and recent activity feed.
 2. **Workouts / Training (`/training`, tab: `workouts`):**
@@ -27,7 +29,9 @@ Currently, the application manages navigation primarily through local tab state 
    - Returning user greeting and quick resume prompt.
 
 ### 1.2 Modals, Overlays, and Sheets
+
 The app includes 14 modal dialogs and overlays:
+
 1. `ActiveWorkoutSession.tsx`: Full-screen active workout tracker with stopwatch, set logging tables, and completion celebration.
 2. `ExerciseLibraryModal.tsx`: Searchable 800+ exercise directory with filters.
 3. `ExercisePickerModal.tsx`: Modal for choosing exercises to append to a training day.
@@ -49,15 +53,16 @@ The app includes 14 modal dialogs and overlays:
 
 Analysis of `src/styles/app.css` (3,805 lines, 66.6 KB):
 
-| Metric | Measured Value | Standard Target (Task A) |
-| :--- | :---: | :--- |
-| **Global CSS Files** | 1 (`src/styles/app.css`) | `styles/tokens.css` + scoped component tokens |
-| **Distinct Colours** | **124** | **10** (bg, surface, surface-2, text, text-2, divider, accent, 4 semantics) |
-| **Distinct Font Sizes** | **23** | **6** (12, 14, 16, 18, 22, 28) |
-| **Distinct Border Radii** | **11** | **3** (12 for cards, 10 for controls, 999 for chips) |
-| **Font Family** | Unstyled `system-ui` | Single self-hosted font: **IBM Plex Sans Arabic** (woff2) |
+| Metric                    |      Measured Value      | Standard Target (Task A)                                                    |
+| :------------------------ | :----------------------: | :-------------------------------------------------------------------------- |
+| **Global CSS Files**      | 1 (`src/styles/app.css`) | `styles/tokens.css` + scoped component tokens                               |
+| **Distinct Colours**      |         **124**          | **10** (bg, surface, surface-2, text, text-2, divider, accent, 4 semantics) |
+| **Distinct Font Sizes**   |          **23**          | **6** (12, 14, 16, 18, 22, 28)                                              |
+| **Distinct Border Radii** |          **11**          | **3** (12 for cards, 10 for controls, 999 for chips)                        |
+| **Font Family**           |   Unstyled `system-ui`   | Single self-hosted font: **IBM Plex Sans Arabic** (woff2)                   |
 
 ### Key Issues Identified in Existing CSS:
+
 - Raw hex codes scattered throughout components (`#0f172a`, `#64748b`, `#cbd5e1`, `#1e293b`, `#475569`, etc.) rather than semantic tokens.
 - Brand orange inconsistencies: `#f95700` in light mode, `#ff6b1a` in dark mode, plus ad-hoc variations (`#ea580c`, `#f59e0b`, `#ff853f`).
 - Random font sizes (`11px`, `13px`, `13.5px`, `15px`, `17px`, `20px`, `26px`, `32px`).
@@ -74,6 +79,7 @@ Analysis of `src/styles/app.css` (3,805 lines, 66.6 KB):
   `⚠ 📁 💪 ⏱ 📲 🏁 👈 📅 📄 👋 📈 📊 💾 📥 🗑 🥗 🌟 🔥 🥩 🍲 🏋 🧘 🏃 🍫 🦾 🎉 🧬 🔍 🎯 ⚡ 💡 ⚙ 🔬 📋 📚 ➕ ✨ 🔄 ✏ 🏠`
 
 ### Detailed Breakdown by File:
+
 - `src/App.tsx`: 7 emojis (`⚠️`, `📁`, `💪`, `⏱️`, `📲`, `🏁`, `👈`).
 - `src/components/DateField.tsx`: 1 emoji (`📅`).
 - `src/components/FileField.tsx`: 2 emojis (`📁`, `📄`).
@@ -98,14 +104,17 @@ Analysis of `src/styles/app.css` (3,805 lines, 66.6 KB):
 ## 4. Native Form Elements and Window Dialogs
 
 ### 4.1 Native `<select>`
+
 - **Total in DOM:** 0 raw unstyled native `<select>` tags in user-facing components (enforced by `DesignSystemGates.test.tsx`).
 - **Occurrences:** All 39 instances are the custom React `<Select>` component trigger or test assertions.
 - **Action Required:** Ensure `<Select>` conforms to the new UI sheet component specification with search and single/multi modes.
 
 ### 4.2 Native Date Inputs (`<input type="date">`)
+
 - **Total:** 1 occurrence in `src/components/DateField.tsx:229` (retained as an accessible, hidden semantic input underneath the styled trigger).
 
 ### 4.3 Native File Inputs (`<input type="file">`)
+
 - **Total:** 4 occurrences:
   - `src/components/FileField.tsx:122` (hidden semantic input).
   - `src/modules/backup/BackupPanel.tsx:252` (raw unstyled file input).
@@ -114,6 +123,7 @@ Analysis of `src/styles/app.css` (3,805 lines, 66.6 KB):
 - **Action Required:** Replace raw file inputs with the unified `FileField` component.
 
 ### 4.4 Window Dialogs (`window.alert`, `window.confirm`, `window.prompt`)
+
 - **`window.alert` (8 occurrences):**
   - `CustomMealModal.tsx:149`, `177`, `189`
   - `Reports.tsx:99`, `116`, `139`, `169`
@@ -153,6 +163,7 @@ Testing at `360px` mobile viewport width revealed the following layout and clipp
 ## 6. Audit Conclusion & Implementation Roadmap
 
 Task A will resolve all identified flaws by providing:
+
 1. `src/styles/tokens.css`: The rigid token foundation (Light/Dark, typography, radii, spacing, WCAG AA brand orange).
 2. `public/fonts/`: Self-hosted IBM Plex Sans Arabic (`woff2`) for 100% offline support.
 3. `src/ui/Icon.tsx` + SVG sprite: Unified Lucide line icons replacing all 71 emojis.

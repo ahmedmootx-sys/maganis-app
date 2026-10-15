@@ -46,7 +46,7 @@ export function MuscleAtlasDebug({ onClose }: { onClose?: () => void }) {
       >
         <div>
           <h3 style={{ margin: 0, fontSize: '17px', color: 'var(--accent)' }}>
-            🔬 أداة فحص ومراجعة الرؤوس العضلية (Muscle Atlas Inspector)
+            أداة فحص ومراجعة الرؤوس العضلية
           </h3>
           <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
             فحص كل رأس عضلي من الـ 48 عضلة واحدة تلو الأخرى مع التأكد من مطابقة
