@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react'
-import type {
-  UserProfile,
-  Goal,
-  ActivityLevel,
-} from '../onboarding/types.ts'
+import type { UserProfile, Goal, ActivityLevel } from '../onboarding/types.ts'
 import { GOALS, ACTIVITY_LEVELS } from '../onboarding/types.ts'
 import type { BackupData } from '../shared/types.ts'
 import { TopBar } from '../../components/TopBar.tsx'
-import { KeyValueList, type KeyValueItem } from '../../components/KeyValueList.tsx'
+import {
+  KeyValueList,
+  type KeyValueItem,
+} from '../../components/KeyValueList.tsx'
 import { ListRow } from '../../components/ListRow.tsx'
 import { Select } from '../../components/Select.tsx'
 import { Sheet } from '../../components/Sheet.tsx'
@@ -19,7 +18,6 @@ import {
   IconMonitor,
   IconEdit,
   IconSettings,
-  IconCalendar,
 } from '../../components/Icons.tsx'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
@@ -41,8 +39,16 @@ export interface SettingsScreenProps {
 
 const EXPERIENCE_OPTIONS = [
   { value: 'beginner', labelAr: 'مبتدئ', labelEn: 'Beginner (أقل من سنة)' },
-  { value: 'intermediate', labelAr: 'متوسط', labelEn: 'Intermediate (1 - 3 سنوات)' },
-  { value: 'advanced', labelAr: 'متقدم', labelEn: 'Advanced (أكثر من 3 سنوات)' },
+  {
+    value: 'intermediate',
+    labelAr: 'متوسط',
+    labelEn: 'Intermediate (1 - 3 سنوات)',
+  },
+  {
+    value: 'advanced',
+    labelAr: 'متقدم',
+    labelEn: 'Advanced (أكثر من 3 سنوات)',
+  },
 ]
 
 const LOCATION_OPTIONS = [
@@ -66,7 +72,7 @@ const GOAL_OPTIONS = GOALS.map((g) => ({
 const ACTIVITY_OPTIONS = ACTIVITY_LEVELS.map((a) => ({
   value: a.value,
   labelAr: a.labelAr,
-  labelEn: a.descAr,
+  labelEn: a.hintAr,
 }))
 
 export function SettingsScreen({
@@ -88,7 +94,8 @@ export function SettingsScreen({
     if (propThemeMode) return propThemeMode
     try {
       const saved = localStorage.getItem('maganis:theme_mode')
-      if (saved === 'auto' || saved === 'light' || saved === 'dark') return saved
+      if (saved === 'auto' || saved === 'light' || saved === 'dark')
+        return saved
     } catch {
       // ignore
     }
@@ -101,7 +108,9 @@ export function SettingsScreen({
 
   // Edit form state
   const [editName, setEditName] = useState(profile?.name ?? '')
-  const [editGoal, setEditGoal] = useState<Goal>(profile?.primaryGoal ?? 'hypertrophy')
+  const [editGoal, setEditGoal] = useState<Goal>(
+    profile?.primaryGoal ?? 'hypertrophy',
+  )
   const [editDays, setEditDays] = useState(profile?.trainingDaysPerWeek ?? 4)
   const [editExperience, setEditExperience] = useState<string>(
     profile?.experienceLevel ?? 'intermediate',
@@ -152,7 +161,8 @@ export function SettingsScreen({
     } else {
       let resolvedTheme: 'light' | 'dark' = 'light'
       if (newMode === 'auto') {
-        resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)')
+          .matches
           ? 'dark'
           : 'light'
       } else {
@@ -190,7 +200,9 @@ export function SettingsScreen({
       primaryGoal: editGoal,
       goals: [editGoal],
       trainingDaysPerWeek: editDays,
-      experienceLevel: (editExperience as 'beginner' | 'intermediate' | 'advanced') || undefined,
+      experienceLevel:
+        (editExperience as 'beginner' | 'intermediate' | 'advanced') ||
+        undefined,
       trainingLocation: (editLocation as 'gym' | 'home' | 'both') || undefined,
       restrictions: editRestrictions.trim() || undefined,
       body: {
@@ -208,8 +220,7 @@ export function SettingsScreen({
   }
 
   const isDebugMode =
-    typeof window !== 'undefined' &&
-    window.location.search.includes('debug=1')
+    typeof window !== 'undefined' && window.location.search.includes('debug=1')
 
   const goalInfo = GOALS.find((g) => g.value === profile?.primaryGoal)
   const activityInfo = ACTIVITY_LEVELS.find(
@@ -588,7 +599,8 @@ export function SettingsScreen({
                 lineHeight: 1.6,
               }}
             >
-              إعادة ضبط التطبيق بالكامل ومسح كافة البيانات والجداول التدريبية وسجلات التغذية واستعادة الحالة الأولية:
+              إعادة ضبط التطبيق بالكامل ومسح كافة البيانات والجداول التدريبية
+              وسجلات التغذية واستعادة الحالة الأولية:
             </p>
             <button
               type="button"
@@ -621,8 +633,14 @@ export function SettingsScreen({
           }}
         >
           {/* Name */}
-          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label htmlFor="edit-profile-name" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+          <div
+            className="form-group"
+            style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+          >
+            <label
+              htmlFor="edit-profile-name"
+              style={{ fontSize: '13.5px', fontWeight: 700 }}
+            >
               الاسم (اختياري)
             </label>
             <input
@@ -688,8 +706,14 @@ export function SettingsScreen({
           />
 
           {/* Restrictions / Injuries */}
-          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label htmlFor="edit-profile-restrictions" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+          <div
+            className="form-group"
+            style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+          >
+            <label
+              htmlFor="edit-profile-restrictions"
+              style={{ fontSize: '13.5px', fontWeight: 700 }}
+            >
               إصابات سابقة أو قيود حركية (اختياري)
             </label>
             <textarea
@@ -725,9 +749,20 @@ export function SettingsScreen({
           />
 
           {/* Body stats grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label htmlFor="edit-profile-age" style={{ fontSize: '13px', fontWeight: 700 }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '10px',
+            }}
+          >
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+            >
+              <label
+                htmlFor="edit-profile-age"
+                style={{ fontSize: '13px', fontWeight: 700 }}
+              >
                 العمر
               </label>
               <div style={{ position: 'relative' }}>
@@ -753,8 +788,13 @@ export function SettingsScreen({
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label htmlFor="edit-profile-height" style={{ fontSize: '13px', fontWeight: 700 }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+            >
+              <label
+                htmlFor="edit-profile-height"
+                style={{ fontSize: '13px', fontWeight: 700 }}
+              >
                 الطول (سم)
               </label>
               <input
@@ -778,8 +818,13 @@ export function SettingsScreen({
               />
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label htmlFor="edit-profile-weight" style={{ fontSize: '13px', fontWeight: 700 }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+            >
+              <label
+                htmlFor="edit-profile-weight"
+                style={{ fontSize: '13px', fontWeight: 700 }}
+              >
                 الوزن (كجم)
               </label>
               <input
@@ -815,7 +860,14 @@ export function SettingsScreen({
           />
 
           {/* Actions */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '12px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              marginTop: '12px',
+            }}
+          >
             <button
               type="button"
               className="btn-primary-action full-width"

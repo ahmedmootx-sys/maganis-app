@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import type {
   CustomExercise,
   Difficulty,
@@ -87,16 +87,16 @@ function AutoGrowTextarea({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
-  const adjustHeight = () => {
+  const adjustHeight = useCallback(() => {
     const el = textareaRef.current
     if (!el) return
     el.style.height = 'auto'
     el.style.height = `${Math.max(el.scrollHeight, minRows * 24)}px`
-  }
+  }, [minRows])
 
   useEffect(() => {
     adjustHeight()
-  }, [value])
+  }, [value, adjustHeight])
 
   return (
     <textarea
@@ -147,10 +147,12 @@ export function CustomExerciseBuilder({
   const [equipment, setEquipment] = useState<Equipment>(
     initialExercise?.equipment ?? 'bodyweight',
   )
-  const [measurementType, setMeasurementType] = useState<MeasurementType>(() => {
-    const mt = initialExercise?.measurementType
-    return mt === 'duration' || mt === 'bodyweight' ? mt : 'reps'
-  })
+  const [measurementType, setMeasurementType] = useState<MeasurementType>(
+    () => {
+      const mt = initialExercise?.measurementType
+      return mt === 'duration' || mt === 'bodyweight' ? mt : 'reps'
+    },
+  )
   const [imageUrl, setImageUrl] = useState(initialExercise?.imageUrl ?? '')
   const [mechanicsAr, setMechanicsAr] = useState(
     initialExercise?.mechanicsAr ?? '',

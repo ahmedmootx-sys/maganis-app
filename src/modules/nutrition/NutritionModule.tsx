@@ -9,7 +9,6 @@ import { ACTIVITY_LEVELS, GOALS } from '../onboarding/types.ts'
 import type { BodyLogEntry } from '../shared/types.ts'
 import { calculateCalorieMacroTargets } from './calorieCalculator.ts'
 import { CustomMealModal } from './CustomMealModal.tsx'
-import { calculateIngredientMacros, getFoodItemById } from './foodDatabase.ts'
 import {
   calibrateTDEE,
   validateNutritionInput,
@@ -36,11 +35,9 @@ import {
   IconTrash,
   IconEdit,
   IconCheck,
-  IconInfo,
   IconChevronLeft,
   IconChevronRight,
   IconMoreVertical,
-  IconClose,
 } from '../../components/Icons.tsx'
 
 interface NutritionModuleProps {
@@ -586,7 +583,9 @@ export function NutritionModule({
             textAlign: 'center',
           }}
         >
-          {isToday ? `اليوم، ${formatArabicDate(selectedDate)}` : formatArabicDate(selectedDate)}
+          {isToday
+            ? `اليوم، ${formatArabicDate(selectedDate)}`
+            : formatArabicDate(selectedDate)}
         </div>
 
         <button
@@ -658,7 +657,13 @@ export function NutritionModule({
               }}
             >
               <div>
-                <span style={{ fontSize: '12.5px', color: 'var(--muted)', fontWeight: 600 }}>
+                <span
+                  style={{
+                    fontSize: '12.5px',
+                    color: 'var(--muted)',
+                    fontWeight: 600,
+                  }}
+                >
                   السعرات المستهلكة
                 </span>
                 <div
@@ -670,7 +675,13 @@ export function NutritionModule({
                   }}
                 >
                   {dailyLog.consumedCalories}{' '}
-                  <span style={{ fontSize: '15px', color: 'var(--muted)', fontWeight: 500 }}>
+                  <span
+                    style={{
+                      fontSize: '15px',
+                      color: 'var(--muted)',
+                      fontWeight: 500,
+                    }}
+                  >
                     / {targets.targetCalories} كالوِري
                   </span>
                 </div>
@@ -706,7 +717,9 @@ export function NutritionModule({
             }}
           >
             {/* Protein */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
               <div
                 style={{
                   display: 'flex',
@@ -715,9 +728,17 @@ export function NutritionModule({
                   fontSize: '13px',
                 }}
               >
-                <span style={{ fontWeight: 700, color: '#3b82f6' }}>البروتين</span>
-                <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--ink)' }}>
-                  {dailyLog.consumedProtein} / {targets.proteinGrams} جم ({proteinPercent}%)
+                <span style={{ fontWeight: 700, color: '#3b82f6' }}>
+                  البروتين
+                </span>
+                <span
+                  style={{
+                    fontVariantNumeric: 'tabular-nums',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  {dailyLog.consumedProtein} / {targets.proteinGrams} جم (
+                  {proteinPercent}%)
                 </span>
               </div>
               <ProgressBar
@@ -730,7 +751,9 @@ export function NutritionModule({
             </div>
 
             {/* Carbs */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
               <div
                 style={{
                   display: 'flex',
@@ -739,9 +762,17 @@ export function NutritionModule({
                   fontSize: '13px',
                 }}
               >
-                <span style={{ fontWeight: 700, color: '#eab308' }}>الكاربوهيدرات</span>
-                <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--ink)' }}>
-                  {dailyLog.consumedCarbs} / {targets.carbsGrams} جم ({carbsPercent}%)
+                <span style={{ fontWeight: 700, color: '#eab308' }}>
+                  الكاربوهيدرات
+                </span>
+                <span
+                  style={{
+                    fontVariantNumeric: 'tabular-nums',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  {dailyLog.consumedCarbs} / {targets.carbsGrams} جم (
+                  {carbsPercent}%)
                 </span>
               </div>
               <ProgressBar
@@ -754,7 +785,9 @@ export function NutritionModule({
             </div>
 
             {/* Fats */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
               <div
                 style={{
                   display: 'flex',
@@ -763,9 +796,17 @@ export function NutritionModule({
                   fontSize: '13px',
                 }}
               >
-                <span style={{ fontWeight: 700, color: '#ec4899' }}>الدهون</span>
-                <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--ink)' }}>
-                  {dailyLog.consumedFats} / {targets.fatsGrams} جم ({fatsPercent}%)
+                <span style={{ fontWeight: 700, color: '#ec4899' }}>
+                  الدهون
+                </span>
+                <span
+                  style={{
+                    fontVariantNumeric: 'tabular-nums',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  {dailyLog.consumedFats} / {targets.fatsGrams} جم (
+                  {fatsPercent}%)
                 </span>
               </div>
               <ProgressBar
@@ -786,7 +827,8 @@ export function NutritionModule({
                 paddingTop: '4px',
               }}
             >
-              الوجبات المسجلة: {dailyLog.loggedMeals.map((m) => m.nameAr).join(' • ')}
+              الوجبات المسجلة:{' '}
+              {dailyLog.loggedMeals.map((m) => m.nameAr).join(' • ')}
             </div>
           )}
         </div>
@@ -810,14 +852,20 @@ export function NutritionModule({
           tabIndex={0}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--ink)' }}>
+            <span
+              style={{ fontSize: '15px', fontWeight: 700, color: 'var(--ink)' }}
+            >
               احتياجك اليومي العلمي
             </span>
             <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-              {targets.targetCalories} كالوِري ({targets.goalLabelAr}) · BMR {targets.bmr} · TDEE {targets.tdee}
+              {targets.targetCalories} كالوِري ({targets.goalLabelAr}) · BMR{' '}
+              {targets.bmr} · TDEE {targets.tdee}
             </span>
           </div>
-          <IconChevronLeft size={20} style={{ color: 'var(--muted)', flexShrink: 0 }} />
+          <IconChevronLeft
+            size={20}
+            style={{ color: 'var(--muted)', flexShrink: 0 }}
+          />
         </div>
 
         {/* Meal Categories & List Section */}
@@ -832,7 +880,14 @@ export function NutritionModule({
               alignItems: 'center',
             }}
           >
-            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: 'var(--ink)' }}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: '16px',
+                fontWeight: 700,
+                color: 'var(--ink)',
+              }}
+            >
               قائمة الوجبات ({filteredCustomMeals.length})
             </h3>
             <button
@@ -867,7 +922,10 @@ export function NutritionModule({
           >
             <button
               type="button"
-              className={'chip-btn' + (selectedCategoryFilter === 'all' ? ' selected' : '')}
+              className={
+                'chip-btn' +
+                (selectedCategoryFilter === 'all' ? ' selected' : '')
+              }
               onClick={() => setSelectedCategoryFilter('all')}
               style={{
                 padding: '8px 14px',
@@ -875,7 +933,10 @@ export function NutritionModule({
                 fontSize: '13px',
                 fontWeight: 600,
                 border: '1px solid var(--line)',
-                background: selectedCategoryFilter === 'all' ? 'var(--brand)' : 'var(--card-subtle)',
+                background:
+                  selectedCategoryFilter === 'all'
+                    ? 'var(--brand)'
+                    : 'var(--card-subtle)',
                 color: selectedCategoryFilter === 'all' ? '#fff' : 'var(--ink)',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
@@ -887,7 +948,10 @@ export function NutritionModule({
               <button
                 key={cat}
                 type="button"
-                className={'chip-btn' + (selectedCategoryFilter === cat ? ' selected' : '')}
+                className={
+                  'chip-btn' +
+                  (selectedCategoryFilter === cat ? ' selected' : '')
+                }
                 onClick={() => setSelectedCategoryFilter(cat)}
                 style={{
                   padding: '8px 14px',
@@ -895,13 +959,17 @@ export function NutritionModule({
                   fontSize: '13px',
                   fontWeight: 600,
                   border: '1px solid var(--line)',
-                  background: selectedCategoryFilter === cat ? 'var(--brand)' : 'var(--card-subtle)',
+                  background:
+                    selectedCategoryFilter === cat
+                      ? 'var(--brand)'
+                      : 'var(--card-subtle)',
                   color: selectedCategoryFilter === cat ? '#fff' : 'var(--ink)',
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                 }}
               >
-                {CATEGORY_LABELS[cat]} ({customMeals.filter((m) => m.category === cat).length})
+                {CATEGORY_LABELS[cat]} (
+                {customMeals.filter((m) => m.category === cat).length})
               </button>
             ))}
           </div>
@@ -915,7 +983,9 @@ export function NutritionModule({
               onAction={() => setIsCustomMealModalOpen(true)}
             />
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               {filteredCustomMeals.map((meal) => {
                 const isJustLogged = recentlyLoggedId === meal.id
                 return (
@@ -934,7 +1004,13 @@ export function NutritionModule({
                     }}
                   >
                     <div style={{ minWidth: 0, flex: 1 }}>
-                      <strong style={{ fontSize: '15px', color: 'var(--ink)', display: 'block' }}>
+                      <strong
+                        style={{
+                          fontSize: '15px',
+                          color: 'var(--ink)',
+                          display: 'block',
+                        }}
+                      >
                         {meal.nameAr}
                       </strong>
                       <span
@@ -946,11 +1022,19 @@ export function NutritionModule({
                           fontVariantNumeric: 'tabular-nums',
                         }}
                       >
-                        {meal.calories} كالوِري · ب: {meal.proteinGrams}ج · ك: {meal.carbsGrams}ج · د: {meal.fatsGrams}ج
+                        {meal.calories} كالوِري · ب: {meal.proteinGrams}ج · ك:{' '}
+                        {meal.carbsGrams}ج · د: {meal.fatsGrams}ج
                       </span>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        flexShrink: 0,
+                      }}
+                    >
                       <button
                         type="button"
                         onClick={() => handleLogCustomMeal(meal)}
@@ -1008,7 +1092,14 @@ export function NutritionModule({
         onClose={() => setShowPlusSheet(false)}
         title="إضافة وتتبع التغذية"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px 0' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            padding: '8px 0',
+          }}
+        >
           <button
             type="button"
             onClick={() => {
@@ -1028,7 +1119,9 @@ export function NutritionModule({
               width: '100%',
             }}
           >
-            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>تسجيل وجبة سريعة</strong>
+            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
+              تسجيل وجبة سريعة
+            </strong>
             <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
               سجل سعرات وماكروز وجبة مباشرة بالأرقام
             </span>
@@ -1054,7 +1147,9 @@ export function NutritionModule({
               width: '100%',
             }}
           >
-            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>تصميم وجبة بالمكونات</strong>
+            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
+              تصميم وجبة بالمكونات
+            </strong>
             <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
               احسب الماكروز بالجرام من قاعدة الأغذية المصرية والعربية
             </span>
@@ -1079,7 +1174,9 @@ export function NutritionModule({
               width: '100%',
             }}
           >
-            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>دليل الماكروز والتغذية</strong>
+            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
+              دليل الماكروز والتغذية
+            </strong>
             <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
               شرح مبسط لكيفية تقسيم البروتين والكارب والدهون
             </span>
@@ -1120,7 +1217,14 @@ export function NutritionModule({
           onClose={() => setMealActionTarget(null)}
           title={`خيارات: ${mealActionTarget.nameAr}`}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px 0' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              padding: '8px 0',
+            }}
+          >
             <button
               type="button"
               onClick={() => {
@@ -1279,7 +1383,13 @@ export function NutritionModule({
             </div>
 
             {/* BMR and TDEE Stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '12px',
+              }}
+            >
               <Stat
                 label="الحرق الأساسي"
                 value={`${targets.bmr} كالوِري`}
@@ -1326,15 +1436,48 @@ export function NutritionModule({
               </button>
 
               {showExplanation && targets.engineResult && (
-                <div style={{ marginTop: '12px', fontSize: '13px', lineHeight: 1.7 }}>
-                  <ul style={{ paddingRight: '18px', margin: '8px 0', color: 'var(--ink)' }}>
-                    <li><strong>المعادلة:</strong> {targets.engineResult.explanationAr.formula}</li>
-                    <li><strong>الحرق القاعدي (BMR):</strong> {targets.engineResult.explanationAr.bmrText}</li>
-                    <li><strong>معامل نمط الحياة:</strong> {targets.engineResult.explanationAr.lifestyleText}</li>
-                    <li><strong>حرق التمرين الفعلي (EAT):</strong> {targets.engineResult.explanationAr.eatText}</li>
-                    <li><strong>نطاق الاستهلاك (TDEE):</strong> {targets.engineResult.explanationAr.tdeeRangeText}</li>
-                    <li><strong>تعديل السعرات:</strong> {targets.engineResult.explanationAr.adjustmentText}</li>
-                    <li><strong>أساس احتساب البروتين:</strong> {targets.engineResult.explanationAr.proteinBasisText}</li>
+                <div
+                  style={{
+                    marginTop: '12px',
+                    fontSize: '13px',
+                    lineHeight: 1.7,
+                  }}
+                >
+                  <ul
+                    style={{
+                      paddingRight: '18px',
+                      margin: '8px 0',
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    <li>
+                      <strong>المعادلة:</strong>{' '}
+                      {targets.engineResult.explanationAr.formula}
+                    </li>
+                    <li>
+                      <strong>الحرق القاعدي (BMR):</strong>{' '}
+                      {targets.engineResult.explanationAr.bmrText}
+                    </li>
+                    <li>
+                      <strong>معامل نمط الحياة:</strong>{' '}
+                      {targets.engineResult.explanationAr.lifestyleText}
+                    </li>
+                    <li>
+                      <strong>حرق التمرين الفعلي (EAT):</strong>{' '}
+                      {targets.engineResult.explanationAr.eatText}
+                    </li>
+                    <li>
+                      <strong>نطاق الاستهلاك (TDEE):</strong>{' '}
+                      {targets.engineResult.explanationAr.tdeeRangeText}
+                    </li>
+                    <li>
+                      <strong>تعديل السعرات:</strong>{' '}
+                      {targets.engineResult.explanationAr.adjustmentText}
+                    </li>
+                    <li>
+                      <strong>أساس احتساب البروتين:</strong>{' '}
+                      {targets.engineResult.explanationAr.proteinBasisText}
+                    </li>
                   </ul>
                   <div
                     style={{
@@ -1345,14 +1488,18 @@ export function NutritionModule({
                       color: 'var(--muted)',
                     }}
                   >
-                    <em>مرجع رياضي:</em> تشير الدراسات إلى أن مكاسب البناء العضلي تصل لذروتها حول 1.6 جم/كجم (Morton et al., BJSM 2018).
+                    <em>مرجع رياضي:</em> تشير الدراسات إلى أن مكاسب البناء
+                    العضلي تصل لذروتها حول 1.6 جم/كجم (Morton et al., BJSM
+                    2018).
                   </div>
                 </div>
               )}
             </div>
 
             {/* Actions: Edit profile & Calibration */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+            >
               <button
                 type="button"
                 className="btn-primary"
@@ -1408,7 +1555,9 @@ export function NutritionModule({
                 textAlign: 'center',
               }}
             >
-              تنويه طبي: هذه الأرقام والخطط الغذائية هي تقديرات حسابية إرشادية مستندة للأدبيات الرياضية وليست استشارة طبية. يُرجى استشارة طبيب أو أخصائي تغذية قبل اتباع أي حمية صارمة.
+              تنويه طبي: هذه الأرقام والخطط الغذائية هي تقديرات حسابية إرشادية
+              مستندة للأدبيات الرياضية وليست استشارة طبية. يُرجى استشارة طبيب أو
+              أخصائي تغذية قبل اتباع أي حمية صارمة.
             </p>
           </div>
         </div>
@@ -1496,7 +1645,9 @@ export function NutritionModule({
                     fontWeight: 700,
                     fontSize: '13.5px',
                     cursor: 'pointer',
-                    boxShadow: !isImperial ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                    boxShadow: !isImperial
+                      ? '0 1px 3px rgba(0,0,0,0.1)'
+                      : 'none',
                   }}
                 >
                   متري (كجم / سم)
@@ -1513,7 +1664,9 @@ export function NutritionModule({
                     fontWeight: 700,
                     fontSize: '13.5px',
                     cursor: 'pointer',
-                    boxShadow: isImperial ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                    boxShadow: isImperial
+                      ? '0 1px 3px rgba(0,0,0,0.1)'
+                      : 'none',
                   }}
                 >
                   إمبراطوري (باوند / بوصة)
@@ -1522,7 +1675,10 @@ export function NutritionModule({
 
               {/* Weight Field */}
               <div className="field">
-                <label htmlFor="calc-weight" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                <label
+                  htmlFor="calc-weight"
+                  style={{ fontSize: '13.5px', fontWeight: 700 }}
+                >
                   الوزن ({isImperial ? 'باوند' : 'كجم'})
                 </label>
                 <input
@@ -1548,7 +1704,10 @@ export function NutritionModule({
 
               {/* Height Field */}
               <div className="field">
-                <label htmlFor="calc-height" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                <label
+                  htmlFor="calc-height"
+                  style={{ fontSize: '13.5px', fontWeight: 700 }}
+                >
                   الطول ({isImperial ? 'بوصة' : 'سم'})
                 </label>
                 <input
@@ -1574,7 +1733,10 @@ export function NutritionModule({
 
               {/* Age Field */}
               <div className="field">
-                <label htmlFor="calc-age" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                <label
+                  htmlFor="calc-age"
+                  style={{ fontSize: '13.5px', fontWeight: 700 }}
+                >
                   العمر (بالسنوات)
                 </label>
                 <input
@@ -1607,7 +1769,10 @@ export function NutritionModule({
 
               {/* Body Fat % (Optional) */}
               <div className="field">
-                <label htmlFor="calc-bf" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                <label
+                  htmlFor="calc-bf"
+                  style={{ fontSize: '13.5px', fontWeight: 700 }}
+                >
                   نسبة دهون الجسم (اختياري، %)
                 </label>
                 <input
@@ -1682,7 +1847,13 @@ export function NutritionModule({
                     alignItems: 'center',
                   }}
                 >
-                  <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--ink)' }}>
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 700,
+                      color: 'var(--ink)',
+                    }}
+                  >
                     جلسات التمارين الرياضية (حساب EAT)
                   </span>
                   {editWorkoutBlocks.length < 3 && (
@@ -1727,8 +1898,20 @@ export function NutritionModule({
                       border: '1px solid var(--line)',
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: '13.5px',
+                          fontWeight: 700,
+                          color: 'var(--ink)',
+                        }}
+                      >
                         نشاط #{idx + 1}
                       </span>
                       {editWorkoutBlocks.length > 1 && (
@@ -1773,9 +1956,17 @@ export function NutritionModule({
                       sheetTitle="اختر نوع التمرين"
                     />
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '8px',
+                      }}
+                    >
                       <div className="field">
-                        <label style={{ fontSize: '12.5px', fontWeight: 600 }}>الجلسات أسبوعياً</label>
+                        <label style={{ fontSize: '12.5px', fontWeight: 600 }}>
+                          الجلسات أسبوعياً
+                        </label>
                         <input
                           type="number"
                           min="1"
@@ -1785,7 +1976,8 @@ export function NutritionModule({
                             const updated = [...editWorkoutBlocks]
                             updated[idx] = {
                               ...updated[idx],
-                              sessionsPerWeek: parseInt(e.target.value, 10) || 1,
+                              sessionsPerWeek:
+                                parseInt(e.target.value, 10) || 1,
                             }
                             setEditWorkoutBlocks(updated)
                           }}
@@ -1794,7 +1986,9 @@ export function NutritionModule({
                         />
                       </div>
                       <div className="field">
-                        <label style={{ fontSize: '12.5px', fontWeight: 600 }}>الدقائق لكل جلسة</label>
+                        <label style={{ fontSize: '12.5px', fontWeight: 600 }}>
+                          الدقائق لكل جلسة
+                        </label>
                         <input
                           type="number"
                           min="10"
@@ -1805,7 +1999,8 @@ export function NutritionModule({
                             const updated = [...editWorkoutBlocks]
                             updated[idx] = {
                               ...updated[idx],
-                              minutesPerSession: parseInt(e.target.value, 10) || 10,
+                              minutesPerSession:
+                                parseInt(e.target.value, 10) || 10,
                             }
                             setEditWorkoutBlocks(updated)
                           }}
@@ -1823,14 +2018,14 @@ export function NutritionModule({
                         const updated = [...editWorkoutBlocks]
                         updated[idx] = {
                           ...updated[idx],
-                          intensity: val as 'light' | 'moderate' | 'vigorous',
+                          intensity: val as 'light' | 'moderate' | 'hard',
                         }
                         setEditWorkoutBlocks(updated)
                       }}
                       options={[
                         { value: 'light', labelAr: 'خفيفة (راحة طويلة)' },
                         { value: 'moderate', labelAr: 'متوسطة (عادية)' },
-                        { value: 'vigorous', labelAr: 'شديدة (جهد عالي)' },
+                        { value: 'hard', labelAr: 'شديدة (جهد عالي)' },
                       ]}
                       sheetTitle="اختر شدة التمرين"
                     />
@@ -1848,7 +2043,7 @@ export function NutritionModule({
                   options={GOALS.map((g) => ({
                     value: g.value,
                     labelAr: g.labelAr,
-                    description: g.descriptionAr,
+                    labelEn: g.hintAr,
                   }))}
                   sheetTitle="اختر هدفك التدريبي"
                 />
@@ -1885,7 +2080,9 @@ export function NutritionModule({
                   id="calc-formula-select"
                   label="معادلة الحساب المعتمدة"
                   value={editFormulaOverride}
-                  onChange={(val) => setEditFormulaOverride(val as FormulaChoice)}
+                  onChange={(val) =>
+                    setEditFormulaOverride(val as FormulaChoice)
+                  }
                   options={[
                     {
                       value: 'auto',
@@ -1910,7 +2107,10 @@ export function NutritionModule({
 
               {/* Protein Override Field */}
               <div className="field">
-                <label htmlFor="calc-protein-override" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                <label
+                  htmlFor="calc-protein-override"
+                  style={{ fontSize: '13.5px', fontWeight: 700 }}
+                >
                   تعديل البروتين يدوياً (اختياري، جم/كجم)
                 </label>
                 <input
@@ -1999,15 +2199,29 @@ export function NutritionModule({
         }}
         title="معايرة السعرات الذكية"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '8px 0' }}>
-          <Callout
-            title="كيف تعمل المعايرة؟"
-            message="المعايرة تقارن وزنك الفعلي على مدار أسبوعين مع سعراتك اليومية المتناولة لتحديد معدل الحرق الحقيقي لجسمك بدقة تامة وتعديل سعراتك تلقائياً."
-          />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            padding: '8px 0',
+          }}
+        >
+          <Callout title="كيف تعمل المعايرة؟">
+            المعايرة تقارن وزنك الفعلي على مدار أسبوعين مع سعراتك اليومية
+            المتناولة لتحديد معدل الحرق الحقيقي لجسمك بدقة تامة وتعديل سعراتك
+            تلقائياً.
+          </Callout>
 
           {/* Progress to 8 logs */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '13px',
+              }}
+            >
               <span style={{ fontWeight: 600 }}>الأوزان المسجلة</span>
               <span style={{ fontWeight: 700, color: 'var(--brand)' }}>
                 {Math.min(8, bodyLog.length)} من 8 أوزان مطلوبة
@@ -2032,12 +2246,17 @@ export function NutritionModule({
               border: '1px solid var(--line)',
             }}
           >
-            <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--ink)' }}>
+            <span
+              style={{ fontSize: '14px', fontWeight: 700, color: 'var(--ink)' }}
+            >
               تسجيل وزن سريع للمعايرة
             </span>
 
             <div className="field">
-              <label htmlFor="quick-cal-weight" style={{ fontSize: '13px', fontWeight: 600 }}>
+              <label
+                htmlFor="quick-cal-weight"
+                style={{ fontSize: '13px', fontWeight: 600 }}
+              >
                 الوزن (كجم)
               </label>
               <input
@@ -2085,7 +2304,9 @@ export function NutritionModule({
                 style={{
                   fontSize: '13px',
                   fontWeight: 600,
-                  color: calibrationFeedback.startsWith('✓') ? '#10b981' : 'var(--danger)',
+                  color: calibrationFeedback.startsWith('✓')
+                    ? '#10b981'
+                    : 'var(--danger)',
                   marginTop: '4px',
                 }}
               >
@@ -2107,14 +2328,33 @@ export function NutritionModule({
                 border: '1px solid #10b981',
               }}
             >
-              <span style={{ fontSize: '14px', fontWeight: 700, color: '#10b981' }}>
-                ✓ تتوفر بيانات كافية للمعايرة ({calibrationData.logsCount} أوزان عبر {calibrationData.daysSpan} يوماً)
+              <span
+                style={{ fontSize: '14px', fontWeight: 700, color: '#10b981' }}
+              >
+                ✓ تتوفر بيانات كافية للمعايرة ({calibrationData.logsCount} أوزان
+                عبر {calibrationData.daysSpan} يوماً)
               </span>
 
-              <ul style={{ margin: 0, paddingRight: '18px', fontSize: '13px', lineHeight: 1.7 }}>
-                <li><strong>معدل التغير الأسبوعي:</strong> {calibrationData.slopeKgPerWeek} كجم/أسبوع</li>
-                <li><strong>الحرق المشاهد (TDEE):</strong> {calibrationData.tdeeObserved} كالوِري</li>
-                <li><strong>الهدف المعاير المقترح:</strong> {calibrationData.newTargetCalories} كالوِري</li>
+              <ul
+                style={{
+                  margin: 0,
+                  paddingRight: '18px',
+                  fontSize: '13px',
+                  lineHeight: 1.7,
+                }}
+              >
+                <li>
+                  <strong>معدل التغير الأسبوعي:</strong>{' '}
+                  {calibrationData.slopeKgPerWeek} كجم/أسبوع
+                </li>
+                <li>
+                  <strong>الحرق المشاهد (TDEE):</strong>{' '}
+                  {calibrationData.tdeeObserved} كالوِري
+                </li>
+                <li>
+                  <strong>الهدف المعاير المقترح:</strong>{' '}
+                  {calibrationData.newTargetCalories} كالوِري
+                </li>
               </ul>
 
               <button
@@ -2136,7 +2376,8 @@ export function NutritionModule({
                   marginTop: '4px',
                 }}
               >
-                تطبيق الهدف المعاير ({calibrationData.newTargetCalories} كالوِري)
+                تطبيق الهدف المعاير ({calibrationData.newTargetCalories}{' '}
+                كالوِري)
               </button>
             </div>
           ) : (

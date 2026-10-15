@@ -271,7 +271,8 @@ export function BackupPanel({
       {showReminder && !syncState.isEnabled && (
         <div style={{ marginTop: '8px' }}>
           <Callout variant="warning">
-            لم تصدّر بياناتك منذ أكثر من أسبوع. ننصح بتفعيل المزامنة التلقائية أو أخذ نسخة احتياطية للحفاظ على بياناتك.
+            لم تصدّر بياناتك منذ أكثر من أسبوع. ننصح بتفعيل المزامنة التلقائية
+            أو أخذ نسخة احتياطية للحفاظ على بياناتك.
           </Callout>
         </div>
       )}

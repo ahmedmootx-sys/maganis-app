@@ -3782,7 +3782,9 @@ input[type='url'],
 /* --- Sticky Bottom Bar --- */
 .sticky-bottom-bar {
   position: sticky;
-  bottom: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(
+    var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px)
+  );
   background: var(--card-bg);
   border-top: 1px solid var(--line);
   padding: 12px 16px;
@@ -3800,4 +3802,3 @@ input[type='url'],
   font-size: 15px;
   font-weight: 700;
 }
-

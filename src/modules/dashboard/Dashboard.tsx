@@ -319,7 +319,10 @@ export function Dashboard({
                   {todayProgramDay.exercises.slice(0, 3).map((pe, idx) => {
                     const ex = getExerciseById(pe.exerciseId)
                     const arabicName = ex?.nameAr ?? pe.exerciseId
-                    const englishName = ex?.nameEn ?? ''
+                    const englishName =
+                      (ex as { nameEn?: string; name?: string })?.nameEn ||
+                      ex?.name ||
+                      ''
                     const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى عدد' : pe.reps}`
                     return (
                       <ListRow

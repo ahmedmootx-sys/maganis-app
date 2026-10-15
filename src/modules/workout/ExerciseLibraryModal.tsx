@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import type {
   CustomExercise,
-  DifficultyLevel,
-  EquipmentType,
+  Difficulty,
+  Equipment,
   Exercise,
   MuscleGroup,
   WorkoutProgram,
@@ -123,7 +123,9 @@ export function ExerciseLibraryModal({
     searchTerm,
   ])
 
-  function handleResetFilter(filterType: 'category' | 'sub' | 'equip' | 'level') {
+  function handleResetFilter(
+    filterType: 'category' | 'sub' | 'equip' | 'level',
+  ) {
     if (filterType === 'category') {
       setCategoryFilter('all')
       setSubMuscleFilter('all')
@@ -203,7 +205,8 @@ export function ExerciseLibraryModal({
               fontWeight: 700,
               borderRadius: '8px',
               border: 'none',
-              background: activeTab === 'all' ? 'var(--card-bg)' : 'transparent',
+              background:
+                activeTab === 'all' ? 'var(--card-bg)' : 'transparent',
               color: activeTab === 'all' ? 'var(--ink)' : 'var(--muted)',
               cursor: 'pointer',
               boxShadow:
@@ -223,7 +226,8 @@ export function ExerciseLibraryModal({
               fontWeight: 700,
               borderRadius: '8px',
               border: 'none',
-              background: activeTab === 'trash' ? 'var(--card-bg)' : 'transparent',
+              background:
+                activeTab === 'trash' ? 'var(--card-bg)' : 'transparent',
               color: activeTab === 'trash' ? 'var(--danger)' : 'var(--muted)',
               cursor: 'pointer',
               boxShadow:
@@ -348,7 +352,9 @@ export function ExerciseLibraryModal({
                   height: '32px',
                 }}
               >
-                <span>{MUSCLE_GROUP_LABELS[categoryFilter as MuscleGroup]}</span>
+                <span>
+                  {MUSCLE_GROUP_LABELS[categoryFilter as MuscleGroup]}
+                </span>
                 <IconClose size={14} />
               </button>
             )}
@@ -382,9 +388,7 @@ export function ExerciseLibraryModal({
                   height: '32px',
                 }}
               >
-                <span>
-                  {EQUIPMENT_LABELS[equipmentFilter as EquipmentType]}
-                </span>
+                <span>{EQUIPMENT_LABELS[equipmentFilter as Equipment]}</span>
                 <IconClose size={14} />
               </button>
             )}
@@ -401,9 +405,7 @@ export function ExerciseLibraryModal({
                   height: '32px',
                 }}
               >
-                <span>
-                  {DIFFICULTY_LABELS[levelFilter as DifficultyLevel]}
-                </span>
+                <span>{DIFFICULTY_LABELS[levelFilter as Difficulty]}</span>
                 <IconClose size={14} />
               </button>
             )}
@@ -456,10 +458,9 @@ export function ExerciseLibraryModal({
               const muscleLabel =
                 MUSCLE_GROUP_LABELS[ex.category as MuscleGroup] || ex.category
               const equipLabel =
-                EQUIPMENT_LABELS[ex.equipment as EquipmentType] || ex.equipment
+                EQUIPMENT_LABELS[ex.equipment as Equipment] || ex.equipment
               const diffLabel =
-                DIFFICULTY_LABELS[ex.difficulty as DifficultyLevel] ||
-                ex.difficulty
+                DIFFICULTY_LABELS[ex.difficulty as Difficulty] || ex.difficulty
               const tertiaryInfo = `${muscleLabel} · ${equipLabel} · ${diffLabel}`
 
               return (
@@ -489,7 +490,9 @@ export function ExerciseLibraryModal({
                     </div>
                   }
                   title={ex.nameAr}
-                  secondary={ex.name && ex.name !== ex.nameAr ? ex.name : undefined}
+                  secondary={
+                    ex.name && ex.name !== ex.nameAr ? ex.name : undefined
+                  }
                   secondaryIsLtr={true}
                   tertiary={tertiaryInfo}
                   trailing={
@@ -555,28 +558,30 @@ export function ExerciseLibraryModal({
               <span>عرض تفاصيل التمرين وتشريح العضلات</span>
             </button>
 
-            {'isCustom' in actionExercise &&
+            {Boolean(
+              'isCustom' in actionExercise &&
               actionExercise.isCustom &&
-              onEditCustomExercise && (
-                <button
-                  type="button"
-                  className="ghost-secondary full-width"
-                  style={{
-                    justifyContent: 'flex-start',
-                    height: '48px',
-                    gap: '10px',
-                  }}
-                  onClick={() => {
-                    const ex = actionExercise as CustomExercise
-                    setActionExercise(null)
-                    onClose()
-                    onEditCustomExercise(ex)
-                  }}
-                >
-                  <IconEdit size={18} />
-                  <span>تعديل بيانات التمرين المخصص</span>
-                </button>
-              )}
+              onEditCustomExercise,
+            ) && (
+              <button
+                type="button"
+                className="ghost-secondary full-width"
+                style={{
+                  justifyContent: 'flex-start',
+                  height: '48px',
+                  gap: '10px',
+                }}
+                onClick={() => {
+                  const ex = actionExercise as CustomExercise
+                  setActionExercise(null)
+                  onClose()
+                  onEditCustomExercise?.(ex)
+                }}
+              >
+                <IconEdit size={18} />
+                <span>تعديل بيانات التمرين المخصص</span>
+              </button>
+            )}
 
             {activeTab === 'all' && onDeleteExercise && (
               <button
@@ -629,7 +634,13 @@ export function ExerciseLibraryModal({
       >
         {addToDayExercise && program && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <p style={{ fontSize: '13px', color: 'var(--muted)', margin: '0 0 6px' }}>
+            <p
+              style={{
+                fontSize: '13px',
+                color: 'var(--muted)',
+                margin: '0 0 6px',
+              }}
+            >
               اختر اليوم التدريبي لإضافة تمرين "{addToDayExercise.nameAr}":
             </p>
             {program.days.map((day) => (

@@ -1,9 +1,5 @@
 import { useState, useMemo } from 'react'
-import type {
-  TrackingSession,
-  BodyLogEntry,
-  DayNote,
-} from '../shared/types.ts'
+import type { TrackingSession, BodyLogEntry, DayNote } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { getExerciseById } from '../workout/exercises.ts'
 import { SvgLineChart } from '../reports/SvgLineChart.tsx'
@@ -14,7 +10,6 @@ import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
 import { EmptyState } from '../../components/EmptyState.tsx'
 import { Stat } from '../../components/Stat.tsx'
 import {
-  IconPlus,
   IconTrash,
   IconChevronLeft,
   IconChevronRight,
@@ -90,7 +85,7 @@ export function ProgressScreen({
   sessions,
   bodyLog,
   dayNotes,
-  profile,
+  profile: _profile,
   onAddBodyWeight,
   onDeleteBodyWeight,
   onAddDayNote,
@@ -109,14 +104,16 @@ export function ProgressScreen({
   const now = new Date()
   const [calYear, setCalYear] = useState(now.getFullYear())
   const [calMonth, setCalMonth] = useState(now.getMonth())
-  const [selectedCalendarDate, setSelectedCalendarDate] = useState<string | null>(null)
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<
+    string | null
+  >(null)
 
   // --- LOG TAB: Notes State ---
   const [showAddNoteSheet, setShowAddNoteSheet] = useState(false)
   const [newNoteDate, setNewNoteDate] = useState(() => todayStr())
   const [newNoteText, setNewNoteText] = useState('')
   const [noteError, setNoteError] = useState('')
-  const [noteToDelete, setNoteToDelete] = useState<{ date: string; text: string } | null>(null)
+  const [noteToDelete, setNoteToDelete] = useState<DayNote | null>(null)
 
   // --- REPORTS TAB State ---
   const [range, setRange] = useState<DateRange>('4w')
@@ -233,25 +230,16 @@ export function ProgressScreen({
       .map(([wk, vol]) => ({ label: weekLabel(wk), value: Math.round(vol) }))
   }, [filteredSessions])
 
-  // Sessions by week
-  const sessionsByWeek = useMemo(() => {
-    const map: Record<string, number> = {}
-    for (const session of filteredSessions) {
-      const wk = getWeekStart(session.date)
-      map[wk] = (map[wk] ?? 0) + 1
-    }
-    return Object.entries(map)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([wk, count]) => ({ label: weekLabel(wk), value: count }))
-  }, [filteredSessions])
-
   // Total volume in range
   const totalVolumeInRange = useMemo(() => {
     return filteredSessions.reduce((acc, s) => {
       return (
         acc +
         s.exercises.reduce((eAcc, e) => {
-          return eAcc + e.sets.reduce((sAcc, set) => sAcc + set.reps * set.weightKg, 0)
+          return (
+            eAcc +
+            e.sets.reduce((sAcc, set) => sAcc + set.reps * set.weightKg, 0)
+          )
         }, 0)
       )
     }, 0)
@@ -403,12 +391,14 @@ export function ProgressScreen({
               height: '42px',
               borderRadius: '8px',
               border: 'none',
-              background: activeTab === 'log' ? 'var(--card-bg)' : 'transparent',
+              background:
+                activeTab === 'log' ? 'var(--card-bg)' : 'transparent',
               color: activeTab === 'log' ? 'var(--ink)' : 'var(--muted)',
               fontWeight: 700,
               fontSize: '14.5px',
               cursor: 'pointer',
-              boxShadow: activeTab === 'log' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+              boxShadow:
+                activeTab === 'log' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               transition: 'all 0.15s ease',
             }}
           >
@@ -421,12 +411,14 @@ export function ProgressScreen({
               height: '42px',
               borderRadius: '8px',
               border: 'none',
-              background: activeTab === 'reports' ? 'var(--card-bg)' : 'transparent',
+              background:
+                activeTab === 'reports' ? 'var(--card-bg)' : 'transparent',
               color: activeTab === 'reports' ? 'var(--ink)' : 'var(--muted)',
               fontWeight: 700,
               fontSize: '14.5px',
               cursor: 'pointer',
-              boxShadow: activeTab === 'reports' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+              boxShadow:
+                activeTab === 'reports' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               transition: 'all 0.15s ease',
             }}
           >
@@ -436,7 +428,9 @@ export function ProgressScreen({
 
         {/* ===================== LOG SUB-TAB ===================== */}
         {activeTab === 'log' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+          >
             {/* Section 1: Body Weight Tracker */}
             <div
               className="card section-weight"
@@ -450,7 +444,14 @@ export function ProgressScreen({
                 gap: '14px',
               }}
             >
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: 'var(--ink)' }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
                 سجل قياس الوزن
               </h3>
 
@@ -472,10 +473,17 @@ export function ProgressScreen({
 
               <form
                 onSubmit={handleWeightSubmit}
-                style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                }}
               >
                 <div className="field">
-                  <label htmlFor="bw-weight-input" style={{ fontSize: '13px', fontWeight: 600 }}>
+                  <label
+                    htmlFor="bw-weight-input"
+                    style={{ fontSize: '13px', fontWeight: 600 }}
+                  >
                     الوزن (كجم)
                   </label>
                   <input
@@ -525,8 +533,22 @@ export function ProgressScreen({
 
               {/* Mini SVG Chart if 2+ entries */}
               {bodyLog.length >= 2 && (
-                <div style={{ marginTop: '8px', paddingTop: '12px', borderTop: '1px solid var(--line)' }}>
-                  <span style={{ fontSize: '12.5px', color: 'var(--muted)', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
+                <div
+                  style={{
+                    marginTop: '8px',
+                    paddingTop: '12px',
+                    borderTop: '1px solid var(--line)',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: '12.5px',
+                      color: 'var(--muted)',
+                      fontWeight: 600,
+                      display: 'block',
+                      marginBottom: '8px',
+                    }}
+                  >
                     منحنى تغير الوزن
                   </span>
                   <SvgLineChart
@@ -544,9 +566,23 @@ export function ProgressScreen({
               )}
 
               {/* Weight Log Entries List */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  marginTop: '4px',
+                }}
+              >
                 {sortedBodyLog.length === 0 ? (
-                  <p style={{ fontSize: '13px', color: 'var(--muted)', margin: '8px 0', textAlign: 'center' }}>
+                  <p
+                    style={{
+                      fontSize: '13px',
+                      color: 'var(--muted)',
+                      margin: '8px 0',
+                      textAlign: 'center',
+                    }}
+                  >
                     لا توجد قياسات وزن مسجلة بعد.
                   </p>
                 ) : (
@@ -563,10 +599,14 @@ export function ProgressScreen({
                       }}
                     >
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <strong style={{ fontSize: '14.5px', color: 'var(--ink)' }}>
+                        <strong
+                          style={{ fontSize: '14.5px', color: 'var(--ink)' }}
+                        >
                           {entry.weightKg} كجم
                         </strong>
-                        <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                        <span
+                          style={{ fontSize: '12px', color: 'var(--muted)' }}
+                        >
                           {formatArabicDate(entry.date)}
                         </span>
                       </div>
@@ -610,11 +650,26 @@ export function ProgressScreen({
                 gap: '14px',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: 'var(--ink)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: '16px',
+                    fontWeight: 700,
+                    color: 'var(--ink)',
+                  }}
+                >
                   تقويم التدريب والملاحظات
                 </h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
                   <button
                     type="button"
                     onClick={prevMonth}
@@ -634,7 +689,14 @@ export function ProgressScreen({
                   >
                     <IconChevronRight size={18} />
                   </button>
-                  <span style={{ fontSize: '14px', fontWeight: 700, minWidth: '100px', textAlign: 'center' }}>
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 700,
+                      minWidth: '100px',
+                      textAlign: 'center',
+                    }}
+                  >
                     {MONTH_NAMES_AR[calMonth]} {calYear}
                   </span>
                   <button
@@ -672,7 +734,9 @@ export function ProgressScreen({
                 }}
               >
                 {DAY_NAMES_SHORT.map((name) => (
-                  <div key={name} style={{ padding: '4px 0' }}>{name}</div>
+                  <div key={name} style={{ padding: '4px 0' }}>
+                    {name}
+                  </div>
                 ))}
               </div>
 
@@ -703,7 +767,9 @@ export function ProgressScreen({
                       style={{
                         height: '42px',
                         borderRadius: '10px',
-                        border: isCurrentDay ? '1.5px solid var(--brand)' : '1px solid transparent',
+                        border: isCurrentDay
+                          ? '1.5px solid var(--brand)'
+                          : '1px solid transparent',
                         background: hasSession
                           ? 'var(--brand-surface, rgba(230, 81, 0, 0.1))'
                           : 'var(--card-subtle)',
@@ -719,7 +785,14 @@ export function ProgressScreen({
                       }}
                     >
                       <span>{dayNum}</span>
-                      <div style={{ display: 'flex', gap: '3px', position: 'absolute', bottom: '4px' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          gap: '3px',
+                          position: 'absolute',
+                          bottom: '4px',
+                        }}
+                      >
                         {hasSession && (
                           <span
                             style={{
@@ -758,12 +831,30 @@ export function ProgressScreen({
                   paddingTop: '6px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--brand)' }} />
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <span
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: 'var(--brand)',
+                    }}
+                  />
                   <span>جلسة تمرين</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6' }} />
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <span
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: '#3b82f6',
+                    }}
+                  />
                   <span>ملاحظة يومية</span>
                 </div>
               </div>
@@ -782,8 +873,21 @@ export function ProgressScreen({
                 gap: '14px',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: 'var(--ink)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: '16px',
+                    fontWeight: 700,
+                    color: 'var(--ink)',
+                  }}
+                >
                   ملاحظات يومية ({dayNotes.length})
                 </h3>
                 <button
@@ -811,7 +915,13 @@ export function ProgressScreen({
                   onAction={() => setShowAddNoteSheet(true)}
                 />
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
                   {sortedDayNotes.slice(0, 15).map((n, i) => (
                     <div
                       key={`${n.date}-${i}`}
@@ -826,10 +936,24 @@ export function ProgressScreen({
                       }}
                     >
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <span style={{ fontSize: '12px', color: 'var(--muted)', display: 'block', marginBottom: '2px' }}>
+                        <span
+                          style={{
+                            fontSize: '12px',
+                            color: 'var(--muted)',
+                            display: 'block',
+                            marginBottom: '2px',
+                          }}
+                        >
                           {formatArabicDate(n.date)}
                         </span>
-                        <p style={{ margin: 0, fontSize: '14px', color: 'var(--ink)', lineHeight: 1.5 }}>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: '14px',
+                            color: 'var(--ink)',
+                            lineHeight: 1.5,
+                          }}
+                        >
                           {n.note}
                         </p>
                       </div>
@@ -865,7 +989,9 @@ export function ProgressScreen({
 
         {/* ===================== REPORTS SUB-TAB ===================== */}
         {activeTab === 'reports' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+          >
             {/* Range Filter (Equal-width row) */}
             <div
               className="range-buttons-row"
@@ -893,7 +1019,8 @@ export function ProgressScreen({
                     fontWeight: 700,
                     fontSize: '13px',
                     cursor: 'pointer',
-                    boxShadow: range === r ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                    boxShadow:
+                      range === r ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
                   }}
                 >
                   {RANGE_LABELS[r]}
@@ -902,7 +1029,13 @@ export function ProgressScreen({
             </div>
 
             {/* Overview Stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '12px',
+              }}
+            >
               <Stat
                 label="إجمالي الجلسات"
                 value={`${filteredSessions.length} جلسة`}
@@ -928,7 +1061,14 @@ export function ProgressScreen({
                 gap: '12px',
               }}
             >
-              <h3 style={{ margin: 0, fontSize: '15.5px', fontWeight: 700, color: 'var(--ink)' }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: '15.5px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
                 الحجم التدريبي الأسبوعي (كجم)
               </h3>
               {volumeByWeek.length === 0 ? (
@@ -937,7 +1077,11 @@ export function ProgressScreen({
                   description="سجّل جلسات تمرينك لتبدأ بمتابعة تطور الحجم التدريبي"
                 />
               ) : (
-                <SvgLineChart data={volumeByWeek} height={180} color="#10b981" />
+                <SvgLineChart
+                  data={volumeByWeek}
+                  height={180}
+                  color="#10b981"
+                />
               )}
             </div>
 
@@ -954,7 +1098,14 @@ export function ProgressScreen({
                 gap: '12px',
               }}
             >
-              <h3 style={{ margin: 0, fontSize: '15.5px', fontWeight: 700, color: 'var(--ink)' }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: '15.5px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
                 منحنى تغير وزن الجسم
               </h3>
               {weightChartData.length < 2 ? (
@@ -963,7 +1114,11 @@ export function ProgressScreen({
                   description="سجّل قياسين على الأقل في هذه الفترة لعرض منحنى التغير"
                 />
               ) : (
-                <SvgLineChart data={weightChartData} height={180} color="#F95700" />
+                <SvgLineChart
+                  data={weightChartData}
+                  height={180}
+                  color="#F95700"
+                />
               )}
             </div>
 
@@ -980,7 +1135,14 @@ export function ProgressScreen({
                 gap: '12px',
               }}
             >
-              <h3 style={{ margin: 0, fontSize: '15.5px', fontWeight: 700, color: 'var(--ink)' }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: '15.5px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
                 الأرقام القياسية الشخصية (أعلى وزن)
               </h3>
               {personalRecords.length === 0 ? (
@@ -989,7 +1151,13 @@ export function ProgressScreen({
                   description="سجّل جلسات التمرين بأوزانك لتظهر أفضل أرقامك هنا"
                 />
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
                   {personalRecords.slice(0, 10).map((pr, idx) => (
                     <div
                       key={idx}
@@ -1002,7 +1170,13 @@ export function ProgressScreen({
                         background: 'var(--card-subtle)',
                       }}
                     >
-                      <span style={{ fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)' }}>
+                      <span
+                        style={{
+                          fontSize: '14.5px',
+                          fontWeight: 600,
+                          color: 'var(--ink)',
+                        }}
+                      >
                         {pr.name}
                       </span>
                       <strong
@@ -1030,14 +1204,31 @@ export function ProgressScreen({
           onClose={() => setSelectedCalendarDate(null)}
           title={`سجل يوم: ${formatArabicDate(selectedCalendarDate)}`}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', padding: '8px 0' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px',
+              padding: '8px 0',
+            }}
+          >
             {/* Sessions on this day */}
             <div>
-              <strong style={{ fontSize: '14px', color: 'var(--ink)', display: 'block', marginBottom: '8px' }}>
+              <strong
+                style={{
+                  fontSize: '14px',
+                  color: 'var(--ink)',
+                  display: 'block',
+                  marginBottom: '8px',
+                }}
+              >
                 جلسات التمرين
               </strong>
-              {sessions.filter((s) => s.date === selectedCalendarDate).length === 0 ? (
-                <p style={{ fontSize: '13px', color: 'var(--muted)', margin: 0 }}>
+              {sessions.filter((s) => s.date === selectedCalendarDate)
+                .length === 0 ? (
+                <p
+                  style={{ fontSize: '13px', color: 'var(--muted)', margin: 0 }}
+                >
                   لم تسجل جلسة تمرين في هذا اليوم.
                 </p>
               ) : (
@@ -1053,14 +1244,31 @@ export function ProgressScreen({
                         marginBottom: '6px',
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13.5px' }}>
-                        <span style={{ fontWeight: 700 }}>{s.exercises.length} تمرين</span>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          fontSize: '13.5px',
+                        }}
+                      >
+                        <span style={{ fontWeight: 700 }}>
+                          {s.exercises.length} تمرين
+                        </span>
                         <span style={{ color: 'var(--muted)' }}>
-                          {new Date(s.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                          {new Date(s.createdAt).toLocaleTimeString('ar-EG', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
                         </span>
                       </div>
                       {s.notes && (
-                        <p style={{ margin: '4px 0 0', fontSize: '12.5px', color: 'var(--muted)' }}>
+                        <p
+                          style={{
+                            margin: '4px 0 0',
+                            fontSize: '12.5px',
+                            color: 'var(--muted)',
+                          }}
+                        >
                           {s.notes}
                         </p>
                       )}
@@ -1070,12 +1278,24 @@ export function ProgressScreen({
             </div>
 
             {/* Notes on this day */}
-            <div style={{ paddingTop: '8px', borderTop: '1px solid var(--line)' }}>
-              <strong style={{ fontSize: '14px', color: 'var(--ink)', display: 'block', marginBottom: '8px' }}>
+            <div
+              style={{ paddingTop: '8px', borderTop: '1px solid var(--line)' }}
+            >
+              <strong
+                style={{
+                  fontSize: '14px',
+                  color: 'var(--ink)',
+                  display: 'block',
+                  marginBottom: '8px',
+                }}
+              >
                 الملاحظات
               </strong>
-              {dayNotes.filter((n) => n.date === selectedCalendarDate).length === 0 ? (
-                <p style={{ fontSize: '13px', color: 'var(--muted)', margin: 0 }}>
+              {dayNotes.filter((n) => n.date === selectedCalendarDate)
+                .length === 0 ? (
+                <p
+                  style={{ fontSize: '13px', color: 'var(--muted)', margin: 0 }}
+                >
                   لا توجد ملاحظات مسجلة لهذا اليوم.
                 </p>
               ) : (
@@ -1134,7 +1354,15 @@ export function ProgressScreen({
           }}
           title="تدوين ملاحظة يومية"
         >
-          <form onSubmit={handleNoteSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px', padding: '8px 0' }}>
+          <form
+            onSubmit={handleNoteSubmit}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px',
+              padding: '8px 0',
+            }}
+          >
             {noteError && (
               <div
                 role="alert"
@@ -1161,7 +1389,10 @@ export function ProgressScreen({
             </div>
 
             <div className="field">
-              <label htmlFor="sheet-note-text" style={{ fontSize: '13.5px', fontWeight: 600 }}>
+              <label
+                htmlFor="sheet-note-text"
+                style={{ fontSize: '13.5px', fontWeight: 600 }}
+              >
                 الملاحظة
               </label>
               <textarea
@@ -1228,7 +1459,7 @@ export function ProgressScreen({
           isOpen={true}
           onClose={() => setNoteToDelete(null)}
           onConfirm={() => {
-            onDeleteDayNote?.(noteToDelete.date, noteToDelete.text)
+            onDeleteDayNote?.(noteToDelete.date, noteToDelete.note)
             setNoteToDelete(null)
           }}
           title="حذف الملاحظة؟"

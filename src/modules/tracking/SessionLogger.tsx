@@ -12,11 +12,7 @@ import { TopBar } from '../../components/TopBar.tsx'
 import { DateField } from '../../components/DateField.tsx'
 import { EmptyState } from '../../components/EmptyState.tsx'
 import { Sheet } from '../../components/Sheet.tsx'
-import {
-  IconPlus,
-  IconTrash,
-  IconInfo,
-} from '../../components/Icons.tsx'
+import { IconPlus, IconTrash, IconInfo } from '../../components/Icons.tsx'
 
 export interface SessionLoggerProps {
   programDay: ProgramDay | null
@@ -77,7 +73,7 @@ export function SessionLogger({
     return all.filter(
       (e) =>
         e.nameAr.toLowerCase().includes(term) ||
-        e.name.toLowerCase().includes(term) ||
+        (e.name ?? '').toLowerCase().includes(term) ||
         (e.targetMusclesAr &&
           e.targetMusclesAr.some((m) => m.toLowerCase().includes(term))),
     )
@@ -317,9 +313,10 @@ export function SessionLogger({
                           }}
                         >
                           <ExerciseVisual
+                            category={exInfo?.category ?? 'chest'}
                             exerciseId={se.exerciseId}
                             exerciseName={exInfo?.nameAr}
-                            size={52}
+                            size="medium"
                           />
                         </div>
                         <div style={{ minWidth: 0 }}>

@@ -20,8 +20,6 @@ import type {
   CustomExercise,
 } from './modules/shared/types.ts'
 import type { UserProfile } from './modules/onboarding/types.ts'
-import { GOALS } from './modules/onboarding/types.ts'
-import { ACTIVITY_LEVELS } from './modules/onboarding/types.ts'
 import { WeeklyPlanView } from './modules/workout/WeeklyPlanView.tsx'
 import { CustomExerciseBuilder } from './modules/workout/CustomExerciseBuilder.tsx'
 import { ExerciseLibraryModal } from './modules/workout/ExerciseLibraryModal.tsx'
@@ -31,10 +29,6 @@ import { ActiveWorkoutSession } from './modules/workout/ActiveWorkoutSession.tsx
 import { formatTime } from './modules/workout/workoutUtils.ts'
 import { generateProgram } from './modules/workout/programGenerator.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
-import { BodyWeightTracker } from './modules/tracking/BodyWeightTracker.tsx'
-import { DayNotes } from './modules/tracking/DayNotes.tsx'
-import { TrainingCalendar } from './modules/tracking/TrainingCalendar.tsx'
-import { Reports } from './modules/reports/Reports.tsx'
 import { SettingsScreen } from './modules/settings/SettingsScreen.tsx'
 import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
 import { MuscleAtlasDebug } from './modules/workout/MuscleAtlasDebug.tsx'
@@ -44,7 +38,6 @@ import {
   IconUser,
   IconDumbbell,
   IconUtensils,
-  IconClipboard,
   IconTrendingUp,
   IconSettings,
 } from './components/Icons.tsx'
@@ -290,7 +283,6 @@ export function App({ config }: AppProps) {
     setActiveWorkoutDay(null)
     setIsWorkoutSessionExpanded(false)
     setActiveSessionSeconds(0)
-    setConfirmDeleteAll(false)
     setActiveTab('dashboard')
   }, [profileStore, workoutStore, storage])
 
@@ -409,7 +401,9 @@ export function App({ config }: AppProps) {
   const handleDeleteNote = useCallback(
     (date: string, noteText: string) => {
       const current = trackingStore.loadDayNotes()
-      const updated = current.filter((n) => !(n.date === date && n.note === noteText))
+      const updated = current.filter(
+        (n) => !(n.date === date && n.note === noteText),
+      )
       trackingStore.saveDayNotes(updated)
       setDayNotes(updated)
     },

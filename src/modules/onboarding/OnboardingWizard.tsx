@@ -11,13 +11,7 @@ import {
   validateProfile,
 } from './validate'
 import { Callout } from '../../components/Callout.tsx'
-import {
-  IconCheck,
-  IconArrowLeft,
-  IconArrowRight,
-  IconUser,
-  IconInfo,
-} from '../../components/Icons.tsx'
+import { IconCheck } from '../../components/Icons.tsx'
 
 interface FormState {
   goals: Goal[]
@@ -147,7 +141,8 @@ function ReviewSummary({ form }: { form: FormState }) {
       <li>
         <span>العمر / الطول / الوزن</span>
         <strong dir="ltr" style={{ textAlign: 'left' }}>
-          {form.age || '—'} yr / {form.heightCm || '—'} cm / {form.weightKg || '—'} kg
+          {form.age || '—'} yr / {form.heightCm || '—'} cm /{' '}
+          {form.weightKg || '—'} kg
         </strong>
       </li>
       <li>
@@ -265,9 +260,18 @@ export function OnboardingWizard({
 
   if (askResume) {
     return (
-      <section className="card resume-card" data-testid="resume-card" style={{ maxWidth: '640px', margin: '20px auto', padding: '20px' }}>
-        <h2 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 800 }}>توقفت في منتصف التهيئة؟</h2>
-        <p className="muted" style={{ margin: '0 0 16px 0', fontSize: '14px', lineHeight: 1.6 }}>
+      <section
+        className="card resume-card"
+        data-testid="resume-card"
+        style={{ maxWidth: '640px', margin: '20px auto', padding: '20px' }}
+      >
+        <h2 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 800 }}>
+          توقفت في منتصف التهيئة؟
+        </h2>
+        <p
+          className="muted"
+          style={{ margin: '0 0 16px 0', fontSize: '14px', lineHeight: 1.6 }}
+        >
           حفظنا تقدمك تلقائياً على جهازك. يمكنك المتابعة من حيث توقفت أو البدء
           من جديد.
         </p>
@@ -302,7 +306,11 @@ export function OnboardingWizard({
   }
 
   return (
-    <section className="card wizard" data-testid="wizard" style={{ maxWidth: '640px', margin: '0 auto', padding: '16px' }}>
+    <section
+      className="card wizard"
+      data-testid="wizard"
+      style={{ maxWidth: '640px', margin: '0 auto', padding: '16px' }}
+    >
       {/* Coach Greeting Banner */}
       <div className="maganis-coach-card" style={{ marginBottom: '16px' }}>
         <div className="maganis-coach-avatar-wrapper">
@@ -350,11 +358,24 @@ export function OnboardingWizard({
         ))}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '16px' }}>
-        <h2 data-testid="step-title" style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: '16px',
+        }}
+      >
+        <h2
+          data-testid="step-title"
+          style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}
+        >
           {STEP_TITLES[step]}
         </h2>
-        <span className="step-counter muted" style={{ fontSize: '13px', fontWeight: 600 }}>
+        <span
+          className="step-counter muted"
+          style={{ fontSize: '13px', fontWeight: 600 }}
+        >
           الخطوة {step + 1} من {STEP_COUNT}
         </span>
       </div>
@@ -362,7 +383,10 @@ export function OnboardingWizard({
       {/* Step 0: Goal Selection */}
       {step === 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          <div className="options" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div
+            className="options"
+            style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+          >
             {GOALS.map((goal) => {
               const isSelected = form.goals.includes(goal.value)
               return (
@@ -403,13 +427,30 @@ export function OnboardingWizard({
                     transition: 'all 0.15s ease',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                    <strong style={{ fontSize: '15px', color: isSelected ? 'var(--accent)' : 'var(--ink)' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <strong
+                      style={{
+                        fontSize: '15px',
+                        color: isSelected ? 'var(--accent)' : 'var(--ink)',
+                      }}
+                    >
                       {goal.labelAr}
                     </strong>
-                    {isSelected && <IconCheck size={18} color="var(--accent)" />}
+                    {isSelected && (
+                      <IconCheck size={18} color="var(--accent)" />
+                    )}
                   </div>
-                  <span className="hint" style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                  <span
+                    className="hint"
+                    style={{ fontSize: '13px', color: 'var(--muted)' }}
+                  >
                     {goal.hintAr}
                   </span>
                 </button>
@@ -419,7 +460,13 @@ export function OnboardingWizard({
 
           {form.goals.length > 1 && (
             <div className="field" style={{ marginTop: '8px' }}>
-              <p style={{ fontSize: '13.5px', fontWeight: 700, margin: '0 0 8px 0' }}>
+              <p
+                style={{
+                  fontSize: '13.5px',
+                  fontWeight: 700,
+                  margin: '0 0 8px 0',
+                }}
+              >
                 اخترت أهدافاً مركبة — حدد الهدف الأساسي:
               </p>
               <div
@@ -474,7 +521,10 @@ export function OnboardingWizard({
       {/* Step 1: Training Days Per Week */}
       {step === 1 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <p className="muted" style={{ fontSize: '13.5px', margin: '0 0 8px 0' }}>
+          <p
+            className="muted"
+            style={{ fontSize: '13.5px', margin: '0 0 8px 0' }}
+          >
             كم يوماً في الأسبوع تستطيع الالتزام بالتمرين؟
           </p>
           <div
@@ -525,7 +575,14 @@ export function OnboardingWizard({
               )
             })}
           </div>
-          <div style={{ textAlign: 'center', color: 'var(--muted)', fontSize: '12.5px', marginTop: '4px' }}>
+          <div
+            style={{
+              textAlign: 'center',
+              color: 'var(--muted)',
+              fontSize: '12.5px',
+              marginTop: '4px',
+            }}
+          >
             أيام أسبوعياً
           </div>
         </div>
@@ -535,7 +592,13 @@ export function OnboardingWizard({
       {step === 2 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <p style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 10px 0' }}>
+            <p
+              style={{
+                fontSize: '14px',
+                fontWeight: 700,
+                margin: '0 0 10px 0',
+              }}
+            >
               هل تعاني من أي إصابات سابقة أو مشاكل في المفاصل؟
             </p>
             <div
@@ -548,7 +611,9 @@ export function OnboardingWizard({
             >
               <button
                 type="button"
-                className={'option-btn' + (form.hasIssues === true ? ' selected' : '')}
+                className={
+                  'option-btn' + (form.hasIssues === true ? ' selected' : '')
+                }
                 data-testid="medical-yes"
                 aria-pressed={form.hasIssues === true}
                 onClick={() => {
@@ -558,13 +623,16 @@ export function OnboardingWizard({
                 style={{
                   height: '48px',
                   borderRadius: '12px',
-                  border: form.hasIssues === true
-                    ? '2px solid var(--accent)'
-                    : '1.5px solid var(--line)',
-                  background: form.hasIssues === true
-                    ? 'var(--accent-soft)'
-                    : 'var(--card-subtle)',
-                  color: form.hasIssues === true ? 'var(--accent)' : 'var(--ink)',
+                  border:
+                    form.hasIssues === true
+                      ? '2px solid var(--accent)'
+                      : '1.5px solid var(--line)',
+                  background:
+                    form.hasIssues === true
+                      ? 'var(--accent-soft)'
+                      : 'var(--card-subtle)',
+                  color:
+                    form.hasIssues === true ? 'var(--accent)' : 'var(--ink)',
                   fontWeight: 800,
                   fontSize: '15px',
                   cursor: 'pointer',
@@ -574,7 +642,9 @@ export function OnboardingWizard({
               </button>
               <button
                 type="button"
-                className={'option-btn' + (form.hasIssues === false ? ' selected' : '')}
+                className={
+                  'option-btn' + (form.hasIssues === false ? ' selected' : '')
+                }
                 data-testid="medical-no"
                 aria-pressed={form.hasIssues === false}
                 onClick={() => {
@@ -588,13 +658,16 @@ export function OnboardingWizard({
                 style={{
                   height: '48px',
                   borderRadius: '12px',
-                  border: form.hasIssues === false
-                    ? '2px solid var(--accent)'
-                    : '1.5px solid var(--line)',
-                  background: form.hasIssues === false
-                    ? 'var(--accent-soft)'
-                    : 'var(--card-subtle)',
-                  color: form.hasIssues === false ? 'var(--accent)' : 'var(--ink)',
+                  border:
+                    form.hasIssues === false
+                      ? '2px solid var(--accent)'
+                      : '1.5px solid var(--line)',
+                  background:
+                    form.hasIssues === false
+                      ? 'var(--accent-soft)'
+                      : 'var(--card-subtle)',
+                  color:
+                    form.hasIssues === false ? 'var(--accent)' : 'var(--ink)',
                   fontWeight: 800,
                   fontSize: '15px',
                   cursor: 'pointer',
@@ -608,7 +681,13 @@ export function OnboardingWizard({
           {form.hasIssues === true && (
             <>
               <div className="field">
-                <p style={{ fontSize: '13.5px', fontWeight: 700, margin: '0 0 8px 0' }}>
+                <p
+                  style={{
+                    fontSize: '13.5px',
+                    fontWeight: 700,
+                    margin: '0 0 8px 0',
+                  }}
+                >
                   حدد موضع الإصابة أو المشكلة (يمكن اختيار أكثر من واحد):
                 </p>
                 <div
@@ -659,7 +738,10 @@ export function OnboardingWizard({
                 </div>
               </div>
 
-              <div className="field" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div
+                className="field"
+                style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+              >
                 <label
                   htmlFor="medical-notes"
                   style={{ fontSize: '13.5px', fontWeight: 700 }}
@@ -693,9 +775,9 @@ export function OnboardingWizard({
 
           <div style={{ marginTop: '4px' }}>
             <Callout variant="warning">
-              ملاحظة مهمة: مجانص ليس بديلاً عن الطبيب. إجاباتك تُستخدم فقط لتكييف
-              التمارين مع حالتك، وإذا كان لديك أي إصابة أو حالة صحية فاستشر طبيبك
-              قبل البدء.
+              ملاحظة مهمة: مجانص ليس بديلاً عن الطبيب. إجاباتك تُستخدم فقط
+              لتكييف التمارين مع حالتك، وإذا كان لديك أي إصابة أو حالة صحية
+              فاستشر طبيبك قبل البدء.
             </Callout>
           </div>
         </div>
@@ -706,7 +788,13 @@ export function OnboardingWizard({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Sex */}
           <div className="field">
-            <p style={{ fontSize: '13.5px', fontWeight: 700, margin: '0 0 8px 0' }}>
+            <p
+              style={{
+                fontSize: '13.5px',
+                fontWeight: 700,
+                margin: '0 0 8px 0',
+              }}
+            >
               الجنس:
             </p>
             <div
@@ -719,7 +807,9 @@ export function OnboardingWizard({
             >
               <button
                 type="button"
-                className={'option-btn' + (form.sex === 'male' ? ' selected' : '')}
+                className={
+                  'option-btn' + (form.sex === 'male' ? ' selected' : '')
+                }
                 data-testid="sex-male"
                 aria-pressed={form.sex === 'male'}
                 onClick={() => {
@@ -729,12 +819,14 @@ export function OnboardingWizard({
                 style={{
                   height: '48px',
                   borderRadius: '12px',
-                  border: form.sex === 'male'
-                    ? '2px solid var(--accent)'
-                    : '1.5px solid var(--line)',
-                  background: form.sex === 'male'
-                    ? 'var(--accent-soft)'
-                    : 'var(--card-subtle)',
+                  border:
+                    form.sex === 'male'
+                      ? '2px solid var(--accent)'
+                      : '1.5px solid var(--line)',
+                  background:
+                    form.sex === 'male'
+                      ? 'var(--accent-soft)'
+                      : 'var(--card-subtle)',
                   color: form.sex === 'male' ? 'var(--accent)' : 'var(--ink)',
                   fontWeight: 800,
                   fontSize: '15px',
@@ -745,7 +837,9 @@ export function OnboardingWizard({
               </button>
               <button
                 type="button"
-                className={'option-btn' + (form.sex === 'female' ? ' selected' : '')}
+                className={
+                  'option-btn' + (form.sex === 'female' ? ' selected' : '')
+                }
                 data-testid="sex-female"
                 aria-pressed={form.sex === 'female'}
                 onClick={() => {
@@ -755,12 +849,14 @@ export function OnboardingWizard({
                 style={{
                   height: '48px',
                   borderRadius: '12px',
-                  border: form.sex === 'female'
-                    ? '2px solid var(--accent)'
-                    : '1.5px solid var(--line)',
-                  background: form.sex === 'female'
-                    ? 'var(--accent-soft)'
-                    : 'var(--card-subtle)',
+                  border:
+                    form.sex === 'female'
+                      ? '2px solid var(--accent)'
+                      : '1.5px solid var(--line)',
+                  background:
+                    form.sex === 'female'
+                      ? 'var(--accent-soft)'
+                      : 'var(--card-subtle)',
                   color: form.sex === 'female' ? 'var(--accent)' : 'var(--ink)',
                   fontWeight: 800,
                   fontSize: '15px',
@@ -773,9 +869,21 @@ export function OnboardingWizard({
           </div>
 
           {/* Age, Height, Weight in a row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-            <div className="field" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label htmlFor="age" style={{ fontSize: '13px', fontWeight: 700 }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '10px',
+            }}
+          >
+            <div
+              className="field"
+              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+            >
+              <label
+                htmlFor="age"
+                style={{ fontSize: '13px', fontWeight: 700 }}
+              >
                 العمر (سنة)
               </label>
               <input
@@ -801,8 +909,14 @@ export function OnboardingWizard({
                 }}
               />
             </div>
-            <div className="field" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label htmlFor="height" style={{ fontSize: '13px', fontWeight: 700 }}>
+            <div
+              className="field"
+              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+            >
+              <label
+                htmlFor="height"
+                style={{ fontSize: '13px', fontWeight: 700 }}
+              >
                 الطول (سم)
               </label>
               <input
@@ -828,8 +942,14 @@ export function OnboardingWizard({
                 }}
               />
             </div>
-            <div className="field" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label htmlFor="weight" style={{ fontSize: '13px', fontWeight: 700 }}>
+            <div
+              className="field"
+              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+            >
+              <label
+                htmlFor="weight"
+                style={{ fontSize: '13px', fontWeight: 700 }}
+              >
                 الوزن (كجم)
               </label>
               <input
@@ -859,19 +979,26 @@ export function OnboardingWizard({
 
           {/* Activity Level */}
           <div className="field">
-            <p style={{ fontSize: '13.5px', fontWeight: 700, margin: '0 0 8px 0' }}>
+            <p
+              style={{
+                fontSize: '13.5px',
+                fontWeight: 700,
+                margin: '0 0 8px 0',
+              }}
+            >
               مستوى النشاط اليومي:
             </p>
-            <div className="options" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div
+              className="options"
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               {ACTIVITY_LEVELS.map((lvl) => {
                 const isSelected = form.activityLevel === lvl.value
                 return (
                   <button
                     key={lvl.value}
                     type="button"
-                    className={
-                      'option-btn' + (isSelected ? ' selected' : '')
-                    }
+                    className={'option-btn' + (isSelected ? ' selected' : '')}
                     data-testid={`activity-${lvl.value}`}
                     aria-pressed={isSelected}
                     onClick={() => {
@@ -898,8 +1025,20 @@ export function OnboardingWizard({
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                      <strong style={{ fontSize: '14.5px', color: isSelected ? 'var(--accent)' : 'var(--ink)' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <strong
+                        style={{
+                          fontSize: '14.5px',
+                          color: isSelected ? 'var(--accent)' : 'var(--ink)',
+                        }}
+                      >
                         {lvl.labelAr}
                       </strong>
                       <span
@@ -908,7 +1047,9 @@ export function OnboardingWizard({
                           fontSize: '12px',
                           fontWeight: 700,
                           color: isSelected ? 'var(--accent)' : 'var(--muted)',
-                          background: isSelected ? 'rgba(var(--accent-rgb), 0.15)' : 'var(--card-bg)',
+                          background: isSelected
+                            ? 'rgba(var(--accent-rgb), 0.15)'
+                            : 'var(--card-bg)',
                           padding: '2px 6px',
                           borderRadius: '4px',
                         }}
@@ -916,7 +1057,10 @@ export function OnboardingWizard({
                         ×{lvl.multiplier}
                       </span>
                     </div>
-                    <span className="hint" style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
+                    <span
+                      className="hint"
+                      style={{ fontSize: '12.5px', color: 'var(--muted)' }}
+                    >
                       {lvl.hintAr}
                     </span>
                   </button>
@@ -932,7 +1076,11 @@ export function OnboardingWizard({
 
       {/* Errors */}
       {errors.length > 0 && (
-        <div style={{ marginTop: '16px' }} data-testid="step-errors" role="alert">
+        <div
+          style={{ marginTop: '16px' }}
+          data-testid="step-errors"
+          role="alert"
+        >
           <Callout variant="error">
             <ul style={{ margin: 0, paddingInlineStart: '18px' }}>
               {errors.map((message, i) => (
@@ -944,7 +1092,11 @@ export function OnboardingWizard({
       )}
 
       {saveError && (
-        <div style={{ marginTop: '16px' }} data-testid="save-error" role="alert">
+        <div
+          style={{ marginTop: '16px' }}
+          data-testid="save-error"
+          role="alert"
+        >
           <Callout variant="error">{saveError}</Callout>
         </div>
       )}

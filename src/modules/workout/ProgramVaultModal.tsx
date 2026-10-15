@@ -39,8 +39,9 @@ export function ProgramVaultModal({
   const [renameText, setRenameText] = useState('')
 
   // Confirmation Sheets
-  const [confirmApply, setConfirmApply] =
-    useState<SavedWorkoutProgram | null>(null)
+  const [confirmApply, setConfirmApply] = useState<SavedWorkoutProgram | null>(
+    null,
+  )
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
   function handleSaveCurrent(e: React.FormEvent) {

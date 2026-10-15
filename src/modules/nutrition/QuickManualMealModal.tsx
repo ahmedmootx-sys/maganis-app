@@ -3,7 +3,16 @@ import type { CustomMeal, MealCategory } from './types.ts'
 import { Sheet } from '../../components/Sheet.tsx'
 
 export interface QuickManualMealModalProps {
-  onLogMealDirect: (meal: {
+  isOpen?: boolean
+  onLogMealDirect?: (meal: {
+    id: string
+    nameAr: string
+    calories: number
+    protein: number
+    carbs: number
+    fats: number
+  }) => void
+  onLogDirect?: (meal: {
     id: string
     nameAr: string
     calories: number
@@ -12,6 +21,7 @@ export interface QuickManualMealModalProps {
     fats: number
   }) => void
   onSaveToCustomMeals?: (meal: CustomMeal) => void
+  onSaveMeal?: (meal: CustomMeal) => void
   onClose: () => void
 }
 
@@ -23,8 +33,11 @@ const CATEGORIES: { key: MealCategory; label: string }[] = [
 ]
 
 export function QuickManualMealModal({
+  isOpen = true,
   onLogMealDirect,
+  onLogDirect,
   onSaveToCustomMeals,
+  onSaveMeal,
   onClose,
 }: QuickManualMealModalProps) {
   const [nameAr, setNameAr] = useState('')
@@ -40,17 +53,24 @@ export function QuickManualMealModal({
     const trimmedName = nameAr.trim() || 'وجبة يدوية'
     const mealId = `manual-meal-${Date.now()}`
 
-    onLogMealDirect({
+    const mealPayload = {
       id: mealId,
       nameAr: trimmedName,
       calories: Math.max(0, Math.round(Number(calories) || 0)),
       protein: Math.max(0, Math.round((Number(protein) || 0) * 10) / 10),
       carbs: Math.max(0, Math.round((Number(carbs) || 0) * 10) / 10),
       fats: Math.max(0, Math.round((Number(fats) || 0) * 10) / 10),
-    })
+    }
 
-    if (saveAsPermanent && onSaveToCustomMeals) {
-      onSaveToCustomMeals({
+    if (onLogMealDirect) {
+      onLogMealDirect(mealPayload)
+    } else if (onLogDirect) {
+      onLogDirect(mealPayload)
+    }
+
+    const saveFn = onSaveToCustomMeals || onSaveMeal
+    if (saveAsPermanent && saveFn) {
+      saveFn({
         id: mealId,
         nameAr: trimmedName,
         category,
@@ -68,7 +88,7 @@ export function QuickManualMealModal({
 
   return (
     <Sheet
-      isOpen={true}
+      isOpen={isOpen}
       onClose={onClose}
       title="تسجيل وجبة سريعة بالسعرات والماكروز"
     >
@@ -113,7 +133,9 @@ export function QuickManualMealModal({
 
         {/* Meal Category */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}>
+          <label
+            style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}
+          >
             تصنيف الوجبة
           </label>
           <div

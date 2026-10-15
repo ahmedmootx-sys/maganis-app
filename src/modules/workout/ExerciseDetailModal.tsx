@@ -8,9 +8,10 @@ import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
 import { simplifyMuscleList, formatHowToStep } from './muscleHelper.ts'
 
-interface ExerciseDetailModalProps {
+export interface ExerciseDetailModalProps {
   exercise: Exercise | null
   onClose: () => void
+  onSwapClick?: () => void
 }
 
 /**
@@ -179,6 +180,7 @@ function getEnrichedExercise(ex: Exercise): {
 export function ExerciseDetailModal({
   exercise,
   onClose,
+  onSwapClick,
 }: ExerciseDetailModalProps) {
   if (!exercise) return null
 
@@ -345,8 +347,26 @@ export function ExerciseDetailModal({
           </div>
         </div>
 
-        <div className="modal-footer actions-row">
-          <button type="button" className="button-primary" onClick={onClose}>
+        <div
+          className="modal-footer actions-row"
+          style={{ display: 'flex', gap: '8px' }}
+        >
+          {onSwapClick && (
+            <button
+              type="button"
+              className="ghost-secondary"
+              onClick={onSwapClick}
+              style={{ flex: 1, height: '48px' }}
+            >
+              استبدال التمرين
+            </button>
+          )}
+          <button
+            type="button"
+            className="button-primary"
+            onClick={onClose}
+            style={{ flex: 1, height: '48px' }}
+          >
             فهمت، إغلاق الشرح
           </button>
         </div>

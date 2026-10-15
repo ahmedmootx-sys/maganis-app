@@ -12,7 +12,7 @@ import {
 import type { MealCategory } from './types.ts'
 import { Select } from '../../components/Select'
 import { Sheet } from '../../components/Sheet.tsx'
-import { IconPlus, IconClose, IconTrash, IconSearch } from '../../components/Icons.tsx'
+import { IconTrash } from '../../components/Icons.tsx'
 
 export interface CustomMealModalProps {
   initialMeal?: CustomMeal | null
@@ -220,7 +220,9 @@ export function CustomMealModal({
     <Sheet
       isOpen={true}
       onClose={onClose}
-      title={initialMeal ? 'تعديل الوجبة الخاصة' : 'تصميم وجبة خاصة وحساب الماكروز'}
+      title={
+        initialMeal ? 'تعديل الوجبة الخاصة' : 'تصميم وجبة خاصة وحساب الماكروز'
+      }
     >
       <form
         onSubmit={handleSubmit}
@@ -263,7 +265,9 @@ export function CustomMealModal({
 
         {/* Category */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}>
+          <label
+            style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}
+          >
             تصنيف الوجبة
           </label>
           <div
@@ -328,8 +332,7 @@ export function CustomMealModal({
               cursor: 'pointer',
               background:
                 mode === 'ingredients' ? 'var(--card-bg)' : 'transparent',
-              color:
-                mode === 'ingredients' ? 'var(--ink)' : 'var(--muted)',
+              color: mode === 'ingredients' ? 'var(--ink)' : 'var(--muted)',
               boxShadow:
                 mode === 'ingredients' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               transition: 'all 0.15s ease',
@@ -347,8 +350,7 @@ export function CustomMealModal({
               fontWeight: 700,
               fontSize: '13.5px',
               cursor: 'pointer',
-              background:
-                mode === 'direct' ? 'var(--card-bg)' : 'transparent',
+              background: mode === 'direct' ? 'var(--card-bg)' : 'transparent',
               color: mode === 'direct' ? 'var(--ink)' : 'var(--muted)',
               boxShadow:
                 mode === 'direct' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
@@ -430,7 +432,13 @@ export function CustomMealModal({
                     gap: '10px',
                   }}
                 >
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
                     <label style={{ fontSize: '12px', fontWeight: 700 }}>
                       اسم الطعام
                     </label>
@@ -479,47 +487,129 @@ export function CustomMealModal({
                     gap: '6px',
                   }}
                 >
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: 700 }}>سعرات/100ج</label>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
+                    <label style={{ fontSize: '11px', fontWeight: 700 }}>
+                      سعرات/100ج
+                    </label>
                     <input
                       type="number"
                       min="0"
                       value={newFoodCalories}
-                      onChange={(e) => setNewFoodCalories(Number(e.target.value))}
-                      style={{ height: '40px', padding: '0 6px', borderRadius: '6px', border: '1px solid var(--line)', textAlign: 'center', fontSize: '13px' }}
+                      onChange={(e) =>
+                        setNewFoodCalories(Number(e.target.value))
+                      }
+                      style={{
+                        height: '40px',
+                        padding: '0 6px',
+                        borderRadius: '6px',
+                        border: '1px solid var(--line)',
+                        textAlign: 'center',
+                        fontSize: '13px',
+                      }}
                     />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#3b82f6' }}>بروتين/100ج</label>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
+                    <label
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        color: '#3b82f6',
+                      }}
+                    >
+                      بروتين/100ج
+                    </label>
                     <input
                       type="number"
                       min="0"
                       step="0.1"
                       value={newFoodProtein}
-                      onChange={(e) => setNewFoodProtein(Number(e.target.value))}
-                      style={{ height: '40px', padding: '0 6px', borderRadius: '6px', border: '1px solid var(--line)', textAlign: 'center', fontSize: '13px' }}
+                      onChange={(e) =>
+                        setNewFoodProtein(Number(e.target.value))
+                      }
+                      style={{
+                        height: '40px',
+                        padding: '0 6px',
+                        borderRadius: '6px',
+                        border: '1px solid var(--line)',
+                        textAlign: 'center',
+                        fontSize: '13px',
+                      }}
                     />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#eab308' }}>كارب/100ج</label>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
+                    <label
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        color: '#eab308',
+                      }}
+                    >
+                      كارب/100ج
+                    </label>
                     <input
                       type="number"
                       min="0"
                       step="0.1"
                       value={newFoodCarbs}
                       onChange={(e) => setNewFoodCarbs(Number(e.target.value))}
-                      style={{ height: '40px', padding: '0 6px', borderRadius: '6px', border: '1px solid var(--line)', textAlign: 'center', fontSize: '13px' }}
+                      style={{
+                        height: '40px',
+                        padding: '0 6px',
+                        borderRadius: '6px',
+                        border: '1px solid var(--line)',
+                        textAlign: 'center',
+                        fontSize: '13px',
+                      }}
                     />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#ef4444' }}>دهون/100ج</label>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
+                    <label
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        color: '#ef4444',
+                      }}
+                    >
+                      دهون/100ج
+                    </label>
                     <input
                       type="number"
                       min="0"
                       step="0.1"
                       value={newFoodFats}
                       onChange={(e) => setNewFoodFats(Number(e.target.value))}
-                      style={{ height: '40px', padding: '0 6px', borderRadius: '6px', border: '1px solid var(--line)', textAlign: 'center', fontSize: '13px' }}
+                      style={{
+                        height: '40px',
+                        padding: '0 6px',
+                        borderRadius: '6px',
+                        border: '1px solid var(--line)',
+                        textAlign: 'center',
+                        fontSize: '13px',
+                      }}
                     />
                   </div>
                 </div>
@@ -529,7 +619,11 @@ export function CustomMealModal({
                     type="button"
                     className="btn-primary-action"
                     onClick={handleSaveNewCustomFood}
-                    style={{ height: '40px', padding: '0 16px', fontSize: '13px' }}
+                    style={{
+                      height: '40px',
+                      padding: '0 16px',
+                      fontSize: '13px',
+                    }}
                   >
                     حفظ وإضافة للوجبة
                   </button>
@@ -537,7 +631,11 @@ export function CustomMealModal({
                     type="button"
                     className="ghost-secondary"
                     onClick={() => setShowAddCustomFoodForm(false)}
-                    style={{ height: '40px', padding: '0 14px', fontSize: '13px' }}
+                    style={{
+                      height: '40px',
+                      padding: '0 14px',
+                      fontSize: '13px',
+                    }}
                   >
                     إلغاء
                   </button>
@@ -546,7 +644,9 @@ export function CustomMealModal({
             )}
 
             {/* Current Ingredients List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               {ingredients.map((ing, idx) => {
                 const food = getFoodItemById(ing.foodItemId)
                 if (!food) return null
@@ -567,17 +667,38 @@ export function CustomMealModal({
                     }}
                   >
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--ink)' }}>
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          fontSize: '14px',
+                          color: 'var(--ink)',
+                        }}
+                      >
                         {food.nameAr}
                       </div>
-                      <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '2px' }}>
-                        {macros.calories} سعرة • {macros.protein}ج بروتين • {macros.carbs}ج كارب • {macros.fats}ج دهون
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          color: 'var(--muted)',
+                          marginTop: '2px',
+                        }}
+                      >
+                        {macros.calories} سعرة • {macros.protein}ج بروتين •{' '}
+                        {macros.carbs}ج كارب • {macros.fats}ج دهون
                       </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
                       <button
                         type="button"
-                        onClick={() => handleUpdateGrams(idx, Math.max(5, ing.grams - 25))}
+                        onClick={() =>
+                          handleUpdateGrams(idx, Math.max(5, ing.grams - 25))
+                        }
                         style={{
                           width: '32px',
                           height: '32px',
@@ -596,7 +717,9 @@ export function CustomMealModal({
                         max="2000"
                         step="5"
                         value={ing.grams}
-                        onChange={(e) => handleUpdateGrams(idx, Number(e.target.value))}
+                        onChange={(e) =>
+                          handleUpdateGrams(idx, Number(e.target.value))
+                        }
                         style={{
                           width: '64px',
                           height: '32px',
@@ -623,7 +746,9 @@ export function CustomMealModal({
                       >
                         +
                       </button>
-                      <span style={{ fontSize: '12px', color: 'var(--muted)' }}>جم</span>
+                      <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                        جم
+                      </span>
                       <button
                         type="button"
                         onClick={() => handleRemoveIngredient(idx)}
@@ -661,7 +786,13 @@ export function CustomMealModal({
                 gap: '10px',
               }}
             >
-              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)' }}>
+              <div
+                style={{
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
                 إضافة سريعة لمكونات أساسية:
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -669,7 +800,9 @@ export function CustomMealModal({
                   <button
                     key={quick.id}
                     type="button"
-                    onClick={() => handleAddIngredientDirect(quick.id, quick.grams)}
+                    onClick={() =>
+                      handleAddIngredientDirect(quick.id, quick.grams)
+                    }
                     style={{
                       padding: '6px 10px',
                       fontSize: '12px',
@@ -687,7 +820,14 @@ export function CustomMealModal({
               </div>
 
               {/* Search */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  marginTop: '4px',
+                }}
+              >
                 <label style={{ fontSize: '12.5px', fontWeight: 700 }}>
                   ابحث في جميع الأطعمة والمكونات:
                 </label>
@@ -730,7 +870,8 @@ export function CustomMealModal({
                           textAlign: 'center',
                         }}
                       >
-                        لم نجد طعاماً بهذا الاسم. يمكنك الضغط على "مكوّن غذائي خاص جديد" أعلاه لإضافته!
+                        لم نجد طعاماً بهذا الاسم. يمكنك الضغط على "مكوّن غذائي
+                        خاص جديد" أعلاه لإضافته!
                       </div>
                     ) : (
                       searchResults.map((food) => (
@@ -747,19 +888,35 @@ export function CustomMealModal({
                           }}
                         >
                           <div>
-                            <strong style={{ fontSize: '13px' }}>{food.nameAr}</strong>
-                            <span style={{ fontSize: '11.5px', color: 'var(--muted)', marginRight: '6px' }}>
-                              ({food.per100g.calories} كالوِري • {food.per100g.protein}ج بروتين / 100ج)
+                            <strong style={{ fontSize: '13px' }}>
+                              {food.nameAr}
+                            </strong>
+                            <span
+                              style={{
+                                fontSize: '11.5px',
+                                color: 'var(--muted)',
+                                marginRight: '6px',
+                              }}
+                            >
+                              ({food.per100g.calories} كالوِري •{' '}
+                              {food.per100g.protein}ج بروتين / 100ج)
                             </span>
                           </div>
                           <button
                             type="button"
                             className="btn-primary-action tiny"
                             onClick={() => {
-                              handleAddIngredientDirect(food.id, food.defaultGrams || 100)
+                              handleAddIngredientDirect(
+                                food.id,
+                                food.defaultGrams || 100,
+                              )
                               setIngredientSearch('')
                             }}
-                            style={{ height: '32px', padding: '0 10px', fontSize: '12px' }}
+                            style={{
+                              height: '32px',
+                              padding: '0 10px',
+                              fontSize: '12px',
+                            }}
                           >
                             + أضف ({food.defaultGrams || 100}ج)
                           </button>
@@ -786,20 +943,42 @@ export function CustomMealModal({
               border: '1px solid var(--line)',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '12.5px', fontWeight: 700 }}>السعرات</label>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
+              <label style={{ fontSize: '12.5px', fontWeight: 700 }}>
+                السعرات
+              </label>
               <input
                 type="number"
                 min="0"
                 max="5000"
                 value={directCalories}
                 onChange={(e) => setDirectCalories(Number(e.target.value))}
-                style={{ height: '48px', padding: '0 12px', borderRadius: '8px', border: '1.5px solid var(--line)', fontSize: '15px', fontWeight: 700, boxSizing: 'border-box' }}
+                style={{
+                  height: '48px',
+                  padding: '0 12px',
+                  borderRadius: '8px',
+                  border: '1.5px solid var(--line)',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  boxSizing: 'border-box',
+                }}
                 required
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#3b82f6' }}>البروتين (جم)</label>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
+              <label
+                style={{
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  color: '#3b82f6',
+                }}
+              >
+                البروتين (جم)
+              </label>
               <input
                 type="number"
                 min="0"
@@ -807,12 +986,30 @@ export function CustomMealModal({
                 step="0.5"
                 value={directProtein}
                 onChange={(e) => setDirectProtein(Number(e.target.value))}
-                style={{ height: '48px', padding: '0 12px', borderRadius: '8px', border: '1.5px solid var(--line)', fontSize: '15px', fontWeight: 700, boxSizing: 'border-box' }}
+                style={{
+                  height: '48px',
+                  padding: '0 12px',
+                  borderRadius: '8px',
+                  border: '1.5px solid var(--line)',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  boxSizing: 'border-box',
+                }}
                 required
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#eab308' }}>الكاربوهيدرات (جم)</label>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
+              <label
+                style={{
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  color: '#eab308',
+                }}
+              >
+                الكاربوهيدرات (جم)
+              </label>
               <input
                 type="number"
                 min="0"
@@ -820,12 +1017,30 @@ export function CustomMealModal({
                 step="0.5"
                 value={directCarbs}
                 onChange={(e) => setDirectCarbs(Number(e.target.value))}
-                style={{ height: '48px', padding: '0 12px', borderRadius: '8px', border: '1.5px solid var(--line)', fontSize: '15px', fontWeight: 700, boxSizing: 'border-box' }}
+                style={{
+                  height: '48px',
+                  padding: '0 12px',
+                  borderRadius: '8px',
+                  border: '1.5px solid var(--line)',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  boxSizing: 'border-box',
+                }}
                 required
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#ef4444' }}>الدهون (جم)</label>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
+              <label
+                style={{
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  color: '#ef4444',
+                }}
+              >
+                الدهون (جم)
+              </label>
               <input
                 type="number"
                 min="0"
@@ -833,7 +1048,15 @@ export function CustomMealModal({
                 step="0.5"
                 value={directFats}
                 onChange={(e) => setDirectFats(Number(e.target.value))}
-                style={{ height: '48px', padding: '0 12px', borderRadius: '8px', border: '1.5px solid var(--line)', fontSize: '15px', fontWeight: 700, boxSizing: 'border-box' }}
+                style={{
+                  height: '48px',
+                  padding: '0 12px',
+                  borderRadius: '8px',
+                  border: '1.5px solid var(--line)',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  boxSizing: 'border-box',
+                }}
                 required
               />
             </div>
@@ -849,7 +1072,14 @@ export function CustomMealModal({
             borderRadius: '12px',
           }}
         >
-          <div style={{ fontSize: '12px', color: 'var(--muted)', marginBottom: '4px', fontWeight: 600 }}>
+          <div
+            style={{
+              fontSize: '12px',
+              color: 'var(--muted)',
+              marginBottom: '4px',
+              fontWeight: 600,
+            }}
+          >
             الماكروز الإجمالية المحسوبة للوجبة:
           </div>
           <div
@@ -861,9 +1091,19 @@ export function CustomMealModal({
               gap: '8px',
             }}
           >
-            <div style={{ fontSize: '20px', fontWeight: 900, color: 'var(--accent)' }}>
-              {mode === 'ingredients' ? calculatedTotals.calories : directCalories}{' '}
-              <span style={{ fontSize: '13px', color: 'var(--muted)' }}>سعرة حرارية</span>
+            <div
+              style={{
+                fontSize: '20px',
+                fontWeight: 900,
+                color: 'var(--accent)',
+              }}
+            >
+              {mode === 'ingredients'
+                ? calculatedTotals.calories
+                : directCalories}{' '}
+              <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                سعرة حرارية
+              </span>
             </div>
             <div
               style={{
@@ -874,13 +1114,22 @@ export function CustomMealModal({
               }}
             >
               <span style={{ color: '#3b82f6' }}>
-                {mode === 'ingredients' ? calculatedTotals.proteinGrams : directProtein}ج بروتين
+                {mode === 'ingredients'
+                  ? calculatedTotals.proteinGrams
+                  : directProtein}
+                ج بروتين
               </span>
               <span style={{ color: '#eab308' }}>
-                {mode === 'ingredients' ? calculatedTotals.carbsGrams : directCarbs}ج كارب
+                {mode === 'ingredients'
+                  ? calculatedTotals.carbsGrams
+                  : directCarbs}
+                ج كارب
               </span>
               <span style={{ color: '#ef4444' }}>
-                {mode === 'ingredients' ? calculatedTotals.fatsGrams : directFats}ج دهون
+                {mode === 'ingredients'
+                  ? calculatedTotals.fatsGrams
+                  : directFats}
+                ج دهون
               </span>
             </div>
           </div>
@@ -911,7 +1160,14 @@ export function CustomMealModal({
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            marginTop: '8px',
+          }}
+        >
           <button
             type="submit"
             className="btn-primary-action full-width"

@@ -6,34 +6,38 @@
 
 ## 1. حصر القيم المزدوجة ومصادر تخزينها (Duplicated Values Inventory)
 
-| القيمة (Metric) | أماكن تواجدها في النماذج (Storage Locations) | النوع الافتراضي / النطاق |
-| :--- | :--- | :--- |
+| القيمة (Metric)                  | أماكن تواجدها في النماذج (Storage Locations)                                                                                                                                                         | النوع الافتراضي / النطاق      |
+| :------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------- |
 | **أيام التدريب (Training Days)** | 1. `profile.trainingDaysPerWeek` في نموذج `UserProfile`<br>2. `program.days.length` في كائن `WorkoutProgram`<br>3. `workoutBlocks[].sessionsPerWeek` (جلسات EAT) في `UserProfile.body.workoutBlocks` | 1 - 7 أيام (الافتراضي 3 أو 4) |
-| **الوزن (Body Weight)** | 1. `profile.body.weightKg` في `UserProfile`<br>2. `bodyLog[].weightKg` في سجل قياسات الوزن المستمر (`trackingStore`)<br>3. `editWeight` في حاسبة السعرات وإعدادات التغذية (`NutritionModule`) | كجم (30 - 300) |
-| **الطول (Height)** | 1. `profile.body.heightCm` في `UserProfile`<br>2. `editHeight` في حاسبة السعرات وإعدادات التغذية | سم (100 - 250) |
-| **الهدف الرياضي (Goal)** | 1. `profile.primaryGoal` (hypertrophy, cut, flexibility, calisthenics)<br>2. `editGoal` في حاسبة السعرات (hypertrophy, cut, maintenance, recomposition, endurance) | أهداف تضخيم / تنشيف / لياقة |
+| **الوزن (Body Weight)**          | 1. `profile.body.weightKg` في `UserProfile`<br>2. `bodyLog[].weightKg` في سجل قياسات الوزن المستمر (`trackingStore`)<br>3. `editWeight` في حاسبة السعرات وإعدادات التغذية (`NutritionModule`)        | كجم (30 - 300)                |
+| **الطول (Height)**               | 1. `profile.body.heightCm` في `UserProfile`<br>2. `editHeight` في حاسبة السعرات وإعدادات التغذية                                                                                                     | سم (100 - 250)                |
+| **الهدف الرياضي (Goal)**         | 1. `profile.primaryGoal` (hypertrophy, cut, flexibility, calisthenics)<br>2. `editGoal` في حاسبة السعرات (hypertrophy, cut, maintenance, recomposition, endurance)                                   | أهداف تضخيم / تنشيف / لياقة   |
 
 ---
 
 ## 2. ما تقرأه كل عملية حسابية ومصدرها المحدد (What Each Calculation Reads)
 
 ### أ. محرك توليد الجداول التدريبية (`programGenerator.ts`)
+
 - **أيام التدريب:** يقرأ حصراً `profile.trainingDaysPerWeek`. يقوم بإنشاء مصفوفة `days` بعدد أيام مطابق.
 - **الهدف:** يقرأ حصراً `profile.primaryGoal`.
 - **الوزن والطول:** لا يدخلان في منطق توليد التمارين.
 
 ### ب. محرك التغذية والسعرات الدقيق (`nutritionEngine.ts` & `NutritionModule.tsx`)
+
 - **أيام التدريب (حرق التمرين EAT):** يقرأ حصراً `profile.body.workoutBlocks[].sessionsPerWeek` (الافتراضي 4 جلسات مقاومة لمدة 60 دقيقة). **لا يقرأ** `profile.trainingDaysPerWeek` ولا طول مصفوفة `program.days`.
 - **الوزن:** يقرأ `profile.body.weightKg` لحساب معدل الأيض الأساسي (BMR) ومعادلة ميفلين-سانت جور وكتلة الجسم النحيلة (LBM). **لا يقرأ** آخر وزن مسجل في `bodyLog`.
 - **الطول:** يقرأ `profile.body.heightCm`.
 - **الهدف:** يقرأ `profile.primaryGoal` ويقوم بمطابقته مع استراتيجية العجز أو الفائض الحراري.
 
 ### ج. لوحة التحكم الرئيسية (`Dashboard.tsx`)
+
 - **الوزن الحالي:** كانت الدالة تقرأ حصراً `getLatestWeight(bodyLog)`. في حال عدم تسجيل أي وزن في سجل المتابعة اليومي `bodyLog`، كانت النتيجة تظهر كـ `"—"` بالرغم من وجود وزن أساسي محدد في `profile.body.weightKg`.
 - **أيام الأسبوع:** تعرض جدول الأسبوع بالاعتماد على `program.days` الفعلي.
 - **الجلسات المنجزة:** تحسب الجلسات الفعلية المسجلة في `recentSessions` للأسبوع الحالي.
 
 ### د. شاشة التقارير وتتبع الوزن (`Reports.tsx` & `BodyWeightTracker.tsx`)
+
 - **رسم بياني للوزن:** يعتمد 100% على مدخلات `bodyLog` المتسلسلة زمنياً.
 - **حجم التدريب:** يعتمد على `TrackingSession` الفعلية المسجلة.
 

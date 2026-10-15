@@ -31,25 +31,14 @@ const mockProfile: UserProfile = {
 }
 
 const mockBackupData: BackupData = {
-  version: 1,
+  exportVersion: 1,
   exportedAt: 1700000000000,
   profile: mockProfile,
-  workout: {
-    customExercises: [],
-    savedPrograms: [],
-    deletedExerciseIds: [],
-  },
-  tracking: {
-    sessions: [],
-    bodyLog: [],
-    dayNotes: [],
-  },
-  nutrition: {
-    customMeals: [],
-    dailyLogs: [],
-    waterLog: [],
-    fastingLog: [],
-  },
+  workoutProgram: null,
+  customExercises: [],
+  trackingSessions: [],
+  bodyLog: [],
+  dayNotes: [],
 }
 
 describe('SettingsScreen', () => {

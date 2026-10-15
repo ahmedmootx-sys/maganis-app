@@ -343,4 +343,3 @@ export function IconUserCheck(props: IconProps) {
     </IconBase>
   )
 }
-

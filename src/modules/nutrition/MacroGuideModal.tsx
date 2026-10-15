@@ -7,11 +7,7 @@ export interface MacroGuideModalProps {
 
 export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
   return (
-    <Sheet
-      isOpen={true}
-      onClose={onClose}
-      title="دليل حساب السعرات والماكروز"
-    >
+    <Sheet isOpen={true} onClose={onClose} title="دليل حساب السعرات والماكروز">
       <div
         style={{
           display: 'flex',
@@ -121,8 +117,9 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
                 color: 'var(--ink)',
               }}
             >
-              <strong>المعيار العلمي:</strong> من <strong>1.8 إلى 2.2 جرام</strong>{' '}
-              لكل كجم من وزن جسمك الكلي (أو من الكتلة الخالية من الدهون LBM).
+              <strong>المعيار العلمي:</strong> من{' '}
+              <strong>1.8 إلى 2.2 جرام</strong> لكل كجم من وزن جسمك الكلي (أو من
+              الكتلة الخالية من الدهون LBM).
               <br />
               <span style={{ color: 'var(--muted)', fontSize: '12px' }}>
                 مثال: لاعب وزنه 75 كجم يحتاج تقريباً 150 جم بروتين يومياً (تساوي
@@ -173,9 +170,9 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
                 color: 'var(--ink)',
               }}
             >
-              <strong>المعيار العلمي:</strong> تمثل من <strong>20% إلى 25%</strong>{' '}
-              من إجمالي سعراتك اليومية كحد فسيولوجي أدنى لحماية إفراز الهرمونات
-              وصحة المفاصل والأداء الذهني.
+              <strong>المعيار العلمي:</strong> تمثل من{' '}
+              <strong>20% إلى 25%</strong> من إجمالي سعراتك اليومية كحد فسيولوجي
+              أدنى لحماية إفراز الهرمونات وصحة المفاصل والأداء الذهني.
             </p>
           </div>
 
@@ -222,8 +219,8 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
               }}
             >
               <strong>المعيار العلمي:</strong> تخصص باقي السعرات المتبقية
-              بالكامل للكربوهيدرات لملء مخازن الجليكوجين العضلي وتوفير طاقة الرفع
-              في التدريب:
+              بالكامل للكربوهيدرات لملء مخازن الجليكوجين العضلي وتوفير طاقة
+              الرفع في التدريب:
               <br />
               <code
                 dir="ltr"

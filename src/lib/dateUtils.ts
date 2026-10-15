@@ -53,4 +53,3 @@ export function getOrderedWeekdays(startDayIndex: number = 6): ArabicWeekday[] {
     ...ARABIC_WEEKDAYS.slice(0, startPos),
   ]
 }
-

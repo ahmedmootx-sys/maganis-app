@@ -1,17 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type {
   CustomExercise,
-  DaySectionConfig,
   Exercise,
   ExerciseSection,
   ProgramDay,
   WorkoutProgram,
   WorkoutSplitType,
 } from '../shared/types.ts'
-import {
-  DEFAULT_DAY_SECTIONS,
-  WORKOUT_SPLIT_LABELS,
-} from '../shared/types.ts'
+import { WORKOUT_SPLIT_LABELS } from '../shared/types.ts'
 import { navigationHistory } from '../../utils/navigationHistory.ts'
 import { getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
@@ -42,7 +38,6 @@ import {
   IconDownload,
   IconUpload,
   IconTrash,
-  IconEdit,
   IconDumbbell,
   IconClipboard,
   IconCalendar,
@@ -194,12 +189,6 @@ export function WeeklyPlanView({
     return program.days.find((d) => d.dayIndex === selectedDayIndex) ?? null
   }, [program, selectedDayIndex])
 
-  function getDaySections(day: ProgramDay): DaySectionConfig[] {
-    return day.sections && day.sections.length > 0
-      ? day.sections
-      : DEFAULT_DAY_SECTIONS
-  }
-
   function handleOpenDetail(exerciseId: string) {
     const custom = customExercises.find((c) => c.id === exerciseId)
     const ex = custom ?? getExerciseById(exerciseId)
@@ -282,7 +271,9 @@ export function WeeklyPlanView({
     if (!onUpdateProgram || !program) return
     const updated = { ...program, isLocked: !program.isLocked }
     onUpdateProgram(updated)
-    showToast(updated.isLocked ? 'تم قفل الجدول التدريبي' : 'تم إلغاء قفل الجدول')
+    showToast(
+      updated.isLocked ? 'تم قفل الجدول التدريبي' : 'تم إلغاء قفل الجدول',
+    )
   }
 
   function handleChangeSplit(newSplit: WorkoutSplitType) {
@@ -325,12 +316,12 @@ export function WeeklyPlanView({
       try {
         const text = e.target?.result as string
         const parsed = parseAndValidateRoutineJson(text)
-        if (parsed.success && parsed.data) {
-          const imported = parsed.data
+        if (parsed.success) {
+          const imported = parsed.program
           setReplaceConfirm({
             isOpen: true,
             title: 'تأكيد استيراد الجدول',
-            message: `سيتم استبدال جدولك الحالي بالجدول المستورد: "${imported.title || 'جدول تمارين'}" (${imported.days.length} أيام). هل أنت متأكد؟`,
+            message: `سيتم استبدال جدولك الحالي بالجدول المستورد: "${parsed.title || (imported as WorkoutProgram & { title?: string }).title || 'جدول تمارين'}" (${imported.days.length} أيام). هل أنت متأكد؟`,
             action: () => {
               onUpdateProgram?.(imported)
               setIsManageSheetOpen(false)
@@ -386,7 +377,6 @@ export function WeeklyPlanView({
 
   // --- Render Day Screen ---
   if (selectedDay) {
-    const daySections = getDaySections(selectedDay)
     const warmupExercises = selectedDay.exercises.filter(
       (e) => e.section === 'warmup',
     )
@@ -473,7 +463,10 @@ export function WeeklyPlanView({
                   const globalIdx = selectedDay.exercises.indexOf(pe)
                   const ex = getExerciseById(pe.exerciseId)
                   const arabicName = ex?.nameAr ?? pe.exerciseId
-                  const englishName = ex?.nameEn ?? ''
+                  const englishName =
+                    (ex as { nameEn?: string; name?: string })?.nameEn ||
+                    ex?.name ||
+                    ''
                   const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى' : pe.reps}`
 
                   return (
@@ -642,7 +635,10 @@ export function WeeklyPlanView({
                   const globalIdx = selectedDay.exercises.indexOf(pe)
                   const ex = getExerciseById(pe.exerciseId)
                   const arabicName = ex?.nameAr ?? pe.exerciseId
-                  const englishName = ex?.nameEn ?? ''
+                  const englishName =
+                    (ex as { nameEn?: string; name?: string })?.nameEn ||
+                    ex?.name ||
+                    ''
                   const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى' : pe.reps}`
 
                   return (
@@ -786,7 +782,10 @@ export function WeeklyPlanView({
                   const globalIdx = selectedDay.exercises.indexOf(pe)
                   const ex = getExerciseById(pe.exerciseId)
                   const arabicName = ex?.nameAr ?? pe.exerciseId
-                  const englishName = ex?.nameEn ?? ''
+                  const englishName =
+                    (ex as { nameEn?: string; name?: string })?.nameEn ||
+                    ex?.name ||
+                    ''
                   const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى' : pe.reps}`
 
                   return (
@@ -894,7 +893,9 @@ export function WeeklyPlanView({
                 setIsEditMode(!isEditMode)
               }}
             >
-              {isEditMode ? '✓ إنهاء وضع التعديل والترتيب' : '✏️ ترتيب وتعديل التمارين'}
+              {isEditMode
+                ? '✓ إنهاء وضع التعديل والترتيب'
+                : '✏️ ترتيب وتعديل التمارين'}
             </button>
             <button
               type="button"
@@ -932,7 +933,7 @@ export function WeeklyPlanView({
           <ExerciseSwapModal
             currentExercise={swapTarget.exercise}
             customExercises={customExercises}
-            onSelectExercise={handleSwapExercise}
+            onSelectSwap={handleSwapExercise}
             onClose={() => setSwapTarget(null)}
           />
         )}
@@ -944,11 +945,7 @@ export function WeeklyPlanView({
             }
             onClose={() => setAddingToDayIndex(null)}
             customExercises={customExercises}
-            dayLabel={selectedDay.labelAr}
-            sectionName={
-              daySections.find((s) => s.id === addingSection)?.labelAr ??
-              'التمارين'
-            }
+            dayLabelAr={selectedDay.labelAr}
           />
         )}
 
@@ -1343,7 +1340,13 @@ export function WeeklyPlanView({
 
           {/* Change split as radio list with English secondary ltr line */}
           {!program.isCustom && (
-            <div style={{ marginTop: '8px', borderTop: '1px solid var(--line)', paddingTop: '10px' }}>
+            <div
+              style={{
+                marginTop: '8px',
+                borderTop: '1px solid var(--line)',
+                paddingTop: '10px',
+              }}
+            >
               <div
                 style={{
                   fontSize: '13px',
