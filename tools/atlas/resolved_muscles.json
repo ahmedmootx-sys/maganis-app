@@ -1,0 +1,1543 @@
+[
+  {
+    "id": "pec_clavicular",
+    "en": "Pectoralis major, clavicular head",
+    "ar": "الصدرية الكبرى – الرأس الترقوي (الصدر العلوي)",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "clavicular part of pectoralis major",
+        "concepts": [
+          "FMA34687"
+        ],
+        "files": [
+          "FJ1447",
+          "FJ1447M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1447",
+      "FJ1447M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "pec_sternal",
+    "en": "Pectoralis major, sternal head",
+    "ar": "الصدرية الكبرى – الرأس القصي (الصدر الأوسط)",
+    "expected_views": "A",
+    "derived": {
+      "from": [
+        "sternocostal part of pectoralis major"
+      ],
+      "rule": "split by vertical extent of the mesh: upper 65% = pec_sternal, lower 35% = pec_costal (approximation, mark as derived)",
+      "part": "upper"
+    },
+    "partsUsed": [
+      {
+        "name": "sternocostal part of pectoralis major",
+        "concepts": [
+          "FMA34696"
+        ],
+        "files": [
+          "FJ1464",
+          "FJ1464M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1464",
+      "FJ1464M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "pec_costal",
+    "en": "Pectoralis major, costal head",
+    "ar": "الصدرية الكبرى – الجزء الضلعي (الصدر السفلي)",
+    "expected_views": "A",
+    "derived": {
+      "from": [
+        "sternocostal part of pectoralis major"
+      ],
+      "rule": "see pec_sternal",
+      "part": "lower"
+    },
+    "partsUsed": [
+      {
+        "name": "sternocostal part of pectoralis major",
+        "concepts": [
+          "FMA34696"
+        ],
+        "files": [
+          "FJ1464",
+          "FJ1464M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1464",
+      "FJ1464M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "pec_minor",
+    "en": "Pectoralis minor",
+    "ar": "الصدرية الصغرى",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "pectoralis minor",
+        "concepts": [
+          "FMA13109",
+          "FMA13376",
+          "FMA13375"
+        ],
+        "files": [
+          "FJ1456",
+          "FJ1456M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1456",
+      "FJ1456M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "serratus_anterior",
+    "en": "Serratus anterior",
+    "ar": "المنشارية الأمامية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "serratus anterior",
+        "concepts": [
+          "FMA13397",
+          "FMA13399",
+          "FMA13398"
+        ],
+        "files": [
+          "FJ1459",
+          "FJ1459M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1459",
+      "FJ1459M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "delt_anterior",
+    "en": "Anterior deltoid",
+    "ar": "الدالية الأمامية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "clavicular part of deltoid",
+        "concepts": [
+          "FMA34677"
+        ],
+        "files": [
+          "FJ1468",
+          "FJ1468M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1468",
+      "FJ1468M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "delt_lateral",
+    "en": "Lateral deltoid",
+    "ar": "الدالية الجانبية",
+    "expected_views": "A+P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "acromial part of deltoid",
+        "concepts": [
+          "FMA34678"
+        ],
+        "files": [
+          "FJ1467",
+          "FJ1467M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1467",
+      "FJ1467M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "delt_posterior",
+    "en": "Posterior deltoid",
+    "ar": "الدالية الخلفية",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "spinal part of deltoid",
+        "concepts": [
+          "FMA34679"
+        ],
+        "files": [
+          "FJ1513",
+          "FJ1513M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1513",
+      "FJ1513M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "biceps_long",
+    "en": "Biceps brachii, long head",
+    "ar": "ذات الرأسين العضدية – الرأس الطويل",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "long head of biceps brachii",
+        "concepts": [
+          "FMA37683"
+        ],
+        "files": [
+          "FJ1478",
+          "FJ1478M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1478",
+      "FJ1478M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "biceps_short",
+    "en": "Biceps brachii, short head",
+    "ar": "ذات الرأسين العضدية – الرأس القصير",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "short head of biceps brachii",
+        "concepts": [
+          "FMA37682"
+        ],
+        "files": [
+          "FJ1512",
+          "FJ1512M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1512",
+      "FJ1512M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "brachialis",
+    "en": "Brachialis",
+    "ar": "العضدية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "brachialis",
+        "concepts": [
+          "FMA37667",
+          "FMA37669",
+          "FMA37668"
+        ],
+        "files": [
+          "FJ1486",
+          "FJ1486M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1486",
+      "FJ1486M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "brachioradialis",
+    "en": "Brachioradialis",
+    "ar": "العضدية الكعبرية",
+    "expected_views": "A+P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "brachioradialis",
+        "concepts": [
+          "FMA38485",
+          "FMA38487",
+          "FMA38486"
+        ],
+        "files": [
+          "FJ1487",
+          "FJ1487M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1487",
+      "FJ1487M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "forearm_flexors",
+    "en": "Forearm flexors",
+    "ar": "عضلات الساعد القابضة",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "flexor carpi radialis",
+        "concepts": [
+          "FMA38459",
+          "FMA38461",
+          "FMA38460"
+        ],
+        "files": [
+          "FJ1496",
+          "FJ1496M"
+        ]
+      },
+      {
+        "name": "flexor carpi ulnaris",
+        "concepts": [
+          "FMA38615",
+          "FMA38616"
+        ],
+        "files": [
+          "FJ1473",
+          "FJ1473M",
+          "FJ1518",
+          "FJ1518M"
+        ]
+      },
+      {
+        "name": "flexor digitorum superficialis",
+        "concepts": [
+          "FMA38469",
+          "FMA38471",
+          "FMA38470"
+        ],
+        "files": [
+          "FJ1475",
+          "FJ1475M",
+          "FJ1499",
+          "FJ1499M"
+        ]
+      },
+      {
+        "name": "palmaris longus",
+        "optional": true,
+        "concepts": [
+          "FMA38462",
+          "FMA38464",
+          "FMA38463"
+        ],
+        "files": [
+          "FJ1502",
+          "FJ1502M"
+        ]
+      },
+      {
+        "name": "flexor digitorum profundus",
+        "optional": true,
+        "concepts": [
+          "FMA38478",
+          "FMA38480",
+          "FMA38479"
+        ],
+        "files": [
+          "FJ1497",
+          "FJ1497M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1496",
+      "FJ1496M",
+      "FJ1473",
+      "FJ1473M",
+      "FJ1518",
+      "FJ1518M",
+      "FJ1475",
+      "FJ1475M",
+      "FJ1499",
+      "FJ1499M",
+      "FJ1502",
+      "FJ1502M",
+      "FJ1497",
+      "FJ1497M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "forearm_extensors",
+    "en": "Forearm extensors",
+    "ar": "عضلات الساعد الباسطة",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "extensor carpi radialis longus",
+        "concepts": [
+          "FMA38494",
+          "FMA38496",
+          "FMA38495"
+        ],
+        "files": [
+          "FJ1490",
+          "FJ1490M"
+        ]
+      },
+      {
+        "name": "extensor digitorum",
+        "concepts": [
+          "FMA38500",
+          "FMA38502",
+          "FMA38501"
+        ],
+        "files": [
+          "FJ1492",
+          "FJ1492M"
+        ]
+      },
+      {
+        "name": "extensor carpi radialis brevis",
+        "optional": true,
+        "concepts": [
+          "FMA38497",
+          "FMA38499",
+          "FMA38498"
+        ],
+        "files": [
+          "FJ1489",
+          "FJ1489M"
+        ]
+      },
+      {
+        "name": "extensor carpi ulnaris",
+        "optional": true,
+        "concepts": [
+          "FMA38506",
+          "FMA38508",
+          "FMA38507"
+        ],
+        "files": [
+          "FJ1472",
+          "FJ1472M",
+          "FJ1517",
+          "FJ1517M"
+        ]
+      },
+      {
+        "name": "extensor digiti minimi",
+        "optional": true,
+        "concepts": [
+          "FMA38503",
+          "FMA38505",
+          "FMA38504"
+        ],
+        "files": [
+          "FJ1491",
+          "FJ1491M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1490",
+      "FJ1490M",
+      "FJ1492",
+      "FJ1492M",
+      "FJ1489",
+      "FJ1489M",
+      "FJ1472",
+      "FJ1472M",
+      "FJ1517",
+      "FJ1517M",
+      "FJ1491",
+      "FJ1491M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "rectus_abdominis_upper",
+    "en": "Rectus abdominis, upper",
+    "ar": "المستقيمة البطنية – العلوية",
+    "expected_views": "A",
+    "derived": {
+      "from": [
+        "rectus abdominis"
+      ],
+      "rule": "split at 50% of the mesh's vertical extent: upper half = upper, lower half = lower (mark as derived)",
+      "part": "upper"
+    },
+    "partsUsed": [],
+    "files": [],
+    "hasMesh": false
+  },
+  {
+    "id": "rectus_abdominis_lower",
+    "en": "Rectus abdominis, lower",
+    "ar": "المستقيمة البطنية – السفلية",
+    "expected_views": "A",
+    "derived": {
+      "from": [
+        "rectus abdominis"
+      ],
+      "rule": "see rectus_abdominis_upper",
+      "part": "lower"
+    },
+    "partsUsed": [],
+    "files": [],
+    "hasMesh": false
+  },
+  {
+    "id": "obliques_external",
+    "en": "External obliques",
+    "ar": "المائلة الخارجية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "external oblique",
+        "concepts": [
+          "FMA13335",
+          "FMA13337",
+          "FMA13336"
+        ],
+        "files": [
+          "FJ1452",
+          "FJ1452M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1452",
+      "FJ1452M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "transversus_abdominis",
+    "en": "Transversus abdominis",
+    "ar": "البطنية المستعرضة",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [],
+    "files": [],
+    "hasMesh": false
+  },
+  {
+    "id": "iliopsoas",
+    "en": "Iliopsoas",
+    "ar": "الحرقفية القطنية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "psoas major",
+        "concepts": [
+          "FMA18060",
+          "FMA22343",
+          "FMA22342"
+        ],
+        "files": [
+          "FJ1431",
+          "FJ1431M"
+        ]
+      },
+      {
+        "name": "iliacus",
+        "concepts": [
+          "FMA22310",
+          "FMA22323",
+          "FMA22322"
+        ],
+        "files": [
+          "FJ1422",
+          "FJ1422M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1431",
+      "FJ1431M",
+      "FJ1422",
+      "FJ1422M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "tfl",
+    "en": "Tensor fasciae latae",
+    "ar": "الموترة للفافة العريضة",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "tensor fasciae latae",
+        "concepts": [
+          "FMA22423",
+          "FMA22426",
+          "FMA22425"
+        ],
+        "files": [
+          "FJ1438",
+          "FJ1438M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1438",
+      "FJ1438M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "sartorius",
+    "en": "Sartorius",
+    "ar": "الخياطية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "sartorius",
+        "concepts": [
+          "FMA22353",
+          "FMA22355",
+          "FMA22354"
+        ],
+        "files": [
+          "FJ1434",
+          "FJ1434M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1434",
+      "FJ1434M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "rectus_femoris",
+    "en": "Rectus femoris",
+    "ar": "المستقيمة الفخذية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "rectus femoris",
+        "concepts": [
+          "FMA22430",
+          "FMA38929",
+          "FMA38928"
+        ],
+        "files": [
+          "FJ1433",
+          "FJ1433M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1433",
+      "FJ1433M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "vastus_lateralis",
+    "en": "Vastus lateralis",
+    "ar": "المتسعة الوحشية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "vastus lateralis",
+        "concepts": [
+          "FMA22431",
+          "FMA38931",
+          "FMA38930"
+        ],
+        "files": [
+          "FJ1442",
+          "FJ1442M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1442",
+      "FJ1442M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "vastus_medialis",
+    "en": "Vastus medialis",
+    "ar": "المتسعة الإنسية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "vastus medialis",
+        "concepts": [
+          "FMA22432",
+          "FMA38933",
+          "FMA38932"
+        ],
+        "files": [
+          "FJ1443",
+          "FJ1443M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1443",
+      "FJ1443M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "vastus_intermedius",
+    "en": "Vastus intermedius",
+    "ar": "المتسعة المتوسطة",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "vastus intermedius",
+        "concepts": [
+          "FMA22433",
+          "FMA38935",
+          "FMA38934"
+        ],
+        "files": [
+          "FJ1441",
+          "FJ1441M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1441",
+      "FJ1441M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "adductors",
+    "en": "Adductors",
+    "ar": "العضلات المقرّبة",
+    "expected_views": "A+P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "adductor longus",
+        "concepts": [
+          "FMA22441",
+          "FMA22457",
+          "FMA22456"
+        ],
+        "files": [
+          "FJ1402",
+          "FJ1402M"
+        ]
+      },
+      {
+        "name": "adductor magnus",
+        "concepts": [
+          "FMA22443",
+          "FMA22460",
+          "FMA22459"
+        ],
+        "files": [
+          "FJ1403",
+          "FJ1403M"
+        ]
+      },
+      {
+        "name": "gracilis",
+        "concepts": [
+          "FMA43882",
+          "FMA43884",
+          "FMA43883"
+        ],
+        "files": [
+          "FJ1421",
+          "FJ1421M"
+        ]
+      },
+      {
+        "name": "adductor brevis",
+        "optional": true,
+        "concepts": [
+          "FMA22442",
+          "FMA22454",
+          "FMA22452"
+        ],
+        "files": [
+          "FJ1401",
+          "FJ1401M"
+        ]
+      },
+      {
+        "name": "pectineus",
+        "optional": true,
+        "concepts": [
+          "FMA22440",
+          "FMA22451",
+          "FMA22450"
+        ],
+        "files": [
+          "FJ1427",
+          "FJ1427M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1402",
+      "FJ1402M",
+      "FJ1403",
+      "FJ1403M",
+      "FJ1421",
+      "FJ1421M",
+      "FJ1401",
+      "FJ1401M",
+      "FJ1427",
+      "FJ1427M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "tibialis_anterior",
+    "en": "Tibialis anterior",
+    "ar": "الظنبوبية الأمامية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "tibialis anterior",
+        "concepts": [
+          "FMA22532",
+          "FMA22545",
+          "FMA22544"
+        ],
+        "files": [
+          "FJ1439",
+          "FJ1439M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1439",
+      "FJ1439M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "neck_scm",
+    "en": "Sternocleidomastoid",
+    "ar": "القصية الترقوية الخشائية",
+    "expected_views": "A",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "sternocleidomastoid",
+        "concepts": [
+          "FMA13407",
+          "FMA13409",
+          "FMA13408"
+        ],
+        "files": [
+          "FJ1573",
+          "FJ1595"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1573",
+      "FJ1595"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "trap_upper",
+    "en": "Upper trapezius",
+    "ar": "شبه المنحرفة – العلوية",
+    "expected_views": "A+P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "descending part of trapezius",
+        "concepts": [
+          "FMA32557"
+        ],
+        "files": [
+          "FJ1521",
+          "FJ1521M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1521",
+      "FJ1521M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "trap_middle",
+    "en": "Middle trapezius",
+    "ar": "شبه المنحرفة – الوسطى",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "transverse part of trapezius",
+        "concepts": [
+          "FMA32556"
+        ],
+        "files": [
+          "FJ1554",
+          "FJ1554M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1554",
+      "FJ1554M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "trap_lower",
+    "en": "Lower trapezius",
+    "ar": "شبه المنحرفة – السفلية",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "ascending part of trapezius",
+        "concepts": [
+          "FMA32555"
+        ],
+        "files": [
+          "FJ1520",
+          "FJ1520M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1520",
+      "FJ1520M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "rhomboids",
+    "en": "Rhomboids",
+    "ar": "المعينية",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "rhomboid major",
+        "concepts": [
+          "FMA13379",
+          "FMA13382",
+          "FMA13381"
+        ],
+        "files": [
+          "FJ1536",
+          "FJ1536M"
+        ]
+      },
+      {
+        "name": "rhomboid minor",
+        "concepts": [
+          "FMA13380",
+          "FMA13384",
+          "FMA13383"
+        ],
+        "files": [
+          "FJ1537",
+          "FJ1537M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1536",
+      "FJ1536M",
+      "FJ1537",
+      "FJ1537M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "levator_scapulae",
+    "en": "Levator scapulae",
+    "ar": "رافعة الكتف",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "levator scapulae",
+        "concepts": [
+          "FMA32519",
+          "FMA32541",
+          "FMA32540"
+        ],
+        "files": [
+          "FJ1532",
+          "FJ1532M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1532",
+      "FJ1532M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "lats",
+    "en": "Latissimus dorsi",
+    "ar": "الظهرية العريضة",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [],
+    "files": [],
+    "hasMesh": false
+  },
+  {
+    "id": "teres_major",
+    "en": "Teres major",
+    "ar": "المدورة الكبيرة",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "teres major",
+        "concepts": [
+          "FMA32549",
+          "FMA32552",
+          "FMA32551"
+        ],
+        "files": [
+          "FJ1507",
+          "FJ1507M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1507",
+      "FJ1507M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "teres_minor",
+    "en": "Teres minor",
+    "ar": "المدورة الصغيرة",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "teres minor",
+        "concepts": [
+          "FMA32550",
+          "FMA32554",
+          "FMA32553"
+        ],
+        "files": [
+          "FJ1508",
+          "FJ1508M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1508",
+      "FJ1508M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "infraspinatus",
+    "en": "Infraspinatus",
+    "ar": "تحت الشوكة",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "infraspinatus muscle",
+        "concepts": [
+          "FMA32548",
+          "FMA32547"
+        ],
+        "files": [
+          "FJ1500M",
+          "FJ1500"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1500M",
+      "FJ1500"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "supraspinatus",
+    "en": "Supraspinatus",
+    "ar": "فوق الشوكة",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "supraspinatus",
+        "concepts": [
+          "FMA9629",
+          "FMA32545",
+          "FMA32544"
+        ],
+        "files": [
+          "FJ1506",
+          "FJ1506M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1506",
+      "FJ1506M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "triceps_long",
+    "en": "Triceps, long head",
+    "ar": "ثلاثية الرؤوس – الرأس الطويل",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "long head of triceps brachii",
+        "concepts": [
+          "FMA37692"
+        ],
+        "files": [
+          "FJ1479",
+          "FJ1479M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1479",
+      "FJ1479M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "triceps_lateral",
+    "en": "Triceps, lateral head",
+    "ar": "ثلاثية الرؤوس – الرأس الوحشي",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "lateral head of triceps brachii",
+        "concepts": [
+          "FMA37694"
+        ],
+        "files": [
+          "FJ1477",
+          "FJ1477M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1477",
+      "FJ1477M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "triceps_medial",
+    "en": "Triceps, medial head",
+    "ar": "ثلاثية الرؤوس – الرأس الإنسي",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "medial head of triceps brachii",
+        "concepts": [
+          "FMA37693"
+        ],
+        "files": [
+          "FJ1480",
+          "FJ1480M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1480",
+      "FJ1480M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "erector_spinae",
+    "en": "Erector spinae",
+    "ar": "الناصبة للفقار (أسفل الظهر)",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "iliocostalis",
+        "concepts": [
+          "FMA77177"
+        ],
+        "files": [
+          "FJ1526",
+          "FJ1526M",
+          "FJ1527",
+          "FJ1527M",
+          "FJ1528",
+          "FJ1528M"
+        ]
+      },
+      {
+        "name": "longissimus",
+        "concepts": [
+          "FMA77178"
+        ],
+        "files": [
+          "FJ1533",
+          "FJ1533M",
+          "FJ1534",
+          "FJ1534M",
+          "FJ1535",
+          "FJ1535M"
+        ]
+      },
+      {
+        "name": "spinalis",
+        "concepts": [
+          "FMA77179"
+        ],
+        "files": [
+          "FJ1543",
+          "FJ1543M",
+          "FJ1544",
+          "FJ1544M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1526",
+      "FJ1526M",
+      "FJ1527",
+      "FJ1527M",
+      "FJ1528",
+      "FJ1528M",
+      "FJ1533",
+      "FJ1533M",
+      "FJ1534",
+      "FJ1534M",
+      "FJ1535",
+      "FJ1535M",
+      "FJ1543",
+      "FJ1543M",
+      "FJ1544",
+      "FJ1544M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "quadratus_lumborum",
+    "en": "Quadratus lumborum",
+    "ar": "المربعة القطنية",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [],
+    "files": [],
+    "hasMesh": false
+  },
+  {
+    "id": "glute_max",
+    "en": "Gluteus maximus",
+    "ar": "الألوية الكبرى",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "gluteus maximus",
+        "concepts": [
+          "FMA22314",
+          "FMA22329",
+          "FMA22328"
+        ],
+        "files": [
+          "FJ1418",
+          "FJ1418M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1418",
+      "FJ1418M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "glute_med",
+    "en": "Gluteus medius",
+    "ar": "الألوية الوسطى",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "gluteus medius",
+        "concepts": [
+          "FMA22315",
+          "FMA22331",
+          "FMA22330"
+        ],
+        "files": [
+          "FJ1419",
+          "FJ1419M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1419",
+      "FJ1419M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "glute_min",
+    "en": "Gluteus minimus",
+    "ar": "الألوية الصغرى",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "gluteus minimus",
+        "concepts": [
+          "FMA22317",
+          "FMA22333",
+          "FMA22332"
+        ],
+        "files": [
+          "FJ1420",
+          "FJ1420M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1420",
+      "FJ1420M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "hamstring_bf_long",
+    "en": "Biceps femoris, long head",
+    "ar": "الفخذية ذات الرأسين – الرأس الطويل",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "long head of biceps femoris",
+        "concepts": [
+          "FMA45887"
+        ],
+        "files": [
+          "FJ1395",
+          "FJ1395M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1395",
+      "FJ1395M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "hamstring_bf_short",
+    "en": "Biceps femoris, short head",
+    "ar": "الفخذية ذات الرأسين – الرأس القصير",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "short head of biceps femoris",
+        "concepts": [
+          "FMA45890"
+        ],
+        "files": [
+          "FJ1444",
+          "FJ1444M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1444",
+      "FJ1444M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "hamstring_semitendinosus",
+    "en": "Semitendinosus",
+    "ar": "نصف الوترية",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "semitendinosus",
+        "concepts": [
+          "FMA22357",
+          "FMA22359",
+          "FMA22358"
+        ],
+        "files": [
+          "FJ1436",
+          "FJ1436M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1436",
+      "FJ1436M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "hamstring_semimembranosus",
+    "en": "Semimembranosus",
+    "ar": "نصف الغشائية",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "semimembranosus",
+        "concepts": [
+          "FMA22438",
+          "FMA22449",
+          "FMA22448"
+        ],
+        "files": [
+          "FJ1435",
+          "FJ1435M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1435",
+      "FJ1435M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "gastrocnemius_medial",
+    "en": "Gastrocnemius, medial head",
+    "ar": "التوأمية – الرأس الإنسي",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "medial head of gastrocnemius",
+        "concepts": [
+          "FMA45956"
+        ],
+        "files": [
+          "FJ1397",
+          "FJ1397M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1397",
+      "FJ1397M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "gastrocnemius_lateral",
+    "en": "Gastrocnemius, lateral head",
+    "ar": "التوأمية – الرأس الوحشي",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "lateral head of gastrocnemius",
+        "concepts": [
+          "FMA45959"
+        ],
+        "files": [
+          "FJ1394",
+          "FJ1394M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1394",
+      "FJ1394M"
+    ],
+    "hasMesh": true
+  },
+  {
+    "id": "soleus",
+    "en": "Soleus",
+    "ar": "النعلية",
+    "expected_views": "P",
+    "derived": null,
+    "partsUsed": [
+      {
+        "name": "soleus",
+        "concepts": [
+          "FMA22542",
+          "FMA22559",
+          "FMA22558"
+        ],
+        "files": [
+          "FJ1437",
+          "FJ1437M"
+        ]
+      }
+    ],
+    "files": [
+      "FJ1437",
+      "FJ1437M"
+    ],
+    "hasMesh": true
+  }
+]

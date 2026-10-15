@@ -1,0 +1,2261 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-15T06:53:01.894Z",
+  "source": "BodyParts3D Release 4.0",
+  "license": "Creative Commons Attribution-ShareAlike 2.1 Japan (CC BY-SA 2.1 JP) / CC BY 4.0",
+  "viewBox": "0 0 1024 2048",
+  "width": 1024,
+  "height": 2048,
+  "total_muscles": 53,
+  "muscles_with_mesh": 48,
+  "muscles_missing": 5,
+  "muscles": {
+    "pec_clavicular": {
+      "id": "pec_clavicular",
+      "ar": "الصدرية الكبرى – الرأس الترقوي (الصدر العلوي)",
+      "en": "Pectoralis major, clavicular head",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.878,
+      "area_px": 8872,
+      "derived": false,
+      "parts_used": [
+        "FJ1447",
+        "FJ1447M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          611,
+          431
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 8872,
+          "full_pixels": 10110,
+          "visible_ratio": 0.878,
+          "layer": "S",
+          "anchor": [
+            611,
+            431
+          ]
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 10110,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "pec_sternal": {
+      "id": "pec_sternal",
+      "ar": "الصدرية الكبرى – الرأس القصي (الصدر الأوسط)",
+      "en": "Pectoralis major, sternal head",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.941,
+      "area_px": 34154,
+      "derived": true,
+      "parts_used": [
+        "FJ1464",
+        "FJ1464M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          584,
+          502
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 34154,
+          "full_pixels": 36292,
+          "visible_ratio": 0.941,
+          "layer": "S",
+          "anchor": [
+            584,
+            502
+          ]
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 36334,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "pec_costal": {
+      "id": "pec_costal",
+      "ar": "الصدرية الكبرى – الجزء الضلعي (الصدر السفلي)",
+      "en": "Pectoralis major, costal head",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.846,
+      "area_px": 8618,
+      "derived": true,
+      "parts_used": [
+        "FJ1464",
+        "FJ1464M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          574,
+          585
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 8618,
+          "full_pixels": 10186,
+          "visible_ratio": 0.846,
+          "layer": "S",
+          "anchor": [
+            574,
+            585
+          ]
+        },
+        "P": {
+          "visible_pixels": 250,
+          "full_pixels": 10138,
+          "visible_ratio": 0.025,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "pec_minor": {
+      "id": "pec_minor",
+      "ar": "الصدرية الصغرى",
+      "en": "Pectoralis minor",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "D",
+      "visible_ratio": 0.012,
+      "area_px": 100,
+      "derived": false,
+      "parts_used": [
+        "FJ1456",
+        "FJ1456M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          653,
+          431
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 100,
+          "full_pixels": 8596,
+          "visible_ratio": 0.012,
+          "layer": "D",
+          "anchor": [
+            653,
+            431
+          ]
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 8596,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "serratus_anterior": {
+      "id": "serratus_anterior",
+      "ar": "المنشارية الأمامية",
+      "en": "Serratus anterior",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "D",
+      "visible_ratio": 0.1,
+      "area_px": 3070,
+      "derived": false,
+      "parts_used": [
+        "FJ1459",
+        "FJ1459M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          660,
+          561
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 3070,
+          "full_pixels": 30549,
+          "visible_ratio": 0.1,
+          "layer": "D",
+          "anchor": [
+            660,
+            561
+          ]
+        },
+        "P": {
+          "visible_pixels": 10538,
+          "full_pixels": 30549,
+          "visible_ratio": 0.345,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "delt_anterior": {
+      "id": "delt_anterior",
+      "ar": "الدالية الأمامية",
+      "en": "Anterior deltoid",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.983,
+      "area_px": 12342,
+      "derived": false,
+      "parts_used": [
+        "FJ1468",
+        "FJ1468M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          692,
+          434
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 12342,
+          "full_pixels": 12550,
+          "visible_ratio": 0.983,
+          "layer": "S",
+          "anchor": [
+            692,
+            434
+          ]
+        },
+        "P": {
+          "visible_pixels": 22,
+          "full_pixels": 12550,
+          "visible_ratio": 0.002,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "delt_lateral": {
+      "id": "delt_lateral",
+      "ar": "الدالية الجانبية",
+      "en": "Lateral deltoid",
+      "expected_views": "A+P",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.728,
+      "area_px": 7390,
+      "derived": false,
+      "parts_used": [
+        "FJ1467",
+        "FJ1467M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          749,
+          477
+        ],
+        "P": [
+          731,
+          420
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 7390,
+          "full_pixels": 10152,
+          "visible_ratio": 0.728,
+          "layer": "S",
+          "anchor": [
+            749,
+            477
+          ]
+        },
+        "P": {
+          "visible_pixels": 3804,
+          "full_pixels": 10152,
+          "visible_ratio": 0.375,
+          "layer": "S",
+          "anchor": [
+            731,
+            420
+          ]
+        }
+      }
+    },
+    "delt_posterior": {
+      "id": "delt_posterior",
+      "ar": "الدالية الخلفية",
+      "en": "Posterior deltoid",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.93,
+      "area_px": 18546,
+      "derived": false,
+      "parts_used": [
+        "FJ1513",
+        "FJ1513M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          698,
+          458
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 522,
+          "full_pixels": 19944,
+          "visible_ratio": 0.026,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 18546,
+          "full_pixels": 19944,
+          "visible_ratio": 0.93,
+          "layer": "S",
+          "anchor": [
+            698,
+            458
+          ]
+        }
+      }
+    },
+    "biceps_long": {
+      "id": "biceps_long",
+      "ar": "ذات الرأسين العضدية – الرأس الطويل",
+      "en": "Biceps brachii, long head",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.737,
+      "area_px": 11382,
+      "derived": false,
+      "parts_used": [
+        "FJ1478",
+        "FJ1478M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          745,
+          618
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 11382,
+          "full_pixels": 15438,
+          "visible_ratio": 0.737,
+          "layer": "S",
+          "anchor": [
+            745,
+            618
+          ]
+        },
+        "P": {
+          "visible_pixels": 236,
+          "full_pixels": 15438,
+          "visible_ratio": 0.015,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "biceps_short": {
+      "id": "biceps_short",
+      "ar": "ذات الرأسين العضدية – الرأس القصير",
+      "en": "Biceps brachii, short head",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.841,
+      "area_px": 9966,
+      "derived": false,
+      "parts_used": [
+        "FJ1512",
+        "FJ1512M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          718,
+          635
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 9966,
+          "full_pixels": 11846,
+          "visible_ratio": 0.841,
+          "layer": "S",
+          "anchor": [
+            718,
+            635
+          ]
+        },
+        "P": {
+          "visible_pixels": 20,
+          "full_pixels": 11846,
+          "visible_ratio": 0.002,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "brachialis": {
+      "id": "brachialis",
+      "ar": "العضدية",
+      "en": "Brachialis",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "D",
+      "visible_ratio": 0.293,
+      "area_px": 5877,
+      "derived": false,
+      "parts_used": [
+        "FJ1486",
+        "FJ1486M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          731,
+          710
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 5877,
+          "full_pixels": 20049,
+          "visible_ratio": 0.293,
+          "layer": "D",
+          "anchor": [
+            731,
+            710
+          ]
+        },
+        "P": {
+          "visible_pixels": 2255,
+          "full_pixels": 20049,
+          "visible_ratio": 0.112,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "brachioradialis": {
+      "id": "brachioradialis",
+      "ar": "العضدية الكعبرية",
+      "en": "Brachioradialis",
+      "expected_views": "A+P",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.865,
+      "area_px": 12574,
+      "derived": false,
+      "parts_used": [
+        "FJ1487",
+        "FJ1487M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          789,
+          790
+        ],
+        "P": [
+          767,
+          678
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 12574,
+          "full_pixels": 14533,
+          "visible_ratio": 0.865,
+          "layer": "S",
+          "anchor": [
+            789,
+            790
+          ]
+        },
+        "P": {
+          "visible_pixels": 2215,
+          "full_pixels": 14533,
+          "visible_ratio": 0.152,
+          "layer": "D",
+          "anchor": [
+            767,
+            678
+          ]
+        }
+      }
+    },
+    "forearm_flexors": {
+      "id": "forearm_flexors",
+      "ar": "عضلات الساعد القابضة",
+      "en": "Forearm flexors",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.984,
+      "area_px": 32899,
+      "derived": false,
+      "parts_used": [
+        "FJ1496",
+        "FJ1496M",
+        "FJ1473",
+        "FJ1473M",
+        "FJ1518",
+        "FJ1518M",
+        "FJ1475",
+        "FJ1475M",
+        "FJ1499",
+        "FJ1499M",
+        "FJ1502",
+        "FJ1502M",
+        "FJ1497",
+        "FJ1497M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          760,
+          861
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 32899,
+          "full_pixels": 33428,
+          "visible_ratio": 0.984,
+          "layer": "S",
+          "anchor": [
+            760,
+            861
+          ]
+        },
+        "P": {
+          "visible_pixels": 17467,
+          "full_pixels": 33428,
+          "visible_ratio": 0.523,
+          "layer": "S",
+          "anchor": null
+        }
+      }
+    },
+    "forearm_extensors": {
+      "id": "forearm_extensors",
+      "ar": "عضلات الساعد الباسطة",
+      "en": "Forearm extensors",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.999,
+      "area_px": 31006,
+      "derived": false,
+      "parts_used": [
+        "FJ1490",
+        "FJ1490M",
+        "FJ1492",
+        "FJ1492M",
+        "FJ1489",
+        "FJ1489M",
+        "FJ1472",
+        "FJ1472M",
+        "FJ1517",
+        "FJ1517M",
+        "FJ1491",
+        "FJ1491M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          783,
+          889
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 3929,
+          "full_pixels": 31044,
+          "visible_ratio": 0.127,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 31006,
+          "full_pixels": 31044,
+          "visible_ratio": 0.999,
+          "layer": "S",
+          "anchor": [
+            783,
+            889
+          ]
+        }
+      }
+    },
+    "rectus_abdominis_upper": {
+      "id": "rectus_abdominis_upper",
+      "ar": "المستقيمة البطنية – العلوية",
+      "en": "Rectus abdominis, upper",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "D",
+      "visible_ratio": 0,
+      "area_px": 0,
+      "derived": true,
+      "parts_used": [],
+      "missing": true,
+      "anchors": {
+        "A": null,
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "rectus_abdominis_lower": {
+      "id": "rectus_abdominis_lower",
+      "ar": "المستقيمة البطنية – السفلية",
+      "en": "Rectus abdominis, lower",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "D",
+      "visible_ratio": 0,
+      "area_px": 0,
+      "derived": true,
+      "parts_used": [],
+      "missing": true,
+      "anchors": {
+        "A": null,
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "obliques_external": {
+      "id": "obliques_external",
+      "ar": "المائلة الخارجية",
+      "en": "External obliques",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.992,
+      "area_px": 105236,
+      "derived": false,
+      "parts_used": [
+        "FJ1452",
+        "FJ1452M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          593,
+          881
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 105236,
+          "full_pixels": 106090,
+          "visible_ratio": 0.992,
+          "layer": "S",
+          "anchor": [
+            593,
+            881
+          ]
+        },
+        "P": {
+          "visible_pixels": 27082,
+          "full_pixels": 106090,
+          "visible_ratio": 0.255,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "transversus_abdominis": {
+      "id": "transversus_abdominis",
+      "ar": "البطنية المستعرضة",
+      "en": "Transversus abdominis",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "D",
+      "visible_ratio": 0,
+      "area_px": 0,
+      "derived": false,
+      "parts_used": [],
+      "missing": true,
+      "anchors": {
+        "A": null,
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "iliopsoas": {
+      "id": "iliopsoas",
+      "ar": "الحرقفية القطنية",
+      "en": "Iliopsoas",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "D",
+      "visible_ratio": 0.15,
+      "area_px": 5772,
+      "derived": false,
+      "parts_used": [
+        "FJ1431",
+        "FJ1431M",
+        "FJ1422",
+        "FJ1422M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          605,
+          986
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 5772,
+          "full_pixels": 38563,
+          "visible_ratio": 0.15,
+          "layer": "D",
+          "anchor": [
+            605,
+            986
+          ]
+        },
+        "P": {
+          "visible_pixels": 1986,
+          "full_pixels": 38562,
+          "visible_ratio": 0.052,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "tfl": {
+      "id": "tfl",
+      "ar": "الموترة للفافة العريضة",
+      "en": "Tensor fasciae latae",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.99,
+      "area_px": 7476,
+      "derived": false,
+      "parts_used": [
+        "FJ1438",
+        "FJ1438M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          673,
+          980
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 7476,
+          "full_pixels": 7552,
+          "visible_ratio": 0.99,
+          "layer": "S",
+          "anchor": [
+            673,
+            980
+          ]
+        },
+        "P": {
+          "visible_pixels": 2798,
+          "full_pixels": 7552,
+          "visible_ratio": 0.37,
+          "layer": "S",
+          "anchor": null
+        }
+      }
+    },
+    "sartorius": {
+      "id": "sartorius",
+      "ar": "الخياطية",
+      "en": "Sartorius",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.976,
+      "area_px": 30380,
+      "derived": false,
+      "parts_used": [
+        "FJ1434",
+        "FJ1434M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          590,
+          1170
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 30380,
+          "full_pixels": 31126,
+          "visible_ratio": 0.976,
+          "layer": "S",
+          "anchor": [
+            590,
+            1170
+          ]
+        },
+        "P": {
+          "visible_pixels": 132,
+          "full_pixels": 31126,
+          "visible_ratio": 0.004,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "rectus_femoris": {
+      "id": "rectus_femoris",
+      "ar": "المستقيمة الفخذية",
+      "en": "Rectus femoris",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.839,
+      "area_px": 43330,
+      "derived": false,
+      "parts_used": [
+        "FJ1433",
+        "FJ1433M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          646,
+          1158
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 43330,
+          "full_pixels": 51624,
+          "visible_ratio": 0.839,
+          "layer": "S",
+          "anchor": [
+            646,
+            1158
+          ]
+        },
+        "P": {
+          "visible_pixels": 1330,
+          "full_pixels": 51624,
+          "visible_ratio": 0.026,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "vastus_lateralis": {
+      "id": "vastus_lateralis",
+      "ar": "المتسعة الوحشية",
+      "en": "Vastus lateralis",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.382,
+      "area_px": 16741,
+      "derived": false,
+      "parts_used": [
+        "FJ1442",
+        "FJ1442M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          658,
+          1336
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 16741,
+          "full_pixels": 43807,
+          "visible_ratio": 0.382,
+          "layer": "S",
+          "anchor": [
+            658,
+            1336
+          ]
+        },
+        "P": {
+          "visible_pixels": 24480,
+          "full_pixels": 43807,
+          "visible_ratio": 0.559,
+          "layer": "S",
+          "anchor": null
+        }
+      }
+    },
+    "vastus_medialis": {
+      "id": "vastus_medialis",
+      "ar": "المتسعة الإنسية",
+      "en": "Vastus medialis",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.726,
+      "area_px": 21030,
+      "derived": false,
+      "parts_used": [
+        "FJ1443",
+        "FJ1443M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          578,
+          1392
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 21030,
+          "full_pixels": 28950,
+          "visible_ratio": 0.726,
+          "layer": "S",
+          "anchor": [
+            578,
+            1392
+          ]
+        },
+        "P": {
+          "visible_pixels": 1910,
+          "full_pixels": 28950,
+          "visible_ratio": 0.066,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "vastus_intermedius": {
+      "id": "vastus_intermedius",
+      "ar": "المتسعة المتوسطة",
+      "en": "Vastus intermedius",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "D",
+      "visible_ratio": 0.012,
+      "area_px": 380,
+      "derived": false,
+      "parts_used": [
+        "FJ1441",
+        "FJ1441M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          603,
+          1459
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 380,
+          "full_pixels": 32769,
+          "visible_ratio": 0.012,
+          "layer": "D",
+          "anchor": [
+            603,
+            1459
+          ]
+        },
+        "P": {
+          "visible_pixels": 319,
+          "full_pixels": 32769,
+          "visible_ratio": 0.01,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "adductors": {
+      "id": "adductors",
+      "ar": "العضلات المقرّبة",
+      "en": "Adductors",
+      "expected_views": "A+P",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.454,
+      "area_px": 34260,
+      "derived": false,
+      "parts_used": [
+        "FJ1402",
+        "FJ1402M",
+        "FJ1403",
+        "FJ1403M",
+        "FJ1421",
+        "FJ1421M",
+        "FJ1401",
+        "FJ1401M",
+        "FJ1427",
+        "FJ1427M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          568,
+          1049
+        ],
+        "P": [
+          540,
+          1080
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 34260,
+          "full_pixels": 75452,
+          "visible_ratio": 0.454,
+          "layer": "S",
+          "anchor": [
+            568,
+            1049
+          ]
+        },
+        "P": {
+          "visible_pixels": 6028,
+          "full_pixels": 75452,
+          "visible_ratio": 0.08,
+          "layer": "D",
+          "anchor": [
+            540,
+            1080
+          ]
+        }
+      }
+    },
+    "tibialis_anterior": {
+      "id": "tibialis_anterior",
+      "ar": "الظنبوبية الأمامية",
+      "en": "Tibialis anterior",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 1,
+      "area_px": 16028,
+      "derived": false,
+      "parts_used": [
+        "FJ1439",
+        "FJ1439M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          625,
+          1624
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 16028,
+          "full_pixels": 16028,
+          "visible_ratio": 1,
+          "layer": "S",
+          "anchor": [
+            625,
+            1624
+          ]
+        },
+        "P": {
+          "visible_pixels": 3414,
+          "full_pixels": 16028,
+          "visible_ratio": 0.213,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "neck_scm": {
+      "id": "neck_scm",
+      "ar": "القصية الترقوية الخشائية",
+      "en": "Sternocleidomastoid",
+      "expected_views": "A",
+      "best_view": "A",
+      "best_layer": "S",
+      "visible_ratio": 0.986,
+      "area_px": 9449,
+      "derived": false,
+      "parts_used": [
+        "FJ1573",
+        "FJ1595"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          547,
+          390
+        ],
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 9449,
+          "full_pixels": 9585,
+          "visible_ratio": 0.986,
+          "layer": "S",
+          "anchor": [
+            547,
+            390
+          ]
+        },
+        "P": {
+          "visible_pixels": 1841,
+          "full_pixels": 9585,
+          "visible_ratio": 0.192,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "trap_upper": {
+      "id": "trap_upper",
+      "ar": "شبه المنحرفة – العلوية",
+      "en": "Upper trapezius",
+      "expected_views": "A+P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.796,
+      "area_px": 14081,
+      "derived": false,
+      "parts_used": [
+        "FJ1521",
+        "FJ1521M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": [
+          512,
+          266
+        ],
+        "P": [
+          512,
+          316
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 11792,
+          "full_pixels": 17679,
+          "visible_ratio": 0.667,
+          "layer": "S",
+          "anchor": [
+            512,
+            266
+          ]
+        },
+        "P": {
+          "visible_pixels": 14081,
+          "full_pixels": 17679,
+          "visible_ratio": 0.796,
+          "layer": "S",
+          "anchor": [
+            512,
+            316
+          ]
+        }
+      }
+    },
+    "trap_middle": {
+      "id": "trap_middle",
+      "ar": "شبه المنحرفة – الوسطى",
+      "en": "Middle trapezius",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.726,
+      "area_px": 10302,
+      "derived": false,
+      "parts_used": [
+        "FJ1554",
+        "FJ1554M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          539,
+          388
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 753,
+          "full_pixels": 14191,
+          "visible_ratio": 0.053,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 10302,
+          "full_pixels": 14191,
+          "visible_ratio": 0.726,
+          "layer": "S",
+          "anchor": [
+            539,
+            388
+          ]
+        }
+      }
+    },
+    "trap_lower": {
+      "id": "trap_lower",
+      "ar": "شبه المنحرفة – السفلية",
+      "en": "Lower trapezius",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.993,
+      "area_px": 43655,
+      "derived": false,
+      "parts_used": [
+        "FJ1520",
+        "FJ1520M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          512,
+          534
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 1728,
+          "full_pixels": 43941,
+          "visible_ratio": 0.039,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 43655,
+          "full_pixels": 43941,
+          "visible_ratio": 0.993,
+          "layer": "S",
+          "anchor": [
+            512,
+            534
+          ]
+        }
+      }
+    },
+    "rhomboids": {
+      "id": "rhomboids",
+      "ar": "المعينية",
+      "en": "Rhomboids",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0.024,
+      "area_px": 404,
+      "derived": false,
+      "parts_used": [
+        "FJ1536",
+        "FJ1536M",
+        "FJ1537",
+        "FJ1537M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          597,
+          562
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 1732,
+          "full_pixels": 16806,
+          "visible_ratio": 0.103,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 404,
+          "full_pixels": 16806,
+          "visible_ratio": 0.024,
+          "layer": "D",
+          "anchor": [
+            597,
+            562
+          ]
+        }
+      }
+    },
+    "levator_scapulae": {
+      "id": "levator_scapulae",
+      "ar": "رافعة الكتف",
+      "en": "Levator scapulae",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0.032,
+      "area_px": 156,
+      "derived": false,
+      "parts_used": [
+        "FJ1532",
+        "FJ1532M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          554,
+          288
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 817,
+          "full_pixels": 4880,
+          "visible_ratio": 0.167,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 156,
+          "full_pixels": 4880,
+          "visible_ratio": 0.032,
+          "layer": "D",
+          "anchor": [
+            554,
+            288
+          ]
+        }
+      }
+    },
+    "lats": {
+      "id": "lats",
+      "ar": "الظهرية العريضة",
+      "en": "Latissimus dorsi",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0,
+      "area_px": 0,
+      "derived": false,
+      "parts_used": [],
+      "missing": true,
+      "anchors": {
+        "A": null,
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "teres_major": {
+      "id": "teres_major",
+      "ar": "المدورة الكبيرة",
+      "en": "Teres major",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.735,
+      "area_px": 5457,
+      "derived": false,
+      "parts_used": [
+        "FJ1507",
+        "FJ1507M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          648,
+          538
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 762,
+          "full_pixels": 7420,
+          "visible_ratio": 0.103,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 5457,
+          "full_pixels": 7420,
+          "visible_ratio": 0.735,
+          "layer": "S",
+          "anchor": [
+            648,
+            538
+          ]
+        }
+      }
+    },
+    "teres_minor": {
+      "id": "teres_minor",
+      "ar": "المدورة الصغيرة",
+      "en": "Teres minor",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0.228,
+      "area_px": 1197,
+      "derived": false,
+      "parts_used": [
+        "FJ1508",
+        "FJ1508M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          666,
+          488
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 0,
+          "full_pixels": 5255,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 1197,
+          "full_pixels": 5255,
+          "visible_ratio": 0.228,
+          "layer": "D",
+          "anchor": [
+            666,
+            488
+          ]
+        }
+      }
+    },
+    "infraspinatus": {
+      "id": "infraspinatus",
+      "ar": "تحت الشوكة",
+      "en": "Infraspinatus",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.357,
+      "area_px": 6318,
+      "derived": false,
+      "parts_used": [
+        "FJ1500M",
+        "FJ1500"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          639,
+          483
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 126,
+          "full_pixels": 17688,
+          "visible_ratio": 0.007,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 6318,
+          "full_pixels": 17688,
+          "visible_ratio": 0.357,
+          "layer": "S",
+          "anchor": [
+            639,
+            483
+          ]
+        }
+      }
+    },
+    "supraspinatus": {
+      "id": "supraspinatus",
+      "ar": "فوق الشوكة",
+      "en": "Supraspinatus",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0.007,
+      "area_px": 36,
+      "derived": false,
+      "parts_used": [
+        "FJ1506",
+        "FJ1506M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          647,
+          422
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 218,
+          "full_pixels": 5532,
+          "visible_ratio": 0.039,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 36,
+          "full_pixels": 5532,
+          "visible_ratio": 0.007,
+          "layer": "D",
+          "anchor": [
+            647,
+            422
+          ]
+        }
+      }
+    },
+    "triceps_long": {
+      "id": "triceps_long",
+      "ar": "ثلاثية الرؤوس – الرأس الطويل",
+      "en": "Triceps, long head",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.867,
+      "area_px": 15719,
+      "derived": false,
+      "parts_used": [
+        "FJ1479",
+        "FJ1479M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          710,
+          604
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 1887,
+          "full_pixels": 18132,
+          "visible_ratio": 0.104,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 15719,
+          "full_pixels": 18132,
+          "visible_ratio": 0.867,
+          "layer": "S",
+          "anchor": [
+            710,
+            604
+          ]
+        }
+      }
+    },
+    "triceps_lateral": {
+      "id": "triceps_lateral",
+      "ar": "ثلاثية الرؤوس – الرأس الوحشي",
+      "en": "Triceps, lateral head",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.742,
+      "area_px": 11152,
+      "derived": false,
+      "parts_used": [
+        "FJ1477",
+        "FJ1477M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          748,
+          631
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 444,
+          "full_pixels": 15030,
+          "visible_ratio": 0.03,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 11152,
+          "full_pixels": 15030,
+          "visible_ratio": 0.742,
+          "layer": "S",
+          "anchor": [
+            748,
+            631
+          ]
+        }
+      }
+    },
+    "triceps_medial": {
+      "id": "triceps_medial",
+      "ar": "ثلاثية الرؤوس – الرأس الإنسي",
+      "en": "Triceps, medial head",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0.096,
+      "area_px": 1622,
+      "derived": false,
+      "parts_used": [
+        "FJ1480",
+        "FJ1480M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          718,
+          717
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 1992,
+          "full_pixels": 16900,
+          "visible_ratio": 0.118,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 1622,
+          "full_pixels": 16900,
+          "visible_ratio": 0.096,
+          "layer": "D",
+          "anchor": [
+            718,
+            717
+          ]
+        }
+      }
+    },
+    "erector_spinae": {
+      "id": "erector_spinae",
+      "ar": "الناصبة للفقار (أسفل الظهر)",
+      "en": "Erector spinae",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.561,
+      "area_px": 45720,
+      "derived": false,
+      "parts_used": [
+        "FJ1526",
+        "FJ1526M",
+        "FJ1527",
+        "FJ1527M",
+        "FJ1528",
+        "FJ1528M",
+        "FJ1533",
+        "FJ1533M",
+        "FJ1534",
+        "FJ1534M",
+        "FJ1535",
+        "FJ1535M",
+        "FJ1543",
+        "FJ1543M",
+        "FJ1544",
+        "FJ1544M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          550,
+          841
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 8358,
+          "full_pixels": 81506,
+          "visible_ratio": 0.103,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 45720,
+          "full_pixels": 81506,
+          "visible_ratio": 0.561,
+          "layer": "S",
+          "anchor": [
+            550,
+            841
+          ]
+        }
+      }
+    },
+    "quadratus_lumborum": {
+      "id": "quadratus_lumborum",
+      "ar": "المربعة القطنية",
+      "en": "Quadratus lumborum",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0,
+      "area_px": 0,
+      "derived": false,
+      "parts_used": [],
+      "missing": true,
+      "anchors": {
+        "A": null,
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 0,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "glute_max": {
+      "id": "glute_max",
+      "ar": "الألوية الكبرى",
+      "en": "Gluteus maximus",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.983,
+      "area_px": 51666,
+      "derived": false,
+      "parts_used": [
+        "FJ1418",
+        "FJ1418M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          585,
+          1014
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 1396,
+          "full_pixels": 52564,
+          "visible_ratio": 0.027,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 51666,
+          "full_pixels": 52564,
+          "visible_ratio": 0.983,
+          "layer": "S",
+          "anchor": [
+            585,
+            1014
+          ]
+        }
+      }
+    },
+    "glute_med": {
+      "id": "glute_med",
+      "ar": "الألوية الوسطى",
+      "en": "Gluteus medius",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.438,
+      "area_px": 10404,
+      "derived": false,
+      "parts_used": [
+        "FJ1419",
+        "FJ1419M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          634,
+          873
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 22,
+          "full_pixels": 23762,
+          "visible_ratio": 0.001,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 10404,
+          "full_pixels": 23762,
+          "visible_ratio": 0.438,
+          "layer": "S",
+          "anchor": [
+            634,
+            873
+          ]
+        }
+      }
+    },
+    "glute_min": {
+      "id": "glute_min",
+      "ar": "الألوية الصغرى",
+      "en": "Gluteus minimus",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0.008,
+      "area_px": 110,
+      "derived": false,
+      "parts_used": [
+        "FJ1420",
+        "FJ1420M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          670,
+          1021
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 942,
+          "full_pixels": 13528,
+          "visible_ratio": 0.07,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 110,
+          "full_pixels": 13528,
+          "visible_ratio": 0.008,
+          "layer": "D",
+          "anchor": [
+            670,
+            1021
+          ]
+        }
+      }
+    },
+    "hamstring_bf_long": {
+      "id": "hamstring_bf_long",
+      "ar": "الفخذية ذات الرأسين – الرأس الطويل",
+      "en": "Biceps femoris, long head",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.944,
+      "area_px": 41310,
+      "derived": false,
+      "parts_used": [
+        "FJ1395",
+        "FJ1395M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          618,
+          1319
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 1200,
+          "full_pixels": 43778,
+          "visible_ratio": 0.027,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 41310,
+          "full_pixels": 43778,
+          "visible_ratio": 0.944,
+          "layer": "S",
+          "anchor": [
+            618,
+            1319
+          ]
+        }
+      }
+    },
+    "hamstring_bf_short": {
+      "id": "hamstring_bf_short",
+      "ar": "الفخذية ذات الرأسين – الرأس القصير",
+      "en": "Biceps femoris, short head",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0,
+      "area_px": 0,
+      "derived": false,
+      "parts_used": [
+        "FJ1444",
+        "FJ1444M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": null
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 1414,
+          "full_pixels": 12748,
+          "visible_ratio": 0.111,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 0,
+          "full_pixels": 12748,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        }
+      }
+    },
+    "hamstring_semitendinosus": {
+      "id": "hamstring_semitendinosus",
+      "ar": "نصف الوترية",
+      "en": "Semitendinosus",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.905,
+      "area_px": 22128,
+      "derived": false,
+      "parts_used": [
+        "FJ1436",
+        "FJ1436M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          563,
+          1267
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 2,
+          "full_pixels": 24444,
+          "visible_ratio": 0,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 22128,
+          "full_pixels": 24444,
+          "visible_ratio": 0.905,
+          "layer": "S",
+          "anchor": [
+            563,
+            1267
+          ]
+        }
+      }
+    },
+    "hamstring_semimembranosus": {
+      "id": "hamstring_semimembranosus",
+      "ar": "نصف الغشائية",
+      "en": "Semimembranosus",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.378,
+      "area_px": 14412,
+      "derived": false,
+      "parts_used": [
+        "FJ1435",
+        "FJ1435M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          572,
+          1411
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 358,
+          "full_pixels": 38136,
+          "visible_ratio": 0.009,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 14412,
+          "full_pixels": 38136,
+          "visible_ratio": 0.378,
+          "layer": "S",
+          "anchor": [
+            572,
+            1411
+          ]
+        }
+      }
+    },
+    "gastrocnemius_medial": {
+      "id": "gastrocnemius_medial",
+      "ar": "التوأمية – الرأس الإنسي",
+      "en": "Gastrocnemius, medial head",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.951,
+      "area_px": 23554,
+      "derived": false,
+      "parts_used": [
+        "FJ1397",
+        "FJ1397M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          563,
+          1685
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 12324,
+          "full_pixels": 24766,
+          "visible_ratio": 0.498,
+          "layer": "S",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 23554,
+          "full_pixels": 24766,
+          "visible_ratio": 0.951,
+          "layer": "S",
+          "anchor": [
+            563,
+            1685
+          ]
+        }
+      }
+    },
+    "gastrocnemius_lateral": {
+      "id": "gastrocnemius_lateral",
+      "ar": "التوأمية – الرأس الوحشي",
+      "en": "Gastrocnemius, lateral head",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "S",
+      "visible_ratio": 0.956,
+      "area_px": 30016,
+      "derived": false,
+      "parts_used": [
+        "FJ1394",
+        "FJ1394M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          611,
+          1638
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 1150,
+          "full_pixels": 31398,
+          "visible_ratio": 0.037,
+          "layer": "D",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 30016,
+          "full_pixels": 31398,
+          "visible_ratio": 0.956,
+          "layer": "S",
+          "anchor": [
+            611,
+            1638
+          ]
+        }
+      }
+    },
+    "soleus": {
+      "id": "soleus",
+      "ar": "النعلية",
+      "en": "Soleus",
+      "expected_views": "P",
+      "best_view": "P",
+      "best_layer": "D",
+      "visible_ratio": 0.241,
+      "area_px": 9758,
+      "derived": false,
+      "parts_used": [
+        "FJ1437",
+        "FJ1437M"
+      ],
+      "missing": false,
+      "anchors": {
+        "A": null,
+        "P": [
+          591,
+          1778
+        ]
+      },
+      "views": {
+        "A": {
+          "visible_pixels": 25662,
+          "full_pixels": 40468,
+          "visible_ratio": 0.634,
+          "layer": "S",
+          "anchor": null
+        },
+        "P": {
+          "visible_pixels": 9758,
+          "full_pixels": 40468,
+          "visible_ratio": 0.241,
+          "layer": "D",
+          "anchor": [
+            591,
+            1778
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+Maganis Muscle Atlas License & Attribution Notice
+=================================================
+
+1. Attribution & Source
+-----------------------
+This project incorporates anatomical 3D models and anatomical terminology from BodyParts3D:
+
+"BodyParts3D, (c) The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan"
+Source database URL: http://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html
+Dataset: BodyParts3D Release 4.0 (IS-A part tree OBJ dataset, 2013).
+
+The original 3D polygon meshes and ontology mappings were developed and released by the Database Center for Life Science (DBCLS), Japan.
+
+
+2. Changes Made
+---------------
+In accordance with the Creative Commons Attribution license requirements, the following adaptations and modifications were made to the original BodyParts3D 4.0 models to create the Maganis Muscle Atlas static assets:
+
+1. Mesh Extraction & Anatomical Grouping:
+   Individual 3D polygon meshes in Wavefront OBJ format were retrieved from BodyParts3D Release 4.0. Symmetrical bilateral mesh pairs (left and right sides, e.g., FJ1447 and FJ1447M) and anatomical sub-parts were combined and unioned to represent 48 distinct anatomical muscle entities defined in data/atlas_muscles.json.
+
+2. Anatomical Sub-Head Resolutions:
+   The entity "flexor carpi ulnaris" was constructed by resolving and unioning its two constituent anatomical heads cataloged in BodyParts3D: the humeral head of flexor carpi ulnaris (FMA38615, meshes FJ1473, FJ1473M) and the ulnar head of flexor carpi ulnaris (FMA38616, meshes FJ1518, FJ1518M).
+
+3. Geometric Derivations:
+   The mesh representing the sternocostal part of pectoralis major (FMA34696, meshes FJ1464, FJ1464M) was geometrically partitioned along its vertical (Z-axis) extent: the upper 65% of triangles were assigned to the sternal head (pec_sternal), and the lower 35% were assigned to the costal head (pec_costal), marked as derived: true.
+
+4. 2D Orthographic Projections & Occlusion Calculation:
+   The 3D meshes were aligned in anatomical coordinate space and rendered orthographically from two opposite viewpoints: Anterior (facing the front of the body from Y = -1500 mm) and Posterior (facing the back from Y = +1500 mm) onto a 1024x2048 canvas. Camera frustum parameters were set to 920 mm width by 1840 mm height, centered at Z = 786.76 mm. Hardware depth buffer testing was performed to compute exact pixel-level unoccluded visibility ratios (visible_pixels / full_pixels) for each muscle, classifying them into superficial ('S', visible_ratio >= 0.35) and deep ('D') layers.
+
+5. Vectorization into SVG Paths:
+   Pixel masks for each muscle (visible mask and full mask) and the overall human body silhouette (derived from skin mesh FJ2810 and hair mesh FJ2813) were traced into vectorized SVG paths using Potrace. These are organized into public/atlas/anterior.svg and public/atlas/posterior.svg with shared viewBox="0 0 1024 2048", carrying unique element IDs m-<id>-vis and m-<id>-full for dynamic client-side styling.
+
+6. Grayscale Depth Rasters:
+   Directional and ambient diffuse lighting passes across all muscles were rendered to produce high-resolution, lightweight grayscale reference rasters saved as public/atlas/shade-anterior.webp and public/atlas/shade-posterior.webp.
+
+7. Truthful Documentation of Missing Release 4.0 Entities:
+   Four muscle concepts (covering five atlas IDs: rectus_abdominis_upper, rectus_abdominis_lower, transversus_abdominis, lats / latissimus dorsi, and quadratus_lumborum) are genuinely absent as 3D polygon meshes in BodyParts3D Release 4.0. Per strict scientific and developmental guidelines, these missing entities are preserved in public/atlas/atlas-meta.json and documented with missing: true rather than being artificially synthesized or renamed.

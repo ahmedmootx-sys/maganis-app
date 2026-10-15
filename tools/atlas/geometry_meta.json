@@ -1,0 +1,875 @@
+[
+  {
+    "id": "pec_clavicular",
+    "ar": "الصدرية الكبرى – الرأس الترقوي (الصدر العلوي)",
+    "en": "Pectoralis major, clavicular head",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1447",
+      "FJ1447M"
+    ],
+    "posOffset": 0,
+    "posCount": 8961,
+    "idxOffset": 35844,
+    "idxCount": 11076,
+    "numVertices": 2987,
+    "numTriangles": 3692
+  },
+  {
+    "id": "pec_sternal",
+    "ar": "الصدرية الكبرى – الرأس القصي (الصدر الأوسط)",
+    "en": "Pectoralis major, sternal head",
+    "expected_views": "A",
+    "derived": true,
+    "parts_used": [
+      "FJ1464",
+      "FJ1464M"
+    ],
+    "posOffset": 80148,
+    "posCount": 32838,
+    "idxOffset": 211500,
+    "idxCount": 34872,
+    "numVertices": 10946,
+    "numTriangles": 11624
+  },
+  {
+    "id": "pec_costal",
+    "ar": "الصدرية الكبرى – الجزء الضلعي (الصدر السفلي)",
+    "en": "Pectoralis major, costal head",
+    "expected_views": "A",
+    "derived": true,
+    "parts_used": [
+      "FJ1464",
+      "FJ1464M"
+    ],
+    "posOffset": 350988,
+    "posCount": 32838,
+    "idxOffset": 482340,
+    "idxCount": 7812,
+    "numVertices": 10946,
+    "numTriangles": 2604
+  },
+  {
+    "id": "pec_minor",
+    "ar": "الصدرية الصغرى",
+    "en": "Pectoralis minor",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1456",
+      "FJ1456M"
+    ],
+    "posOffset": 513588,
+    "posCount": 40461,
+    "idxOffset": 675432,
+    "idxCount": 56808,
+    "numVertices": 13487,
+    "numTriangles": 18936
+  },
+  {
+    "id": "serratus_anterior",
+    "ar": "المنشارية الأمامية",
+    "en": "Serratus anterior",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1459",
+      "FJ1459M"
+    ],
+    "posOffset": 902664,
+    "posCount": 170745,
+    "idxOffset": 1585644,
+    "idxCount": 295272,
+    "numVertices": 56915,
+    "numTriangles": 98424
+  },
+  {
+    "id": "delt_anterior",
+    "ar": "الدالية الأمامية",
+    "en": "Anterior deltoid",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1468",
+      "FJ1468M"
+    ],
+    "posOffset": 2766732,
+    "posCount": 15588,
+    "idxOffset": 2829084,
+    "idxCount": 13236,
+    "numVertices": 5196,
+    "numTriangles": 4412
+  },
+  {
+    "id": "delt_lateral",
+    "ar": "الدالية الجانبية",
+    "en": "Lateral deltoid",
+    "expected_views": "A+P",
+    "derived": false,
+    "parts_used": [
+      "FJ1467",
+      "FJ1467M"
+    ],
+    "posOffset": 2882028,
+    "posCount": 5502,
+    "idxOffset": 2904036,
+    "idxCount": 7800,
+    "numVertices": 1834,
+    "numTriangles": 2600
+  },
+  {
+    "id": "delt_posterior",
+    "ar": "الدالية الخلفية",
+    "en": "Posterior deltoid",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1513",
+      "FJ1513M"
+    ],
+    "posOffset": 2935236,
+    "posCount": 10029,
+    "idxOffset": 2975352,
+    "idxCount": 11400,
+    "numVertices": 3343,
+    "numTriangles": 3800
+  },
+  {
+    "id": "biceps_long",
+    "ar": "ذات الرأسين العضدية – الرأس الطويل",
+    "en": "Biceps brachii, long head",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1478",
+      "FJ1478M"
+    ],
+    "posOffset": 3020952,
+    "posCount": 6276,
+    "idxOffset": 3046056,
+    "idxCount": 8556,
+    "numVertices": 2092,
+    "numTriangles": 2852
+  },
+  {
+    "id": "biceps_short",
+    "ar": "ذات الرأسين العضدية – الرأس القصير",
+    "en": "Biceps brachii, short head",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1512",
+      "FJ1512M"
+    ],
+    "posOffset": 3080280,
+    "posCount": 10446,
+    "idxOffset": 3122064,
+    "idxCount": 11136,
+    "numVertices": 3482,
+    "numTriangles": 3712
+  },
+  {
+    "id": "brachialis",
+    "ar": "العضدية",
+    "en": "Brachialis",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1486",
+      "FJ1486M"
+    ],
+    "posOffset": 3166608,
+    "posCount": 7566,
+    "idxOffset": 3196872,
+    "idxCount": 10476,
+    "numVertices": 2522,
+    "numTriangles": 3492
+  },
+  {
+    "id": "brachioradialis",
+    "ar": "العضدية الكعبرية",
+    "en": "Brachioradialis",
+    "expected_views": "A+P",
+    "derived": false,
+    "parts_used": [
+      "FJ1487",
+      "FJ1487M"
+    ],
+    "posOffset": 3238776,
+    "posCount": 19626,
+    "idxOffset": 3317280,
+    "idxCount": 29244,
+    "numVertices": 6542,
+    "numTriangles": 9748
+  },
+  {
+    "id": "forearm_flexors",
+    "ar": "عضلات الساعد القابضة",
+    "en": "Forearm flexors",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1496",
+      "FJ1496M",
+      "FJ1473",
+      "FJ1473M",
+      "FJ1518",
+      "FJ1518M",
+      "FJ1475",
+      "FJ1475M",
+      "FJ1499",
+      "FJ1499M",
+      "FJ1502",
+      "FJ1502M",
+      "FJ1497",
+      "FJ1497M"
+    ],
+    "posOffset": 3434256,
+    "posCount": 116931,
+    "idxOffset": 3901980,
+    "idxCount": 148272,
+    "numVertices": 38977,
+    "numTriangles": 49424
+  },
+  {
+    "id": "forearm_extensors",
+    "ar": "عضلات الساعد الباسطة",
+    "en": "Forearm extensors",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1490",
+      "FJ1490M",
+      "FJ1492",
+      "FJ1492M",
+      "FJ1489",
+      "FJ1489M",
+      "FJ1472",
+      "FJ1472M",
+      "FJ1517",
+      "FJ1517M",
+      "FJ1491",
+      "FJ1491M"
+    ],
+    "posOffset": 4495068,
+    "posCount": 70350,
+    "idxOffset": 4776468,
+    "idxCount": 82164,
+    "numVertices": 23450,
+    "numTriangles": 27388
+  },
+  {
+    "id": "obliques_external",
+    "ar": "المائلة الخارجية",
+    "en": "External obliques",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1452",
+      "FJ1452M"
+    ],
+    "posOffset": 5105124,
+    "posCount": 383400,
+    "idxOffset": 6638724,
+    "idxCount": 670956,
+    "numVertices": 127800,
+    "numTriangles": 223652
+  },
+  {
+    "id": "iliopsoas",
+    "ar": "الحرقفية القطنية",
+    "en": "Iliopsoas",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1431",
+      "FJ1431M",
+      "FJ1422",
+      "FJ1422M"
+    ],
+    "posOffset": 9322548,
+    "posCount": 36495,
+    "idxOffset": 9468528,
+    "idxCount": 46572,
+    "numVertices": 12165,
+    "numTriangles": 15524
+  },
+  {
+    "id": "tfl",
+    "ar": "الموترة للفافة العريضة",
+    "en": "Tensor fasciae latae",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1438",
+      "FJ1438M"
+    ],
+    "posOffset": 9654816,
+    "posCount": 6522,
+    "idxOffset": 9680904,
+    "idxCount": 7524,
+    "numVertices": 2174,
+    "numTriangles": 2508
+  },
+  {
+    "id": "sartorius",
+    "ar": "الخياطية",
+    "en": "Sartorius",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1434",
+      "FJ1434M"
+    ],
+    "posOffset": 9711000,
+    "posCount": 15789,
+    "idxOffset": 9774156,
+    "idxCount": 20664,
+    "numVertices": 5263,
+    "numTriangles": 6888
+  },
+  {
+    "id": "rectus_femoris",
+    "ar": "المستقيمة الفخذية",
+    "en": "Rectus femoris",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1433",
+      "FJ1433M"
+    ],
+    "posOffset": 9856812,
+    "posCount": 19956,
+    "idxOffset": 9936636,
+    "idxCount": 34128,
+    "numVertices": 6652,
+    "numTriangles": 11376
+  },
+  {
+    "id": "vastus_lateralis",
+    "ar": "المتسعة الوحشية",
+    "en": "Vastus lateralis",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1442",
+      "FJ1442M"
+    ],
+    "posOffset": 10073148,
+    "posCount": 23847,
+    "idxOffset": 10168536,
+    "idxCount": 40128,
+    "numVertices": 7949,
+    "numTriangles": 13376
+  },
+  {
+    "id": "vastus_medialis",
+    "ar": "المتسعة الإنسية",
+    "en": "Vastus medialis",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1443",
+      "FJ1443M"
+    ],
+    "posOffset": 10329048,
+    "posCount": 16635,
+    "idxOffset": 10395588,
+    "idxCount": 27312,
+    "numVertices": 5545,
+    "numTriangles": 9104
+  },
+  {
+    "id": "vastus_intermedius",
+    "ar": "المتسعة المتوسطة",
+    "en": "Vastus intermedius",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1441",
+      "FJ1441M"
+    ],
+    "posOffset": 10504836,
+    "posCount": 16476,
+    "idxOffset": 10570740,
+    "idxCount": 25560,
+    "numVertices": 5492,
+    "numTriangles": 8520
+  },
+  {
+    "id": "adductors",
+    "ar": "العضلات المقرّبة",
+    "en": "Adductors",
+    "expected_views": "A+P",
+    "derived": false,
+    "parts_used": [
+      "FJ1402",
+      "FJ1402M",
+      "FJ1403",
+      "FJ1403M",
+      "FJ1421",
+      "FJ1421M",
+      "FJ1401",
+      "FJ1401M",
+      "FJ1427",
+      "FJ1427M"
+    ],
+    "posOffset": 10672980,
+    "posCount": 61413,
+    "idxOffset": 10918632,
+    "idxCount": 87624,
+    "numVertices": 20471,
+    "numTriangles": 29208
+  },
+  {
+    "id": "tibialis_anterior",
+    "ar": "الظنبوبية الأمامية",
+    "en": "Tibialis anterior",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1439",
+      "FJ1439M"
+    ],
+    "posOffset": 11269128,
+    "posCount": 13230,
+    "idxOffset": 11322048,
+    "idxCount": 15060,
+    "numVertices": 4410,
+    "numTriangles": 5020
+  },
+  {
+    "id": "neck_scm",
+    "ar": "القصية الترقوية الخشائية",
+    "en": "Sternocleidomastoid",
+    "expected_views": "A",
+    "derived": false,
+    "parts_used": [
+      "FJ1573",
+      "FJ1595"
+    ],
+    "posOffset": 11382288,
+    "posCount": 38556,
+    "idxOffset": 11536512,
+    "idxCount": 61704,
+    "numVertices": 12852,
+    "numTriangles": 20568
+  },
+  {
+    "id": "trap_upper",
+    "ar": "شبه المنحرفة – العلوية",
+    "en": "Upper trapezius",
+    "expected_views": "A+P",
+    "derived": false,
+    "parts_used": [
+      "FJ1521",
+      "FJ1521M"
+    ],
+    "posOffset": 11783328,
+    "posCount": 30066,
+    "idxOffset": 11903592,
+    "idxCount": 42648,
+    "numVertices": 10022,
+    "numTriangles": 14216
+  },
+  {
+    "id": "trap_middle",
+    "ar": "شبه المنحرفة – الوسطى",
+    "en": "Middle trapezius",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1554",
+      "FJ1554M"
+    ],
+    "posOffset": 12074184,
+    "posCount": 21210,
+    "idxOffset": 12159024,
+    "idxCount": 26760,
+    "numVertices": 7070,
+    "numTriangles": 8920
+  },
+  {
+    "id": "trap_lower",
+    "ar": "شبه المنحرفة – السفلية",
+    "en": "Lower trapezius",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1520",
+      "FJ1520M"
+    ],
+    "posOffset": 12266064,
+    "posCount": 45120,
+    "idxOffset": 12446544,
+    "idxCount": 63180,
+    "numVertices": 15040,
+    "numTriangles": 21060
+  },
+  {
+    "id": "rhomboids",
+    "ar": "المعينية",
+    "en": "Rhomboids",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1536",
+      "FJ1536M",
+      "FJ1537",
+      "FJ1537M"
+    ],
+    "posOffset": 12699264,
+    "posCount": 39393,
+    "idxOffset": 12856836,
+    "idxCount": 56448,
+    "numVertices": 13131,
+    "numTriangles": 18816
+  },
+  {
+    "id": "levator_scapulae",
+    "ar": "رافعة الكتف",
+    "en": "Levator scapulae",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1532",
+      "FJ1532M"
+    ],
+    "posOffset": 13082628,
+    "posCount": 19905,
+    "idxOffset": 13162248,
+    "idxCount": 28308,
+    "numVertices": 6635,
+    "numTriangles": 9436
+  },
+  {
+    "id": "teres_major",
+    "ar": "المدورة الكبيرة",
+    "en": "Teres major",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1507",
+      "FJ1507M"
+    ],
+    "posOffset": 13275480,
+    "posCount": 6288,
+    "idxOffset": 13300632,
+    "idxCount": 6252,
+    "numVertices": 2096,
+    "numTriangles": 2084
+  },
+  {
+    "id": "teres_minor",
+    "ar": "المدورة الصغيرة",
+    "en": "Teres minor",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1508",
+      "FJ1508M"
+    ],
+    "posOffset": 13325640,
+    "posCount": 2349,
+    "idxOffset": 13335036,
+    "idxCount": 3036,
+    "numVertices": 783,
+    "numTriangles": 1012
+  },
+  {
+    "id": "infraspinatus",
+    "ar": "تحت الشوكة",
+    "en": "Infraspinatus",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1500M",
+      "FJ1500"
+    ],
+    "posOffset": 13347180,
+    "posCount": 4443,
+    "idxOffset": 13364952,
+    "idxCount": 5196,
+    "numVertices": 1481,
+    "numTriangles": 1732
+  },
+  {
+    "id": "supraspinatus",
+    "ar": "فوق الشوكة",
+    "en": "Supraspinatus",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1506",
+      "FJ1506M"
+    ],
+    "posOffset": 13385736,
+    "posCount": 5055,
+    "idxOffset": 13405956,
+    "idxCount": 5268,
+    "numVertices": 1685,
+    "numTriangles": 1756
+  },
+  {
+    "id": "triceps_long",
+    "ar": "ثلاثية الرؤوس – الرأس الطويل",
+    "en": "Triceps, long head",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1479",
+      "FJ1479M"
+    ],
+    "posOffset": 13427028,
+    "posCount": 6642,
+    "idxOffset": 13453596,
+    "idxCount": 9528,
+    "numVertices": 2214,
+    "numTriangles": 3176
+  },
+  {
+    "id": "triceps_lateral",
+    "ar": "ثلاثية الرؤوس – الرأس الوحشي",
+    "en": "Triceps, lateral head",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1477",
+      "FJ1477M"
+    ],
+    "posOffset": 13491708,
+    "posCount": 10062,
+    "idxOffset": 13531956,
+    "idxCount": 15636,
+    "numVertices": 3354,
+    "numTriangles": 5212
+  },
+  {
+    "id": "triceps_medial",
+    "ar": "ثلاثية الرؤوس – الرأس الإنسي",
+    "en": "Triceps, medial head",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1480",
+      "FJ1480M"
+    ],
+    "posOffset": 13594500,
+    "posCount": 3711,
+    "idxOffset": 13609344,
+    "idxCount": 4992,
+    "numVertices": 1237,
+    "numTriangles": 1664
+  },
+  {
+    "id": "erector_spinae",
+    "ar": "الناصبة للفقار (أسفل الظهر)",
+    "en": "Erector spinae",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1526",
+      "FJ1526M",
+      "FJ1527",
+      "FJ1527M",
+      "FJ1528",
+      "FJ1528M",
+      "FJ1533",
+      "FJ1533M",
+      "FJ1534",
+      "FJ1534M",
+      "FJ1535",
+      "FJ1535M",
+      "FJ1543",
+      "FJ1543M",
+      "FJ1544",
+      "FJ1544M"
+    ],
+    "posOffset": 13629312,
+    "posCount": 255204,
+    "idxOffset": 14650128,
+    "idxCount": 336528,
+    "numVertices": 85068,
+    "numTriangles": 112176
+  },
+  {
+    "id": "glute_max",
+    "ar": "الألوية الكبرى",
+    "en": "Gluteus maximus",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1418",
+      "FJ1418M"
+    ],
+    "posOffset": 15996240,
+    "posCount": 12318,
+    "idxOffset": 16045512,
+    "idxCount": 14256,
+    "numVertices": 4106,
+    "numTriangles": 4752
+  },
+  {
+    "id": "glute_med",
+    "ar": "الألوية الوسطى",
+    "en": "Gluteus medius",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1419",
+      "FJ1419M"
+    ],
+    "posOffset": 16102536,
+    "posCount": 13860,
+    "idxOffset": 16157976,
+    "idxCount": 20136,
+    "numVertices": 4620,
+    "numTriangles": 6712
+  },
+  {
+    "id": "glute_min",
+    "ar": "الألوية الصغرى",
+    "en": "Gluteus minimus",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1420",
+      "FJ1420M"
+    ],
+    "posOffset": 16238520,
+    "posCount": 18396,
+    "idxOffset": 16312104,
+    "idxCount": 25248,
+    "numVertices": 6132,
+    "numTriangles": 8416
+  },
+  {
+    "id": "hamstring_bf_long",
+    "ar": "الفخذية ذات الرأسين – الرأس الطويل",
+    "en": "Biceps femoris, long head",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1395",
+      "FJ1395M"
+    ],
+    "posOffset": 16413096,
+    "posCount": 17025,
+    "idxOffset": 16481196,
+    "idxCount": 30660,
+    "numVertices": 5675,
+    "numTriangles": 10220
+  },
+  {
+    "id": "hamstring_bf_short",
+    "ar": "الفخذية ذات الرأسين – الرأس القصير",
+    "en": "Biceps femoris, short head",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1444",
+      "FJ1444M"
+    ],
+    "posOffset": 16603836,
+    "posCount": 7278,
+    "idxOffset": 16632948,
+    "idxCount": 10368,
+    "numVertices": 2426,
+    "numTriangles": 3456
+  },
+  {
+    "id": "hamstring_semitendinosus",
+    "ar": "نصف الوترية",
+    "en": "Semitendinosus",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1436",
+      "FJ1436M"
+    ],
+    "posOffset": 16674420,
+    "posCount": 10860,
+    "idxOffset": 16717860,
+    "idxCount": 16272,
+    "numVertices": 3620,
+    "numTriangles": 5424
+  },
+  {
+    "id": "hamstring_semimembranosus",
+    "ar": "نصف الغشائية",
+    "en": "Semimembranosus",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1435",
+      "FJ1435M"
+    ],
+    "posOffset": 16782948,
+    "posCount": 15528,
+    "idxOffset": 16845060,
+    "idxCount": 27672,
+    "numVertices": 5176,
+    "numTriangles": 9224
+  },
+  {
+    "id": "gastrocnemius_medial",
+    "ar": "التوأمية – الرأس الإنسي",
+    "en": "Gastrocnemius, medial head",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1397",
+      "FJ1397M"
+    ],
+    "posOffset": 16955748,
+    "posCount": 13581,
+    "idxOffset": 17010072,
+    "idxCount": 23052,
+    "numVertices": 4527,
+    "numTriangles": 7684
+  },
+  {
+    "id": "gastrocnemius_lateral",
+    "ar": "التوأمية – الرأس الوحشي",
+    "en": "Gastrocnemius, lateral head",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1394",
+      "FJ1394M"
+    ],
+    "posOffset": 17102280,
+    "posCount": 10482,
+    "idxOffset": 17144208,
+    "idxCount": 18312,
+    "numVertices": 3494,
+    "numTriangles": 6104
+  },
+  {
+    "id": "soleus",
+    "ar": "النعلية",
+    "en": "Soleus",
+    "expected_views": "P",
+    "derived": false,
+    "parts_used": [
+      "FJ1437",
+      "FJ1437M"
+    ],
+    "posOffset": 17217456,
+    "posCount": 16044,
+    "idxOffset": 17281632,
+    "idxCount": 26508,
+    "numVertices": 5348,
+    "numTriangles": 8836
+  },
+  {
+    "id": "body-silhouette",
+    "posOffset": 17387664,
+    "posCount": 344793,
+    "idxOffset": 18766836,
+    "idxCount": 664164,
+    "numVertices": 114931,
+    "numTriangles": 221388
+  }
+]

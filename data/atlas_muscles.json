@@ -1,0 +1,507 @@
+{
+  "version": 1,
+  "note": "Atlas muscle ids with Arabic/English names, expected views, and the BodyParts3D part names to union for each id. Names were checked against BodyParts3D parts lists, but spelling/ids can differ by release: verify against isa_parts_list_e.txt and report anything missing. 'bp3d_optional' names are included only if present. 'derive' = geometric split of a single mesh (approximation).",
+  "muscles": [
+    {
+      "id": "pec_clavicular",
+      "ar": "الصدرية الكبرى – الرأس الترقوي (الصدر العلوي)",
+      "en": "Pectoralis major, clavicular head",
+      "expected_views": "A",
+      "bp3d": ["clavicular part of pectoralis major"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "pec_sternal",
+      "ar": "الصدرية الكبرى – الرأس القصي (الصدر الأوسط)",
+      "en": "Pectoralis major, sternal head",
+      "expected_views": "A",
+      "bp3d": [],
+      "bp3d_optional": [],
+      "derive": {
+        "from": ["sternocostal part of pectoralis major"],
+        "rule": "split by vertical extent of the mesh: upper 65% = pec_sternal, lower 35% = pec_costal (approximation, mark as derived)",
+        "part": "upper"
+      }
+    },
+    {
+      "id": "pec_costal",
+      "ar": "الصدرية الكبرى – الجزء الضلعي (الصدر السفلي)",
+      "en": "Pectoralis major, costal head",
+      "expected_views": "A",
+      "bp3d": [],
+      "bp3d_optional": [],
+      "derive": {
+        "from": ["sternocostal part of pectoralis major"],
+        "rule": "see pec_sternal",
+        "part": "lower"
+      }
+    },
+    {
+      "id": "pec_minor",
+      "ar": "الصدرية الصغرى",
+      "en": "Pectoralis minor",
+      "expected_views": "A",
+      "bp3d": ["pectoralis minor"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "serratus_anterior",
+      "ar": "المنشارية الأمامية",
+      "en": "Serratus anterior",
+      "expected_views": "A",
+      "bp3d": ["serratus anterior"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "delt_anterior",
+      "ar": "الدالية الأمامية",
+      "en": "Anterior deltoid",
+      "expected_views": "A",
+      "bp3d": ["clavicular part of deltoid"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "delt_lateral",
+      "ar": "الدالية الجانبية",
+      "en": "Lateral deltoid",
+      "expected_views": "A+P",
+      "bp3d": ["acromial part of deltoid"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "delt_posterior",
+      "ar": "الدالية الخلفية",
+      "en": "Posterior deltoid",
+      "expected_views": "P",
+      "bp3d": ["spinal part of deltoid"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "biceps_long",
+      "ar": "ذات الرأسين العضدية – الرأس الطويل",
+      "en": "Biceps brachii, long head",
+      "expected_views": "A",
+      "bp3d": ["long head of biceps brachii"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "biceps_short",
+      "ar": "ذات الرأسين العضدية – الرأس القصير",
+      "en": "Biceps brachii, short head",
+      "expected_views": "A",
+      "bp3d": ["short head of biceps brachii"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "brachialis",
+      "ar": "العضدية",
+      "en": "Brachialis",
+      "expected_views": "A",
+      "bp3d": ["brachialis"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "brachioradialis",
+      "ar": "العضدية الكعبرية",
+      "en": "Brachioradialis",
+      "expected_views": "A+P",
+      "bp3d": ["brachioradialis"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "forearm_flexors",
+      "ar": "عضلات الساعد القابضة",
+      "en": "Forearm flexors",
+      "expected_views": "A",
+      "bp3d": [
+        "flexor carpi radialis",
+        "flexor carpi ulnaris",
+        "flexor digitorum superficialis"
+      ],
+      "bp3d_optional": ["palmaris longus", "flexor digitorum profundus"],
+      "derive": null
+    },
+    {
+      "id": "forearm_extensors",
+      "ar": "عضلات الساعد الباسطة",
+      "en": "Forearm extensors",
+      "expected_views": "P",
+      "bp3d": ["extensor carpi radialis longus", "extensor digitorum"],
+      "bp3d_optional": [
+        "extensor carpi radialis brevis",
+        "extensor carpi ulnaris",
+        "extensor digiti minimi"
+      ],
+      "derive": null
+    },
+    {
+      "id": "rectus_abdominis_upper",
+      "ar": "المستقيمة البطنية – العلوية",
+      "en": "Rectus abdominis, upper",
+      "expected_views": "A",
+      "bp3d": [],
+      "bp3d_optional": [],
+      "derive": {
+        "from": ["rectus abdominis"],
+        "rule": "split at 50% of the mesh's vertical extent: upper half = upper, lower half = lower (mark as derived)",
+        "part": "upper"
+      }
+    },
+    {
+      "id": "rectus_abdominis_lower",
+      "ar": "المستقيمة البطنية – السفلية",
+      "en": "Rectus abdominis, lower",
+      "expected_views": "A",
+      "bp3d": [],
+      "bp3d_optional": [],
+      "derive": {
+        "from": ["rectus abdominis"],
+        "rule": "see rectus_abdominis_upper",
+        "part": "lower"
+      }
+    },
+    {
+      "id": "obliques_external",
+      "ar": "المائلة الخارجية",
+      "en": "External obliques",
+      "expected_views": "A",
+      "bp3d": ["external oblique"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "transversus_abdominis",
+      "ar": "البطنية المستعرضة",
+      "en": "Transversus abdominis",
+      "expected_views": "A",
+      "bp3d": ["transversus abdominis"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "iliopsoas",
+      "ar": "الحرقفية القطنية",
+      "en": "Iliopsoas",
+      "expected_views": "A",
+      "bp3d": ["psoas major", "iliacus"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "tfl",
+      "ar": "الموترة للفافة العريضة",
+      "en": "Tensor fasciae latae",
+      "expected_views": "A",
+      "bp3d": ["tensor fasciae latae"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "sartorius",
+      "ar": "الخياطية",
+      "en": "Sartorius",
+      "expected_views": "A",
+      "bp3d": ["sartorius"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "rectus_femoris",
+      "ar": "المستقيمة الفخذية",
+      "en": "Rectus femoris",
+      "expected_views": "A",
+      "bp3d": ["rectus femoris"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "vastus_lateralis",
+      "ar": "المتسعة الوحشية",
+      "en": "Vastus lateralis",
+      "expected_views": "A",
+      "bp3d": ["vastus lateralis"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "vastus_medialis",
+      "ar": "المتسعة الإنسية",
+      "en": "Vastus medialis",
+      "expected_views": "A",
+      "bp3d": ["vastus medialis"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "vastus_intermedius",
+      "ar": "المتسعة المتوسطة",
+      "en": "Vastus intermedius",
+      "expected_views": "A",
+      "bp3d": ["vastus intermedius"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "adductors",
+      "ar": "العضلات المقرّبة",
+      "en": "Adductors",
+      "expected_views": "A+P",
+      "bp3d": ["adductor longus", "adductor magnus", "gracilis"],
+      "bp3d_optional": ["adductor brevis", "pectineus"],
+      "derive": null
+    },
+    {
+      "id": "tibialis_anterior",
+      "ar": "الظنبوبية الأمامية",
+      "en": "Tibialis anterior",
+      "expected_views": "A",
+      "bp3d": ["tibialis anterior"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "neck_scm",
+      "ar": "القصية الترقوية الخشائية",
+      "en": "Sternocleidomastoid",
+      "expected_views": "A",
+      "bp3d": ["sternocleidomastoid"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "trap_upper",
+      "ar": "شبه المنحرفة – العلوية",
+      "en": "Upper trapezius",
+      "expected_views": "A+P",
+      "bp3d": ["descending part of trapezius"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "trap_middle",
+      "ar": "شبه المنحرفة – الوسطى",
+      "en": "Middle trapezius",
+      "expected_views": "P",
+      "bp3d": ["transverse part of trapezius"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "trap_lower",
+      "ar": "شبه المنحرفة – السفلية",
+      "en": "Lower trapezius",
+      "expected_views": "P",
+      "bp3d": ["ascending part of trapezius"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "rhomboids",
+      "ar": "المعينية",
+      "en": "Rhomboids",
+      "expected_views": "P",
+      "bp3d": ["rhomboid major", "rhomboid minor"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "levator_scapulae",
+      "ar": "رافعة الكتف",
+      "en": "Levator scapulae",
+      "expected_views": "P",
+      "bp3d": ["levator scapulae"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "lats",
+      "ar": "الظهرية العريضة",
+      "en": "Latissimus dorsi",
+      "expected_views": "P",
+      "bp3d": ["latissimus dorsi"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "teres_major",
+      "ar": "المدورة الكبيرة",
+      "en": "Teres major",
+      "expected_views": "P",
+      "bp3d": ["teres major"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "teres_minor",
+      "ar": "المدورة الصغيرة",
+      "en": "Teres minor",
+      "expected_views": "P",
+      "bp3d": ["teres minor"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "infraspinatus",
+      "ar": "تحت الشوكة",
+      "en": "Infraspinatus",
+      "expected_views": "P",
+      "bp3d": ["infraspinatus muscle"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "supraspinatus",
+      "ar": "فوق الشوكة",
+      "en": "Supraspinatus",
+      "expected_views": "P",
+      "bp3d": ["supraspinatus"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "triceps_long",
+      "ar": "ثلاثية الرؤوس – الرأس الطويل",
+      "en": "Triceps, long head",
+      "expected_views": "P",
+      "bp3d": ["long head of triceps brachii"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "triceps_lateral",
+      "ar": "ثلاثية الرؤوس – الرأس الوحشي",
+      "en": "Triceps, lateral head",
+      "expected_views": "P",
+      "bp3d": ["lateral head of triceps brachii"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "triceps_medial",
+      "ar": "ثلاثية الرؤوس – الرأس الإنسي",
+      "en": "Triceps, medial head",
+      "expected_views": "P",
+      "bp3d": ["medial head of triceps brachii"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "erector_spinae",
+      "ar": "الناصبة للفقار (أسفل الظهر)",
+      "en": "Erector spinae",
+      "expected_views": "P",
+      "bp3d": ["iliocostalis", "longissimus", "spinalis"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "quadratus_lumborum",
+      "ar": "المربعة القطنية",
+      "en": "Quadratus lumborum",
+      "expected_views": "P",
+      "bp3d": ["quadratus lumborum"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "glute_max",
+      "ar": "الألوية الكبرى",
+      "en": "Gluteus maximus",
+      "expected_views": "P",
+      "bp3d": ["gluteus maximus"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "glute_med",
+      "ar": "الألوية الوسطى",
+      "en": "Gluteus medius",
+      "expected_views": "P",
+      "bp3d": ["gluteus medius"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "glute_min",
+      "ar": "الألوية الصغرى",
+      "en": "Gluteus minimus",
+      "expected_views": "P",
+      "bp3d": ["gluteus minimus"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "hamstring_bf_long",
+      "ar": "الفخذية ذات الرأسين – الرأس الطويل",
+      "en": "Biceps femoris, long head",
+      "expected_views": "P",
+      "bp3d": ["long head of biceps femoris"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "hamstring_bf_short",
+      "ar": "الفخذية ذات الرأسين – الرأس القصير",
+      "en": "Biceps femoris, short head",
+      "expected_views": "P",
+      "bp3d": ["short head of biceps femoris"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "hamstring_semitendinosus",
+      "ar": "نصف الوترية",
+      "en": "Semitendinosus",
+      "expected_views": "P",
+      "bp3d": ["semitendinosus"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "hamstring_semimembranosus",
+      "ar": "نصف الغشائية",
+      "en": "Semimembranosus",
+      "expected_views": "P",
+      "bp3d": ["semimembranosus"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "gastrocnemius_medial",
+      "ar": "التوأمية – الرأس الإنسي",
+      "en": "Gastrocnemius, medial head",
+      "expected_views": "P",
+      "bp3d": ["medial head of gastrocnemius"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "gastrocnemius_lateral",
+      "ar": "التوأمية – الرأس الوحشي",
+      "en": "Gastrocnemius, lateral head",
+      "expected_views": "P",
+      "bp3d": ["lateral head of gastrocnemius"],
+      "bp3d_optional": [],
+      "derive": null
+    },
+    {
+      "id": "soleus",
+      "ar": "النعلية",
+      "en": "Soleus",
+      "expected_views": "P",
+      "bp3d": ["soleus"],
+      "bp3d_optional": [],
+      "derive": null
+    }
+  ]
+}

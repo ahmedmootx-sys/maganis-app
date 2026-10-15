@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maganis Muscle Atlas – Inspector & Debug Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #090a0f;
+      --bg-card: #12141c;
+      --bg-card-hover: #1b1e2b;
+      --border: #232738;
+      --text: #f1f3f9;
+      --text-muted: #8b92a5;
+      --primary: #ef4444;
+      --secondary: #eab308;
+      --accent: #3b82f6;
+      --success: #10b981;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-base);
+      color: var(--text);
+      font-family: 'Cairo', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .sanity-banner {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .main-layout { grid-template-columns: 1fr; }
+    }
+
+    /* Sidebar Controls */
+    .sidebar {
+      background: var(--bg-card);
+      border-inline-end: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 73px);
+      overflow: hidden;
+    }
+
+    .sidebar-controls {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .control-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-base);
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .btn-toggle {
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-toggle.active {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-action:hover {
+      background: var(--bg-card-hover);
+      color: var(--text);
+    }
+
+    .muscle-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .muscle-card {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .muscle-card:hover {
+      background: var(--bg-card-hover);
+      border-color: #383f58;
+    }
+
+    .muscle-card.active-primary {
+      border-color: var(--primary);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .muscle-card.active-secondary {
+      border-color: var(--secondary);
+      background: rgba(234, 179, 8, 0.1);
+    }
+
+    .muscle-card.is-missing {
+      opacity: 0.45;
+    }
+
+    .card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .card-ar {
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-en {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      direction: ltr;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badges {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-layer-s { background: #064e3b; color: #6ee7b7; }
+    .badge-layer-d { background: #1e293b; color: #94a3b8; }
+    .badge-view { background: #1e1b4b; color: #a5b4fc; }
+    .badge-derived { background: #451a03; color: #fdba74; }
+    .badge-missing { background: #450a0a; color: #fca5a5; }
+
+    /* Viewer Stage */
+    .viewer-stage {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 73px);
+      overflow-y: auto;
+      padding: 24px;
+      gap: 20px;
+    }
+
+    .figures-container {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .figure-pane {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .figure-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .figure-frame {
+      position: relative;
+      width: 400px;
+      height: 800px;
+      background: #0d0f15;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .figure-frame img.shade-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 1;
+    }
+
+    .figure-frame svg.atlas-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    .figure-frame svg.anchor-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Muscle styling inside SVG */
+    .muscle-vis, .muscle-full {
+      cursor: pointer;
+      transition: fill 0.15s ease, opacity 0.15s ease;
+      fill: transparent;
+    }
+
+    .muscle-vis:hover, .muscle-full:hover {
+      fill: rgba(59, 130, 246, 0.6) !important;
+    }
+
+    .muscle-vis.highlight-primary, .muscle-full.highlight-primary {
+      fill: var(--primary) !important;
+      opacity: 0.9 !important;
+    }
+
+    .muscle-vis.highlight-secondary, .muscle-full.highlight-secondary {
+      fill: var(--secondary) !important;
+      opacity: 0.9 !important;
+    }
+
+    /* Tooltip */
+    #tooltip {
+      position: fixed;
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      pointer-events: none;
+      z-index: 9999;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      max-width: 280px;
+    }
+
+    #tooltip .tt-title { font-weight: 700; color: white; margin-bottom: 4px; }
+    #tooltip .tt-en { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; direction: ltr; }
+    #tooltip .tt-stat { display: flex; justify-content: space-between; gap: 8px; font-size: 0.75rem; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-logo">M</div>
+      <div>
+        <div class="brand-title">أطلس مجانيس العضلي – أداة الفحص والتصحيح</div>
+        <div class="brand-subtitle">BodyParts3D 4.0 Static Anatomical Atlas Inspector</div>
+      </div>
+    </div>
+    <div id="sanity-check" class="sanity-banner">
+      <span>✓</span>
+      <span>فحص الاتجاه التشريحي: سليم (الصدر الأيمن يقع في يسار الناظر في المنظر الأمامي)</span>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-controls">
+        <div class="search-box">
+          <input type="text" id="search-input" class="search-input" placeholder="بحث باسم العضلة (عربي أو إنجليزي)...">
+        </div>
+
+        <div class="control-row">
+          <span class="control-label">لون التحديد النشط:</span>
+          <div class="btn-group">
+            <button class="btn-toggle active" id="btn-color-primary" style="color: var(--primary);">أساسي (أحمر)</button>
+            <button class="btn-toggle" id="btn-color-secondary" style="color: var(--secondary);">ثانوي (أصفر)</button>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <span class="control-label">قناع العضلة:</span>
+          <div class="btn-group">
+            <button class="btn-toggle active" id="btn-mask-vis">الظاهر (Visible)</button>
+            <button class="btn-toggle" id="btn-mask-full">الكامل (Full)</button>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <span class="control-label">الطبقات:</span>
+          <div class="btn-group">
+            <button class="btn-toggle active" id="btn-layer-all">الكل</button>
+            <button class="btn-toggle" id="btn-layer-s">سطحي (S)</button>
+            <button class="btn-toggle" id="btn-layer-d">عميق (D)</button>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <span class="control-label">نقاط التسمية (Anchors):</span>
+          <div class="btn-group">
+            <button class="btn-toggle" id="btn-toggle-anchors">إظهار النقاط</button>
+          </div>
+        </div>
+
+        <div class="slider-row">
+          <span class="control-label">تظليل الويب بي (WebP):</span>
+          <input type="range" id="shade-opacity" min="0" max="100" value="80">
+          <span id="shade-opacity-val" style="font-size: 0.8rem; width: 32px;">80%</span>
+        </div>
+
+        <div class="actions-bar">
+          <button class="btn-action" id="btn-select-all">تحديد الكل</button>
+          <button class="btn-action" id="btn-clear-all">إلغاء التحديد</button>
+          <button class="btn-action" id="btn-select-ant">عضلات المنظر الأمامي</button>
+          <button class="btn-action" id="btn-select-post">عضلات المنظر الخلفي</button>
+        </div>
+      </div>
+
+      <div class="muscle-list" id="muscle-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </aside>
+
+    <!-- Stage -->
+    <main class="viewer-stage">
+      <div class="figures-container">
+        <!-- Anterior View -->
+        <div class="figure-pane">
+          <div class="figure-title">المنظر الأمامي (Anterior View)</div>
+          <div class="figure-frame">
+            <img id="shade-img-ant" class="shade-layer" src="/atlas/shade-anterior.webp" alt="Shaded Anterior">
+            <div id="svg-host-ant"></div>
+            <svg id="anchor-svg-ant" class="anchor-svg" viewBox="0 0 1024 2048"></svg>
+          </div>
+        </div>
+
+        <!-- Posterior View -->
+        <div class="figure-pane">
+          <div class="figure-title">المنظر الخلفي (Posterior View)</div>
+          <div class="figure-frame">
+            <img id="shade-img-post" class="shade-layer" src="/atlas/shade-posterior.webp" alt="Shaded Posterior">
+            <div id="svg-host-post"></div>
+            <svg id="anchor-svg-post" class="anchor-svg" viewBox="0 0 1024 2048"></svg>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="tooltip">
+    <div class="tt-title" id="tt-ar"></div>
+    <div class="tt-en" id="tt-en"></div>
+    <div class="tt-stat"><span>المنظر الأنسب:</span><span id="tt-view"></span></div>
+    <div class="tt-stat"><span>الطبقة:</span><span id="tt-layer"></span></div>
+    <div class="tt-stat"><span>نسبة الظهور:</span><span id="tt-ratio"></span></div>
+    <div class="tt-stat"><span>المساحة:</span><span id="tt-area"></span></div>
+  </div>
+
+  <script>
+    let atlasMeta = null;
+    let activeColor = 'primary'; // 'primary' | 'secondary'
+    let activeMask = 'vis'; // 'vis' | 'full'
+    let activeLayerFilter = 'all'; // 'all' | 'S' | 'D'
+    let showAnchors = false;
+    const selectedMuscles = new Map(); // id -> 'primary' | 'secondary'
+
+    async function init() {
+      // 1. Fetch metadata and SVGs
+      const [metaResp, antSvgText, postSvgText] = await Promise.all([
+        fetch('/atlas/atlas-meta.json').then(r => r.json()),
+        fetch('/atlas/anterior.svg').then(r => r.text()),
+        fetch('/atlas/posterior.svg').then(r => r.text())
+      ]);
+
+      atlasMeta = metaResp;
+
+      // 2. Inject SVGs
+      document.getElementById('svg-host-ant').innerHTML = antSvgText;
+      document.getElementById('svg-host-post').innerHTML = postSvgText;
+
+      const antSvg = document.querySelector('#svg-host-ant svg');
+      const postSvg = document.querySelector('#svg-host-post svg');
+      if (antSvg) antSvg.classList.add('atlas-svg');
+      if (postSvg) postSvg.classList.add('atlas-svg');
+
+      // 3. Render Muscle List
+      renderMuscleList();
+
+      // 4. Attach event listeners
+      setupControls();
+      setupSvgInteractions();
+      renderAnchors();
+    }
+
+    function renderMuscleList(filterText = '') {
+      const listEl = document.getElementById('muscle-list');
+      listEl.innerHTML = '';
+
+      const query = filterText.toLowerCase().trim();
+
+      for (const [id, m] of Object.entries(atlasMeta.muscles)) {
+        if (query && !m.ar.toLowerCase().includes(query) && !m.en.toLowerCase().includes(query) && !id.includes(query)) {
+          continue;
+        }
+
+        if (activeLayerFilter !== 'all' && m.best_layer !== activeLayerFilter && !m.missing) {
+          continue;
+        }
+
+        const card = document.createElement('div');
+        card.className = `muscle-card ${m.missing ? 'is-missing' : ''}`;
+        card.id = `card-${id}`;
+
+        const sel = selectedMuscles.get(id);
+        if (sel === 'primary') card.classList.add('active-primary');
+        if (sel === 'secondary') card.classList.add('active-secondary');
+
+        card.innerHTML = `
+          <div class="card-info">
+            <div class="card-ar">${m.ar}</div>
+            <div class="card-en">${m.en}</div>
+          </div>
+          <div class="badges">
+            ${m.missing ? '<span class="badge badge-missing">مفقود</span>' : ''}
+            ${m.derived ? '<span class="badge badge-derived">مشتق</span>' : ''}
+            <span class="badge badge-view">${m.expected_views}</span>
+            <span class="badge ${m.best_layer === 'S' ? 'badge-layer-s' : 'badge-layer-d'}">${m.best_layer}</span>
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          toggleMuscleSelection(id);
+        });
+
+        card.addEventListener('mouseenter', () => {
+          highlightHover(id, true);
+        });
+        card.addEventListener('mouseleave', () => {
+          highlightHover(id, false);
+        });
+
+        listEl.appendChild(card);
+      }
+    }
+
+    function toggleMuscleSelection(id) {
+      if (selectedMuscles.get(id) === activeColor) {
+        selectedMuscles.delete(id);
+      } else {
+        selectedMuscles.set(id, activeColor);
+      }
+      updateVisuals();
+    }
+
+    function updateVisuals() {
+      // Update cards
+      for (const id of Object.keys(atlasMeta.muscles)) {
+        const card = document.getElementById(`card-${id}`);
+        if (card) {
+          card.classList.remove('active-primary', 'active-secondary');
+          const sel = selectedMuscles.get(id);
+          if (sel === 'primary') card.classList.add('active-primary');
+          if (sel === 'secondary') card.classList.add('active-secondary');
+        }
+      }
+
+      // Update SVG paths
+      const allPaths = document.querySelectorAll('.atlas-svg path[data-muscle]');
+      allPaths.forEach(path => {
+        const id = path.getAttribute('data-muscle');
+        const isVis = path.id.endsWith('-vis');
+        const isFull = path.id.endsWith('-full');
+
+        // Toggle visibility between vis and full
+        if (activeMask === 'vis') {
+          if (isFull) path.style.display = 'none';
+          if (isVis) path.style.display = '';
+        } else {
+          if (isFull) path.style.display = '';
+          if (isVis) path.style.display = 'none';
+        }
+
+        path.classList.remove('highlight-primary', 'highlight-secondary');
+        const sel = selectedMuscles.get(id);
+        if (sel === 'primary') path.classList.add('highlight-primary');
+        if (sel === 'secondary') path.classList.add('highlight-secondary');
+      });
+    }
+
+    function highlightHover(id, enter) {
+      const paths = document.querySelectorAll(`.atlas-svg path[data-muscle="${id}"]`);
+      paths.forEach(p => {
+        if (enter) {
+          p.dataset.hovered = 'true';
+          p.style.fill = 'rgba(59, 130, 246, 0.7)';
+        } else {
+          delete p.dataset.hovered;
+          p.style.fill = '';
+        }
+      });
+    }
+
+    function setupControls() {
+      // Search
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        renderMuscleList(e.target.value);
+      });
+
+      // Color toggles
+      document.getElementById('btn-color-primary').addEventListener('click', () => {
+        activeColor = 'primary';
+        document.getElementById('btn-color-primary').classList.add('active');
+        document.getElementById('btn-color-secondary').classList.remove('active');
+      });
+      document.getElementById('btn-color-secondary').addEventListener('click', () => {
+        activeColor = 'secondary';
+        document.getElementById('btn-color-secondary').classList.add('active');
+        document.getElementById('btn-color-primary').classList.remove('active');
+      });
+
+      // Mask toggles
+      document.getElementById('btn-mask-vis').addEventListener('click', () => {
+        activeMask = 'vis';
+        document.getElementById('btn-mask-vis').classList.add('active');
+        document.getElementById('btn-mask-full').classList.remove('active');
+        updateVisuals();
+      });
+      document.getElementById('btn-mask-full').addEventListener('click', () => {
+        activeMask = 'full';
+        document.getElementById('btn-mask-full').classList.add('active');
+        document.getElementById('btn-mask-vis').classList.remove('active');
+        updateVisuals();
+      });
+
+      // Layer filter
+      const setLayer = (l, btn) => {
+        activeLayerFilter = l;
+        document.querySelectorAll('#btn-layer-all, #btn-layer-s, #btn-layer-d').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderMuscleList(document.getElementById('search-input').value);
+      };
+      document.getElementById('btn-layer-all').addEventListener('click', function() { setLayer('all', this); });
+      document.getElementById('btn-layer-s').addEventListener('click', function() { setLayer('S', this); });
+      document.getElementById('btn-layer-d').addEventListener('click', function() { setLayer('D', this); });
+
+      // Shade opacity
+      const shadeRange = document.getElementById('shade-opacity');
+      const shadeVal = document.getElementById('shade-opacity-val');
+      shadeRange.addEventListener('input', () => {
+        const val = shadeRange.value;
+        shadeVal.innerText = `${val}%`;
+        document.getElementById('shade-img-ant').style.opacity = val / 100;
+        document.getElementById('shade-img-post').style.opacity = val / 100;
+      });
+
+      // Anchors toggle
+      const btnAnchors = document.getElementById('btn-toggle-anchors');
+      btnAnchors.addEventListener('click', () => {
+        showAnchors = !showAnchors;
+        btnAnchors.classList.toggle('active', showAnchors);
+        document.getElementById('anchor-svg-ant').style.display = showAnchors ? 'block' : 'none';
+        document.getElementById('anchor-svg-post').style.display = showAnchors ? 'block' : 'none';
+      });
+
+      // Action buttons
+      document.getElementById('btn-select-all').addEventListener('click', () => {
+        for (const [id, m] of Object.entries(atlasMeta.muscles)) {
+          if (!m.missing) selectedMuscles.set(id, 'primary');
+        }
+        updateVisuals();
+      });
+      document.getElementById('btn-clear-all').addEventListener('click', () => {
+        selectedMuscles.clear();
+        updateVisuals();
+      });
+      document.getElementById('btn-select-ant').addEventListener('click', () => {
+        selectedMuscles.clear();
+        for (const [id, m] of Object.entries(atlasMeta.muscles)) {
+          if (m.expected_views.includes('A') && !m.missing) selectedMuscles.set(id, 'primary');
+        }
+        updateVisuals();
+      });
+      document.getElementById('btn-select-post').addEventListener('click', () => {
+        selectedMuscles.clear();
+        for (const [id, m] of Object.entries(atlasMeta.muscles)) {
+          if (m.expected_views.includes('P') && !m.missing) selectedMuscles.set(id, 'primary');
+        }
+        updateVisuals();
+      });
+    }
+
+    function setupSvgInteractions() {
+      const tooltip = document.getElementById('tooltip');
+
+      document.addEventListener('mouseover', (e) => {
+        const path = e.target.closest('path[data-muscle]');
+        if (path) {
+          const id = path.getAttribute('data-muscle');
+          const m = atlasMeta.muscles[id];
+          if (!m) return;
+
+          document.getElementById('tt-ar').innerText = m.ar;
+          document.getElementById('tt-en').innerText = m.en;
+          document.getElementById('tt-view').innerText = m.best_view === 'A' ? 'أمامي (Anterior)' : 'خلفي (Posterior)';
+          document.getElementById('tt-layer').innerText = m.best_layer === 'S' ? 'سطحي (Superficial)' : 'عميق (Deep)';
+          document.getElementById('tt-ratio').innerText = `${Math.round(m.visible_ratio * 100)}%`;
+          document.getElementById('tt-area').innerText = `${m.area_px.toLocaleString()} px`;
+
+          tooltip.style.display = 'block';
+        }
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (tooltip.style.display === 'block') {
+          tooltip.style.left = `${e.clientX + 16}px`;
+          tooltip.style.top = `${e.clientY + 16}px`;
+        }
+      });
+
+      document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('path[data-muscle]')) {
+          tooltip.style.display = 'none';
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        const path = e.target.closest('path[data-muscle]');
+        if (path) {
+          const id = path.getAttribute('data-muscle');
+          toggleMuscleSelection(id);
+        }
+      });
+    }
+
+    function renderAnchors() {
+      const antSvg = document.getElementById('anchor-svg-ant');
+      const postSvg = document.getElementById('anchor-svg-post');
+      antSvg.innerHTML = '';
+      postSvg.innerHTML = '';
+      antSvg.style.display = 'none';
+      postSvg.style.display = 'none';
+
+      for (const [id, m] of Object.entries(atlasMeta.muscles)) {
+        if (m.missing) continue;
+
+        if (m.anchors.A) {
+          const [x, y] = m.anchors.A;
+          antSvg.innerHTML += `
+            <g class="anchor-marker" data-muscle="${id}">
+              <circle cx="${x}" cy="${y}" r="8" fill="#ef4444" stroke="#ffffff" stroke-width="2" />
+              <text x="${x + 12}" y="${y + 4}" fill="#ffffff" font-size="16" font-family="sans-serif" font-weight="bold">${m.ar.split('–')[0].trim()}</text>
+            </g>
+          `;
+        }
+
+        if (m.anchors.P) {
+          const [x, y] = m.anchors.P;
+          postSvg.innerHTML += `
+            <g class="anchor-marker" data-muscle="${id}">
+              <circle cx="${x}" cy="${y}" r="8" fill="#eab308" stroke="#ffffff" stroke-width="2" />
+              <text x="${x + 12}" y="${y + 4}" fill="#ffffff" font-size="16" font-family="sans-serif" font-weight="bold">${m.ar.split('–')[0].trim()}</text>
+            </g>
+          `;
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

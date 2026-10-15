@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Maganis Atlas Headless Renderer</title>
+  <style>
+    body { margin: 0; background: #000; overflow: hidden; }
+    canvas { width: 1024px; height: 2048px; }
+  </style>
+</head>
+<body>
+<div id="status" style="color: white; font-family: sans-serif; padding: 20px;">Loading geometry...</div>
+
+<script type="module">
+import * as THREE from '/three.module.js';
+
+function remoteLog(msg) {
+  console.log(msg);
+  fetch('/api/log', { method: 'POST', body: String(msg) }).catch(() => {});
+}
+
+window.onerror = (msg, url, line, col, err) => {
+  remoteLog(`[CLIENT ERROR] ${msg} at ${line}:${col} - ${err ? err.stack : ''}`);
+};
+
+window.onunhandledrejection = (event) => {
+  remoteLog(`[CLIENT PROMISE REJECTION] ${event.reason ? (event.reason.stack || event.reason) : event}`);
+};
+
+function encodeRLE(mask) {
+  const rle = [];
+  let currentVal = mask[0];
+  let count = 0;
+  for (let i = 0; i < mask.length; i++) {
+    if (mask[i] === currentVal) {
+      count++;
+    } else {
+      rle.push(count);
+      currentVal = mask[i];
+      count = 1;
+    }
+  }
+  rle.push(count);
+  return { firstVal: mask[0], rle };
+}
+
+function flipY(src, width, height) {
+  const dst = new Uint8Array(width * height);
+  for (let y = 0; y < height; y++) {
+    const srcRow = (height - 1 - y) * width;
+    const dstRow = y * width;
+    for (let x = 0; x < width; x++) {
+      dst[dstRow + x] = src[srcRow + x];
+    }
+  }
+  return dst;
+}
+
+async function run() {
+  const statusEl = document.getElementById('status');
+  remoteLog('Renderer starting. Fetching geometry layout and binary bundle...');
+  statusEl.innerText = 'Fetching geometry bundle...';
+
+  const [metaResp, binResp] = await Promise.all([
+    fetch('/geometry_meta.json'),
+    fetch('/geometry_bundle.bin')
+  ]);
+
+  const metaList = await metaResp.json();
+  const buf = await binResp.arrayBuffer();
+
+  remoteLog(`Loaded geometry bundle: ${metaList.length} items, ${(buf.byteLength / 1024 / 1024).toFixed(2)} MB`);
+
+  const items = [];
+  for (const item of metaList) {
+    const positions = new Float32Array(buf, item.posOffset, item.posCount);
+    const indices = new Uint32Array(buf, item.idxOffset, item.idxCount);
+    items.push({ id: item.id, positions, indices });
+  }
+
+  statusEl.innerText = `Parsed ${items.length} items. Initializing Three.js...`;
+
+  const W_CANVAS = 1024;
+  const H_CANVAS = 2048;
+
+  const renderer = new THREE.WebGLRenderer({
+    antialias: false,
+    preserveDrawingBuffer: true,
+    alpha: true
+  });
+  renderer.setSize(W_CANVAS, H_CANVAS);
+  renderer.setPixelRatio(1);
+  renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+  renderer.setClearColor(0x000000, 0);
+  document.body.appendChild(renderer.domElement);
+  const gl = renderer.getContext();
+
+  const scene = new THREE.Scene();
+
+  const H_FRUSTUM = 1840;
+  const W_FRUSTUM = 920;
+  const zCenter = 786.76;
+
+  const camA = new THREE.OrthographicCamera(
+    -W_FRUSTUM / 2, W_FRUSTUM / 2,
+    H_FRUSTUM / 2, -H_FRUSTUM / 2,
+    100, 3000
+  );
+  camA.position.set(0, -1500, zCenter);
+  camA.up.set(0, 0, 1);
+  camA.lookAt(0, 0, zCenter);
+  camA.updateMatrixWorld();
+  camA.updateProjectionMatrix();
+
+  const camP = new THREE.OrthographicCamera(
+    -W_FRUSTUM / 2, W_FRUSTUM / 2,
+    H_FRUSTUM / 2, -H_FRUSTUM / 2,
+    100, 3000
+  );
+  camP.position.set(0, 1500, zCenter);
+  camP.up.set(0, 0, 1);
+  camP.lookAt(0, 0, zCenter);
+  camP.updateMatrixWorld();
+  camP.updateProjectionMatrix();
+
+  // Lighting for shade pass
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+  const dirLightA1 = new THREE.DirectionalLight(0xffffff, 0.75);
+  dirLightA1.position.set(0, -1500, 1400);
+  const dirLightA2 = new THREE.DirectionalLight(0xffffff, 0.35);
+  dirLightA2.position.set(0, 1500, 600);
+
+  const dirLightP1 = new THREE.DirectionalLight(0xffffff, 0.75);
+  dirLightP1.position.set(0, 1500, 1400);
+  const dirLightP2 = new THREE.DirectionalLight(0xffffff, 0.35);
+  dirLightP2.position.set(0, -1500, 600);
+
+  const lightGroup = new THREE.Group();
+  lightGroup.add(ambientLight);
+  scene.add(lightGroup);
+
+  const shadeMat = new THREE.MeshStandardMaterial({
+    color: 0x909498,
+    roughness: 0.55,
+    metalness: 0.08
+  });
+
+  const basicWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+  const idVertexShader = `
+    void main() {
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `;
+  const idFragmentShader = `
+    precision mediump float;
+    uniform float uId;
+    void main() {
+      gl_FragColor = vec4(uId / 255.0, 0.0, 0.0, 1.0);
+    }
+  `;
+
+  const muscles = [];
+  let silhouetteMesh = null;
+
+  for (const item of items) {
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(item.positions, 3));
+    geom.setIndex(new THREE.BufferAttribute(item.indices, 1));
+    geom.computeVertexNormals();
+
+    if (item.id === 'body-silhouette') {
+      silhouetteMesh = new THREE.Mesh(geom, basicWhiteMat);
+      silhouetteMesh.visible = false;
+      scene.add(silhouetteMesh);
+    } else {
+      const index = muscles.length + 1; // 1-based ID: 1..48
+      const idMat = new THREE.ShaderMaterial({
+        vertexShader: idVertexShader,
+        fragmentShader: idFragmentShader,
+        uniforms: {
+          uId: { value: index }
+        },
+        depthTest: true,
+        depthWrite: true
+      });
+      const mesh = new THREE.Mesh(geom, idMat);
+      scene.add(mesh);
+      muscles.push({
+        id: item.id,
+        index,
+        mesh,
+        idMat
+      });
+    }
+  }
+
+  remoteLog(`Created 3D meshes: ${muscles.length} muscles, silhouette: ${!!silhouetteMesh}`);
+  statusEl.innerText = 'Rendering Shading passes...';
+
+  // 1. Shading pass: Anterior
+  for (const m of muscles) {
+    m.mesh.material = shadeMat;
+    m.mesh.visible = true;
+  }
+  if (silhouetteMesh) silhouetteMesh.visible = false;
+
+  lightGroup.add(dirLightA1);
+  lightGroup.add(dirLightA2);
+  renderer.render(scene, camA);
+  const shadeAnteriorDataUrl = renderer.domElement.toDataURL('image/webp', 0.82);
+
+  // 2. Shading pass: Posterior
+  lightGroup.remove(dirLightA1);
+  lightGroup.remove(dirLightA2);
+  lightGroup.add(dirLightP1);
+  lightGroup.add(dirLightP2);
+  renderer.render(scene, camP);
+  const shadePosteriorDataUrl = renderer.domElement.toDataURL('image/webp', 0.82);
+
+  // Remove lights for unlit passes
+  lightGroup.remove(dirLightP1);
+  lightGroup.remove(dirLightP2);
+
+  remoteLog('Shading passes completed.');
+  statusEl.innerText = 'Rendering ID passes...';
+
+  // 3. ID Pass: Anterior
+  for (const m of muscles) {
+    m.mesh.material = m.idMat;
+    m.mesh.visible = true;
+  }
+  renderer.render(scene, camA);
+
+  const rawPixelsA = new Uint8Array(W_CANVAS * H_CANVAS * 4);
+  gl.readPixels(0, 0, W_CANVAS, H_CANVAS, gl.RGBA, gl.UNSIGNED_BYTE, rawPixelsA);
+  const redA = new Uint8Array(W_CANVAS * H_CANVAS);
+  for (let i = 0; i < redA.length; i++) {
+    redA[i] = rawPixelsA[i * 4];
+  }
+  const idMaskA = flipY(redA, W_CANVAS, H_CANVAS);
+
+  // 4. ID Pass: Posterior
+  renderer.render(scene, camP);
+  const rawPixelsP = new Uint8Array(W_CANVAS * H_CANVAS * 4);
+  gl.readPixels(0, 0, W_CANVAS, H_CANVAS, gl.RGBA, gl.UNSIGNED_BYTE, rawPixelsP);
+  const redP = new Uint8Array(W_CANVAS * H_CANVAS);
+  for (let i = 0; i < redP.length; i++) {
+    redP[i] = rawPixelsP[i * 4];
+  }
+  const idMaskP = flipY(redP, W_CANVAS, H_CANVAS);
+
+  remoteLog('ID passes completed.');
+  statusEl.innerText = 'Rendering Full masks...';
+
+  // 5. Full (Unoccluded) Masks for each muscle
+  const fullMasksA = [];
+  const fullMasksP = [];
+
+  const tempRaw = new Uint8Array(W_CANVAS * H_CANVAS * 4);
+  const tempRed = new Uint8Array(W_CANVAS * H_CANVAS);
+
+  for (let i = 0; i < muscles.length; i++) {
+    const target = muscles[i];
+    for (let j = 0; j < muscles.length; j++) {
+      muscles[j].mesh.visible = (j === i);
+      muscles[j].mesh.material = basicWhiteMat;
+    }
+
+    // Anterior full
+    renderer.render(scene, camA);
+    gl.readPixels(0, 0, W_CANVAS, H_CANVAS, gl.RGBA, gl.UNSIGNED_BYTE, tempRaw);
+    for (let k = 0; k < tempRed.length; k++) {
+      tempRed[k] = tempRaw[k * 4] > 0 ? 1 : 0;
+    }
+    fullMasksA.push(flipY(tempRed, W_CANVAS, H_CANVAS));
+
+    // Posterior full
+    renderer.render(scene, camP);
+    gl.readPixels(0, 0, W_CANVAS, H_CANVAS, gl.RGBA, gl.UNSIGNED_BYTE, tempRaw);
+    for (let k = 0; k < tempRed.length; k++) {
+      tempRed[k] = tempRaw[k * 4] > 0 ? 1 : 0;
+    }
+    fullMasksP.push(flipY(tempRed, W_CANVAS, H_CANVAS));
+  }
+
+  remoteLog('Full mask passes completed.');
+  statusEl.innerText = 'Rendering Silhouette passes...';
+
+  // 6. Silhouette Pass
+  for (const m of muscles) m.mesh.visible = false;
+  silhouetteMesh.visible = true;
+  silhouetteMesh.material = basicWhiteMat;
+
+  // Anterior silhouette
+  renderer.render(scene, camA);
+  gl.readPixels(0, 0, W_CANVAS, H_CANVAS, gl.RGBA, gl.UNSIGNED_BYTE, tempRaw);
+  for (let k = 0; k < tempRed.length; k++) {
+    tempRed[k] = tempRaw[k * 4] > 0 ? 1 : 0;
+  }
+  const silhouetteMaskA = flipY(tempRed, W_CANVAS, H_CANVAS);
+
+  // Posterior silhouette
+  renderer.render(scene, camP);
+  gl.readPixels(0, 0, W_CANVAS, H_CANVAS, gl.RGBA, gl.UNSIGNED_BYTE, tempRaw);
+  for (let k = 0; k < tempRed.length; k++) {
+    tempRed[k] = tempRaw[k * 4] > 0 ? 1 : 0;
+  }
+  const silhouetteMaskP = flipY(tempRed, W_CANVAS, H_CANVAS);
+
+  remoteLog('Silhouette passes completed.');
+  statusEl.innerText = 'Encoding masks with RLE...';
+
+  // 7. Assemble muscle masks
+  const muscleResults = [];
+  const N_PIXELS = W_CANVAS * H_CANVAS;
+  const tempVis = new Uint8Array(N_PIXELS);
+
+  for (let i = 0; i < muscles.length; i++) {
+    const m = muscles[i];
+    const index = m.index;
+
+    // Anterior visible
+    let visCountA = 0;
+    tempVis.fill(0);
+    for (let p = 0; p < N_PIXELS; p++) {
+      if (idMaskA[p] === index) {
+        tempVis[p] = 1;
+        visCountA++;
+      }
+    }
+    const rleVisA = encodeRLE(tempVis);
+
+    // Posterior visible
+    let visCountP = 0;
+    tempVis.fill(0);
+    for (let p = 0; p < N_PIXELS; p++) {
+      if (idMaskP[p] === index) {
+        tempVis[p] = 1;
+        visCountP++;
+      }
+    }
+    const rleVisP = encodeRLE(tempVis);
+
+    // Anterior full
+    const fullMaskA = fullMasksA[i];
+    let fullCountA = 0;
+    for (let p = 0; p < N_PIXELS; p++) {
+      if (fullMaskA[p] === 1) fullCountA++;
+    }
+    const rleFullA = encodeRLE(fullMaskA);
+
+    // Posterior full
+    const fullMaskP = fullMasksP[i];
+    let fullCountP = 0;
+    for (let p = 0; p < N_PIXELS; p++) {
+      if (fullMaskP[p] === 1) fullCountP++;
+    }
+    const rleFullP = encodeRLE(fullMaskP);
+
+    muscleResults.push({
+      id: m.id,
+      index,
+      visCountA,
+      fullCountA,
+      visCountP,
+      fullCountP,
+      rleVisA,
+      rleFullA,
+      rleVisP,
+      rleFullP
+    });
+  }
+
+  remoteLog('RLE encoding finished. Packaging payload...');
+
+  const payload = {
+    width: W_CANVAS,
+    height: H_CANVAS,
+    shadeAnterior: shadeAnteriorDataUrl,
+    shadePosterior: shadePosteriorDataUrl,
+    silhouetteA: encodeRLE(silhouetteMaskA),
+    silhouetteP: encodeRLE(silhouetteMaskP),
+    muscles: muscleResults
+  };
+
+  statusEl.innerText = 'Uploading render results to server...';
+  remoteLog('Sending POST /api/upload_results...');
+
+  const uploadResp = await fetch('/api/upload_results', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  remoteLog('Upload response received. Done!');
+  statusEl.innerText = 'Render Complete! Server acknowledged.';
+}
+
+run().catch(err => {
+  remoteLog(`[CLIENT ROOT ERROR] ${err.message} - ${err.stack}`);
+  document.getElementById('status').innerText = 'ERROR: ' + err.message;
+});
+</script>
+</body>
+</html>
