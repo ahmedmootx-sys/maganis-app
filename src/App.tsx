@@ -38,6 +38,7 @@ import { Reports } from './modules/reports/Reports.tsx'
 import { BackupPanel } from './modules/backup/BackupPanel.tsx'
 import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
 import { MuscleAtlasDebug } from './modules/workout/MuscleAtlasDebug.tsx'
+import { ProgressScreen } from './modules/tracking/ProgressScreen.tsx'
 import { Toast } from './components/Toast.tsx'
 import {
   IconUser,
@@ -53,6 +54,7 @@ type TabId =
   | 'dashboard'
   | 'workouts'
   | 'nutrition'
+  | 'progress'
   | 'tracking'
   | 'reports'
   | 'settings'
@@ -65,8 +67,7 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: 'dashboard', label: 'الرئيسية', icon: <IconUser size={20} /> },
   { id: 'workouts', label: 'التدريب', icon: <IconDumbbell size={20} /> },
   { id: 'nutrition', label: 'التغذية', icon: <IconUtensils size={20} /> },
-  { id: 'tracking', label: 'التتبع', icon: <IconClipboard size={20} /> },
-  { id: 'reports', label: 'التقارير', icon: <IconTrendingUp size={20} /> },
+  { id: 'progress', label: 'التقدم', icon: <IconTrendingUp size={20} /> },
   { id: 'settings', label: 'الإعدادات', icon: <IconSettings size={20} /> },
 ]
 
@@ -380,10 +381,30 @@ export function App({ config }: AppProps) {
     [trackingStore],
   )
 
+  const handleDeleteWeight = useCallback(
+    (date: string) => {
+      const current = trackingStore.loadBodyLog()
+      const updated = current.filter((e) => e.date !== date)
+      trackingStore.saveBodyLog(updated)
+      setBodyLog(updated)
+    },
+    [trackingStore],
+  )
+
   const handleAddNote = useCallback(
     (note: DayNote) => {
       trackingStore.addDayNote(note)
       setDayNotes(trackingStore.loadDayNotes())
+    },
+    [trackingStore],
+  )
+
+  const handleDeleteNote = useCallback(
+    (date: string, noteText: string) => {
+      const current = trackingStore.loadDayNotes()
+      const updated = current.filter((n) => !(n.date === date && n.note === noteText))
+      trackingStore.saveDayNotes(updated)
+      setDayNotes(updated)
     },
     [trackingStore],
   )
@@ -675,21 +696,19 @@ export function App({ config }: AppProps) {
           />
         )
 
+      case 'progress':
       case 'tracking':
-        return (
-          <div className="tracking-tab">
-            <TrainingCalendar sessions={sessions} />
-            <BodyWeightTracker bodyLog={bodyLog} onAdd={handleAddWeight} />
-            <DayNotes notes={dayNotes} onAdd={handleAddNote} />
-          </div>
-        )
-
       case 'reports':
         return (
-          <Reports
+          <ProgressScreen
             sessions={sessions}
             bodyLog={bodyLog}
+            dayNotes={dayNotes}
             profile={profile}
+            onAddBodyWeight={handleAddWeight}
+            onDeleteBodyWeight={handleDeleteWeight}
+            onAddDayNote={handleAddNote}
+            onDeleteDayNote={handleDeleteNote}
             onUpdateSessions={(updated) => {
               setSessions(updated)
               storage.set('tracking.sessions', updated)
@@ -698,6 +717,7 @@ export function App({ config }: AppProps) {
               setBodyLog(updated)
               storage.set('tracking.body-log', updated)
             }}
+            initialSubTab={activeTab === 'reports' ? 'reports' : 'log'}
           />
         )
 
