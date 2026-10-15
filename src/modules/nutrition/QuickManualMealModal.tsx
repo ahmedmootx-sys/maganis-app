@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { CustomMeal, MealCategory } from './types.ts'
+import { Sheet } from '../../components/Sheet.tsx'
 
-interface QuickManualMealModalProps {
+export interface QuickManualMealModalProps {
   onLogMealDirect: (meal: {
     id: string
     nameAr: string
@@ -13,6 +14,13 @@ interface QuickManualMealModalProps {
   onSaveToCustomMeals?: (meal: CustomMeal) => void
   onClose: () => void
 }
+
+const CATEGORIES: { key: MealCategory; label: string }[] = [
+  { key: 'breakfast', label: 'فطور' },
+  { key: 'lunch', label: 'غداء' },
+  { key: 'dinner', label: 'عشاء' },
+  { key: 'snack', label: 'وجبة خفيفة' },
+]
 
 export function QuickManualMealModal({
   onLogMealDirect,
@@ -59,283 +67,282 @@ export function QuickManualMealModal({
   }
 
   return (
-    <div
-      className="modal-backdrop"
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '16px',
-      }}
+    <Sheet
+      isOpen={true}
+      onClose={onClose}
+      title="تسجيل وجبة سريعة بالسعرات والماكروز"
     >
-      <div
-        className="card"
-        onClick={(e) => e.stopPropagation()}
+      <form
+        onSubmit={handleSubmit}
         style={{
-          width: '100%',
-          maxWidth: '480px',
-          borderRadius: '16px',
-          padding: '20px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '8px 0 24px',
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '16px',
-            borderBottom: '1px solid var(--line)',
-            paddingBottom: '12px',
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
-            ⚡ تسجيل وجبة سريعة بالسعرات والماكروز
-          </h2>
-          <button
-            type="button"
-            className="ghost-secondary tiny"
-            onClick={onClose}
-            style={{ fontSize: '18px', lineHeight: 1 }}
+        {/* Meal Name */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <label
+            htmlFor="quick-meal-name"
+            style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}
           >
-            ✕
-          </button>
+            اسم الوجبة
+          </label>
+          <input
+            id="quick-meal-name"
+            type="text"
+            className="field-input"
+            value={nameAr}
+            onChange={(e) => setNameAr(e.target.value)}
+            placeholder="مثال: غداء خارجي، وجبة بعد التمرين..."
+            required
+            style={{
+              height: '48px',
+              width: '100%',
+              borderRadius: '10px',
+              border: '1.5px solid var(--line)',
+              padding: '0 14px',
+              fontSize: '15px',
+              background: 'var(--card-bg)',
+              color: 'var(--ink)',
+              boxSizing: 'border-box',
+            }}
+          />
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '14px' }}>
-            <label
-              style={{
-                display: 'block',
-                fontWeight: 700,
-                fontSize: '13px',
-                marginBottom: '4px',
-              }}
-            >
-              اسم الوجبة:
-            </label>
-            <input
-              type="text"
-              className="field-input"
-              value={nameAr}
-              onChange={(e) => setNameAr(e.target.value)}
-              placeholder="مثال: غداء خارجي، وجبة بعد التمرين، عشاء خفيف..."
-              required
-              style={{ width: '100%', padding: '10px' }}
-            />
-          </div>
-
-          <div style={{ marginBottom: '14px' }}>
-            <label
-              style={{
-                display: 'block',
-                fontWeight: 700,
-                fontSize: '13px',
-                marginBottom: '4px',
-              }}
-            >
-              تصنيف الوجبة:
-            </label>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: '6px',
-              }}
-            >
-              {(
-                [
-                  ['breakfast', '🌅 فطور'],
-                  ['lunch', '🍲 غداء'],
-                  ['dinner', '🌙 عشاء'],
-                  ['snack', '🥗 سناك'],
-                ] as const
-              ).map(([catKey, catLabel]) => (
-                <button
-                  key={catKey}
-                  type="button"
-                  onClick={() => setCategory(catKey)}
-                  style={{
-                    padding: '8px 4px',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    borderRadius: '8px',
-                    border:
-                      category === catKey
-                        ? '2px solid var(--accent)'
-                        : '1px solid var(--line)',
-                    background:
-                      category === catKey ? 'var(--accent)' : 'var(--card-bg)',
-                    color: category === catKey ? '#ffffff' : 'var(--ink)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {catLabel}
-                </button>
-              ))}
-            </div>
-          </div>
-
+        {/* Meal Category */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <label style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}>
+            تصنيف الوجبة
+          </label>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '10px',
-              background: 'var(--card-subtle)',
-              padding: '12px',
-              borderRadius: '10px',
-              border: '1px solid var(--line)',
-              marginBottom: '14px',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '6px',
             }}
           >
-            <div>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  marginBottom: '4px',
-                }}
-              >
-                🔥 السعرات (كالوِري):
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="5000"
-                className="field-input"
-                value={calories}
-                onChange={(e) => setCalories(Number(e.target.value))}
-                style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  marginBottom: '4px',
-                  color: '#2563eb',
-                }}
-              >
-                🥩 البروتين (جم):
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="400"
-                step="0.5"
-                className="field-input"
-                value={protein}
-                onChange={(e) => setProtein(Number(e.target.value))}
-                style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  marginBottom: '4px',
-                  color: '#ca8a04',
-                }}
-              >
-                🍞 الكاربوهيدرات (جم):
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="500"
-                step="0.5"
-                className="field-input"
-                value={carbs}
-                onChange={(e) => setCarbs(Number(e.target.value))}
-                style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  marginBottom: '4px',
-                  color: '#dc2626',
-                }}
-              >
-                🥑 الدهون (جم):
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="250"
-                step="0.5"
-                className="field-input"
-                value={fats}
-                onChange={(e) => setFats(Number(e.target.value))}
-                style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                required
-              />
-            </div>
+            {CATEGORIES.map(({ key, label }) => {
+              const isSelected = category === key
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setCategory(key)}
+                  style={{
+                    height: '42px',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    borderRadius: '8px',
+                    border: isSelected
+                      ? '2px solid var(--accent)'
+                      : '1px solid var(--line)',
+                    background: isSelected
+                      ? 'var(--accent)'
+                      : 'var(--card-subtle)',
+                    color: isSelected ? '#ffffff' : 'var(--ink)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {label}
+                </button>
+              )
+            })}
           </div>
+        </div>
 
-          <div
-            style={{
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <input
-              type="checkbox"
-              id="savePermanentCheck"
-              checked={saveAsPermanent}
-              onChange={(e) => setSaveAsPermanent(e.target.checked)}
-              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-            />
+        {/* Macros & Calories Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '12px',
+            background: 'var(--card-subtle)',
+            padding: '14px',
+            borderRadius: '12px',
+            border: '1px solid var(--line)',
+          }}
+        >
+          {/* Calories */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label
-              htmlFor="savePermanentCheck"
-              style={{ fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}
+              htmlFor="quick-meal-cal"
+              style={{ fontSize: '12.5px', fontWeight: 700 }}
             >
-              💾 احفظ هذه الوجبة أيضاً في قائمة وجباتي الدائمة للرجوع إليها
-              لاحقاً
+              السعرات (كالوِري)
             </label>
+            <input
+              id="quick-meal-cal"
+              type="number"
+              min="0"
+              max="5000"
+              value={calories}
+              onChange={(e) => setCalories(Number(e.target.value))}
+              style={{
+                height: '48px',
+                width: '100%',
+                borderRadius: '8px',
+                border: '1.5px solid var(--line)',
+                padding: '0 12px',
+                fontSize: '16px',
+                fontWeight: 700,
+                background: 'var(--card-bg)',
+                color: 'var(--ink)',
+                boxSizing: 'border-box',
+              }}
+              required
+            />
           </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              type="submit"
-              className="button-primary"
-              style={{ flex: 1, padding: '12px', fontWeight: 800 }}
+          {/* Protein */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label
+              htmlFor="quick-meal-pro"
+              style={{ fontSize: '12.5px', fontWeight: 700, color: '#3b82f6' }}
             >
-              🍽️ تسجيل في متتبع اليوم
-            </button>
-            <button
-              type="button"
-              className="ghost"
-              onClick={onClose}
-              style={{ padding: '12px 16px' }}
-            >
-              إلغاء
-            </button>
+              البروتين (جم)
+            </label>
+            <input
+              id="quick-meal-pro"
+              type="number"
+              min="0"
+              max="400"
+              step="0.5"
+              value={protein}
+              onChange={(e) => setProtein(Number(e.target.value))}
+              style={{
+                height: '48px',
+                width: '100%',
+                borderRadius: '8px',
+                border: '1.5px solid var(--line)',
+                padding: '0 12px',
+                fontSize: '16px',
+                fontWeight: 700,
+                background: 'var(--card-bg)',
+                color: 'var(--ink)',
+                boxSizing: 'border-box',
+              }}
+              required
+            />
           </div>
-        </form>
-      </div>
-    </div>
+
+          {/* Carbs */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label
+              htmlFor="quick-meal-carb"
+              style={{ fontSize: '12.5px', fontWeight: 700, color: '#eab308' }}
+            >
+              الكاربوهيدرات (جم)
+            </label>
+            <input
+              id="quick-meal-carb"
+              type="number"
+              min="0"
+              max="500"
+              step="0.5"
+              value={carbs}
+              onChange={(e) => setCarbs(Number(e.target.value))}
+              style={{
+                height: '48px',
+                width: '100%',
+                borderRadius: '8px',
+                border: '1.5px solid var(--line)',
+                padding: '0 12px',
+                fontSize: '16px',
+                fontWeight: 700,
+                background: 'var(--card-bg)',
+                color: 'var(--ink)',
+                boxSizing: 'border-box',
+              }}
+              required
+            />
+          </div>
+
+          {/* Fats */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label
+              htmlFor="quick-meal-fat"
+              style={{ fontSize: '12.5px', fontWeight: 700, color: '#ef4444' }}
+            >
+              الدهون (جم)
+            </label>
+            <input
+              id="quick-meal-fat"
+              type="number"
+              min="0"
+              max="250"
+              step="0.5"
+              value={fats}
+              onChange={(e) => setFats(Number(e.target.value))}
+              style={{
+                height: '48px',
+                width: '100%',
+                borderRadius: '8px',
+                border: '1.5px solid var(--line)',
+                padding: '0 12px',
+                fontSize: '16px',
+                fontWeight: 700,
+                background: 'var(--card-bg)',
+                color: 'var(--ink)',
+                boxSizing: 'border-box',
+              }}
+              required
+            />
+          </div>
+        </div>
+
+        {/* Save to Permanent Meals Checkbox */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            padding: '4px 0',
+          }}
+        >
+          <input
+            type="checkbox"
+            id="savePermanentCheck"
+            checked={saveAsPermanent}
+            onChange={(e) => setSaveAsPermanent(e.target.checked)}
+            style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+          />
+          <label
+            htmlFor="savePermanentCheck"
+            style={{ fontSize: '13.5px', fontWeight: 600, cursor: 'pointer' }}
+          >
+            حفظ هذه الوجبة في قائمة وجباتي الدائمة للرجوع إليها لاحقاً
+          </label>
+        </div>
+
+        {/* Actions */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            marginTop: '8px',
+          }}
+        >
+          <button
+            type="submit"
+            className="btn-primary-action full-width"
+            style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
+          >
+            تسجيل في متتبع اليوم
+          </button>
+          <button
+            type="button"
+            className="ghost-secondary full-width"
+            onClick={onClose}
+            style={{ height: '44px', fontSize: '14px' }}
+          >
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </Sheet>
   )
 }

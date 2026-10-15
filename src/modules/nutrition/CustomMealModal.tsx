@@ -11,12 +11,33 @@ import {
 } from './foodDatabase.ts'
 import type { MealCategory } from './types.ts'
 import { Select } from '../../components/Select'
+import { Sheet } from '../../components/Sheet.tsx'
+import { IconPlus, IconClose, IconTrash, IconSearch } from '../../components/Icons.tsx'
 
-interface CustomMealModalProps {
+export interface CustomMealModalProps {
   initialMeal?: CustomMeal | null
   onSave: (meal: CustomMeal) => void
   onClose: () => void
 }
+
+const CATEGORIES: { key: MealCategory; label: string }[] = [
+  { key: 'breakfast', label: 'فطور' },
+  { key: 'lunch', label: 'غداء' },
+  { key: 'dinner', label: 'عشاء' },
+  { key: 'snack', label: 'سناك' },
+]
+
+const QUICK_STAPLES = [
+  { id: 'chicken-breast-cooked', name: 'صدور فراخ', grams: 150 },
+  { id: 'cooked-white-rice', name: 'أرز مطبوخ', grams: 200 },
+  { id: 'raw-oats', name: 'شوفان', grams: 60 },
+  { id: 'egg-whole', name: 'بيض مسلوق', grams: 100 },
+  { id: 'tuna-water', name: 'تونة مصفاة', grams: 140 },
+  { id: 'cottage-cheese', name: 'جبنة قريش', grams: 150 },
+  { id: 'boiled-potato', name: 'بطاطس مسلوقة', grams: 200 },
+  { id: 'whey-protein', name: 'واي بروتين', grams: 30 },
+  { id: 'olive-oil', name: 'زيت زيتون', grams: 10 },
+]
 
 export function CustomMealModal({
   initialMeal,
@@ -144,9 +165,7 @@ export function CustomMealModal({
     }
 
     saveCustomFoodItem(newFood)
-    // Add to current meal immediately
     handleAddIngredientDirect(newFood.id, 100)
-    // Reset form
     setNewFoodName('')
     setShowAddCustomFoodForm(false)
     setIngredientSearch('')
@@ -197,904 +216,719 @@ export function CustomMealModal({
     onClose()
   }
 
-  const QUICK_STAPLES = [
-    { id: 'chicken-breast-cooked', name: '🍗 صدور فراخ', grams: 150 },
-    { id: 'cooked-white-rice', name: '🍚 أرز مطبوخ', grams: 200 },
-    { id: 'raw-oats', name: '🥣 شوفان', grams: 60 },
-    { id: 'egg-whole', name: '🥚 بيض مسلوق', grams: 100 },
-    { id: 'tuna-water', name: '🐟 تونة مصفاة', grams: 140 },
-    { id: 'cottage-cheese', name: '🧀 جبنة قريش', grams: 150 },
-    { id: 'boiled-potato', name: '🥔 بطاطس مسلوقة', grams: 200 },
-    { id: 'whey-protein', name: '🥤 واي بروتين', grams: 30 },
-    { id: 'olive-oil', name: '🫒 زيت زيتون', grams: 10 },
-  ]
-
   return (
-    <div
-      className="modal-backdrop"
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '16px',
-      }}
+    <Sheet
+      isOpen={true}
+      onClose={onClose}
+      title={initialMeal ? 'تعديل الوجبة الخاصة' : 'تصميم وجبة خاصة وحساب الماكروز'}
     >
-      <div
-        className="card"
-        onClick={(e) => e.stopPropagation()}
+      <form
+        onSubmit={handleSubmit}
         style={{
-          width: '100%',
-          maxWidth: '560px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          borderRadius: '16px',
-          padding: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '8px 0 24px',
         }}
       >
+        {/* Meal Name */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <label
+            htmlFor="custom-meal-name"
+            style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}
+          >
+            اسم الوجبة <span style={{ color: 'var(--danger)' }}>*</span>
+          </label>
+          <input
+            id="custom-meal-name"
+            type="text"
+            className="field-input"
+            value={nameAr}
+            onChange={(e) => setNameAr(e.target.value)}
+            placeholder="مثال: غداء الضخامة (فراخ وأرز وسلطة)"
+            required
+            style={{
+              height: '48px',
+              width: '100%',
+              borderRadius: '10px',
+              border: '1.5px solid var(--line)',
+              padding: '0 14px',
+              fontSize: '15px',
+              background: 'var(--card-bg)',
+              color: 'var(--ink)',
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
+        {/* Category */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <label style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}>
+            تصنيف الوجبة
+          </label>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '6px',
+            }}
+          >
+            {CATEGORIES.map(({ key, label }) => {
+              const isSelected = category === key
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setCategory(key)}
+                  style={{
+                    height: '42px',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    borderRadius: '8px',
+                    border: isSelected
+                      ? '2px solid var(--accent)'
+                      : '1px solid var(--line)',
+                    background: isSelected
+                      ? 'var(--accent)'
+                      : 'var(--card-subtle)',
+                    color: isSelected ? '#ffffff' : 'var(--ink)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Mode Switcher */}
         <div
+          className="segmented-control"
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '16px',
-            borderBottom: '1px solid var(--line)',
-            paddingBottom: '12px',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            background: 'var(--card-subtle)',
+            padding: '4px',
+            borderRadius: '12px',
+            border: '1px solid var(--line)',
+            gap: '4px',
           }}
         >
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
-            {initialMeal
-              ? '✏️ تعديل الوجبة الخاصة'
-              : '✨ تصميم وجبة خاصة وحساب الماكروز'}
-          </h2>
           <button
             type="button"
-            className="ghost-secondary tiny"
-            onClick={onClose}
-            style={{ fontSize: '18px', lineHeight: 1 }}
+            onClick={() => setMode('ingredients')}
+            style={{
+              height: '42px',
+              borderRadius: '8px',
+              border: 'none',
+              fontWeight: 700,
+              fontSize: '13.5px',
+              cursor: 'pointer',
+              background:
+                mode === 'ingredients' ? 'var(--card-bg)' : 'transparent',
+              color:
+                mode === 'ingredients' ? 'var(--ink)' : 'var(--muted)',
+              boxShadow:
+                mode === 'ingredients' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+              transition: 'all 0.15s ease',
+            }}
           >
-            ✕
+            حاسبة المكونات (بالجرام)
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('direct')}
+            style={{
+              height: '42px',
+              borderRadius: '8px',
+              border: 'none',
+              fontWeight: 700,
+              fontSize: '13.5px',
+              cursor: 'pointer',
+              background:
+                mode === 'direct' ? 'var(--card-bg)' : 'transparent',
+              color: mode === 'direct' ? 'var(--ink)' : 'var(--muted)',
+              boxShadow:
+                mode === 'direct' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            إدخال الماكروز المباشر
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          {/* Meal Name */}
-          <div style={{ marginBottom: '14px' }}>
-            <label
-              style={{
-                display: 'block',
-                fontWeight: 700,
-                fontSize: '13.5px',
-                marginBottom: '6px',
-              }}
-            >
-              اسم الوجبة: <span style={{ color: 'red' }}>*</span>
-            </label>
-            <input
-              type="text"
-              className="field-input"
-              value={nameAr}
-              onChange={(e) => setNameAr(e.target.value)}
-              placeholder="مثال: غداء الضخامة (فراخ وأرز وسلطة)"
-              required
-              style={{ width: '100%', padding: '10px', borderRadius: '8px' }}
-            />
-          </div>
-
-          {/* Category */}
-          <div style={{ marginBottom: '16px' }}>
-            <label
-              style={{
-                display: 'block',
-                fontWeight: 700,
-                fontSize: '13.5px',
-                marginBottom: '6px',
-              }}
-            >
-              تصنيف الوجبة:
-            </label>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: '6px',
-              }}
-            >
-              {(
-                [
-                  ['breakfast', '🌅 فطور'],
-                  ['lunch', '🍲 غداء'],
-                  ['dinner', '🌙 عشاء'],
-                  ['snack', '🥗 سناك'],
-                ] as const
-              ).map(([catKey, catLabel]) => {
-                const isSelected = category === catKey
-                return (
-                  <button
-                    key={catKey}
-                    type="button"
-                    onClick={() => setCategory(catKey)}
-                    style={{
-                      padding: '8px 4px',
-                      fontSize: '12.5px',
-                      fontWeight: 700,
-                      borderRadius: '8px',
-                      border: isSelected
-                        ? '2px solid var(--accent)'
-                        : '1px solid var(--line)',
-                      background: isSelected
-                        ? 'var(--accent)'
-                        : 'var(--card-bg)',
-                      color: isSelected ? '#ffffff' : 'var(--ink)',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    {catLabel}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Mode Switcher */}
+        {/* Mode 1: Ingredients Builder */}
+        {mode === 'ingredients' && (
           <div
             style={{
-              display: 'flex',
               background: 'var(--card-subtle)',
-              padding: '4px',
-              borderRadius: '10px',
-              marginBottom: '16px',
-              border: '1px solid var(--line)',
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => setMode('ingredients')}
-              style={{
-                flex: 1,
-                padding: '8px',
-                borderRadius: '8px',
-                border: 'none',
-                fontWeight: 700,
-                fontSize: '13px',
-                cursor: 'pointer',
-                background:
-                  mode === 'ingredients' ? 'var(--card-bg)' : 'transparent',
-                color:
-                  mode === 'ingredients' ? 'var(--accent)' : 'var(--muted)',
-                boxShadow:
-                  mode === 'ingredients' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-              }}
-            >
-              ⚖️ حاسبة المكونات (بالجرام)
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('direct')}
-              style={{
-                flex: 1,
-                padding: '8px',
-                borderRadius: '8px',
-                border: 'none',
-                fontWeight: 700,
-                fontSize: '13px',
-                cursor: 'pointer',
-                background:
-                  mode === 'direct' ? 'var(--card-bg)' : 'transparent',
-                color: mode === 'direct' ? 'var(--accent)' : 'var(--muted)',
-                boxShadow:
-                  mode === 'direct' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-              }}
-            >
-              ✍️ إدخال الماكروز المباشر
-            </button>
-          </div>
-
-          {/* MODE 1: INGREDIENTS BUILDER */}
-          {mode === 'ingredients' && (
-            <div
-              style={{
-                background: 'var(--card-subtle)',
-                padding: '14px',
-                borderRadius: '12px',
-                border: '1px solid var(--line)',
-                marginBottom: '16px',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '10px',
-                  flexWrap: 'wrap',
-                  gap: '6px',
-                }}
-              >
-                <h4 style={{ margin: 0, fontSize: '14px' }}>
-                  🥗 مكونات الوجبة الحالية ({ingredients.length}):
-                </h4>
-                <button
-                  type="button"
-                  className="chip-btn"
-                  onClick={() => setShowAddCustomFoodForm((prev) => !prev)}
-                  style={{
-                    fontSize: '12px',
-                    padding: '4px 10px',
-                    background: showAddCustomFoodForm
-                      ? 'var(--accent)'
-                      : 'var(--card-bg)',
-                    color: showAddCustomFoodForm ? '#fff' : 'var(--accent)',
-                    border: '1px solid var(--accent)',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                  }}
-                >
-                  {showAddCustomFoodForm
-                    ? '✕ إغلاق النموذج'
-                    : '➕ مكوّن غذائي خاص جديد'}
-                </button>
-              </div>
-
-              {/* Add Custom Food Form */}
-              {showAddCustomFoodForm && (
-                <div
-                  style={{
-                    background: 'var(--card-bg)',
-                    border: '1.5px dashed var(--accent)',
-                    padding: '12px',
-                    borderRadius: '10px',
-                    marginBottom: '14px',
-                  }}
-                >
-                  <h5 style={{ margin: '0 0 8px', fontSize: '13.5px' }}>
-                    ✨ تسجيل طعام أو مكوّن غذائي جديد في قائمتك:
-                  </h5>
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '8px',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    <div>
-                      <label style={{ fontSize: '12px', display: 'block' }}>
-                        اسم الطعام (مثال: بروتين بار):
-                      </label>
-                      <input
-                        type="text"
-                        className="field-input"
-                        value={newFoodName}
-                        onChange={(e) => setNewFoodName(e.target.value)}
-                        placeholder="اسم المكوّن"
-                        style={{ width: '100%', padding: '6px 8px' }}
-                      />
-                    </div>
-                    <div style={{ width: '100%' }}>
-                      <Select
-                        id="new-food-category-select"
-                        label="التصنيف الغذائي:"
-                        value={newFoodCategory}
-                        onChange={(val) =>
-                          setNewFoodCategory(val as FoodItem['categoryAr'])
-                        }
-                        options={[
-                          'بروتين ولحوم',
-                          'نشويات وكارب',
-                          'ألبان وأجبان',
-                          'بقوليات',
-                          'دهون ومكسرات',
-                          'فواكه وخضار',
-                          'مكملات وسناكس',
-                        ]}
-                        sheetTitle="اختر التصنيف الغذائي"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns:
-                        'repeat(auto-fit, minmax(90px, 1fr))',
-                      gap: '6px',
-                      marginBottom: '10px',
-                    }}
-                  >
-                    <div>
-                      <label style={{ fontSize: '11px', display: 'block' }}>
-                        سعرات /100ج:
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        className="field-input"
-                        value={newFoodCalories}
-                        onChange={(e) =>
-                          setNewFoodCalories(Number(e.target.value))
-                        }
-                        style={{ width: '100%', padding: '4px' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '11px', display: 'block' }}>
-                        بروتين /100ج:
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        className="field-input"
-                        value={newFoodProtein}
-                        onChange={(e) =>
-                          setNewFoodProtein(Number(e.target.value))
-                        }
-                        style={{ width: '100%', padding: '4px' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '11px', display: 'block' }}>
-                        كارب /100ج:
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        className="field-input"
-                        value={newFoodCarbs}
-                        onChange={(e) =>
-                          setNewFoodCarbs(Number(e.target.value))
-                        }
-                        style={{ width: '100%', padding: '4px' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '11px', display: 'block' }}>
-                        دهون /100ج:
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        className="field-input"
-                        value={newFoodFats}
-                        onChange={(e) => setNewFoodFats(Number(e.target.value))}
-                        style={{ width: '100%', padding: '4px' }}
-                      />
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    <button
-                      type="button"
-                      className="button-primary tiny"
-                      onClick={handleSaveNewCustomFood}
-                    >
-                      ✓ حفظ وإضافة للوجبة الآن
-                    </button>
-                    <button
-                      type="button"
-                      className="ghost tiny"
-                      onClick={() => setShowAddCustomFoodForm(false)}
-                    >
-                      إلغاء
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Current Ingredients List */}
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                  marginBottom: '14px',
-                }}
-              >
-                {ingredients.map((ing, idx) => {
-                  const food = getFoodItemById(ing.foodItemId)
-                  if (!food) return null
-                  const macros = calculateIngredientMacros(food, ing.grams)
-
-                  return (
-                    <div
-                      key={`${ing.foodItemId}-${idx}`}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        background: 'var(--card-bg)',
-                        padding: '8px 12px',
-                        borderRadius: '8px',
-                        border: '1px solid var(--line)',
-                        gap: '8px',
-                      }}
-                    >
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 700, fontSize: '13px' }}>
-                          {food.nameAr}
-                        </div>
-                        <div
-                          style={{ fontSize: '11.5px', color: 'var(--muted)' }}
-                        >
-                          {macros.calories} سعرة • {macros.protein}ج بروتين •{' '}
-                          {macros.carbs}ج كارب • {macros.fats}ج دهون
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                        }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleUpdateGrams(idx, Math.max(5, ing.grams - 25))
-                          }
-                          style={{
-                            padding: '2px 8px',
-                            borderRadius: '4px',
-                            fontWeight: 700,
-                          }}
-                        >
-                          -
-                        </button>
-                        <input
-                          type="number"
-                          min="1"
-                          max="2000"
-                          step="5"
-                          value={ing.grams}
-                          onChange={(e) =>
-                            handleUpdateGrams(idx, Number(e.target.value))
-                          }
-                          style={{
-                            width: '60px',
-                            padding: '4px',
-                            textAlign: 'center',
-                            borderRadius: '6px',
-                            border: '1px solid var(--line)',
-                            fontSize: '13px',
-                            fontWeight: 700,
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleUpdateGrams(idx, ing.grams + 25)}
-                          style={{
-                            padding: '2px 8px',
-                            borderRadius: '4px',
-                            fontWeight: 700,
-                          }}
-                        >
-                          +
-                        </button>
-                        <span
-                          style={{ fontSize: '12px', color: 'var(--muted)' }}
-                        >
-                          جم
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveIngredient(idx)}
-                          style={{
-                            background: 'var(--danger-soft)',
-                            color: 'var(--danger)',
-                            border: 'none',
-                            borderRadius: '6px',
-                            width: '26px',
-                            height: '26px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontWeight: 700,
-                          }}
-                          title="حذف المكون"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {/* Add Ingredients: Quick Staples */}
-              <div
-                style={{
-                  background: 'var(--card-bg)',
-                  padding: '12px',
-                  borderRadius: '10px',
-                  border: '1px solid var(--line)',
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    marginBottom: '8px',
-                  }}
-                >
-                  ⚡ إضافة سريعة لمكونات أساسية:
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '5px',
-                    marginBottom: '12px',
-                  }}
-                >
-                  {QUICK_STAPLES.map((quick) => (
-                    <button
-                      key={quick.id}
-                      type="button"
-                      onClick={() =>
-                        handleAddIngredientDirect(quick.id, quick.grams)
-                      }
-                      style={{
-                        padding: '4px 8px',
-                        fontSize: '11.5px',
-                        fontWeight: 600,
-                        borderRadius: '6px',
-                        border: '1px solid var(--line)',
-                        background: 'var(--card-subtle)',
-                        cursor: 'pointer',
-                        color: 'var(--ink)',
-                      }}
-                    >
-                      + {quick.name} ({quick.grams}ج)
-                    </button>
-                  ))}
-                </div>
-
-                {/* Search Bar for all foods */}
-                <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      marginBottom: '4px',
-                    }}
-                  >
-                    🔍 ابحث في جميع الأطعمة والمكونات:
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="اكتب اسم الطعام (فراخ، لحم، بيض، أرز، شوفان، عدس، تونة، موز...)"
-                    value={ingredientSearch}
-                    onChange={(e) => setIngredientSearch(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '8px 10px',
-                      fontSize: '13px',
-                      borderRadius: '6px',
-                      border: '1px solid var(--line)',
-                    }}
-                  />
-
-                  {/* Search Results Display */}
-                  {ingredientSearch.trim() && (
-                    <div
-                      style={{
-                        marginTop: '8px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '4px',
-                        maxHeight: '180px',
-                        overflowY: 'auto',
-                      }}
-                    >
-                      {searchResults.length === 0 ? (
-                        <div
-                          style={{
-                            padding: '8px',
-                            fontSize: '12px',
-                            color: 'var(--muted)',
-                            textAlign: 'center',
-                          }}
-                        >
-                          لم نجد طعاماً بهذا الاسم. يمكنك الضغط على "➕ مكوّن
-                          غذائي خاص جديد" أعلاه لإضافته!
-                        </div>
-                      ) : (
-                        searchResults.map((food) => (
-                          <div
-                            key={food.id}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              padding: '6px 10px',
-                              borderRadius: '6px',
-                              background: 'var(--card-subtle)',
-                              border: '1px solid var(--line)',
-                            }}
-                          >
-                            <div>
-                              <strong style={{ fontSize: '12.5px' }}>
-                                {food.nameAr}
-                              </strong>
-                              <span
-                                style={{
-                                  fontSize: '11px',
-                                  color: 'var(--muted)',
-                                  marginRight: '6px',
-                                }}
-                              >
-                                ({food.per100g.calories} كالوِري •{' '}
-                                {food.per100g.protein}ج بروتين / 100ج)
-                              </span>
-                            </div>
-                            <button
-                              type="button"
-                              className="button-primary tiny"
-                              onClick={() => {
-                                handleAddIngredientDirect(
-                                  food.id,
-                                  food.defaultGrams || 100,
-                                )
-                                setIngredientSearch('')
-                              }}
-                            >
-                              + أضف ({food.defaultGrams || 100}ج)
-                            </button>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* MODE 2: DIRECT MACROS INPUT */}
-          {mode === 'direct' && (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '12px',
-                background: 'var(--card-subtle)',
-                padding: '14px',
-                borderRadius: '12px',
-                border: '1px solid var(--line)',
-                marginBottom: '16px',
-              }}
-            >
-              <div>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    marginBottom: '4px',
-                  }}
-                >
-                  🔥 السعرات (Calories):
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="5000"
-                  className="field-input"
-                  value={directCalories}
-                  onChange={(e) => setDirectCalories(Number(e.target.value))}
-                  style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    marginBottom: '4px',
-                    color: '#2563eb',
-                  }}
-                >
-                  🥩 البروتين (جم):
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="500"
-                  step="0.5"
-                  className="field-input"
-                  value={directProtein}
-                  onChange={(e) => setDirectProtein(Number(e.target.value))}
-                  style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    marginBottom: '4px',
-                    color: '#ca8a04',
-                  }}
-                >
-                  🍞 الكاربوهيدرات (جم):
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="500"
-                  step="0.5"
-                  className="field-input"
-                  value={directCarbs}
-                  onChange={(e) => setDirectCarbs(Number(e.target.value))}
-                  style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    marginBottom: '4px',
-                    color: '#dc2626',
-                  }}
-                >
-                  🥑 الدهون الصحية (جم):
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="300"
-                  step="0.5"
-                  className="field-input"
-                  value={directFats}
-                  onChange={(e) => setDirectFats(Number(e.target.value))}
-                  style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                  required
-                />
-              </div>
-            </div>
-          )}
-
-          {/* LIVE SUMMARY TOTALS BOX */}
-          <div
-            style={{
-              background: 'linear-gradient(135deg, #0f172a, #1e293b)',
-              color: '#ffffff',
               padding: '14px',
               borderRadius: '12px',
-              marginBottom: '16px',
+              border: '1px solid var(--line)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
             }}
           >
-            <div
-              style={{
-                fontSize: '12.5px',
-                color: '#94a3b8',
-                marginBottom: '4px',
-              }}
-            >
-              📊 الماكروز الإجمالية المحسوبة للوجبة:
-            </div>
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'baseline',
+                alignItems: 'center',
                 flexWrap: 'wrap',
                 gap: '8px',
               }}
             >
-              <div
-                style={{ fontSize: '20px', fontWeight: 900, color: '#F95700' }}
-              >
-                {mode === 'ingredients'
-                  ? calculatedTotals.calories
-                  : directCalories}{' '}
-                <span style={{ fontSize: '13px', color: '#cbd5e1' }}>
-                  سعرة حرارية
-                </span>
-              </div>
-              <div
+              <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 800 }}>
+                مكونات الوجبة الحالية ({ingredients.length}):
+              </h4>
+              <button
+                type="button"
+                className="chip-btn"
+                onClick={() => setShowAddCustomFoodForm((prev) => !prev)}
                 style={{
-                  display: 'flex',
-                  gap: '12px',
-                  fontSize: '13px',
+                  fontSize: '12px',
+                  padding: '6px 12px',
+                  background: showAddCustomFoodForm
+                    ? 'var(--accent)'
+                    : 'var(--card-bg)',
+                  color: showAddCustomFoodForm ? '#fff' : 'var(--accent)',
+                  border: '1px solid var(--accent)',
                   fontWeight: 700,
+                  cursor: 'pointer',
+                  borderRadius: '20px',
                 }}
               >
-                <span style={{ color: '#60a5fa' }}>
-                  🥩{' '}
-                  {mode === 'ingredients'
-                    ? calculatedTotals.proteinGrams
-                    : directProtein}
-                  ج بروتين
-                </span>
-                <span style={{ color: '#facc15' }}>
-                  🍞{' '}
-                  {mode === 'ingredients'
-                    ? calculatedTotals.carbsGrams
-                    : directCarbs}
-                  ج كارب
-                </span>
-                <span style={{ color: '#f87171' }}>
-                  🥑{' '}
-                  {mode === 'ingredients'
-                    ? calculatedTotals.fatsGrams
-                    : directFats}
-                  ج دهون
-                </span>
+                {showAddCustomFoodForm
+                  ? 'إغلاق النموذج'
+                  : 'مكوّن غذائي خاص جديد'}
+              </button>
+            </div>
+
+            {/* Add Custom Food Form */}
+            {showAddCustomFoodForm && (
+              <div
+                style={{
+                  background: 'var(--card-bg)',
+                  border: '1.5px dashed var(--accent)',
+                  padding: '14px',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}
+              >
+                <div style={{ fontSize: '13px', fontWeight: 800 }}>
+                  تسجيل مكوّن غذائي جديد في قائمتك:
+                </div>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '10px',
+                  }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '12px', fontWeight: 700 }}>
+                      اسم الطعام
+                    </label>
+                    <input
+                      type="text"
+                      value={newFoodName}
+                      onChange={(e) => setNewFoodName(e.target.value)}
+                      placeholder="مثال: بروتين بار"
+                      style={{
+                        height: '44px',
+                        width: '100%',
+                        borderRadius: '8px',
+                        border: '1px solid var(--line)',
+                        padding: '0 10px',
+                        fontSize: '13.5px',
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Select
+                      id="new-food-category-select"
+                      label="التصنيف الغذائي"
+                      value={newFoodCategory}
+                      onChange={(val) =>
+                        setNewFoodCategory(val as FoodItem['categoryAr'])
+                      }
+                      options={[
+                        'بروتين ولحوم',
+                        'نشويات وكارب',
+                        'ألبان وأجبان',
+                        'بقوليات',
+                        'دهون ومكسرات',
+                        'فواكه وخضار',
+                        'مكملات وسناكس',
+                      ]}
+                      sheetTitle="اختر التصنيف الغذائي"
+                    />
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gap: '6px',
+                  }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: 700 }}>سعرات/100ج</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={newFoodCalories}
+                      onChange={(e) => setNewFoodCalories(Number(e.target.value))}
+                      style={{ height: '40px', padding: '0 6px', borderRadius: '6px', border: '1px solid var(--line)', textAlign: 'center', fontSize: '13px' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#3b82f6' }}>بروتين/100ج</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value={newFoodProtein}
+                      onChange={(e) => setNewFoodProtein(Number(e.target.value))}
+                      style={{ height: '40px', padding: '0 6px', borderRadius: '6px', border: '1px solid var(--line)', textAlign: 'center', fontSize: '13px' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#eab308' }}>كارب/100ج</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value={newFoodCarbs}
+                      onChange={(e) => setNewFoodCarbs(Number(e.target.value))}
+                      style={{ height: '40px', padding: '0 6px', borderRadius: '6px', border: '1px solid var(--line)', textAlign: 'center', fontSize: '13px' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#ef4444' }}>دهون/100ج</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value={newFoodFats}
+                      onChange={(e) => setNewFoodFats(Number(e.target.value))}
+                      style={{ height: '40px', padding: '0 6px', borderRadius: '6px', border: '1px solid var(--line)', textAlign: 'center', fontSize: '13px' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    className="btn-primary-action"
+                    onClick={handleSaveNewCustomFood}
+                    style={{ height: '40px', padding: '0 16px', fontSize: '13px' }}
+                  >
+                    حفظ وإضافة للوجبة
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost-secondary"
+                    onClick={() => setShowAddCustomFoodForm(false)}
+                    style={{ height: '40px', padding: '0 14px', fontSize: '13px' }}
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Current Ingredients List */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {ingredients.map((ing, idx) => {
+                const food = getFoodItemById(ing.foodItemId)
+                if (!food) return null
+                const macros = calculateIngredientMacros(food, ing.grams)
+
+                return (
+                  <div
+                    key={`${ing.foodItemId}-${idx}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: 'var(--card-bg)',
+                      padding: '10px 14px',
+                      borderRadius: '10px',
+                      border: '1px solid var(--line)',
+                      gap: '8px',
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--ink)' }}>
+                        {food.nameAr}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '2px' }}>
+                        {macros.calories} سعرة • {macros.protein}ج بروتين • {macros.carbs}ج كارب • {macros.fats}ج دهون
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateGrams(idx, Math.max(5, ing.grams - 25))}
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '6px',
+                          border: '1px solid var(--line)',
+                          background: 'var(--card-subtle)',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        min="1"
+                        max="2000"
+                        step="5"
+                        value={ing.grams}
+                        onChange={(e) => handleUpdateGrams(idx, Number(e.target.value))}
+                        style={{
+                          width: '64px',
+                          height: '32px',
+                          padding: '0 4px',
+                          textAlign: 'center',
+                          borderRadius: '6px',
+                          border: '1px solid var(--line)',
+                          fontSize: '14px',
+                          fontWeight: 700,
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateGrams(idx, ing.grams + 25)}
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '6px',
+                          border: '1px solid var(--line)',
+                          background: 'var(--card-subtle)',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        +
+                      </button>
+                      <span style={{ fontSize: '12px', color: 'var(--muted)' }}>جم</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveIngredient(idx)}
+                        style={{
+                          background: 'var(--danger-soft)',
+                          color: 'var(--danger)',
+                          border: 'none',
+                          borderRadius: '6px',
+                          width: '32px',
+                          height: '32px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                        title="حذف المكون"
+                      >
+                        <IconTrash size={16} />
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Quick Staples & Search */}
+            <div
+              style={{
+                background: 'var(--card-bg)',
+                padding: '12px',
+                borderRadius: '10px',
+                border: '1px solid var(--line)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+              }}
+            >
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)' }}>
+                إضافة سريعة لمكونات أساسية:
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                {QUICK_STAPLES.map((quick) => (
+                  <button
+                    key={quick.id}
+                    type="button"
+                    onClick={() => handleAddIngredientDirect(quick.id, quick.grams)}
+                    style={{
+                      padding: '6px 10px',
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      borderRadius: '8px',
+                      border: '1px solid var(--line)',
+                      background: 'var(--card-subtle)',
+                      cursor: 'pointer',
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    + {quick.name} ({quick.grams}ج)
+                  </button>
+                ))}
+              </div>
+
+              {/* Search */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
+                <label style={{ fontSize: '12.5px', fontWeight: 700 }}>
+                  ابحث في جميع الأطعمة والمكونات:
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    placeholder="اكتب اسم الطعام (فراخ، أرز، شوفان، بيض...)"
+                    value={ingredientSearch}
+                    onChange={(e) => setIngredientSearch(e.target.value)}
+                    style={{
+                      height: '44px',
+                      width: '100%',
+                      padding: '0 12px',
+                      fontSize: '13.5px',
+                      borderRadius: '8px',
+                      border: '1.5px solid var(--line)',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                {/* Search Results */}
+                {ingredientSearch.trim() && (
+                  <div
+                    style={{
+                      marginTop: '6px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                      maxHeight: '180px',
+                      overflowY: 'auto',
+                    }}
+                  >
+                    {searchResults.length === 0 ? (
+                      <div
+                        style={{
+                          padding: '10px',
+                          fontSize: '12.5px',
+                          color: 'var(--muted)',
+                          textAlign: 'center',
+                        }}
+                      >
+                        لم نجد طعاماً بهذا الاسم. يمكنك الضغط على "مكوّن غذائي خاص جديد" أعلاه لإضافته!
+                      </div>
+                    ) : (
+                      searchResults.map((food) => (
+                        <div
+                          key={food.id}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: '8px 12px',
+                            borderRadius: '8px',
+                            background: 'var(--card-subtle)',
+                            border: '1px solid var(--line)',
+                          }}
+                        >
+                          <div>
+                            <strong style={{ fontSize: '13px' }}>{food.nameAr}</strong>
+                            <span style={{ fontSize: '11.5px', color: 'var(--muted)', marginRight: '6px' }}>
+                              ({food.per100g.calories} كالوِري • {food.per100g.protein}ج بروتين / 100ج)
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            className="btn-primary-action tiny"
+                            onClick={() => {
+                              handleAddIngredientDirect(food.id, food.defaultGrams || 100)
+                              setIngredientSearch('')
+                            }}
+                            style={{ height: '32px', padding: '0 10px', fontSize: '12px' }}
+                          >
+                            + أضف ({food.defaultGrams || 100}ج)
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
+        )}
 
-          {/* Notes Input */}
-          <div style={{ marginBottom: '16px' }}>
-            <label
+        {/* Mode 2: Direct Input */}
+        {mode === 'direct' && (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '12px',
+              background: 'var(--card-subtle)',
+              padding: '14px',
+              borderRadius: '12px',
+              border: '1px solid var(--line)',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '12.5px', fontWeight: 700 }}>السعرات</label>
+              <input
+                type="number"
+                min="0"
+                max="5000"
+                value={directCalories}
+                onChange={(e) => setDirectCalories(Number(e.target.value))}
+                style={{ height: '48px', padding: '0 12px', borderRadius: '8px', border: '1.5px solid var(--line)', fontSize: '15px', fontWeight: 700, boxSizing: 'border-box' }}
+                required
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#3b82f6' }}>البروتين (جم)</label>
+              <input
+                type="number"
+                min="0"
+                max="500"
+                step="0.5"
+                value={directProtein}
+                onChange={(e) => setDirectProtein(Number(e.target.value))}
+                style={{ height: '48px', padding: '0 12px', borderRadius: '8px', border: '1.5px solid var(--line)', fontSize: '15px', fontWeight: 700, boxSizing: 'border-box' }}
+                required
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#eab308' }}>الكاربوهيدرات (جم)</label>
+              <input
+                type="number"
+                min="0"
+                max="500"
+                step="0.5"
+                value={directCarbs}
+                onChange={(e) => setDirectCarbs(Number(e.target.value))}
+                style={{ height: '48px', padding: '0 12px', borderRadius: '8px', border: '1.5px solid var(--line)', fontSize: '15px', fontWeight: 700, boxSizing: 'border-box' }}
+                required
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#ef4444' }}>الدهون (جم)</label>
+              <input
+                type="number"
+                min="0"
+                max="300"
+                step="0.5"
+                value={directFats}
+                onChange={(e) => setDirectFats(Number(e.target.value))}
+                style={{ height: '48px', padding: '0 12px', borderRadius: '8px', border: '1.5px solid var(--line)', fontSize: '15px', fontWeight: 700, boxSizing: 'border-box' }}
+                required
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Live Summary Totals Box */}
+        <div
+          style={{
+            background: 'var(--card-subtle)',
+            border: '1.5px solid var(--line)',
+            padding: '14px',
+            borderRadius: '12px',
+          }}
+        >
+          <div style={{ fontSize: '12px', color: 'var(--muted)', marginBottom: '4px', fontWeight: 600 }}>
+            الماكروز الإجمالية المحسوبة للوجبة:
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              flexWrap: 'wrap',
+              gap: '8px',
+            }}
+          >
+            <div style={{ fontSize: '20px', fontWeight: 900, color: 'var(--accent)' }}>
+              {mode === 'ingredients' ? calculatedTotals.calories : directCalories}{' '}
+              <span style={{ fontSize: '13px', color: 'var(--muted)' }}>سعرة حرارية</span>
+            </div>
+            <div
               style={{
-                display: 'block',
-                fontSize: '12.5px',
+                display: 'flex',
+                gap: '10px',
+                fontSize: '13px',
                 fontWeight: 700,
-                marginBottom: '4px',
               }}
             >
-              ملاحظات أو طريقة التحضير (اختياري):
-            </label>
-            <textarea
-              className="field-input"
-              value={notesAr}
-              onChange={(e) => setNotesAr(e.target.value)}
-              placeholder="مثال: صدور دجاج متبلة مع أرز بسمتي وسلطة خضراء."
-              rows={2}
-              style={{
-                width: '100%',
-                padding: '8px',
-                borderRadius: '8px',
-                fontSize: '12.5px',
-              }}
-            />
+              <span style={{ color: '#3b82f6' }}>
+                {mode === 'ingredients' ? calculatedTotals.proteinGrams : directProtein}ج بروتين
+              </span>
+              <span style={{ color: '#eab308' }}>
+                {mode === 'ingredients' ? calculatedTotals.carbsGrams : directCarbs}ج كارب
+              </span>
+              <span style={{ color: '#ef4444' }}>
+                {mode === 'ingredients' ? calculatedTotals.fatsGrams : directFats}ج دهون
+              </span>
+            </div>
           </div>
+        </div>
 
-          {/* Actions */}
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button
-              type="submit"
-              className="button-primary"
-              style={{
-                flex: 1,
-                padding: '12px',
-                fontSize: '14px',
-                fontWeight: 800,
-              }}
-            >
-              💾 حفظ الوجبة في وجباتي
-            </button>
-            <button
-              type="button"
-              className="button-secondary"
-              onClick={onClose}
-              style={{ padding: '12px 18px', fontSize: '14px' }}
-            >
-              إلغاء
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        {/* Notes */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <label style={{ fontSize: '13px', fontWeight: 700 }}>
+            ملاحظات أو طريقة التحضير (اختياري)
+          </label>
+          <textarea
+            value={notesAr}
+            onChange={(e) => setNotesAr(e.target.value)}
+            placeholder="مثال: صدور دجاج متبلة مع أرز بسمتي وسلطة خضراء..."
+            rows={2}
+            style={{
+              width: '100%',
+              padding: '10px 12px',
+              borderRadius: '10px',
+              border: '1.5px solid var(--line)',
+              fontSize: '13.5px',
+              background: 'var(--card-bg)',
+              color: 'var(--ink)',
+              boxSizing: 'border-box',
+              resize: 'none',
+            }}
+          />
+        </div>
+
+        {/* Actions */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px' }}>
+          <button
+            type="submit"
+            className="btn-primary-action full-width"
+            style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
+          >
+            حفظ الوجبة في وجباتي
+          </button>
+          <button
+            type="button"
+            className="ghost-secondary full-width"
+            onClick={onClose}
+            style={{ height: '44px', fontSize: '14px' }}
+          >
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </Sheet>
   )
 }

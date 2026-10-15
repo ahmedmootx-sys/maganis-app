@@ -1,147 +1,62 @@
-import { useEffect } from 'react'
-import { assetUrl } from '../../utils/assetUrl.ts'
-import { navigationHistory } from '../../utils/navigationHistory.ts'
+import { Sheet } from '../../components/Sheet.tsx'
+import { Callout } from '../../components/Callout.tsx'
 
-interface MacroGuideModalProps {
+export interface MacroGuideModalProps {
   onClose: () => void
 }
 
 export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
-  useEffect(() => {
-    return navigationHistory.push('macroGuideModal', onClose)
-  }, [onClose])
-
   return (
-    <div
-      className="modal-backdrop"
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0, 0, 0, 0.72)',
-        backdropFilter: 'blur(5px)',
-        WebkitBackdropFilter: 'blur(5px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '16px',
-      }}
+    <Sheet
+      isOpen={true}
+      onClose={onClose}
+      title="دليل حساب السعرات والماكروز"
     >
       <div
-        className="modal-content card"
-        onClick={(e) => e.stopPropagation()}
         style={{
-          width: '100%',
-          maxWidth: '680px',
-          maxHeight: '88vh',
-          overflowY: 'auto',
-          borderRadius: '16px',
-          border: '2px solid var(--accent)',
-          padding: '24px',
-          background: 'var(--card-bg)',
-          color: 'var(--ink)',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.4)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '8px 0 24px',
         }}
       >
-        {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid var(--line)',
-            paddingBottom: '14px',
-            marginBottom: '18px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <img
-              src={assetUrl('branding/maganis-badge.png')}
-              alt="د. مجانص"
-              style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '12px',
-                objectFit: 'contain',
-              }}
-            />
-            <div>
-              <h2
-                style={{
-                  margin: 0,
-                  fontSize: '18px',
-                  fontWeight: 800,
-                  color: 'var(--accent)',
-                }}
-              >
-                💡 دليل د. مجانص العلمي لحساب الماكروز
-              </h2>
-              <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
-                الأسس الفسيولوجية لتوزيع السعرات والمغذيات الكبرى
-              </span>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="ghost tiny"
-            onClick={onClose}
-            style={{ fontSize: '16px', padding: '6px 12px' }}
-          >
-            ✕
-          </button>
-        </div>
+        {/* Introduction Callout */}
+        <Callout variant="tip">
+          <strong>الأسس الفسيولوجية لتوزيع المغذيات:</strong> المغذيات الكبرى هي
+          الوقود ومواد البناء لجسمك. السعرات تمثل كمية الطاقة الإجمالية، بينما
+          توزيع المغذيات يحدد نمو الكتلة العضلية والمحافظة عليها وخسارة الدهون.
+        </Callout>
 
-        {/* Introduction Quote */}
-        <div
-          style={{
-            background: 'var(--accent-soft)',
-            border: '1px solid var(--accent)',
-            borderRadius: '12px',
-            padding: '12px 16px',
-            marginBottom: '20px',
-            fontSize: '13.5px',
-            lineHeight: '1.6',
-          }}
-        >
-          <strong style={{ color: 'var(--accent)' }}>كوتش مجانص بيقولك:</strong>{' '}
-          «الماكروز مش طلاسم! هي ببساطة الوقود ومواد البناء لجسمك. السعرات هي
-          الكمية الإجمالية، وتوزيع الماكروز هو اللي بيحدد هتزيد عضل صافي ولا
-          دهون! ركّز في الأرقام دي وطبّقها.»
-        </div>
-
-        {/* Section 1: Calories Baseline */}
-        <div style={{ marginBottom: '18px' }}>
+        {/* Section 1: TDEE */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <h3
             style={{
               fontSize: '15px',
               fontWeight: 800,
-              margin: '0 0 8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
+              margin: '0',
+              color: 'var(--ink)',
             }}
           >
-            🔥 1. قاعدة الطاقة الإجمالية (TDEE):
+            1. قاعدة الطاقة الإجمالية (TDEE)
           </h3>
           <p
             style={{
               fontSize: '13px',
-              color: 'var(--ink)',
+              color: 'var(--muted)',
               lineHeight: '1.6',
               margin: 0,
             }}
           >
-            قبل حساب الماكروز، بنحسب استهلاك الطاقة اليومي (TDEE) بمعادلة
-            Mifflin-St Jeor أو Katch-McArdle + معامل النشاط الرياضي (METs).
-            وبناءً على هدفك:
+            يتم احتساب استهلاك الطاقة اليومي (TDEE) بمعادلة Mifflin-St Jeor أو
+            Katch-McArdle مع معامل النشاط الرياضي ومعدل الحرق الأساسي (BMR):
           </p>
           <ul
             style={{
-              fontSize: '12.5px',
+              fontSize: '13px',
               lineHeight: '1.7',
-              margin: '6px 0 0',
+              margin: '4px 0 0',
               paddingInlineStart: '20px',
+              color: 'var(--ink)',
             }}
           >
             <li>
@@ -150,26 +65,25 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
             </li>
             <li>
               <strong>التنشيف (Cut):</strong> عجز سعرات آمن (-15% إلى -20% تحت
-              الثبات) مع عدم النزول تحت معدل الأيض الأساسي (BMR) لحماية صحتك
-              وهرموناتك.
+              الثبات) مع عدم النزول تحت معدل الأيض الأساسي (BMR) لحماية الكتلة
+              العضلية وصحة الهرمونات.
             </li>
           </ul>
         </div>
 
-        {/* Section 2: Macro Breakdown Cards */}
+        {/* Section 2: Macro Breakdown */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             gap: '12px',
-            marginBottom: '22px',
           }}
         >
           {/* Protein */}
           <div
             style={{
               border: '1px solid var(--line)',
-              borderRadius: '10px',
+              borderRadius: '12px',
               padding: '12px 14px',
               background: 'var(--card-subtle)',
             }}
@@ -179,36 +93,38 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '4px',
+                marginBottom: '6px',
               }}
             >
               <strong style={{ color: '#ef4444', fontSize: '14px' }}>
-                🥩 أولاً: البروتين (حجر بناء العضلات)
+                أولاً: البروتين (حجر بناء العضلات)
               </strong>
               <span
+                dir="ltr"
                 style={{
-                  fontSize: '11px',
-                  background: 'rgba(239, 68, 68, 0.15)',
+                  fontSize: '11.5px',
+                  background: 'rgba(239, 68, 68, 0.12)',
                   color: '#ef4444',
                   padding: '2px 8px',
                   borderRadius: '999px',
                   fontWeight: 700,
                 }}
               >
-                1 جم بروتين = 4 سعرات حرارية
+                1 g = 4 kcal
               </span>
             </div>
             <p
               style={{
-                fontSize: '12.5px',
+                fontSize: '13px',
                 lineHeight: '1.6',
-                margin: '4px 0 0',
+                margin: 0,
+                color: 'var(--ink)',
               }}
             >
-              <strong>المعادلة:</strong> من <strong>1.8 إلى 2.2 جرام</strong>{' '}
-              لكل كجم من وزن جسمك (أو من الكتلة اللحمية LBM).
+              <strong>المعيار العلمي:</strong> من <strong>1.8 إلى 2.2 جرام</strong>{' '}
+              لكل كجم من وزن جسمك الكلي (أو من الكتلة الخالية من الدهون LBM).
               <br />
-              <span style={{ color: 'var(--muted)' }}>
+              <span style={{ color: 'var(--muted)', fontSize: '12px' }}>
                 مثال: لاعب وزنه 75 كجم يحتاج تقريباً 150 جم بروتين يومياً (تساوي
                 600 سعرة حرارية).
               </span>
@@ -219,7 +135,7 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
           <div
             style={{
               border: '1px solid var(--line)',
-              borderRadius: '10px',
+              borderRadius: '12px',
               padding: '12px 14px',
               background: 'var(--card-subtle)',
             }}
@@ -229,39 +145,37 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '4px',
+                marginBottom: '6px',
               }}
             >
               <strong style={{ color: '#f59e0b', fontSize: '14px' }}>
-                🥑 ثانياً: الدهون الصحية (مصنع الهرمونات)
+                ثانياً: الدهون الصحية (التوازن الهرموني)
               </strong>
               <span
+                dir="ltr"
                 style={{
-                  fontSize: '11px',
-                  background: 'rgba(245, 158, 11, 0.15)',
+                  fontSize: '11.5px',
+                  background: 'rgba(245, 158, 11, 0.12)',
                   color: '#d97706',
                   padding: '2px 8px',
                   borderRadius: '999px',
                   fontWeight: 700,
                 }}
               >
-                1 جم دهون = 9 سعرات حرارية
+                1 g = 9 kcal
               </span>
             </div>
             <p
               style={{
-                fontSize: '12.5px',
+                fontSize: '13px',
                 lineHeight: '1.6',
-                margin: '4px 0 0',
+                margin: 0,
+                color: 'var(--ink)',
               }}
             >
-              <strong>المعادلة:</strong> تمثل من <strong>20% إلى 25%</strong> من
-              إجمالي سعراتك اليومية كحد فسيولوجي أدنى لحماية إفراز هرمون الذكورة
-              (التستوستيرون) وصحة المفاصل والمخ.
-              <br />
-              <span style={{ color: 'var(--muted)' }}>
-                لا تقطع الدهون أبداً حتى أثناء أشد فترات التنشيف!
-              </span>
+              <strong>المعيار العلمي:</strong> تمثل من <strong>20% إلى 25%</strong>{' '}
+              من إجمالي سعراتك اليومية كحد فسيولوجي أدنى لحماية إفراز الهرمونات
+              وصحة المفاصل والأداء الذهني.
             </p>
           </div>
 
@@ -269,7 +183,7 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
           <div
             style={{
               border: '1px solid var(--line)',
-              borderRadius: '10px',
+              borderRadius: '12px',
               padding: '12px 14px',
               background: 'var(--card-subtle)',
             }}
@@ -279,60 +193,67 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '4px',
+                marginBottom: '6px',
               }}
             >
               <strong style={{ color: '#0ea5e9', fontSize: '14px' }}>
-                🍚 ثالثاً: الكربوهيدرات (وقود التدريب والطاقة)
+                ثالثاً: الكربوهيدرات (وقود التدريب والطاقة)
               </strong>
               <span
+                dir="ltr"
                 style={{
-                  fontSize: '11px',
-                  background: 'rgba(14, 165, 233, 0.15)',
+                  fontSize: '11.5px',
+                  background: 'rgba(14, 165, 233, 0.12)',
                   color: '#0284c7',
                   padding: '2px 8px',
                   borderRadius: '999px',
                   fontWeight: 700,
                 }}
               >
-                1 جم كارب = 4 سعرات حرارية
+                1 g = 4 kcal
               </span>
             </div>
             <p
               style={{
-                fontSize: '12.5px',
+                fontSize: '13px',
                 lineHeight: '1.6',
-                margin: '4px 0 0',
+                margin: 0,
+                color: 'var(--ink)',
               }}
             >
-              <strong>المعادلة:</strong> باقي السعرات المتبقية بالكامل تخصص
-              للكربوهيدرات:
+              <strong>المعيار العلمي:</strong> تخصص باقي السعرات المتبقية
+              بالكامل للكربوهيدرات لملء مخازن الجليكوجين العضلي وتوفير طاقة الرفع
+              في التدريب:
               <br />
-              <code>
-                سعرات الكارب = السعرات الإجمالية - (سعرات البروتين + سعرات
-                الدهون)
+              <code
+                dir="ltr"
+                style={{
+                  display: 'inline-block',
+                  margin: '4px 0',
+                  padding: '3px 8px',
+                  background: 'var(--card-bg)',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                }}
+              >
+                Carbs (g) = (Total Calories - (Protein cal + Fat cal)) / 4
               </code>
-              <br />
-              ثم نقسم سعرات الكارب على 4 للحصول على الجرامات لملء مخازن
-              الجليكوجين وقوة الرفع في الجيم.
             </p>
           </div>
         </div>
 
-        {/* Footer Actions */}
-        <div
-          style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}
-        >
+        {/* Action Button */}
+        <div style={{ marginTop: '8px' }}>
           <button
             type="button"
-            className="button-primary full-width"
+            className="btn-primary-action full-width"
             onClick={onClose}
-            style={{ padding: '10px', fontWeight: 800 }}
+            style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
           >
-            فهمت يا دكتور — جاهز لتحقيق أهدافي 💪
+            فهمت الدليل العلمي
           </button>
         </div>
       </div>
-    </div>
+    </Sheet>
   )
 }
