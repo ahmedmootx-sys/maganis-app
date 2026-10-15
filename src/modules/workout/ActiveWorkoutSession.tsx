@@ -1018,7 +1018,7 @@ export function ActiveWorkoutSession({
             style={{ maxWidth: '440px', width: '100%' }}
           >
             <div className="modal-header">
-              <h2>🎉 مبروك إنهاء التمرين!</h2>
+              <h2>مبروك إنهاء التمرين!</h2>
               <button
                 type="button"
                 className="close-btn"
@@ -1065,7 +1065,7 @@ export function ActiveWorkoutSession({
                 }}
                 style={{ height: '48px', fontSize: '16px', fontWeight: 700 }}
               >
-                💾 تأكيد وحفظ الجلسة
+                تأكيد وحفظ الجلسة
               </button>
               <button
                 type="button"

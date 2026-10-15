@@ -145,7 +145,7 @@ export function Reports({
 
   function handleResetReports() {
     const confirmed = window.confirm(
-      '⚠️ هل أنت متأكد من تصفير (Reset) كافة بيانات وسجلات التقارير والتغذية والوزن؟\nلن يتم المساس بملفك الشخصي أو جدولك التدريبي.',
+      'هل أنت متأكد من تصفير (Reset) كافة بيانات وسجلات التقارير والتغذية والوزن؟\nلن يتم المساس بملفك الشخصي أو جدولك التدريبي.',
     )
     if (!confirmed) return
 
@@ -387,7 +387,7 @@ export function Reports({
         }}
       >
         <h2 className="reports__title" style={{ margin: 0 }}>
-          📈 التقارير والإحصائيات الشاملة
+          التقارير والإحصائيات الشاملة
         </h2>
         {reportStatusMessage && (
           <span
@@ -436,7 +436,7 @@ export function Reports({
                 gap: '6px',
               }}
             >
-              📊 إدارة بيانات وسجلات التقارير
+              إدارة بيانات وسجلات التقارير
             </h3>
             <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
               تصدير واستيراد وإعادة تعيين سجلات التمارين والتغذية والوزن بشكل
@@ -451,7 +451,7 @@ export function Reports({
               onClick={handleExportReports}
               style={{ fontWeight: 700 }}
             >
-              💾 تصدير التقارير (JSON)
+              تصدير التقارير (JSON)
             </button>
             <label
               className="button-secondary small"
@@ -463,7 +463,7 @@ export function Reports({
                 fontWeight: 700,
               }}
             >
-              📥 استيراد تقارير
+              استيراد تقارير
               <input
                 type="file"
                 accept=".json"
@@ -477,7 +477,7 @@ export function Reports({
               onClick={handleResetReports}
               style={{ fontWeight: 700 }}
             >
-              🗑️ تصفير التقارير (Reset)
+              تصفير التقارير (Reset)
             </button>
           </div>
         </div>
@@ -513,7 +513,7 @@ export function Reports({
         >
           <div>
             <h3 style={{ margin: 0, fontSize: '17px', color: 'var(--accent)' }}>
-              🥗 تقارير الالتزام بالتغذية والسعرات والماكروز
+              تقارير الالتزام بالتغذية والسعرات والماكروز
             </h3>
             <p className="muted-small" style={{ margin: '4px 0 0' }}>
               متابعة مدى تحقيقك للأهداف الغذائية خلال ({RANGE_LABELS[range]})
@@ -531,8 +531,8 @@ export function Reports({
             }}
           >
             {calorieAdherencePct >= 70
-              ? '🌟 التزام ممتاز بالدايت'
-              : '⚠️ بحاجة لزيادة الالتزام'}
+              ? 'التزام ممتاز بالدايت'
+              : 'بحاجة لزيادة الالتزام'}
           </span>
         </div>
 
@@ -719,7 +719,7 @@ export function Reports({
         {/* Calorie Intake Chart */}
         <div style={{ marginTop: '12px', marginBottom: '14px' }}>
           <h4 style={{ fontSize: '13.5px', margin: '0 0 8px' }}>
-            🔥 السعرات الحرارية المسجلة يومياً (الهدف: {targetCalories} ك.س)
+            السعرات الحرارية المسجلة يومياً (الهدف: {targetCalories} ك.س)
           </h4>
           <BarChart data={calorieData} />
         </div>
@@ -727,7 +727,7 @@ export function Reports({
         {/* Protein Intake Chart */}
         <div style={{ marginTop: '12px', marginBottom: '14px' }}>
           <h4 style={{ fontSize: '13.5px', margin: '0 0 8px' }}>
-            🥩 كمية البروتين اليومية (الهدف: {targetProtein} جم)
+            كمية البروتين اليومية (الهدف: {targetProtein} جم)
           </h4>
           <BarChart data={proteinData} />
         </div>
@@ -741,7 +741,7 @@ export function Reports({
           }}
         >
           <h4 style={{ fontSize: '14px', margin: '0 0 8px' }}>
-            🍲 أكثر الأغذية والوجبات التي تم تناولها وتأكيدها في هذا النطاق:
+            أكثر الأغذية والوجبات التي تم تناولها وتأكيدها في هذا النطاق:
           </h4>
           {topFoods.length === 0 ? (
             <p className="muted" style={{ fontSize: '12.5px' }}>

@@ -70,7 +70,7 @@ describe('ActiveWorkoutSession', () => {
     const finishBtn = screen.getByTestId('header-finish-btn')
     fireEvent.click(finishBtn)
 
-    expect(screen.getByText('🎉 مبروك إنهاء التمرين!')).toBeInTheDocument()
+    expect(screen.getByText('مبروك إنهاء التمرين!')).toBeInTheDocument()
 
     const confirmBtn = screen.getByTestId('confirm-save-session-btn')
     fireEvent.click(confirmBtn)

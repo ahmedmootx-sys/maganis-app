@@ -370,7 +370,6 @@ export function AnatomyMuscleMap({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '18px' }}>🧬</span>
           <div>
             <h4
               style={{
@@ -407,7 +406,7 @@ export function AnatomyMuscleMap({
               }}
               title="إظهار العضلات العميقة بتعتيم الطبقة السطحية"
             >
-              🧬 عضلات عميقة متضمنة {showDeepLayer ? '✓' : ''}
+              عضلات عميقة متضمنة {showDeepLayer ? '✓' : ''}
             </button>
           )}
 
@@ -425,7 +424,7 @@ export function AnatomyMuscleMap({
             }}
             title="تكبير لمنطقة العضلات المستهدفة بدقة"
           >
-            {isZoomed ? '🔍 تكبير (مفعّل)' : '🔍 تكبير'}
+            {isZoomed ? 'تكبير (مفعّل)' : 'تكبير'}
           </button>
         </div>
       </div>
@@ -444,7 +443,7 @@ export function AnatomyMuscleMap({
             display: 'inline-block',
           }}
         >
-          ⚠️ توزيع رؤوس مؤقت من التصنيف القديم (provisional - needs head-level
+          توزيع رؤوس مؤقت من التصنيف القديم (provisional - needs head-level
           review)
         </div>
       )}
@@ -537,7 +536,7 @@ export function AnatomyMuscleMap({
                 marginBottom: '4px',
               }}
             >
-              🎯 العضلات المستهدفة الأساسية (Primary Active Focus):
+              العضلات المستهدفة الأساسية (Primary Active Focus):
             </span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {primaryList.map((m) => (
@@ -596,7 +595,7 @@ export function AnatomyMuscleMap({
                 marginBottom: '4px',
               }}
             >
-              ⚡ العضلات المساعدة (Secondary Involvement):
+              العضلات المساعدة (Secondary Involvement):
             </span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {secondaryList.map((m) => (

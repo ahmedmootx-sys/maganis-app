@@ -428,7 +428,7 @@ export function CustomExerciseBuilder({
                   lineHeight: '1.4',
                 }}
               >
-                💡 {selectedMeasurement.helperAr}
+                {selectedMeasurement.helperAr}
               </div>
             )}
           </div>
@@ -619,7 +619,7 @@ export function CustomExerciseBuilder({
                   marginBottom: '4px',
                 }}
               >
-                💡 خطوة في كل سطر
+                خطوة في كل سطر
               </span>
               <AutoGrowTextarea
                 id="ce-steps"

@@ -255,14 +255,14 @@ export function ExerciseDetailModal({
             />
             <div className="showcase-meta">
               <span className="showcase-tag">
-                🎯 الاستهداف: {details.targetMuscles[0] || 'عضلة رئيسية'}
+                الاستهداف {details.targetMuscles[0] || 'عضلة رئيسية'}
               </span>
               <span className="showcase-tag">
-                ⚙️ الأداة:{' '}
+                الأداة{' '}
                 {EQUIPMENT_LABELS[exercise.equipment] || exercise.equipment}
               </span>
               <span className="showcase-tag">
-                📊 المستوى:{' '}
+                المستوى{' '}
                 {DIFFICULTY_LABELS[exercise.difficulty] || exercise.difficulty}
               </span>
             </div>
@@ -270,16 +270,16 @@ export function ExerciseDetailModal({
 
           {/* 1. Scientific Benefits (الفوائد بالتفصيل) */}
           <div className="detail-section benefit-box">
-            <h3>🔬 الفائدة العلمية والتأثير العضلي (Scientific Benefits)</h3>
+            <h3>الفائدة العلمية والتأثير العضلي</h3>
             <p className="highlight-text">{details.benefit}</p>
           </div>
 
           {/* 2. Targeted Muscles with Anatomy Map (العضلات المستهدفة بالخريطة التشريحية) */}
           <div className="detail-section muscles-box">
-            <h3>🎯 خريطة العضلات المستهدفة تشريحياً (Anatomical Muscle Map)</h3>
+            <h3>خريطة العضلات المستهدفة تشريحياً</h3>
             <p className="muted-small" style={{ marginBottom: '10px' }}>
               توضح الخريطة التالية باللون الأحمر العضلات النشطة الأساسية
-              والمساعدة أثناء أداء تمرين {exercise.nameAr}:
+              والمساعدة أثناء أداء تمرين {exercise.nameAr}
             </p>
             <AnatomyMuscleMap
               category={exercise.category}
@@ -297,8 +297,8 @@ export function ExerciseDetailModal({
                 >
                   <span className="muscle-type-badge">
                     {idx === 0
-                      ? 'عضلة أساسية (Primary Target)'
-                      : 'عضلة مساعدة (Secondary Target)'}
+                      ? 'عضلة أساسية'
+                      : 'عضلة مساعدة'}
                   </span>
                   <strong>{muscle}</strong>
                 </div>
@@ -308,13 +308,13 @@ export function ExerciseDetailModal({
 
           {/* 3. Mechanics (ميكانيكا الحركة) */}
           <div className="detail-section highlight-box">
-            <h3>⚙️ ميكانيكا الحركة والتكنيك (Movement Mechanics)</h3>
+            <h3>ميكانيكا الحركة والتكنيك</h3>
             <p>{details.mechanics}</p>
           </div>
 
           {/* 4. Step-by-Step Instructions (طريقة عمل التمرين خطوة بخطوة) */}
           <div className="detail-section steps-box">
-            <h3>📋 خطوات الأداء الصحيحة خطوة بخطوة (How-to Guide)</h3>
+            <h3>خطوات الأداء الصحيحة خطوة بخطوة</h3>
             <ol className="detailed-steps-list">
               {details.howToSteps.map((step, idx) => (
                 <li key={idx} className="step-item">
@@ -328,11 +328,11 @@ export function ExerciseDetailModal({
           {/* 5. Injury Warnings (محاذير الإصابات) */}
           {details.avoidInjuries.length > 0 && (
             <div className="detail-section warning-box">
-              <h3>⚠️ محاذير الإصابات والأمان (Safety Warning)</h3>
+              <h3>محاذير الإصابات والأمان</h3>
               <p>
                 يُنصح بتجنب هذا التمرين أو استبداله ببديل مريح إذا كان لديك ألم
-                أو إصابة سابقة في:{' '}
-                <strong>{details.avoidInjuries.join('، ')}</strong>.
+                أو إصابة سابقة في{' '}
+                <strong>{details.avoidInjuries.join('، ')}</strong>
               </p>
             </div>
           )}
@@ -340,7 +340,7 @@ export function ExerciseDetailModal({
           {/* 6. Scientific Reference */}
           <div className="detail-section source-box">
             <span className="muted-small">
-              📚 المرجع العلمي:{' '}
+              المرجع العلمي{' '}
               {exercise.medicalSource ||
                 "ACSM's Guidelines for Exercise Testing and Prescription & NSCA Standards"}
             </span>

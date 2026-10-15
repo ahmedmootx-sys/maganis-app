@@ -75,7 +75,7 @@ export function ExerciseSwapModal({
         style={{ maxWidth: '640px', width: '95%' }}
       >
         <div className="modal-header">
-          <h2>🔄 استبدال التمرين: {currentExercise.nameAr}</h2>
+          <h2>استبدال التمرين: {currentExercise.nameAr}</h2>
           <button type="button" className="close-btn" onClick={onClose}>
             ✕
           </button>
@@ -91,7 +91,7 @@ export function ExerciseSwapModal({
           <div style={{ marginBottom: '10px' }}>
             <input
               type="text"
-              placeholder="🔍 ابحث عن اسم التمرين البديل أو الرأس العضلي..."
+              placeholder="ابحث عن اسم التمرين البديل أو الرأس العضلي..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               dir="rtl"
@@ -213,7 +213,7 @@ export function ExerciseSwapModal({
                         </strong>
                         {exercise.targetSubMuscleAr && (
                           <span className="submuscle-badge">
-                            🎯 {exercise.targetSubMuscleAr}
+                            {exercise.targetSubMuscleAr}
                           </span>
                         )}
                       </div>

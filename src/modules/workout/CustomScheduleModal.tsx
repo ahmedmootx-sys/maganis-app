@@ -284,7 +284,7 @@ export function CustomScheduleModal({
                   lineHeight: '1.4',
                 }}
               >
-                💡 تم تحديد {selectedDayIndexes.length} أيام تمرين، وباقي أيام
+                تم تحديد {selectedDayIndexes.length} أيام تمرين، وباقي أيام
                 الأسبوع ستكون أيام راحة واستشفاء.
               </div>
 

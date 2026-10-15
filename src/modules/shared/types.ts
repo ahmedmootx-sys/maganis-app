@@ -56,30 +56,30 @@ export interface DaySectionConfig {
 }
 
 export const DEFAULT_DAY_SECTIONS: DaySectionConfig[] = [
-  { id: 'warmup', labelAr: 'تمارين الإحماء والتسخين', icon: '🔥' },
-  { id: 'primary', labelAr: 'التمارين الأساسية', icon: '🏋️' },
-  { id: 'flexibility_core', labelAr: 'المرونة، الثبات والتهدئة', icon: '🧘' },
+  { id: 'warmup', labelAr: 'تمارين الإحماء والتسخين', icon: 'flame' },
+  { id: 'primary', labelAr: 'التمارين الأساسية', icon: 'dumbbell' },
+  { id: 'flexibility_core', labelAr: 'المرونة، الثبات والتهدئة', icon: 'heart' },
 ]
 
 export const PRESET_DAY_SECTIONS: DaySectionConfig[] = [
-  { id: 'warmup', labelAr: 'تمارين الإحماء والتسخين', icon: '🔥' },
-  { id: 'primary', labelAr: 'التمارين الأساسية', icon: '🏋️' },
-  { id: 'cardio', labelAr: 'تمارين الكارديو واللياقة', icon: '🏃' },
-  { id: 'flexibility_core', labelAr: 'المرونة، الثبات والتهدئة', icon: '🧘' },
-  { id: 'core_abs', labelAr: 'تمارين البطن والكور', icon: '🍫' },
-  { id: 'arms_grip', labelAr: 'تمارين الساعد والقبضة', icon: '🦾' },
+  { id: 'warmup', labelAr: 'تمارين الإحماء والتسخين', icon: 'flame' },
+  { id: 'primary', labelAr: 'التمارين الأساسية', icon: 'dumbbell' },
+  { id: 'cardio', labelAr: 'تمارين الكارديو واللياقة', icon: 'activity' },
+  { id: 'flexibility_core', labelAr: 'المرونة، الثبات والتهدئة', icon: 'heart' },
+  { id: 'core_abs', labelAr: 'تمارين البطن والكور', icon: 'shield' },
+  { id: 'arms_grip', labelAr: 'تمارين الساعد والقبضة', icon: 'zap' },
 ]
 
 export const EXERCISE_SECTION_LABELS: Record<
   string,
   { labelAr: string; icon: string }
 > = {
-  warmup: { labelAr: 'تمارين الإحماء والتسخين', icon: '🔥' },
-  primary: { labelAr: 'التمارين الأساسية', icon: '🏋️' },
-  flexibility_core: { labelAr: 'المرونة، الثبات والتهدئة', icon: '🧘' },
-  cardio: { labelAr: 'تمارين الكارديو واللياقة', icon: '🏃' },
-  core_abs: { labelAr: 'تمارين البطن والكور', icon: '🍫' },
-  arms_grip: { labelAr: 'تمارين الساعد والقبضة', icon: '🦾' },
+  warmup: { labelAr: 'تمارين الإحماء والتسخين', icon: 'flame' },
+  primary: { labelAr: 'التمارين الأساسية', icon: 'dumbbell' },
+  flexibility_core: { labelAr: 'المرونة، الثبات والتهدئة', icon: 'heart' },
+  cardio: { labelAr: 'تمارين الكارديو واللياقة', icon: 'activity' },
+  core_abs: { labelAr: 'تمارين البطن والكور', icon: 'shield' },
+  arms_grip: { labelAr: 'تمارين الساعد والقبضة', icon: 'zap' },
 }
 
 export type MuscleRole = 'primary' | 'secondary'

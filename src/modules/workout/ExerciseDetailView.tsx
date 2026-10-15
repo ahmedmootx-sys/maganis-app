@@ -103,7 +103,7 @@ export function ExerciseDetailView({
       {/* تحذير الإصابات */}
       {avoid.length > 0 && (
         <div className="exercise-detail__section exercise-detail__warning">
-          <h3>⚠️ تحذير</h3>
+          <h3>تحذير</h3>
           <p>يُنصح بتجنب هذا التمرين إذا كنت تعاني من: {avoid.join('، ')}</p>
         </div>
       )}

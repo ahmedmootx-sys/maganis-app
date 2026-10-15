@@ -92,7 +92,7 @@ export function ExercisePickerModal({
         style={{ maxWidth: '680px', width: '95%' }}
       >
         <div className="modal-header">
-          <h2>➕ إضافة تمرين إلى {dayLabelAr}</h2>
+          <h2>إضافة تمرين إلى {dayLabelAr}</h2>
           <button type="button" className="close-btn" onClick={onClose}>
             ✕
           </button>
@@ -107,7 +107,7 @@ export function ExercisePickerModal({
           {/* Search */}
           <input
             type="text"
-            placeholder="🔍 ابحث باسم التمرين، العضلة، أو الرأس المستهدف..."
+            placeholder="ابحث باسم التمرين، العضلة، أو الرأس المستهدف..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             dir="rtl"
@@ -247,11 +247,11 @@ export function ExercisePickerModal({
                         </strong>
                         {ex.targetSubMuscleAr && (
                           <span className="submuscle-badge">
-                            🎯 {ex.targetSubMuscleAr}
+                            {ex.targetSubMuscleAr}
                           </span>
                         )}
                         {'isCustom' in ex && (
-                          <span className="chip highlight">مخصص ✨</span>
+                          <span className="chip highlight">مخصص</span>
                         )}
                       </div>
                       {ex.name && ex.nameAr && ex.name !== ex.nameAr && (

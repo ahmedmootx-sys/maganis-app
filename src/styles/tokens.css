@@ -1,0 +1,225 @@
+/* ==========================================================================
+   Maganis Design System – Tokens (tokens.css)
+   Light + Dark + prefers-color-scheme + Manual Override
+   WCAG AA Compliant • Mobile-First • RTL-First
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Offline Self-Hosted Typography: IBM Plex Sans Arabic
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-arabic-400.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-arabic-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-arabic-600.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-arabic-600-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-arabic-700.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-sans-arabic-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215;
+}
+
+/* --------------------------------------------------------------------------
+   2. Design System Root Variables
+   -------------------------------------------------------------------------- */
+:root {
+  /* Font Family */
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Typography Scale */
+  --font-size-xs: 0.75rem;     /* 12px */
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-md: 1rem;        /* 16px */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.375rem;    /* 22px */
+  --font-size-2xl: 1.75rem;    /* 28px */
+
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-body: 1.5;
+  --line-height-heading: 1.3;
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Radii */
+  --radius-card: 12px;
+  --radius-control: 10px;
+  --radius-full: 999px;
+
+  /* Touch Targets & Dimensions */
+  --touch-target-min: 44px;
+  --button-height-primary: 52px;
+  --button-height-sm: 36px;
+  --content-max-width: 640px;
+
+  /* Safe Area Insets */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* Shadows: Borders over shadows; subtle elevation for bottom sheets */
+  --shadow-sheet: 0 -4px 20px rgba(0, 0, 0, 0.25);
+  --shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+  /* Reserved Muscle Map Colors (Strictly Isolated to Anatomy Visuals) */
+  --color-muscle-primary: #E53935;
+  --color-muscle-secondary: #FDD835;
+  --color-muscle-secondary-border: #F9A825;
+
+  /* Default Light Theme Colors */
+  --color-bg: #F4F5F7;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #EEF0F3;
+  --color-text: #14161A;
+  --color-text-2: #5B616B;
+  --color-divider: #E2E5EA;
+
+  /* Brand Accent: Original orange #f95700 */
+  --color-accent: #f95700;
+  --color-accent-hover: #ea580c;
+  --color-accent-text: #c2410c; /* WCAG AA 4.75:1 on #F4F5F7 */
+  --color-accent-contrast: #FFFFFF;
+  --color-focus-ring: rgba(249, 87, 0, 0.35);
+
+  /* Semantic State Tokens */
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fecaca;
+
+  --color-info: #1d4ed8;
+  --color-info-bg: #eff6ff;
+  --color-info-border: #bfdbfe;
+}
+
+/* --------------------------------------------------------------------------
+   3. Dark Theme Specification
+   -------------------------------------------------------------------------- */
+[data-theme='dark'] {
+  --color-bg: #0B0C0E;
+  --color-surface: #16181B;
+  --color-surface-2: #212429;
+  --color-text: #F2F3F5;
+  --color-text-2: #A3A8B1;
+  --color-divider: #2B2F35;
+
+  /* Brand Accent in Dark: #ff6b1a */
+  --color-accent: #ff6b1a;
+  --color-accent-hover: #ff853f;
+  --color-accent-text: #ff853f; /* WCAG AA > 8:1 on #0B0C0E */
+  --color-accent-contrast: #0B0C0E;
+  --color-focus-ring: rgba(255, 107, 26, 0.35);
+
+  --color-success: #22c55e;
+  --color-success-bg: #052e16;
+  --color-success-border: #14532d;
+
+  --color-warning: #f59e0b;
+  --color-warning-bg: #451a03;
+  --color-warning-border: #78350f;
+
+  --color-danger: #ef4444;
+  --color-danger-bg: #450a0a;
+  --color-danger-border: #7f1d1d;
+
+  --color-info: #3b82f6;
+  --color-info-bg: #172554;
+  --color-info-border: #1e3a8a;
+
+  --shadow-sheet: 0 -4px 24px rgba(0, 0, 0, 0.6);
+  --shadow-dropdown: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   4. System Preference (prefers-color-scheme)
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #0B0C0E;
+    --color-surface: #16181B;
+    --color-surface-2: #212429;
+    --color-text: #F2F3F5;
+    --color-text-2: #A3A8B1;
+    --color-divider: #2B2F35;
+
+    --color-accent: #ff6b1a;
+    --color-accent-hover: #ff853f;
+    --color-accent-text: #ff853f;
+    --color-accent-contrast: #0B0C0E;
+    --color-focus-ring: rgba(255, 107, 26, 0.35);
+
+    --color-success: #22c55e;
+    --color-success-bg: #052e16;
+    --color-success-border: #14532d;
+
+    --color-warning: #f59e0b;
+    --color-warning-bg: #451a03;
+    --color-warning-border: #78350f;
+
+    --color-danger: #ef4444;
+    --color-danger-bg: #450a0a;
+    --color-danger-border: #7f1d1d;
+
+    --color-info: #3b82f6;
+    --color-info-bg: #172554;
+    --color-info-border: #1e3a8a;
+
+    --shadow-sheet: 0 -4px 24px rgba(0, 0, 0, 0.6);
+    --shadow-dropdown: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+}

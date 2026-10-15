@@ -23,7 +23,7 @@ export function WelcomeBack({ profile, onEdit, onDelete }: WelcomeBackProps) {
 
   return (
     <section className="card" data-testid="welcome-card">
-      <h2 data-testid="welcome-title">أهلاً بعودتك 👋</h2>
+      <h2 data-testid="welcome-title">أهلاً بعودتك</h2>
       <p className="muted">
         ملفك الشخصي محفوظ على جهازك منذ {joined} وجاهز للاستخدام.
       </p>
