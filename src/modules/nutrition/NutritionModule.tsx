@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { assetUrl } from '../../utils/assetUrl.ts'
 import type {
   ActivityLevel,
   Goal,
@@ -23,7 +22,26 @@ import { QuickManualMealModal } from './QuickManualMealModal.tsx'
 import { MacroGuideModal } from './MacroGuideModal.tsx'
 import type { CustomMeal, DailyNutritionLog, MealCategory } from './types.ts'
 import { Select } from '../../components/Select'
-import { DateField } from '../../components/DateField'
+import { DateField, formatArabicDate } from '../../components/DateField'
+import { TopBar } from '../../components/TopBar.tsx'
+import { ProgressBar } from '../../components/ProgressBar.tsx'
+import { Sheet } from '../../components/Sheet.tsx'
+import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
+import { Callout } from '../../components/Callout.tsx'
+import { EmptyState } from '../../components/EmptyState.tsx'
+import { KeyValueList } from '../../components/KeyValueList.tsx'
+import { Stat } from '../../components/Stat.tsx'
+import {
+  IconPlus,
+  IconTrash,
+  IconEdit,
+  IconCheck,
+  IconInfo,
+  IconChevronLeft,
+  IconChevronRight,
+  IconMoreVertical,
+  IconClose,
+} from '../../components/Icons.tsx'
 
 interface NutritionModuleProps {
   profile: UserProfile | null
@@ -33,15 +51,31 @@ interface NutritionModuleProps {
 }
 
 const CATEGORY_LABELS: Record<MealCategory, string> = {
-  breakfast: '🌅 فطور',
-  lunch: '🍲 غداء',
-  dinner: '🌙 عشاء',
-  snack: '🥗 سناك وخفايف',
+  breakfast: 'فطور',
+  lunch: 'غداء',
+  dinner: 'عشاء',
+  snack: 'سناك وخفايف',
+}
+
+function getTodayStr(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function addDays(dateStr: string, days: number): string {
+  const parts = dateStr.split('-')
+  const d = new Date(
+    parseInt(parts[0], 10),
+    parseInt(parts[1], 10) - 1,
+    parseInt(parts[2], 10),
+  )
+  d.setDate(d.getDate() + days)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 export function NutritionModule({
   profile,
-  bodyLog,
+  bodyLog = [],
   onAddBodyWeight,
   onUpdateProfile,
 }: NutritionModuleProps) {
@@ -49,6 +83,18 @@ export function NutritionModule({
     MealCategory | 'all'
   >('all')
   const [recentlyLoggedId, setRecentlyLoggedId] = useState<string | null>(null)
+
+  // Day Switcher state
+  const [selectedDate, setSelectedDate] = useState(() => getTodayStr())
+  const isToday = selectedDate === getTodayStr()
+
+  // Sub-screens & sheets
+  const [showBodyTargetsDetails, setShowBodyTargetsDetails] = useState(false)
+  const [showPlusSheet, setShowPlusSheet] = useState(false)
+  const [mealActionTarget, setMealActionTarget] = useState<CustomMeal | null>(
+    null,
+  )
+  const [mealToDelete, setMealToDelete] = useState<CustomMeal | null>(null)
 
   // Custom Meals State
   const [customMeals, setCustomMeals] = useState<CustomMeal[]>(() => {
@@ -67,7 +113,7 @@ export function NutritionModule({
   )
   const [showMacroGuide, setShowMacroGuide] = useState(false)
 
-  // Profile Editor Modal State
+  // Profile / Calculator Editor Modal State
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isImperial, setIsImperial] = useState(false)
   const [editWeight, setEditWeight] = useState<number>(
@@ -111,16 +157,13 @@ export function NutritionModule({
   const [editProteinOverride, setEditProteinOverride] = useState<
     number | undefined
   >(profile?.body?.proteinPerKgOverride)
-  const [showAdvancedInModal, setShowAdvancedInModal] = useState(false)
   const [modalError, setModalError] = useState('')
 
   // Explanation & Calibration Modal State
   const [showExplanation, setShowExplanation] = useState(false)
   const [isCalibrationModalOpen, setIsCalibrationModalOpen] = useState(false)
   const [quickWeight, setQuickWeight] = useState('')
-  const [quickWeightDate, setQuickWeightDate] = useState(
-    () => new Date().toISOString().split('T')[0],
-  )
+  const [quickWeightDate, setQuickWeightDate] = useState(() => getTodayStr())
   const [calibrationFeedback, setCalibrationFeedback] = useState('')
 
   useEffect(() => {
@@ -157,8 +200,8 @@ export function NutritionModule({
     }
   }, [customMeals])
 
-  const todayKey = useMemo(() => new Date().toISOString().split('T')[0], [])
-  const storageKey = `maganis:daily_nutrition_${todayKey}`
+  // Storage key based on selectedDate
+  const storageKey = `maganis:daily_nutrition_${selectedDate}`
 
   // Daily tracker state
   const [dailyLog, setDailyLog] = useState<DailyNutritionLog>(() => {
@@ -171,7 +214,7 @@ export function NutritionModule({
       // ignore
     }
     return {
-      date: todayKey,
+      date: selectedDate,
       consumedCalories: 0,
       consumedProtein: 0,
       consumedCarbs: 0,
@@ -179,6 +222,27 @@ export function NutritionModule({
       loggedMeals: [],
     }
   })
+
+  // Re-read dailyLog when selectedDate changes
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(storageKey)
+      if (raw) {
+        setDailyLog(JSON.parse(raw) as DailyNutritionLog)
+        return
+      }
+    } catch {
+      // ignore
+    }
+    setDailyLog({
+      date: selectedDate,
+      consumedCalories: 0,
+      consumedProtein: 0,
+      consumedCarbs: 0,
+      consumedFats: 0,
+      loggedMeals: [],
+    })
+  }, [storageKey, selectedDate])
 
   useEffect(() => {
     try {
@@ -258,9 +322,9 @@ export function NutritionModule({
   }
 
   function handleDeleteCustomMeal(id: string) {
-    if (window.confirm('هل أنت متأكد من حذف هذه الوجبة؟')) {
-      setCustomMeals((prev) => prev.filter((m) => m.id !== id))
-    }
+    setCustomMeals((prev) => prev.filter((m) => m.id !== id))
+    setMealToDelete(null)
+    setMealActionTarget(null)
   }
 
   const calibrationData = useMemo(() => {
@@ -386,7 +450,7 @@ export function NutritionModule({
   function handleResetDailyLog() {
     if (window.confirm('هل تريد تصفير عداد السعرات والماكروز لهذا اليوم؟')) {
       const resetState: DailyNutritionLog = {
-        date: todayKey,
+        date: selectedDate,
         consumedCalories: 0,
         consumedProtein: 0,
         consumedCarbs: 0,
@@ -409,10 +473,13 @@ export function NutritionModule({
 
   if (!profile || !targets) {
     return (
-      <div className="card">
-        <p className="muted">
-          يرجى إكمال الملف الشخصي أولاً لحساب السعرات والماكروز.
-        </p>
+      <div className="card" style={{ margin: '16px' }}>
+        <Callout
+          title="الملف غير مكتمل"
+          message="يرجى إكمال بيانات ملفك الشخصي لتشغيل محرك حساب السعرات والماكروز العلمي."
+          actionLabel="إكمال الملف الشخصي"
+          onAction={() => setIsProfileModalOpen(true)}
+        />
       </div>
     )
   }
@@ -440,1307 +507,1132 @@ export function NutritionModule({
   )
 
   return (
-    <div className="nutrition-module" data-testid="nutrition-module">
-      {/* Dr. Maganis Coach Header */}
-      <div className="maganis-coach-card" style={{ marginBottom: '16px' }}>
-        <div className="maganis-coach-avatar-wrapper">
-          <img
-            src={assetUrl('branding/maganis-nutrition-transparent.png')}
-            alt="د. مجانص والتغذية"
-            className="maganis-transparent-mascot"
-          />
-          <span className="maganis-coach-badge">د. مجانص</span>
-        </div>
-        <div className="maganis-coach-body">
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '6px',
-            }}
-          >
-            <h3 className="maganis-coach-title" style={{ margin: 0 }}>
-              🍎 مطبخ د. مجانص — متابعة السعرات والماكروز
-            </h3>
+    <div
+      className="nutrition-module"
+      data-testid="nutrition-module"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        paddingBottom: '24px',
+      }}
+    >
+      {/* TopBar with Plus Sheet & Day Switcher */}
+      <TopBar
+        title="التغذية"
+        actions={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               type="button"
-              className="chip highlight"
-              onClick={() => setShowMacroGuide((prev) => !prev)}
+              className="btn-icon"
+              onClick={() => setShowPlusSheet(true)}
+              aria-label="إضافة وتتبع التغذية"
               style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'var(--brand)',
+                color: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 cursor: 'pointer',
-                fontWeight: 700,
-                fontSize: '12px',
-                padding: '4px 10px',
-                border: '1px solid var(--primary)',
               }}
             >
-              {showMacroGuide
-                ? '✕ إخفاء الدليل التعليمي'
-                : '💡 كيف أحسب الماكروز؟'}
+              <IconPlus size={20} />
             </button>
           </div>
-          <div className="maganis-speech-bubble" style={{ marginTop: '8px' }}>
-            <strong>سجّل وجباتك بلمسة واحدة!</strong> اكتب سعرات وماكروز وجبتك
-            مباشرة، أو صمّمها بالجرام من حاسبة المكونات. شريطك بيتملي أمامك حتى
-            توصل لهدفك وتعمل فورمة حديد!
-          </div>
-        </div>
-      </div>
+        }
+      />
 
-      {/* Outdated Profile Notice Banner */}
-      {profile &&
-        (!profile.body.lifestyle ||
-          !profile.body.workoutBlocks ||
-          profile.body.workoutBlocks.length === 0) && (
-          <div
-            style={{
-              background: 'rgba(249, 115, 22, 0.12)',
-              border: '1.5px solid var(--accent)',
-              borderRadius: '10px',
-              padding: '12px 14px',
-              marginBottom: '14px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '10px',
-            }}
-          >
-            <div>
-              <strong style={{ color: 'var(--accent)', fontSize: '13.5px' }}>
-                💡 استكمال بيانات الحساب العلمي الدقيق:
-              </strong>
-              <p
-                style={{
-                  margin: '4px 0 0',
-                  fontSize: '12px',
-                  color: 'var(--ink)',
-                }}
-              >
-                لتفعيل حساب معدل الأيض ومعامل النشاط اليومي وتفاصيل جلسات
-                التمرين بدقة 100% بنظام 2026، اضغط هنا لاستكمال بياناتك.
-              </p>
-            </div>
-            <button
-              type="button"
-              className="button-primary small"
-              onClick={() => setIsProfileModalOpen(true)}
-            >
-              ✨ استكمال البيانات الآن
-            </button>
-          </div>
-        )}
-
-      {/* Body Profile & Daily Calorie Science Card */}
+      {/* Day Switcher */}
       <div
-        className="card highlight-box"
+        className="day-switcher-bar"
         style={{
-          marginBottom: '16px',
-          border: '1.5px solid var(--line)',
-          padding: '14px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 16px',
+          background: 'var(--card-bg)',
+          borderBottom: '1px solid var(--line)',
         }}
       >
-        <div
+        <button
+          type="button"
+          onClick={() => setSelectedDate((d) => addDays(d, -1))}
+          aria-label="اليوم السابق"
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '8px',
-            marginBottom: '10px',
-          }}
-        >
-          <div>
-            <h4
-              style={{
-                margin: 0,
-                fontSize: '15px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
-              🎯 ملف جسمك واحتياجك اليومي العلمي
-            </h4>
-            <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
-              {targets.engineResult
-                ? targets.engineResult.explanationAr.formula
-                : 'معادلة ميفلين سانت جيور (Mifflin-St Jeor)'}
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="chip-btn"
-              onClick={() => setIsProfileModalOpen(true)}
-              style={{
-                background: 'var(--primary)',
-                color: '#ffffff',
-                border: 'none',
-                padding: '6px 12px',
-                fontWeight: 700,
-                fontSize: '12.5px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-              }}
-            >
-              ✏️ تعديل بيانات وزني وهدفي
-            </button>
-            <button
-              type="button"
-              className="button-secondary small"
-              onClick={() => setIsCalibrationModalOpen(true)}
-            >
-              ⚖️ معايرة السعرات الذكية
-            </button>
-          </div>
-        </div>
-
-        {/* Profile Metrics Row */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
-            fontSize: '12.5px',
-            background: 'var(--card-subtle)',
-            padding: '10px 12px',
+            width: '40px',
+            height: '40px',
             borderRadius: '8px',
-            marginBottom: '10px',
-            border: '1px solid var(--line)',
-          }}
-        >
-          <span>
-            ⚖️ <strong>الوزن:</strong> {profile.body.weightKg} كجم
-          </span>
-          <span>•</span>
-          <span>
-            📏 <strong>الطول:</strong> {profile.body.heightCm} سم
-          </span>
-          <span>•</span>
-          <span>
-            🎂 <strong>السن:</strong> {profile.body.age} سنة
-          </span>
-          {profile.body.bodyFatPercent && (
-            <>
-              <span>•</span>
-              <span>
-                💧 <strong>نسبة الدهون:</strong> {profile.body.bodyFatPercent}%
-              </span>
-            </>
-          )}
-          <span>•</span>
-          <span>
-            ⚡ <strong>النشاط:</strong> {currentActivityObj?.labelAr || 'متوسط'}
-          </span>
-          <span>•</span>
-          <span>
-            🏆 <strong>الهدف:</strong> {currentGoalObj?.labelAr || 'تضخيم'}
-          </span>
-        </div>
-
-        {/* Calculation Details */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-            gap: '8px',
-            fontSize: '12px',
-          }}
-        >
-          <div
-            style={{
-              background: 'var(--card-subtle)',
-              padding: '8px 10px',
-              borderRadius: '6px',
-            }}
-          >
-            <strong>الحرق الأساسي (BMR):</strong>
-            <div>{targets.bmr} كالوِري (أثناء الراحة)</div>
-          </div>
-          <div
-            style={{
-              background: 'var(--card-subtle)',
-              padding: '8px 10px',
-              borderRadius: '6px',
-            }}
-          >
-            <strong>استهلاكك بالنشاط (TDEE):</strong>
-            <div>
-              {targets.tdee} كالوِري{' '}
-              {targets.engineResult?.tdeeRange && (
-                <span
-                  style={{
-                    fontSize: '10.5px',
-                    color: 'var(--muted)',
-                    display: 'block',
-                  }}
-                >
-                  نطاق: {targets.engineResult.tdeeRange.min} -{' '}
-                  {targets.engineResult.tdeeRange.max}
-                </span>
-              )}
-            </div>
-          </div>
-          <div
-            style={{
-              background: 'var(--accent-soft)',
-              color: 'var(--accent)',
-              border: '1px solid rgba(249, 87, 0, 0.3)',
-              padding: '8px 10px',
-              borderRadius: '6px',
-              fontWeight: 700,
-            }}
-          >
-            <strong>الهدف اليومي:</strong>
-            <div>
-              {targets.targetCalories} كالوِري ({targets.goalLabelAr})
-            </div>
-          </div>
-          <div
-            style={{
-              background: 'var(--card-subtle)',
-              color: 'var(--ink)',
-              border: '1px solid var(--line)',
-              padding: '8px 10px',
-              borderRadius: '6px',
-              fontWeight: 700,
-            }}
-          >
-            <strong>البروتين المستهدف:</strong>
-            <div>
-              {targets.proteinGrams} جم (
-              {(targets.proteinGrams / profile.body.weightKg).toFixed(1)}{' '}
-              جم/كجم)
-              {targets.engineResult?.protein && (
-                <span
-                  style={{
-                    fontSize: '10.5px',
-                    color: 'var(--muted)',
-                    display: 'block',
-                  }}
-                >
-                  نطاق: {targets.engineResult.protein.rangeMin} -{' '}
-                  {targets.engineResult.protein.rangeMax} جم
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Collapsible 'كيف حسبناها؟' Button */}
-        <div style={{ marginTop: '10px' }}>
-          <button
-            type="button"
-            className="button-secondary small"
-            onClick={() => setShowExplanation(!showExplanation)}
-            style={{ width: '100%', justifyContent: 'center' }}
-          >
-            {showExplanation
-              ? '▲ إخفاء تفاصيل المعادلات العلمية'
-              : '🔍 كيف حسبناها؟ (التفاصيل والمعادلات العلمية 2026)'}
-          </button>
-        </div>
-
-        {/* Detailed Scientific Explanation Panel */}
-        {showExplanation && targets.engineResult && (
-          <div
-            style={{
-              marginTop: '10px',
-              padding: '12px 14px',
-              borderRadius: '8px',
-              background: 'var(--card-bg)',
-              border: '1px solid var(--line)',
-            }}
-          >
-            <h5
-              style={{
-                margin: '0 0 8px 0',
-                fontSize: '13px',
-                color: 'var(--ink)',
-              }}
-            >
-              🔬 تفاصيل المعادلات العلمية لحساب خطتك:
-            </h5>
-            <ul
-              style={{
-                margin: 0,
-                paddingRight: '16px',
-                fontSize: '12px',
-                lineHeight: '1.75',
-                color: 'var(--ink)',
-              }}
-            >
-              <li>
-                <strong>المعادلة:</strong>{' '}
-                {targets.engineResult.explanationAr.formula}
-              </li>
-              <li>
-                <strong>الحرق القاعدي (BMR):</strong>{' '}
-                {targets.engineResult.explanationAr.bmrText}
-              </li>
-              <li>
-                <strong>معامل نمط الحياة:</strong>{' '}
-                {targets.engineResult.explanationAr.lifestyleText}
-              </li>
-              <li>
-                <strong>حرق التمرين الفعلي (EAT):</strong>{' '}
-                {targets.engineResult.explanationAr.eatText}
-              </li>
-              <li>
-                <strong>نطاق الاستهلاك (TDEE):</strong>{' '}
-                {targets.engineResult.explanationAr.tdeeRangeText}
-              </li>
-              <li>
-                <strong>المعدل الأسبوعي:</strong>{' '}
-                {targets.engineResult.explanationAr.rateText}
-              </li>
-              <li>
-                <strong>تعديل السعرات:</strong>{' '}
-                {targets.engineResult.explanationAr.adjustmentText}
-              </li>
-              <li>
-                <strong>أساس احتساب البروتين:</strong>{' '}
-                {targets.engineResult.explanationAr.proteinBasisText}
-              </li>
-            </ul>
-            <div
-              style={{
-                marginTop: '10px',
-                padding: '8px 10px',
-                borderRadius: '6px',
-                background: 'var(--card-subtle)',
-                fontSize: '11px',
-                color: 'var(--muted)',
-                lineHeight: '1.5',
-              }}
-            >
-              💡 <em>مرجع رياضي:</em> تشير الدراسات إلى أن مكاسب البناء العضلي
-              تصل إلى ذروتها حول 1.6 جم/كجم (Morton et al., BJSM 2018)، والزيادة
-              عن ذلك آمنة للأصحاء ولكنها اختيارية.
-            </div>
-            {targets.engineResult.warningsAr.length > 0 && (
-              <div style={{ marginTop: '8px' }}>
-                {targets.engineResult.warningsAr.map((w, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      color: 'var(--accent)',
-                      fontSize: '11.5px',
-                      marginTop: '4px',
-                    }}
-                  >
-                    ⚠️ {w}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Safety Disclaimer */}
-        <div
-          style={{
-            marginTop: '10px',
-            padding: '8px 10px',
-            borderRadius: '6px',
+            border: 'none',
             background: 'var(--card-subtle)',
-            fontSize: '11px',
-            color: 'var(--muted)',
-            lineHeight: '1.5',
-            border: '1px dashed var(--line)',
+            color: 'var(--ink)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
           }}
         >
-          ⚠️ <strong>إخلاء مسؤولية طبي وأمان:</strong> جميع الأرقام والخطط
-          الغذائية هي تقديرات حسابية إرشادية مستندة للأدبيات الرياضية وليست
-          استشارة طبية. في حالات الحمل، الرضاعة، الأمراض المزمنة، أو تاريخ
-          اضطرابات الأكل، يُرجى استشارة طبيب أو أخصائي تغذية متخصص.
+          <IconChevronRight size={18} />
+        </button>
+
+        <div
+          style={{
+            fontSize: '14.5px',
+            fontWeight: 700,
+            color: 'var(--ink)',
+            textAlign: 'center',
+          }}
+        >
+          {isToday ? `اليوم، ${formatArabicDate(selectedDate)}` : formatArabicDate(selectedDate)}
         </div>
+
+        <button
+          type="button"
+          onClick={() => setSelectedDate((d) => addDays(d, 1))}
+          aria-label="اليوم التالي"
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '8px',
+            border: 'none',
+            background: 'var(--card-subtle)',
+            color: 'var(--ink)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <IconChevronLeft size={18} />
+        </button>
       </div>
 
-      {/* Interactive Macro Guide */}
-      {showMacroGuide && (
+      <div
+        className="screen-content"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '0 16px',
+          maxWidth: '720px',
+          margin: '0 auto',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Outdated / Incomplete Profile Notice Banner */}
+        {(!profile.body.lifestyle ||
+          !profile.body.workoutBlocks ||
+          profile.body.workoutBlocks.length === 0) && (
+          <Callout
+            title="استكمال البيانات"
+            message="لتفعيل حساب معدل الأيض ومعامل النشاط اليومي وتفاصيل جلسات التمرين بدقة 100% بنظام 2026، استكمل بياناتك الآن."
+            actionLabel="استكمال البيانات"
+            onAction={() => setIsProfileModalOpen(true)}
+          />
+        )}
+
+        {/* Daily Summary Card: Calories & 3 Macros Grouped */}
         <div
-          className="card highlight-box"
+          className="card daily-summary-card"
           style={{
-            marginBottom: '16px',
-            border: '2px solid #3b82f6',
-            padding: '16px',
+            padding: '18px',
+            borderRadius: '16px',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
           }}
+        >
+          {/* Calories Row */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
+              }}
+            >
+              <div>
+                <span style={{ fontSize: '12.5px', color: 'var(--muted)', fontWeight: 600 }}>
+                  السعرات المستهلكة
+                </span>
+                <div
+                  style={{
+                    fontSize: '26px',
+                    fontWeight: 800,
+                    color: 'var(--brand)',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {dailyLog.consumedCalories}{' '}
+                  <span style={{ fontSize: '15px', color: 'var(--muted)', fontWeight: 500 }}>
+                    / {targets.targetCalories} كالوِري
+                  </span>
+                </div>
+              </div>
+              <span
+                style={{
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  color: calPercent >= 100 ? '#10b981' : 'var(--muted)',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {calPercent}%
+              </span>
+            </div>
+            <ProgressBar
+              value={dailyLog.consumedCalories}
+              max={targets.targetCalories}
+              height={8}
+              color={calPercent >= 100 ? '#10b981' : 'var(--brand)'}
+              aria-label="شريط السعرات اليومية"
+            />
+          </div>
+
+          {/* 3 Macro Bars Grouped */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+              paddingTop: '12px',
+              borderTop: '1px solid var(--line)',
+            }}
+          >
+            {/* Protein */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '13px',
+                }}
+              >
+                <span style={{ fontWeight: 700, color: '#3b82f6' }}>البروتين</span>
+                <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--ink)' }}>
+                  {dailyLog.consumedProtein} / {targets.proteinGrams} جم ({proteinPercent}%)
+                </span>
+              </div>
+              <ProgressBar
+                value={dailyLog.consumedProtein}
+                max={targets.proteinGrams}
+                height={5}
+                color="#3b82f6"
+                aria-label="البروتين"
+              />
+            </div>
+
+            {/* Carbs */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '13px',
+                }}
+              >
+                <span style={{ fontWeight: 700, color: '#eab308' }}>الكاربوهيدرات</span>
+                <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--ink)' }}>
+                  {dailyLog.consumedCarbs} / {targets.carbsGrams} جم ({carbsPercent}%)
+                </span>
+              </div>
+              <ProgressBar
+                value={dailyLog.consumedCarbs}
+                max={targets.carbsGrams}
+                height={5}
+                color="#eab308"
+                aria-label="الكاربوهيدرات"
+              />
+            </div>
+
+            {/* Fats */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '13px',
+                }}
+              >
+                <span style={{ fontWeight: 700, color: '#ec4899' }}>الدهون</span>
+                <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--ink)' }}>
+                  {dailyLog.consumedFats} / {targets.fatsGrams} جم ({fatsPercent}%)
+                </span>
+              </div>
+              <ProgressBar
+                value={dailyLog.consumedFats}
+                max={targets.fatsGrams}
+                height={5}
+                color="#ec4899"
+                aria-label="الدهون"
+              />
+            </div>
+          </div>
+
+          {dailyLog.loggedMeals.length > 0 && (
+            <div
+              style={{
+                fontSize: '12px',
+                color: 'var(--muted)',
+                paddingTop: '4px',
+              }}
+            >
+              الوجبات المسجلة: {dailyLog.loggedMeals.map((m) => m.nameAr).join(' • ')}
+            </div>
+          )}
+        </div>
+
+        {/* 'احتياجك اليومي العلمي' Row */}
+        <div
+          className="card"
+          onClick={() => setShowBodyTargetsDetails(true)}
+          style={{
+            padding: '16px',
+            borderRadius: '16px',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            cursor: 'pointer',
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--ink)' }}>
+              احتياجك اليومي العلمي
+            </span>
+            <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
+              {targets.targetCalories} كالوِري ({targets.goalLabelAr}) · BMR {targets.bmr} · TDEE {targets.tdee}
+            </span>
+          </div>
+          <IconChevronLeft size={20} style={{ color: 'var(--muted)', flexShrink: 0 }} />
+        </div>
+
+        {/* Meal Categories & List Section */}
+        <div
+          className="section-meals"
+          style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
         >
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: '12px',
             }}
           >
-            <h3
-              style={{
-                margin: 0,
-                fontSize: '16px',
-                color: '#1e3a8a',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
-              📖 دليل الماكروز العلمي
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: 'var(--ink)' }}>
+              قائمة الوجبات ({filteredCustomMeals.length})
             </h3>
             <button
               type="button"
-              className="ghost-secondary tiny"
-              onClick={() => setShowMacroGuide(false)}
-            >
-              ✕
-            </button>
-          </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '10px',
-            }}
-          >
-            <div
-              style={{
-                background: '#eff6ff',
-                padding: '12px',
-                borderRadius: '10px',
-                border: '1px solid #bfdbfe',
-              }}
-            >
-              <h4 style={{ margin: '0 0 6px', color: '#1d4ed8' }}>
-                🥩 البروتين (Protein)
-              </h4>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '12px',
-                  color: '#1e40af',
-                  lineHeight: '1.5',
-                }}
-              >
-                1 جم بروتين = 4 سعرات حرارية. مسؤول عن بناء وترميم الألياف
-                العضلية.
-              </p>
-            </div>
-            <div
-              style={{
-                background: '#fefce8',
-                padding: '12px',
-                borderRadius: '10px',
-                border: '1px solid #fef08a',
-              }}
-            >
-              <h4 style={{ margin: '0 0 6px', color: '#a16207' }}>
-                🍞 الكاربوهيدرات (Carbs)
-              </h4>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '12px',
-                  color: '#854d0e',
-                  lineHeight: '1.5',
-                }}
-              >
-                1 جم كارب = 4 سعرات حرارية. مصدر الطاقة الأول لتمارين الأوزان.
-              </p>
-            </div>
-            <div
-              style={{
-                background: '#fef2f2',
-                padding: '12px',
-                borderRadius: '10px',
-                border: '1px solid #fecaca',
-              }}
-            >
-              <h4 style={{ margin: '0 0 6px', color: '#b91c1c' }}>
-                🥑 الدهون الصحية (Fats)
-              </h4>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '12px',
-                  color: '#991b1b',
-                  lineHeight: '1.5',
-                }}
-              >
-                1 جم دهون = 9 سعرات حرارية. ضرورية لصحة الهرمونات والمفاصل.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Interactive Daily Macro Tracker Bar */}
-      <div
-        className="card highlight-box"
-        style={{ marginBottom: '16px', border: '2px solid var(--primary)' }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '8px',
-            marginBottom: '12px',
-          }}
-        >
-          <div>
-            <h3 style={{ margin: 0, fontSize: '17px' }}>
-              📊 متتبع التغذية اليومي (اليوم: {todayKey})
-            </h3>
-            <span className="muted-small">
-              سجل وجباتك بضغطة زر وشاهد نسبة اكتمال احتياجك
-            </span>
-          </div>
-          {dailyLog.consumedCalories > 0 && (
-            <button
-              type="button"
-              className="ghost-danger tiny"
-              onClick={handleResetDailyLog}
-              title="تصفير العداد لليوم"
-            >
-              🔄 تصفير عداد اليوم
-            </button>
-          )}
-        </div>
-
-        {/* Calories Progress Bar */}
-        <div style={{ marginBottom: '14px' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: '14px',
-              marginBottom: '4px',
-            }}
-          >
-            <span>
-              🔥 <strong>السعرات الحرارية:</strong> {dailyLog.consumedCalories}{' '}
-              / {targets.targetCalories} كالوِري
-            </span>
-            <strong
-              style={{
-                color: calPercent >= 100 ? '#22c55e' : 'var(--primary)',
-              }}
-            >
-              {calPercent}%
-            </strong>
-          </div>
-          <div
-            style={{
-              height: '10px',
-              background: 'var(--line)',
-              borderRadius: '8px',
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                width: `${calPercent}%`,
-                height: '100%',
-                background:
-                  calPercent >= 100
-                    ? '#22c55e'
-                    : 'linear-gradient(90deg, #F95700, #ff8a3d)',
-                transition: 'width 0.3s ease',
-              }}
-            />
-          </div>
-        </div>
-
-        {/* 3 Macro Bars (Protein, Carbs, Fats) */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-            gap: '10px',
-          }}
-        >
-          {/* Protein */}
-          <div
-            style={{
-              background: 'var(--card-subtle)',
-              padding: '10px',
-              borderRadius: '10px',
-              border: '1px solid var(--line)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '12.5px',
-                marginBottom: '4px',
-              }}
-            >
-              <span style={{ fontWeight: 700, color: '#3b82f6' }}>
-                🥩 البروتين
-              </span>
-              <strong>{proteinPercent}%</strong>
-            </div>
-            <div
-              style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
-            >
-              {dailyLog.consumedProtein} / {targets.proteinGrams} جم
-            </div>
-            <div
-              style={{
-                height: '6px',
-                background: 'var(--line)',
-                borderRadius: '6px',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  width: `${proteinPercent}%`,
-                  height: '100%',
-                  background: '#3b82f6',
-                  transition: 'width 0.3s ease',
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Carbs */}
-          <div
-            style={{
-              background: 'var(--card-subtle)',
-              padding: '10px',
-              borderRadius: '10px',
-              border: '1px solid var(--line)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '12.5px',
-                marginBottom: '4px',
-              }}
-            >
-              <span style={{ fontWeight: 700, color: '#eab308' }}>
-                🍞 الكارب
-              </span>
-              <strong>{carbsPercent}%</strong>
-            </div>
-            <div
-              style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
-            >
-              {dailyLog.consumedCarbs} / {targets.carbsGrams} جم
-            </div>
-            <div
-              style={{
-                height: '6px',
-                background: 'var(--line)',
-                borderRadius: '6px',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  width: `${carbsPercent}%`,
-                  height: '100%',
-                  background: '#eab308',
-                  transition: 'width 0.3s ease',
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Fats */}
-          <div
-            style={{
-              background: 'var(--card-subtle)',
-              padding: '10px',
-              borderRadius: '10px',
-              border: '1px solid var(--line)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '12.5px',
-                marginBottom: '4px',
-              }}
-            >
-              <span style={{ fontWeight: 700, color: '#ef4444' }}>
-                🥑 الدهون
-              </span>
-              <strong>{fatsPercent}%</strong>
-            </div>
-            <div
-              style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
-            >
-              {dailyLog.consumedFats} / {targets.fatsGrams} جم
-            </div>
-            <div
-              style={{
-                height: '6px',
-                background: 'var(--line)',
-                borderRadius: '6px',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  width: `${fatsPercent}%`,
-                  height: '100%',
-                  background: '#ef4444',
-                  transition: 'width 0.3s ease',
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {dailyLog.loggedMeals.length > 0 && (
-          <div
-            style={{
-              marginTop: '10px',
-              fontSize: '12px',
-              color: 'var(--muted)',
-            }}
-          >
-            الوجبات المسجلة اليوم:{' '}
-            {dailyLog.loggedMeals.map((m) => m.nameAr).join(' • ')}
-          </div>
-        )}
-      </div>
-
-      {/* Main Custom Meals Action Section */}
-      <div className="card">
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '10px',
-            marginBottom: '14px',
-          }}
-        >
-          <div>
-            <h2 style={{ margin: '0 0 4px', fontSize: '18px' }}>
-              🥗 وجباتي المخصصة
-            </h2>
-            <p className="muted" style={{ margin: 0 }}>
-              سجّل أي وجبة وتناولها بضغطة زر مع احتساب دقيق للسعرات والماكروز.
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="button-primary small"
-              onClick={() => setIsQuickManualModalOpen(true)}
-              style={{
-                background: 'linear-gradient(135deg, #f95700, #ff8a3d)',
-              }}
-            >
-              ⚡ + تسجيل وجبة سريعة
-            </button>
-            <button
-              type="button"
-              className="button-secondary small"
+              className="btn-ghost"
               onClick={() => {
                 setEditingCustomMeal(null)
                 setIsCustomMealModalOpen(true)
               }}
-            >
-              ✨ + تصميم وجبة بالمكونات
-            </button>
-          </div>
-        </div>
-
-        {/* Category Filters */}
-        <div
-          className="chips-row"
-          style={{ flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}
-        >
-          <button
-            type="button"
-            className={
-              'chip-btn' + (selectedCategoryFilter === 'all' ? ' selected' : '')
-            }
-            onClick={() => setSelectedCategoryFilter('all')}
-          >
-            📋 كل الوجبات ({customMeals.length})
-          </button>
-          {(Object.keys(CATEGORY_LABELS) as MealCategory[]).map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={
-                'chip-btn' + (selectedCategoryFilter === cat ? ' selected' : '')
-              }
-              onClick={() => setSelectedCategoryFilter(cat)}
-            >
-              {CATEGORY_LABELS[cat]} (
-              {customMeals.filter((m) => m.category === cat).length})
-            </button>
-          ))}
-        </div>
-
-        {/* Custom Meals Grid */}
-        <div className="egyptian-meals-grid">
-          {filteredCustomMeals.length === 0 ? (
-            <div
-              className="card"
               style={{
-                gridColumn: '1 / -1',
-                textAlign: 'center',
-                padding: '36px 16px',
-                background: 'var(--card-subtle)',
-                border: '1.5px dashed var(--line)',
-                borderRadius: '12px',
+                fontSize: '13.5px',
+                fontWeight: 600,
+                color: 'var(--brand)',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
               }}
             >
-              <h3 style={{ margin: '0 0 8px' }}>لم تضف وجبات بعد! 🍽️</h3>
-              <p
-                className="muted"
-                style={{ margin: '0 auto 16px', maxWidth: '440px' }}
-              >
-                يمكنك الآن تسجيل أي وجبة تأكلها بالسعرات والماكروز مباشرة عبر زر{' '}
-                <strong>"⚡ تسجيل وجبة سريعة"</strong>، أو تصميمها بالجرام من
-                حاسبة المكونات.
-              </p>
-              <div
+              + تصميم وجبة
+            </button>
+          </div>
+
+          {/* Category Filter Chips (No Emoji) */}
+          <div
+            className="chips-row"
+            style={{
+              display: 'flex',
+              gap: '8px',
+              overflowX: 'auto',
+              paddingBottom: '4px',
+            }}
+          >
+            <button
+              type="button"
+              className={'chip-btn' + (selectedCategoryFilter === 'all' ? ' selected' : '')}
+              onClick={() => setSelectedCategoryFilter('all')}
+              style={{
+                padding: '8px 14px',
+                borderRadius: '999px',
+                fontSize: '13px',
+                fontWeight: 600,
+                border: '1px solid var(--line)',
+                background: selectedCategoryFilter === 'all' ? 'var(--brand)' : 'var(--card-subtle)',
+                color: selectedCategoryFilter === 'all' ? '#fff' : 'var(--ink)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              الكل ({customMeals.length})
+            </button>
+            {(Object.keys(CATEGORY_LABELS) as MealCategory[]).map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={'chip-btn' + (selectedCategoryFilter === cat ? ' selected' : '')}
+                onClick={() => setSelectedCategoryFilter(cat)}
                 style={{
-                  display: 'flex',
-                  gap: '8px',
-                  justifyContent: 'center',
-                  flexWrap: 'wrap',
+                  padding: '8px 14px',
+                  borderRadius: '999px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  border: '1px solid var(--line)',
+                  background: selectedCategoryFilter === cat ? 'var(--brand)' : 'var(--card-subtle)',
+                  color: selectedCategoryFilter === cat ? '#fff' : 'var(--ink)',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
                 }}
               >
-                <button
-                  type="button"
-                  className="button-primary"
-                  onClick={() => setIsQuickManualModalOpen(true)}
-                >
-                  ⚡ سجّل أول وجبة سريعة الآن
-                </button>
-                <button
-                  type="button"
-                  className="ghost"
-                  onClick={() => {
-                    setEditingCustomMeal(null)
-                    setIsCustomMealModalOpen(true)
-                  }}
-                >
-                  ✨ صمّم وجبة بحاسبة الجرامات
-                </button>
-              </div>
-            </div>
+                {CATEGORY_LABELS[cat]} ({customMeals.filter((m) => m.category === cat).length})
+              </button>
+            ))}
+          </div>
+
+          {/* Meals List */}
+          {filteredCustomMeals.length === 0 ? (
+            <EmptyState
+              title="لا توجد وجبات في هذا القسم"
+              description="صمّم وجبتك بالجرامات أو سجّل وجبة سريعة بالأرقام"
+              actionLabel="+ إضافة وجبة"
+              onAction={() => setIsCustomMealModalOpen(true)}
+            />
           ) : (
-            filteredCustomMeals.map((meal) => {
-              const isJustLogged = recentlyLoggedId === meal.id
-              return (
-                <div key={meal.id} className="egyptian-meal-card card">
-                  <div className="meal-card-header">
-                    <div>
-                      <h3 style={{ margin: '0 0 4px', fontSize: '15px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {filteredCustomMeals.map((meal) => {
+                const isJustLogged = recentlyLoggedId === meal.id
+                return (
+                  <div
+                    key={meal.id}
+                    className="card meal-list-row"
+                    style={{
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      background: 'var(--card-bg)',
+                      border: '1px solid var(--line)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '12px',
+                    }}
+                  >
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <strong style={{ fontSize: '15px', color: 'var(--ink)', display: 'block' }}>
                         {meal.nameAr}
-                      </h3>
+                      </strong>
                       <span
-                        className="chip"
                         style={{
-                          background: 'var(--accent-soft)',
-                          color: 'var(--accent)',
-                          fontSize: '11px',
-                          padding: '2px 8px',
-                          borderRadius: '999px',
+                          fontSize: '12.5px',
+                          color: 'var(--muted)',
+                          marginTop: '2px',
+                          display: 'block',
+                          fontVariantNumeric: 'tabular-nums',
                         }}
                       >
-                        {CATEGORY_LABELS[meal.category] || meal.category}
+                        {meal.calories} كالوِري · ب: {meal.proteinGrams}ج · ك: {meal.carbsGrams}ج · د: {meal.fatsGrams}ج
                       </span>
                     </div>
-                    <span className="badge-cal">{meal.calories} كالوِري</span>
-                  </div>
 
-                  {meal.notesAr && <p className="meal-desc">{meal.notesAr}</p>}
-
-                  {meal.ingredients && meal.ingredients.length > 0 && (
-                    <div
-                      style={{
-                        margin: '8px 0',
-                        padding: '8px',
-                        background: 'var(--card-subtle)',
-                        borderRadius: '8px',
-                        fontSize: '12px',
-                        border: '1px solid var(--line)',
-                      }}
-                    >
-                      <strong>المكونات:</strong>
-                      <ul
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                      <button
+                        type="button"
+                        onClick={() => handleLogCustomMeal(meal)}
                         style={{
-                          margin: '4px 0 0',
-                          paddingRight: '18px',
-                          color: 'var(--muted)',
+                          height: '38px',
+                          padding: '0 12px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: isJustLogged ? '#10b981' : 'var(--brand)',
+                          color: '#fff',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
                         }}
                       >
-                        {meal.ingredients.map((ing, i) => {
-                          const food = getFoodItemById(ing.foodItemId)
-                          if (!food) return null
-                          const m = calculateIngredientMacros(food, ing.grams)
-                          return (
-                            <li key={i}>
-                              {ing.grams} جم {food.nameAr} ({m.calories} كالوِري
-                              • {m.protein}ج بروتين)
-                            </li>
-                          )
-                        })}
-                      </ul>
+                        {isJustLogged && <IconCheck size={16} />}
+                        <span>{isJustLogged ? 'تم التسجيل' : 'أكلتها'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn-icon"
+                        onClick={() => setMealActionTarget(meal)}
+                        aria-label={`خيارات وجبة ${meal.nameAr}`}
+                        style={{
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: 'var(--card-subtle)',
+                          color: 'var(--ink)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <IconMoreVertical size={18} />
+                      </button>
                     </div>
-                  )}
-
-                  <div className="meal-macros-mini">
-                    <span className="macro-pill protein">
-                      بروتين: {meal.proteinGrams}ج
-                    </span>
-                    <span className="macro-pill carbs">
-                      كارب: {meal.carbsGrams}ج
-                    </span>
-                    <span className="macro-pill fats">
-                      دهون: {meal.fatsGrams}ج
-                    </span>
                   </div>
-
-                  <div
-                    style={{ display: 'flex', gap: '6px', marginTop: '12px' }}
-                  >
-                    <button
-                      type="button"
-                      className="button-primary tiny"
-                      style={{
-                        flex: 2,
-                        background: isJustLogged ? '#22c55e' : undefined,
-                        borderColor: isJustLogged ? '#22c55e' : undefined,
-                      }}
-                      onClick={() => handleLogCustomMeal(meal)}
-                    >
-                      {isJustLogged
-                        ? '✓ تم تسجيل الوجبة!'
-                        : '🍽️ أكلت الوجبة (+ضيف للماكروز)'}
-                    </button>
-                    <button
-                      type="button"
-                      className="ghost tiny"
-                      onClick={() => {
-                        setEditingCustomMeal(meal)
-                        setIsCustomMealModalOpen(true)
-                      }}
-                      title="تعديل الوجبة"
-                    >
-                      ✏️ تعديل
-                    </button>
-                    <button
-                      type="button"
-                      className="ghost-danger tiny"
-                      onClick={() => handleDeleteCustomMeal(meal.id)}
-                      title="حذف الوجبة"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </div>
-              )
-            })
+                )
+              })}
+            </div>
           )}
         </div>
       </div>
 
-      {/* Quick Manual Meal Modal */}
-      {isQuickManualModalOpen && (
-        <QuickManualMealModal
-          onLogMealDirect={handleLogDirectMeal}
-          onSaveToCustomMeals={handleSaveCustomMeal}
-          onClose={() => setIsQuickManualModalOpen(false)}
+      {/* Plus Sheet: Quick Log / Custom Meal / Macro Guide */}
+      <Sheet
+        isOpen={showPlusSheet}
+        onClose={() => setShowPlusSheet(false)}
+        title="إضافة وتتبع التغذية"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px 0' }}>
+          <button
+            type="button"
+            onClick={() => {
+              setShowPlusSheet(false)
+              setIsQuickManualModalOpen(true)
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px',
+              padding: '14px 16px',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'var(--card-subtle)',
+              textAlign: 'right',
+              cursor: 'pointer',
+              width: '100%',
+            }}
+          >
+            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>تسجيل وجبة سريعة</strong>
+            <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
+              سجل سعرات وماكروز وجبة مباشرة بالأرقام
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowPlusSheet(false)
+              setEditingCustomMeal(null)
+              setIsCustomMealModalOpen(true)
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px',
+              padding: '14px 16px',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'var(--card-subtle)',
+              textAlign: 'right',
+              cursor: 'pointer',
+              width: '100%',
+            }}
+          >
+            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>تصميم وجبة بالمكونات</strong>
+            <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
+              احسب الماكروز بالجرام من قاعدة الأغذية المصرية والعربية
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowPlusSheet(false)
+              setShowMacroGuide(true)
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px',
+              padding: '14px 16px',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'var(--card-subtle)',
+              textAlign: 'right',
+              cursor: 'pointer',
+              width: '100%',
+            }}
+          >
+            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>دليل الماكروز والتغذية</strong>
+            <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
+              شرح مبسط لكيفية تقسيم البروتين والكارب والدهون
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowPlusSheet(false)
+              handleResetDailyLog()
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px',
+              padding: '14px 16px',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'var(--danger-surface, rgba(220, 38, 38, 0.08))',
+              color: 'var(--danger)',
+              textAlign: 'right',
+              cursor: 'pointer',
+              width: '100%',
+            }}
+          >
+            <strong style={{ fontSize: '15px' }}>تصفير عداد اليوم</strong>
+            <span style={{ fontSize: '12.5px', opacity: 0.8 }}>
+              إعادة عداد السعرات والماكروز لليوم الحالي إلى الصفر
+            </span>
+          </button>
+        </div>
+      </Sheet>
+
+      {/* Meal Actions Sheet */}
+      {mealActionTarget && (
+        <Sheet
+          isOpen={true}
+          onClose={() => setMealActionTarget(null)}
+          title={`خيارات: ${mealActionTarget.nameAr}`}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px 0' }}>
+            <button
+              type="button"
+              onClick={() => {
+                setEditingCustomMeal(mealActionTarget)
+                setMealActionTarget(null)
+                setIsCustomMealModalOpen(true)
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '14px 16px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'var(--card-subtle)',
+                color: 'var(--ink)',
+                fontSize: '15px',
+                fontWeight: 600,
+                textAlign: 'right',
+                width: '100%',
+                cursor: 'pointer',
+              }}
+            >
+              <IconEdit size={18} />
+              <span>تعديل الوجبة</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMealToDelete(mealActionTarget)
+                setMealActionTarget(null)
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '14px 16px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'var(--danger-surface, rgba(220, 38, 38, 0.08))',
+                color: 'var(--danger)',
+                fontSize: '15px',
+                fontWeight: 600,
+                textAlign: 'right',
+                width: '100%',
+                cursor: 'pointer',
+              }}
+            >
+              <IconTrash size={18} />
+              <span>حذف الوجبة</span>
+            </button>
+          </div>
+        </Sheet>
+      )}
+
+      {/* Delete Meal Confirm Sheet */}
+      {mealToDelete && (
+        <ConfirmSheet
+          isOpen={true}
+          onClose={() => setMealToDelete(null)}
+          onConfirm={() => handleDeleteCustomMeal(mealToDelete.id)}
+          title="حذف الوجبة؟"
+          message={`هل أنت متأكد من حذف وجبة «${mealToDelete.nameAr}»؟`}
+          confirmLabel="نعم، حذف"
+          cancelLabel="إلغاء"
+          isDestructive={true}
         />
       )}
 
-      {/* Custom Meal Modal (with ingredients and custom food creator) */}
-      {isCustomMealModalOpen && (
-        <CustomMealModal
-          initialMeal={editingCustomMeal}
-          onSave={handleSaveCustomMeal}
-          onClose={() => {
-            setIsCustomMealModalOpen(false)
-            setEditingCustomMeal(null)
-          }}
-        />
-      )}
-
-      {/* Profile Edit Modal */}
-      {isProfileModalOpen && (
+      {/* Body & Targets Detail Sub-Screen */}
+      {showBodyTargetsDetails && (
         <div
-          className="modal-backdrop"
-          onClick={() => setIsProfileModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.7)',
+            zIndex: 500,
+            background: 'var(--bg)',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '16px',
+            flexDirection: 'column',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
           }}
         >
+          <TopBar
+            title="ملف جسمك واحتياجك العلمي"
+            onBack={() => setShowBodyTargetsDetails(false)}
+          />
+
           <div
-            className="card"
-            onClick={(e) => e.stopPropagation()}
+            className="screen-content"
             style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              padding: '16px',
+              maxWidth: '680px',
+              margin: '0 auto',
               width: '100%',
-              maxWidth: '560px',
-              borderRadius: '16px',
-              padding: '20px',
-              maxHeight: '92vh',
-              overflowY: 'auto',
+              boxSizing: 'border-box',
             }}
           >
+            {/* KeyValueList of metrics */}
             <div
+              className="card"
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '14px',
-                borderBottom: '1px solid var(--line)',
-                paddingBottom: '10px',
+                borderRadius: '16px',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--line)',
+                padding: '8px 16px',
               }}
             >
-              <div>
-                <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 800 }}>
-                  ⚙️ إعدادات الحساب العلمي للسعرات والماكروز
-                </h3>
-                <span style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
-                  نظام 2026 الدقيق (BMR + METs + EAT + LBM)
-                </span>
-              </div>
+              <KeyValueList
+                items={[
+                  {
+                    id: 'weight',
+                    label: 'الوزن',
+                    value: `${profile.body.weightKg} كجم`,
+                  },
+                  {
+                    id: 'height',
+                    label: 'الطول',
+                    value: `${profile.body.heightCm} سم`,
+                  },
+                  {
+                    id: 'age',
+                    label: 'العمر',
+                    value: `${profile.body.age} سنة`,
+                  },
+                  {
+                    id: 'sex',
+                    label: 'الجنس',
+                    value: profile.body.sex === 'male' ? 'ذكر' : 'أنثى',
+                  },
+                  {
+                    id: 'bf',
+                    label: 'نسبة دهون الجسم',
+                    value: profile.body.bodyFatPercent
+                      ? `${profile.body.bodyFatPercent}%`
+                      : 'غير محددة',
+                  },
+                  {
+                    id: 'activity',
+                    label: 'معامل النشاط',
+                    value: currentActivityObj?.labelAr || 'متوسط',
+                  },
+                  {
+                    id: 'goal',
+                    label: 'الهدف الأساسي',
+                    value: currentGoalObj?.labelAr || 'تضخيم',
+                  },
+                ]}
+              />
+            </div>
+
+            {/* BMR and TDEE Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <Stat
+                label="الحرق الأساسي"
+                value={`${targets.bmr} كالوِري`}
+                secondary={<span dir="ltr">BMR</span>}
+              />
+              <Stat
+                label="الحرق بالنشاط"
+                value={`${targets.tdee} كالوِري`}
+                secondary={<span dir="ltr">TDEE</span>}
+              />
+            </div>
+
+            {/* Scientific Explanation Expandable */}
+            <div
+              className="card"
+              style={{
+                borderRadius: '16px',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--line)',
+                padding: '16px',
+              }}
+            >
               <button
                 type="button"
-                className="ghost-secondary tiny"
-                onClick={() => setIsProfileModalOpen(false)}
+                onClick={() => setShowExplanation(!showExplanation)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  background: 'transparent',
+                  border: 'none',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                  cursor: 'pointer',
+                  padding: 0,
+                }}
               >
-                ✕
+                <span>كيف حسبناها؟ (معادلات 2026)</span>
+                <span style={{ fontSize: '13px', color: 'var(--brand)' }}>
+                  {showExplanation ? 'إخفاء ▲' : 'عرض ▼'}
+                </span>
+              </button>
+
+              {showExplanation && targets.engineResult && (
+                <div style={{ marginTop: '12px', fontSize: '13px', lineHeight: 1.7 }}>
+                  <ul style={{ paddingRight: '18px', margin: '8px 0', color: 'var(--ink)' }}>
+                    <li><strong>المعادلة:</strong> {targets.engineResult.explanationAr.formula}</li>
+                    <li><strong>الحرق القاعدي (BMR):</strong> {targets.engineResult.explanationAr.bmrText}</li>
+                    <li><strong>معامل نمط الحياة:</strong> {targets.engineResult.explanationAr.lifestyleText}</li>
+                    <li><strong>حرق التمرين الفعلي (EAT):</strong> {targets.engineResult.explanationAr.eatText}</li>
+                    <li><strong>نطاق الاستهلاك (TDEE):</strong> {targets.engineResult.explanationAr.tdeeRangeText}</li>
+                    <li><strong>تعديل السعرات:</strong> {targets.engineResult.explanationAr.adjustmentText}</li>
+                    <li><strong>أساس احتساب البروتين:</strong> {targets.engineResult.explanationAr.proteinBasisText}</li>
+                  </ul>
+                  <div
+                    style={{
+                      background: 'var(--card-subtle)',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                      color: 'var(--muted)',
+                    }}
+                  >
+                    <em>مرجع رياضي:</em> تشير الدراسات إلى أن مكاسب البناء العضلي تصل لذروتها حول 1.6 جم/كجم (Morton et al., BJSM 2018).
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Actions: Edit profile & Calibration */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => {
+                  setShowBodyTargetsDetails(false)
+                  setIsProfileModalOpen(true)
+                }}
+                style={{
+                  height: '48px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: 'var(--brand)',
+                  color: '#fff',
+                  fontSize: '15.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  width: '100%',
+                }}
+              >
+                تعديل بيانات وزني وهدفي
+              </button>
+
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => {
+                  setShowBodyTargetsDetails(false)
+                  setIsCalibrationModalOpen(true)
+                }}
+                style={{
+                  height: '48px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--line)',
+                  background: 'var(--card-subtle)',
+                  color: 'var(--ink)',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  width: '100%',
+                }}
+              >
+                معايرة السعرات الذكية
               </button>
             </div>
 
-            {modalError && (
-              <div
-                style={{
-                  background: 'var(--danger-soft)',
-                  color: 'var(--danger)',
-                  padding: '10px',
-                  borderRadius: '8px',
-                  marginBottom: '12px',
-                  fontSize: '12.5px',
-                  fontWeight: 700,
-                  border: '1px solid var(--danger-line)',
-                }}
-              >
-                ⚠️ {modalError}
-              </div>
-            )}
+            {/* Safety Disclaimer Footnote */}
+            <p
+              style={{
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+                lineHeight: 1.5,
+                margin: '8px 0',
+                textAlign: 'center',
+              }}
+            >
+              تنويه طبي: هذه الأرقام والخطط الغذائية هي تقديرات حسابية إرشادية مستندة للأدبيات الرياضية وليست استشارة طبية. يُرجى استشارة طبيب أو أخصائي تغذية قبل اتباع أي حمية صارمة.
+            </p>
+          </div>
+        </div>
+      )}
 
-            <form onSubmit={handleSaveProfileChanges}>
-              {/* Unit Toggle */}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  marginBottom: '10px',
-                }}
-              >
+      {/* Screen 10: Calculator Settings (Full-Screen Route) */}
+      {isProfileModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 500,
+            background: 'var(--bg)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
+          <TopBar
+            title="إعدادات الحاسبة واحتياج السعرات"
+            onBack={() => setIsProfileModalOpen(false)}
+          />
+
+          <form
+            onSubmit={handleSaveProfileChanges}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flex: 1,
+            }}
+          >
+            <div
+              className="screen-content"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+                padding: '16px',
+                maxWidth: '680px',
+                margin: '0 auto',
+                width: '100%',
+                boxSizing: 'border-box',
+                flex: 1,
+              }}
+            >
+              {modalError && (
                 <div
+                  role="alert"
                   style={{
-                    display: 'flex',
-                    background: 'var(--card-subtle)',
-                    borderRadius: '8px',
-                    padding: '2px',
-                    border: '1px solid var(--line)',
+                    padding: '12px 16px',
+                    borderRadius: '10px',
+                    background: 'var(--danger-surface, rgba(220, 38, 38, 0.1))',
+                    color: 'var(--danger)',
+                    fontSize: '14px',
+                    fontWeight: 600,
                   }}
                 >
-                  <button
-                    type="button"
-                    className={`tiny ${!isImperial ? 'button-primary' : 'ghost'}`}
-                    onClick={() => setIsImperial(false)}
-                    style={{ borderRadius: '6px' }}
-                  >
-                    متري (كجم / سم)
-                  </button>
-                  <button
-                    type="button"
-                    className={`tiny ${isImperial ? 'button-primary' : 'ghost'}`}
-                    onClick={() => setIsImperial(true)}
-                    style={{ borderRadius: '6px' }}
-                  >
-                    إمبراطوري (باوند / بوصة)
-                  </button>
+                  {modalError}
                 </div>
-              </div>
+              )}
 
-              {/* Weight & Height */}
+              {/* Unit Toggle: Segmented control */}
               <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
-                  gap: '10px',
-                  marginBottom: '12px',
+                  background: 'var(--card-subtle)',
+                  padding: '4px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--line)',
                 }}
               >
-                <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      marginBottom: '4px',
-                    }}
-                  >
-                    ⚖️ الوزن ({isImperial ? 'باوند lbs' : 'كجم'}):
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    className="field-input"
-                    value={
-                      isImperial
-                        ? Number((editWeight * 2.20462).toFixed(1))
-                        : editWeight
-                    }
-                    onChange={(e) => {
-                      const val = parseFloat(e.target.value) || 0
-                      setEditWeight(
-                        isImperial ? Number((val / 2.20462).toFixed(1)) : val,
-                      )
-                    }}
-                    required
-                    style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      marginBottom: '4px',
-                    }}
-                  >
-                    📏 الطول ({isImperial ? 'بوصة in' : 'سم'}):
-                  </label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    className="field-input"
-                    value={
-                      isImperial
-                        ? Number((editHeight / 2.54).toFixed(1))
-                        : editHeight
-                    }
-                    onChange={(e) => {
-                      const val = parseFloat(e.target.value) || 0
-                      setEditHeight(
-                        isImperial ? Number((val * 2.54).toFixed(1)) : val,
-                      )
-                    }}
-                    required
-                    style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                  />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsImperial(false)}
+                  style={{
+                    height: '40px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: !isImperial ? 'var(--card-bg)' : 'transparent',
+                    color: !isImperial ? 'var(--ink)' : 'var(--muted)',
+                    fontWeight: 700,
+                    fontSize: '13.5px',
+                    cursor: 'pointer',
+                    boxShadow: !isImperial ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  }}
+                >
+                  متري (كجم / سم)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsImperial(true)}
+                  style={{
+                    height: '40px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: isImperial ? 'var(--card-bg)' : 'transparent',
+                    color: isImperial ? 'var(--ink)' : 'var(--muted)',
+                    fontWeight: 700,
+                    fontSize: '13.5px',
+                    cursor: 'pointer',
+                    boxShadow: isImperial ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  }}
+                >
+                  إمبراطوري (باوند / بوصة)
+                </button>
               </div>
 
-              {/* Age, Sex & Optional Body Fat */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr',
-                  gap: '10px',
-                  marginBottom: '12px',
-                }}
-              >
-                <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      marginBottom: '4px',
-                    }}
-                  >
-                    🎂 العمر:
-                  </label>
-                  <input
-                    type="number"
-                    min="12"
-                    max="100"
-                    className="field-input"
-                    value={editAge}
-                    onChange={(e) => setEditAge(Number(e.target.value))}
-                    required
-                    style={{ width: '100%', padding: '8px', fontWeight: 700 }}
-                  />
-                </div>
-
-                <div>
-                  <Select
-                    id="calc-sex-select"
-                    label="👤 الجنس:"
-                    value={editSex}
-                    onChange={(val) => setEditSex(val as Sex)}
-                    options={[
-                      { value: 'male', labelAr: 'ذكر', labelEn: 'Male' },
-                      { value: 'female', labelAr: 'أنثى', labelEn: 'Female' },
-                    ]}
-                    sheetTitle="اختر الجنس"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      marginBottom: '4px',
-                    }}
-                  >
-                    💧 دهون الجسم % (اختياري):
-                  </label>
-                  <input
-                    type="number"
-                    min="3"
-                    max="65"
-                    step="0.5"
-                    className="field-input"
-                    value={editBodyFat ?? ''}
-                    placeholder="مثال: 18"
-                    onChange={(e) =>
-                      setEditBodyFat(
-                        e.target.value ? Number(e.target.value) : undefined,
-                      )
-                    }
-                    style={{ width: '100%', padding: '8px' }}
-                  />
-                </div>
+              {/* Weight Field */}
+              <div className="field">
+                <label htmlFor="calc-weight" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                  الوزن ({isImperial ? 'باوند' : 'كجم'})
+                </label>
+                <input
+                  id="calc-weight"
+                  type="number"
+                  step="0.1"
+                  className="field-input"
+                  value={
+                    isImperial
+                      ? Number((editWeight * 2.20462).toFixed(1))
+                      : editWeight
+                  }
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value) || 0
+                    setEditWeight(
+                      isImperial ? Number((val / 2.20462).toFixed(1)) : val,
+                    )
+                  }}
+                  required
+                  style={{ height: '48px', width: '100%' }}
+                />
               </div>
 
-              {/* Lifestyle (excluding workouts) */}
-              <div style={{ marginBottom: '14px' }}>
+              {/* Height Field */}
+              <div className="field">
+                <label htmlFor="calc-height" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                  الطول ({isImperial ? 'بوصة' : 'سم'})
+                </label>
+                <input
+                  id="calc-height"
+                  type="number"
+                  step="0.5"
+                  className="field-input"
+                  value={
+                    isImperial
+                      ? Number((editHeight / 2.54).toFixed(1))
+                      : editHeight
+                  }
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value) || 0
+                    setEditHeight(
+                      isImperial ? Number((val * 2.54).toFixed(1)) : val,
+                    )
+                  }}
+                  required
+                  style={{ height: '48px', width: '100%' }}
+                />
+              </div>
+
+              {/* Age Field */}
+              <div className="field">
+                <label htmlFor="calc-age" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                  العمر (بالسنوات)
+                </label>
+                <input
+                  id="calc-age"
+                  type="number"
+                  min="12"
+                  max="100"
+                  className="field-input"
+                  value={editAge}
+                  onChange={(e) => setEditAge(Number(e.target.value))}
+                  required
+                  style={{ height: '48px', width: '100%' }}
+                />
+              </div>
+
+              {/* Sex Select */}
+              <div className="field">
+                <Select
+                  id="calc-sex-select"
+                  label="الجنس"
+                  value={editSex}
+                  onChange={(val) => setEditSex(val as Sex)}
+                  options={[
+                    { value: 'male', labelAr: 'ذكر', labelEn: 'Male' },
+                    { value: 'female', labelAr: 'أنثى', labelEn: 'Female' },
+                  ]}
+                  sheetTitle="اختر الجنس"
+                />
+              </div>
+
+              {/* Body Fat % (Optional) */}
+              <div className="field">
+                <label htmlFor="calc-bf" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                  نسبة دهون الجسم (اختياري، %)
+                </label>
+                <input
+                  id="calc-bf"
+                  type="number"
+                  min="3"
+                  max="65"
+                  step="0.5"
+                  className="field-input"
+                  value={editBodyFat ?? ''}
+                  placeholder="مثال: 18"
+                  onChange={(e) =>
+                    setEditBodyFat(
+                      e.target.value ? Number(e.target.value) : undefined,
+                    )
+                  }
+                  style={{ height: '48px', width: '100%' }}
+                />
+              </div>
+
+              {/* Lifestyle Level Select */}
+              <div className="field">
                 <Select
                   id="calc-lifestyle-select"
-                  label="🚶 نمط نشاطك اليومي (خارج أوقات التمرين):"
+                  label="نمط نشاطك اليومي (خارج أوقات التمرين)"
                   value={String(editLifestyle)}
                   onChange={(val) =>
                     setEditLifestyle(Number(val) as LifestyleLevel)
@@ -1748,8 +1640,8 @@ export function NutritionModule({
                   options={[
                     {
                       value: '1',
-                      labelAr: '1 = مكتبي / طالب',
-                      description: 'خامل غالباً، معامل 1.20',
+                      labelAr: '1 = مكتبي أو طالب (خامل غالباً)',
+                      description: 'معامل 1.20',
                     },
                     {
                       value: '2',
@@ -1771,13 +1663,15 @@ export function NutritionModule({
                 />
               </div>
 
-              {/* Workout Blocks (up to 3) */}
+              {/* Workout Blocks (Vertical Repeater: 1 per row) */}
               <div
                 style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                  padding: '14px',
+                  borderRadius: '16px',
                   background: 'var(--card-subtle)',
-                  padding: '12px',
-                  borderRadius: '10px',
-                  marginBottom: '14px',
                   border: '1px solid var(--line)',
                 }}
               >
@@ -1786,16 +1680,15 @@ export function NutritionModule({
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    marginBottom: '8px',
                   }}
                 >
-                  <label style={{ fontSize: '12.5px', fontWeight: 800 }}>
-                    🏋️ جلسات التمارين الرياضية (حساب حرق EAT):
-                  </label>
+                  <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--ink)' }}>
+                    جلسات التمارين الرياضية (حساب EAT)
+                  </span>
                   {editWorkoutBlocks.length < 3 && (
                     <button
                       type="button"
-                      className="button-secondary tiny"
+                      className="btn-ghost"
                       onClick={() =>
                         setEditWorkoutBlocks([
                           ...editWorkoutBlocks,
@@ -1807,8 +1700,16 @@ export function NutritionModule({
                           },
                         ])
                       }
+                      style={{
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        color: 'var(--brand)',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
                     >
-                      + إضافة نشاط آخر
+                      + إضافة نشاط
                     </button>
                   )}
                 </div>
@@ -1817,578 +1718,461 @@ export function NutritionModule({
                   <div
                     key={idx}
                     style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1.2fr 1fr 1fr 1.2fr auto',
-                      gap: '6px',
-                      alignItems: 'center',
-                      marginBottom: '8px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px',
+                      padding: '14px',
+                      borderRadius: '12px',
                       background: 'var(--card-bg)',
-                      padding: '8px',
-                      borderRadius: '8px',
                       border: '1px solid var(--line)',
                     }}
                   >
-                    <div>
-                      <Select
-                        id={`block-type-${idx}`}
-                        label="النوع"
-                        value={block.type}
-                        onChange={(val) => {
-                          const updated = [...editWorkoutBlocks]
-                          updated[idx] = {
-                            ...updated[idx],
-                            type: val as 'resistance' | 'cardio',
-                          }
-                          setEditWorkoutBlocks(updated)
-                        }}
-                        options={[
-                          { value: 'resistance', labelAr: 'حديد ومقاومة' },
-                          { value: 'cardio', labelAr: 'كارديو وجري' },
-                        ]}
-                        sheetTitle="اختر نوع التمرين"
-                      />
-                    </div>
-
-                    <div>
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          display: 'block',
-                          color: 'var(--muted)',
-                        }}
-                      >
-                        أيام/أسبوع
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--ink)' }}>
+                        نشاط #{idx + 1}
                       </span>
-                      <input
-                        type="number"
-                        min="1"
-                        max="7"
-                        className="field-input"
-                        value={block.sessionsPerWeek}
-                        onChange={(e) => {
-                          const updated = [...editWorkoutBlocks]
-                          updated[idx] = {
-                            ...updated[idx],
-                            sessionsPerWeek: Number(e.target.value),
+                      {editWorkoutBlocks.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEditWorkoutBlocks(
+                              editWorkoutBlocks.filter((_, i) => i !== idx),
+                            )
                           }
-                          setEditWorkoutBlocks(updated)
-                        }}
-                        style={{
-                          width: '100%',
-                          padding: '4px',
-                          fontSize: '11px',
-                        }}
-                      />
+                          aria-label="حذف هذا النشاط"
+                          style={{
+                            border: 'none',
+                            background: 'transparent',
+                            color: 'var(--danger)',
+                            cursor: 'pointer',
+                            fontSize: '12.5px',
+                            fontWeight: 600,
+                          }}
+                        >
+                          حذف
+                        </button>
+                      )}
                     </div>
 
-                    <div>
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          display: 'block',
-                          color: 'var(--muted)',
-                        }}
-                      >
-                        دقيقة/جلسة
-                      </span>
-                      <input
-                        type="number"
-                        min="15"
-                        max="180"
-                        step="5"
-                        className="field-input"
-                        value={block.minutesPerSession}
-                        onChange={(e) => {
-                          const updated = [...editWorkoutBlocks]
-                          updated[idx] = {
-                            ...updated[idx],
-                            minutesPerSession: Number(e.target.value),
-                          }
-                          setEditWorkoutBlocks(updated)
-                        }}
-                        style={{
-                          width: '100%',
-                          padding: '4px',
-                          fontSize: '11px',
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <Select
-                        id={`block-intensity-${idx}`}
-                        label="الشدة"
-                        value={block.intensity}
-                        onChange={(val) => {
-                          const updated = [...editWorkoutBlocks]
-                          updated[idx] = {
-                            ...updated[idx],
-                            intensity: val as 'light' | 'moderate' | 'hard',
-                          }
-                          setEditWorkoutBlocks(updated)
-                        }}
-                        options={[
-                          { value: 'light', labelAr: 'خفيفة' },
-                          { value: 'moderate', labelAr: 'متوسطة' },
-                          { value: 'hard', labelAr: 'شاقة وعالية' },
-                        ]}
-                        sheetTitle="اختر شدة التمرين"
-                      />
-                    </div>
-
-                    {editWorkoutBlocks.length > 1 && (
-                      <button
-                        type="button"
-                        className="ghost-danger tiny"
-                        onClick={() =>
-                          setEditWorkoutBlocks(
-                            editWorkoutBlocks.filter((_, i) => i !== idx),
-                          )
+                    <Select
+                      id={`block-type-${idx}`}
+                      label="نوع التمرين"
+                      value={block.type}
+                      onChange={(val) => {
+                        const updated = [...editWorkoutBlocks]
+                        updated[idx] = {
+                          ...updated[idx],
+                          type: val as 'resistance' | 'cardio',
                         }
-                        title="حذف"
-                        style={{ marginTop: '12px' }}
-                      >
-                        ✕
-                      </button>
-                    )}
+                        setEditWorkoutBlocks(updated)
+                      }}
+                      options={[
+                        { value: 'resistance', labelAr: 'حديد ومقاومة' },
+                        { value: 'cardio', labelAr: 'كارديو وجري' },
+                      ]}
+                      sheetTitle="اختر نوع التمرين"
+                    />
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                      <div className="field">
+                        <label style={{ fontSize: '12.5px', fontWeight: 600 }}>الجلسات أسبوعياً</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="14"
+                          value={block.sessionsPerWeek}
+                          onChange={(e) => {
+                            const updated = [...editWorkoutBlocks]
+                            updated[idx] = {
+                              ...updated[idx],
+                              sessionsPerWeek: parseInt(e.target.value, 10) || 1,
+                            }
+                            setEditWorkoutBlocks(updated)
+                          }}
+                          className="field-input"
+                          style={{ height: '48px', width: '100%' }}
+                        />
+                      </div>
+                      <div className="field">
+                        <label style={{ fontSize: '12.5px', fontWeight: 600 }}>الدقائق لكل جلسة</label>
+                        <input
+                          type="number"
+                          min="10"
+                          max="180"
+                          step="5"
+                          value={block.minutesPerSession}
+                          onChange={(e) => {
+                            const updated = [...editWorkoutBlocks]
+                            updated[idx] = {
+                              ...updated[idx],
+                              minutesPerSession: parseInt(e.target.value, 10) || 10,
+                            }
+                            setEditWorkoutBlocks(updated)
+                          }}
+                          className="field-input"
+                          style={{ height: '48px', width: '100%' }}
+                        />
+                      </div>
+                    </div>
+
+                    <Select
+                      id={`block-intensity-${idx}`}
+                      label="شدة التمرين"
+                      value={block.intensity}
+                      onChange={(val) => {
+                        const updated = [...editWorkoutBlocks]
+                        updated[idx] = {
+                          ...updated[idx],
+                          intensity: val as 'light' | 'moderate' | 'vigorous',
+                        }
+                        setEditWorkoutBlocks(updated)
+                      }}
+                      options={[
+                        { value: 'light', labelAr: 'خفيفة (راحة طويلة)' },
+                        { value: 'moderate', labelAr: 'متوسطة (عادية)' },
+                        { value: 'vigorous', labelAr: 'شديدة (جهد عالي)' },
+                      ]}
+                      sheetTitle="اختر شدة التمرين"
+                    />
                   </div>
                 ))}
               </div>
 
-              {/* Goal & Pace */}
-              <div
+              {/* Goal Select */}
+              <div className="field">
+                <Select
+                  id="calc-goal-select"
+                  label="الهدف الأساسي"
+                  value={editGoal}
+                  onChange={(val) => setEditGoal(val as Goal)}
+                  options={GOALS.map((g) => ({
+                    value: g.value,
+                    labelAr: g.labelAr,
+                    description: g.descriptionAr,
+                  }))}
+                  sheetTitle="اختر هدفك التدريبي"
+                />
+              </div>
+
+              {/* Pace Select */}
+              <div className="field">
+                <Select
+                  id="calc-pace-select"
+                  label="وتيرة التقدم"
+                  value={editPace}
+                  onChange={(val) => setEditPace(val as NutritionPace)}
+                  options={[
+                    {
+                      value: 'conservative',
+                      labelAr: 'بطيء ومحافظ (تغيير طفيف في الوزن)',
+                    },
+                    {
+                      value: 'standard',
+                      labelAr: 'معتدل (المعدل العلمي الموصى به)',
+                    },
+                    {
+                      value: 'aggressive',
+                      labelAr: 'سريع ومكثف',
+                    },
+                  ]}
+                  sheetTitle="اختر وتيرة التقدم"
+                />
+              </div>
+
+              {/* Advanced Calculation Formula Select */}
+              <div className="field">
+                <Select
+                  id="calc-formula-select"
+                  label="معادلة الحساب المعتمدة"
+                  value={editFormulaOverride}
+                  onChange={(val) => setEditFormulaOverride(val as FormulaChoice)}
+                  options={[
+                    {
+                      value: 'auto',
+                      labelAr: 'تلقائي (الأفضل علمياً حسب معطياتك)',
+                    },
+                    {
+                      value: 'mifflin',
+                      labelAr: 'ميفلين سانت جيور (الأكثر دقة للأصحاء)',
+                    },
+                    {
+                      value: 'katch',
+                      labelAr: 'كاتش-ماكاردل (تتطلب نسبة دهون دقيقة)',
+                    },
+                    {
+                      value: 'cunningham',
+                      labelAr: 'كامينغهام (للرياضيين المتقدمين)',
+                    },
+                  ]}
+                  sheetTitle="اختر معادلة الحساب"
+                />
+              </div>
+
+              {/* Protein Override Field */}
+              <div className="field">
+                <label htmlFor="calc-protein-override" style={{ fontSize: '13.5px', fontWeight: 700 }}>
+                  تعديل البروتين يدوياً (اختياري، جم/كجم)
+                </label>
+                <input
+                  id="calc-protein-override"
+                  type="number"
+                  min="1.2"
+                  max="3.5"
+                  step="0.1"
+                  className="field-input"
+                  value={editProteinOverride ?? ''}
+                  placeholder="اتركه فارغاً للحساب التلقائي (1.6 - 2.2)"
+                  onChange={(e) =>
+                    setEditProteinOverride(
+                      e.target.value ? Number(e.target.value) : undefined,
+                    )
+                  }
+                  style={{ height: '48px', width: '100%' }}
+                />
+              </div>
+            </div>
+
+            {/* Sticky Bottom Bar */}
+            <div
+              className="sticky-actions-bar"
+              style={{
+                position: 'sticky',
+                bottom: 0,
+                background: 'var(--bg)',
+                padding: '12px 16px',
+                borderTop: '1px solid var(--line)',
+                zIndex: 20,
+                display: 'flex',
+                gap: '12px',
+                maxWidth: '680px',
+                margin: '0 auto',
+                width: '100%',
+                boxSizing: 'border-box',
+              }}
+            >
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => setIsProfileModalOpen(false)}
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1.2fr 1fr',
-                  gap: '10px',
-                  marginBottom: '14px',
+                  height: '48px',
+                  flex: '0 0 90px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--line)',
+                  background: 'transparent',
+                  color: 'var(--ink)',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
                 }}
               >
-                <div>
-                  <Select
-                    id="calc-goal-select"
-                    label="🏆 الهدف الأساسي:"
-                    value={editGoal}
-                    onChange={(val) => setEditGoal(val as Goal)}
-                    options={[
-                      {
-                        value: 'hypertrophy',
-                        labelAr: 'بناء عضلات وتضخيم',
-                        description: 'فائض سعرات',
-                      },
-                      {
-                        value: 'cut',
-                        labelAr: 'تنشيف وخسارة دهون',
-                        description: 'عجز سعرات',
-                      },
-                      {
-                        value: 'calisthenics',
-                        labelAr: 'كاليستينكس',
-                        description: 'سعرات المحافظة',
-                      },
-                      {
-                        value: 'flexibility',
-                        labelAr: 'صحة ومرونة',
-                        description: 'سعرات المحافظة',
-                      },
-                    ]}
-                    sheetTitle="اختر هدفك الأساسي"
-                  />
-                </div>
-
-                <div>
-                  <Select
-                    id="calc-pace-select"
-                    label="⚡ وتيرة الهدف (Pace):"
-                    value={editPace}
-                    onChange={(val) => setEditPace(val as NutritionPace)}
-                    options={[
-                      {
-                        value: 'slow',
-                        labelAr: 'هادئة وتدريجية',
-                        labelEn: 'Slow',
-                      },
-                      {
-                        value: 'standard',
-                        labelAr: 'قياسية ومعتدلة',
-                        labelEn: 'Standard',
-                      },
-                      {
-                        value: 'fast',
-                        labelAr: 'سريعة ومكثفة',
-                        labelEn: 'Fast',
-                      },
-                    ]}
-                    sheetTitle="اختر وتيرة الهدف"
-                  />
-                </div>
-              </div>
-
-              {/* Advanced Options Toggle */}
-              <div style={{ marginBottom: '14px' }}>
-                <button
-                  type="button"
-                  className="ghost tiny"
-                  onClick={() => setShowAdvancedInModal(!showAdvancedInModal)}
-                  style={{ textDecoration: 'underline', color: 'var(--muted)' }}
-                >
-                  {showAdvancedInModal
-                    ? '▲ إخفاء الخيارات المتقدمة'
-                    : '⚙️ خيارات متقدمة (تحديد المعادلة والبروتين يدوياً)'}
-                </button>
-
-                {showAdvancedInModal && (
-                  <div
-                    style={{
-                      marginTop: '8px',
-                      padding: '10px',
-                      borderRadius: '8px',
-                      background: 'var(--card-subtle)',
-                      border: '1px solid var(--line)',
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '10px',
-                    }}
-                  >
-                    <div>
-                      <Select
-                        id="calc-formula-select"
-                        label="معادلة BMR:"
-                        value={editFormulaOverride}
-                        onChange={(val) =>
-                          setEditFormulaOverride(val as FormulaChoice)
-                        }
-                        options={[
-                          {
-                            value: 'auto',
-                            labelAr: 'تلقائي',
-                            description: 'Katch عند توفر الدهون وإلا Mifflin',
-                          },
-                          {
-                            value: 'mifflin',
-                            labelAr: 'Mifflin-St Jeor',
-                            description: 'معيار الوزن والطول',
-                          },
-                          {
-                            value: 'katch',
-                            labelAr: 'Katch-McArdle',
-                            description: 'معيار الكتلة اللادهنية LBM',
-                          },
-                        ]}
-                        sheetTitle="اختر معادلة BMR"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '11.5px',
-                          marginBottom: '3px',
-                        }}
-                      >
-                        معامل بروتين يدوي (1.4 - 2.4 جم/كجم):
-                      </label>
-                      <input
-                        type="number"
-                        min="1.4"
-                        max="2.4"
-                        step="0.1"
-                        className="field-input"
-                        value={editProteinOverride ?? ''}
-                        placeholder="تلقائي حسب الهدف والكتلة"
-                        onChange={(e) =>
-                          setEditProteinOverride(
-                            e.target.value ? Number(e.target.value) : undefined,
-                          )
-                        }
-                        style={{
-                          width: '100%',
-                          padding: '6px',
-                          fontSize: '12px',
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div
+                إلغاء
+              </button>
+              <button
+                type="submit"
+                className="btn-primary"
                 style={{
-                  display: 'flex',
-                  gap: '8px',
-                  justifyContent: 'flex-end',
+                  height: '48px',
+                  flex: 1,
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: 'var(--brand)',
+                  color: '#fff',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
                 }}
               >
-                <button
-                  type="button"
-                  className="ghost"
-                  onClick={() => setIsProfileModalOpen(false)}
-                >
-                  إلغاء
-                </button>
-                <button type="submit" className="button-primary">
-                  ✓ تطبيق وحساب السعرات العلمية فوراً
-                </button>
-              </div>
-            </form>
-          </div>
+                تطبيق وحساب السعرات
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
-      {/* Calibration Modal */}
-      {isCalibrationModalOpen && (
-        <div
-          className="modal-backdrop"
-          onClick={() => setIsCalibrationModalOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '16px',
-          }}
-        >
+      {/* Smart Calibration Sheet */}
+      <Sheet
+        isOpen={isCalibrationModalOpen}
+        onClose={() => {
+          setIsCalibrationModalOpen(false)
+          setCalibrationFeedback('')
+        }}
+        title="معايرة السعرات الذكية"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '8px 0' }}>
+          <Callout
+            title="كيف تعمل المعايرة؟"
+            message="المعايرة تقارن وزنك الفعلي على مدار أسبوعين مع سعراتك اليومية المتناولة لتحديد معدل الحرق الحقيقي لجسمك بدقة تامة وتعديل سعراتك تلقائياً."
+          />
+
+          {/* Progress to 8 logs */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+              <span style={{ fontWeight: 600 }}>الأوزان المسجلة</span>
+              <span style={{ fontWeight: 700, color: 'var(--brand)' }}>
+                {Math.min(8, bodyLog.length)} من 8 أوزان مطلوبة
+              </span>
+            </div>
+            <ProgressBar
+              value={Math.min(8, bodyLog.length)}
+              max={8}
+              height={8}
+            />
+          </div>
+
+          {/* Quick Weight Form */}
           <div
-            className="card"
-            onClick={(e) => e.stopPropagation()}
             style={{
-              width: '100%',
-              maxWidth: '520px',
-              borderRadius: '16px',
-              padding: '20px',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+              padding: '14px',
+              borderRadius: '12px',
+              background: 'var(--card-subtle)',
+              border: '1px solid var(--line)',
             }}
           >
+            <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--ink)' }}>
+              تسجيل وزن سريع للمعايرة
+            </span>
+
+            <div className="field">
+              <label htmlFor="quick-cal-weight" style={{ fontSize: '13px', fontWeight: 600 }}>
+                الوزن (كجم)
+              </label>
+              <input
+                id="quick-cal-weight"
+                type="number"
+                step="0.1"
+                className="field-input"
+                value={quickWeight}
+                onChange={(e) => setQuickWeight(e.target.value)}
+                placeholder="مثال: 72.5"
+                style={{ height: '48px', width: '100%' }}
+              />
+            </div>
+
+            <div className="field">
+              <DateField
+                id="quick-cal-date"
+                label="التاريخ"
+                value={quickWeightDate}
+                onChange={(val) => setQuickWeightDate(val)}
+              />
+            </div>
+
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={handleQuickWeightSave}
+              style={{
+                height: '48px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'var(--brand)',
+                color: '#fff',
+                fontSize: '15px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                width: '100%',
+              }}
+            >
+              حفظ الوزن
+            </button>
+
+            {calibrationFeedback && (
+              <div
+                style={{
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  color: calibrationFeedback.startsWith('✓') ? '#10b981' : 'var(--danger)',
+                  marginTop: '4px',
+                }}
+              >
+                {calibrationFeedback}
+              </div>
+            )}
+          </div>
+
+          {/* Calibration Result */}
+          {calibrationData && calibrationData.canCalibrate ? (
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '14px',
-                borderBottom: '1px solid var(--line)',
-                paddingBottom: '10px',
+                flexDirection: 'column',
+                gap: '10px',
+                padding: '14px',
+                borderRadius: '12px',
+                background: 'var(--card-bg)',
+                border: '1px solid #10b981',
               }}
             >
-              <div>
-                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800 }}>
-                  ⚖️ تسجيل الوزن ومعايرة السعرات (Calibration Loop)
-                </h3>
-                <span style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
-                  تعديل السعرات النظرية بناءً على ميل تغير وزنك الفعلي
-                </span>
-              </div>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#10b981' }}>
+                ✓ تتوفر بيانات كافية للمعايرة ({calibrationData.logsCount} أوزان عبر {calibrationData.daysSpan} يوماً)
+              </span>
+
+              <ul style={{ margin: 0, paddingRight: '18px', fontSize: '13px', lineHeight: 1.7 }}>
+                <li><strong>معدل التغير الأسبوعي:</strong> {calibrationData.slopeKgPerWeek} كجم/أسبوع</li>
+                <li><strong>الحرق المشاهد (TDEE):</strong> {calibrationData.tdeeObserved} كالوِري</li>
+                <li><strong>الهدف المعاير المقترح:</strong> {calibrationData.newTargetCalories} كالوِري</li>
+              </ul>
+
               <button
                 type="button"
-                className="ghost-secondary tiny"
-                onClick={() => setIsCalibrationModalOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <p
-              className="muted"
-              style={{ fontSize: '12px', marginTop: 0, lineHeight: '1.6' }}
-            >
-              المعادلات النظرية تعطي دقة ±10%. حلقة المعايرة الرياضية تراقب وزنك
-              خلال 14-21 يوماً لحساب الحرق المشاهد الحقيقي وضبط سعراتك بدقة
-              تامة.
-            </p>
-
-            {/* Quick Weight Form */}
-            <div
-              style={{
-                background: 'var(--card-subtle)',
-                padding: '12px',
-                borderRadius: '10px',
-                marginBottom: '16px',
-                border: '1px solid var(--line)',
-              }}
-            >
-              <h4 style={{ margin: '0 0 8px 0', fontSize: '13px' }}>
-                ➕ تسجيل وزن سريع لليوم:
-              </h4>
-              <div
+                className="btn-primary"
+                onClick={() =>
+                  handleApplyCalibration(calibrationData.newTargetCalories!)
+                }
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px',
+                  height: '44px',
+                  borderRadius: '10px',
+                  border: 'none',
+                  background: '#10b981',
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
                   width: '100%',
+                  marginTop: '4px',
                 }}
               >
-                <div style={{ width: '100%' }}>
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      marginBottom: '4px',
-                      color: 'var(--ink)',
-                    }}
-                  >
-                    الوزن (كجم):
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    className="field-input"
-                    value={quickWeight}
-                    onChange={(e) => setQuickWeight(e.target.value)}
-                    placeholder="مثال: 72.5"
-                    style={{ width: '100%' }}
-                  />
-                </div>
-                <div style={{ width: '100%' }}>
-                  <DateField
-                    id="quick-weight-date"
-                    label="التاريخ:"
-                    value={quickWeightDate}
-                    onChange={(val) => setQuickWeightDate(val)}
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="button-primary"
-                  style={{ width: '100%', height: '48px' }}
-                  onClick={handleQuickWeightSave}
-                >
-                  حفظ الوزن
-                </button>
-              </div>
-              {calibrationFeedback && (
-                <p
-                  style={{
-                    margin: '6px 0 0',
-                    fontSize: '12px',
-                    color: 'var(--accent)',
-                    fontWeight: 700,
-                  }}
-                >
-                  {calibrationFeedback}
-                </p>
-              )}
-            </div>
-
-            {/* Calibration Status Box */}
-            <div
-              style={{
-                padding: '12px',
-                borderRadius: '10px',
-                border: '1px solid var(--line)',
-                background: 'var(--card-bg)',
-              }}
-            >
-              <h4 style={{ margin: '0 0 8px 0', fontSize: '13px' }}>
-                📊 حالة حلقة المعايرة:
-              </h4>
-              {calibrationData && calibrationData.canCalibrate ? (
-                <div>
-                  <div
-                    style={{
-                      color: '#16a34a',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      marginBottom: '6px',
-                    }}
-                  >
-                    ✓ تتوفر بيانات كافية ({calibrationData.logsCount} أوزان على
-                    مدى {calibrationData.daysSpan} يوماً).
-                  </div>
-                  <ul
-                    style={{
-                      margin: 0,
-                      paddingRight: '18px',
-                      fontSize: '12px',
-                      lineHeight: '1.7',
-                    }}
-                  >
-                    <li>
-                      <strong>معدل تغير الوزن الفعلي (Slope):</strong>{' '}
-                      {calibrationData.slopeKgPerWeek} كجم/أسبوع
-                    </li>
-                    <li>
-                      <strong>الحرق اليومي المشاهد (TDEE Obs):</strong>{' '}
-                      {calibrationData.tdeeObserved} كالوِري
-                    </li>
-                    <li>
-                      <strong>الحرق المعاير الجديد (TDEE New):</strong>{' '}
-                      {calibrationData.tdeeNew} كالوِري
-                    </li>
-                    <li>
-                      <strong>الهدف اليومي المعاير:</strong>{' '}
-                      {calibrationData.newTargetCalories} كالوِري (
-                      {calibrationData.changeKcal &&
-                      calibrationData.changeKcal > 0
-                        ? `+${calibrationData.changeKcal}`
-                        : calibrationData.changeKcal}{' '}
-                      كالوِري)
-                    </li>
-                  </ul>
-                  <p
-                    style={{
-                      fontSize: '11px',
-                      color: 'var(--muted)',
-                      marginTop: '8px',
-                    }}
-                  >
-                    {calibrationData.reasonAr}
-                  </p>
-                  <div style={{ marginTop: '12px' }}>
-                    <button
-                      type="button"
-                      className="button-primary small"
-                      onClick={() =>
-                        handleApplyCalibration(
-                          calibrationData.newTargetCalories!,
-                        )
-                      }
-                    >
-                      ✓ اعتماد وتطبيق الهدف المعاير (
-                      {calibrationData.newTargetCalories} كالوِري)
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  style={{
-                    fontSize: '12px',
-                    color: 'var(--muted)',
-                    lineHeight: '1.6',
-                  }}
-                >
-                  <p style={{ margin: 0 }}>
-                    ℹ️{' '}
-                    {calibrationData
-                      ? calibrationData.reasonAr
-                      : 'يتطلب حساب المعايرة تسجيل 8 أوزان على الأقل خلال أسبوعين إلى 3 أسابيع.'}
-                  </p>
-                  <p style={{ margin: '6px 0 0', fontSize: '11px' }}>
-                    الأوزان المسجلة حالياً: {bodyLog ? bodyLog.length : 0}{' '}
-                    تسجيلات.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div
-              className="modal-footer actions-row"
-              style={{ marginTop: '14px' }}
-            >
-              <button
-                type="button"
-                className="ghost"
-                onClick={() => setIsCalibrationModalOpen(false)}
-              >
-                إغلاق
+                تطبيق الهدف المعاير ({calibrationData.newTargetCalories} كالوِري)
               </button>
             </div>
-          </div>
+          ) : (
+            <div
+              style={{
+                fontSize: '12.5px',
+                color: 'var(--muted)',
+                lineHeight: 1.5,
+                padding: '8px',
+              }}
+            >
+              سجّل وزنك 8 مرات على الأقل لتفعيل حساب المعايرة التلقائية.
+            </div>
+          )}
         </div>
+      </Sheet>
+
+      {/* External Modals */}
+      {isCustomMealModalOpen && (
+        <CustomMealModal
+          initialMeal={editingCustomMeal}
+          onSave={handleSaveCustomMeal}
+          onClose={() => {
+            setIsCustomMealModalOpen(false)
+            setEditingCustomMeal(null)
+          }}
+        />
+      )}
+
+      {isQuickManualModalOpen && (
+        <QuickManualMealModal
+          isOpen={isQuickManualModalOpen}
+          onClose={() => setIsQuickManualModalOpen(false)}
+          onSaveMeal={handleSaveCustomMeal}
+          onLogDirect={handleLogDirectMeal}
+        />
       )}
 
       {showMacroGuide && (
