@@ -5,17 +5,28 @@ import {
   createLiveFileSyncManager,
   type LiveFileSyncState,
 } from '../../lib/liveFileSync.ts'
+import { ListRow } from '../../components/ListRow.tsx'
+import { Callout } from '../../components/Callout.tsx'
+import {
+  IconRefreshCw,
+  IconDownload,
+  IconUpload,
+  IconShare,
+  IconDatabase,
+} from '../../components/Icons.tsx'
 
-interface BackupPanelProps {
+export interface BackupPanelProps {
   backupData: () => BackupData
   onImported?: () => void
   onRestore?: (data: BackupData) => void
+  hideCardWrapper?: boolean
 }
 
 export function BackupPanel({
   backupData,
   onImported,
   onRestore,
+  hideCardWrapper = false,
 }: BackupPanelProps) {
   const store = createBackupStore()
   const [status, setStatus] = useState('')
@@ -46,7 +57,7 @@ export function BackupPanel({
       if (res.ok) {
         setSyncState(liveSyncManager.getState())
         setStatus(
-          `تم تفعيل المزامنة التلقائية وحفظ أول نسخة في: ${res.fileName} ✓`,
+          `تم تفعيل المزامنة التلقائية وحفظ أول نسخة في: ${res.fileName}`,
         )
       } else {
         setError(res.error ?? 'تعذر تفعيل المزامنة')
@@ -61,7 +72,7 @@ export function BackupPanel({
     const ok = await liveSyncManager.sync(backupData())
     if (ok) {
       setSyncState(liveSyncManager.getState())
-      setStatus('تم تحديث الملف على جهازك بنجاح ✓')
+      setStatus('تم تحديث الملف على جهازك بنجاح')
     } else {
       setError('تعذر تحديث الملف — يرجى إعادة تحديد الملف')
       setStatus('')
@@ -74,7 +85,7 @@ export function BackupPanel({
     try {
       const ok = await store.shareData(backupData())
       if (ok) {
-        setStatus('تمت المشاركة بنجاح ✓')
+        setStatus('تمت المشاركة بنجاح')
       } else {
         setStatus('')
       }
@@ -90,7 +101,7 @@ export function BackupPanel({
     try {
       const ok = await store.exportData(backupData())
       if (ok) {
-        setStatus('تم تصدير البيانات بنجاح ✓')
+        setStatus('تم تصدير البيانات بنجاح')
       } else {
         setError('فشل في تصدير البيانات')
         setStatus('')
@@ -109,7 +120,7 @@ export function BackupPanel({
     try {
       const result = await store.importData(file)
       if (result.ok && result.data) {
-        setStatus('تم استيراد البيانات بنجاح ✓')
+        setStatus('تم استيراد البيانات بنجاح')
         if (onRestore) {
           onRestore(result.data)
         } else {
@@ -123,7 +134,6 @@ export function BackupPanel({
       setError(String(err))
       setStatus('')
     }
-    // Reset input so same file can be re-selected
     e.target.value = ''
   }
 
@@ -131,83 +141,112 @@ export function BackupPanel({
     fileInputRef.current?.click()
   }
 
-  return (
-    <div className="card backup-panel">
-      <h2>📁 النسخ الاحتياطي والمزامنة التلقائية</h2>
+  const lastExportTimestamp = store.getLastExport()
+  const lastExportFormatted = lastExportTimestamp
+    ? new Date(lastExportTimestamp).toLocaleDateString('ar-EG', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : null
 
-      {/* Live Device File Sync Card */}
-      <div className={`live-sync-card ${syncState.isEnabled ? 'active' : ''}`}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '8px',
-          }}
-        >
-          <strong>المزامنة الحية مع ملف على هاتفك/جهازك</strong>
-          <span
-            className={`sync-status-badge ${syncState.isEnabled ? 'active' : 'inactive'}`}
-          >
-            {syncState.isEnabled ? '🟢 متزامن تلقائياً' : '⚪ غير مفعل'}
-          </span>
-        </div>
-
-        <p className="muted" style={{ fontSize: '13px', margin: '6px 0 12px' }}>
-          {syncState.isEnabled && syncState.fileName
-            ? `التطبيق متصل بملف (${syncState.fileName}) على جهازك ويحفظ أي تعديل فورياً وتلقائياً.`
-            : 'اختر مكاناً على جهازك لإنشاء ملف بيانات؛ وسيتم حفظ كل خطوة وتمرين تلقائياً في الملف دون الحاجة لتصدير يدوي متكرر!'}
-        </p>
-
-        <div className="actions-row">
-          <button
-            type="button"
-            className={syncState.isEnabled ? 'ghost' : 'button-primary'}
-            onClick={handleToggleLiveSync}
-          >
-            {syncState.isEnabled
-              ? 'إيقاف المزامنة التلقائية'
-              : '📁 اختيار ملف على جهازي وبدء الحفظ التلقائي'}
-          </button>
-          {syncState.isEnabled && (
-            <button type="button" onClick={handleManualSyncNow}>
-              🔄 مزامنة وتحديث فوري الآن
+  const content = (
+    <div
+      className="backup-panel-content"
+      style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+    >
+      {/* Live sync row */}
+      <ListRow
+        leading={<IconDatabase size={20} />}
+        title="المزامنة الحية مع ملف على جهازك"
+        secondary={
+          syncState.isEnabled && syncState.fileName
+            ? syncState.fileName
+            : 'حفظ أي تعديل أو تمرين تلقائياً في ملف خارجي'
+        }
+        secondaryIsLtr={syncState.isEnabled && !!syncState.fileName}
+        trailing={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '12px',
+                fontWeight: 600,
+                color: syncState.isEnabled ? '#10b981' : 'var(--muted)',
+                background: syncState.isEnabled
+                  ? 'rgba(16, 185, 129, 0.12)'
+                  : 'var(--card-subtle)',
+                padding: '3px 8px',
+                borderRadius: '6px',
+              }}
+            >
+              <span
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: syncState.isEnabled ? '#10b981' : 'var(--muted)',
+                }}
+              />
+              {syncState.isEnabled ? 'متزامن تلقائياً' : 'غير مفعّل'}
+            </span>
+            <button
+              type="button"
+              className={syncState.isEnabled ? 'ghost' : 'btn-primary-action'}
+              onClick={handleToggleLiveSync}
+              style={{
+                height: '36px',
+                fontSize: '13px',
+                padding: '0 12px',
+                minWidth: 'auto',
+              }}
+            >
+              {syncState.isEnabled ? 'إيقاف' : 'تفعيل'}
             </button>
-          )}
-        </div>
-      </div>
+          </div>
+        }
+      />
 
-      {showReminder && !syncState.isEnabled && (
-        <div className="disclaimer" style={{ marginTop: '12px' }}>
-          ⚠️ لم تصدّر بياناتك منذ أكثر من أسبوع. ننصح بتفعيل المزامنة التلقائية
-          أو أخذ نسخة احتياطية.
-        </div>
+      {syncState.isEnabled && (
+        <ListRow
+          leading={<IconRefreshCw size={18} />}
+          title="مزامنة وتحديث فوري الآن"
+          secondary="حفظ أحدث التعديلات في الملف المحدد فوراً"
+          onClick={handleManualSyncNow}
+        />
       )}
 
-      <h3 style={{ marginTop: '16px', marginBottom: '8px' }}>
-        تصدير ومشاركة أو استيراد يدوي:
-      </h3>
-      <div className="actions-row">
-        <button
-          type="button"
-          className="button-primary"
-          onClick={handleShare}
-          title="مشاركة ملف النسخة الاحتياطية مباشرة عبر واتساب أو تليجرام أو تطبيقات المراسلة"
-        >
-          📲 مشاركة مباشرة (واتساب/تليجرام)
-        </button>
-        <button
-          type="button"
-          onClick={handleExport}
-          title="حفظ وتنزيل ملف النسخة كملف على جهازك"
-        >
-          💾 حفظ وتنزيل كملف
-        </button>
-        <button type="button" onClick={triggerFileInput}>
-          📥 استيراد ملف
-        </button>
-      </div>
+      {/* Manual Export */}
+      <ListRow
+        leading={<IconDownload size={18} />}
+        title="تنزيل نسخة احتياطية (ملف JSON)"
+        secondary={
+          lastExportFormatted
+            ? `آخر تصدير: ${lastExportFormatted}`
+            : 'حفظ نسخة من كامل بياناتك في مجلد التنزيلات'
+        }
+        onClick={handleExport}
+      />
 
+      {/* Import */}
+      <ListRow
+        leading={<IconUpload size={18} />}
+        title="استيراد نسخة احتياطية من ملف"
+        secondary="استعادة كل البيانات والتمارين من ملف تم تنزيله سابقاً"
+        onClick={triggerFileInput}
+      />
+
+      {/* Share */}
+      <ListRow
+        leading={<IconShare size={18} />}
+        title="مشاركة النسخة الاحتياطية"
+        secondary="إرسال ملف البيانات مباشرة عبر واتساب أو تليجرام"
+        onClick={handleShare}
+      />
+
+      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
@@ -216,23 +255,36 @@ export function BackupPanel({
         onChange={handleImport}
       />
 
+      {/* Feedback Alerts */}
       {status && (
-        <p style={{ color: 'var(--accent)', marginTop: '12px' }}>{status}</p>
-      )}
-      {error && (
-        <div className="error-list" style={{ marginTop: '12px' }}>
-          <ul>
-            <li>{error}</li>
-          </ul>
+        <div style={{ marginTop: '8px' }}>
+          <Callout variant="tip">{status}</Callout>
         </div>
       )}
 
-      {store.getLastExport() && (
-        <p className="muted" style={{ fontSize: '12px', marginTop: '12px' }}>
-          آخر تصدير يدوي:{' '}
-          {new Date(store.getLastExport()!).toLocaleDateString('ar-EG')}
-        </p>
+      {error && (
+        <div style={{ marginTop: '8px' }}>
+          <Callout variant="error">{error}</Callout>
+        </div>
       )}
+
+      {showReminder && !syncState.isEnabled && (
+        <div style={{ marginTop: '8px' }}>
+          <Callout variant="warning">
+            لم تصدّر بياناتك منذ أكثر من أسبوع. ننصح بتفعيل المزامنة التلقائية أو أخذ نسخة احتياطية للحفاظ على بياناتك.
+          </Callout>
+        </div>
+      )}
+    </div>
+  )
+
+  if (hideCardWrapper) {
+    return content
+  }
+
+  return (
+    <div className="card backup-panel" style={{ padding: '8px' }}>
+      {content}
     </div>
   )
 }

@@ -35,7 +35,7 @@ import { BodyWeightTracker } from './modules/tracking/BodyWeightTracker.tsx'
 import { DayNotes } from './modules/tracking/DayNotes.tsx'
 import { TrainingCalendar } from './modules/tracking/TrainingCalendar.tsx'
 import { Reports } from './modules/reports/Reports.tsx'
-import { BackupPanel } from './modules/backup/BackupPanel.tsx'
+import { SettingsScreen } from './modules/settings/SettingsScreen.tsx'
 import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
 import { MuscleAtlasDebug } from './modules/workout/MuscleAtlasDebug.tsx'
 import { ProgressScreen } from './modules/tracking/ProgressScreen.tsx'
@@ -135,7 +135,6 @@ export function App({ config }: AppProps) {
     },
   )
   const [activeSessionSeconds, setActiveSessionSeconds] = useState(0)
-  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false)
   const [showCustomScheduleModal, setShowCustomScheduleModal] = useState(false)
   const [showProgramVaultModal, setShowProgramVaultModal] = useState(false)
   const [showAtlasDebugModal, setShowAtlasDebugModal] = useState(false)
@@ -260,6 +259,14 @@ export function App({ config }: AppProps) {
     setProfile(saved)
     setEditing(false)
   }, [])
+
+  const handleUpdateProfile = useCallback(
+    (updated: UserProfile) => {
+      profileStore.saveProfile(updated)
+      setProfile(updated)
+    },
+    [profileStore],
+  )
 
   const handleFactoryReset = useCallback(() => {
     try {
@@ -723,172 +730,19 @@ export function App({ config }: AppProps) {
 
       case 'settings': {
         if (!profile) return null
-        const goalLabel =
-          GOALS.find((g) => g.value === profile.primaryGoal)?.labelAr ?? '—'
-        const activity = ACTIVITY_LEVELS.find(
-          (a) => a.value === profile.body.activityLevel,
-        )
         return (
-          <div className="settings-tab">
-            <div className="card">
-              <h2>الملف الشخصي</h2>
-              <ul className="summary-list">
-                <li>
-                  <span>الهدف الأساسي</span>
-                  <strong>{goalLabel}</strong>
-                </li>
-                <li>
-                  <span>أيام التمرين</span>
-                  <strong>{profile.trainingDaysPerWeek}</strong>
-                </li>
-                <li>
-                  <span>الجنس</span>
-                  <strong>
-                    {profile.body.sex === 'male' ? 'ذكر' : 'أنثى'}
-                  </strong>
-                </li>
-                <li>
-                  <span>العمر</span>
-                  <strong>{profile.body.age} سنة</strong>
-                </li>
-                <li>
-                  <span>الطول</span>
-                  <strong>{profile.body.heightCm} سم</strong>
-                </li>
-                <li>
-                  <span>الوزن</span>
-                  <strong>{profile.body.weightKg} كجم</strong>
-                </li>
-                <li>
-                  <span>مستوى النشاط</span>
-                  <strong>{activity?.labelAr ?? '—'}</strong>
-                </li>
-              </ul>
-              <div className="actions-row">
-                <button type="button" onClick={() => setEditing(true)}>
-                  تعديل بياناتي
-                </button>
-              </div>
-            </div>
-
-            <BackupPanel
-              backupData={handleBackupData}
-              onImported={handleImported}
-              onRestore={handleRestoreBackup}
-            />
-
-            <div className="card">
-              <h2>المظهر والثيم (Dark Mode)</h2>
-              <p className="muted">التحكم في الوضع الليلي والنهاري للتطبيق:</p>
-              <div className="theme-switch-container">
-                <div className="theme-switch-label">
-                  <span className="theme-switch-title">
-                    {theme === 'dark'
-                      ? 'الوضع الليلي مفعّل 🌙'
-                      : 'الوضع المضيء مفعّل ☀️'}
-                  </span>
-                  <span className="theme-switch-desc">
-                    {theme === 'dark'
-                      ? 'مظهر ليلي مريح للعينين أثناء التمرين في الإضاءة الخافتة'
-                      : 'مظهر نهاري بألوان واضحة ومتباينة'}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  className="theme-switch-btn"
-                  onClick={toggleTheme}
-                  aria-label="تبديل الوضع الليلي والنهاري"
-                >
-                  {theme === 'dark'
-                    ? '☀️ التبديل إلى النهاري'
-                    : '🌙 التبديل إلى الليلي'}
-                </button>
-              </div>
-            </div>
-
-            <div className="card">
-              <h2>🧬 فحص ومراجعة الخريطة التشريحية</h2>
-              <p className="muted">
-                استعراض الرؤوس العضلية الـ 48 تشريحياً والتأكد من حدود كل رأس
-                عضلي على حدة.
-              </p>
-              <button
-                type="button"
-                className="chip-btn"
-                onClick={() => setShowAtlasDebugModal(true)}
-                style={{
-                  marginTop: '8px',
-                  fontWeight: 800,
-                  color: 'var(--accent)',
-                  borderColor: 'var(--accent)',
-                }}
-              >
-                🔬 فتح أداة فحص الرؤوس العضلية (Muscle Atlas Inspector)
-              </button>
-            </div>
-
-            <div className="card">
-              <h2>عن التطبيق</h2>
-              <p>مجانص — الإصدار 0.2.0</p>
-              <p className="muted">مدربك الشخصي وخبير التغذية على جهازك.</p>
-            </div>
-
-            <div className="card settings-tab__danger">
-              <h2>منطقة الخطر — إعادة ضبط المصنع الشاملة</h2>
-              <p className="muted">
-                إعادة ضبط التطبيق بالكامل ومسح كافة البيانات واستعادة الحالة
-                الأولية:
-              </p>
-              {confirmDeleteAll ? (
-                <div
-                  style={{
-                    background: 'var(--danger-soft)',
-                    border: '1.5px solid var(--danger)',
-                    borderRadius: '10px',
-                    padding: '14px',
-                    marginTop: '10px',
-                  }}
-                >
-                  <p
-                    style={{
-                      color: 'var(--danger)',
-                      fontWeight: 700,
-                      margin: '0 0 10px',
-                    }}
-                  >
-                    ⚠️ تحذير نهائي: سيتم مسح حسابك والجدول التدريبي والتمارين
-                    المخصصة وكل سجلات التغذية والوزن بشكل نهائي، وسيعود التطبيق
-                    كما لو كنت تفتحه لأول مرة.
-                  </p>
-                  <div className="actions-row">
-                    <button
-                      type="button"
-                      className="danger"
-                      onClick={handleFactoryReset}
-                      style={{ fontWeight: 800 }}
-                    >
-                      🔄 تأكيد إعادة ضبط المصنع الشاملة (Factory Reset)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setConfirmDeleteAll(false)}
-                    >
-                      إلغاء التراجع
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  className="ghost-danger"
-                  onClick={() => setConfirmDeleteAll(true)}
-                  style={{ marginTop: '10px', fontWeight: 800 }}
-                >
-                  🔄 إعادة ضبط المصنع الشاملة (Factory Reset)
-                </button>
-              )}
-            </div>
-          </div>
+          <SettingsScreen
+            profile={profile}
+            onUpdateProfile={handleUpdateProfile}
+            onEditProfile={() => setEditing(true)}
+            theme={theme}
+            onToggleTheme={toggleTheme}
+            backupData={handleBackupData}
+            onImported={handleImported}
+            onRestore={handleRestoreBackup}
+            onOpenAtlasDebug={() => setShowAtlasDebugModal(true)}
+            onFactoryReset={handleFactoryReset}
+          />
         )
       }
     }
