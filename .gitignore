@@ -9,3 +9,15 @@ coverage/
 npm-debug.log*
 .vite/
 .cache/
+node_modules/
+.cache/
+dist/
+.DS_Store
+maganis-data.json
+*.local.json
+node_modules/
+.cache/
+dist/
+.DS_Store
+maganis-data.json
+*.local.json
