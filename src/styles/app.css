@@ -1956,14 +1956,24 @@ button.ghost-danger:hover {
   outline: none;
 }
 
+.set-prev-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .set-check-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
   border: 1.5px solid var(--line);
   background: var(--bg);
   color: var(--muted);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   display: inline-flex;
   align-items: center;

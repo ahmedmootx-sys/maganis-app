@@ -884,6 +884,7 @@ export function App({ config }: AppProps) {
           <ActiveWorkoutSession
             programDay={activeWorkoutDay}
             customExercises={workoutStore.getCustomExercises()}
+            previousSessions={sessions}
             onFinish={(session) => {
               handleSaveSession(session)
               setActiveWorkoutDay(null)

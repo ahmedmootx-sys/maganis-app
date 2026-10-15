@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { assetUrl } from '../../utils/assetUrl.ts'
 import type {
   Exercise,
   ProgramDay,
@@ -11,10 +10,22 @@ import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { formatTime } from './workoutUtils.ts'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
+import { TopBar } from '../../components/TopBar.tsx'
+import { ProgressBar } from '../../components/ProgressBar.tsx'
+import { Sheet } from '../../components/Sheet.tsx'
+import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
+import {
+  IconClock,
+  IconMoreVertical,
+  IconChevronDown,
+  IconInfo,
+  IconClose,
+} from '../../components/Icons.tsx'
 
-interface ActiveWorkoutSessionProps {
+export interface ActiveWorkoutSessionProps {
   programDay: ProgramDay
   customExercises?: Exercise[]
+  previousSessions?: TrackingSession[]
   onFinish: (session: TrackingSession) => void
   onCancel: () => void
   onMinimize?: () => void
@@ -55,6 +66,7 @@ interface SavedSessionState {
 export function ActiveWorkoutSession({
   programDay,
   customExercises = [],
+  previousSessions = [],
   onFinish,
   onCancel,
   onMinimize,
@@ -119,6 +131,20 @@ export function ActiveWorkoutSession({
     return 0
   })
 
+  // Start mascot toast message, auto disappears after 3.5s
+  const [toastMessage, setToastMessage] = useState<string | null>(
+    'عاش يا بطل! ركّز في الأداء والتكنيك وتدرب بعزيمة.',
+  )
+
+  useEffect(() => {
+    if (!toastMessage) return
+    const timer = setTimeout(() => {
+      setToastMessage(null)
+    }, 3500)
+    return () => clearTimeout(timer)
+  }, [toastMessage])
+
+  // Stopwatch interval
   useEffect(() => {
     const timer = setInterval(() => {
       setElapsedSeconds((prev) => prev + 1)
@@ -264,9 +290,43 @@ export function ActiveWorkoutSession({
     })
   }
 
-  // --- Finish Workout Handler ---
+  // Modals & Sheets
   const [showConfirmFinish, setShowConfirmFinish] = useState(false)
   const [showConfirmCancel, setShowConfirmCancel] = useState(false)
+  const [showOverflowSheet, setShowOverflowSheet] = useState(false)
+
+  // Load previous sessions to show "السابق" history per exercise
+  const previousHistoryMap = useMemo(() => {
+    let allSessions: TrackingSession[] = previousSessions || []
+    if (allSessions.length === 0) {
+      try {
+        const raw = localStorage.getItem('tracking.sessions')
+        if (raw) {
+          allSessions = JSON.parse(raw)
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    const history: Record<string, { weightKg: number; reps: number }[]> = {}
+    if (Array.isArray(allSessions)) {
+      const sorted = [...allSessions].sort((a, b) => b.createdAt - a.createdAt)
+      for (const session of sorted) {
+        if (!Array.isArray(session.exercises)) continue
+        for (const ex of session.exercises) {
+          if (
+            !history[ex.exerciseId] &&
+            Array.isArray(ex.sets) &&
+            ex.sets.length > 0
+          ) {
+            history[ex.exerciseId] = ex.sets
+          }
+        }
+      }
+    }
+    return history
+  }, [previousSessions])
 
   const completedSetsCount = useMemo(() => {
     return exercisesState.reduce((acc, ex) => {
@@ -337,110 +397,217 @@ export function ActiveWorkoutSession({
     <div
       className="active-workout-session"
       data-testid="active-workout-session"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        background: 'var(--bg)',
+        paddingBottom: '88px',
+      }}
     >
-      {/* Top Header */}
-      <header className="active-workout-header">
-        <div className="header-left">
-          {onMinimize && (
+      {/* TopBar with Timer, Overflow and Cancel Confirmation */}
+      <TopBar
+        title={programDay.labelAr}
+        subtitle={programDay.focus}
+        onBack={() => setShowConfirmCancel(true)}
+        actions={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div
+              className="stopwatch-badge"
+              style={{
+                fontVariantNumeric: 'tabular-nums',
+                fontWeight: 700,
+                fontSize: '13.5px',
+                color: 'var(--brand)',
+                background: 'var(--card-subtle)',
+                padding: '4px 8px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                margin: 0,
+              }}
+            >
+              <IconClock size={15} />
+              <span>{formatTime(elapsedSeconds)}</span>
+            </div>
+            {onMinimize && (
+              <button
+                type="button"
+                className="btn-icon"
+                onClick={onMinimize}
+                title="تصغير الجلسة ومتابعة التصفح"
+                aria-label="تصغير الجلسة"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: 'var(--card-subtle)',
+                  color: 'var(--ink)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <IconChevronDown size={20} />
+              </button>
+            )}
             <button
               type="button"
-              className="button-secondary tiny"
-              onClick={onMinimize}
-              title="تصغير ومتابعة التصفح مع إبقاء الجلسة نشطة"
-              style={{ fontWeight: 700 }}
+              className="btn-icon"
+              onClick={() => setShowOverflowSheet(true)}
+              aria-label="خيارات الجلسة"
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'var(--card-subtle)',
+                color: 'var(--ink)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
             >
-              🔽 تصغير الجلسة
+              <IconMoreVertical size={20} />
             </button>
-          )}
-          <button
-            type="button"
-            className="ghost-danger tiny"
-            onClick={() => setShowConfirmCancel(true)}
+          </div>
+        }
+      />
+
+      {/* Progress Strip: Single line + ProgressBar */}
+      <div
+        className="workout-progress-strip"
+        style={{
+          padding: '12px 16px',
+          background: 'var(--card-bg)',
+          borderBottom: '1px solid var(--line)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '6px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: '13.5px',
+            fontWeight: 700,
+            color: 'var(--ink)',
+          }}
+        >
+          <span>
+            {completedSetsCount} من {totalSetsCount} مجموعة مكتملة
+          </span>
+          <span
+            style={{
+              color: 'var(--muted)',
+              fontVariantNumeric: 'tabular-nums',
+            }}
           >
-            ✕ إلغاء الجلسة
-          </button>
+            {totalVolumeKg} كجم
+          </span>
         </div>
-
-        <div className="header-center">
-          <h2 className="routine-title">{programDay.labelAr}</h2>
-          <span className="routine-focus">{programDay.focus}</span>
-        </div>
-
-        <div className="header-right">
-          <div className="stopwatch-badge">⏱️ {formatTime(elapsedSeconds)}</div>
-          <button
-            type="button"
-            className="button-primary tiny finish-btn"
-            data-testid="header-finish-btn"
-            onClick={() => setShowConfirmFinish(true)}
-          >
-            🏁 إنهاء وحفظ
-          </button>
-        </div>
-      </header>
-
-      {/* Dr. Maganis Gym Coach Callout */}
-      <div className="maganis-callout-toast" style={{ margin: '0 16px' }}>
-        <img
-          src={assetUrl('branding/maganis-dumbbell-transparent.png')}
-          alt="د. مجانص"
-          className="maganis-mini-avatar"
+        <ProgressBar
+          value={completedSetsCount}
+          max={Math.max(1, totalSetsCount)}
+          height={6}
+          aria-label="تقدم الجلسة التدريبية"
         />
-        <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
-          <strong>د. مجانص في ضهرك:</strong> عاش يا كوتش! البار بيستغيث والعضلات
-          بتكبر، ركّز في الأداء ومترحمهاش! 💪🔥
-        </div>
       </div>
 
       {/* Floating Rest Timer */}
       {restSecondsLeft !== null && restSecondsLeft > 0 && (
-        <div className="rest-timer-banner">
-          <div className="rest-timer-info">
-            <span className="rest-icon">⏳</span>
-            <span className="rest-label">فترة راحة بين المجموعات:</span>
-            <strong className="rest-countdown">{restSecondsLeft} ثانية</strong>
+        <div
+          className="rest-timer-banner"
+          style={{
+            margin: '8px 16px',
+            padding: '10px 14px',
+            borderRadius: '12px',
+            background: 'var(--card-subtle)',
+            border: '1px solid var(--brand)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '13.5px',
+              fontWeight: 600,
+            }}
+          >
+            <IconClock size={18} style={{ color: 'var(--brand)' }} />
+            <span>فترة الراحة:</span>
+            <strong
+              style={{
+                color: 'var(--brand)',
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              {restSecondsLeft} ثانية
+            </strong>
           </div>
-          <div className="rest-timer-actions">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               type="button"
-              className="ghost tiny"
+              className="btn-ghost"
               onClick={() =>
                 setRestSecondsLeft((prev) => (prev ? prev + 30 : 30))
               }
+              style={{
+                padding: '6px 10px',
+                fontSize: '12.5px',
+                borderRadius: '8px',
+                border: '1px solid var(--line)',
+                background: 'var(--card-bg)',
+                cursor: 'pointer',
+              }}
             >
               +30ث
             </button>
             <button
               type="button"
-              className="ghost-danger tiny"
+              className="btn-ghost"
               onClick={() => setRestSecondsLeft(null)}
+              aria-label="تخطي الراحة"
+              style={{
+                padding: '6px 10px',
+                fontSize: '12.5px',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--danger)',
+                cursor: 'pointer',
+              }}
             >
-              تخطي ✕
+              تخطي
             </button>
           </div>
         </div>
       )}
 
-      {/* Progress Strip */}
-      <div className="workout-progress-strip">
-        <div className="progress-info">
-          <span>
-            المجموعات المكتملة: {completedSetsCount} من {totalSetsCount}
-          </span>
-          <span>إجمالي الوزن المرفوع: {totalVolumeKg} كجم</span>
-        </div>
-        <div className="progress-track">
-          <div
-            className="progress-fill"
-            style={{
-              width: `${totalSetsCount > 0 ? (completedSetsCount / totalSetsCount) * 100 : 0}%`,
-            }}
-          />
-        </div>
-      </div>
-
       {/* Exercises List (Hevy / Strong Style) */}
-      <main className="active-exercises-list">
+      <main
+        className="active-exercises-list"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '16px',
+          maxWidth: '720px',
+          margin: '0 auto',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
         {exercisesState.map((exState, exIdx) => {
           const custom = customExercises.find(
             (c) => c.id === exState.exerciseId,
@@ -449,21 +616,81 @@ export function ActiveWorkoutSession({
           const exerciseName = exercise?.nameAr ?? exState.exerciseId
 
           return (
-            <div key={exState.exerciseId} className="active-exercise-card card">
+            <div
+              key={exState.exerciseId}
+              className="active-exercise-card card"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                padding: '16px',
+                borderRadius: '16px',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--line)',
+              }}
+            >
               {/* Exercise Header Row */}
-              <div className="exercise-card-header">
-                <div className="exercise-title-group">
-                  <ExerciseVisual
-                    category={exercise?.category ?? 'chest'}
-                    exerciseId={exState.exerciseId}
-                    exerciseName={exerciseName}
-                    imageUrl={exercise?.imageUrl}
-                    size="medium"
-                  />
-                  <div>
-                    <h3 className="exercise-name">{exerciseName}</h3>
+              <div
+                className="exercise-card-header"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '12px',
+                }}
+              >
+                <div
+                  className="exercise-title-group"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    minWidth: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '52px',
+                      height: '52px',
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                      flexShrink: 0,
+                      background: 'var(--card-subtle)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <ExerciseVisual
+                      category={exercise?.category ?? 'chest'}
+                      exerciseId={exState.exerciseId}
+                      exerciseName={exerciseName}
+                      imageUrl={exercise?.imageUrl}
+                      size="medium"
+                    />
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <h3
+                      className="exercise-name"
+                      style={{
+                        margin: 0,
+                        fontSize: '15.5px',
+                        fontWeight: 700,
+                        color: 'var(--ink)',
+                      }}
+                    >
+                      {exerciseName}
+                    </h3>
                     {exercise && (
-                      <span className="muscle-badge">
+                      <span
+                        className="muscle-badge"
+                        style={{
+                          fontSize: '12px',
+                          color: 'var(--muted)',
+                          marginTop: '2px',
+                          display: 'inline-block',
+                        }}
+                      >
                         {MUSCLE_GROUP_LABELS[exercise.category] ||
                           exercise.category}
                       </span>
@@ -474,98 +701,131 @@ export function ActiveWorkoutSession({
                 <button
                   type="button"
                   className="ghost-primary tiny info-btn"
-                  title="عرض الميكانيكا والفائدة والصورة"
                   onClick={() => handleOpenExerciseDetail(exState.exerciseId)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    height: '38px',
+                    padding: '0 10px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--line)',
+                    background: 'var(--card-subtle)',
+                    color: 'var(--ink)',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    flexShrink: 0,
+                  }}
                 >
-                  ℹ️ الشرح والفائدة
+                  <IconInfo size={16} />
+                  <span>شرح التمرين</span>
                 </button>
               </div>
 
               {/* Sets Table */}
-              <div className="sets-table-wrapper">
-                <table className="sets-table">
+              <div className="sets-table-wrapper" style={{ overflowX: 'auto' }}>
+                <table className="sets-table" style={{ width: '100%' }}>
                   <thead>
                     <tr>
-                      <th className="col-set">SET</th>
-                      <th className="col-input">KG</th>
-                      <th className="col-input">REPS</th>
-                      <th className="col-check">✓</th>
+                      <th className="col-set">المجموعة</th>
+                      <th className="col-prev">السابق</th>
+                      <th className="col-input">الوزن</th>
+                      <th className="col-input">التكرارات</th>
+                      <th className="col-check">تم</th>
                       <th className="col-action"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {exState.sets.map((set, sIdx) => (
-                      <tr
-                        key={set.id}
-                        className={`set-row ${set.isCompleted ? 'set-completed' : ''}`}
-                      >
-                        <td className="col-set">
-                          <span className="set-number-badge">{set.setNum}</span>
-                        </td>
-                        <td className="col-input">
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.5"
-                            value={set.weightKg}
-                            onChange={(e) =>
-                              handleUpdateSetField(
-                                exIdx,
-                                sIdx,
-                                'weightKg',
-                                parseFloat(e.target.value) || 0,
-                              )
-                            }
-                            className="set-field-input"
-                          />
-                        </td>
-                        <td className="col-input">
-                          <input
-                            type="number"
-                            min="0"
-                            step="1"
-                            value={set.reps}
-                            onChange={(e) =>
-                              handleUpdateSetField(
-                                exIdx,
-                                sIdx,
-                                'reps',
-                                parseInt(e.target.value, 10) || 0,
-                              )
-                            }
-                            className="set-field-input"
-                          />
-                        </td>
-                        <td className="col-check">
-                          <button
-                            type="button"
-                            className={`set-check-btn ${set.isCompleted ? 'checked' : ''}`}
-                            onClick={() =>
-                              handleToggleSetCompleted(exIdx, sIdx)
-                            }
-                            title={
-                              set.isCompleted
-                                ? 'إلغاء التحديد'
-                                : 'تأكيد إنهاء المجموعة'
-                            }
-                          >
-                            ✓
-                          </button>
-                        </td>
-                        <td className="col-action">
-                          {exState.sets.length > 1 && (
+                    {exState.sets.map((set, sIdx) => {
+                      const prevExSets = previousHistoryMap[exState.exerciseId]
+                      const prevSet = prevExSets?.[sIdx]
+                      const prevText = prevSet
+                        ? `${prevSet.weightKg}ك × ${prevSet.reps}`
+                        : '—'
+
+                      return (
+                        <tr
+                          key={set.id}
+                          className={`set-row ${set.isCompleted ? 'set-completed' : ''}`}
+                        >
+                          <td className="col-set">
+                            <span className="set-number-badge">
+                              {set.setNum}
+                            </span>
+                          </td>
+                          <td className="col-prev">
+                            <span className="set-prev-badge">{prevText}</span>
+                          </td>
+                          <td className="col-input">
+                            <input
+                              type="number"
+                              min="0"
+                              step="0.5"
+                              value={set.weightKg}
+                              onChange={(e) =>
+                                handleUpdateSetField(
+                                  exIdx,
+                                  sIdx,
+                                  'weightKg',
+                                  parseFloat(e.target.value) || 0,
+                                )
+                              }
+                              className="set-field-input"
+                              aria-label={`وزن المجموعة ${set.setNum}`}
+                            />
+                          </td>
+                          <td className="col-input">
+                            <input
+                              type="number"
+                              min="0"
+                              step="1"
+                              value={set.reps}
+                              onChange={(e) =>
+                                handleUpdateSetField(
+                                  exIdx,
+                                  sIdx,
+                                  'reps',
+                                  parseInt(e.target.value, 10) || 0,
+                                )
+                              }
+                              className="set-field-input"
+                              aria-label={`تكرار المجموعة ${set.setNum}`}
+                            />
+                          </td>
+                          <td className="col-check">
                             <button
                               type="button"
-                              className="ghost-danger tiny remove-set-btn"
-                              onClick={() => handleRemoveSet(exIdx, sIdx)}
-                              title="حذف هذه المجموعة"
+                              className={`set-check-btn ${set.isCompleted ? 'checked' : ''}`}
+                              onClick={() =>
+                                handleToggleSetCompleted(exIdx, sIdx)
+                              }
+                              title={
+                                set.isCompleted
+                                  ? 'إلغاء التحديد'
+                                  : 'تأكيد إنهاء المجموعة'
+                              }
+                              aria-label="✓"
                             >
-                              ✕
+                              ✓
                             </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+                          <td className="col-action">
+                            {exState.sets.length > 1 && (
+                              <button
+                                type="button"
+                                className="ghost-danger tiny remove-set-btn"
+                                onClick={() => handleRemoveSet(exIdx, sIdx)}
+                                title="حذف هذه المجموعة"
+                                aria-label="حذف المجموعة"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -576,6 +836,16 @@ export function ActiveWorkoutSession({
                   type="button"
                   className="ghost-primary tiny add-set-btn"
                   onClick={() => handleAddSet(exIdx)}
+                  style={{
+                    height: '42px',
+                    width: '100%',
+                    borderRadius: '10px',
+                    border: '1px dashed var(--line)',
+                    background: 'var(--card-subtle)',
+                    color: 'var(--brand)',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
                 >
                   + إضافة مجموعة جديدة
                 </button>
@@ -585,16 +855,148 @@ export function ActiveWorkoutSession({
         })}
       </main>
 
-      {/* Bottom Sticky Action Bar */}
-      <footer className="active-workout-footer">
+      {/* Bottom Sticky Action Bar: EXACTLY ONE finish button */}
+      <footer
+        className="active-workout-footer"
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          insetInline: 0,
+          padding: '10px 16px',
+          background: 'var(--bg)',
+          borderTop: '1px solid var(--line)',
+          zIndex: 900,
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <button
           type="button"
           className="button-primary full-width finish-workout-large-btn"
+          data-testid="header-finish-btn"
           onClick={() => setShowConfirmFinish(true)}
+          style={{
+            maxWidth: '560px',
+            width: '100%',
+            height: '50px',
+            borderRadius: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '2px',
+            background: 'var(--brand)',
+            border: 'none',
+            color: '#fff',
+            cursor: 'pointer',
+          }}
         >
-          🏁 إنهاء التمرين وحفظ الجلسة ({completedSetsCount} مجموعة مكتملة)
+          <span style={{ fontSize: '15.5px', fontWeight: 700 }}>
+            إنهاء التمرين
+          </span>
+          <span style={{ fontSize: '12px', fontWeight: 500, opacity: 0.9 }}>
+            {completedSetsCount} من {totalSetsCount} مجموعة مكتملة
+          </span>
         </button>
       </footer>
+
+      {/* Toast message at session start */}
+      {toastMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="toast"
+          style={{
+            position: 'fixed',
+            bottom: '76px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            background: 'var(--ink, #1f2937)',
+            color: '#fff',
+            padding: '10px 18px',
+            borderRadius: '12px',
+            fontSize: '13.5px',
+            fontWeight: 600,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+            maxWidth: 'calc(100vw - 32px)',
+            textAlign: 'center',
+            pointerEvents: 'none',
+          }}
+        >
+          {toastMessage}
+        </div>
+      )}
+
+      {/* Overflow Sheet for Session Options */}
+      <Sheet
+        isOpen={showOverflowSheet}
+        onClose={() => setShowOverflowSheet(false)}
+        title="خيارات الجلسة"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            padding: '8px 0',
+          }}
+        >
+          {onMinimize && (
+            <button
+              type="button"
+              onClick={() => {
+                setShowOverflowSheet(false)
+                onMinimize()
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '14px 16px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'var(--card-subtle)',
+                color: 'var(--ink)',
+                fontSize: '15px',
+                fontWeight: 600,
+                textAlign: 'right',
+                width: '100%',
+                cursor: 'pointer',
+              }}
+            >
+              <IconChevronDown size={20} />
+              <span>تصغير الجلسة ومتابعة التصفح</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowOverflowSheet(false)
+              setShowConfirmCancel(true)
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '14px 16px',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'var(--danger-surface, rgba(220, 38, 38, 0.08))',
+              color: 'var(--danger)',
+              fontSize: '15px',
+              fontWeight: 600,
+              textAlign: 'right',
+              width: '100%',
+              cursor: 'pointer',
+            }}
+          >
+            <IconClose size={20} />
+            <span>إلغاء الجلسة الحالية</span>
+          </button>
+        </div>
+      </Sheet>
 
       {/* Exercise Detail Modal */}
       {selectedExerciseForDetail && (
@@ -613,6 +1015,7 @@ export function ActiveWorkoutSession({
           <div
             className="modal-content card"
             onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: '440px', width: '100%' }}
           >
             <div className="modal-header">
               <h2>🎉 مبروك إنهاء التمرين!</h2>
@@ -620,6 +1023,7 @@ export function ActiveWorkoutSession({
                 type="button"
                 className="close-btn"
                 onClick={() => setShowConfirmFinish(false)}
+                aria-label="إغلاق"
               >
                 ✕
               </button>
@@ -647,22 +1051,27 @@ export function ActiveWorkoutSession({
                 </li>
               </ul>
             </div>
-            <div className="modal-footer actions-row">
+            <div
+              className="modal-footer actions-row"
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               <button
                 type="button"
-                className="button-primary"
+                className="button-primary full-width"
                 data-testid="confirm-save-session-btn"
                 onClick={() => {
                   setShowConfirmFinish(false)
                   handleSaveAndFinish()
                 }}
+                style={{ height: '48px', fontSize: '16px', fontWeight: 700 }}
               >
                 💾 تأكيد وحفظ الجلسة
               </button>
               <button
                 type="button"
-                className="ghost"
+                className="ghost full-width"
                 onClick={() => setShowConfirmFinish(false)}
+                style={{ height: '44px' }}
               >
                 الرجوع للجلسة
               </button>
@@ -671,58 +1080,26 @@ export function ActiveWorkoutSession({
         </div>
       )}
 
-      {/* Confirm Cancel Modal */}
+      {/* Confirm Cancel Modal / ConfirmSheet */}
       {showConfirmCancel && (
-        <div
-          className="modal-backdrop"
-          onClick={() => setShowConfirmCancel(false)}
-        >
-          <div
-            className="modal-content card"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h2>⚠️ إلغاء الجلسة</h2>
-              <button
-                type="button"
-                className="close-btn"
-                onClick={() => setShowConfirmCancel(false)}
-              >
-                ✕
-              </button>
-            </div>
-            <div className="modal-body">
-              <p>
-                هل أنت متأكد من إلغاء جلسة التمرين الحالية؟ لن يتم حفظ المجموعات
-                التي قمت بتسجيلها.
-              </p>
-            </div>
-            <div className="modal-footer actions-row">
-              <button
-                type="button"
-                className="danger"
-                onClick={() => {
-                  try {
-                    localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
-                  } catch {
-                    // ignore
-                  }
-                  setShowConfirmCancel(false)
-                  onCancel()
-                }}
-              >
-                نعم، إلغاء وخروج
-              </button>
-              <button
-                type="button"
-                className="ghost"
-                onClick={() => setShowConfirmCancel(false)}
-              >
-                متابعة التمرين
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmSheet
+          isOpen={showConfirmCancel}
+          onClose={() => setShowConfirmCancel(false)}
+          onConfirm={() => {
+            try {
+              localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
+            } catch {
+              // ignore
+            }
+            setShowConfirmCancel(false)
+            onCancel()
+          }}
+          title="إلغاء الجلسة؟"
+          message="هل أنت متأكد من إلغاء جلسة التمرين الحالية؟ لن يتم حفظ المجموعات التي قمت بتسجيلها."
+          confirmLabel="نعم، إلغاء وخروج"
+          cancelLabel="متابعة التمرين"
+          isDestructive={true}
+        />
       )}
     </div>
   )
