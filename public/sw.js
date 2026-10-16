@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maganis-v4'
+const CACHE_NAME = 'maganis-v5'
 
 // Use the service worker's own scope to determine the base path
 // This makes it work on both localhost (/) and GitHub Pages (/maganis-app/)
@@ -12,6 +12,12 @@ const STATIC_ASSETS = [
   BASE + 'branding/app-icon-maskable.png',
   BASE + 'branding/app-icon-outer.png',
   BASE + 'branding/maganis-mascot-inner.png',
+  // Precache 3D anatomical atlas assets for offline viewing
+  BASE + 'atlas/anterior.svg',
+  BASE + 'atlas/posterior.svg',
+  BASE + 'atlas/atlas-meta.json',
+  BASE + 'atlas/shade-anterior.webp',
+  BASE + 'atlas/shade-posterior.webp',
 ]
 
 self.addEventListener('install', (event) => {

@@ -512,15 +512,7 @@ export function SettingsScreen({
               title="إعادة ضبط التطبيق"
               subtitle="حذف الحساب والبيانات والبدء من جديد"
               onClick={() => setShowConfirmReset(true)}
-              trailing={
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => setShowConfirmReset(true)}
-                >
-                  حذف كل البيانات وإعادة ضبط المصنع
-                </Button>
-              }
+              trailing={<Icon name="chevron-left" size={16} />}
             />
           </Card>
         </Section>
@@ -760,6 +752,15 @@ export function SettingsScreen({
           'سيتم مسح الجداول التدريبية والتمارين المخصصة.',
           'سيتم مسح كافة سجلات الوزن، الملاحظات، وسجلات التغذية اليومية.',
         ]}
+        requiredWord="حذف"
+        backupOffer={{
+          label: 'حفظ نسخة أولاً',
+          onBackup: async () => {
+            const { createBackupStore } = await import('../backup/backupStore.ts')
+            const store = createBackupStore()
+            await store.exportData(backupData())
+          },
+        }}
         confirmLabel="حذف كل شيء والبدء من جديد"
         cancelLabel="تراجع"
         isDestructive

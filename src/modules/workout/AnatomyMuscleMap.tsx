@@ -9,7 +9,8 @@ import { loadAtlasSvg } from './atlasSvgLoader.ts'
 import atlasMusclesData from '../../data/atlas_muscles.json'
 import atlasGroupsData from '../../data/atlas-groups.json'
 import atlasMetaData from '../../../public/atlas/atlas-meta.json'
-import { Segmented, Sheet } from '../../ui/index.ts'
+import { Segmented, Sheet, Callout } from '../../ui/index.ts'
+import { assetUrl } from '../../utils/assetUrl.ts'
 
 export interface AnatomyMuscleMapProps {
   exercise?: Partial<Exercise> | (Partial<Exercise> & Record<string, unknown>)
@@ -80,6 +81,8 @@ export function AnatomyMuscleMap({
   // Auto-selected initially based on weighted presence
   const [view, setView] = useState<'A' | 'P'>(resolved.defaultView)
   const [svgContent, setSvgContent] = useState<string>('')
+  const [svgError, setSvgError] = useState<boolean>(false)
+  const [reloadKey, setReloadKey] = useState<number>(0)
   const [showDeep, setShowDeep] = useState(false)
   const [zoom, setZoom] = useState(1.0)
   const [pan, setPan] = useState({ x: 0, y: 0 })
@@ -98,18 +101,28 @@ export function AnatomyMuscleMap({
     setSelectedMuscleId(null)
   }, [resolved.defaultView])
 
-  // Fetch and cache SVG
+  // Fetch and cache SVG with error state tracking
   useEffect(() => {
     let isCancelled = false
-    loadAtlasSvg(view).then((text) => {
-      if (!isCancelled) {
-        setSvgContent(text)
-      }
-    })
+    setSvgError(false)
+    loadAtlasSvg(view, reloadKey > 0)
+      .then((text) => {
+        if (!isCancelled) {
+          if (text && text.includes('<svg')) {
+            setSvgContent(text)
+            setSvgError(false)
+          } else {
+            setSvgError(true)
+          }
+        }
+      })
+      .catch(() => {
+        if (!isCancelled) setSvgError(true)
+      })
     return () => {
       isCancelled = true
     }
-  }, [view])
+  }, [view, reloadKey])
 
   // Fast map of resolved active muscles for lookup: muscleId -> role
   const roleMap = useMemo(() => {
@@ -141,14 +154,18 @@ export function AnatomyMuscleMap({
       const meta = META_MUSCLES[m.id]
       const curVis = meta?.views?.[view]?.visible_pixels ?? 0
       const otherVis = meta?.views?.[otherView]?.visible_pixels ?? 0
-      const inCurrent = curVis > 0 || meta?.best_view === view
-      const inOther = otherVis > 0 || meta?.best_view === otherView
+      const inCurrent =
+        meta?.best_view === view ||
+        (curVis > 500 && (meta?.views?.[view]?.visible_ratio ?? 0) >= 0.1)
+      const inOther =
+        meta?.best_view === otherView ||
+        (otherVis > 500 && (meta?.views?.[otherView]?.visible_ratio ?? 0) >= 0.1)
 
       if (inCurrent) {
         if (m.role === 'primary') curPrimary++
         else curSecondary++
       }
-      if (inOther) {
+      if (inOther && !inCurrent) {
         otherTotal++
       }
     }
@@ -382,8 +399,9 @@ export function AnatomyMuscleMap({
     )
   }
 
-  const shadeSrc =
-    view === 'A' ? '/atlas/shade-anterior.webp' : '/atlas/shade-posterior.webp'
+  const shadeSrc = assetUrl(
+    `atlas/shade-${view === 'A' ? 'anterior' : 'posterior'}.webp`,
+  )
   const sheetMuscleDef = sheetMuscleId ? MUSCLE_DEFS[sheetMuscleId] : null
   const sheetMuscleRole = sheetMuscleId ? roleMap.get(sheetMuscleId) : null
 
@@ -431,6 +449,22 @@ export function AnatomyMuscleMap({
         )}
       </div>
 
+      {/* Error Callout with Retry (Never leave empty frame without feedback) */}
+      {svgError && (
+        <div style={{ margin: '8px 0' }}>
+          <Callout
+            variant="warning"
+            title="تعذر تحميل الخريطة التشريحية"
+            action={{
+              label: 'إعادة المحاولة',
+              onClick: () => setReloadKey((k) => k + 1),
+            }}
+          >
+            تعذر جلب ملف الرسم التشريحي من الخادم. تأكد من اتصال الإنترنت أو إعدادات المسار، مع إمكانية استعراض قائمة العضلات أدناه.
+          </Callout>
+        </div>
+      )}
+
       {/* 2. Interactive Atlas Stage */}
       <div
         className="atlas-container"
@@ -454,6 +488,10 @@ export function AnatomyMuscleMap({
             aria-hidden="true"
             className="atlas-shade-layer"
             loading="eager"
+            onError={(e) => {
+              // Hide broken image placeholder if shade asset is unreachable
+              e.currentTarget.style.display = 'none'
+            }}
           />
 
           {/* Inline SVG Layer */}
@@ -464,7 +502,7 @@ export function AnatomyMuscleMap({
           />
         </div>
 
-        {/* Zoom Controls Overlay */}
+        {/* Zoom Controls Overlay with Reset Always Available */}
         <div className="atlas-zoom-controls">
           <button
             type="button"
@@ -488,17 +526,15 @@ export function AnatomyMuscleMap({
               −
             </span>
           </button>
-          {zoom > 1.0 && (
-            <button
-              type="button"
-              className="atlas-zoom-btn"
-              onClick={handleReset}
-              aria-label="إعادة ضبط"
-              title="إعادة ضبط"
-            >
-              <span style={{ fontSize: '14px', lineHeight: 1 }}>↺</span>
-            </button>
-          )}
+          <button
+            type="button"
+            className="atlas-zoom-btn"
+            onClick={handleReset}
+            aria-label="إعادة ضبط العرض"
+            title="إعادة ضبط العرض"
+          >
+            <span style={{ fontSize: '15px', lineHeight: 1 }}>↺</span>
+          </button>
         </div>
       </div>
 

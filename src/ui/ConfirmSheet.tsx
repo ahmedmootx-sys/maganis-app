@@ -12,6 +12,10 @@ export interface ConfirmSheetProps {
   cancelLabel?: string
   isDestructive?: boolean
   requiredWord?: string
+  backupOffer?: {
+    label: string
+    onBackup: () => void
+  }
   className?: string
 }
 
@@ -25,9 +29,16 @@ export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
   cancelLabel = 'إلغاء',
   isDestructive = true,
   requiredWord,
+  backupOffer,
   className = '',
 }) => {
   const [typedWord, setTypedWord] = useState('')
+
+  React.useEffect(() => {
+    if (!isOpen) {
+      setTypedWord('')
+    }
+  }, [isOpen])
 
   const canConfirm = !requiredWord || typedWord.trim() === requiredWord
 
@@ -75,6 +86,32 @@ export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
               <li key={idx}>{c}</li>
             ))}
           </ul>
+        )}
+
+        {backupOffer && (
+          <div
+            style={{
+              padding: '12px',
+              backgroundColor: 'var(--color-surface-2)',
+              borderRadius: 'var(--radius-md)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              border: '1px solid var(--color-border)',
+            }}
+          >
+            <div style={{ fontSize: '13.5px', color: 'var(--color-text-2)' }}>
+              يوصى بحفظ نسخة من بياناتك أولاً قبل المتابعة
+            </div>
+            <Button
+              variant="secondary"
+              size="md"
+              fullWidth
+              onClick={backupOffer.onBackup}
+            >
+              {backupOffer.label}
+            </Button>
+          </div>
         )}
 
         {requiredWord && (

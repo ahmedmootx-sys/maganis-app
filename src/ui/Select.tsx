@@ -158,12 +158,14 @@ export function Select<T = string>({
         {searchable && options.length > 5 && (
           <div style={{ marginBottom: '12px' }}>
             <input
-              type="text"
+              type="search"
               className="field-input"
               placeholder="ابحث في الخيارات..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              autoFocus
+              dir="rtl"
+              lang="ar"
+              aria-label="بحث في الخيارات"
             />
           </div>
         )}

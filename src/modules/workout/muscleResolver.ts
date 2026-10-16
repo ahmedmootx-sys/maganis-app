@@ -24,6 +24,8 @@ export interface ResolveMusclesInput {
   primary_muscles?: { ar?: string[]; db?: string[] } | string[]
   secondary_muscles?: { ar?: string[]; db?: string[] } | string[]
   targetMusclesAr?: string[]
+  imageUrl?: string
+  thumbnailUrl?: string
 }
 
 export interface ResolvedMusclesResult {
@@ -66,6 +68,57 @@ const GROUP_NORM_MAP: Record<string, string> = {
   triceps: 'triceps',
 }
 
+const AR_TARGET_TO_GROUP: Record<string, string> = {
+  الصدر: 'chest',
+  الصدرية: 'chest',
+  الكتف: 'shoulders',
+  الدالية: 'shoulders',
+  الترايسبس: 'triceps',
+  البايسبس: 'biceps',
+  الظهر: 'lats',
+  المجانص: 'lats',
+  الرومبويدز: 'middle back',
+  الترابيس: 'traps',
+  الساعد: 'forearms',
+  السمانة: 'calves',
+  المؤخرة: 'glutes',
+  الجلوتس: 'glutes',
+  الرباعية: 'quadriceps',
+  الأمامية: 'quadriceps',
+  'أوتار الركبة': 'hamstrings',
+  الهمسترنج: 'hamstrings',
+  البطن: 'abdominals',
+  الكور: 'abdominals',
+  القطنية: 'lower back',
+  المبعدة: 'abductors',
+  الضامة: 'adductors',
+  الرقبة: 'neck',
+}
+
+function extractDbId(url?: string): string {
+  if (!url) return ''
+  const m = url.match(/exercises\/([^/]+)\//)
+  return m ? m[1] : ''
+}
+
+const STRICT_VARIANTS = [
+  'incline',
+  'decline',
+  'close_grip',
+  'reverse_grip',
+  'wide_grip',
+  'one_arm',
+]
+
+function areVariantsCompatible(a: string, b: string): boolean {
+  for (const v of STRICT_VARIANTS) {
+    const inA = a.includes(v)
+    const inB = b.includes(v)
+    if (inA !== inB) return false
+  }
+  return true
+}
+
 function normalizeKey(str: string): string {
   return str
     .toLowerCase()
@@ -76,7 +129,7 @@ function normalizeKey(str: string): string {
 
 /**
  * Pure function to resolve muscles for an exercise across 4 strict tiers:
- * Tier 1: Curated exercise_muscles.json
+ * Tier 1: Curated exercise_muscles.json (strict order: key -> db_id -> normalised db_name -> name_en)
  * Tier 2: User-defined exercise.muscles from custom exercise builder
  * Tier 3: Group-level expansion through group-to-heads.json with caption
  * Tier 4: Names only with "لا توجد خريطة تفصيلية لهذا التمرين بعد"
@@ -96,24 +149,103 @@ export function resolveMuscles(
 
   // -------------------------------------------------------------
   // TIER 1: Curated match from exercise_muscles.json
-  // Matches by key, name_en (or name), or db_id (or id)
+  // Strict matching order: key -> db_id -> normalised db_name -> name_en
+  // (never match across variants such as incline/decline/close-grip)
   // -------------------------------------------------------------
   const curatedMap = exerciseMusclesData as Record<
     string,
     { muscles: ExerciseMuscleTarget[] }
   >
 
-  const candidatesToMatch: string[] = []
-  if (exercise.key) candidatesToMatch.push(exercise.key)
-  if (exercise.name_en) candidatesToMatch.push(exercise.name_en)
-  if (exercise.name) candidatesToMatch.push(exercise.name)
-  if (exercise.db_id) candidatesToMatch.push(exercise.db_id)
-  if (exercise.id) candidatesToMatch.push(exercise.id)
+  // 1. key
+  if (exercise.key) {
+    const normKey = normalizeKey(exercise.key)
+    if (
+      normKey &&
+      curatedMap[normKey]?.muscles?.length > 0 &&
+      areVariantsCompatible(normKey, normKey)
+    ) {
+      const muscles = curatedMap[normKey].muscles
+      return {
+        tier: 1,
+        muscles,
+        defaultView: computeBestView(muscles),
+      }
+    }
+  }
 
-  for (const candidate of candidatesToMatch) {
-    const norm = normalizeKey(candidate)
-    if (norm && curatedMap[norm] && curatedMap[norm].muscles?.length > 0) {
-      const muscles = curatedMap[norm].muscles
+  // 2. db_id
+  const dbId =
+    exercise.db_id ||
+    extractDbId(exercise.imageUrl || exercise.thumbnailUrl) ||
+    (exercise.id && !exercise.id.includes('-') ? exercise.id : '')
+  if (dbId) {
+    const normDbId = normalizeKey(dbId)
+    if (
+      normDbId &&
+      curatedMap[normDbId]?.muscles?.length > 0 &&
+      areVariantsCompatible(normDbId, normDbId)
+    ) {
+      const muscles = curatedMap[normDbId].muscles
+      return {
+        tier: 1,
+        muscles,
+        defaultView: computeBestView(muscles),
+      }
+    }
+  }
+
+  // 3. normalised db_name
+  if (dbId) {
+    const normDbName = normalizeKey(dbId.replace(/_/g, ' '))
+    if (
+      normDbName &&
+      curatedMap[normDbName]?.muscles?.length > 0 &&
+      areVariantsCompatible(normDbName, normDbName)
+    ) {
+      const muscles = curatedMap[normDbName].muscles
+      return {
+        tier: 1,
+        muscles,
+        defaultView: computeBestView(muscles),
+      }
+    }
+
+    // Check non-variant stripped descriptors (e.g. medium grip, full squat, with handle)
+    const stripped = normDbName
+      .replace(/_medium_grip$/, '')
+      .replace(/_full_squat$/, '_squat')
+      .replace(/_with_handle$/, '')
+      .replace(/_chest_version$/, '')
+      .replace(/_triceps_version$/, '')
+      .replace(/_back_extensions$/, '')
+      .replace(/^standing_military_press$/, 'overhead_press')
+      .replace(/^side_lateral_raise$/, 'lateral_raise')
+      .replace(/^dumbbell_bicep_curl$/, 'dumbbell_biceps_curl')
+    if (
+      stripped &&
+      curatedMap[stripped]?.muscles?.length > 0 &&
+      areVariantsCompatible(normDbName, stripped)
+    ) {
+      const muscles = curatedMap[stripped].muscles
+      return {
+        tier: 1,
+        muscles,
+        defaultView: computeBestView(muscles),
+      }
+    }
+  }
+
+  // 4. name_en / name
+  const candidateName = exercise.name_en || exercise.name
+  if (candidateName) {
+    const normName = normalizeKey(candidateName)
+    if (
+      normName &&
+      curatedMap[normName]?.muscles?.length > 0 &&
+      areVariantsCompatible(normName, normName)
+    ) {
+      const muscles = curatedMap[normName].muscles
       return {
         tier: 1,
         muscles,
@@ -163,6 +295,23 @@ export function resolveMuscles(
     Array.isArray(exercise.secondary_muscles.db)
   ) {
     secondaryGroupNames.push(...exercise.secondary_muscles.db)
+  }
+
+  // If no secondary groups from secondary_muscles, map from targetMusclesAr secondary items
+  if (
+    secondaryGroupNames.length === 0 &&
+    Array.isArray(exercise.targetMusclesAr) &&
+    exercise.targetMusclesAr.length > 1
+  ) {
+    for (let i = 1; i < exercise.targetMusclesAr.length; i++) {
+      const arText = exercise.targetMusclesAr[i]
+      for (const [arKey, groupVal] of Object.entries(AR_TARGET_TO_GROUP)) {
+        if (arText.includes(arKey)) {
+          secondaryGroupNames.push(groupVal)
+          break
+        }
+      }
+    }
   }
 
   // If no primary group specified, inspect category / muscle_group or targetMuscles

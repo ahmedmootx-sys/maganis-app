@@ -1,454 +1,1490 @@
 {
   "incline_bench_press": {
     "muscles": [
-      { "id": "pec_clavicular", "role": "primary" },
-      { "id": "pec_sternal", "role": "secondary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "triceps_long", "role": "secondary" }
+      {
+        "id": "pec_clavicular",
+        "role": "primary"
+      },
+      {
+        "id": "pec_sternal",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
     ]
   },
   "barbell_incline_bench_press": {
     "muscles": [
-      { "id": "pec_clavicular", "role": "primary" },
-      { "id": "pec_sternal", "role": "secondary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "triceps_long", "role": "secondary" }
+      {
+        "id": "pec_clavicular",
+        "role": "primary"
+      },
+      {
+        "id": "pec_sternal",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
     ]
   },
   "decline_barbell_bench_press": {
     "muscles": [
-      { "id": "pec_costal", "role": "primary" },
-      { "id": "pec_sternal", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "delt_anterior", "role": "secondary" }
+      {
+        "id": "pec_costal",
+        "role": "primary"
+      },
+      {
+        "id": "pec_sternal",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      }
     ]
   },
   "dumbbell_bench_press": {
     "muscles": [
-      { "id": "pec_sternal", "role": "primary" },
-      { "id": "pec_clavicular", "role": "secondary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" }
+      {
+        "id": "pec_sternal",
+        "role": "primary"
+      },
+      {
+        "id": "pec_clavicular",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      }
     ]
   },
   "incline_dumbbell_press": {
     "muscles": [
-      { "id": "pec_clavicular", "role": "primary" },
-      { "id": "pec_sternal", "role": "secondary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" }
+      {
+        "id": "pec_clavicular",
+        "role": "primary"
+      },
+      {
+        "id": "pec_sternal",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      }
     ]
   },
   "decline_dumbbell_bench_press": {
     "muscles": [
-      { "id": "pec_costal", "role": "primary" },
-      { "id": "pec_sternal", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" }
+      {
+        "id": "pec_costal",
+        "role": "primary"
+      },
+      {
+        "id": "pec_sternal",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      }
     ]
   },
   "dumbbell_flyes": {
     "muscles": [
-      { "id": "pec_sternal", "role": "primary" },
-      { "id": "pec_clavicular", "role": "primary" },
-      { "id": "delt_anterior", "role": "secondary" }
+      {
+        "id": "pec_sternal",
+        "role": "primary"
+      },
+      {
+        "id": "pec_clavicular",
+        "role": "primary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      }
     ]
   },
   "cable_crossover": {
     "muscles": [
-      { "id": "pec_sternal", "role": "primary" },
-      { "id": "pec_costal", "role": "primary" },
-      { "id": "delt_anterior", "role": "secondary" }
+      {
+        "id": "pec_sternal",
+        "role": "primary"
+      },
+      {
+        "id": "pec_costal",
+        "role": "primary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      }
     ]
   },
   "dips": {
     "muscles": [
-      { "id": "pec_costal", "role": "primary" },
-      { "id": "triceps_lateral", "role": "primary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "triceps_long", "role": "secondary" }
+      {
+        "id": "pec_costal",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
     ]
   },
   "chest_dip": {
     "muscles": [
-      { "id": "pec_costal", "role": "primary" },
-      { "id": "triceps_lateral", "role": "primary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "triceps_long", "role": "secondary" }
+      {
+        "id": "pec_costal",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
     ]
   },
   "pushups": {
     "muscles": [
-      { "id": "pec_sternal", "role": "primary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "rectus_abdominis_upper", "role": "secondary" }
+      {
+        "id": "pec_sternal",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "rectus_abdominis_upper",
+        "role": "secondary"
+      }
     ]
   },
   "barbell_deadlift": {
     "muscles": [
-      { "id": "glute_max", "role": "primary" },
-      { "id": "hamstring_bf_long", "role": "primary" },
-      { "id": "hamstring_semitendinosus", "role": "primary" },
-      { "id": "erector_spinae", "role": "primary" },
-      { "id": "rectus_femoris", "role": "secondary" },
-      { "id": "lats", "role": "secondary" },
-      { "id": "trap_middle", "role": "secondary" },
-      { "id": "forearm_flexors", "role": "secondary" }
+      {
+        "id": "glute_max",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_bf_long",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_semitendinosus",
+        "role": "primary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "primary"
+      },
+      {
+        "id": "rectus_femoris",
+        "role": "secondary"
+      },
+      {
+        "id": "lats",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "secondary"
+      },
+      {
+        "id": "forearm_flexors",
+        "role": "secondary"
+      }
     ]
   },
   "romanian_deadlift": {
     "muscles": [
-      { "id": "hamstring_bf_long", "role": "primary" },
-      { "id": "hamstring_semitendinosus", "role": "primary" },
-      { "id": "hamstring_semimembranosus", "role": "primary" },
-      { "id": "glute_max", "role": "primary" },
-      { "id": "erector_spinae", "role": "secondary" },
-      { "id": "adductors", "role": "secondary" }
+      {
+        "id": "hamstring_bf_long",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_semitendinosus",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_semimembranosus",
+        "role": "primary"
+      },
+      {
+        "id": "glute_max",
+        "role": "primary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "secondary"
+      },
+      {
+        "id": "adductors",
+        "role": "secondary"
+      }
     ]
   },
   "bent_over_barbell_row": {
     "muscles": [
-      { "id": "lats", "role": "primary" },
-      { "id": "rhomboids", "role": "primary" },
-      { "id": "trap_middle", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "biceps_short", "role": "secondary" },
-      { "id": "delt_posterior", "role": "secondary" },
-      { "id": "erector_spinae", "role": "secondary" }
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "primary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_posterior",
+        "role": "secondary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "secondary"
+      }
     ]
   },
   "one_arm_dumbbell_row": {
     "muscles": [
-      { "id": "lats", "role": "primary" },
-      { "id": "rhomboids", "role": "secondary" },
-      { "id": "trap_middle", "role": "secondary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "delt_posterior", "role": "secondary" }
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "secondary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_posterior",
+        "role": "secondary"
+      }
     ]
   },
   "pull_ups": {
     "muscles": [
-      { "id": "lats", "role": "primary" },
-      { "id": "teres_major", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "biceps_short", "role": "secondary" },
-      { "id": "brachialis", "role": "secondary" },
-      { "id": "trap_lower", "role": "secondary" },
-      { "id": "rhomboids", "role": "secondary" }
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "teres_major",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "secondary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_lower",
+        "role": "secondary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      }
     ]
   },
   "pullups": {
     "muscles": [
-      { "id": "lats", "role": "primary" },
-      { "id": "teres_major", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "biceps_short", "role": "secondary" },
-      { "id": "brachialis", "role": "secondary" },
-      { "id": "trap_lower", "role": "secondary" },
-      { "id": "rhomboids", "role": "secondary" }
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "teres_major",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "secondary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_lower",
+        "role": "secondary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      }
     ]
   },
   "chin_up": {
     "muscles": [
-      { "id": "lats", "role": "primary" },
-      { "id": "biceps_short", "role": "primary" },
-      { "id": "biceps_long", "role": "primary" },
-      { "id": "brachialis", "role": "secondary" },
-      { "id": "teres_major", "role": "secondary" },
-      { "id": "rhomboids", "role": "secondary" }
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      },
+      {
+        "id": "teres_major",
+        "role": "secondary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      }
     ]
   },
   "lat_pulldown": {
     "muscles": [
-      { "id": "lats", "role": "primary" },
-      { "id": "teres_major", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "biceps_short", "role": "secondary" },
-      { "id": "rhomboids", "role": "secondary" }
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "teres_major",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "secondary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      }
     ]
   },
   "wide_grip_lat_pulldown": {
     "muscles": [
-      { "id": "lats", "role": "primary" },
-      { "id": "teres_major", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "biceps_short", "role": "secondary" },
-      { "id": "rhomboids", "role": "secondary" }
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "teres_major",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "secondary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      }
     ]
   },
   "seated_cable_rows": {
     "muscles": [
-      { "id": "rhomboids", "role": "primary" },
-      { "id": "trap_middle", "role": "primary" },
-      { "id": "lats", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "biceps_short", "role": "secondary" },
-      { "id": "delt_posterior", "role": "secondary" }
+      {
+        "id": "rhomboids",
+        "role": "primary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "primary"
+      },
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_posterior",
+        "role": "secondary"
+      }
     ]
   },
   "t_bar_row": {
     "muscles": [
-      { "id": "lats", "role": "primary" },
-      { "id": "trap_middle", "role": "primary" },
-      { "id": "rhomboids", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "delt_posterior", "role": "secondary" },
-      { "id": "erector_spinae", "role": "secondary" }
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "primary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_posterior",
+        "role": "secondary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "secondary"
+      }
     ]
   },
   "face_pull": {
     "muscles": [
-      { "id": "delt_posterior", "role": "primary" },
-      { "id": "trap_middle", "role": "primary" },
-      { "id": "rhomboids", "role": "secondary" },
-      { "id": "infraspinatus", "role": "secondary" },
-      { "id": "teres_minor", "role": "secondary" }
+      {
+        "id": "delt_posterior",
+        "role": "primary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "primary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      },
+      {
+        "id": "infraspinatus",
+        "role": "secondary"
+      },
+      {
+        "id": "teres_minor",
+        "role": "secondary"
+      }
     ]
   },
   "barbell_shrug": {
     "muscles": [
-      { "id": "trap_upper", "role": "primary" },
-      { "id": "trap_middle", "role": "secondary" },
-      { "id": "levator_scapulae", "role": "secondary" }
+      {
+        "id": "trap_upper",
+        "role": "primary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "secondary"
+      },
+      {
+        "id": "levator_scapulae",
+        "role": "secondary"
+      }
     ]
   },
   "hyperextensions": {
     "muscles": [
-      { "id": "erector_spinae", "role": "primary" },
-      { "id": "glute_max", "role": "secondary" },
-      { "id": "hamstring_bf_long", "role": "secondary" }
+      {
+        "id": "erector_spinae",
+        "role": "primary"
+      },
+      {
+        "id": "glute_max",
+        "role": "secondary"
+      },
+      {
+        "id": "hamstring_bf_long",
+        "role": "secondary"
+      }
     ]
   },
   "overhead_press": {
     "muscles": [
-      { "id": "delt_anterior", "role": "primary" },
-      { "id": "delt_lateral", "role": "secondary" },
-      { "id": "triceps_long", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "trap_upper", "role": "secondary" }
+      {
+        "id": "delt_anterior",
+        "role": "primary"
+      },
+      {
+        "id": "delt_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_upper",
+        "role": "secondary"
+      }
     ]
   },
   "dumbbell_shoulder_press": {
     "muscles": [
-      { "id": "delt_anterior", "role": "primary" },
-      { "id": "delt_lateral", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "triceps_long", "role": "secondary" }
+      {
+        "id": "delt_anterior",
+        "role": "primary"
+      },
+      {
+        "id": "delt_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
     ]
   },
   "dumbbell_lateral_raise": {
     "muscles": [
-      { "id": "delt_lateral", "role": "primary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "trap_upper", "role": "secondary" },
-      { "id": "supraspinatus", "role": "secondary" }
+      {
+        "id": "delt_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_upper",
+        "role": "secondary"
+      },
+      {
+        "id": "supraspinatus",
+        "role": "secondary"
+      }
     ]
   },
   "lateral_raise": {
     "muscles": [
-      { "id": "delt_lateral", "role": "primary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "trap_upper", "role": "secondary" },
-      { "id": "supraspinatus", "role": "secondary" }
+      {
+        "id": "delt_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_upper",
+        "role": "secondary"
+      },
+      {
+        "id": "supraspinatus",
+        "role": "secondary"
+      }
     ]
   },
   "front_dumbbell_raise": {
     "muscles": [
-      { "id": "delt_anterior", "role": "primary" },
-      { "id": "delt_lateral", "role": "secondary" },
-      { "id": "pec_clavicular", "role": "secondary" }
+      {
+        "id": "delt_anterior",
+        "role": "primary"
+      },
+      {
+        "id": "delt_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "pec_clavicular",
+        "role": "secondary"
+      }
     ]
   },
   "rear_delt_fly": {
     "muscles": [
-      { "id": "delt_posterior", "role": "primary" },
-      { "id": "rhomboids", "role": "secondary" },
-      { "id": "infraspinatus", "role": "secondary" },
-      { "id": "trap_middle", "role": "secondary" }
+      {
+        "id": "delt_posterior",
+        "role": "primary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      },
+      {
+        "id": "infraspinatus",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "secondary"
+      }
     ]
   },
   "upright_row": {
     "muscles": [
-      { "id": "delt_lateral", "role": "primary" },
-      { "id": "trap_upper", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "brachialis", "role": "secondary" }
+      {
+        "id": "delt_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "trap_upper",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      }
     ]
   },
   "barbell_curl": {
     "muscles": [
-      { "id": "biceps_long", "role": "primary" },
-      { "id": "biceps_short", "role": "primary" },
-      { "id": "brachialis", "role": "secondary" },
-      { "id": "forearm_flexors", "role": "secondary" }
+      {
+        "id": "biceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "primary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      },
+      {
+        "id": "forearm_flexors",
+        "role": "secondary"
+      }
     ]
   },
   "dumbbell_biceps_curl": {
     "muscles": [
-      { "id": "biceps_long", "role": "primary" },
-      { "id": "biceps_short", "role": "primary" },
-      { "id": "brachialis", "role": "secondary" },
-      { "id": "brachioradialis", "role": "secondary" },
-      { "id": "forearm_flexors", "role": "secondary" }
+      {
+        "id": "biceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "primary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      },
+      {
+        "id": "brachioradialis",
+        "role": "secondary"
+      },
+      {
+        "id": "forearm_flexors",
+        "role": "secondary"
+      }
     ]
   },
   "bicep_curl": {
     "muscles": [
-      { "id": "biceps_long", "role": "primary" },
-      { "id": "biceps_short", "role": "primary" },
-      { "id": "brachialis", "role": "secondary" },
-      { "id": "brachioradialis", "role": "secondary" },
-      { "id": "forearm_flexors", "role": "secondary" }
+      {
+        "id": "biceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "primary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      },
+      {
+        "id": "brachioradialis",
+        "role": "secondary"
+      },
+      {
+        "id": "forearm_flexors",
+        "role": "secondary"
+      }
     ]
   },
   "hammer_curls": {
     "muscles": [
-      { "id": "brachialis", "role": "primary" },
-      { "id": "brachioradialis", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "forearm_flexors", "role": "secondary" }
+      {
+        "id": "brachialis",
+        "role": "primary"
+      },
+      {
+        "id": "brachioradialis",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "forearm_flexors",
+        "role": "secondary"
+      }
     ]
   },
   "preacher_curl": {
     "muscles": [
-      { "id": "biceps_short", "role": "primary" },
-      { "id": "biceps_long", "role": "secondary" },
-      { "id": "brachialis", "role": "secondary" }
+      {
+        "id": "biceps_short",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      }
     ]
   },
   "triceps_pushdown": {
     "muscles": [
-      { "id": "triceps_lateral", "role": "primary" },
-      { "id": "triceps_medial", "role": "primary" },
-      { "id": "triceps_long", "role": "secondary" }
+      {
+        "id": "triceps_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_medial",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
     ]
   },
   "overhead_dumbbell_triceps_extension": {
     "muscles": [
-      { "id": "triceps_long", "role": "primary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "triceps_medial", "role": "secondary" }
+      {
+        "id": "triceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_medial",
+        "role": "secondary"
+      }
     ]
   },
   "skull_crusher": {
     "muscles": [
-      { "id": "triceps_long", "role": "primary" },
-      { "id": "triceps_medial", "role": "primary" },
-      { "id": "triceps_lateral", "role": "secondary" }
+      {
+        "id": "triceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_medial",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      }
     ]
   },
   "flat_bench_press": {
     "muscles": [
-      { "id": "pec_sternal", "role": "primary" },
-      { "id": "pec_clavicular", "role": "secondary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "triceps_long", "role": "secondary" }
+      {
+        "id": "pec_sternal",
+        "role": "primary"
+      },
+      {
+        "id": "pec_clavicular",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
     ]
   },
   "barbell_bench_press": {
     "muscles": [
-      { "id": "pec_sternal", "role": "primary" },
-      { "id": "pec_clavicular", "role": "secondary" },
-      { "id": "delt_anterior", "role": "secondary" },
-      { "id": "triceps_lateral", "role": "secondary" },
-      { "id": "triceps_long", "role": "secondary" }
+      {
+        "id": "pec_sternal",
+        "role": "primary"
+      },
+      {
+        "id": "pec_clavicular",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
     ]
   },
   "barbell_squat": {
     "muscles": [
-      { "id": "rectus_femoris", "role": "primary" },
-      { "id": "vastus_lateralis", "role": "primary" },
-      { "id": "vastus_medialis", "role": "primary" },
-      { "id": "glute_max", "role": "primary" },
-      { "id": "adductors", "role": "secondary" },
-      { "id": "erector_spinae", "role": "secondary" }
+      {
+        "id": "rectus_femoris",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_lateralis",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_medialis",
+        "role": "primary"
+      },
+      {
+        "id": "glute_max",
+        "role": "primary"
+      },
+      {
+        "id": "adductors",
+        "role": "secondary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "secondary"
+      }
     ]
   },
   "front_barbell_squat": {
     "muscles": [
-      { "id": "rectus_femoris", "role": "primary" },
-      { "id": "vastus_lateralis", "role": "primary" },
-      { "id": "vastus_medialis", "role": "primary" },
-      { "id": "glute_max", "role": "secondary" },
-      { "id": "rectus_abdominis_upper", "role": "secondary" },
-      { "id": "erector_spinae", "role": "secondary" }
+      {
+        "id": "rectus_femoris",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_lateralis",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_medialis",
+        "role": "primary"
+      },
+      {
+        "id": "glute_max",
+        "role": "secondary"
+      },
+      {
+        "id": "rectus_abdominis_upper",
+        "role": "secondary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "secondary"
+      }
     ]
   },
   "leg_press": {
     "muscles": [
-      { "id": "rectus_femoris", "role": "primary" },
-      { "id": "vastus_lateralis", "role": "primary" },
-      { "id": "vastus_medialis", "role": "primary" },
-      { "id": "glute_max", "role": "primary" },
-      { "id": "hamstring_bf_long", "role": "secondary" },
-      { "id": "adductors", "role": "secondary" }
+      {
+        "id": "rectus_femoris",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_lateralis",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_medialis",
+        "role": "primary"
+      },
+      {
+        "id": "glute_max",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_bf_long",
+        "role": "secondary"
+      },
+      {
+        "id": "adductors",
+        "role": "secondary"
+      }
     ]
   },
   "leg_extensions": {
     "muscles": [
-      { "id": "rectus_femoris", "role": "primary" },
-      { "id": "vastus_lateralis", "role": "primary" },
-      { "id": "vastus_medialis", "role": "primary" },
-      { "id": "vastus_intermedius", "role": "primary" }
+      {
+        "id": "rectus_femoris",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_lateralis",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_medialis",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_intermedius",
+        "role": "primary"
+      }
     ]
   },
   "lying_leg_curls": {
     "muscles": [
-      { "id": "hamstring_bf_long", "role": "primary" },
-      { "id": "hamstring_bf_short", "role": "primary" },
-      { "id": "hamstring_semitendinosus", "role": "primary" },
-      { "id": "hamstring_semimembranosus", "role": "primary" },
-      { "id": "gastrocnemius_medial", "role": "secondary" },
-      { "id": "gastrocnemius_lateral", "role": "secondary" }
+      {
+        "id": "hamstring_bf_long",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_bf_short",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_semitendinosus",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_semimembranosus",
+        "role": "primary"
+      },
+      {
+        "id": "gastrocnemius_medial",
+        "role": "secondary"
+      },
+      {
+        "id": "gastrocnemius_lateral",
+        "role": "secondary"
+      }
     ]
   },
   "barbell_hip_thrust": {
     "muscles": [
-      { "id": "glute_max", "role": "primary" },
-      { "id": "glute_med", "role": "primary" },
-      { "id": "hamstring_bf_long", "role": "secondary" },
-      { "id": "adductors", "role": "secondary" }
+      {
+        "id": "glute_max",
+        "role": "primary"
+      },
+      {
+        "id": "glute_med",
+        "role": "primary"
+      },
+      {
+        "id": "hamstring_bf_long",
+        "role": "secondary"
+      },
+      {
+        "id": "adductors",
+        "role": "secondary"
+      }
     ]
   },
   "standing_calf_raise": {
     "muscles": [
-      { "id": "gastrocnemius_medial", "role": "primary" },
-      { "id": "gastrocnemius_lateral", "role": "primary" },
-      { "id": "soleus", "role": "secondary" }
+      {
+        "id": "gastrocnemius_medial",
+        "role": "primary"
+      },
+      {
+        "id": "gastrocnemius_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "soleus",
+        "role": "secondary"
+      }
     ]
   },
   "standing_calf_raises": {
     "muscles": [
-      { "id": "gastrocnemius_medial", "role": "primary" },
-      { "id": "gastrocnemius_lateral", "role": "primary" },
-      { "id": "soleus", "role": "secondary" }
+      {
+        "id": "gastrocnemius_medial",
+        "role": "primary"
+      },
+      {
+        "id": "gastrocnemius_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "soleus",
+        "role": "secondary"
+      }
     ]
   },
   "seated_calf_raise": {
     "muscles": [
-      { "id": "soleus", "role": "primary" },
-      { "id": "gastrocnemius_medial", "role": "secondary" },
-      { "id": "gastrocnemius_lateral", "role": "secondary" }
+      {
+        "id": "soleus",
+        "role": "primary"
+      },
+      {
+        "id": "gastrocnemius_medial",
+        "role": "secondary"
+      },
+      {
+        "id": "gastrocnemius_lateral",
+        "role": "secondary"
+      }
     ]
   },
   "hanging_leg_raise": {
     "muscles": [
-      { "id": "rectus_abdominis_lower", "role": "primary" },
-      { "id": "rectus_abdominis_upper", "role": "secondary" },
-      { "id": "obliques_external", "role": "secondary" },
-      { "id": "iliopsoas", "role": "secondary" }
+      {
+        "id": "rectus_abdominis_lower",
+        "role": "primary"
+      },
+      {
+        "id": "rectus_abdominis_upper",
+        "role": "secondary"
+      },
+      {
+        "id": "obliques_external",
+        "role": "secondary"
+      },
+      {
+        "id": "iliopsoas",
+        "role": "secondary"
+      }
     ]
   },
   "plank": {
     "muscles": [
-      { "id": "transversus_abdominis", "role": "primary" },
-      { "id": "rectus_abdominis_upper", "role": "primary" },
-      { "id": "rectus_abdominis_lower", "role": "primary" },
-      { "id": "obliques_external", "role": "secondary" },
-      { "id": "erector_spinae", "role": "secondary" }
+      {
+        "id": "transversus_abdominis",
+        "role": "primary"
+      },
+      {
+        "id": "rectus_abdominis_upper",
+        "role": "primary"
+      },
+      {
+        "id": "rectus_abdominis_lower",
+        "role": "primary"
+      },
+      {
+        "id": "obliques_external",
+        "role": "secondary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "secondary"
+      }
+    ]
+  },
+  "barbell_bench_press_medium_grip": {
+    "muscles": [
+      {
+        "id": "pec_sternal",
+        "role": "primary"
+      },
+      {
+        "id": "pec_clavicular",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
+    ]
+  },
+  "barbell_incline_bench_press_medium_grip": {
+    "muscles": [
+      {
+        "id": "pec_clavicular",
+        "role": "primary"
+      },
+      {
+        "id": "pec_sternal",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
+    ]
+  },
+  "dips_chest_version": {
+    "muscles": [
+      {
+        "id": "pec_costal",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      }
+    ]
+  },
+  "t_bar_row_with_handle": {
+    "muscles": [
+      {
+        "id": "lats",
+        "role": "primary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "primary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "delt_posterior",
+        "role": "secondary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "secondary"
+      }
+    ]
+  },
+  "hyperextensions_back_extensions": {
+    "muscles": [
+      {
+        "id": "erector_spinae",
+        "role": "primary"
+      },
+      {
+        "id": "glute_max",
+        "role": "secondary"
+      },
+      {
+        "id": "hamstring_bf_long",
+        "role": "secondary"
+      }
+    ]
+  },
+  "standing_military_press": {
+    "muscles": [
+      {
+        "id": "delt_anterior",
+        "role": "primary"
+      },
+      {
+        "id": "delt_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_upper",
+        "role": "secondary"
+      }
+    ]
+  },
+  "side_lateral_raise": {
+    "muscles": [
+      {
+        "id": "delt_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "delt_anterior",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_upper",
+        "role": "secondary"
+      },
+      {
+        "id": "supraspinatus",
+        "role": "secondary"
+      }
+    ]
+  },
+  "cable_rear_delt_fly": {
+    "muscles": [
+      {
+        "id": "delt_posterior",
+        "role": "primary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      },
+      {
+        "id": "infraspinatus",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "secondary"
+      }
+    ]
+  },
+  "rear_delt_flyes": {
+    "muscles": [
+      {
+        "id": "delt_posterior",
+        "role": "primary"
+      },
+      {
+        "id": "rhomboids",
+        "role": "secondary"
+      },
+      {
+        "id": "infraspinatus",
+        "role": "secondary"
+      },
+      {
+        "id": "trap_middle",
+        "role": "secondary"
+      }
+    ]
+  },
+  "upright_barbell_row": {
+    "muscles": [
+      {
+        "id": "delt_lateral",
+        "role": "primary"
+      },
+      {
+        "id": "trap_upper",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_long",
+        "role": "secondary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      }
+    ]
+  },
+  "dumbbell_bicep_curl": {
+    "muscles": [
+      {
+        "id": "biceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "biceps_short",
+        "role": "primary"
+      },
+      {
+        "id": "brachialis",
+        "role": "secondary"
+      },
+      {
+        "id": "brachioradialis",
+        "role": "secondary"
+      },
+      {
+        "id": "forearm_flexors",
+        "role": "secondary"
+      }
+    ]
+  },
+  "standing_dumbbell_triceps_extension": {
+    "muscles": [
+      {
+        "id": "triceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_medial",
+        "role": "secondary"
+      }
+    ]
+  },
+  "standing_overhead_barbell_triceps_extension": {
+    "muscles": [
+      {
+        "id": "triceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      },
+      {
+        "id": "triceps_medial",
+        "role": "secondary"
+      }
+    ]
+  },
+  "lying_triceps_press": {
+    "muscles": [
+      {
+        "id": "triceps_long",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_medial",
+        "role": "primary"
+      },
+      {
+        "id": "triceps_lateral",
+        "role": "secondary"
+      }
+    ]
+  },
+  "barbell_full_squat": {
+    "muscles": [
+      {
+        "id": "rectus_femoris",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_lateralis",
+        "role": "primary"
+      },
+      {
+        "id": "vastus_medialis",
+        "role": "primary"
+      },
+      {
+        "id": "glute_max",
+        "role": "primary"
+      },
+      {
+        "id": "adductors",
+        "role": "secondary"
+      },
+      {
+        "id": "erector_spinae",
+        "role": "secondary"
+      }
     ]
   }
 }

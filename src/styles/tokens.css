@@ -155,10 +155,26 @@
   --color-danger: #b91c1c;
   --color-danger-bg: #fef2f2;
   --color-danger-border: #fecaca;
+  --color-danger-contrast: #ffffff;
 
   --color-info: #1d4ed8;
   --color-info-bg: #eff6ff;
   --color-info-border: #bfdbfe;
+
+  /* Modals, Overlays & Stacking Contexts */
+  --color-overlay: rgba(20, 22, 26, 0.6);
+  --z-index-modal: 1000;
+  --z-index-bottom-nav: 100;
+
+  /* Legacy Design System Aliases for Visual Continuity */
+  --brand: var(--color-accent);
+  --brand-contrast: var(--color-accent-contrast);
+  --line: var(--color-divider);
+  --ink: var(--color-text);
+  --ink-2: var(--color-text-2);
+  --muted: var(--color-text-2);
+  --card-subtle: var(--color-surface-2);
+  --card-bg: var(--color-surface);
 }
 
 /* --------------------------------------------------------------------------
@@ -190,6 +206,8 @@
   --color-danger: #ef4444;
   --color-danger-bg: #450a0a;
   --color-danger-border: #7f1d1d;
+  --color-danger-contrast: #ffffff;
+  --color-overlay: rgba(0, 0, 0, 0.75);
 
   --color-info: #3b82f6;
   --color-info-bg: #172554;

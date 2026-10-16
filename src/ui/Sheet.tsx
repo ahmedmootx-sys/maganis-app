@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { IconButton } from './Button.tsx'
 
 export interface SheetProps {
@@ -22,7 +23,7 @@ export const Sheet: React.FC<SheetProps> = ({
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null)
 
-  // Esc key closes & focus trap
+  // Esc key closes, focus trap & body scroll lock with BottomNav inert state
   useEffect(() => {
     if (!isOpen) return
 
@@ -49,24 +50,28 @@ export const Sheet: React.FC<SheetProps> = ({
       }
     }
 
-    // Prevent body scroll when sheet is open
+    // Prevent body scroll and mark sheet open on body
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+    document.body.dataset.sheetOpen = 'true'
+
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
       document.body.style.overflow = prevOverflow
+      delete document.body.dataset.sheetOpen
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [isOpen, onClose])
 
   if (!isOpen) return null
 
-  return (
+  const sheetContent = (
     <div
       className="sheet-backdrop"
       onClick={onClose}
       data-testid="sheet-backdrop"
+      dir="rtl"
     >
       <div
         ref={sheetRef}
@@ -84,7 +89,7 @@ export const Sheet: React.FC<SheetProps> = ({
               {subtitle && (
                 <span
                   className="sheet__subtitle"
-                  style={{ fontSize: '13px', color: 'var(--muted)' }}
+                  style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
                 >
                   {subtitle}
                 </span>
@@ -103,4 +108,10 @@ export const Sheet: React.FC<SheetProps> = ({
       </div>
     </div>
   )
+
+  if (typeof document !== 'undefined') {
+    return createPortal(sheetContent, document.body)
+  }
+
+  return sheetContent
 }

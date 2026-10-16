@@ -6,6 +6,7 @@ import { SvgLineChart } from '../reports/SvgLineChart.tsx'
 import { formatArabicDate } from '../../components/DateField.tsx'
 import {
   DateField,
+  Button,
   TopBar,
   Sheet,
   ConfirmSheet,
@@ -88,7 +89,7 @@ export function ProgressScreen({
   sessions,
   bodyLog,
   dayNotes,
-  profile: _profile,
+  profile,
   onAddBodyWeight,
   onDeleteBodyWeight,
   onAddDayNote,
@@ -149,11 +150,33 @@ export function ProgressScreen({
     setShowAddNoteSheet(false)
   }
 
-  // Calendar Helpers
+  // Calendar Helpers (Week start from profile preference)
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate()
-  // Saturday start (0 in JS is Sunday, so Saturday is 6)
+  const weekStartDay = profile?.weekStartDay ?? 6
   const rawFirstDay = new Date(calYear, calMonth, 1).getDay()
-  const firstDayIndex = (rawFirstDay + 1) % 7 // maps Sat -> 0, Sun -> 1, ...
+  const firstDayIndex = (rawFirstDay - weekStartDay + 7) % 7
+
+  const ALL_DAY_NAMES = useMemo(
+    () => [
+      { dayIndex: 0, label: 'أح' },
+      { dayIndex: 1, label: 'إث' },
+      { dayIndex: 2, label: 'ثلا' },
+      { dayIndex: 3, label: 'أرب' },
+      { dayIndex: 4, label: 'خم' },
+      { dayIndex: 5, label: 'جم' },
+      { dayIndex: 6, label: 'سب' },
+    ],
+    [],
+  )
+
+  const orderedDayNames = useMemo(() => {
+    const start = profile?.weekStartDay ?? 6
+    const list = []
+    for (let i = 0; i < 7; i++) {
+      list.push(ALL_DAY_NAMES[(start + i) % 7])
+    }
+    return list
+  }, [profile?.weekStartDay, ALL_DAY_NAMES])
 
   function prevMonth() {
     if (calMonth === 0) {
@@ -515,23 +538,14 @@ export function ProgressScreen({
                   />
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  className="btn-primary"
-                  style={{
-                    height: '48px',
-                    borderRadius: '12px',
-                    border: 'none',
-                    background: 'var(--brand)',
-                    color: '#fff',
-                    fontSize: '15px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    width: '100%',
-                  }}
+                  variant="primary"
+                  size="lg"
+                  fullWidth
                 >
                   حفظ قياس الوزن
-                </button>
+                </Button>
               </form>
 
               {/* Mini SVG Chart if 2+ entries */}
@@ -653,37 +667,40 @@ export function ProgressScreen({
                 gap: '14px',
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
+              <div>
                 <h3
                   style={{
                     margin: 0,
                     fontSize: '16px',
                     fontWeight: 700,
-                    color: 'var(--ink)',
+                    color: 'var(--color-text)',
                   }}
                 >
                   تقويم التدريب والملاحظات
                 </h3>
+              </div>
+
+              {/* Month navigation on its own row */}
                 <div
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    paddingBlock: '4px',
+                  }}
                 >
                   <button
                     type="button"
                     onClick={prevMonth}
                     aria-label="الشهر السابق"
                     style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: 'var(--card-subtle)',
-                      color: 'var(--ink)',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: 'var(--radius-control)',
+                      border: '1px solid var(--color-divider)',
+                      background: 'var(--color-surface-2)',
+                      color: 'var(--color-text)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -694,9 +711,9 @@ export function ProgressScreen({
                   </button>
                   <span
                     style={{
-                      fontSize: '14px',
+                      fontSize: '15px',
                       fontWeight: 700,
-                      minWidth: '100px',
+                      color: 'var(--color-text)',
                       textAlign: 'center',
                     }}
                   >
@@ -707,12 +724,12 @@ export function ProgressScreen({
                     onClick={nextMonth}
                     aria-label="الشهر التالي"
                     style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: 'var(--card-subtle)',
-                      color: 'var(--ink)',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: 'var(--radius-control)',
+                      border: '1px solid var(--color-divider)',
+                      background: 'var(--color-surface-2)',
+                      color: 'var(--color-text)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -722,145 +739,159 @@ export function ProgressScreen({
                     <IconChevronLeft size={18} />
                   </button>
                 </div>
-              </div>
 
-              {/* Day Names Grid */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(7, 1fr)',
-                  gap: '4px',
-                  textAlign: 'center',
-                  fontSize: '12.5px',
-                  fontWeight: 700,
-                  color: 'var(--muted)',
-                }}
-              >
-                {DAY_NAMES_SHORT.map((name) => (
-                  <div key={name} style={{ padding: '4px 0' }}>
-                    {name}
-                  </div>
-                ))}
-              </div>
-
-              {/* Days Cells */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(7, 1fr)',
-                  gap: '4px',
-                }}
-              >
-                {Array.from({ length: firstDayIndex }).map((_, i) => (
-                  <div key={`empty-${i}`} />
-                ))}
-
-                {Array.from({ length: daysInMonth }).map((_, i) => {
-                  const dayNum = i + 1
-                  const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
-                  const hasSession = sessionDatesSet.has(dateStr)
-                  const hasNote = noteDatesSet.has(dateStr)
-                  const isCurrentDay = dateStr === todayStr()
-
-                  return (
-                    <button
-                      key={dateStr}
-                      type="button"
-                      onClick={() => setSelectedCalendarDate(dateStr)}
+                {/* ONE Unified Grid for Header Day Names and Day Cells */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
+                    gap: '4px',
+                    width: '100%',
+                  }}
+                >
+                  {/* 7 Header Day Names */}
+                  {orderedDayNames.map((d) => (
+                    <div
+                      key={`hdr-${d.dayIndex}`}
                       style={{
-                        height: '42px',
-                        borderRadius: '10px',
-                        border: isCurrentDay
-                          ? '1.5px solid var(--brand)'
-                          : '1px solid transparent',
-                        background: hasSession
-                          ? 'var(--brand-surface, rgba(230, 81, 0, 0.1))'
-                          : 'var(--card-subtle)',
-                        color: hasSession ? 'var(--brand)' : 'var(--ink)',
-                        fontWeight: hasSession || isCurrentDay ? 800 : 500,
-                        fontSize: '13px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        position: 'relative',
+                        textAlign: 'center',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        color: 'var(--color-text-2)',
+                        padding: '4px 0',
                       }}
                     >
-                      <span>{dayNum}</span>
-                      <div
+                      {d.label}
+                    </div>
+                  ))}
+
+                  {/* Empty Offset Cells */}
+                  {Array.from({ length: firstDayIndex }).map((_, i) => (
+                    <div key={`empty-${i}`} />
+                  ))}
+
+                  {/* Day Cells */}
+                  {Array.from({ length: daysInMonth }).map((_, i) => {
+                    const dayNum = i + 1
+                    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
+                    const hasSession = sessionDatesSet.has(dateStr)
+                    const hasNote = noteDatesSet.has(dateStr)
+                    const isCurrentDay = dateStr === todayStr()
+                    const isSelected = dateStr === selectedCalendarDate
+
+                    return (
+                      <button
+                        key={dateStr}
+                        type="button"
+                        onClick={() => setSelectedCalendarDate(dateStr)}
                         style={{
+                          height: '42px',
+                          borderRadius: 'var(--radius-control)',
+                          border: isCurrentDay
+                            ? '2px solid var(--color-primary)'
+                            : isSelected
+                              ? '1px solid var(--color-text)'
+                              : '1px solid var(--color-divider)',
+                          background: hasSession
+                            ? 'var(--color-primary-subtle, rgba(249, 87, 0, 0.12))'
+                            : 'var(--color-surface-2)',
+                          color: hasSession
+                            ? 'var(--color-primary)'
+                            : 'var(--color-text)',
+                          fontWeight: hasSession || isCurrentDay ? 700 : 500,
+                          fontSize: '13px',
                           display: 'flex',
-                          gap: '3px',
-                          position: 'absolute',
-                          bottom: '4px',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          position: 'relative',
+                          padding: 0,
                         }}
                       >
-                        {hasSession && (
-                          <span
-                            style={{
-                              width: '4px',
-                              height: '4px',
-                              borderRadius: '50%',
-                              background: 'var(--brand)',
-                            }}
-                          />
-                        )}
-                        {hasNote && (
-                          <span
-                            style={{
-                              width: '4px',
-                              height: '4px',
-                              borderRadius: '50%',
-                              background: '#3b82f6',
-                            }}
-                          />
-                        )}
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
+                        <span>{dayNum}</span>
+                        <div
+                          style={{
+                            display: 'flex',
+                            gap: '3px',
+                            position: 'absolute',
+                            bottom: '4px',
+                          }}
+                        >
+                          {hasSession && (
+                            <span
+                              style={{
+                                width: '5px',
+                                height: '5px',
+                                borderRadius: '50%',
+                                background: 'var(--color-primary)',
+                              }}
+                            />
+                          )}
+                          {hasNote && (
+                            <span
+                              style={{
+                                width: '5px',
+                                height: '5px',
+                                borderRadius: '50%',
+                                background: '#0284c7',
+                              }}
+                            />
+                          )}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
 
-              {/* Legend */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '16px',
-                  fontSize: '12px',
-                  color: 'var(--muted)',
-                  paddingTop: '6px',
-                }}
-              >
+                {/* Legend with Both Session and Note Dots */}
                 <div
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '20px',
+                    fontSize: '12px',
+                    color: 'var(--color-text-2)',
+                    paddingTop: '8px',
+                    borderTop: '1px solid var(--color-divider)',
+                  }}
                 >
-                  <span
+                  <div
                     style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      background: 'var(--brand)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
                     }}
-                  />
-                  <span>جلسة تمرين</span>
-                </div>
-                <div
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <span
+                  >
+                    <span
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: 'var(--color-primary)',
+                      }}
+                    />
+                    <span>جلسة تمرين</span>
+                  </div>
+                  <div
                     style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      background: '#3b82f6',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
                     }}
-                  />
-                  <span>ملاحظة يومية</span>
+                  >
+                    <span
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: '#0284c7',
+                      }}
+                    />
+                    <span>ملاحظة يومية</span>
+                  </div>
                 </div>
-              </div>
             </div>
 
             {/* Section 3: Daily Notes */}

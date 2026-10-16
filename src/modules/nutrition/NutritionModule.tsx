@@ -20,6 +20,7 @@ import { MacroGuideModal } from './MacroGuideModal.tsx'
 import type { CustomMeal, DailyNutritionLog, MealCategory } from './types.ts'
 import {
   TopBar,
+  Button,
   ProgressBar,
   Sheet,
   ConfirmSheet,
@@ -1112,12 +1113,15 @@ export function NutritionModule({
                 borderRadius: '999px',
                 fontSize: '13px',
                 fontWeight: 600,
-                border: '1px solid var(--line)',
+                border: '1px solid var(--color-divider)',
                 background:
                   selectedCategoryFilter === 'all'
-                    ? 'var(--brand)'
-                    : 'var(--card-subtle)',
-                color: selectedCategoryFilter === 'all' ? '#fff' : 'var(--ink)',
+                    ? 'var(--color-primary)'
+                    : 'var(--color-surface-2)',
+                color:
+                  selectedCategoryFilter === 'all'
+                    ? 'var(--color-primary-contrast, #ffffff)'
+                    : 'var(--color-text)',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
               }}
@@ -1138,12 +1142,15 @@ export function NutritionModule({
                   borderRadius: '999px',
                   fontSize: '13px',
                   fontWeight: 600,
-                  border: '1px solid var(--line)',
+                  border: '1px solid var(--color-divider)',
                   background:
                     selectedCategoryFilter === cat
-                      ? 'var(--brand)'
-                      : 'var(--card-subtle)',
-                  color: selectedCategoryFilter === cat ? '#fff' : 'var(--ink)',
+                      ? 'var(--color-primary)'
+                      : 'var(--color-surface-2)',
+                  color:
+                    selectedCategoryFilter === cat
+                      ? 'var(--color-primary-contrast, #ffffff)'
+                      : 'var(--color-text)',
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                 }}
@@ -1711,49 +1718,29 @@ export function NutritionModule({
             <div
               style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
             >
-              <button
-                type="button"
-                className="btn-primary"
+              <Button
+                variant="primary"
+                size="lg"
+                fullWidth
                 onClick={() => {
                   setShowBodyTargetsDetails(false)
                   setIsProfileModalOpen(true)
                 }}
-                style={{
-                  height: '48px',
-                  borderRadius: '12px',
-                  border: 'none',
-                  background: 'var(--brand)',
-                  color: '#fff',
-                  fontSize: '15.5px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  width: '100%',
-                }}
               >
                 تعديل بيانات وزني وهدفي
-              </button>
+              </Button>
 
-              <button
-                type="button"
-                className="btn-ghost"
+              <Button
+                variant="secondary"
+                size="lg"
+                fullWidth
                 onClick={() => {
                   setShowBodyTargetsDetails(false)
                   setIsCalibrationModalOpen(true)
                 }}
-                style={{
-                  height: '48px',
-                  borderRadius: '12px',
-                  border: '1px solid var(--line)',
-                  background: 'var(--card-subtle)',
-                  color: 'var(--ink)',
-                  fontSize: '15px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  width: '100%',
-                }}
               >
                 معايرة السعرات الذكية
-              </button>
+              </Button>
             </div>
 
             {/* Safety Disclaimer Footnote */}

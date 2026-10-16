@@ -156,9 +156,7 @@ describe('SettingsScreen', () => {
       />,
     )
 
-    const resetTrigger = screen.getByRole('button', {
-      name: 'حذف كل البيانات وإعادة ضبط المصنع',
-    })
+    const resetTrigger = screen.getByText('إعادة ضبط التطبيق')
     fireEvent.click(resetTrigger)
 
     // Confirm sheet title
@@ -167,6 +165,12 @@ describe('SettingsScreen', () => {
     const confirmBtn = screen.getByRole('button', {
       name: 'حذف كل شيء والبدء من جديد',
     })
+    expect(confirmBtn).toBeDisabled()
+
+    const input = screen.getByPlaceholderText('حذف')
+    fireEvent.change(input, { target: { value: 'حذف' } })
+    expect(confirmBtn).not.toBeDisabled()
+
     fireEvent.click(confirmBtn)
 
     expect(handleReset).toHaveBeenCalledTimes(1)
