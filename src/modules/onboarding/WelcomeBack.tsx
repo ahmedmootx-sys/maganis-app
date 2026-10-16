@@ -26,7 +26,9 @@ export function WelcomeBack({ profile, onEdit, onDelete }: WelcomeBackProps) {
   const lifestyleObj = LIFESTYLE_OPTIONS.find(
     (l) => l.level === currentLifestyle,
   )
-  const joined = new Date(profile.createdAt).toLocaleDateString('ar-EG')
+  const joined = new Date(profile.createdAt).toLocaleDateString(
+    'ar-EG-u-nu-latn',
+  )
 
   return (
     <section className="card" data-testid="welcome-card">

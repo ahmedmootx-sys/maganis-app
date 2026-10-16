@@ -440,9 +440,13 @@ export const Styleguide: React.FC = () => {
                 <Select
                   label="اختر المستوى التدريبي"
                   options={[
-                    { value: 'opt1', label: 'مبتدئ (Beginner)' },
-                    { value: 'opt2', label: 'متوسط (Intermediate)' },
-                    { value: 'opt3', label: 'متقدم (Advanced)' },
+                    { value: 'opt1', labelAr: 'مبتدئ', labelEn: 'Beginner' },
+                    {
+                      value: 'opt2',
+                      labelAr: 'متوسط',
+                      labelEn: 'Intermediate',
+                    },
+                    { value: 'opt3', labelAr: 'متقدم', labelEn: 'Advanced' },
                   ]}
                   value={selectVal}
                   onChange={(v) => setSelectVal(v as string)}

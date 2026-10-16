@@ -31,7 +31,7 @@ export function formatArabicDate(dateStr: string): string {
     if (isNaN(year) || isNaN(month) || isNaN(day)) return dateStr
 
     const date = new Date(year, month - 1, day)
-    return new Intl.DateTimeFormat('ar-EG', {
+    return new Intl.DateTimeFormat('ar-EG-u-nu-latn', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

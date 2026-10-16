@@ -143,7 +143,7 @@ export function BackupPanel({
 
   const lastExportTimestamp = store.getLastExport()
   const lastExportFormatted = lastExportTimestamp
-    ? new Date(lastExportTimestamp).toLocaleDateString('ar-EG', {
+    ? new Date(lastExportTimestamp).toLocaleDateString('ar-EG-u-nu-latn', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',

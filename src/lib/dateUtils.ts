@@ -10,7 +10,7 @@ export function formatArabicDate(
     typeof date === 'object' && date instanceof Date ? date : new Date(date)
   if (isNaN(d.getTime())) return '—'
   return d.toLocaleDateString(
-    'ar-EG',
+    'ar-EG-u-nu-latn',
     options ?? {
       weekday: 'long',
       year: 'numeric',
