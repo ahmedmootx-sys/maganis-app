@@ -4,6 +4,7 @@ import type { UserProfile } from '../onboarding/types.ts'
 import { getExerciseById } from '../workout/exercises.ts'
 import { calculateCalorieMacroTargets } from '../nutrition/calorieCalculator.ts'
 import { SvgLineChart } from './SvgLineChart.tsx'
+import { ConfirmSheet } from '../../ui/index.ts'
 
 interface ReportsProps {
   sessions: TrackingSession[]
@@ -50,6 +51,7 @@ export function Reports({
 }: ReportsProps) {
   const [range, setRange] = useState<DateRange>('4w')
   const [resetNonce, setResetNonce] = useState(0)
+  const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [reportStatusMessage, setReportStatusMessage] = useState<string | null>(
     null,
   )
@@ -96,7 +98,7 @@ export function Reports({
       showMessage('✓ تم تصدير ملف التقارير بنجاح!')
     } catch (e) {
       console.error(e)
-      alert('حدث خطأ أثناء تصدير التقارير.')
+      showMessage('حدث خطأ أثناء تصدير التقارير.')
     }
   }
 
@@ -113,7 +115,7 @@ export function Reports({
           parsed.type !== 'maganis-reports-backup' ||
           !Array.isArray(parsed.sessions)
         ) {
-          alert(
+          showMessage(
             'ملف غير صالح! يرجى اختيار ملف تقارير صالح تم تصديره من تطبيق مجانص.',
           )
           return
@@ -136,7 +138,7 @@ export function Reports({
         showMessage('✓ تم استيراد بيانات وسجلات التقارير بنجاح!')
       } catch (err) {
         console.error(err)
-        alert('تعذر قراءة ملف التقارير. تأكد من سلامة ملف JSON.')
+        showMessage('تعذر قراءة ملف التقارير. تأكد من سلامة ملف JSON.')
       }
     }
     reader.readAsText(file)
@@ -144,11 +146,10 @@ export function Reports({
   }
 
   function handleResetReports() {
-    const confirmed = window.confirm(
-      'هل أنت متأكد من تصفير (Reset) كافة بيانات وسجلات التقارير والتغذية والوزن؟\nلن يتم المساس بملفك الشخصي أو جدولك التدريبي.',
-    )
-    if (!confirmed) return
+    setShowResetConfirm(true)
+  }
 
+  function doResetReports() {
     try {
       if (onUpdateSessions) onUpdateSessions([])
       if (onUpdateBodyLog) onUpdateBodyLog([])
@@ -163,10 +164,10 @@ export function Reports({
       keysToRemove.forEach((k) => localStorage.removeItem(k))
 
       setResetNonce((p) => p + 1)
-      showMessage('✓ تم تصفير سجلات التقارير بنجاح.')
+      showMessage('تم تصفير سجلات التقارير بنجاح.')
     } catch (e) {
       console.error(e)
-      alert('حدث خطأ أثناء تصفير التقارير.')
+      showMessage('حدث خطأ أثناء تصفير التقارير.')
     }
   }
 
@@ -832,6 +833,20 @@ export function Reports({
           </ul>
         )}
       </div>
+
+      <ConfirmSheet
+        isOpen={showResetConfirm}
+        onClose={() => setShowResetConfirm(false)}
+        onConfirm={doResetReports}
+        title="تصفير كافة سجلات التقارير؟"
+        consequences={[
+          'سيتم مسح كافة سجلات التمارين السابقة والتقارير والوزن والتغذية.',
+          'لن يتم المساس بملفك الشخصي أو جدولك التدريبي الحالي.',
+        ]}
+        confirmLabel="تأكيد التصفير"
+        cancelLabel="إلغاء"
+        isDestructive={true}
+      />
     </div>
   )
 }

@@ -6,6 +6,7 @@ export interface StatProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string
   value: number | string
   unit?: string
+  secondary?: React.ReactNode
   icon?: IconName
   trend?: {
     value: number | string
@@ -18,6 +19,7 @@ export const Stat: React.FC<StatProps> = ({
   label,
   value,
   unit,
+  secondary,
   icon,
   trend,
   className = '',
@@ -53,6 +55,11 @@ export const Stat: React.FC<StatProps> = ({
           </span>
         )}
       </div>
+      {secondary && (
+        <span style={{ fontSize: '11px', color: 'var(--muted, var(--color-text-2))', marginTop: '2px', display: 'block' }}>
+          {secondary}
+        </span>
+      )}
     </div>
   )
 }

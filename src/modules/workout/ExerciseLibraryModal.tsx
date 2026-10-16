@@ -15,11 +15,15 @@ import {
 import { EXERCISES } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
-import { TopBar } from '../../components/TopBar.tsx'
-import { ListRow } from '../../components/ListRow.tsx'
-import { Sheet } from '../../components/Sheet.tsx'
-import { EmptyState } from '../../components/EmptyState.tsx'
-import { Select } from '../../components/Select.tsx'
+import {
+  TopBar,
+  ListRow,
+  Sheet,
+  EmptyState,
+  Select,
+  Segmented,
+  Button,
+} from '../../ui/index.ts'
 import {
   IconPlus,
   IconClose,
@@ -153,8 +157,33 @@ export function ExerciseLibraryModal({
         WebkitOverflowScrolling: 'touch',
       }}
     >
-      {/* TopBar with Back */}
-      <TopBar title="مكتبة التمارين" onBack={onClose} />
+      {/* TopBar with Back and Add Exercise */}
+      <TopBar
+        title="مكتبة التمارين"
+        onBack={onClose}
+        actions={
+          onEditCustomExercise ? (
+            <Button
+              variant="subtle"
+              size="sm"
+              onClick={() =>
+                onEditCustomExercise({
+                  id: '',
+                  nameAr: '',
+                  category: 'chest',
+                  difficulty: 'beginner',
+                  equipment: 'bodyweight',
+                  measurementType: 'reps',
+                  isCustom: true,
+                  descriptionAr: '',
+                })
+              }
+            >
+              + إضافة تمرين
+            </Button>
+          ) : undefined
+        }
+      />
 
       <div
         className="screen-content"
@@ -183,61 +212,14 @@ export function ExerciseLibraryModal({
         </div>
 
         {/* Segmented Tabs: الكل (N) | المحذوفة (M) */}
-        <div
-          className="segmented-control"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            background: 'var(--card-subtle)',
-            padding: '4px',
-            borderRadius: '12px',
-            border: '1px solid var(--line)',
-            width: '100%',
-          }}
-        >
-          <button
-            type="button"
-            className={`segmented-btn ${activeTab === 'all' ? 'active' : ''}`}
-            onClick={() => setActiveTab('all')}
-            style={{
-              padding: '10px',
-              fontSize: '13.5px',
-              fontWeight: 700,
-              borderRadius: '8px',
-              border: 'none',
-              background:
-                activeTab === 'all' ? 'var(--card-bg)' : 'transparent',
-              color: activeTab === 'all' ? 'var(--ink)' : 'var(--muted)',
-              cursor: 'pointer',
-              boxShadow:
-                activeTab === 'all' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            الكل ({activeExercises.length})
-          </button>
-          <button
-            type="button"
-            className={`segmented-btn ${activeTab === 'trash' ? 'active' : ''}`}
-            onClick={() => setActiveTab('trash')}
-            style={{
-              padding: '10px',
-              fontSize: '13.5px',
-              fontWeight: 700,
-              borderRadius: '8px',
-              border: 'none',
-              background:
-                activeTab === 'trash' ? 'var(--card-bg)' : 'transparent',
-              color: activeTab === 'trash' ? 'var(--danger)' : 'var(--muted)',
-              cursor: 'pointer',
-              boxShadow:
-                activeTab === 'trash' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            المحذوفة ({deletedExercises.length})
-          </button>
-        </div>
+        <Segmented
+          options={[
+            { value: 'all', label: `الكل (${activeExercises.length})` },
+            { value: 'trash', label: `المحذوفة (${deletedExercises.length})` },
+          ]}
+          value={activeTab}
+          onChange={(val) => setActiveTab(val as 'all' | 'trash')}
+        />
 
         {/* ChipRow of Select-chips: العضلة، التفصيل، المعدات، المستوى */}
         {activeTab === 'all' && (
@@ -466,8 +448,14 @@ export function ExerciseLibraryModal({
               return (
                 <ListRow
                   key={ex.id}
-                  onClick={() => setSelectedExercise(ex)}
+                  onClick={() => {
+                    window.location.hash = `#/exercise/${ex.id}`
+                  }}
                   onLongPress={() => setActionExercise(ex)}
+                  style={{
+                    contentVisibility: 'auto',
+                    containIntrinsicSize: '0 72px',
+                  }}
                   leading={
                     <div
                       style={{

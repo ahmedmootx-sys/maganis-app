@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import type { SavedWorkoutProgram, WorkoutProgram } from '../shared/types.ts'
 import { formatArabicDate } from '../../lib/dateUtils.ts'
-import { Sheet } from '../../components/Sheet.tsx'
-import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
-import { ListRow } from '../../components/ListRow.tsx'
-import { EmptyState } from '../../components/EmptyState.tsx'
+import {
+  Sheet,
+  ConfirmSheet,
+  ListRow,
+  EmptyState,
+} from '../../ui/index.ts'
 import {
   IconMoreVertical,
   IconClipboard,
@@ -84,7 +86,7 @@ export function ProgramVaultModal({
             >
               <div className="field">
                 <label htmlFor="vault-save-title">
-                  حفظ الجدول الحالي في الحافظة:
+                  حفظ الجدول الحالي في الحافظة
                 </label>
                 <input
                   id="vault-save-title"
@@ -305,7 +307,10 @@ export function ProgramVaultModal({
           }
         }}
         title="تأكيد تطبيق الجدول"
-        message={`سيتم استبدال جدولك النشط الحالي بالجدول المحفوظ: "${confirmApply?.title}" (${confirmApply?.program.days.length} أيام). هل أنت متأكد؟`}
+        consequences={[
+          `سيتم استبدال جدولك النشط الحالي بالجدول المحفوظ: "${confirmApply?.title}" (${confirmApply?.program.days.length} أيام).`,
+          'ستفقد أي تعديلات غير محفوظة على جدولك الحالي.',
+        ]}
         confirmLabel="تطبيق الجدول"
         cancelLabel="إلغاء"
       />
@@ -321,7 +326,10 @@ export function ProgramVaultModal({
           }
         }}
         title="حذف الجدول من الحافظة"
-        message="هل أنت متأكد من حذف هذا الجدول نهائياً من الحافظة؟ لن تتمكن من استرجاعه لاحقاً."
+        consequences={[
+          'هل أنت متأكد من حذف هذا الجدول نهائياً من الحافظة؟',
+          'لن تتمكن من استرجاعه لاحقاً.',
+        ]}
         confirmLabel="حذف نهائي"
         cancelLabel="إلغاء"
         isDestructive={true}

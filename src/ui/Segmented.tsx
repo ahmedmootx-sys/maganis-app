@@ -1,6 +1,7 @@
 export interface SegmentedOption<T extends string | number> {
   value: T
-  label: string
+  label?: string
+  labelAr?: string
 }
 
 export interface SegmentedProps<T extends string | number> {
@@ -21,21 +22,21 @@ export function Segmented<T extends string | number>({
   return (
     <div
       className={`segmented ${className}`.trim()}
-      role="radiogroup"
+      role="group"
       aria-label={name}
     >
       {options.map((opt) => {
         const isSelected = opt.value === value
+        const displayLabel = opt.label || opt.labelAr || String(opt.value)
         return (
           <button
             key={String(opt.value)}
             type="button"
-            role="radio"
-            aria-checked={isSelected}
+            aria-pressed={isSelected}
             className={`segmented__item ${isSelected ? 'segmented__item--active' : ''}`.trim()}
             onClick={() => onChange(opt.value)}
           >
-            {opt.label}
+            {displayLabel}
           </button>
         )
       })}

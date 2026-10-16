@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 export type RoutePath =
   | '/home'
+  | '/onboarding'
   | '/training'
   | '/training/day/:id'
   | '/exercise/:id'
@@ -25,6 +26,9 @@ export function parseHash(hash: string): RouteMatch {
 
   if (parts[0] === 'home') {
     return { path: '/home', raw: '#/home', params: {} }
+  }
+  if (parts[0] === 'onboarding') {
+    return { path: '/onboarding', raw: '#/onboarding', params: {} }
   }
   if (parts[0] === 'training') {
     if (parts[1] === 'day' && parts[2]) {

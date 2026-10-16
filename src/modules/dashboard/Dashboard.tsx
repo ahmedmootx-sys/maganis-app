@@ -11,11 +11,17 @@ import type { UserProfile } from '../onboarding/types'
 import { GOALS } from '../onboarding/types'
 import { getExerciseById } from '../workout/exercises'
 import { ExerciseVisual } from '../workout/ExerciseVisual'
-import { TopBar } from '../../components/TopBar'
-import { Callout } from '../../components/Callout'
-import { Stat } from '../../components/Stat'
-import { ListRow } from '../../components/ListRow'
-import { ProgressBar } from '../../components/ProgressBar'
+import {
+  TopBar,
+  Button,
+  Card,
+  Section,
+  ListRow,
+  Stat,
+  ProgressBar,
+  Callout,
+  Icon,
+} from '../../ui'
 import { calculateCalorieMacroTargets } from '../nutrition/calorieCalculator'
 
 export interface DashboardProps {
@@ -26,6 +32,7 @@ export interface DashboardProps {
   onStartWorkout?: (day: ProgramDay) => void
   onViewDay?: (day: ProgramDay) => void
   onOpenNutrition?: () => void
+  onSyncTrainingDays?: () => void
 }
 
 function getGreeting(name?: string): string {
@@ -68,23 +75,32 @@ function getSessionsThisWeek(
 function getCurrentWeightDisplay(
   bodyLog: BodyLogEntry[],
   profile: UserProfile | null,
-): { value: string; source: string } {
+): { value: string; secondary: string } {
   if (bodyLog.length > 0) {
     const sorted = [...bodyLog].sort((a, b) => b.date.localeCompare(a.date))
+    const latest = sorted[0].weightKg
+    let deltaStr = ''
+    if (sorted.length > 1) {
+      const prev = sorted[1].weightKg
+      const diff = Math.round((latest - prev) * 10) / 10
+      if (diff > 0) deltaStr = ` (+${diff} كجم)`
+      else if (diff < 0) deltaStr = ` (${diff} كجم)`
+      else deltaStr = ' (ثابت)'
+    }
     return {
-      value: `${sorted[0].weightKg} كجم`,
-      source: 'من سجل الوزن',
+      value: `${latest} كجم`,
+      secondary: deltaStr ? `آخر تسجيل${deltaStr}` : 'آخر تسجيل',
     }
   }
   if (profile?.body?.weightKg) {
     return {
       value: `${profile.body.weightKg} كجم`,
-      source: 'من الملف الشخصي',
+      secondary: 'من الملف الشخصي',
     }
   }
   return {
     value: '—',
-    source: 'غير محدد',
+    secondary: 'غير محدد',
   }
 }
 
@@ -119,6 +135,7 @@ export function Dashboard({
   onStartWorkout,
   onViewDay,
   onOpenNutrition,
+  onSyncTrainingDays,
 }: DashboardProps) {
   const weekStartDay = profile?.weekStartDay ?? 6
   const greeting = getGreeting(profile?.name)
@@ -143,13 +160,9 @@ export function Dashboard({
     return uncompleted ?? program.days[0]
   }, [program, completedDays])
 
-  // Mascot tips verbatim from coachTips
+  // Verified safe mascot tips (excluding items marked NEEDS REVIEW in docs/tips-review.md)
   const coachTips = [
-    'يا أسطى العضلات! د. مجانص بيقولك: اللي يفوّت تمرين الرجلين يروح يتمرن زومبا أحسن! الأرجل هي أساس هرمون التستوستيرون يا بطل!',
-    'البروتين ثم البروتين! سيبك من الفسيخ والمقليات وركّز في الفراخ والبيض والتونة، عشان الألياف العضلية تبات شبعانة وتصحى عملاقة!',
     'عاش يا وحش! الالتزام بالتحميل التصاعدي وزيادة الأوزان حبة حبة هو سر الفورمة.. البار بيستغيث والدهون بتعيط!',
-    'النوم 8 ساعات مش كسل، دي الفترة الوحيدة اللي د. مجانص بيبني فيها عضلاتك في المعمل! متسهرش قدام التيك توك وتطلب فورمة!',
-    'الماء يا كوتش! اشرب من 3 إلى 4 لتر مية يومياً.. مفيش بمب عضلات من غير هيدريشن عالي يا صديقي!',
     'د. مجانص شايفك وانت بتبص على الشاورما! لو هتاكل، احسبها في الماكروز وسف السعرات بالتمرين، كل حاجة بالعلم بتتحل!',
   ]
   const tipIndex =
@@ -203,9 +216,21 @@ export function Dashboard({
     )
   }, [recentSessions, weekStartDay])
 
+  // Check for training days mismatch between program and profile
+  const trainingDaysMismatch = useMemo(() => {
+    if (!program || !profile?.trainingDaysPerWeek) return null
+    if (program.days.length !== profile.trainingDaysPerWeek) {
+      return {
+        programDays: program.days.length,
+        goalDays: profile.trainingDaysPerWeek,
+      }
+    }
+    return null
+  }, [program, profile])
+
   return (
     <div className="screen-container home-screen" dir="rtl">
-      {/* TopBar */}
+      {/* TopBar with greeting & small mascot avatar */}
       <TopBar
         leading={
           <div
@@ -217,7 +242,7 @@ export function Dashboard({
           >
             <img
               src={assetUrl('branding/maganis-mascot-inner.png')}
-              alt="Maganis"
+              alt="د. مجانص"
               style={{
                 width: '36px',
                 height: '36px',
@@ -230,7 +255,7 @@ export function Dashboard({
               style={{
                 fontWeight: 800,
                 fontSize: '17px',
-                color: 'var(--ink)',
+                color: 'var(--color-text)',
                 letterSpacing: '-0.02em',
               }}
             >
@@ -247,32 +272,46 @@ export function Dashboard({
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '18px',
+          gap: '16px',
           padding: '16px',
         }}
       >
-        {/* Card تمرين اليوم */}
-        <section className="screen-section">
-          <div className="section-title">
-            <span>تمرين اليوم</span>
-            {todayProgramDay && (
-              <span className="section-title-counter">
-                {todayProgramDay.exercises.length} تمارين
-              </span>
-            )}
-          </div>
-
-          <div
-            className="card"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '14px',
-              padding: '16px',
-            }}
+        {/* Single-line Callout when training days differ */}
+        {trainingDaysMismatch && (
+          <Callout
+            variant="warning"
+            title="اختلاف في أيام التدريب"
+            action={
+              onSyncTrainingDays ? (
+                <Button size="sm" variant="subtle" onClick={onSyncTrainingDays}>
+                  تطابق
+                </Button>
+              ) : undefined
+            }
           >
+            جدولك الحالي {trainingDaysMismatch.programDays} أيام بينما هدف ملفك
+            الشخصي {trainingDaysMismatch.goalDays} أيام أسبوعياً.
+          </Callout>
+        )}
+
+        {/* Card تمرين اليوم */}
+        <Section
+          title="تمرين اليوم"
+          trailing={
+            todayProgramDay
+              ? `${todayProgramDay.exercises.length} تمارين`
+              : undefined
+          }
+        >
+          <Card padding="md">
             {todayProgramDay ? (
-              <>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '14px',
+                }}
+              >
                 <div
                   style={{
                     display: 'flex',
@@ -285,27 +324,31 @@ export function Dashboard({
                     style={{
                       fontSize: '17px',
                       fontWeight: 800,
-                      color: 'var(--ink)',
+                      color: 'var(--color-text)',
                     }}
                   >
                     {todayProgramDay.labelAr} — {todayProgramDay.focus}
                   </div>
+                  <div
+                    style={{
+                      fontSize: '13px',
+                      color: 'var(--color-text-2)',
+                      fontWeight: 600,
+                    }}
+                  >
+                    ~{todayProgramDay.exercises.length * 5} دقيقة
+                  </div>
                 </div>
 
                 {onStartWorkout && (
-                  <button
-                    type="button"
-                    className="button-primary"
-                    style={{
-                      width: '100%',
-                      height: '48px',
-                      fontSize: '15.5px',
-                      fontWeight: 700,
-                    }}
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    fullWidth
                     onClick={() => onStartWorkout(todayProgramDay)}
                   >
                     ابدأ التمرين
-                  </button>
+                  </Button>
                 )}
 
                 {/* First 3 exercises as ListRows */}
@@ -313,29 +356,28 @@ export function Dashboard({
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '8px',
+                    gap: '6px',
                   }}
                 >
                   {todayProgramDay.exercises.slice(0, 3).map((pe, idx) => {
                     const ex = getExerciseById(pe.exerciseId)
-                    const arabicName = ex?.nameAr ?? pe.exerciseId
-                    const englishName =
-                      (ex as { nameEn?: string; name?: string })?.nameEn ||
-                      ex?.name ||
-                      ''
-                    const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى عدد' : pe.reps}`
+                    const arabicName =
+                      ex?.nameAr ?? (pe as any).customName ?? 'تمرين مخصص'
+                    const englishName = ex?.name ?? ''
+                    const repsDisplay = pe.reps ?? 10
+                    const setsReps = `${pe.sets} × ${repsDisplay} تكرار`
                     return (
                       <ListRow
-                        key={idx}
+                        key={`${pe.exerciseId}-${idx}`}
                         leading={
                           <div
                             style={{
-                              width: '56px',
-                              height: '56px',
-                              borderRadius: '10px',
+                              width: '48px',
+                              height: '48px',
+                              borderRadius: '8px',
                               overflow: 'hidden',
-                              background: 'var(--card-subtle)',
-                              border: '1px solid var(--line)',
+                              background: 'var(--color-surface-2)',
+                              border: '1px solid var(--color-divider)',
                               flexShrink: 0,
                             }}
                           >
@@ -348,14 +390,13 @@ export function Dashboard({
                           </div>
                         }
                         title={arabicName}
-                        secondary={englishName}
-                        secondaryIsLtr={true}
+                        subtitle={englishName}
                         trailing={
                           <span
                             style={{
                               fontWeight: 700,
                               fontSize: '13.5px',
-                              color: 'var(--ink)',
+                              color: 'var(--color-text)',
                               fontVariantNumeric: 'tabular-nums',
                             }}
                           >
@@ -368,122 +409,190 @@ export function Dashboard({
                 </div>
 
                 {todayProgramDay.exercises.length > 0 && (
-                  <button
-                    type="button"
-                    className="ghost-secondary full-width"
-                    style={{ height: '40px', fontSize: '13.5px' }}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    fullWidth
                     onClick={() => onViewDay?.(todayProgramDay)}
                   >
                     عرض اليوم كاملًا
-                  </button>
+                  </Button>
                 )}
-              </>
+              </div>
             ) : (
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '8px',
-                  padding: '8px 0',
+                  padding: '4px 0',
                 }}
               >
                 <div
                   style={{
                     fontSize: '16px',
                     fontWeight: 800,
-                    color: 'var(--ink)',
+                    color: 'var(--color-text)',
                   }}
                 >
-                  يوم راحة
+                  لا يوجد تمرين اليوم (يوم راحة)
                 </div>
                 {nextWorkoutDay ? (
-                  <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                    التمرين القادم: {nextWorkoutDay.labelAr} (
+                  <div
+                    style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
+                  >
+                    الجلسة التالية: {nextWorkoutDay.labelAr} (
                     {nextWorkoutDay.focus})
                   </div>
                 ) : (
-                  <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                  <div
+                    style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
+                  >
                     استمتع بالاستشفاء ونم جيداً لبناء الألياف العضلية
                   </div>
                 )}
                 {nextWorkoutDay && onStartWorkout && (
-                  <button
-                    type="button"
-                    className="ghost-secondary full-width"
-                    style={{ marginTop: '8px', height: '44px' }}
-                    onClick={() => onStartWorkout(nextWorkoutDay)}
-                  >
-                    بدء تمرين مبكر ({nextWorkoutDay.labelAr})
-                  </button>
+                  <div style={{ marginTop: '6px' }}>
+                    <Button
+                      variant="subtle"
+                      size="md"
+                      fullWidth
+                      onClick={() => onStartWorkout(nextWorkoutDay)}
+                    >
+                      بدء تمرين مبكر ({nextWorkoutDay.labelAr})
+                    </Button>
+                  </div>
                 )}
               </div>
             )}
-          </div>
-        </section>
+          </Card>
+        </Section>
 
         {/* 1 Row of 3 Stats */}
-        <section className="screen-section">
-          <div className="stats-strip">
-            <Stat
-              label="الجلسات هذا الأسبوع"
-              value={sessionsThisWeek}
-              secondary={`${recentSessions.length} إجمالي`}
-            />
-            <Stat
-              label="الوزن الحالي"
-              value={currentWeight.value}
-              secondary={currentWeight.source}
-            />
-            <Stat
-              label="الهدف"
-              value={goalLabel}
-              secondary={profile?.body?.sex === 'female' ? 'أنثى' : 'ذكر'}
-            />
-          </div>
-        </section>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '8px',
+          }}
+        >
+          <Stat
+            label="الجلسات هذا الأسبوع"
+            value={sessionsThisWeek}
+            secondary={`${recentSessions.length} إجمالي`}
+          />
+          <Stat
+            label="الوزن الحالي"
+            value={currentWeight.value}
+            secondary={currentWeight.secondary}
+          />
+          <Stat
+            label="الهدف"
+            value={goalLabel}
+            secondary={profile?.body?.sex === 'female' ? 'أنثى' : 'ذكر'}
+          />
+        </div>
 
-        {/* 7-day strip (done / today / rest) */}
-        <section className="screen-section">
-          <div className="section-title">
-            <span>أيام الأسبوع</span>
-          </div>
-          <div className="week-strip">
+        {/* 7-Day Week Strip */}
+        <Section title="أيام الأسبوع">
+          <div
+            className="week-strip"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(7, 1fr)',
+              gap: '6px',
+              background: 'var(--color-surface)',
+              padding: '12px 8px',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--color-divider)',
+              textAlign: 'center',
+            }}
+          >
             {orderedWeekdays.map((w) => {
               const isToday = w.dayIndex === todayDayIndex
               const isDone = sessionDatesThisWeek.has(w.dayIndex)
               const hasWorkout = program?.days.some(
                 (d) => d.dayIndex === w.dayIndex,
               )
-              const statusClass = isDone
-                ? 'week-strip__day--done'
-                : isToday
-                  ? 'week-strip__day--today'
-                  : ''
               return (
                 <div
                   key={w.dayIndex}
-                  className={`week-strip__day ${statusClass}`}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '6px 2px',
+                    borderRadius: 'var(--radius-sm)',
+                    background: isToday
+                      ? 'var(--color-surface-2)'
+                      : 'transparent',
+                    border: isToday
+                      ? '1px solid var(--color-accent)'
+                      : '1px solid transparent',
+                  }}
                 >
-                  <span>{w.short}</span>
-                  <div
-                    className="week-strip__dot"
+                  <span
                     style={{
-                      opacity: isDone || isToday || hasWorkout ? 1 : 0.25,
+                      fontSize: '12px',
+                      fontWeight: isToday ? 800 : 600,
+                      color: isToday
+                        ? 'var(--color-accent-text)'
+                        : 'var(--color-text)',
                     }}
-                  />
+                  >
+                    {w.short}
+                  </span>
+                  <div
+                    style={{
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: isDone
+                        ? 'var(--color-success)'
+                        : hasWorkout
+                          ? 'var(--color-surface-2)'
+                          : 'transparent',
+                      color: isDone ? '#FFFFFF' : 'var(--color-text-2)',
+                      fontSize: '11px',
+                    }}
+                  >
+                    {isDone ? (
+                      <Icon name="check" size={12} />
+                    ) : hasWorkout ? (
+                      <div
+                        style={{
+                          width: '6px',
+                          height: '6px',
+                          borderRadius: '50%',
+                          background: 'var(--color-accent)',
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: '4px',
+                          height: '4px',
+                          borderRadius: '50%',
+                          background: 'var(--color-divider)',
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
               )
             })}
           </div>
-        </section>
+        </Section>
 
         {/* Nutrition Today */}
-        <section className="screen-section">
-          <div className="section-title">
-            <span>التغذية اليوم</span>
-          </div>
-          <div
-            className="card list-row--clickable"
+        <Section title="التغذية اليوم">
+          <Card
+            padding="md"
+            interactive
             onClick={onOpenNutrition}
             role="button"
             tabIndex={0}
@@ -493,25 +602,20 @@ export function Dashboard({
                 onOpenNutrition?.()
               }
             }}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              padding: '14px 16px',
-            }}
           >
             <div
               style={{
                 display: 'flex',
                 alignItems: 'baseline',
                 justifyContent: 'space-between',
+                marginBottom: '10px',
               }}
             >
               <div
                 style={{
                   fontSize: '20px',
                   fontWeight: 800,
-                  color: 'var(--ink)',
+                  color: 'var(--color-text)',
                   fontVariantNumeric: 'tabular-nums',
                 }}
               >
@@ -520,7 +624,7 @@ export function Dashboard({
                   style={{
                     fontSize: '13px',
                     fontWeight: 600,
-                    color: 'var(--muted)',
+                    color: 'var(--color-text-2)',
                   }}
                 >
                   سعرة
@@ -530,7 +634,7 @@ export function Dashboard({
                 style={{
                   fontSize: '12.5px',
                   fontWeight: 700,
-                  color: 'var(--accent)',
+                  color: 'var(--color-accent-text)',
                   fontVariantNumeric: 'tabular-nums',
                 }}
               >
@@ -541,15 +645,18 @@ export function Dashboard({
             <ProgressBar
               value={consumedCalories}
               max={targetCalories}
-              height={8}
+              variant={
+                consumedCalories > targetCalories ? 'warning' : 'accent'
+              }
             />
 
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                fontSize: '11.5px',
-                color: 'var(--muted)',
+                fontSize: '12px',
+                color: 'var(--color-text-2)',
+                marginTop: '8px',
               }}
             >
               <span>اضغط لعرض الوجبات وحساب السعرات</span>
@@ -562,24 +669,28 @@ export function Dashboard({
                 %
               </span>
             </div>
-          </div>
-        </section>
+          </Card>
+        </Section>
 
-        {/* Mascot Tip: Callout with 56px avatar */}
-        <section className="screen-section">
-          <Callout
-            variant="accent"
-            avatar={
-              <img
-                src={assetUrl('branding/maganis-mascot-inner.png')}
-                alt="د. مجانص"
-              />
-            }
-            title="نصيحة د. مجانص"
-          >
-            {dailyTip}
-          </Callout>
-        </section>
+        {/* Mascot Tip: Approved motivation */}
+        <Callout
+          variant="accent"
+          avatar={
+            <img
+              src={assetUrl('branding/maganis-mascot-inner.png')}
+              alt="د. مجانص"
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                objectFit: 'contain',
+              }}
+            />
+          }
+          title="نصيحة د. مجانص"
+        >
+          {dailyTip}
+        </Callout>
       </div>
     </div>
   )

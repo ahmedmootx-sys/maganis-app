@@ -13,12 +13,36 @@ import {
   MUSCLE_GROUP_LABELS,
 } from '../shared/types.ts'
 import { sanitizeInput } from '../../lib/sanitizer.ts'
-import { MUSCLE_ATLAS, MUSCLE_REGIONS_AR } from './muscleAtlasData.ts'
+import { MUSCLE_ATLAS } from './muscleAtlasData.ts'
 import { resolveExerciseMuscles } from './legacyMuscleMapper.ts'
-import { Select } from '../../components/Select.tsx'
-import { FileField } from '../../components/FileField.tsx'
-import { TopBar } from '../../components/TopBar.tsx'
+import {
+  TopBar,
+  Select,
+  FileField,
+  Button,
+  Segmented,
+} from '../../ui/index.ts'
 import { IconClose } from '../../components/Icons.tsx'
+import atlasGroups from '../../data/atlas-groups.json'
+import atlasMuscles from '../../data/atlas_muscles.json'
+
+const ATLAS_MUSCLE_MAP = new Map<string, { id: string; ar: string; en: string }>(
+  (atlasMuscles.muscles as Array<{ id: string; ar: string; en: string }>).map((m) => [m.id, m]),
+)
+
+const ATLAS_SELECT_OPTIONS = (
+  atlasGroups.groups as Array<{ key: string; ar: string; muscles: string[] }>
+).flatMap((g) =>
+  g.muscles.map((mId) => {
+    const m = ATLAS_MUSCLE_MAP.get(mId)
+    return {
+      value: mId,
+      labelAr: m?.ar || mId,
+      labelEn: m?.en || '',
+      description: g.ar,
+    }
+  }),
+)
 
 export interface CustomExerciseBuilderProps {
   initialExercise?: CustomExercise
@@ -371,53 +395,14 @@ export function CustomExerciseBuilder({
               padding: '16px',
             }}
           >
-            <div
-              className="segmented-control"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                background: 'var(--card-subtle)',
-                padding: '4px',
-                borderRadius: '12px',
-                border: '1px solid var(--line)',
-                width: '100%',
-                boxSizing: 'border-box',
-              }}
-            >
-              {MEASUREMENT_SEGMENTED_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  className={`segmented-btn ${measurementType === opt.value ? 'active' : ''}`}
-                  onClick={() => setMeasurementType(opt.value)}
-                  style={{
-                    padding: '10px 4px',
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    borderRadius: '8px',
-                    border: 'none',
-                    background:
-                      measurementType === opt.value
-                        ? 'var(--card-bg)'
-                        : 'transparent',
-                    color:
-                      measurementType === opt.value
-                        ? 'var(--ink)'
-                        : 'var(--muted)',
-                    cursor: 'pointer',
-                    boxShadow:
-                      measurementType === opt.value
-                        ? '0 1px 3px rgba(0,0,0,0.1)'
-                        : 'none',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {opt.labelAr}
-                </button>
-              ))}
-            </div>
+            <Segmented
+              options={MEASUREMENT_SEGMENTED_OPTIONS.map((opt) => ({
+                value: opt.value,
+                label: opt.labelAr,
+              }))}
+              value={measurementType}
+              onChange={(val) => setMeasurementType(val as MeasurementType)}
+            />
 
             {selectedMeasurement && (
               <div
@@ -513,7 +498,7 @@ export function CustomExerciseBuilder({
                 accept="image/*,.gif"
                 buttonText="اختر ملف من جهازك"
                 readAs="dataURL"
-                onFileLoaded={(dataUrl) => {
+                onFileLoaded={(dataUrl: string) => {
                   setImageUrl(dataUrl)
                   setError('')
                 }}
@@ -674,7 +659,9 @@ export function CustomExerciseBuilder({
                       gap: '6px',
                     }}
                   >
-                    <span>{MUSCLE_ATLAS[id]?.nameAr || id}</span>
+                    <span>
+                      {ATLAS_MUSCLE_MAP.get(id)?.ar || MUSCLE_ATLAS[id]?.nameAr || id}
+                    </span>
                     <button
                       type="button"
                       onClick={() => handleTogglePrimary(id)}
@@ -701,14 +688,11 @@ export function CustomExerciseBuilder({
                 onChange={(val) => {
                   if (val) handleTogglePrimary(val)
                 }}
-                options={Object.values(MUSCLE_ATLAS).map((m) => ({
-                  value: m.id,
-                  labelAr: m.nameAr,
-                  labelEn: m.nameEn,
-                  description: MUSCLE_REGIONS_AR[m.region],
-                  disabled: primaryMuscleIds.includes(m.id),
+                options={ATLAS_SELECT_OPTIONS.map((opt) => ({
+                  ...opt,
+                  disabled: primaryMuscleIds.includes(opt.value),
                 }))}
-                sheetTitle="اختر رأس عضلي رئيسي"
+                sheetTitle="اختر رأس عضلي رئيسي (16 منطقة تشريحية)"
               />
             </div>
 
@@ -746,64 +730,67 @@ export function CustomExerciseBuilder({
                         gap: '6px',
                       }}
                     >
-                      <span>{MUSCLE_ATLAS[id]?.nameAr || id}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleSecondary(id)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: '#92400E',
-                          cursor: 'pointer',
-                          padding: 0,
-                          display: 'inline-flex',
-                        }}
-                        aria-label="إزالة العضلة"
-                      >
-                        <IconClose size={14} />
-                      </button>
-                    </span>
-                  ))
-                )}
+                        <span>
+                          {ATLAS_MUSCLE_MAP.get(id)?.ar ||
+                            MUSCLE_ATLAS[id]?.nameAr ||
+                            id}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleSecondary(id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#92400E',
+                            cursor: 'pointer',
+                            padding: 0,
+                            display: 'inline-flex',
+                          }}
+                          aria-label="إزالة العضلة"
+                        >
+                          <IconClose size={14} />
+                        </button>
+                      </span>
+                    ))
+                  )}
+                </div>
+
+                <Select
+                  id="ce-secondary-muscle-picker"
+                  value=""
+                  placeholder="+ اضغط لإضافة عضلة مساعدة..."
+                  onChange={(val) => {
+                    if (val) handleToggleSecondary(val)
+                  }}
+                  options={ATLAS_SELECT_OPTIONS.map((opt) => ({
+                    ...opt,
+                    disabled: secondaryMuscleIds.includes(opt.value),
+                  }))}
+                  sheetTitle="اختر عضلة مساعدة (16 منطقة تشريحية)"
+                />
               </div>
 
-              <Select
-                id="ce-secondary-muscle-picker"
-                value=""
-                placeholder="+ اضغط لإضافة عضلة مساعدة..."
-                onChange={(val) => {
-                  if (val) handleToggleSecondary(val)
-                }}
-                options={Object.values(MUSCLE_ATLAS).map((m) => ({
-                  value: m.id,
-                  labelAr: m.nameAr,
-                  labelEn: m.nameEn,
-                  description: MUSCLE_REGIONS_AR[m.region],
-                  disabled: secondaryMuscleIds.includes(m.id),
-                }))}
-                sheetTitle="اختر عضلة مساعدة"
-              />
+              {/* Note: Live atlas preview hidden per Task B instructions (Task C replaces it) */}
             </div>
+          </section>
 
-            {/* Note: Live atlas preview hidden per Task B instructions (Task C replaces it) */}
+          {/* Sticky bar: primary "حفظ التمرين", tertiary "إلغاء" */}
+          <div className="sticky-bottom-bar" style={{ display: 'flex', gap: '8px' }}>
+            <Button type="submit" variant="primary" fullWidth size="large">
+              حفظ التمرين
+            </Button>
+            {onCancel && (
+              <Button
+                type="button"
+                variant="tertiary"
+                fullWidth
+                size="large"
+                onClick={onCancel}
+              >
+                إلغاء
+              </Button>
+            )}
           </div>
-        </section>
-
-        {/* Sticky bar: primary "حفظ التمرين", tertiary "إلغاء" */}
-        <div className="sticky-bottom-bar">
-          <button type="submit" className="button-primary full-width">
-            حفظ التمرين
-          </button>
-          {onCancel && (
-            <button
-              type="button"
-              className="ghost-secondary full-width"
-              onClick={onCancel}
-            >
-              إلغاء
-            </button>
-          )}
-        </div>
       </form>
     </div>
   )

@@ -41,6 +41,8 @@ import {
   IconTrendingUp,
   IconSettings,
 } from './components/Icons.tsx'
+import { ExerciseDetailView } from './modules/workout/ExerciseDetailView.tsx'
+import { ConfirmSheet } from './ui/index.ts'
 import { IconSprite } from './ui/IconSprite.tsx'
 import { Styleguide } from './shell/Styleguide.tsx'
 import { useRouter } from './shell/router.ts'
@@ -173,6 +175,10 @@ export function App({ config }: AppProps) {
   const [showCustomBuilder, setShowCustomBuilder] = useState(false)
   const [showLogger, setShowLogger] = useState(false)
   const [showExerciseLibrary, setShowExerciseLibrary] = useState(false)
+  const [confirmReplaceProgramOpen, setConfirmReplaceProgramOpen] = useState(false)
+  const [confirmDeleteProgramOpen, setConfirmDeleteProgramOpen] = useState(false)
+  const [confirmCancelActiveSessionOpen, setConfirmCancelActiveSessionOpen] =
+    useState(false)
   const [activeWorkoutDay, setActiveWorkoutDay] = useState<ProgramDay | null>(
     () => {
       try {
@@ -358,14 +364,8 @@ export function App({ config }: AppProps) {
     setActiveTab('dashboard')
   }, [profileStore, workoutStore, storage])
 
-  const handleGenerateProgram = useCallback(() => {
+  const doGenerateProgram = useCallback(() => {
     if (!profile) return
-    if (program && (program.isLocked || program.isCustom)) {
-      const confirmed = window.confirm(
-        'لديك جدول تدريبي مخصص أو مقفل! هل أنت متأكد من إنشاء جدول تلقائي جديد واستبدال الحالي؟\n(ننصح بحفظ جدولك الحالي في "حافظة الجداول" أولاً)',
-      )
-      if (!confirmed) return
-    }
     const p = generateProgram({
       goal: profile.primaryGoal,
       trainingDaysPerWeek: profile.trainingDaysPerWeek,
@@ -375,7 +375,16 @@ export function App({ config }: AppProps) {
     })
     workoutStore.saveProgram(p)
     setProgram(p)
-  }, [profile, program, workoutStore])
+  }, [profile, workoutStore])
+
+  const handleGenerateProgram = useCallback(() => {
+    if (!profile) return
+    if (program && (program.isLocked || program.isCustom)) {
+      setConfirmReplaceProgramOpen(true)
+      return
+    }
+    doGenerateProgram()
+  }, [profile, program, doGenerateProgram])
 
   const handleSaveCustomSchedule = useCallback(
     (customProgram: WorkoutProgram) => {
@@ -386,14 +395,14 @@ export function App({ config }: AppProps) {
     [workoutStore],
   )
 
-  const handleDeleteProgram = useCallback(() => {
-    const confirmed = window.confirm(
-      'هل أنت متأكد من حذف الجدول التدريبي بالكامل؟ يمكنك إنشاء جدول جديد أو استرجاعه من الحافظة في أي وقت.',
-    )
-    if (!confirmed) return
+  const doDeleteProgram = useCallback(() => {
     workoutStore.clearProgram()
     setProgram(null)
   }, [workoutStore])
+
+  const handleDeleteProgram = useCallback(() => {
+    setConfirmDeleteProgramOpen(true)
+  }, [])
 
   const handleSaveCurrentToVault = useCallback(
     (title: string) => {
@@ -605,27 +614,12 @@ export function App({ config }: AppProps) {
   // --- Onboarding state ---
   if (!profile || editing) {
     return (
-      <div className="maganis-shell app">
+      <div className="maganis-shell app app--fullscreen" dir="rtl">
         <IconSprite />
-        <header className="app-header">
-          <h1 data-testid="app-title">{config.appName}</h1>
-          {typeof window !== 'undefined' &&
-            new URLSearchParams(window.location.search).get('debug') ===
-              '1' && (
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}
-              >
-                <span
-                  className="env-badge"
-                  data-testid="env-badge"
-                  data-env={config.appEnv}
-                >
-                  {config.appEnv}
-                </span>
-              </div>
-            )}
-        </header>
-        <main className="app-main">
+        <h1 data-testid="app-title" style={{ display: 'none' }}>
+          {config.appName}
+        </h1>
+        <main className="app-main app-main--fullscreen">
           <OnboardingWizard
             store={profileStore}
             initialProfile={profile}
@@ -633,9 +627,6 @@ export function App({ config }: AppProps) {
             onCancel={profile ? () => setEditing(false) : undefined}
           />
         </main>
-        <footer className="app-footer">
-          تطبيق offline-first — كل بياناتك محفوظة على جهازك فقط
-        </footer>
       </div>
     )
   }
@@ -647,6 +638,74 @@ export function App({ config }: AppProps) {
 
   // --- Render active tab content ---
   function renderContent() {
+    if (route.path === '/exercise/:id' && route.params.id) {
+      return (
+        <div className="exercise-route-page" dir="rtl">
+          <div
+            style={{
+              padding: '16px',
+              maxWidth: '640px',
+              margin: '0 auto',
+              width: '100%',
+            }}
+          >
+            <ExerciseDetailView
+              exerciseId={route.params.id}
+              profile={profile}
+              program={program}
+              sessions={sessions}
+              onBack={() => {
+                if (window.history.length > 1) {
+                  window.history.back()
+                } else {
+                  navigate('/training')
+                }
+              }}
+              onNavigateSettings={() => navigate('/settings')}
+            />
+          </div>
+        </div>
+      )
+    }
+
+    if (route.path === '/library') {
+      return (
+        <ExerciseLibraryModal
+          program={program}
+          customExercises={customExercisesList}
+          deletedExerciseIds={deletedExerciseIds}
+          onDeleteExercise={handleDeleteExercise}
+          onRestoreExercise={handleRestoreExercise}
+          onEditCustomExercise={handleEditCustomExercise}
+          onAddExerciseToDay={(dayIndex, exerciseId) => {
+            if (program) {
+              const newDays = program.days.map((d) =>
+                d.dayIndex === dayIndex
+                  ? {
+                      ...d,
+                      exercises: [
+                        ...d.exercises,
+                        {
+                          exerciseId,
+                          sets: 3,
+                          reps: 10,
+                          restSeconds: 60,
+                          section: 'primary' as const,
+                        },
+                      ],
+                    }
+                  : d,
+              )
+              const updated = { ...program, days: newDays }
+              workoutStore.saveProgram(updated)
+              setProgram(updated)
+            }
+          }}
+          onClose={() => navigate('/training')}
+        />
+      )
+    }
+
     switch (activeTab) {
       case 'dashboard':
         return (
@@ -754,6 +813,11 @@ export function App({ config }: AppProps) {
               userInjuries={
                 profile?.medical.hasIssues ? profile.medical.injuryTags : []
               }
+              initialSelectedDayIndex={
+                route.path === '/training/day/:id' && route.params.id
+                  ? parseInt(route.params.id, 10)
+                  : null
+              }
               onStartRoutine={(day) => {
                 setActiveWorkoutDay(day)
                 setIsWorkoutSessionExpanded(true)
@@ -765,7 +829,7 @@ export function App({ config }: AppProps) {
               onDeleteProgram={handleDeleteProgram}
               onOpenScheduleModal={() => setShowCustomScheduleModal(true)}
               onOpenVaultModal={() => setShowProgramVaultModal(true)}
-              onOpenLibrary={() => setShowExerciseLibrary(true)}
+              onOpenLibrary={() => navigate('/library')}
               onOpenCustomBuilder={() => setShowCustomBuilder(true)}
               onOpenSessionLogger={() => setShowLogger(true)}
               onGenerateProgram={handleGenerateProgram}
@@ -933,20 +997,7 @@ export function App({ config }: AppProps) {
               <button
                 type="button"
                 className="ghost-danger tiny"
-                onClick={() => {
-                  const confirmed = window.confirm(
-                    'هل أنت متأكد من إلغاء جلسة التمرين الحالية؟ سيتم مسح بيانات هذه الجلسة.',
-                  )
-                  if (confirmed) {
-                    setActiveWorkoutDay(null)
-                    setIsWorkoutSessionExpanded(false)
-                    try {
-                      localStorage.removeItem('maganis:active_session')
-                    } catch {
-                      // ignore
-                    }
-                  }
-                }}
+                onClick={() => setConfirmCancelActiveSessionOpen(true)}
               >
                 ✕ إلغاء
               </button>
@@ -1001,6 +1052,57 @@ export function App({ config }: AppProps) {
             </div>
           </div>
         )}
+
+        <ConfirmSheet
+          isOpen={confirmReplaceProgramOpen}
+          onClose={() => setConfirmReplaceProgramOpen(false)}
+          onConfirm={doGenerateProgram}
+          title="استبدال الجدول الحالي"
+          consequences={[
+            'لديك جدول تدريبي مخصص أو مقفل حالياً.',
+            'سيتم استبدال الجدول الحالي بجدول تلقائي جديد بناءً على بياناتك.',
+            'ننصح بحفظ جدولك الحالي في "حافظة الجداول" أولاً لتفادي فقدانه.',
+          ]}
+          confirmLabel="إنشاء واستبدال"
+          cancelLabel="إلغاء"
+          isDestructive={true}
+        />
+
+        <ConfirmSheet
+          isOpen={confirmDeleteProgramOpen}
+          onClose={() => setConfirmDeleteProgramOpen(false)}
+          onConfirm={doDeleteProgram}
+          title="حذف الجدول التدريبي"
+          consequences={[
+            'سيتم حذف الجدول التدريبي بالكامل من التطبيق.',
+            'يمكنك دائماً إنشاء جدول جديد أو استرجاع جدول سابق من الحافظة.',
+          ]}
+          confirmLabel="تأكيد الحذف"
+          cancelLabel="تراجع"
+          isDestructive={true}
+        />
+
+        <ConfirmSheet
+          isOpen={confirmCancelActiveSessionOpen}
+          onClose={() => setConfirmCancelActiveSessionOpen(false)}
+          onConfirm={() => {
+            setActiveWorkoutDay(null)
+            setIsWorkoutSessionExpanded(false)
+            try {
+              localStorage.removeItem('maganis:active_session')
+            } catch {
+              // ignore
+            }
+          }}
+          title="إلغاء جلسة التمرين"
+          consequences={[
+            'سيتم إلغاء الجلسة التدريبية الحالية ومسح أي مجموعات مؤقتة مسجلة فيها.',
+            'لن يتم حفظ هذه الجلسة في سجل التتبع.',
+          ]}
+          confirmLabel="إلغاء الجلسة"
+          cancelLabel="متابعة التمرين"
+          isDestructive={true}
+        />
 
         <Toast
           message={backToastMessage}

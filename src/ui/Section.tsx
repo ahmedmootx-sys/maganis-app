@@ -9,22 +9,26 @@ export interface SectionAction {
 export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   title?: string
   action?: SectionAction
+  trailing?: React.ReactNode
   children: React.ReactNode
 }
 
 export const Section: React.FC<SectionProps> = ({
   title,
   action,
+  trailing,
   children,
   className = '',
   ...props
 }) => {
   return (
     <section className={`section ${className}`.trim()} {...props}>
-      {(title || action) && (
+      {(title || action || trailing) && (
         <header className="section__header">
           {title && <h2 className="section__title">{title}</h2>}
-          {action && (
+          {trailing ? (
+            <div className="section__trailing">{trailing}</div>
+          ) : action ? (
             <button
               type="button"
               className="section__action"
@@ -33,7 +37,7 @@ export const Section: React.FC<SectionProps> = ({
             >
               {action.label}
             </button>
-          )}
+          ) : null}
         </header>
       )}
       {children}

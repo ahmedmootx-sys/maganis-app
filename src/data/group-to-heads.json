@@ -1,0 +1,83 @@
+{
+  "reviewed": false,
+  "groups": {
+    "abdominals": [
+      "rectus_abdominis_upper",
+      "rectus_abdominis_lower",
+      "obliques_external"
+    ],
+    "abductors": [
+      "glute_med",
+      "glute_min",
+      "tfl"
+    ],
+    "adductors": [
+      "adductors"
+    ],
+    "biceps": [
+      "biceps_long",
+      "biceps_short",
+      "brachialis"
+    ],
+    "calves": [
+      "gastrocnemius_medial",
+      "gastrocnemius_lateral",
+      "soleus"
+    ],
+    "chest": [
+      "pec_clavicular",
+      "pec_sternal",
+      "pec_costal"
+    ],
+    "forearms": [
+      "forearm_flexors",
+      "forearm_extensors",
+      "brachioradialis"
+    ],
+    "glutes": [
+      "glute_max",
+      "glute_med",
+      "glute_min"
+    ],
+    "hamstrings": [
+      "hamstring_bf_long",
+      "hamstring_bf_short",
+      "hamstring_semitendinosus",
+      "hamstring_semimembranosus"
+    ],
+    "lats": [
+      "lats"
+    ],
+    "lower back": [
+      "erector_spinae"
+    ],
+    "middle back": [
+      "rhomboids",
+      "trap_middle"
+    ],
+    "neck": [
+      "neck_scm"
+    ],
+    "quadriceps": [
+      "rectus_femoris",
+      "vastus_lateralis",
+      "vastus_medialis",
+      "vastus_intermedius"
+    ],
+    "shoulders": [
+      "delt_anterior",
+      "delt_lateral",
+      "delt_posterior"
+    ],
+    "traps": [
+      "trap_upper",
+      "trap_middle",
+      "trap_lower"
+    ],
+    "triceps": [
+      "triceps_long",
+      "triceps_lateral",
+      "triceps_medial"
+    ]
+  }
+}

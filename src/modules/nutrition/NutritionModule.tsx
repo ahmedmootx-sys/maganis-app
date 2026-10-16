@@ -20,16 +20,19 @@ import {
 import { QuickManualMealModal } from './QuickManualMealModal.tsx'
 import { MacroGuideModal } from './MacroGuideModal.tsx'
 import type { CustomMeal, DailyNutritionLog, MealCategory } from './types.ts'
-import { Select } from '../../components/Select'
-import { DateField, formatArabicDate } from '../../components/DateField'
-import { TopBar } from '../../components/TopBar.tsx'
-import { ProgressBar } from '../../components/ProgressBar.tsx'
-import { Sheet } from '../../components/Sheet.tsx'
-import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
-import { Callout } from '../../components/Callout.tsx'
-import { EmptyState } from '../../components/EmptyState.tsx'
-import { KeyValueList } from '../../components/KeyValueList.tsx'
-import { Stat } from '../../components/Stat.tsx'
+import {
+  TopBar,
+  ProgressBar,
+  Sheet,
+  ConfirmSheet,
+  Callout,
+  EmptyState,
+  KeyValueList,
+  Stat,
+  Select,
+  DateField,
+} from '../../ui/index.ts'
+import { formatArabicDate } from '../../lib/dateUtils.ts'
 import {
   IconPlus,
   IconTrash,
@@ -158,6 +161,7 @@ export function NutritionModule({
 
   // Explanation & Calibration Modal State
   const [showExplanation, setShowExplanation] = useState(false)
+  const [showResetDailyConfirm, setShowResetDailyConfirm] = useState(false)
   const [isCalibrationModalOpen, setIsCalibrationModalOpen] = useState(false)
   const [quickWeight, setQuickWeight] = useState('')
   const [quickWeightDate, setQuickWeightDate] = useState(() => getTodayStr())
@@ -445,22 +449,25 @@ export function NutritionModule({
   }
 
   function handleResetDailyLog() {
-    if (window.confirm('هل تريد تصفير عداد السعرات والماكروز لهذا اليوم؟')) {
-      const resetState: DailyNutritionLog = {
-        date: selectedDate,
-        consumedCalories: 0,
-        consumedProtein: 0,
-        consumedCarbs: 0,
-        consumedFats: 0,
-        loggedMeals: [],
-      }
-      setDailyLog(resetState)
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(resetState))
-      } catch {
-        // ignore
-      }
+    setShowResetDailyConfirm(true)
+  }
+
+  function doResetDailyLog() {
+    const resetState: DailyNutritionLog = {
+      date: selectedDate,
+      consumedCalories: 0,
+      consumedProtein: 0,
+      consumedCarbs: 0,
+      consumedFats: 0,
+      loggedMeals: [],
     }
+    setDailyLog(resetState)
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(resetState))
+    } catch {
+      // ignore
+    }
+    setShowResetDailyConfirm(false)
   }
 
   const filteredCustomMeals = useMemo(() => {
@@ -1288,8 +1295,22 @@ export function NutritionModule({
           onClose={() => setMealToDelete(null)}
           onConfirm={() => handleDeleteCustomMeal(mealToDelete.id)}
           title="حذف الوجبة؟"
-          message={`هل أنت متأكد من حذف وجبة «${mealToDelete.nameAr}»؟`}
+          consequences={[`هل أنت متأكد من حذف وجبة «${mealToDelete.nameAr}» نهائياً؟`]}
           confirmLabel="نعم، حذف"
+          cancelLabel="إلغاء"
+          isDestructive={true}
+        />
+      )}
+
+      {/* Reset Daily Log Confirm Sheet */}
+      {showResetDailyConfirm && (
+        <ConfirmSheet
+          isOpen={true}
+          onClose={() => setShowResetDailyConfirm(false)}
+          onConfirm={doResetDailyLog}
+          title="تصفير سجل اليوم؟"
+          consequences={['سيتم حذف جميع الوجبات المسجلة وتصفير عداد السعرات والماكروز لهذا اليوم.']}
+          confirmLabel="نعم، تصفير السجل"
           cancelLabel="إلغاء"
           isDestructive={true}
         />

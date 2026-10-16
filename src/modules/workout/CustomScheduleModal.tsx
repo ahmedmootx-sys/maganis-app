@@ -262,7 +262,7 @@ export function CustomScheduleModal({
               }}
             >
               <div className="field">
-                <label>اختر أيام التمرين:</label>
+                <label>اختر أيام التمرين</label>
                 <ToggleChipRow
                   options={orderedWeekdays.map((w) => ({
                     value: w.dayIndex,

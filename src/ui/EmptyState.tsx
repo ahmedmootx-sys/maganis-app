@@ -8,10 +8,13 @@ export interface EmptyStateAction {
 }
 
 export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
-  icon?: IconName
+  icon?: IconName | React.ReactNode
   title: string
   description?: string
-  action?: EmptyStateAction
+  message?: string
+  action?: EmptyStateAction | React.ReactNode
+  actionLabel?: string
+  onAction?: () => void
   className?: string
 }
 
@@ -19,21 +22,35 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   icon = 'inbox' as IconName,
   title,
   description,
+  message,
   action,
+  actionLabel,
+  onAction,
   className = '',
   ...props
 }) => {
+  const desc = description ?? message
+  const effectiveAction = action ?? (actionLabel && onAction ? { label: actionLabel, onClick: onAction } : undefined)
+
   return (
     <div className={`empty-state ${className}`.trim()} {...props}>
       <div className="empty-state__icon" aria-hidden="true">
-        <Icon name={icon} size={40} strokeWidth={1.5} />
+        {typeof icon === 'string' ? (
+          <Icon name={icon as IconName} size={40} strokeWidth={1.5} />
+        ) : (
+          icon
+        )}
       </div>
       <h3 className="empty-state__title">{title}</h3>
-      {description && <p className="empty-state__desc">{description}</p>}
-      {action && (
-        <Button variant="secondary" size="normal" onClick={action.onClick}>
-          {action.label}
-        </Button>
+      {desc && <p className="empty-state__desc">{desc}</p>}
+      {effectiveAction && (
+        React.isValidElement(effectiveAction) ? (
+          effectiveAction
+        ) : (
+          <Button variant="secondary" size="normal" onClick={(effectiveAction as EmptyStateAction).onClick}>
+            {(effectiveAction as EmptyStateAction).label}
+          </Button>
+        )
       )}
     </div>
   )

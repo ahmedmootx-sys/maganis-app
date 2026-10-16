@@ -3,12 +3,15 @@ import type { TrackingSession, BodyLogEntry, DayNote } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { getExerciseById } from '../workout/exercises.ts'
 import { SvgLineChart } from '../reports/SvgLineChart.tsx'
-import { DateField, formatArabicDate } from '../../components/DateField.tsx'
-import { TopBar } from '../../components/TopBar.tsx'
-import { Sheet } from '../../components/Sheet.tsx'
-import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
-import { EmptyState } from '../../components/EmptyState.tsx'
-import { Stat } from '../../components/Stat.tsx'
+import { formatArabicDate } from '../../components/DateField.tsx'
+import {
+  DateField,
+  TopBar,
+  Sheet,
+  ConfirmSheet,
+  EmptyState,
+  Stat,
+} from '../../ui/index.ts'
 import {
   IconTrash,
   IconChevronLeft,
@@ -294,9 +297,9 @@ export function ProgressScreen({
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
       setExportFeedback('تم تصدير ملف التقارير بنجاح')
-      setTimeout(() => setExportFeedback(null), 3000)
     } catch {
-      alert('حدث خطأ أثناء تصدير التقارير')
+      setExportFeedback('حدث خطأ أثناء تصدير التقارير')
+      setTimeout(() => setExportFeedback(null), 3000)
     }
   }
 
@@ -1446,7 +1449,7 @@ export function ProgressScreen({
             setWeightToDelete(null)
           }}
           title="حذف قياس الوزن؟"
-          message={`هل أنت متأكد من حذف قياس الوزن المسجل في ${formatArabicDate(weightToDelete)}؟`}
+          consequences={[`هل أنت متأكد من حذف قياس الوزن المسجل في ${formatArabicDate(weightToDelete)}؟`]}
           confirmLabel="نعم، حذف"
           cancelLabel="إلغاء"
           isDestructive={true}
@@ -1463,7 +1466,7 @@ export function ProgressScreen({
             setNoteToDelete(null)
           }}
           title="حذف الملاحظة؟"
-          message={`هل أنت متأكد من حذف هذه الملاحظة المسجلة في ${formatArabicDate(noteToDelete.date)}؟`}
+          consequences={[`هل أنت متأكد من حذف هذه الملاحظة المسجلة في ${formatArabicDate(noteToDelete.date)}؟`]}
           confirmLabel="نعم، حذف"
           cancelLabel="إلغاء"
           isDestructive={true}

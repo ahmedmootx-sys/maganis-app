@@ -5,6 +5,7 @@ export interface SheetProps {
   isOpen: boolean
   onClose: () => void
   title?: string
+  subtitle?: React.ReactNode
   children: React.ReactNode
   footer?: React.ReactNode
   className?: string
@@ -14,6 +15,7 @@ export const Sheet: React.FC<SheetProps> = ({
   isOpen,
   onClose,
   title,
+  subtitle,
   children,
   footer,
   className = '',
@@ -75,9 +77,16 @@ export const Sheet: React.FC<SheetProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sheet__handle" aria-hidden="true" />
-        {title && (
+        {(title || subtitle) && (
           <div className="sheet__header">
-            <h3 className="sheet__title">{title}</h3>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {title && <h3 className="sheet__title">{title}</h3>}
+              {subtitle && (
+                <span className="sheet__subtitle" style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                  {subtitle}
+                </span>
+              )}
+            </div>
             <IconButton
               name="x"
               size={20}

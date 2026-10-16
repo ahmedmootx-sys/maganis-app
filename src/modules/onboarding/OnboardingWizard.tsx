@@ -1,166 +1,64 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { assetUrl } from '../../utils/assetUrl.ts'
 import type { ProfileStore } from './profileStore'
-import { ACTIVITY_LEVELS, GOALS, INJURY_TAGS } from './types'
-import type { ActivityLevel, Goal, ProfileCore, UserProfile } from './types'
+import { ACTIVITY_LEVELS, GOALS } from './types'
+import type {
+  ActivityLevel,
+  Goal,
+  ProfileCore,
+  Sex,
+  UserProfile,
+} from './types'
 import {
-  validateBody,
-  validateDays,
-  validateGoals,
-  validateMedical,
-  validateProfile,
-} from './validate'
-import { Callout } from '../../components/Callout.tsx'
-import { IconCheck } from '../../components/Icons.tsx'
+  WizardProgress,
+  Button,
+  OptionList,
+  Field,
+  Segmented,
+  Callout,
+  KeyValueList,
+  Chips,
+} from '../../ui'
+import { fmtNumber } from '../../utils/bidi.ts'
+
+export interface OnboardingWizardProps {
+  store: ProfileStore
+  initialProfile?: UserProfile | null
+  onSaved: (profile: UserProfile) => void
+  onCancel?: () => void
+}
 
 interface FormState {
-  goals: Goal[]
   primaryGoal: Goal | null
   trainingDaysPerWeek: number | null
+  experienceLevel: 'beginner' | 'intermediate' | 'advanced'
+  trainingLocation: 'gym' | 'home' | 'both'
+  name: string
   hasIssues: boolean | null
-  injuryTags: string[]
-  notes: string
-  sex: 'male' | 'female' | null
+  injuryNotes: string
+  sex: Sex | null
   age: string
   heightCm: string
   weightKg: string
   activityLevel: ActivityLevel | null
 }
 
-const EMPTY_FORM: FormState = {
-  goals: [],
-  primaryGoal: null,
-  trainingDaysPerWeek: null,
-  hasIssues: null,
-  injuryTags: [],
-  notes: '',
-  sex: null,
-  age: '',
-  heightCm: '',
-  weightKg: '',
-  activityLevel: null,
+const DEFAULT_FORM: FormState = {
+  primaryGoal: 'hypertrophy',
+  trainingDaysPerWeek: 4,
+  experienceLevel: 'beginner',
+  trainingLocation: 'gym',
+  name: '',
+  hasIssues: false,
+  injuryNotes: '',
+  sex: 'male',
+  age: '25',
+  heightCm: '175',
+  weightKg: '75',
+  activityLevel: 'moderate',
 }
 
-const STEP_TITLES = [
-  'اختر هدفك',
-  'أيام التمرين أسبوعياً',
-  'التقييم الطبي',
-  'بيانات الجسم',
-  'مراجعة وتأكيد',
-]
-
-const STEP_COUNT = STEP_TITLES.length
-
-function formFromProfile(profile: UserProfile): FormState {
-  return {
-    goals: [...profile.goals],
-    primaryGoal: profile.primaryGoal,
-    trainingDaysPerWeek: profile.trainingDaysPerWeek,
-    hasIssues: profile.medical.hasIssues,
-    injuryTags: [...profile.medical.injuryTags],
-    notes: profile.medical.notes,
-    sex: profile.body.sex,
-    age: String(profile.body.age),
-    heightCm: String(profile.body.heightCm),
-    weightKg: String(profile.body.weightKg),
-    activityLevel: profile.body.activityLevel,
-  }
-}
-
-function buildProfile(form: FormState): ProfileCore {
-  return {
-    goals: [...form.goals],
-    primaryGoal: form.primaryGoal as Goal,
-    trainingDaysPerWeek: form.trainingDaysPerWeek as number,
-    medical: {
-      hasIssues: form.hasIssues as boolean,
-      injuryTags: [...form.injuryTags],
-      notes: form.notes,
-    },
-    body: {
-      sex: form.sex as 'male' | 'female',
-      age: Number(form.age),
-      heightCm: Number(form.heightCm),
-      weightKg: Number(form.weightKg),
-      activityLevel: form.activityLevel as ActivityLevel,
-    },
-  }
-}
-
-function isFormShape(value: unknown): value is Partial<FormState> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function ReviewSummary({ form }: { form: FormState }) {
-  const goalLabels = form.goals
-    .map((g) => GOALS.find((x) => x.value === g)?.labelAr ?? g)
-    .join('، ')
-  const primary = GOALS.find((x) => x.value === form.primaryGoal)?.labelAr
-  const activity = ACTIVITY_LEVELS.find((x) => x.value === form.activityLevel)
-  return (
-    <ul className="summary-list" data-testid="review-summary">
-      <li>
-        <span>الأهداف</span>
-        <strong>
-          {goalLabels}
-          {form.goals.length > 1 ? ' (أهداف مركبة)' : ''}
-        </strong>
-      </li>
-      <li>
-        <span>الهدف الأساسي</span>
-        <strong>{primary ?? '—'}</strong>
-      </li>
-      <li>
-        <span>أيام التمرين</span>
-        <strong>{form.trainingDaysPerWeek ?? '—'} أيام أسبوعياً</strong>
-      </li>
-      <li>
-        <span>الحالة الصحية</span>
-        <strong>
-          {form.hasIssues === null
-            ? '—'
-            : form.hasIssues
-              ? form.injuryTags.length > 0
-                ? form.injuryTags.join('، ')
-                : 'يوجد — راجع الملاحظات'
-              : 'لا توجد إصابات مسجلة'}
-        </strong>
-      </li>
-      {form.hasIssues === true && form.notes.trim() !== '' && (
-        <li>
-          <span>ملاحظات طبية</span>
-          <strong>{form.notes}</strong>
-        </li>
-      )}
-      <li>
-        <span>الجنس</span>
-        <strong>
-          {form.sex === 'male' ? 'ذكر' : form.sex === 'female' ? 'أنثى' : '—'}
-        </strong>
-      </li>
-      <li>
-        <span>العمر / الطول / الوزن</span>
-        <strong dir="ltr" style={{ textAlign: 'left' }}>
-          {form.age || '—'} yr / {form.heightCm || '—'} cm /{' '}
-          {form.weightKg || '—'} kg
-        </strong>
-      </li>
-      <li>
-        <span>مستوى النشاط</span>
-        <strong>
-          {activity ? `${activity.labelAr} (×${activity.multiplier})` : '—'}
-        </strong>
-      </li>
-    </ul>
-  )
-}
-
-export interface OnboardingWizardProps {
-  store: ProfileStore
-  initialProfile: UserProfile | null
-  onSaved: (profile: UserProfile) => void
-  onCancel?: () => void
-}
+const DRAFT_STORAGE_KEY = 'maganis:onboarding_draft'
 
 export function OnboardingWizard({
   store,
@@ -168,981 +66,756 @@ export function OnboardingWizard({
   onSaved,
   onCancel,
 }: OnboardingWizardProps) {
-  const [boot] = useState(() => {
-    if (initialProfile) {
-      return {
-        askResume: false,
-        step: 0,
-        form: formFromProfile(initialProfile),
+  // Load saved draft or initialize from profile
+  const [currentStep, setCurrentStep] = useState<number>(() => {
+    if (initialProfile) return 1
+    try {
+      const raw = localStorage.getItem(DRAFT_STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (typeof parsed?.step === 'number' && parsed.step >= 1 && parsed.step <= 6) {
+          return parsed.step
+        }
       }
+    } catch {
+      // ignore
     }
-    const draft = store.loadDraft()
-    if (
-      draft &&
-      draft.stepIndex >= 0 &&
-      draft.stepIndex < STEP_COUNT &&
-      isFormShape(draft.data)
-    ) {
-      return {
-        askResume: true,
-        step: draft.stepIndex,
-        form: { ...EMPTY_FORM, ...draft.data } as FormState,
-      }
-    }
-    return { askResume: false, step: 0, form: EMPTY_FORM }
+    return 1
   })
 
-  const [askResume, setAskResume] = useState(boot.askResume)
-  const [step, setStep] = useState(boot.step)
-  const [form, setForm] = useState<FormState>(boot.form)
-  const [errors, setErrors] = useState<string[]>([])
-  const [saveError, setSaveError] = useState<string | null>(null)
-
-  function stepErrors(): string[] {
-    switch (step) {
-      case 0:
-        return validateGoals(form.goals, form.primaryGoal)
-      case 1:
-        return validateDays(form.trainingDaysPerWeek)
-      case 2:
-        return validateMedical({
-          hasIssues: form.hasIssues,
-          injuryTags: form.injuryTags,
-          notes: form.notes,
-        })
-      case 3:
-        return validateBody(form)
-      default: {
-        const result = validateProfile(buildProfile(form))
-        return result.ok ? [] : result.errors
+  const [form, setForm] = useState<FormState>(() => {
+    if (initialProfile) {
+      return {
+        primaryGoal: initialProfile.primaryGoal,
+        trainingDaysPerWeek: initialProfile.trainingDaysPerWeek,
+        experienceLevel: initialProfile.experienceLevel ?? 'beginner',
+        trainingLocation: initialProfile.trainingLocation ?? 'gym',
+        name: initialProfile.name ?? '',
+        hasIssues: initialProfile.medical.hasIssues,
+        injuryNotes:
+          initialProfile.medical.notes ||
+          initialProfile.medical.injuryTags.join('، '),
+        sex: initialProfile.body.sex,
+        age: String(initialProfile.body.age),
+        heightCm: String(initialProfile.body.heightCm),
+        weightKg: String(initialProfile.body.weightKg),
+        activityLevel: initialProfile.body.activityLevel,
       }
     }
-  }
-
-  function goToStep(next: number) {
-    setErrors([])
-    setSaveError(null)
-    if (next >= 0 && next < STEP_COUNT) {
-      store.saveDraft({ stepIndex: next, data: { ...form } })
-      setStep(next)
-    }
-  }
-
-  function handleSave() {
-    const result = validateProfile(buildProfile(form))
-    if (!result.ok) {
-      setErrors(result.errors)
-      return
-    }
     try {
-      const record = store.saveProfile(result.profile)
-      store.clearDraft()
-      onSaved(record)
-    } catch (error) {
-      setSaveError(
-        'تعذر حفظ بياناتك (قد تكون مساحة التخزين ممتلئة أو محجوبة). ' +
-          'إجاباتك لم تُفقد — حاول مرة أخرى. التفاصيل: ' +
-          String(error),
-      )
+      const raw = localStorage.getItem(DRAFT_STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed?.form) {
+          return { ...DEFAULT_FORM, ...parsed.form }
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return DEFAULT_FORM
+  })
+
+  // Persist draft on changes
+  useEffect(() => {
+    if (!initialProfile) {
+      try {
+        localStorage.setItem(
+          DRAFT_STORAGE_KEY,
+          JSON.stringify({ step: currentStep, form }),
+        )
+      } catch {
+        // ignore
+      }
+    }
+  }, [currentStep, form, initialProfile])
+
+  const updateForm = (patch: Partial<FormState>) => {
+    setForm((prev) => ({ ...prev, ...patch }))
+  }
+
+  // --- Step Validations ---
+  const isStep1Valid = form.primaryGoal !== null
+
+  const isStep2Valid =
+    form.trainingDaysPerWeek !== null &&
+    form.trainingDaysPerWeek >= 2 &&
+    form.trainingDaysPerWeek <= 6
+
+  const isStep3Valid =
+    form.hasIssues !== null &&
+    (form.hasIssues === false || form.injuryNotes.trim().length > 0)
+
+  const ageNum = Number(form.age)
+  const heightNum = Number(form.heightCm)
+  const weightNum = Number(form.weightKg)
+
+  const isStep4Valid =
+    form.sex !== null &&
+    Number.isInteger(ageNum) &&
+    ageNum >= 14 &&
+    ageNum <= 90 &&
+    Number.isFinite(heightNum) &&
+    heightNum >= 120 &&
+    heightNum <= 230 &&
+    Number.isFinite(weightNum) &&
+    weightNum >= 30 &&
+    weightNum <= 250
+
+  const isStep5Valid = form.activityLevel !== null
+
+  const isCurrentStepValid = useMemo(() => {
+    switch (currentStep) {
+      case 1:
+        return isStep1Valid
+      case 2:
+        return isStep2Valid
+      case 3:
+        return isStep3Valid
+      case 4:
+        return isStep4Valid
+      case 5:
+        return isStep5Valid
+      case 6:
+        return true
+      default:
+        return false
+    }
+  }, [
+    currentStep,
+    isStep1Valid,
+    isStep2Valid,
+    isStep3Valid,
+    isStep4Valid,
+    isStep5Valid,
+  ])
+
+  const handleNext = () => {
+    if (currentStep < 6) {
+      setCurrentStep((prev) => prev + 1)
+      window.scrollTo(0, 0)
+    } else {
+      handleFinalSave()
     }
   }
 
-  function handleNext() {
-    const found = stepErrors()
-    setErrors(found)
-    if (found.length > 0) return
-    if (step === STEP_COUNT - 1) {
-      handleSave()
-      return
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1)
+      window.scrollTo(0, 0)
+    } else if (onCancel) {
+      onCancel()
     }
-    goToStep(step + 1)
   }
 
-  if (askResume) {
-    return (
-      <section
-        className="card resume-card"
-        data-testid="resume-card"
-        style={{ maxWidth: '640px', margin: '20px auto', padding: '20px' }}
-      >
-        <h2 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 800 }}>
-          توقفت في منتصف التهيئة؟
-        </h2>
-        <p
-          className="muted"
-          style={{ margin: '0 0 16px 0', fontSize: '14px', lineHeight: 1.6 }}
-        >
-          حفظنا تقدمك تلقائياً على جهازك. يمكنك المتابعة من حيث توقفت أو البدء
-          من جديد.
-        </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button
-            type="button"
-            className="btn-primary-action full-width"
-            data-testid="resume-btn"
-            onClick={() => setAskResume(false)}
-            style={{ height: '48px', fontWeight: 800 }}
-          >
-            متابعة من حيث توقفت
-          </button>
-          <button
-            type="button"
-            className="ghost full-width"
-            data-testid="discard-btn"
-            onClick={() => {
-              store.clearDraft()
-              setForm(EMPTY_FORM)
-              setStep(0)
-              setErrors([])
-              setAskResume(false)
-            }}
-            style={{ height: '44px' }}
-          >
-            البدء من جديد
-          </button>
-        </div>
-      </section>
-    )
+  const handleFinalSave = () => {
+    const injuryTags = form.hasIssues && form.injuryNotes.trim()
+      ? [form.injuryNotes.trim()]
+      : []
+
+    const core: ProfileCore = {
+      name: form.name.trim() || undefined,
+      experienceLevel: form.experienceLevel,
+      trainingLocation: form.trainingLocation,
+      goals: form.primaryGoal ? [form.primaryGoal] : ['hypertrophy'],
+      primaryGoal: form.primaryGoal ?? 'hypertrophy',
+      trainingDaysPerWeek: form.trainingDaysPerWeek ?? 4,
+      weekStartDay: 6, // default Saturday
+      medical: {
+        hasIssues: Boolean(form.hasIssues),
+        injuryTags,
+        notes: form.injuryNotes.trim(),
+      },
+      body: {
+        sex: form.sex ?? 'male',
+        age: Number(form.age) || 25,
+        heightCm: Number(form.heightCm) || 175,
+        weightKg: Number(form.weightKg) || 75,
+        activityLevel: form.activityLevel ?? 'moderate',
+      },
+    }
+
+    const saved = store.saveProfile(core)
+    try {
+      localStorage.removeItem(DRAFT_STORAGE_KEY)
+    } catch {
+      // ignore
+    }
+    onSaved(saved)
   }
 
   return (
-    <section
-      className="card wizard"
+    <div
+      className="wizard-fullscreen-container"
       data-testid="wizard"
-      style={{ maxWidth: '640px', margin: '0 auto', padding: '16px' }}
+      dir="rtl"
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        background: 'var(--color-bg)',
+        color: 'var(--color-text)',
+      }}
     >
-      {/* Coach Greeting Banner */}
-      <div className="maganis-coach-card" style={{ marginBottom: '16px' }}>
-        <div className="maganis-coach-avatar-wrapper">
-          <img
-            src={assetUrl('branding/maganis-welcome-transparent.png')}
-            alt="د. مجانص"
-            className="maganis-transparent-mascot"
-          />
-          <span className="maganis-coach-badge">د. مجانص</span>
-        </div>
-        <div className="maganis-coach-body">
-          <h3 className="maganis-coach-title">
-            يا أسطى العضلات وفورمة الساحل!
-          </h3>
-          <div className="maganis-speech-bubble">
-            <strong>يا هلا بالبطل!</strong> د. مجانص معاك على الخط.. هنظبط جسمك
-            بالميزان والمسطرة، علم صافي ومفيش فتي، عشان نبني فورمة قوية وصحية!
-          </div>
-        </div>
+      {/* Top: WizardProgress ONLY (No header, no theme toggle, no tagline) */}
+      <div style={{ padding: '16px 20px 8px' }}>
+        <WizardProgress currentStep={currentStep} totalSteps={6} />
       </div>
 
-      {/* Progress & Step Counter */}
+      {/* Main Question Body */}
       <div
-        className="progress"
-        data-testid="progress"
-        data-step={step + 1}
+        className="wizard-step-body"
         style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${STEP_COUNT}, 1fr)`,
-          gap: '6px',
-          marginBottom: '14px',
-        }}
-      >
-        {Array.from({ length: STEP_COUNT }, (_, i) => (
-          <span
-            key={i}
-            className={'progress-bar' + (i <= step ? ' done' : '')}
-            style={{
-              height: '5px',
-              borderRadius: '999px',
-              background: i <= step ? 'var(--accent)' : 'var(--line)',
-              transition: 'background 0.25s ease',
-            }}
-          />
-        ))}
-      </div>
-
-      <div
-        style={{
+          flex: 1,
           display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
-          marginBottom: '16px',
+          flexDirection: 'column',
+          padding: '16px 20px 96px',
+          maxWidth: '540px',
+          margin: '0 auto',
+          width: '100%',
         }}
       >
-        <h2
-          data-testid="step-title"
-          style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}
-        >
-          {STEP_TITLES[step]}
-        </h2>
-        <span
-          className="step-counter muted"
-          style={{ fontSize: '13px', fontWeight: 600 }}
-        >
-          الخطوة {step + 1} من {STEP_COUNT}
-        </span>
-      </div>
-
-      {/* Step 0: Goal Selection */}
-      {step === 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          <div
-            className="options"
-            style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
-          >
-            {GOALS.map((goal) => {
-              const isSelected = form.goals.includes(goal.value)
-              return (
-                <button
-                  key={goal.value}
-                  type="button"
-                  className={'option-btn' + (isSelected ? ' selected' : '')}
-                  data-testid={`goal-${goal.value}`}
-                  aria-pressed={isSelected}
-                  onClick={() => {
-                    setForm((prev) => {
-                      const selected = prev.goals.includes(goal.value)
-                        ? prev.goals.filter((g) => g !== goal.value)
-                        : [...prev.goals, goal.value]
-                      const primaryGoal =
-                        selected.length === 1 ? selected[0] : null
-                      return { ...prev, goals: selected, primaryGoal }
-                    })
-                    setErrors([])
-                  }}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    gap: '4px',
-                    padding: '12px 14px',
-                    borderRadius: '12px',
-                    border: isSelected
-                      ? '2px solid var(--accent)'
-                      : '1.5px solid var(--line)',
-                    background: isSelected
-                      ? 'var(--accent-soft)'
-                      : 'var(--card-subtle)',
-                    cursor: 'pointer',
-                    textAlign: 'right',
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <strong
-                      style={{
-                        fontSize: '15px',
-                        color: isSelected ? 'var(--accent)' : 'var(--ink)',
-                      }}
-                    >
-                      {goal.labelAr}
-                    </strong>
-                    {isSelected && (
-                      <IconCheck size={18} color="var(--accent)" />
-                    )}
-                  </div>
-                  <span
-                    className="hint"
-                    style={{ fontSize: '13px', color: 'var(--muted)' }}
-                  >
-                    {goal.hintAr}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-
-          {form.goals.length > 1 && (
-            <div className="field" style={{ marginTop: '8px' }}>
-              <p
+        {/* Step 1: ما هدفك؟ */}
+        {currentStep === 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <img
+                src={assetUrl('branding/maganis-mascot-inner.png')}
+                alt="د. مجانص"
+                style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '16px',
+                  objectFit: 'contain',
+                  border: '1px solid var(--color-divider)',
+                  background: 'var(--color-surface)',
+                  flexShrink: 0,
+                }}
+              />
+              <div
                 style={{
                   fontSize: '13.5px',
-                  fontWeight: 700,
-                  margin: '0 0 8px 0',
+                  lineHeight: '1.5',
+                  color: 'var(--color-text-2)',
                 }}
               >
-                اخترت أهدافاً مركبة — حدد الهدف الأساسي:
-              </p>
+                يا هلا بالوحش! د. مجانص معاك على الخط.. هنظبط جسمك ونبنيلك برنامج
+                تدريبي وتغذية علمية تفجّر بيها فورمة أحلامك!
+              </div>
+            </div>
+
+            <h1
+              style={{
+                fontSize: '22px',
+                fontWeight: 700,
+                margin: '8px 0 0',
+                color: 'var(--color-text)',
+              }}
+            >
+              ما هدفك؟
+            </h1>
+            <p
+              style={{
+                fontSize: '14px',
+                color: 'var(--color-text-2)',
+                margin: 0,
+              }}
+            >
+              اختر الهدف التدريبي والبدني الأساسي الذي تريد التركيز عليه
+            </p>
+
+            <OptionList
+              options={GOALS.map((g) => ({
+                value: g.value,
+                title: g.labelAr,
+                subtitle: g.hintAr,
+              }))}
+              value={form.primaryGoal ?? undefined}
+              onChange={(val) => updateForm({ primaryGoal: val as Goal })}
+            />
+          </div>
+        )}
+
+        {/* Step 2: تدريبك */}
+        {currentStep === 2 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            <h1
+              style={{
+                fontSize: '22px',
+                fontWeight: 700,
+                margin: '4px 0 0',
+                color: 'var(--color-text)',
+              }}
+            >
+              تدريبك
+            </h1>
+            <p
+              style={{
+                fontSize: '14px',
+                color: 'var(--color-text-2)',
+                margin: 0,
+              }}
+            >
+              حدد أيام التدريب أسبوعياً وتفضيلاتك التدريبية
+            </p>
+
+            <div>
               <div
-                className="chips"
                 style={{
-                  display: 'flex',
-                  gap: '8px',
-                  flexWrap: 'wrap',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  marginBottom: '8px',
                 }}
               >
-                {form.goals.map((g) => {
-                  const info = GOALS.find((x) => x.value === g)
-                  const isPrimary = form.primaryGoal === g
+                أيام التمرين في الأسبوع
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(5, 1fr)',
+                  gap: '8px',
+                }}
+              >
+                {[2, 3, 4, 5, 6].map((days) => {
+                  const isSelected = form.trainingDaysPerWeek === days
                   return (
-                    <button
-                      key={g}
-                      type="button"
-                      className={'chip-btn' + (isPrimary ? ' selected' : '')}
-                      data-testid={`primary-${g}`}
-                      aria-pressed={isPrimary}
-                      onClick={() => {
-                        setForm((prev) => ({ ...prev, primaryGoal: g }))
-                        setErrors([])
-                      }}
+                    <Chips
+                      key={days}
+                      selected={isSelected}
+                      onClick={() => updateForm({ trainingDaysPerWeek: days })}
                       style={{
-                        height: '42px',
-                        padding: '0 16px',
-                        borderRadius: '21px',
-                        border: isPrimary
-                          ? '2px solid var(--accent)'
-                          : '1px solid var(--line)',
-                        background: isPrimary
-                          ? 'var(--accent)'
-                          : 'var(--card-bg)',
-                        color: isPrimary ? '#fff' : 'var(--ink)',
-                        fontSize: '13.5px',
+                        height: '44px',
+                        justifyContent: 'center',
                         fontWeight: 700,
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease',
+                        fontSize: '15px',
+                        width: '100%',
                       }}
                     >
-                      {info?.labelAr ?? g}
-                    </button>
+                      {days} {days <= 4 ? 'أيام' : 'أيام'}
+                    </Chips>
                   )
                 })}
               </div>
             </div>
-          )}
-        </div>
-      )}
 
-      {/* Step 1: Training Days Per Week */}
-      {step === 1 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <p
-            className="muted"
-            style={{ fontSize: '13.5px', margin: '0 0 8px 0' }}
-          >
-            كم يوماً في الأسبوع تستطيع الالتزام بالتمرين؟
-          </p>
-          <div
-            className="options"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(5, 1fr)',
-              gap: '8px',
-              width: '100%',
-            }}
-          >
-            {[2, 3, 4, 5, 6].map((d) => {
-              const isSelected = form.trainingDaysPerWeek === d
-              return (
-                <button
-                  key={d}
-                  type="button"
-                  className={
-                    'option-btn day-btn' + (isSelected ? ' selected' : '')
-                  }
-                  data-testid={`day-${d}`}
-                  aria-pressed={isSelected}
-                  onClick={() => {
-                    setForm((prev) => ({ ...prev, trainingDaysPerWeek: d }))
-                    setErrors([])
-                  }}
-                  style={{
-                    height: '52px',
-                    borderRadius: '12px',
-                    border: isSelected
-                      ? '2px solid var(--accent)'
-                      : '1.5px solid var(--line)',
-                    background: isSelected
-                      ? 'var(--accent)'
-                      : 'var(--card-subtle)',
-                    color: isSelected ? '#fff' : 'var(--ink)',
-                    fontSize: '18px',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  {d}
-                </button>
-              )
-            })}
-          </div>
-          <div
-            style={{
-              textAlign: 'center',
-              color: 'var(--muted)',
-              fontSize: '12.5px',
-              marginTop: '4px',
-            }}
-          >
-            أيام أسبوعياً
-          </div>
-        </div>
-      )}
+            <div>
+              <div
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  marginBottom: '8px',
+                }}
+              >
+                خبرة التدريب
+              </div>
+              <Segmented
+                options={[
+                  { value: 'beginner', label: 'مبتدئ' },
+                  { value: 'intermediate', label: 'متوسط' },
+                  { value: 'advanced', label: 'متقدم' },
+                ]}
+                value={form.experienceLevel}
+                onChange={(val) =>
+                  updateForm({
+                    experienceLevel: val as
+                      | 'beginner'
+                      | 'intermediate'
+                      | 'advanced',
+                  })
+                }
+              />
+            </div>
 
-      {/* Step 2: Medical Assessment */}
-      {step === 2 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
+            <div>
+              <div
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  marginBottom: '8px',
+                }}
+              >
+                مكان التدريب
+              </div>
+              <Segmented
+                options={[
+                  { value: 'gym', label: 'جيم' },
+                  { value: 'home', label: 'منزل' },
+                  { value: 'both', label: 'الاثنان' },
+                ]}
+                value={form.trainingLocation}
+                onChange={(val) =>
+                  updateForm({
+                    trainingLocation: val as 'gym' | 'home' | 'both',
+                  })
+                }
+              />
+            </div>
+
+            <Field
+              label="الاسم (اختياري)"
+              placeholder="اكتب اسمك الأول..."
+              value={form.name}
+              onChange={(e) => updateForm({ name: e.target.value })}
+            />
+          </div>
+        )}
+
+        {/* Step 3: صحتك */}
+        {currentStep === 3 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            <h1
+              style={{
+                fontSize: '22px',
+                fontWeight: 700,
+                margin: '4px 0 0',
+                color: 'var(--color-text)',
+              }}
+            >
+              صحتك
+            </h1>
+            <p
+              style={{
+                fontSize: '15px',
+                fontWeight: 600,
+                color: 'var(--color-text)',
+                margin: 0,
+              }}
+            >
+              هل لديك إصابة أو حالة صحية تؤثر على التمرين؟
+            </p>
+
+            <Segmented
+              options={[
+                { value: 'no', label: 'لا' },
+                { value: 'yes', label: 'نعم' },
+              ]}
+              value={
+                form.hasIssues === null ? '' : form.hasIssues ? 'yes' : 'no'
+              }
+              onChange={(val) => updateForm({ hasIssues: val === 'yes' })}
+            />
+
+            {form.hasIssues === true && (
+              <Field
+                label="تفاصيل الحالة أو الإصابة"
+                placeholder="مثال: ألم في أسفل الظهر، إصابة بالكتف، تمزق غضروفي..."
+                value={form.injuryNotes}
+                onChange={(e) => updateForm({ injuryNotes: e.target.value })}
+                error={
+                  form.injuryNotes.trim().length === 0
+                    ? 'يرجى كتابة تفاصيل الإصابة لمساعدتنا في تخصيص برنامجك'
+                    : undefined
+                }
+              />
+            )}
+
+            <Callout variant="info" title="إخلاء مسؤولية طبية">
+              هذا التطبيق أداة استرشادية ولا يغني عن استشارة الطبيب المختص أو
+              أخصائي العلاج الطبيعي قبل ممارسة التمارين الرياضية.
+            </Callout>
+          </div>
+        )}
+
+        {/* Step 4: جسمك */}
+        {currentStep === 4 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h1
+              style={{
+                fontSize: '22px',
+                fontWeight: 700,
+                margin: '4px 0 0',
+                color: 'var(--color-text)',
+              }}
+            >
+              جسمك
+            </h1>
             <p
               style={{
                 fontSize: '14px',
-                fontWeight: 700,
-                margin: '0 0 10px 0',
+                color: 'var(--color-text-2)',
+                margin: 0,
               }}
             >
-              هل تعاني من أي إصابات سابقة أو مشاكل في المفاصل؟
+              بياناتك البدنية لحساب معدل الأيض والاحتياج الأساسي بدقة
             </p>
-            <div
-              className="radio-row"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '10px',
-              }}
-            >
-              <button
-                type="button"
-                className={
-                  'option-btn' + (form.hasIssues === true ? ' selected' : '')
-                }
-                data-testid="medical-yes"
-                aria-pressed={form.hasIssues === true}
-                onClick={() => {
-                  setForm((prev) => ({ ...prev, hasIssues: true }))
-                  setErrors([])
-                }}
-                style={{
-                  height: '48px',
-                  borderRadius: '12px',
-                  border:
-                    form.hasIssues === true
-                      ? '2px solid var(--accent)'
-                      : '1.5px solid var(--line)',
-                  background:
-                    form.hasIssues === true
-                      ? 'var(--accent-soft)'
-                      : 'var(--card-subtle)',
-                  color:
-                    form.hasIssues === true ? 'var(--accent)' : 'var(--ink)',
-                  fontWeight: 800,
-                  fontSize: '15px',
-                  cursor: 'pointer',
-                }}
-              >
-                نعم
-              </button>
-              <button
-                type="button"
-                className={
-                  'option-btn' + (form.hasIssues === false ? ' selected' : '')
-                }
-                data-testid="medical-no"
-                aria-pressed={form.hasIssues === false}
-                onClick={() => {
-                  setForm((prev) => ({
-                    ...prev,
-                    hasIssues: false,
-                    injuryTags: [],
-                  }))
-                  setErrors([])
-                }}
-                style={{
-                  height: '48px',
-                  borderRadius: '12px',
-                  border:
-                    form.hasIssues === false
-                      ? '2px solid var(--accent)'
-                      : '1.5px solid var(--line)',
-                  background:
-                    form.hasIssues === false
-                      ? 'var(--accent-soft)'
-                      : 'var(--card-subtle)',
-                  color:
-                    form.hasIssues === false ? 'var(--accent)' : 'var(--ink)',
-                  fontWeight: 800,
-                  fontSize: '15px',
-                  cursor: 'pointer',
-                }}
-              >
-                لا
-              </button>
-            </div>
-          </div>
 
-          {form.hasIssues === true && (
-            <>
-              <div className="field">
-                <p
-                  style={{
-                    fontSize: '13.5px',
-                    fontWeight: 700,
-                    margin: '0 0 8px 0',
-                  }}
-                >
-                  حدد موضع الإصابة أو المشكلة (يمكن اختيار أكثر من واحد):
-                </p>
-                <div
-                  className="chips"
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '8px',
-                  }}
-                >
-                  {INJURY_TAGS.map((tag) => {
-                    const isSelected = form.injuryTags.includes(tag)
-                    return (
-                      <button
-                        key={tag}
-                        type="button"
-                        className={'chip-btn' + (isSelected ? ' selected' : '')}
-                        aria-pressed={isSelected}
-                        onClick={() => {
-                          setForm((prev) => ({
-                            ...prev,
-                            injuryTags: prev.injuryTags.includes(tag)
-                              ? prev.injuryTags.filter((t) => t !== tag)
-                              : [...prev.injuryTags, tag],
-                          }))
-                          setErrors([])
-                        }}
-                        style={{
-                          height: '40px',
-                          padding: '0 14px',
-                          borderRadius: '20px',
-                          border: isSelected
-                            ? '1.5px solid var(--accent)'
-                            : '1px solid var(--line)',
-                          background: isSelected
-                            ? 'var(--accent-soft)'
-                            : 'var(--card-bg)',
-                          color: isSelected ? 'var(--accent)' : 'var(--ink)',
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {tag}
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-
+            <div>
               <div
-                className="field"
-                style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  marginBottom: '8px',
+                }}
               >
-                <label
-                  htmlFor="medical-notes"
-                  style={{ fontSize: '13.5px', fontWeight: 700 }}
-                >
-                  ملاحظات إضافية (اختياري)
-                </label>
-                <textarea
-                  id="medical-notes"
-                  data-testid="medical-notes"
-                  rows={3}
-                  value={form.notes}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, notes: e.target.value }))
-                  }
-                  placeholder="اكتب أي تفاصيل أخرى عن حالتك الصحية..."
-                  style={{
-                    width: '100%',
-                    borderRadius: '10px',
-                    border: '1.5px solid var(--line)',
-                    padding: '10px 14px',
-                    fontSize: '14px',
-                    background: 'var(--card-bg)',
-                    color: 'var(--ink)',
-                    boxSizing: 'border-box',
-                    resize: 'none',
-                  }}
-                />
+                الجنس
               </div>
-            </>
-          )}
+              <Segmented
+                options={[
+                  { value: 'male', label: 'ذكر' },
+                  { value: 'female', label: 'أنثى' },
+                ]}
+                value={form.sex ?? 'male'}
+                onChange={(val) => updateForm({ sex: val as Sex })}
+              />
+            </div>
 
-          <div style={{ marginTop: '4px' }}>
-            <Callout variant="warning">
-              ملاحظة مهمة: مجانص ليس بديلاً عن الطبيب. إجاباتك تُستخدم فقط
-              لتكييف التمارين مع حالتك، وإذا كان لديك أي إصابة أو حالة صحية
-              فاستشر طبيبك قبل البدء.
-            </Callout>
+            <Field
+              label="العمر"
+              unit="سنة"
+              inputMode="numeric"
+              placeholder="مثال: 25"
+              value={form.age}
+              onChange={(e) => updateForm({ age: e.target.value })}
+              error={
+                form.age && (ageNum < 14 || ageNum > 90)
+                  ? 'العمر يجب أن يكون بين 14 و90 سنة'
+                  : undefined
+              }
+            />
+
+            <Field
+              label="الطول"
+              unit="سم"
+              inputMode="numeric"
+              placeholder="مثال: 175"
+              value={form.heightCm}
+              onChange={(e) => updateForm({ heightCm: e.target.value })}
+              error={
+                form.heightCm && (heightNum < 120 || heightNum > 230)
+                  ? 'الطول يجب أن يكون بين 120 و230 سم'
+                  : undefined
+              }
+            />
+
+            <Field
+              label="الوزن"
+              unit="كجم"
+              inputMode="decimal"
+              placeholder="مثال: 75"
+              value={form.weightKg}
+              onChange={(e) => updateForm({ weightKg: e.target.value })}
+              error={
+                form.weightKg && (weightNum < 30 || weightNum > 250)
+                  ? 'الوزن يجب أن يكون بين 30 و250 كجم'
+                  : undefined
+              }
+            />
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Step 3: Body Metrics */}
-      {step === 3 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {/* Sex */}
-          <div className="field">
+        {/* Step 5: نشاطك اليومي */}
+        {currentStep === 5 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h1
+              style={{
+                fontSize: '22px',
+                fontWeight: 700,
+                margin: '4px 0 0',
+                color: 'var(--color-text)',
+              }}
+            >
+              نشاطك اليومي
+            </h1>
             <p
               style={{
-                fontSize: '13.5px',
-                fontWeight: 700,
-                margin: '0 0 8px 0',
+                fontSize: '14px',
+                color: 'var(--color-text-2)',
+                margin: 0,
               }}
             >
-              الجنس:
+              مستوى حركتك ونشاطك خارج أوقات التمرين لحساب السعرات
             </p>
-            <div
-              className="radio-row"
+
+            <OptionList
+              options={ACTIVITY_LEVELS.map((a) => ({
+                value: a.value,
+                title: a.labelAr,
+                subtitle: `${a.hintAr} (×${fmtNumber(a.multiplier)})`,
+              }))}
+              value={form.activityLevel ?? undefined}
+              onChange={(val) =>
+                updateForm({ activityLevel: val as ActivityLevel })
+              }
+            />
+          </div>
+        )}
+
+        {/* Step 6: مراجعة */}
+        {currentStep === 6 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <img
+                src={assetUrl('branding/maganis-mascot-inner.png')}
+                alt="د. مجانص"
+                style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '16px',
+                  objectFit: 'contain',
+                  border: '1px solid var(--color-divider)',
+                  background: 'var(--color-surface)',
+                  flexShrink: 0,
+                }}
+              />
+              <div
+                style={{
+                  fontSize: '13.5px',
+                  lineHeight: '1.5',
+                  color: 'var(--color-text-2)',
+                }}
+              >
+                كافة بياناتك جاهزة! اضغط على أي سطر لتعديله إذا رغبت، أو ابدأ
+                رحلتك الرياضية فوراً.
+              </div>
+            </div>
+
+            <h1
               style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '10px',
+                fontSize: '22px',
+                fontWeight: 700,
+                margin: '8px 0 0',
+                color: 'var(--color-text)',
               }}
             >
-              <button
-                type="button"
-                className={
-                  'option-btn' + (form.sex === 'male' ? ' selected' : '')
-                }
-                data-testid="sex-male"
-                aria-pressed={form.sex === 'male'}
-                onClick={() => {
-                  setForm((prev) => ({ ...prev, sex: 'male' }))
-                  setErrors([])
-                }}
-                style={{
-                  height: '48px',
-                  borderRadius: '12px',
-                  border:
-                    form.sex === 'male'
-                      ? '2px solid var(--accent)'
-                      : '1.5px solid var(--line)',
-                  background:
-                    form.sex === 'male'
-                      ? 'var(--accent-soft)'
-                      : 'var(--card-subtle)',
-                  color: form.sex === 'male' ? 'var(--accent)' : 'var(--ink)',
-                  fontWeight: 800,
-                  fontSize: '15px',
-                  cursor: 'pointer',
-                }}
-              >
-                ذكر
-              </button>
-              <button
-                type="button"
-                className={
-                  'option-btn' + (form.sex === 'female' ? ' selected' : '')
-                }
-                data-testid="sex-female"
-                aria-pressed={form.sex === 'female'}
-                onClick={() => {
-                  setForm((prev) => ({ ...prev, sex: 'female' }))
-                  setErrors([])
-                }}
-                style={{
-                  height: '48px',
-                  borderRadius: '12px',
-                  border:
-                    form.sex === 'female'
-                      ? '2px solid var(--accent)'
-                      : '1.5px solid var(--line)',
-                  background:
-                    form.sex === 'female'
-                      ? 'var(--accent-soft)'
-                      : 'var(--card-subtle)',
-                  color: form.sex === 'female' ? 'var(--accent)' : 'var(--ink)',
-                  fontWeight: 800,
-                  fontSize: '15px',
-                  cursor: 'pointer',
-                }}
-              >
-                أنثى
-              </button>
-            </div>
-          </div>
-
-          {/* Age, Height, Weight in a row */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '10px',
-            }}
-          >
-            <div
-              className="field"
-              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
-            >
-              <label
-                htmlFor="age"
-                style={{ fontSize: '13px', fontWeight: 700 }}
-              >
-                العمر (سنة)
-              </label>
-              <input
-                id="age"
-                type="number"
-                min={10}
-                max={90}
-                data-testid="age"
-                value={form.age}
-                onChange={(e) =>
-                  setForm((prev) => ({ ...prev, age: e.target.value }))
-                }
-                style={{
-                  height: '48px',
-                  width: '100%',
-                  borderRadius: '10px',
-                  border: '1.5px solid var(--line)',
-                  padding: '0 10px',
-                  fontSize: '15px',
-                  background: 'var(--card-bg)',
-                  color: 'var(--ink)',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </div>
-            <div
-              className="field"
-              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
-            >
-              <label
-                htmlFor="height"
-                style={{ fontSize: '13px', fontWeight: 700 }}
-              >
-                الطول (سم)
-              </label>
-              <input
-                id="height"
-                type="number"
-                min={100}
-                max={250}
-                data-testid="height"
-                value={form.heightCm}
-                onChange={(e) =>
-                  setForm((prev) => ({ ...prev, heightCm: e.target.value }))
-                }
-                style={{
-                  height: '48px',
-                  width: '100%',
-                  borderRadius: '10px',
-                  border: '1.5px solid var(--line)',
-                  padding: '0 10px',
-                  fontSize: '15px',
-                  background: 'var(--card-bg)',
-                  color: 'var(--ink)',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </div>
-            <div
-              className="field"
-              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
-            >
-              <label
-                htmlFor="weight"
-                style={{ fontSize: '13px', fontWeight: 700 }}
-              >
-                الوزن (كجم)
-              </label>
-              <input
-                id="weight"
-                type="number"
-                min={30}
-                max={300}
-                data-testid="weight"
-                value={form.weightKg}
-                onChange={(e) =>
-                  setForm((prev) => ({ ...prev, weightKg: e.target.value }))
-                }
-                style={{
-                  height: '48px',
-                  width: '100%',
-                  borderRadius: '10px',
-                  border: '1.5px solid var(--line)',
-                  padding: '0 10px',
-                  fontSize: '15px',
-                  background: 'var(--card-bg)',
-                  color: 'var(--ink)',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Activity Level */}
-          <div className="field">
+              مراجعة
+            </h1>
             <p
               style={{
-                fontSize: '13.5px',
-                fontWeight: 700,
-                margin: '0 0 8px 0',
+                fontSize: '14px',
+                color: 'var(--color-text-2)',
+                margin: 0,
               }}
             >
-              مستوى النشاط اليومي:
+              راجع إجاباتك قبل إنشاء البرنامج التدريبي
             </p>
-            <div
-              className="options"
-              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-            >
-              {ACTIVITY_LEVELS.map((lvl) => {
-                const isSelected = form.activityLevel === lvl.value
-                return (
-                  <button
-                    key={lvl.value}
-                    type="button"
-                    className={'option-btn' + (isSelected ? ' selected' : '')}
-                    data-testid={`activity-${lvl.value}`}
-                    aria-pressed={isSelected}
-                    onClick={() => {
-                      setForm((prev) => ({ ...prev, activityLevel: lvl.value }))
-                      setErrors([])
-                    }}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      gap: '4px',
-                      padding: '10px 14px',
-                      borderRadius: '12px',
-                      border: isSelected
-                        ? '2px solid var(--accent)'
-                        : '1.5px solid var(--line)',
-                      background: isSelected
-                        ? 'var(--accent-soft)'
-                        : 'var(--card-subtle)',
-                      cursor: 'pointer',
-                      textAlign: 'right',
-                      width: '100%',
-                      boxSizing: 'border-box',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <strong
-                        style={{
-                          fontSize: '14.5px',
-                          color: isSelected ? 'var(--accent)' : 'var(--ink)',
-                        }}
-                      >
-                        {lvl.labelAr}
-                      </strong>
-                      <span
-                        dir="ltr"
-                        style={{
-                          fontSize: '12px',
-                          fontWeight: 700,
-                          color: isSelected ? 'var(--accent)' : 'var(--muted)',
-                          background: isSelected
-                            ? 'rgba(var(--accent-rgb), 0.15)'
-                            : 'var(--card-bg)',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                        }}
-                      >
-                        ×{lvl.multiplier}
-                      </span>
-                    </div>
-                    <span
-                      className="hint"
-                      style={{ fontSize: '12.5px', color: 'var(--muted)' }}
-                    >
-                      {lvl.hintAr}
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
+
+            <KeyValueList
+              items={[
+                {
+                  key: 'الهدف',
+                  value:
+                    GOALS.find((g) => g.value === form.primaryGoal)?.labelAr ??
+                    '—',
+                  onClick: () => setCurrentStep(1),
+                },
+                {
+                  key: 'أيام التمرين',
+                  value: `${form.trainingDaysPerWeek} أيام أسبوعياً`,
+                  onClick: () => setCurrentStep(2),
+                },
+                {
+                  key: 'خبرة التدريب',
+                  value:
+                    form.experienceLevel === 'beginner'
+                      ? 'مبتدئ'
+                      : form.experienceLevel === 'intermediate'
+                        ? 'متوسط'
+                        : 'متقدم',
+                  onClick: () => setCurrentStep(2),
+                },
+                {
+                  key: 'مكان التدريب',
+                  value:
+                    form.trainingLocation === 'gym'
+                      ? 'جيم'
+                      : form.trainingLocation === 'home'
+                        ? 'منزل'
+                        : 'الاثنان',
+                  onClick: () => setCurrentStep(2),
+                },
+                {
+                  key: 'الصحة والإصابات',
+                  value: form.hasIssues
+                    ? form.injuryNotes || 'يوجد ملاحظات'
+                    : 'سليم ولا توجد إصابات',
+                  onClick: () => setCurrentStep(3),
+                },
+                {
+                  key: 'الجنس',
+                  value: form.sex === 'male' ? 'ذكر' : 'أنثى',
+                  onClick: () => setCurrentStep(4),
+                },
+                {
+                  key: 'العمر',
+                  value: `${form.age} سنة`,
+                  onClick: () => setCurrentStep(4),
+                },
+                {
+                  key: 'الطول',
+                  value: `${form.heightCm} سم`,
+                  onClick: () => setCurrentStep(4),
+                },
+                {
+                  key: 'الوزن',
+                  value: `${form.weightKg} كجم`,
+                  onClick: () => setCurrentStep(4),
+                },
+                {
+                  key: 'النشاط اليومي',
+                  value:
+                    ACTIVITY_LEVELS.find((a) => a.value === form.activityLevel)
+                      ?.labelAr ?? '—',
+                  onClick: () => setCurrentStep(5),
+                },
+              ]}
+            />
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Step 4: Review & Summary */}
-      {step === 4 && <ReviewSummary form={form} />}
-
-      {/* Errors */}
-      {errors.length > 0 && (
-        <div
-          style={{ marginTop: '16px' }}
-          data-testid="step-errors"
-          role="alert"
-        >
-          <Callout variant="error">
-            <ul style={{ margin: 0, paddingInlineStart: '18px' }}>
-              {errors.map((message, i) => (
-                <li key={i}>{message}</li>
-              ))}
-            </ul>
-          </Callout>
-        </div>
-      )}
-
-      {saveError && (
-        <div
-          style={{ marginTop: '16px' }}
-          data-testid="save-error"
-          role="alert"
-        >
-          <Callout variant="error">{saveError}</Callout>
-        </div>
-      )}
-
-      {/* Navigation Buttons */}
+      {/* Sticky Bottom Bar with Primary and Tertiary Actions */}
       <div
-        className="wizard-nav"
         style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: 'var(--color-surface)',
+          borderTop: '1px solid var(--color-divider)',
+          padding: '12px 20px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '10px',
-          marginTop: '24px',
+          gap: '8px',
+          maxWidth: '540px',
+          margin: '0 auto',
+          zIndex: 100,
         }}
       >
-        <button
-          type="button"
-          className="btn-primary-action full-width"
-          data-testid="next-btn"
-          onClick={handleNext}
-          style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
-        >
-          {step === STEP_COUNT - 1 ? 'حفظ والبدء' : 'التالي'}
-        </button>
+        <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+          {currentStep > 1 && (
+            <Button
+              variant="subtle"
+              size="lg"
+              onClick={handleBack}
+              style={{ flex: '0 0 100px' }}
+            >
+              رجوع
+            </Button>
+          )}
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
+            disabled={!isCurrentStepValid}
+            onClick={handleNext}
+          >
+            {currentStep === 6 ? 'حفظ والبدء' : 'التالي'}
+          </Button>
+        </div>
 
-        {step > 0 ? (
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            data-testid="back-btn"
-            onClick={() => goToStep(step - 1)}
-            style={{ height: '44px', fontSize: '14px' }}
-          >
-            رجوع
-          </button>
-        ) : onCancel ? (
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            data-testid="cancel-btn"
-            onClick={onCancel}
-            style={{ height: '44px', fontSize: '14px' }}
-          >
-            إلغاء
-          </button>
-        ) : null}
+        {/* Clean Arabic-only footer line with zero Latin words */}
+        <div
+          style={{
+            textAlign: 'center',
+            fontSize: '12px',
+            color: 'var(--color-text-2)',
+            paddingTop: '2px',
+          }}
+        >
+          يعمل بدون إنترنت، وبياناتك محفوظة على جهازك فقط.
+        </div>
       </div>
-    </section>
+    </div>
   )
 }

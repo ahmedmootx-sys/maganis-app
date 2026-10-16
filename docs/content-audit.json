@@ -1,0 +1,7849 @@
+{
+  "generated_at": "2026-10-15T23:04:08.941Z",
+  "summary": {
+    "total_exercises": 261,
+    "tiers": {
+      "tier1": {
+        "count": 32,
+        "percentage": 12.3
+      },
+      "tier2": {
+        "count": 0,
+        "percentage": 0
+      },
+      "tier3": {
+        "count": 229,
+        "percentage": 87.7
+      },
+      "tier4": {
+        "count": 0,
+        "percentage": 0
+      }
+    },
+    "quality_metrics": {
+      "genuine_benefit": {
+        "count": 48,
+        "percentage": 18.4
+      },
+      "genuine_mechanics": {
+        "count": 261,
+        "percentage": 100
+      },
+      "genuine_steps": {
+        "count": 261,
+        "percentage": 100
+      },
+      "media_coverage": {
+        "count": 261,
+        "percentage": 100
+      }
+    },
+    "top_10_boilerplate_phrases": [
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدالية) مع تحسين التوافق العضلي العصبي",
+        "count": 25
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات البطن المستقيمة والجذع (الكور) مع تحسين التوافق العضلي العصبي",
+        "count": 23
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات العضلة الرباعية (الفخذ الأمامي) و عضلات السمانة (الكاحل) مع تحسين التوافق العضلي العصبي",
+        "count": 16
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الكتف (الدالية) مع تحسين التوافق العضلي العصبي",
+        "count": 15
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات عضلة الترايسبس مع تحسين التوافق العضلي العصبي",
+        "count": 13
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات عضلة البايسبس مع تحسين التوافق العضلي العصبي",
+        "count": 12
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات عضلة الظهر العريضة (المجانص) و عضلة البايسبس مع تحسين التوافق العضلي العصبي",
+        "count": 11
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات عضلة البايسبس و عضلات الساعد والقبضة مع تحسين التوافق العضلي العصبي",
+        "count": 11
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات أعلى ومنتصف الظهر (الرومبويدز والترابيس) و عضلة البايسبس مع تحسين التوافق العضلي العصبي",
+        "count": 9
+      },
+      {
+        "phrase": "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الكتف (الدالية) و عضلة الترايسبس مع تحسين التوافق العضلي العصبي",
+        "count": 9
+      }
+    ]
+  },
+  "priority_review_list": [
+    {
+      "id": "chest-1",
+      "name_ar": "ضغط صدري بالبار",
+      "name_en": "Barbell Bench Press - Medium Grip",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-4",
+      "name_ar": "ضغط صدري مائل بالبار (بنش عالي)",
+      "name_en": "Barbell Incline Bench Press - Medium Grip",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-13",
+      "name_ar": "ضغط صدري مقلوب بالبار (بنش سفلي)",
+      "name_en": "Decline Barbell Bench Press",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-18",
+      "name_ar": "ضغط صدري بالبار قبضة واسعة",
+      "name_en": "Wide-Grip Barbell Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Barbell_Guillotine_Bench_Press",
+      "name_ar": "ضغط صدري بار للمستوى الترقوي (Guillotine)",
+      "name_en": "Barbell Guillotine Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-2",
+      "name_ar": "ضغط صدري بالدمبل (بنش مستوٍ)",
+      "name_en": "Dumbbell Bench Press",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-5",
+      "name_ar": "ضغط صدري مائل بالدمبل (بنش عالي)",
+      "name_en": "Incline Dumbbell Press",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-15",
+      "name_ar": "ضغط صدري مقلوب بالدمبل (بنش سفلي)",
+      "name_en": "Decline Dumbbell Bench Press",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-6",
+      "name_ar": "تفتيح صدر بالدمبل (مستوٍ)",
+      "name_en": "Dumbbell Flyes",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-9",
+      "name_ar": "تفتيح صدر مائل بالدمبل (عالي)",
+      "name_en": "Incline Dumbbell Flyes",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-12",
+      "name_ar": "تفتيح صدر مقلوب بالدمبل (سفلي)",
+      "name_en": "Decline Dumbbell Flyes",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-17",
+      "name_ar": "تفتيح صدر بالدمبل بيد واحدة",
+      "name_en": "One-Arm Flat Bench Dumbbell Flye",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Hammer_Grip_Incline_DB_Bench_Press",
+      "name_ar": "ضغط دمبل مائل بقبضة متوازية (هامر)",
+      "name_en": "Hammer Grip Incline DB Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-7",
+      "name_ar": "تقاطع كابل للصدر (كيبل كروس عالي/وسط)",
+      "name_en": "Cable Crossover",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-14",
+      "name_ar": "تقاطع كابل للصدر من الأسفل (كيبل سفلي)",
+      "name_en": "Low Cable Crossover",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-8",
+      "name_ar": "ضغط صدري بالكابل واقفاً",
+      "name_en": "Cable Chest Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_Iron_Cross",
+      "name_ar": "تقاطع كابل حديدي (أيرون كروس)",
+      "name_en": "Cable Iron Cross",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Single-Arm_Cable_Crossover",
+      "name_ar": "تقاطع كابل للصدر بيد واحدة",
+      "name_en": "Single-Arm Cable Crossover",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-20",
+      "name_ar": "تفتيح صدر على جهاز الفراشة (Pec Deck)",
+      "name_en": "Butterfly",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-10",
+      "name_ar": "ضغط صدري على الجهاز (Chest Press Machine)",
+      "name_en": "Leverage Chest Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Leverage_Incline_Chest_Press",
+      "name_ar": "ضغط صدري مائل على الجهاز",
+      "name_en": "Leverage Incline Chest Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Leverage_Decline_Chest_Press",
+      "name_ar": "ضغط صدري مقلوب على الجهاز",
+      "name_en": "Leverage Decline Chest Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Bench_Press",
+      "name_ar": "ضغط صدري مستوٍ على جهاز سميث",
+      "name_en": "Smith Machine Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Incline_Bench_Press",
+      "name_ar": "ضغط صدري مائل على جهاز سميث",
+      "name_en": "Smith Machine Incline Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Decline_Press",
+      "name_ar": "ضغط صدري مقلوب على جهاز سميث",
+      "name_en": "Smith Machine Decline Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-11",
+      "name_ar": "متوازي بوزن الجسم للصدر (ميل الجذع للأمام)",
+      "name_en": "Dips - Chest Version",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-3",
+      "name_ar": "تمرين الضغط (ضغط أرضي)",
+      "name_en": "Pushups",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-19",
+      "name_ar": "ضغط مائل لأعلى بوزن الجسم (أسهل للمبتدئين)",
+      "name_en": "Incline Push-Up",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Decline_Push-Up",
+      "name_ar": "ضغط مائل لأسفل بوزن الجسم (تركيز علوي)",
+      "name_en": "Decline Push-Up",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Clock_Push-Up",
+      "name_ar": "ضغط دائري حركي (Clock Push-Up)",
+      "name_en": "Clock Push-Up",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    }
+  ],
+  "exercises": [
+    {
+      "id": "chest-1",
+      "name_ar": "ضغط صدري بالبار",
+      "name_en": "Barbell Bench Press - Medium Grip",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-4",
+      "name_ar": "ضغط صدري مائل بالبار (بنش عالي)",
+      "name_en": "Barbell Incline Bench Press - Medium Grip",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-13",
+      "name_ar": "ضغط صدري مقلوب بالبار (بنش سفلي)",
+      "name_en": "Decline Barbell Bench Press",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-18",
+      "name_ar": "ضغط صدري بالبار قبضة واسعة",
+      "name_en": "Wide-Grip Barbell Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Barbell_Guillotine_Bench_Press",
+      "name_ar": "ضغط صدري بار للمستوى الترقوي (Guillotine)",
+      "name_en": "Barbell Guillotine Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-2",
+      "name_ar": "ضغط صدري بالدمبل (بنش مستوٍ)",
+      "name_en": "Dumbbell Bench Press",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-5",
+      "name_ar": "ضغط صدري مائل بالدمبل (بنش عالي)",
+      "name_en": "Incline Dumbbell Press",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-15",
+      "name_ar": "ضغط صدري مقلوب بالدمبل (بنش سفلي)",
+      "name_en": "Decline Dumbbell Bench Press",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-6",
+      "name_ar": "تفتيح صدر بالدمبل (مستوٍ)",
+      "name_en": "Dumbbell Flyes",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-9",
+      "name_ar": "تفتيح صدر مائل بالدمبل (عالي)",
+      "name_en": "Incline Dumbbell Flyes",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-12",
+      "name_ar": "تفتيح صدر مقلوب بالدمبل (سفلي)",
+      "name_en": "Decline Dumbbell Flyes",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-16",
+      "name_ar": "سحب دمبل مستقيم للصدر واللاتس (بولوفر)",
+      "name_en": "Straight-Arm Dumbbell Pullover",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "chest-17",
+      "name_ar": "تفتيح صدر بالدمبل بيد واحدة",
+      "name_en": "One-Arm Flat Bench Dumbbell Flye",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Hammer_Grip_Incline_DB_Bench_Press",
+      "name_ar": "ضغط دمبل مائل بقبضة متوازية (هامر)",
+      "name_en": "Hammer Grip Incline DB Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-7",
+      "name_ar": "تقاطع كابل للصدر (كيبل كروس عالي/وسط)",
+      "name_en": "Cable Crossover",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-14",
+      "name_ar": "تقاطع كابل للصدر من الأسفل (كيبل سفلي)",
+      "name_en": "Low Cable Crossover",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-8",
+      "name_ar": "ضغط صدري بالكابل واقفاً",
+      "name_en": "Cable Chest Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_Iron_Cross",
+      "name_ar": "تقاطع كابل حديدي (أيرون كروس)",
+      "name_en": "Cable Iron Cross",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Single-Arm_Cable_Crossover",
+      "name_ar": "تقاطع كابل للصدر بيد واحدة",
+      "name_en": "Single-Arm Cable Crossover",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-20",
+      "name_ar": "تفتيح صدر على جهاز الفراشة (Pec Deck)",
+      "name_en": "Butterfly",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-10",
+      "name_ar": "ضغط صدري على الجهاز (Chest Press Machine)",
+      "name_en": "Leverage Chest Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Leverage_Incline_Chest_Press",
+      "name_ar": "ضغط صدري مائل على الجهاز",
+      "name_en": "Leverage Incline Chest Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Leverage_Decline_Chest_Press",
+      "name_ar": "ضغط صدري مقلوب على الجهاز",
+      "name_en": "Leverage Decline Chest Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Bench_Press",
+      "name_ar": "ضغط صدري مستوٍ على جهاز سميث",
+      "name_en": "Smith Machine Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Incline_Bench_Press",
+      "name_ar": "ضغط صدري مائل على جهاز سميث",
+      "name_en": "Smith Machine Incline Bench Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Decline_Press",
+      "name_ar": "ضغط صدري مقلوب على جهاز سميث",
+      "name_en": "Smith Machine Decline Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-11",
+      "name_ar": "متوازي بوزن الجسم للصدر (ميل الجذع للأمام)",
+      "name_en": "Dips - Chest Version",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-3",
+      "name_ar": "تمرين الضغط (ضغط أرضي)",
+      "name_en": "Pushups",
+      "category": "chest",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "chest-19",
+      "name_ar": "ضغط مائل لأعلى بوزن الجسم (أسهل للمبتدئين)",
+      "name_en": "Incline Push-Up",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Decline_Push-Up",
+      "name_ar": "ضغط مائل لأسفل بوزن الجسم (تركيز علوي)",
+      "name_en": "Decline Push-Up",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Svend_Press",
+      "name_ar": "ضغط صدر بالأقراص (Svend Press)",
+      "name_en": "Svend Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Clock_Push-Up",
+      "name_ar": "ضغط دائري حركي (Clock Push-Up)",
+      "name_en": "Clock Push-Up",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-14",
+      "name_ar": "ديدليفت كلاسيكي بالبار (Deadlift)",
+      "name_en": "Barbell Deadlift",
+      "category": "back",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 8,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "back-4",
+      "name_ar": "تجديف بالبار منحنياً (Bent-Over Row)",
+      "name_en": "Bent Over Barbell Row",
+      "category": "back",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 7,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-5",
+      "name_ar": "تجديف بالدمبلين منحنياً",
+      "name_en": "Bent Over Two-Dumbbell Row",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-13",
+      "name_ar": "تجديف بالدمبل بيد واحدة على البنش (منشار)",
+      "name_en": "One-Arm Dumbbell Row",
+      "category": "back",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 5,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-8",
+      "name_ar": "تجديف تي بار بالوزن الحر (T-Bar Row)",
+      "name_en": "T-Bar Row with Handle",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-1",
+      "name_ar": "سحب عالي للظهر بقبضة واسعة (Lat Pulldown)",
+      "name_en": "Wide-Grip Lat Pulldown",
+      "category": "back",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 5,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-7",
+      "name_ar": "سحب عالي للظهر بقبضة ضيقة V-Bar",
+      "name_en": "Close-Grip Front Lat Pulldown",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-3",
+      "name_ar": "سحب عالي بقبضة مقلوبة للمجانص والباي",
+      "name_en": "Underhand Cable Pulldowns",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "One_Arm_Lat_Pulldown",
+      "name_ar": "سحب عالي بالكابل بيد واحدة",
+      "name_en": "One Arm Lat Pulldown",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Full_Range-Of-Motion_Lat_Pulldown",
+      "name_ar": "سحب عالي بمدى حركي كامل",
+      "name_en": "Full Range-Of-Motion Lat Pulldown",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-6",
+      "name_ar": "سحب أرضي بالكابل للظهر (Seated Cable Row)",
+      "name_en": "Seated Cable Rows",
+      "category": "back",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 6,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Elevated_Cable_Rows",
+      "name_ar": "سحب كابل من مستوى مرتفع للظهر",
+      "name_en": "Elevated Cable Rows",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "back-11",
+      "name_ar": "سحب كابل بالذراعين مفرودتين للمجانص",
+      "name_en": "Straight-Arm Pulldown",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "back-10",
+      "name_ar": "عقلة قبضة واسعة فوقية (Pull-Ups)",
+      "name_en": "Pullups",
+      "category": "back",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 7,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Wide-Grip_Rear_Pull-Up",
+      "name_ar": "عقلة خلفية واسعة",
+      "name_en": "Wide-Grip Rear Pull-Up",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-17",
+      "name_ar": "عقلة قبضة معكوسة للباي واللاتس (Chin-Ups)",
+      "name_en": "Chin-Up",
+      "category": "back",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 6,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-16",
+      "name_ar": "عقلة أسترالية مقلوبة بوزن الجسم",
+      "name_en": "Inverted Row",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Rope_Climb",
+      "name_ar": "تسلق الحبل لتقوية الظهر والقبضة",
+      "name_en": "Rope Climb",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-20",
+      "name_ar": "هز أكتاف بالبار للترابيس (Barbell Shrug)",
+      "name_en": "Barbell Shrug",
+      "category": "back",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Dumbbell_Shrug",
+      "name_ar": "هز أكتاف بالدمبل للترابيس (Dumbbell Shrug)",
+      "name_en": "Dumbbell Shrug",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_Shrugs",
+      "name_ar": "شراغز بالكابل للترابيس",
+      "name_en": "Cable Shrugs",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Middle_Back_Shrug",
+      "name_ar": "شراغز لمنتصف الظهر على البنش",
+      "name_en": "Middle Back Shrug",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "back-9",
+      "name_ar": "تمديد الظهر وأسفل الظهر على الجهاز (Hyper)",
+      "name_en": "Hyperextensions (Back Extensions)",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Good_Morning",
+      "name_ar": "صباح الخير بالبار لأسفل الظهر والخلفيات",
+      "name_en": "Good Morning",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Stiff_Leg_Barbell_Good_Morning",
+      "name_ar": "جود مورنينج بالبار بركبتين ثابتتين",
+      "name_en": "Stiff Leg Barbell Good Morning",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Bent_Over_Row",
+      "name_ar": "تجديف منحنياً على جهاز سميث",
+      "name_en": "Smith Machine Bent Over Row",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-18",
+      "name_ar": "سحب عالي على جهاز الرافعة للمجانص",
+      "name_en": "Leverage High Row",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "back-19",
+      "name_ar": "تجديف بالكابل بيد واحدة (شوت جن)",
+      "name_en": "Shotgun Row",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Bent_Over_Two-Arm_Long_Bar_Row",
+      "name_ar": "تجديف بالبار الطويل منحنياً",
+      "name_en": "Bent Over Two-Arm Long Bar Row",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Sumo_Deadlift",
+      "name_ar": "ديدليفت سومو بوقفة واسعة (Sumo Deadlift)",
+      "name_en": "Sumo Deadlift",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Trap_Bar_Deadlift",
+      "name_ar": "ديدليفت بالبار السداسي (Trap Bar)",
+      "name_en": "Trap Bar Deadlift",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Deadlift_with_Bands",
+      "name_ar": "ديدليفت بالبار مع أحبال مقاومة",
+      "name_en": "Deadlift with Bands",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "back-15",
+      "name_ar": "ديدليفت روماني من منصة مرتفعة",
+      "name_en": "Romanian Deadlift from Deficit",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Kettlebell_One-Legged_Deadlift",
+      "name_ar": "ديدليفت بالكتلبل بساق واحدة",
+      "name_en": "Kettlebell One-Legged Deadlift",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-19",
+      "name_ar": "تمرين سوبرمان لتقوية أسفل الظهر بوزن الجسم",
+      "name_en": "Superman",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-12",
+      "name_ar": "سحب الحبل للوجه والكتف الخلفي (Face Pull)",
+      "name_en": "Face Pull",
+      "category": "shoulders",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 5,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Side_Laterals_to_Front_Raise",
+      "name_ar": "دمج رفرفة جانبية وأمامية",
+      "name_en": "Side Laterals to Front Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Upright_Row_-_With_Bands",
+      "name_ar": "تجديف عمودي بحبل المقاومة",
+      "name_en": "Upright Row - With Bands",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Standing_Cable_Lift",
+      "name_ar": "رفع كابل قطري للجذع والظهر",
+      "name_en": "Standing Cable Lift",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-1",
+      "name_ar": "سكوات خلفي كامل بالبار (Back Squat)",
+      "name_en": "Barbell Full Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-11",
+      "name_ar": "سكوات أمامي بالبار (Front Squat)",
+      "name_en": "Front Barbell Squat",
+      "category": "legs",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 6,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-14",
+      "name_ar": "سكوات بالبار على الصندوق (Box Squat)",
+      "name_en": "Box Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Narrow_Stance_Squats",
+      "name_ar": "سكوات بالبار بوقفة ضيقة للتركيز على الفخذ",
+      "name_en": "Narrow Stance Squats",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Wide_Stance_Barbell_Squat",
+      "name_ar": "سكوات بالبار بوقفة واسعة للضامة والجلوتس",
+      "name_en": "Wide Stance Barbell Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Overhead_Squat",
+      "name_ar": "سكوات والبار مرفوع فوق الرأس",
+      "name_en": "Overhead Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-12",
+      "name_ar": "هاك سكوات على الجهاز (Hack Squat)",
+      "name_en": "Hack Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-8",
+      "name_ar": "طعنات بالبار للأرجل والجلوتس (Barbell Lunges)",
+      "name_en": "Barbell Lunge",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Barbell_Walking_Lunge",
+      "name_ar": "طعنات بالمشي بالبار",
+      "name_en": "Barbell Walking Lunge",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Barbell_Side_Split_Squat",
+      "name_ar": "سكوات جانبي بالبار للفخذ الداخلي",
+      "name_en": "Barbell Side Split Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-2",
+      "name_ar": "سكوات بالدمبل",
+      "name_en": "Dumbbell Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Goblet_Squat",
+      "name_ar": "جوبلت سكوات بالدمبل (Goblet Squat)",
+      "name_en": "Goblet Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-7",
+      "name_ar": "طعنات بالدمبلين (Dumbbell Lunges)",
+      "name_en": "Dumbbell Lunges",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-3",
+      "name_ar": "سبليت سكوات ثابت بالدمبل",
+      "name_en": "Split Squat with Dumbbells",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-13",
+      "name_ar": "صعود الدرج بالدمبل (Step-Ups)",
+      "name_en": "Dumbbell Step Ups",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Step-up_with_Knee_Raise",
+      "name_ar": "صعود الدرج مع رفع الركبة",
+      "name_en": "Step-up with Knee Raise",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-16",
+      "name_ar": "سومو سكوات بالدمبل (Sumo / Plie Squat)",
+      "name_en": "Plie Dumbbell Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-4",
+      "name_ar": "ضغط الأرجل على جهاز المكبس (Leg Press)",
+      "name_en": "Leg Press",
+      "category": "legs",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 6,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-18",
+      "name_ar": "فرد الساقين على الجهاز (Leg Extension للأماميات)",
+      "name_en": "Leg Extensions",
+      "category": "legs",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "leg-5",
+      "name_ar": "ثني الساقين مستلقياً على الجهاز (خلفيات الفخذ)",
+      "name_en": "Lying Leg Curls",
+      "category": "legs",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 6,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-17",
+      "name_ar": "ثني الساقين جالساً على الجهاز (خلفيات الفخذ)",
+      "name_en": "Seated Leg Curl",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Standing_Leg_Curl",
+      "name_ar": "ثني الساق واقفاً بساق واحدة",
+      "name_en": "Standing Leg Curl",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-6",
+      "name_ar": "ديدليفت روماني بالبار (RDL للخلفيات والألوية)",
+      "name_en": "Romanian Deadlift",
+      "category": "legs",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 6,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "leg-15",
+      "name_ar": "ديدليفت بالبار بأرجل مستقيمة",
+      "name_en": "Stiff-Legged Barbell Deadlift",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Stiff-Legged_Dumbbell_Deadlift",
+      "name_ar": "ديدليفت بالدمبل بأرجل مستقيمة للخلفيات",
+      "name_en": "Stiff-Legged Dumbbell Deadlift",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-20",
+      "name_ar": "دفع الحوض بالبار للألوية (Barbell Hip Thrust)",
+      "name_en": "Barbell Hip Thrust",
+      "category": "legs",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "leg-21",
+      "name_ar": "جسر الألوية بالبار على الأرض (Glute Bridge)",
+      "name_en": "Barbell Glute Bridge",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Single_Leg_Glute_Bridge",
+      "name_ar": "جسر الألوية بساق واحدة بوزن الجسم",
+      "name_en": "Single Leg Glute Bridge",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Glute_Ham_Raise",
+      "name_ar": "رفع الجذع بالخلفيات والألوية (GHD)",
+      "name_en": "Glute Ham Raise",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Glute_Kickback",
+      "name_ar": "ركل خلفي بالكابل أو الجهاز للألوية (Kickback)",
+      "name_en": "Glute Kickback",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Thigh_Abductor",
+      "name_ar": "فتح الفخذ على الجهاز (Abductor للألوية والخارجيات)",
+      "name_en": "Thigh Abductor",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Thigh_Adductor",
+      "name_ar": "ضم الفخذ على الجهاز (Adductor للعضلات الضامة)",
+      "name_en": "Thigh Adductor",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "leg-9",
+      "name_ar": "رفع السمانة واقفاً بالوزن (Standing Calf Raise)",
+      "name_en": "Standing Calf Raises",
+      "category": "legs",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-10",
+      "name_ar": "رفع السمانة جالساً على الجهاز (Seated Calf Raise)",
+      "name_en": "Seated Calf Raise",
+      "category": "legs",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Calf_Press_On_The_Leg_Press_Machine",
+      "name_ar": "رفع السمانة على جهاز مكبس الأرجل",
+      "name_en": "Calf Press On The Leg Press Machine",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Calf_Raise",
+      "name_ar": "رفع السمانة واقفاً على جهاز سميث",
+      "name_en": "Smith Machine Calf Raise",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Rocking_Standing_Calf_Raise",
+      "name_ar": "رفع السمانة المتأرجح",
+      "name_en": "Rocking Standing Calf Raise",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Donkey_Calf_Raises",
+      "name_ar": "رفع السمانة بوضعية الدونكي كالف",
+      "name_en": "Donkey Calf Raises",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Machine_Squat",
+      "name_ar": "سكوات على جهاز سميث",
+      "name_en": "Smith Machine Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Smith_Single-Leg_Split_Squat",
+      "name_ar": "سبليت سكوات على جهاز سميث",
+      "name_en": "Smith Single-Leg Split Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "leg-19",
+      "name_ar": "سكوات هوائي بوزن الجسم",
+      "name_en": "Bodyweight Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Bodyweight_Walking_Lunge",
+      "name_ar": "طعنات بالمشي بوزن الجسم",
+      "name_en": "Bodyweight Walking Lunge",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Scissors_Jump",
+      "name_ar": "قفز تبادلي بالمقص (انفجاري للأرجل)",
+      "name_en": "Scissors Jump",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Side_Leg_Raises",
+      "name_ar": "رفع الساق جانباً بوزن الجسم",
+      "name_en": "Side Leg Raises",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "One-Arm_Side_Deadlift",
+      "name_ar": "ديدليفت جانبي بيد واحدة",
+      "name_en": "One-Arm Side Deadlift",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Band_Hip_Adductions",
+      "name_ar": "ضم الفخذ بحبل المقاومة",
+      "name_en": "Band Hip Adductions",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Reverse_Band_Box_Squat",
+      "name_ar": "سكوات صندوق بأحبال مقاومة معكوسة",
+      "name_en": "Reverse Band Box Squat",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Calf-Machine_Shoulder_Shrug",
+      "name_ar": "شراغز على جهاز السمانة",
+      "name_en": "Calf-Machine Shoulder Shrug",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Knee_Tuck_Jump",
+      "name_ar": "قفز ضم الركبتين للياقة الأرجل",
+      "name_en": "Knee Tuck Jump",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "shoulder-1",
+      "name_ar": "ضغط كتف عسكري بالبار واقفاً (Overhead Press)",
+      "name_en": "Standing Military Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-11",
+      "name_ar": "ضغط كتف بالبار جالساً (Seated Barbell Press)",
+      "name_en": "Seated Barbell Military Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-15",
+      "name_ar": "ضغط كتف بالدمبل جالساً (Dumbbell Shoulder Press)",
+      "name_en": "Dumbbell Shoulder Press",
+      "category": "shoulders",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Seated_Dumbbell_Press",
+      "name_ar": "ضغط كتف بالدمبل على مقعد مستقيم",
+      "name_en": "Seated Dumbbell Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-6",
+      "name_ar": "ضغط أرنولد الشهير للكتف بالدمبل (Arnold Press)",
+      "name_en": "Arnold Dumbbell Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-16",
+      "name_ar": "ضغط كتف على جهاز الرافعة",
+      "name_en": "Leverage Shoulder Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-19",
+      "name_ar": "كلين آند برس بالبار (قوة انفجارية للكتف والجسم)",
+      "name_en": "Clean and Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Push_Press",
+      "name_ar": "بوش برس بالبار مع مساعدة الساقين",
+      "name_en": "Push Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "shoulder-3",
+      "name_ar": "رفرفة كتف جانبي بالدمبل (Lateral Raise)",
+      "name_en": "Side Lateral Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-9",
+      "name_ar": "رفرفة كتف جانبي بالدمبل جالساً (عزل تام)",
+      "name_en": "Seated Side Lateral Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-14",
+      "name_ar": "رفرفة جانبي بالدمبل بيد واحدة",
+      "name_en": "One-Arm Side Laterals",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-5",
+      "name_ar": "رفرفة جانبي بالكابل جالساً",
+      "name_en": "Cable Seated Lateral Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-4",
+      "name_ar": "رفع كتف أمامي بالدمبل (Front Raise)",
+      "name_en": "Front Dumbbell Raise",
+      "category": "shoulders",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-13",
+      "name_ar": "رفع كتف أمامي بالكابل",
+      "name_en": "Front Cable Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Front_Two-Dumbbell_Raise",
+      "name_ar": "رفع أمامي بكلتا اليدين بالدمبل",
+      "name_en": "Front Two-Dumbbell Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Standing_Front_Barbell_Raise_Over_Head",
+      "name_ar": "رفع بار أمامي حتى أعلى الرأس",
+      "name_en": "Standing Front Barbell Raise Over Head",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "back-12",
+      "name_ar": "رفرفة كتف خلفي بالدمبل مستلقياً على بنش مائل",
+      "name_en": "Reverse Flyes",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-7",
+      "name_ar": "رفرفة خلفية مع تثبيت الرأس على البنش",
+      "name_en": "Bent Over Dumbbell Rear Delt Raise With Head On Bench",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Lying_Rear_Delt_Raise",
+      "name_ar": "رفرفة كتف خلفي مستلقياً على الجانب",
+      "name_en": "Lying Rear Delt Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_Rear_Delt_Fly",
+      "name_ar": "رفرفة كتف خلفي بالكابل المتقاطع",
+      "name_en": "Cable Rear Delt Fly",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-18",
+      "name_ar": "تجديف بالبار عريض للكتف الخلفي",
+      "name_en": "Barbell Rear Delt Row",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_Rope_Rear-Delt_Rows",
+      "name_ar": "سحب حبل الكابل للكتف الخلفي",
+      "name_en": "Cable Rope Rear-Delt Rows",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-17",
+      "name_ar": "تجديف عمودي بالبار للأكتاف والترابيس",
+      "name_en": "Upright Barbell Row",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Upright_Cable_Row",
+      "name_ar": "تجديف عمودي بالكابل للأكتاف",
+      "name_en": "Upright Cable Row",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Dumbbell_One-Arm_Upright_Row",
+      "name_ar": "تجديف عمودي بالدمبل بيد واحدة",
+      "name_en": "Dumbbell One-Arm Upright Row",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-10",
+      "name_ar": "رفع دمبل بزاوية لوح الكتف (Scaption)",
+      "name_en": "Dumbbell Scaption",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Dumbbell_Raise",
+      "name_ar": "رفع دمبل مركب للأكتاف",
+      "name_en": "Dumbbell Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Alternating_Deltoid_Raise",
+      "name_ar": "رفع تبادلي بالدمبل للدالية",
+      "name_en": "Alternating Deltoid Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Car_Drivers",
+      "name_ar": "تمرين مقود السيارة بالقرص للأكتاف (Car Drivers)",
+      "name_en": "Car Drivers",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cuban_Press",
+      "name_ar": "ضغط كوبي بالدمبل لتقوية الكفة المدورة",
+      "name_en": "Cuban Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Iron_Cross",
+      "name_ar": "الصليب الحديدي بالدمبل للكتفين",
+      "name_en": "Iron Cross",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Standing_Low-Pulley_Deltoid_Raise",
+      "name_ar": "رفع دالية سفلي بالكابل",
+      "name_en": "Standing Low-Pulley Deltoid Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "shoulder-20",
+      "name_ar": "ضغط الوقوف على اليدين للكتفين (Handstand)",
+      "name_en": "Handstand Push-Ups",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Kettlebell_Thruster",
+      "name_ar": "ثراستر بالكتلبل (سكوات مع ضغط كتف)",
+      "name_en": "Kettlebell Thruster",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "External_Rotation_with_Band",
+      "name_ar": "دوران خارجي بحبل المقاومة للكفة المدورة",
+      "name_en": "External Rotation with Band",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Side_Wrist_Pull",
+      "name_ar": "سحب جانبي للرسغ والكتف",
+      "name_en": "Side Wrist Pull",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-1",
+      "name_ar": "بايسبس كيرل بالبار مستقيماً (Barbell Curl)",
+      "name_en": "Barbell Curl",
+      "category": "arms",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "EZ-Bar_Curl",
+      "name_ar": "بايسبس كيرل ببار الزجزاج (EZ-Bar Curl)",
+      "name_en": "EZ-Bar Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Close-Grip_Standing_Barbell_Curl",
+      "name_ar": "بايسبس كيرل بالبار قبضة ضيقة للرأس الخارجي",
+      "name_en": "Close-Grip Standing Barbell Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Wide-Grip_Standing_Barbell_Curl",
+      "name_ar": "بايسبس كيرل بالبار قبضة واسعة للرأس الداخلي",
+      "name_en": "Wide-Grip Standing Barbell Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-2",
+      "name_ar": "بايسبس كيرل بالدمبل بالتناوب",
+      "name_en": "Dumbbell Bicep Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-5",
+      "name_ar": "بايسبس بالدمبل على بنش مائل (استطالة عظمى)",
+      "name_en": "Incline Dumbbell Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Incline_Inner_Biceps_Curl",
+      "name_ar": "بايسبس مائل موجه للرأس الداخلي",
+      "name_en": "Incline Inner Biceps Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-3",
+      "name_ar": "بايسبس مطرقة بالدمبل (Hammer Curls للساعد والرأس الطويل)",
+      "name_en": "Hammer Curls",
+      "category": "arms",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cross_Body_Hammer_Curl",
+      "name_ar": "بايسبس مطرقة متقاطع على الصدر (Cross Body)",
+      "name_en": "Cross Body Hammer Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Preacher_Curl",
+      "name_ar": "بايسبس ارتكاز على بنش لاري سكوت (Preacher Curl)",
+      "name_en": "Preacher Curl",
+      "category": "arms",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-4",
+      "name_ar": "بايسبس تركيز بالدمبل جالساً (Concentration Curl)",
+      "name_en": "Concentration Curls",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Spider_Curl",
+      "name_ar": "سبايدر كيرل بالبار على بنش مائل (Spider Curl)",
+      "name_en": "Spider Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Zottman_Curl",
+      "name_ar": "زوتمان كيرل بالدمبل للبايسبس والساعد (Zottman Curl)",
+      "name_en": "Zottman Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Seated_Close-Grip_Concentration_Barbell_Curl",
+      "name_ar": "بايسبس تركيز بالبار قبضة ضيقة",
+      "name_en": "Seated Close-Grip Concentration Barbell Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-6",
+      "name_ar": "بايسبس ارتكاز بالكابل على البنش",
+      "name_en": "Cable Preacher Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-7",
+      "name_ar": "بايسبس مطرقة بحبل الكابل (Cable Rope Hammer)",
+      "name_en": "Cable Hammer Curls - Rope Attachment",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-8",
+      "name_ar": "بايسبس كابل علوي مزدوج (Double Biceps Cable)",
+      "name_en": "Overhead Cable Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-9",
+      "name_ar": "بايسبس كيرل على الجهاز",
+      "name_en": "Machine Bicep Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-10",
+      "name_ar": "بايسبس مقلوب بالبار لتقوية الساعد والباي",
+      "name_en": "Reverse Barbell Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Reverse_Cable_Curl",
+      "name_ar": "بايسبس مقلوب بالكابل للساعد",
+      "name_en": "Reverse Cable Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-11",
+      "name_ar": "بنش برس قبضة ضيقة للترايسبس (Close-Grip Bench)",
+      "name_en": "Close-Grip Barbell Bench Press",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "JM_Press",
+      "name_ar": "تمرين جي إم برس للكتلة الهائلة للترايسبس (JM Press)",
+      "name_en": "JM Press",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-14",
+      "name_ar": "كسر الجمجمة للترايسبس ببار EZ (Skull Crushers)",
+      "name_en": "Lying Triceps Press",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Decline_EZ_Bar_Triceps_Extension",
+      "name_ar": "تمديد ترايسبس على بنش مقلوب ببار EZ",
+      "name_en": "Decline EZ Bar Triceps Extension",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Incline_Barbell_Triceps_Extension",
+      "name_ar": "تمديد ترايسبس بالبار على بنش مائل",
+      "name_en": "Incline Barbell Triceps Extension",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Decline_Close-Grip_Bench_To_Skull_Crusher",
+      "name_ar": "دمج البنش الضيق وكسر الجمجمة للترايسبس",
+      "name_en": "Decline Close-Grip Bench To Skull Crusher",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-15",
+      "name_ar": "تمديد ترايسبس بالبار فوق الرأس واقفاً",
+      "name_en": "Standing Overhead Barbell Triceps Extension",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "arm-17",
+      "name_ar": "تمديد ترايسبس بالدمبل بكلتا اليدين جالساً",
+      "name_en": "Seated Triceps Press",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Standing_Dumbbell_Triceps_Extension",
+      "name_ar": "تمديد ترايسبس بالدمبل فوق الرأس واقفاً",
+      "name_en": "Standing Dumbbell Triceps Extension",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-16",
+      "name_ar": "كيك باك للترايسبس بالدمبل (Dumbbell Kickback)",
+      "name_en": "Tricep Dumbbell Kickback",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Tate_Press",
+      "name_ar": "تيت برس بالدمبل على البنش للترايسبس (Tate Press)",
+      "name_en": "Tate Press",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-12",
+      "name_ar": "ترايسبس بوش داون بالكابل بالمسطرة (Straight Bar)",
+      "name_en": "Triceps Pushdown",
+      "category": "arms",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-13",
+      "name_ar": "ترايسبس بوش داون بحبل الكابل (Rope Pushdown)",
+      "name_en": "Triceps Pushdown - Rope Attachment",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Triceps_Pushdown_-_V-Bar_Attachment",
+      "name_ar": "ترايسبس بوش داون بمقبض V-Bar",
+      "name_en": "Triceps Pushdown - V-Bar Attachment",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Reverse_Grip_Triceps_Pushdown",
+      "name_ar": "ترايسبس بوش داون بقبضة مقلوبة",
+      "name_en": "Reverse Grip Triceps Pushdown",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_One_Arm_Tricep_Extension",
+      "name_ar": "تمديد ترايسبس بالكابل بيد واحدة",
+      "name_en": "Cable One Arm Tricep Extension",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_Lying_Triceps_Extension",
+      "name_ar": "تمديد ترايسبس مستلقياً بالكابل",
+      "name_en": "Cable Lying Triceps Extension",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-19",
+      "name_ar": "متوازي بوزن الجسم للترايسبس (الجسم عمودي)",
+      "name_en": "Dips - Triceps Version",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-18",
+      "name_ar": "غطس ترايسبس على حافة البنش (Bench Dips)",
+      "name_en": "Bench Dips",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Seated_Palm-Up_Barbell_Wrist_Curl",
+      "name_ar": "ثني المعصم بالبار والراحة لأعلى للساعد",
+      "name_en": "Seated Palm-Up Barbell Wrist Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench",
+      "name_ar": "ثني المعصم بالدمبل والراحة لأسفل",
+      "name_en": "Palms-Down Dumbbell Wrist Curl Over A Bench",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench",
+      "name_ar": "ثني المعصم بالدمبل والراحة لأعلى",
+      "name_en": "Palms-Up Dumbbell Wrist Curl Over A Bench",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Farmers_Walk",
+      "name_ar": "مشية المزارع بالأوزان الثقيلة لقوة القبضة والساعد",
+      "name_en": "Farmer's Walk",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Wrist_Roller",
+      "name_ar": "بكرة الرسغ بالأوزان لضخامة الساعد",
+      "name_en": "Wrist Roller",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Plate_Pinch",
+      "name_ar": "عصر وحمل الأقراص بالأصابع لقوة القبضة",
+      "name_en": "Plate Pinch",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_Wrist_Curl",
+      "name_ar": "ثني المعصم بالكابل للساعد",
+      "name_en": "Cable Wrist Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-1",
+      "name_ar": "بلانك ثبات للجذع والكور (Plank)",
+      "name_en": "Plank",
+      "category": "core",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 5,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-5",
+      "name_ar": "ضغط أرضي مع دوران لبلانك جانبي",
+      "name_en": "Push Up to Side Plank",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-2",
+      "name_ar": "كرنش أرضي كلاسيكي لعضلات البطن العلوية (Crunches)",
+      "name_en": "Crunches",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-18",
+      "name_ar": "كرنش على بنش مائل لأسفل (Decline Crunch)",
+      "name_en": "Decline Crunch",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-12",
+      "name_ar": "كرنش معكوس برفع الحوض للبطن السفلية (Reverse Crunch)",
+      "name_en": "Reverse Crunch",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-10",
+      "name_ar": "كرنش متقاطع لعضلات البطن والجوانب",
+      "name_en": "Cross-Body Crunch",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Tuck_Crunch",
+      "name_ar": "كرنش ضم الركبتين للبطن",
+      "name_en": "Tuck Crunch",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-14",
+      "name_ar": "كرنش على الكرة السويسرية لمدى حركي كامل",
+      "name_en": "Exercise Ball Crunch",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-20",
+      "name_ar": "كرنش بالكابل مع الركوع للبطن (Cable Kneeling Crunch)",
+      "name_en": "Cable Crunch",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Kneeling_Cable_Triceps_Extension",
+      "name_ar": "كرنش كابل بحبل المقاومة على الركبتين",
+      "name_en": "Kneeling Cable Triceps Extension",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-17",
+      "name_ar": "رفع الأرجل معلقاً على العقلة للبطن السفلية",
+      "name_en": "Hanging Leg Raise",
+      "category": "core",
+      "tier": 1,
+      "tier_label": "Tier 1 (مدروس يدوياً)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-4",
+      "name_ar": "رفع الأرجل مستلقياً على البنش للبطن السفلية",
+      "name_en": "Flat Bench Lying Leg Raise",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Seated_Flat_Bench_Leg_Pull-In",
+      "name_ar": "سحب الركبتين للصدر جالساً على البنش",
+      "name_en": "Seated Flat Bench Leg Pull-In",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Leg_Pull-In",
+      "name_ar": "ضم الساقين للبطن مستلقياً",
+      "name_en": "Leg Pull-In",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-16",
+      "name_ar": "تمرين عجلة البطن (Ab Wheel Rollout)",
+      "name_en": "Ab Roller",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-7",
+      "name_ar": "تويست روسي بالوزن للخصر والخواصر (Russian Twist)",
+      "name_en": "Russian Twist",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "core-6",
+      "name_ar": "تمرين الدراجة الهوائية للبطن",
+      "name_en": "Air Bike",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-8",
+      "name_ar": "متسلق الجبال السريع لشد البطن وحرق الدهون",
+      "name_en": "Mountain Climbers",
+      "category": "legs",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 4,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "core-13",
+      "name_ar": "تمرين الحشرة الميتة (Dead Bug) لثبات الكور وأسفل الظهر",
+      "name_en": "Dead Bug",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "core-15",
+      "name_ar": "تقطيع الخشب بالكابل لخصر وبطن قوية (Woodchopper)",
+      "name_en": "Standing Cable Wood Chop",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Pallof_Press",
+      "name_ar": "بالوف برس بالكابل لمقاومة الدوران وثبات الجذع",
+      "name_en": "Pallof Press",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Plate_Twist",
+      "name_ar": "دوران بالقرص للخصر والخواصر",
+      "name_en": "Plate Twist",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Medicine_Ball_Full_Twist",
+      "name_ar": "تويست كامل بالكرة الطبية للبطن",
+      "name_en": "Medicine Ball Full Twist",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Dumbbell_Side_Bend",
+      "name_ar": "انحناء جانبي بالدمبل لعضلات الخواصر",
+      "name_en": "Dumbbell Side Bend",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Bottoms_Up",
+      "name_ar": "رفع الحوض السفلي للبطن (Bottoms Up)",
+      "name_en": "Bottoms Up",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Alternating_Floor_Press",
+      "name_ar": "ضغط صدري أرضي بالدمبل بالتناوب",
+      "name_en": "Alternating Floor Press",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Bench_Press_-_With_Bands",
+      "name_ar": "ضغط صدري بالبار مع أحبال المقاومة",
+      "name_en": "Bench Press - With Bands",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Bent-Arm_Dumbbell_Pullover",
+      "name_ar": "بولوفر بالدمبل بذراعين منحنيتين للصدر",
+      "name_en": "Bent-Arm Dumbbell Pullover",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Bodyweight_Flyes",
+      "name_ar": "تفتيح صدر بوزن الجسم بالأرض",
+      "name_en": "Bodyweight Flyes",
+      "category": "chest",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Barbell_Shrug_Behind_The_Back",
+      "name_ar": "شراغز بالبار من خلف الظهر للترابيس",
+      "name_en": "Barbell Shrug Behind The Back",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Bent_Over_One-Arm_Long_Bar_Row",
+      "name_ar": "تجديف بالبار بيد واحدة للظهر",
+      "name_en": "Bent Over One-Arm Long Bar Row",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Bent_Over_Two-Dumbbell_Row_With_Palms_In",
+      "name_ar": "تجديف بالدمبلين بقبضة متوازية للظهر",
+      "name_en": "Bent Over Two-Dumbbell Row With Palms In",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Cable_Incline_Pushdown",
+      "name_ar": "سحب كابل مائل للأسفل للظهر",
+      "name_en": "Cable Incline Pushdown",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Band_Assisted_Pull-Up",
+      "name_ar": "عقلة بمساعدة حبل المقاومة",
+      "name_en": "Band Assisted Pull-Up",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Rocky_Pull-Ups_Pulldowns",
+      "name_ar": "سحب عالي وعقلة روكي للظهر",
+      "name_en": "Rocky Pull-Ups/Pulldowns",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Scapular_Pull-Up",
+      "name_ar": "عقلة تثبيت لوحي الكتف",
+      "name_en": "Scapular Pull-Up",
+      "category": "back",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 1,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Alternating_Cable_Shoulder_Press",
+      "name_ar": "ضغط كتف بالكابل بالتناوب",
+      "name_en": "Alternating Cable Shoulder Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Alternating_Kettlebell_Press",
+      "name_ar": "ضغط كتف بالكتلبل بالتناوب",
+      "name_en": "Alternating Kettlebell Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Band_Pull_Apart",
+      "name_ar": "سحب الحبل للخارج لتقوية لوحي الكتف والدالية الخلفية",
+      "name_en": "Band Pull Apart",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Barbell_Shoulder_Press",
+      "name_ar": "ضغط كتف بالبار",
+      "name_en": "Barbell Shoulder Press",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Bent_Over_Low-Pulley_Side_Lateral",
+      "name_ar": "رفرفة جانبية بالكابل المنخفض منحنياً",
+      "name_en": "Bent Over Low-Pulley Side Lateral",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Dumbbell_Lying_One-Arm_Rear_Lateral_Raise",
+      "name_ar": "رفرفة كتف خلفي مستلقياً على البنش",
+      "name_en": "Dumbbell Lying One-Arm Rear Lateral Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Dumbbell_Lying_Rear_Lateral_Raise",
+      "name_ar": "رفرفة خلفية بالدمبلين مستلقياً",
+      "name_en": "Dumbbell Lying Rear Lateral Raise",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Lateral_Raise_-_With_Bands",
+      "name_ar": "رفرفة كتف جانبي بأحبال المقاومة",
+      "name_en": "Lateral Raise - With Bands",
+      "category": "shoulders",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Alternate_Hammer_Curl",
+      "name_ar": "بايسبس مطرقة بالدمبل بالتناوب",
+      "name_en": "Alternate Hammer Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Alternate_Incline_Dumbbell_Curl",
+      "name_ar": "بايسبس مائل بالدمبل بالتناوب",
+      "name_en": "Alternate Incline Dumbbell Curl",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Band_Skull_Crusher",
+      "name_ar": "كسر جمجمة بحبل المقاومة للترايسبس",
+      "name_en": "Band Skull Crusher",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Barbell_Curls_Lying_Against_An_Incline",
+      "name_ar": "بايسبس كيرل بالبار على بنش مائل",
+      "name_en": "Barbell Curls Lying Against An Incline",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Palms-Down_Wrist_Curl_Over_A_Bench",
+      "name_ar": "ثني المعصم والراحة لأسفل على البنش",
+      "name_en": "Palms-Down Wrist Curl Over A Bench",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "arm-20",
+      "name_ar": "ضغط قبضة ضيقة على الدمبل للترايسبس",
+      "name_en": "Close-Grip Push-Up off of a Dumbbell",
+      "category": "arms",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "safety_cues",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "3_4_Sit-Up",
+      "name_ar": "تمرين 3/4 سيت أب لعضلات البطن",
+      "name_en": "3/4 Sit-Up",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Ab_Crunch_Machine",
+      "name_ar": "كرنش على جهاز البطن بالأوزان",
+      "name_en": "Ab Crunch Machine",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Alternate_Heel_Touchers",
+      "name_ar": "لمس الكعبين بالتناوب لعضلات الخصر والبطن",
+      "name_en": "Alternate Heel Touchers",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Barbell_Ab_Rollout_-_On_Knees",
+      "name_ar": "فرد عجلة البطن بالبار على الركبتين",
+      "name_en": "Barbell Ab Rollout - On Knees",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "Cocoons",
+      "name_ar": "تمرين الشرانق لشد كامل البطن",
+      "name_en": "Cocoons",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Gorilla_Chin_Crunch",
+      "name_ar": "عقلة جوريلا مع كرنش للبطن",
+      "name_en": "Gorilla Chin/Crunch",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    },
+    {
+      "id": "core-9",
+      "name_ar": "تمرين جاك نايف للبطن والكور",
+      "name_en": "Jackknife Sit-Up",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Scissor_Kick",
+      "name_ar": "ركلات المقص للأرجل للبطن السفلية",
+      "name_en": "Scissor Kick",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [
+        "benefit_contains_boilerplate"
+      ],
+      "issues_count": 1
+    },
+    {
+      "id": "Spider_Crawl",
+      "name_ar": "زحف العنكبوت للكور واللياقة",
+      "name_en": "Spider Crawl",
+      "category": "core",
+      "tier": 3,
+      "tier_label": "Tier 3 (توسيع على مستوى المجموعة)",
+      "resolved_muscles_count": 3,
+      "fields_present": [
+        "steps",
+        "benefit",
+        "mechanics",
+        "image_or_gif"
+      ],
+      "fields_missing": [
+        "common_mistakes",
+        "safety_cues",
+        "tempo",
+        "breathing",
+        "reference",
+        "rest_seconds"
+      ],
+      "flagged_issues": [],
+      "issues_count": 0
+    }
+  ]
+}

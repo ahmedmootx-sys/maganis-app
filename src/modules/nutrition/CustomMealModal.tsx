@@ -10,8 +10,7 @@ import {
   type FoodItem,
 } from './foodDatabase.ts'
 import type { MealCategory } from './types.ts'
-import { Select } from '../../components/Select'
-import { Sheet } from '../../components/Sheet.tsx'
+import { Select, Sheet, Callout } from '../../ui/index.ts'
 import { IconTrash } from '../../components/Icons.tsx'
 
 export interface CustomMealModalProps {
@@ -55,6 +54,8 @@ export function CustomMealModal({
     initialMeal?.category || 'lunch',
   )
   const [notesAr, setNotesAr] = useState(initialMeal?.notesAr || '')
+  const [formError, setFormError] = useState<string | null>(null)
+  const [foodFormError, setFoodFormError] = useState<string | null>(null)
 
   // Ingredients builder state
   const [ingredients, setIngredients] = useState<CustomMealIngredient[]>(
@@ -145,8 +146,9 @@ export function CustomMealModal({
 
   function handleSaveNewCustomFood(e: React.FormEvent) {
     e.preventDefault()
+    setFoodFormError(null)
     if (!newFoodName.trim()) {
-      alert('يرجى إدخال اسم المكوّن الغذائي')
+      setFoodFormError('يرجى إدخال اسم المكوّن الغذائي')
       return
     }
 
@@ -173,8 +175,9 @@ export function CustomMealModal({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setFormError(null)
     if (!nameAr.trim()) {
-      alert('يرجى إدخال اسم الوجبة')
+      setFormError('يرجى إدخال اسم الوجبة')
       return
     }
 
@@ -186,7 +189,7 @@ export function CustomMealModal({
 
     if (mode === 'ingredients') {
       if (ingredients.length === 0) {
-        alert('يرجى إضافة مكون واحد على الأقل للوجبة')
+        setFormError('يرجى إضافة مكون واحد على الأقل للوجبة')
         return
       }
       finalCalories = calculatedTotals.calories
@@ -233,6 +236,8 @@ export function CustomMealModal({
           padding: '8px 0 24px',
         }}
       >
+        {formError && <Callout tone="danger">{formError}</Callout>}
+
         {/* Meal Name */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <label
@@ -422,6 +427,7 @@ export function CustomMealModal({
                   gap: '10px',
                 }}
               >
+                {foodFormError && <Callout tone="danger">{foodFormError}</Callout>}
                 <div style={{ fontSize: '13px', fontWeight: 800 }}>
                   تسجيل مكوّن غذائي جديد في قائمتك:
                 </div>

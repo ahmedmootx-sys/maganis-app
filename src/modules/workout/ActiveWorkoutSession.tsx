@@ -10,10 +10,12 @@ import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { formatTime } from './workoutUtils.ts'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
-import { TopBar } from '../../components/TopBar.tsx'
-import { ProgressBar } from '../../components/ProgressBar.tsx'
-import { Sheet } from '../../components/Sheet.tsx'
-import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
+import {
+  TopBar,
+  ProgressBar,
+  Sheet,
+  ConfirmSheet,
+} from '../../ui/index.ts'
 import {
   IconClock,
   IconMoreVertical,
@@ -1095,7 +1097,10 @@ export function ActiveWorkoutSession({
             onCancel()
           }}
           title="إلغاء الجلسة؟"
-          message="هل أنت متأكد من إلغاء جلسة التمرين الحالية؟ لن يتم حفظ المجموعات التي قمت بتسجيلها."
+          consequences={[
+            'هل أنت متأكد من إلغاء جلسة التمرين الحالية؟',
+            'لن يتم حفظ المجموعات التي قمت بتسجيلها في سجل التتبع.',
+          ]}
           confirmLabel="نعم، إلغاء وخروج"
           cancelLabel="متابعة التمرين"
           isDestructive={true}

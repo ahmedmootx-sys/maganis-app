@@ -1,7 +1,7 @@
 import React from 'react'
 import { Icon, type IconName } from './Icon.tsx'
 
-export type CalloutVariant = 'info' | 'warning' | 'danger' | 'success'
+export type CalloutVariant = 'info' | 'warning' | 'danger' | 'success' | 'accent'
 
 export interface CalloutAction {
   label: string
@@ -10,15 +10,21 @@ export interface CalloutAction {
 
 export interface CalloutProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: CalloutVariant
+  tone?: CalloutVariant
   title?: string
+  message?: string
+  actionLabel?: string
+  onAction?: () => void
   icon?: IconName
-  action?: CalloutAction
-  children: React.ReactNode
+  avatar?: React.ReactNode
+  action?: CalloutAction | React.ReactNode
+  children?: React.ReactNode
   className?: string
 }
 
-const DEFAULT_VARIANT_ICONS: Record<CalloutVariant, IconName> = {
+const DEFAULT_VARIANT_ICONS: Record<string, IconName> = {
   info: 'info',
+  accent: 'info',
   warning: 'alert-triangle',
   danger: 'alert-circle',
   success: 'check-circle-2',
@@ -26,45 +32,60 @@ const DEFAULT_VARIANT_ICONS: Record<CalloutVariant, IconName> = {
 
 export const Callout: React.FC<CalloutProps> = ({
   variant = 'info',
+  tone,
   title,
+  message,
+  actionLabel,
+  onAction,
   icon,
+  avatar,
   action,
   children,
   className = '',
   ...props
 }) => {
-  const iconName = icon || DEFAULT_VARIANT_ICONS[variant]
+  const rawVariant = tone || variant || 'info'
+  const resolvedVariant: 'info' | 'warning' | 'danger' | 'success' =
+    rawVariant === 'accent' ? 'info' : rawVariant
+  const iconName = icon || DEFAULT_VARIANT_ICONS[rawVariant] || 'info'
+  const effectiveAction =
+    action ?? (actionLabel && onAction ? { label: actionLabel, onClick: onAction } : undefined)
+  const content = children ?? message
 
   return (
     <aside
-      className={`callout callout--${variant} ${className}`.trim()}
+      className={`callout callout--${resolvedVariant} ${className}`.trim()}
       role="note"
       {...props}
     >
       <div className="callout__icon" aria-hidden="true">
-        <Icon name={iconName} size={20} />
+        {avatar || <Icon name={iconName} size={20} />}
       </div>
       <div className="callout__content">
         {title && <div className="callout__title">{title}</div>}
-        <div className="callout__text">{children}</div>
-        {action && (
-          <button
-            type="button"
-            onClick={action.onClick}
-            style={{
-              marginTop: '6px',
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              fontSize: '12.5px',
-              fontWeight: 700,
-              color: 'inherit',
-              textDecoration: 'underline',
-              cursor: 'pointer',
-            }}
-          >
-            {action.label}
-          </button>
+        {content && <div className="callout__text">{content}</div>}
+        {effectiveAction && (
+          React.isValidElement(effectiveAction) ? (
+            effectiveAction
+          ) : (
+            <button
+              type="button"
+              onClick={(effectiveAction as CalloutAction).onClick}
+              style={{
+                marginTop: '6px',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                fontSize: '12.5px',
+                fontWeight: 700,
+                color: 'currentColor',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+              }}
+            >
+              {(effectiveAction as CalloutAction).label}
+            </button>
+          )
         )}
       </div>
     </aside>

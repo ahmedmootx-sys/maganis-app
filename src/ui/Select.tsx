@@ -5,19 +5,23 @@ import { Button } from './Button.tsx'
 
 export interface SelectOption {
   value: string
-  label: string
+  label?: string
+  labelAr?: string
+  labelEn?: string
   secondary?: string
+  description?: string
   disabled?: boolean
 }
 
 export interface SelectProps {
   id?: string
   label?: string
-  options: SelectOption[]
+  sheetTitle?: string
+  options: (SelectOption | string)[]
   value?: string
   values?: string[]
   multiple?: boolean
-  onChange: (value: string | string[]) => void
+  onChange: (value: any) => void
   placeholder?: string
   searchable?: boolean
   disabled?: boolean
@@ -27,6 +31,7 @@ export interface SelectProps {
 export const Select: React.FC<SelectProps> = ({
   id,
   label,
+  sheetTitle,
   options,
   value,
   values = [],
@@ -41,27 +46,39 @@ export const Select: React.FC<SelectProps> = ({
   const [search, setSearch] = useState('')
   const [tempValues, setTempValues] = useState<string[]>(values)
 
+  const normalizedOptions: SelectOption[] = useMemo(
+    () =>
+      options.map((o) =>
+        typeof o === 'string'
+          ? { value: o, label: o }
+          : { ...o, secondary: o.secondary || o.labelEn || o.description },
+      ),
+    [options],
+  )
+
+  const getOptLabel = (o: SelectOption) => o.label || o.labelAr || o.value
+
   const selectedLabels = useMemo(() => {
     if (multiple) {
       const activeSet = new Set(values)
-      return options
+      return normalizedOptions
         .filter((o) => activeSet.has(o.value))
-        .map((o) => o.label)
+        .map(getOptLabel)
         .join('، ')
     }
-    const found = options.find((o) => o.value === value)
-    return found ? found.label : ''
-  }, [multiple, options, value, values])
+    const found = normalizedOptions.find((o) => o.value === value)
+    return found ? getOptLabel(found) : ''
+  }, [multiple, normalizedOptions, value, values])
 
   const filteredOptions = useMemo(() => {
-    if (!search.trim()) return options
+    if (!search.trim()) return normalizedOptions
     const q = search.toLowerCase()
-    return options.filter(
+    return normalizedOptions.filter(
       (o) =>
-        o.label.toLowerCase().includes(q) ||
+        getOptLabel(o).toLowerCase().includes(q) ||
         (o.secondary && o.secondary.toLowerCase().includes(q)),
     )
-  }, [options, search])
+  }, [normalizedOptions, search])
 
   const handleOpen = () => {
     if (disabled) return
@@ -129,7 +146,7 @@ export const Select: React.FC<SelectProps> = ({
       <Sheet
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title={label || 'اختر من القائمة'}
+        title={sheetTitle || label || 'اختر من القائمة'}
         footer={
           multiple ? (
             <Button variant="primary" fullWidth onClick={handleApplyMulti}>
@@ -180,7 +197,7 @@ export const Select: React.FC<SelectProps> = ({
                   onClick={() => handleSelectOption(opt.value)}
                 >
                   <div className="option-row__content">
-                    <div className="option-row__title">{opt.label}</div>
+                    <div className="option-row__title">{getOptLabel(opt)}</div>
                     {opt.secondary && (
                       <div className="option-row__subtitle">
                         {opt.secondary}

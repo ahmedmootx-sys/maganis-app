@@ -2,8 +2,8 @@ import React from 'react'
 import { Icon, type IconName } from './Icon.tsx'
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'danger'
-  size?: 'normal' | 'large' | 'small'
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'ghost' | 'subtle'
+  size?: 'normal' | 'large' | 'small' | 'sm' | 'md' | 'lg'
   fullWidth?: boolean
   loading?: boolean
   leadingIcon?: IconName
@@ -23,10 +23,15 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
+  const normalizedVariant =
+    variant === 'ghost' ? 'tertiary' : variant === 'subtle' ? 'secondary' : variant
+  const normalizedSize =
+    size === 'sm' ? 'small' : size === 'lg' ? 'large' : size === 'md' ? 'normal' : size
+
   const classes = [
     'btn',
-    `btn--${variant}`,
-    size === 'large' ? 'btn--large' : size === 'small' ? 'btn--small' : '',
+    `btn--${normalizedVariant}`,
+    normalizedSize === 'large' ? 'btn--large' : normalizedSize === 'small' ? 'btn--small' : '',
     fullWidth ? 'btn--full-width' : '',
     loading ? 'btn--loading' : '',
     className,

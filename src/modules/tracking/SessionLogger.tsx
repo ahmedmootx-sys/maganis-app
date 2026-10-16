@@ -8,10 +8,12 @@ import type {
 import { getExerciseById, EXERCISES } from '../workout/exercises.ts'
 import { ExerciseDetailModal } from '../workout/ExerciseDetailModal.tsx'
 import { ExerciseVisual } from '../workout/ExerciseVisual.tsx'
-import { TopBar } from '../../components/TopBar.tsx'
-import { DateField } from '../../components/DateField.tsx'
-import { EmptyState } from '../../components/EmptyState.tsx'
-import { Sheet } from '../../components/Sheet.tsx'
+import {
+  TopBar,
+  DateField,
+  EmptyState,
+  Sheet,
+} from '../../ui/index.ts'
 import { IconPlus, IconTrash, IconInfo } from '../../components/Icons.tsx'
 
 export interface SessionLoggerProps {

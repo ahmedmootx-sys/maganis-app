@@ -2,23 +2,21 @@ import { useState, useEffect } from 'react'
 import type { UserProfile, Goal, ActivityLevel } from '../onboarding/types.ts'
 import { GOALS, ACTIVITY_LEVELS } from '../onboarding/types.ts'
 import type { BackupData } from '../shared/types.ts'
-import { TopBar } from '../../components/TopBar.tsx'
 import {
+  TopBar,
+  Section,
+  Card,
   KeyValueList,
-  type KeyValueItem,
-} from '../../components/KeyValueList.tsx'
-import { ListRow } from '../../components/ListRow.tsx'
-import { Select } from '../../components/Select.tsx'
-import { Sheet } from '../../components/Sheet.tsx'
-import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
+  ListRow,
+  Select,
+  Sheet,
+  ConfirmSheet,
+  Segmented,
+  Button,
+  Field,
+  Icon,
+} from '../../ui'
 import { BackupPanel } from '../backup/BackupPanel.tsx'
-import {
-  IconSun,
-  IconMoon,
-  IconMonitor,
-  IconEdit,
-  IconSettings,
-} from '../../components/Icons.tsx'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
 
@@ -38,41 +36,31 @@ export interface SettingsScreenProps {
 }
 
 const EXPERIENCE_OPTIONS = [
-  { value: 'beginner', labelAr: 'مبتدئ', labelEn: 'Beginner (أقل من سنة)' },
-  {
-    value: 'intermediate',
-    labelAr: 'متوسط',
-    labelEn: 'Intermediate (1 - 3 سنوات)',
-  },
-  {
-    value: 'advanced',
-    labelAr: 'متقدم',
-    labelEn: 'Advanced (أكثر من 3 سنوات)',
-  },
+  { value: 'beginner', labelAr: 'مبتدئ' },
+  { value: 'intermediate', labelAr: 'متوسط' },
+  { value: 'advanced', labelAr: 'متقدم' },
 ]
 
 const LOCATION_OPTIONS = [
-  { value: 'gym', labelAr: 'صالة ألعاب رياضية (الجيم)', labelEn: 'Gym' },
-  { value: 'home', labelAr: 'المنزل', labelEn: 'Home' },
-  { value: 'both', labelAr: 'كلاهما (الجيم والمنزل)', labelEn: 'Both' },
+  { value: 'gym', labelAr: 'صالة ألعاب رياضية (جيم)' },
+  { value: 'home', labelAr: 'المنزل' },
+  { value: 'both', labelAr: 'كلاهما (الجيم والمنزل)' },
 ]
 
 const WEEK_START_OPTIONS = [
-  { value: '6', labelAr: 'السبت', labelEn: 'Saturday (شائع في العالم العربي)' },
-  { value: '0', labelAr: 'الأحد', labelEn: 'Sunday' },
-  { value: '1', labelAr: 'الإثنين', labelEn: 'Monday' },
+  { value: '6', labelAr: 'السبت' },
+  { value: '0', labelAr: 'الأحد' },
+  { value: '1', labelAr: 'الإثنين' },
 ]
 
 const GOAL_OPTIONS = GOALS.map((g) => ({
   value: g.value,
   labelAr: g.labelAr,
-  labelEn: g.hintAr,
 }))
 
 const ACTIVITY_OPTIONS = ACTIVITY_LEVELS.map((a) => ({
   value: a.value,
   labelAr: a.labelAr,
-  labelEn: a.hintAr,
 }))
 
 export function SettingsScreen({
@@ -89,7 +77,6 @@ export function SettingsScreen({
   onOpenAtlasDebug,
   onFactoryReset,
 }: SettingsScreenProps) {
-  // Theme mode local or prop
   const [currentThemeMode, setCurrentThemeMode] = useState<ThemeMode>(() => {
     if (propThemeMode) return propThemeMode
     try {
@@ -99,98 +86,89 @@ export function SettingsScreen({
     } catch {
       // ignore
     }
-    return theme === 'dark' ? 'dark' : 'light'
+    return 'auto'
   })
 
-  // Edit Profile Modal
-  const [showEditModal, setShowEditModal] = useState(false)
-  const [showConfirmReset, setShowConfirmReset] = useState(false)
+  useEffect(() => {
+    if (currentThemeMode === 'auto') {
+      const isDark =
+        typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      if ((isDark && theme !== 'dark') || (!isDark && theme !== 'light')) {
+        onToggleTheme()
+      }
+    }
+  }, [currentThemeMode, theme, onToggleTheme])
 
-  // Edit form state
+  function handleThemeChange(mode: ThemeMode) {
+    setCurrentThemeMode(mode)
+    try {
+      localStorage.setItem('maganis:theme_mode', mode)
+    } catch {
+      // ignore
+    }
+    onChangeThemeMode?.(mode)
+
+    if (mode === 'light' && theme !== 'light') {
+      onToggleTheme()
+    } else if (mode === 'dark' && theme !== 'dark') {
+      onToggleTheme()
+    } else if (mode === 'auto') {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      if (isDark && theme !== 'dark') onToggleTheme()
+      if (!isDark && theme !== 'light') onToggleTheme()
+    }
+  }
+
+  // --- Profile Edit State ---
+  const [showEditModal, setShowEditModal] = useState(false)
   const [editName, setEditName] = useState(profile?.name ?? '')
   const [editGoal, setEditGoal] = useState<Goal>(
     profile?.primaryGoal ?? 'hypertrophy',
   )
   const [editDays, setEditDays] = useState(profile?.trainingDaysPerWeek ?? 4)
-  const [editExperience, setEditExperience] = useState<string>(
-    profile?.experienceLevel ?? 'intermediate',
+  const [editExperience, setEditExperience] = useState(
+    profile?.experienceLevel ?? 'beginner',
   )
-  const [editLocation, setEditLocation] = useState<string>(
+  const [editLocation, setEditLocation] = useState(
     profile?.trainingLocation ?? 'gym',
   )
-  const [editRestrictions, setEditRestrictions] = useState(
-    profile?.restrictions ?? '',
-  )
   const [editSex, setEditSex] = useState<'male' | 'female'>(
-    profile?.body.sex ?? 'male',
+    profile?.body?.sex ?? 'male',
   )
-  const [editAge, setEditAge] = useState(profile?.body.age ?? 25)
-  const [editHeight, setEditHeight] = useState(profile?.body.heightCm ?? 175)
-  const [editWeight, setEditWeight] = useState(profile?.body.weightKg ?? 75)
-  const [editActivity, setEditActivity] = useState<ActivityLevel>(
-    profile?.body.activityLevel ?? 'moderate',
+  const [editAge, setEditAge] = useState(profile?.body?.age ?? 25)
+  const [editHeight, setEditHeight] = useState(profile?.body?.heightCm ?? 175)
+  const [editWeight, setEditWeight] = useState(profile?.body?.weightKg ?? 75)
+  const [editActivity, setEditActivity] = useState(
+    profile?.body?.activityLevel ?? 'moderate',
+  )
+  const [editHasIssues, setEditHasIssues] = useState(
+    profile?.medical?.hasIssues ?? false,
+  )
+  const [editRestrictions, setEditRestrictions] = useState(
+    profile?.medical?.notes || (profile?.medical?.injuryTags ?? []).join('، '),
   )
 
-  // Sync edit form with profile when modal opens
   useEffect(() => {
     if (profile) {
       setEditName(profile.name ?? '')
       setEditGoal(profile.primaryGoal)
       setEditDays(profile.trainingDaysPerWeek)
-      setEditExperience(profile.experienceLevel ?? 'intermediate')
+      setEditExperience(profile.experienceLevel ?? 'beginner')
       setEditLocation(profile.trainingLocation ?? 'gym')
-      setEditRestrictions(profile.restrictions ?? '')
-      setEditSex(profile.body.sex)
-      setEditAge(profile.body.age)
-      setEditHeight(profile.body.heightCm)
-      setEditWeight(profile.body.weightKg)
-      setEditActivity(profile.body.activityLevel)
+      setEditSex(profile.body?.sex ?? 'male')
+      setEditAge(profile.body?.age ?? 25)
+      setEditHeight(profile.body?.heightCm ?? 175)
+      setEditWeight(profile.body?.weightKg ?? 75)
+      setEditActivity(profile.body?.activityLevel ?? 'moderate')
+      setEditHasIssues(profile.medical?.hasIssues ?? false)
+      setEditRestrictions(
+        profile.medical?.notes ||
+          (profile.medical?.injuryTags ?? []).join('، '),
+      )
     }
-  }, [profile, showEditModal])
-
-  function handleThemeChange(newMode: ThemeMode) {
-    setCurrentThemeMode(newMode)
-    try {
-      localStorage.setItem('maganis:theme_mode', newMode)
-    } catch {
-      // ignore
-    }
-
-    if (onChangeThemeMode) {
-      onChangeThemeMode(newMode)
-    } else {
-      let resolvedTheme: 'light' | 'dark' = 'light'
-      if (newMode === 'auto') {
-        resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)')
-          .matches
-          ? 'dark'
-          : 'light'
-      } else {
-        resolvedTheme = newMode
-      }
-      document.documentElement.setAttribute('data-theme', resolvedTheme)
-      try {
-        localStorage.setItem('maganis:theme', resolvedTheme)
-      } catch {
-        // ignore
-      }
-      if (resolvedTheme !== theme) {
-        onToggleTheme()
-      }
-    }
-  }
-
-  function handleWeekStartChange(val: string) {
-    if (!profile) return
-    const day = parseInt(val, 10)
-    if (!isNaN(day)) {
-      onUpdateProfile({
-        ...profile,
-        weekStartDay: day,
-        updatedAt: Date.now(),
-      })
-    }
-  }
+  }, [profile])
 
   function handleSaveProfileEdits() {
     if (!profile) return
@@ -200,17 +178,19 @@ export function SettingsScreen({
       primaryGoal: editGoal,
       goals: [editGoal],
       trainingDaysPerWeek: editDays,
-      experienceLevel:
-        (editExperience as 'beginner' | 'intermediate' | 'advanced') ||
-        undefined,
-      trainingLocation: (editLocation as 'gym' | 'home' | 'both') || undefined,
-      restrictions: editRestrictions.trim() || undefined,
+      experienceLevel: editExperience as 'beginner' | 'intermediate' | 'advanced',
+      trainingLocation: editLocation as 'gym' | 'home' | 'both',
+      medical: {
+        hasIssues: editHasIssues,
+        injuryTags: editHasIssues && editRestrictions.trim() ? [editRestrictions.trim()] : [],
+        notes: editRestrictions.trim(),
+      },
       body: {
         ...profile.body,
         sex: editSex,
-        age: Number(editAge),
-        heightCm: Number(editHeight),
-        weightKg: Number(editWeight),
+        age: editAge,
+        heightCm: editHeight,
+        weightKg: editWeight,
         activityLevel: editActivity,
       },
       updatedAt: Date.now(),
@@ -219,131 +199,30 @@ export function SettingsScreen({
     setShowEditModal(false)
   }
 
-  const isDebugMode =
-    typeof window !== 'undefined' && window.location.search.includes('debug=1')
-
-  const goalInfo = GOALS.find((g) => g.value === profile?.primaryGoal)
-  const activityInfo = ACTIVITY_LEVELS.find(
-    (a) => a.value === profile?.body.activityLevel,
-  )
-  const experienceLabel =
-    EXPERIENCE_OPTIONS.find((e) => e.value === profile?.experienceLevel)
-      ?.labelAr ?? '—'
-  const locationLabel =
-    LOCATION_OPTIONS.find((l) => l.value === profile?.trainingLocation)
-      ?.labelAr ?? '—'
-
-  // Profile KeyValue Items
-  const profileItems: KeyValueItem[] = []
-  if (profile) {
-    if (profile.name) {
-      profileItems.push({
-        id: 'name',
-        label: 'الاسم',
-        value: profile.name,
-      })
+  function handleWeekStartChange(val: string) {
+    if (!profile) return
+    const updated: UserProfile = {
+      ...profile,
+      weekStartDay: Number(val),
+      updatedAt: Date.now(),
     }
-    profileItems.push(
-      {
-        id: 'goal',
-        label: 'الهدف الأساسي',
-        value: goalInfo?.labelAr ?? '—',
-      },
-      {
-        id: 'training-days',
-        label: 'أيام التمرين',
-        value: `${profile.trainingDaysPerWeek} أيام / أسبوع`,
-      },
-      {
-        id: 'sex',
-        label: 'الجنس',
-        value: profile.body.sex === 'male' ? 'ذكر' : 'أنثى',
-      },
-      {
-        id: 'age',
-        label: 'العمر',
-        value: `${profile.body.age} سنة`,
-      },
-      {
-        id: 'height',
-        label: 'الطول',
-        value: `${profile.body.heightCm} سم`,
-      },
-      {
-        id: 'weight',
-        label: 'الوزن',
-        value: `${profile.body.weightKg} كجم`,
-      },
-      {
-        id: 'activity',
-        label: 'مستوى النشاط',
-        value: activityInfo?.labelAr ?? '—',
-      },
-    )
-    if (profile.experienceLevel) {
-      profileItems.push({
-        id: 'experience',
-        label: 'مستوى الخبرة',
-        value: experienceLabel,
-      })
-    }
-    if (profile.trainingLocation) {
-      profileItems.push({
-        id: 'location',
-        label: 'مكان التدريب',
-        value: locationLabel,
-      })
-    }
-    if (profile.restrictions) {
-      profileItems.push({
-        id: 'restrictions',
-        label: 'إصابات أو قيود',
-        value: profile.restrictions,
-      })
-    }
+    onUpdateProfile(updated)
   }
 
-  // About App KeyValue Items
-  const aboutItems: KeyValueItem[] = [
-    {
-      id: 'app-version',
-      label: 'الإصدار',
-      value: '0.2.0',
-      secondaryIsLtr: true,
-    },
-    {
-      id: 'app-type',
-      label: 'طبيعة التخزين',
-      value: 'محلي بالكامل (Local-first Offline)',
-    },
-    {
-      id: 'anatomical-model',
-      label: 'النموذج التشريحي',
-      value: 'BodyParts3D, © DBCLS',
-      secondary: 'CC BY-SA 2.1 JP',
-      secondaryIsLtr: true,
-    },
-    {
-      id: 'icons-license',
-      label: 'حزمة الأيقونات',
-      value: 'Lucide Icons',
-      secondary: 'ISC License',
-      secondaryIsLtr: true,
-    },
-  ]
+  // Confirm Reset State
+  const [showConfirmReset, setShowConfirmReset] = useState(false)
+
+  const isDebugMode =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('debug') === '1'
+
+  const goalObj = GOALS.find((g) => g.value === profile?.primaryGoal)
+  const activityObj = ACTIVITY_LEVELS.find(
+    (a) => a.value === profile?.body?.activityLevel,
+  )
 
   return (
-    <div
-      className="settings-screen"
-      data-testid="settings-screen"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-        paddingBottom: '48px',
-      }}
-    >
-      {/* TopBar */}
+    <div className="settings-screen" dir="rtl">
       <TopBar title="الإعدادات" />
 
       <div
@@ -351,271 +230,218 @@ export function SettingsScreen({
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '20px',
-          padding: '0 16px',
-          maxWidth: '720px',
+          gap: '16px',
+          padding: '16px',
+          maxWidth: '560px',
           margin: '0 auto',
           width: '100%',
-          boxSizing: 'border-box',
         }}
       >
-        {/* Section 1: Profile */}
-        <section className="settings-section">
-          <h2 className="section-title">الملف الشخصي</h2>
-          <div className="card" style={{ padding: '16px' }}>
-            <KeyValueList items={profileItems} />
-            <div style={{ marginTop: '16px' }}>
-              <button
-                type="button"
-                className="ghost-secondary full-width"
-                onClick={() => setShowEditModal(true)}
+        {/* Section 1: الملف الشخصي */}
+        <Section
+          title="الملف الشخصي"
+          trailing={
+            <Button
+              variant="subtle"
+              size="sm"
+              onClick={() => setShowEditModal(true)}
+            >
+              تعديل بياناتي
+            </Button>
+          }
+        >
+          <Card padding="md">
+            <KeyValueList
+              items={[
+                {
+                  key: 'الاسم',
+                  value: profile?.name || 'غير محدد',
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'الهدف الأساسي',
+                  value: goalObj?.labelAr || '—',
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'أيام التمرين',
+                  value: `${profile?.trainingDaysPerWeek ?? 4} أيام أسبوعياً`,
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'الخبرة',
+                  value:
+                    profile?.experienceLevel === 'beginner'
+                      ? 'مبتدئ'
+                      : profile?.experienceLevel === 'intermediate'
+                        ? 'متوسط'
+                        : 'متقدم',
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'مكان التمرين',
+                  value:
+                    profile?.trainingLocation === 'gym'
+                      ? 'جيم'
+                      : profile?.trainingLocation === 'home'
+                        ? 'منزل'
+                        : 'الاثنان',
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'الجنس',
+                  value: profile?.body?.sex === 'female' ? 'أنثى' : 'ذكر',
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'الوزن',
+                  value: `${profile?.body?.weightKg ?? '—'} كجم`,
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'الطول',
+                  value: `${profile?.body?.heightCm ?? '—'} سم`,
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'العمر',
+                  value: `${profile?.body?.age ?? '—'} سنة`,
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'مستوى النشاط',
+                  value: activityObj?.labelAr || '—',
+                  onClick: () => setShowEditModal(true),
+                },
+                {
+                  key: 'الصحة والإصابات',
+                  value: profile?.medical?.hasIssues
+                    ? profile.medical.notes || 'يوجد إصابة'
+                    : 'سليم ولا توجد إصابات',
+                  onClick: () => setShowEditModal(true),
+                },
+              ]}
+            />
+          </Card>
+        </Section>
+
+        {/* Section 2: التفضيلات */}
+        <Section title="التفضيلات">
+          <Card padding="md">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div>
+                <Select
+                  id="settings-week-start"
+                  label="بداية الأسبوع التدريبي"
+                  value={String(profile?.weekStartDay ?? 6)}
+                  onChange={handleWeekStartChange}
+                  options={WEEK_START_OPTIONS}
+                />
+              </div>
+              <div
                 style={{
-                  height: '48px',
                   display: 'flex',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  fontSize: '15px',
-                  fontWeight: 700,
+                  paddingTop: '6px',
+                  borderTop: '1px solid var(--color-divider)',
                 }}
               >
-                <IconEdit size={18} />
-                تعديل بياناتي
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 2: Preferences */}
-        <section className="settings-section">
-          <h2 className="section-title">التفضيلات</h2>
-          <div
-            className="card"
-            style={{
-              padding: '16px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '18px',
-            }}
-          >
-            {/* Theme Selector (Segmented) */}
-            <div>
+                <span style={{ fontSize: '14px', fontWeight: 600 }}>وقت الراحة الافتراضي</span>
+                <span style={{ fontSize: '14px', color: 'var(--color-text-2)' }}>60 ثانية</span>
+              </div>
               <div
                 style={{
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: 'var(--ink)',
-                  marginBottom: '4px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingTop: '6px',
+                  borderTop: '1px solid var(--color-divider)',
                 }}
               >
-                المظهر والثيم
-              </div>
-              <p
-                className="muted"
-                style={{ fontSize: '12.5px', margin: '0 0 10px 0' }}
-              >
-                التحكم في الوضع الليلي والنهاري للتطبيق
-              </p>
-              <div
-                className="segmented-control"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  background: 'var(--card-subtle)',
-                  padding: '4px',
-                  borderRadius: '12px',
-                  border: '1px solid var(--line)',
-                  gap: '4px',
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => handleThemeChange('auto')}
-                  style={{
-                    height: '42px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background:
-                      currentThemeMode === 'auto'
-                        ? 'var(--card-bg)'
-                        : 'transparent',
-                    color:
-                      currentThemeMode === 'auto'
-                        ? 'var(--ink)'
-                        : 'var(--muted)',
-                    fontWeight: 700,
-                    fontSize: '13.5px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    boxShadow:
-                      currentThemeMode === 'auto'
-                        ? '0 1px 3px rgba(0,0,0,0.1)'
-                        : 'none',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <IconMonitor size={16} />
-                  تلقائي
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleThemeChange('light')}
-                  style={{
-                    height: '42px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background:
-                      currentThemeMode === 'light'
-                        ? 'var(--card-bg)'
-                        : 'transparent',
-                    color:
-                      currentThemeMode === 'light'
-                        ? 'var(--ink)'
-                        : 'var(--muted)',
-                    fontWeight: 700,
-                    fontSize: '13.5px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    boxShadow:
-                      currentThemeMode === 'light'
-                        ? '0 1px 3px rgba(0,0,0,0.1)'
-                        : 'none',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <IconSun size={16} />
-                  فاتح
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleThemeChange('dark')}
-                  style={{
-                    height: '42px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background:
-                      currentThemeMode === 'dark'
-                        ? 'var(--card-bg)'
-                        : 'transparent',
-                    color:
-                      currentThemeMode === 'dark'
-                        ? 'var(--ink)'
-                        : 'var(--muted)',
-                    fontWeight: 700,
-                    fontSize: '13.5px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    boxShadow:
-                      currentThemeMode === 'dark'
-                        ? '0 1px 3px rgba(0,0,0,0.1)'
-                        : 'none',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <IconMoon size={16} />
-                  داكن
-                </button>
+                <span style={{ fontSize: '14px', fontWeight: 600 }}>نظام الوحدات</span>
+                <span style={{ fontSize: '14px', color: 'var(--color-text-2)' }}>متري (كجم / سم)</span>
               </div>
             </div>
+          </Card>
+        </Section>
 
-            {/* Week Start Day */}
-            <div>
-              <Select
-                id="settings-week-start"
-                label="بداية الأسبوع التدريبي"
-                value={String(profile?.weekStartDay ?? 6)}
-                onChange={handleWeekStartChange}
-                options={WEEK_START_OPTIONS}
-              />
-              <p
-                className="muted"
-                style={{ fontSize: '12px', margin: '4px 0 0 0' }}
-              >
-                يحدد اليوم الأول في شريط الأيام وجدول التمارين الأسبوعي.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* Section 3: المظهر (ONE Segmented Row) */}
+        <Section title="المظهر">
+          <Card padding="md">
+            <Segmented
+              options={[
+                { value: 'auto', label: 'تلقائي' },
+                { value: 'light', label: 'فاتح' },
+                { value: 'dark', label: 'داكن' },
+              ]}
+              value={currentThemeMode}
+              onChange={(val) => handleThemeChange(val as ThemeMode)}
+            />
+          </Card>
+        </Section>
 
-        {/* Section 3: Data & Sync */}
-        <section className="settings-section">
-          <h2 className="section-title">البيانات والمزامنة</h2>
+        {/* Section 4: البيانات والمزامنة */}
+        <Section title="البيانات والمزامنة">
           <BackupPanel
             backupData={backupData}
             onImported={onImported}
             onRestore={onRestore}
           />
-        </section>
+        </Section>
 
-        {/* Section 4: About App */}
-        <section className="settings-section">
-          <h2 className="section-title">حول التطبيق</h2>
-          <div className="card" style={{ padding: '16px' }}>
-            <KeyValueList items={aboutItems} />
-          </div>
-        </section>
+        {/* Section 5: حول التطبيق وحقوق الملكية */}
+        <Section title="حول التطبيق">
+          <Card padding="md">
+            <KeyValueList
+              items={[
+                { key: 'الإصدار', value: '0.2.0', bdi: true },
+                { key: 'طبيعة التخزين', value: 'محلي بالكامل على جهازك' },
+                {
+                  key: 'النموذج التشريحي',
+                  value:
+                    'BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International',
+                },
+                { key: 'الأيقونات', value: 'Lucide Icons (ISC)' },
+                { key: 'وسائط التمارين', value: 'Gym Visual' },
+              ]}
+            />
+          </Card>
+        </Section>
 
-        {/* Section 5: Developer Debug Inspector (debug=1 only) */}
+        {/* Developer debug only if ?debug=1 */}
         {isDebugMode && (
-          <section className="settings-section">
-            <h2 className="section-title">أدوات المطور والتصحيح</h2>
-            <div className="card" style={{ padding: '8px' }}>
+          <Section title="أدوات المطور والتصحيح">
+            <Card padding="sm">
               <ListRow
-                leading={<IconSettings size={20} />}
                 title="أداة فحص الرؤوس العضلية (Muscle Atlas Inspector)"
-                secondary="استعراض الرؤوس العضلية الـ 48 تشريحياً والتأكد من حدود كل رأس عضلي"
+                subtitle="فحص الرؤوس العضلية الـ 53"
                 onClick={onOpenAtlasDebug}
+                trailing={<Icon name="chevron-left" size={16} />}
               />
-            </div>
-          </section>
+            </Card>
+          </Section>
         )}
 
-        {/* Section 6: Danger Zone */}
-        <section className="settings-section">
-          <h2 className="section-title" style={{ color: 'var(--danger)' }}>
-            منطقة الخطر
-          </h2>
-          <div
-            className="card"
-            style={{
-              padding: '16px',
-              border: '1px solid var(--danger-line)',
-            }}
-          >
-            <p
-              style={{
-                fontSize: '13.5px',
-                color: 'var(--muted)',
-                margin: '0 0 14px 0',
-                lineHeight: 1.6,
-              }}
-            >
-              إعادة ضبط التطبيق بالكامل ومسح كافة البيانات والجداول التدريبية
-              وسجلات التغذية واستعادة الحالة الأولية:
-            </p>
-            <button
-              type="button"
-              className="danger full-width"
+        {/* Section 6: منطقة الخطر (Danger Zone) */}
+        <Section title="منطقة الخطر">
+          <Card padding="md">
+            <ListRow
+              title="إعادة ضبط التطبيق"
+              subtitle="حذف الحساب والبيانات والبدء من جديد"
               onClick={() => setShowConfirmReset(true)}
-              style={{
-                height: '48px',
-                fontWeight: 800,
-                fontSize: '14.5px',
-              }}
-            >
-              حذف كل البيانات وإعادة ضبط المصنع
-            </button>
-          </div>
-        </section>
+              trailing={
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => setShowConfirmReset(true)}
+                >
+                  حذف كل البيانات وإعادة ضبط المصنع
+                </Button>
+              }
+            />
+          </Card>
+        </Section>
       </div>
 
       {/* Edit Profile Sheet */}
@@ -624,46 +450,14 @@ export function SettingsScreen({
         onClose={() => setShowEditModal(false)}
         title="تعديل بيانات الملف الشخصي"
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            padding: '8px 0 24px',
-          }}
-        >
-          {/* Name */}
-          <div
-            className="form-group"
-            style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
-          >
-            <label
-              htmlFor="edit-profile-name"
-              style={{ fontSize: '13.5px', fontWeight: 700 }}
-            >
-              الاسم (اختياري)
-            </label>
-            <input
-              id="edit-profile-name"
-              type="text"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              placeholder="مثال: أحمد"
-              style={{
-                height: '48px',
-                width: '100%',
-                borderRadius: '10px',
-                border: '1.5px solid var(--line)',
-                padding: '0 14px',
-                fontSize: '15px',
-                background: 'var(--card-bg)',
-                color: 'var(--ink)',
-                boxSizing: 'border-box',
-              }}
-            />
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '20px' }}>
+          <Field
+            label="الاسم"
+            value={editName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditName(e.target.value)}
+            placeholder="مثال: أحمد"
+          />
 
-          {/* Primary Goal */}
           <Select
             id="edit-profile-goal"
             label="الهدف الأساسي"
@@ -672,185 +466,83 @@ export function SettingsScreen({
             options={GOAL_OPTIONS}
           />
 
-          {/* Training Days */}
-          <Select
-            id="edit-profile-days"
-            label="أيام التمرين في الأسبوع"
-            value={String(editDays)}
-            onChange={(val) => setEditDays(Number(val))}
-            options={[
-              { value: '2', labelAr: 'يومان في الأسبوع' },
-              { value: '3', labelAr: '3 أيام في الأسبوع' },
-              { value: '4', labelAr: '4 أيام في الأسبوع' },
-              { value: '5', labelAr: '5 أيام في الأسبوع' },
-              { value: '6', labelAr: '6 أيام في الأسبوع' },
-            ]}
-          />
-
-          {/* Experience Level */}
-          <Select
-            id="edit-profile-experience"
-            label="مستوى الخبرة في التدريب"
-            value={editExperience}
-            onChange={(val) => setEditExperience(val)}
-            options={EXPERIENCE_OPTIONS}
-          />
-
-          {/* Training Location */}
-          <Select
-            id="edit-profile-location"
-            label="مكان التدريب المفضل"
-            value={editLocation}
-            onChange={(val) => setEditLocation(val)}
-            options={LOCATION_OPTIONS}
-          />
-
-          {/* Restrictions / Injuries */}
-          <div
-            className="form-group"
-            style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
-          >
-            <label
-              htmlFor="edit-profile-restrictions"
-              style={{ fontSize: '13.5px', fontWeight: 700 }}
-            >
-              إصابات سابقة أو قيود حركية (اختياري)
-            </label>
-            <textarea
-              id="edit-profile-restrictions"
-              value={editRestrictions}
-              onChange={(e) => setEditRestrictions(e.target.value)}
-              placeholder="مثال: آلام أسفل الظهر، خشونة بالركبة..."
-              rows={2}
-              style={{
-                width: '100%',
-                borderRadius: '10px',
-                border: '1.5px solid var(--line)',
-                padding: '10px 14px',
-                fontSize: '14px',
-                background: 'var(--card-bg)',
-                color: 'var(--ink)',
-                boxSizing: 'border-box',
-                resize: 'none',
-              }}
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+              أيام التمرين أسبوعياً
+            </div>
+            <Segmented
+              options={[
+                { value: '2', label: '2' },
+                { value: '3', label: '3' },
+                { value: '4', label: '4' },
+                { value: '5', label: '5' },
+                { value: '6', label: '6' },
+              ]}
+              value={String(editDays)}
+              onChange={(val) => setEditDays(Number(val))}
             />
           </div>
 
-          {/* Sex */}
-          <Select
-            id="edit-profile-sex"
-            label="الجنس"
-            value={editSex}
-            onChange={(val) => setEditSex(val as 'male' | 'female')}
-            options={[
-              { value: 'male', labelAr: 'ذكر' },
-              { value: 'female', labelAr: 'أنثى' },
-            ]}
-          />
-
-          {/* Body stats grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '10px',
-            }}
-          >
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
-            >
-              <label
-                htmlFor="edit-profile-age"
-                style={{ fontSize: '13px', fontWeight: 700 }}
-              >
-                العمر
-              </label>
-              <div style={{ position: 'relative' }}>
-                <input
-                  id="edit-profile-age"
-                  type="number"
-                  min="14"
-                  max="99"
-                  value={editAge}
-                  onChange={(e) => setEditAge(Number(e.target.value))}
-                  style={{
-                    height: '48px',
-                    width: '100%',
-                    borderRadius: '10px',
-                    border: '1.5px solid var(--line)',
-                    padding: '0 10px',
-                    fontSize: '15px',
-                    background: 'var(--card-bg)',
-                    color: 'var(--ink)',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              </div>
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+              خبرة التدريب
             </div>
-
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
-            >
-              <label
-                htmlFor="edit-profile-height"
-                style={{ fontSize: '13px', fontWeight: 700 }}
-              >
-                الطول (سم)
-              </label>
-              <input
-                id="edit-profile-height"
-                type="number"
-                min="100"
-                max="240"
-                value={editHeight}
-                onChange={(e) => setEditHeight(Number(e.target.value))}
-                style={{
-                  height: '48px',
-                  width: '100%',
-                  borderRadius: '10px',
-                  border: '1.5px solid var(--line)',
-                  padding: '0 10px',
-                  fontSize: '15px',
-                  background: 'var(--card-bg)',
-                  color: 'var(--ink)',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </div>
-
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
-            >
-              <label
-                htmlFor="edit-profile-weight"
-                style={{ fontSize: '13px', fontWeight: 700 }}
-              >
-                الوزن (كجم)
-              </label>
-              <input
-                id="edit-profile-weight"
-                type="number"
-                min="35"
-                max="300"
-                step="0.5"
-                value={editWeight}
-                onChange={(e) => setEditWeight(Number(e.target.value))}
-                style={{
-                  height: '48px',
-                  width: '100%',
-                  borderRadius: '10px',
-                  border: '1.5px solid var(--line)',
-                  padding: '0 10px',
-                  fontSize: '15px',
-                  background: 'var(--card-bg)',
-                  color: 'var(--ink)',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </div>
+            <Segmented
+              options={EXPERIENCE_OPTIONS}
+              value={editExperience}
+              onChange={(val) => setEditExperience(val as 'beginner' | 'intermediate' | 'advanced')}
+            />
           </div>
 
-          {/* Activity Level */}
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+              مكان التدريب
+            </div>
+            <Segmented
+              options={LOCATION_OPTIONS}
+              value={editLocation}
+              onChange={(val) => setEditLocation(val as 'gym' | 'home' | 'both')}
+            />
+          </div>
+
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+              الجنس
+            </div>
+            <Segmented
+              options={[
+                { value: 'male', label: 'ذكر' },
+                { value: 'female', label: 'أنثى' },
+              ]}
+              value={editSex}
+              onChange={(val) => setEditSex(val as 'male' | 'female')}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+            <Field
+              label="العمر"
+              unit="سنة"
+              inputMode="numeric"
+              value={String(editAge)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditAge(Number(e.target.value))}
+            />
+            <Field
+              label="الطول"
+              unit="سم"
+              inputMode="numeric"
+              value={String(editHeight)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditHeight(Number(e.target.value))}
+            />
+            <Field
+              label="الوزن"
+              unit="كجم"
+              inputMode="decimal"
+              value={String(editWeight)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditWeight(Number(e.target.value))}
+            />
+          </div>
+
           <Select
             id="edit-profile-activity"
             label="مستوى النشاط اليومي"
@@ -859,49 +551,64 @@ export function SettingsScreen({
             options={ACTIVITY_OPTIONS}
           />
 
-          {/* Actions */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              marginTop: '12px',
-            }}
-          >
-            <button
-              type="button"
-              className="btn-primary-action full-width"
-              onClick={handleSaveProfileEdits}
-              style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
-            >
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+              هل لديك إصابات سابقة؟
+            </div>
+            <Segmented
+              options={[
+                { value: 'false', label: 'لا' },
+                { value: 'true', label: 'نعم' },
+              ]}
+              value={String(editHasIssues)}
+              onChange={(val) => setEditHasIssues(val === 'true')}
+            />
+          </div>
+
+          {editHasIssues && (
+            <Field
+              label="تفاصيل الإصابة أو الملاحظات"
+              value={editRestrictions}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditRestrictions(e.target.value)}
+              placeholder="اكتب تفاصيل الإصابة..."
+            />
+          )}
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+            <Button variant="primary" size="lg" fullWidth onClick={handleSaveProfileEdits}>
               حفظ التعديلات
-            </button>
-            <button
-              type="button"
-              className="ghost-secondary full-width"
+            </Button>
+            <Button
+              variant="ghost"
+              size="md"
+              fullWidth
               onClick={() => {
                 setShowEditModal(false)
                 onEditProfile()
               }}
-              style={{ height: '44px', fontSize: '13.5px' }}
             >
-              إعادة التهيئة الشاملة (معالج البداية)
-            </button>
+              إعادة فتح معالج البداية بالكامل
+            </Button>
           </div>
         </div>
       </Sheet>
 
-      {/* Confirm Factory Reset */}
+      {/* Danger Zone: ConfirmSheet with verification */}
       <ConfirmSheet
         isOpen={showConfirmReset}
         onClose={() => setShowConfirmReset(false)}
         onConfirm={onFactoryReset}
         title="تأكيد إعادة ضبط المصنع الشاملة"
-        message="تحذير نهائي: سيتم مسح حسابك والجدول التدريبي والتمارين المخصصة وكل سجلات التغذية والوزن بشكل نهائي، وسيعود التطبيق كما لو كنت تفتحه لأول مرة. لا يمكن التراجع عن هذا الإجراء."
+        consequences={[
+          'سيتم مسح حسابك والملف الشخصي نهائياً.',
+          'سيتم مسح الجداول التدريبية والتمارين المخصصة.',
+          'سيتم مسح كافة سجلات الوزن، الملاحظات، وسجلات التغذية اليومية.',
+        ]}
         confirmLabel="حذف كل شيء والبدء من جديد"
-        cancelLabel="إلغاء التراجع"
+        cancelLabel="تراجع"
         isDestructive
       />
     </div>
   )
 }
+export default SettingsScreen

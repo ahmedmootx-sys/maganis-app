@@ -21,12 +21,14 @@ import {
   parseAndValidateRoutineJson,
   shareRoutineFile,
 } from './workoutUtils.ts'
-import { TopBar } from '../../components/TopBar.tsx'
-import { Sheet } from '../../components/Sheet.tsx'
-import { ConfirmSheet } from '../../components/ConfirmSheet.tsx'
-import { ListRow } from '../../components/ListRow.tsx'
-import { EmptyState } from '../../components/EmptyState.tsx'
-import { Toast } from '../../components/Toast.tsx'
+import {
+  TopBar,
+  Sheet,
+  ConfirmSheet,
+  ListRow,
+  EmptyState,
+  Toast,
+} from '../../ui/index.ts'
 import {
   IconSearch,
   IconPlus,
@@ -105,6 +107,23 @@ export function WeeklyPlanView({
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(
     initialSelectedDayIndex,
   )
+
+  useEffect(() => {
+    if (initialSelectedDayIndex !== undefined && initialSelectedDayIndex !== null) {
+      setSelectedDayIndex(initialSelectedDayIndex)
+    }
+  }, [initialSelectedDayIndex])
+
+  const handleSelectDay = (dayIndex: number) => {
+    setSelectedDayIndex(dayIndex)
+    window.location.hash = `#/training/day/${dayIndex}`
+  }
+
+  const handleBackToOverview = () => {
+    setSelectedDayIndex(null)
+    setIsEditMode(false)
+    window.location.hash = '#/training'
+  }
 
   // Modals & Sheets
   const [isPlusSheetOpen, setIsPlusSheetOpen] = useState(false)
@@ -190,11 +209,7 @@ export function WeeklyPlanView({
   }, [program, selectedDayIndex])
 
   function handleOpenDetail(exerciseId: string) {
-    const custom = customExercises.find((c) => c.id === exerciseId)
-    const ex = custom ?? getExerciseById(exerciseId)
-    if (ex) {
-      setSelectedExercise(ex)
-    }
+    window.location.hash = `#/exercise/${exerciseId}`
   }
 
   function handleSwapExercise(newEx: Exercise) {
@@ -391,10 +406,7 @@ export function WeeklyPlanView({
       <div className="screen-container day-screen" dir="rtl">
         {/* TopBar with back */}
         <TopBar
-          onBack={() => {
-            setSelectedDayIndex(null)
-            setIsEditMode(false)
-          }}
+          onBack={handleBackToOverview}
           title={selectedDay.labelAr}
           subtitle={selectedDay.focus}
           actions={
@@ -1071,7 +1083,7 @@ export function WeeklyPlanView({
               return (
                 <ListRow
                   key={day.dayIndex}
-                  onClick={() => setSelectedDayIndex(day.dayIndex)}
+                  onClick={() => handleSelectDay(day.dayIndex)}
                   className={isToday ? 'list-row--active' : ''}
                   leading={
                     <div
@@ -1148,6 +1160,40 @@ export function WeeklyPlanView({
               )
             })}
           </div>
+        </section>
+
+        {/* Library Prominent Row */}
+        <section className="screen-section">
+          <ListRow
+            onClick={() => {
+              window.location.hash = '#/library'
+            }}
+            leading={
+              <div
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: 'var(--card-subtle)',
+                  color: 'var(--accent)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid var(--line)',
+                }}
+              >
+                <IconDumbbell size={20} />
+              </div>
+            }
+            title="مكتبة التمارين الشاملة"
+            secondary="استعراض وتصفية التمارين حسب العضلة والأداة والمستوى"
+            trailing={
+              <IconChevronLeft
+                size={16}
+                style={{ color: 'var(--muted)' }}
+              />
+            }
+          />
         </section>
       </div>
 
@@ -1433,7 +1479,7 @@ export function WeeklyPlanView({
         }
         onConfirm={replaceConfirm.action}
         title={replaceConfirm.title}
-        message={replaceConfirm.message}
+        consequences={[replaceConfirm.message]}
         confirmLabel="تأكيد الاستبدال"
         cancelLabel="إلغاء"
       />
@@ -1447,7 +1493,10 @@ export function WeeklyPlanView({
           showToast('تم حذف الجدول التدريبي')
         }}
         title="حذف الجدول التدريبي"
-        message="هل أنت متأكد من حذف الجدول التدريبي بالكامل؟ يمكنك استرجاعه من حافظة الجداول أو إنشاء جدول جديد في أي وقت."
+        consequences={[
+          'هل أنت متأكد من حذف الجدول التدريبي بالكامل؟',
+          'يمكنك استرجاعه من حافظة الجداول أو إنشاء جدول جديد في أي وقت.',
+        ]}
         confirmLabel="حذف الجدول"
         cancelLabel="إلغاء"
         isDestructive={true}

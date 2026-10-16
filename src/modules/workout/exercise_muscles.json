@@ -93,6 +93,15 @@
       { "id": "triceps_long", "role": "secondary" }
     ]
   },
+  "barbell_bench_press": {
+    "muscles": [
+      { "id": "pec_sternal", "role": "primary" },
+      { "id": "pec_clavicular", "role": "secondary" },
+      { "id": "delt_anterior", "role": "secondary" },
+      { "id": "triceps_lateral", "role": "secondary" },
+      { "id": "triceps_long", "role": "secondary" }
+    ]
+  },
   "barbell_squat": {
     "muscles": [
       { "id": "rectus_femoris", "role": "primary" },

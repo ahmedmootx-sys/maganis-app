@@ -5,10 +5,14 @@ import { IconButton } from './Button.tsx'
 export interface FileFieldProps {
   id?: string
   name?: string
+  label?: string
   fileName?: string
   accept?: string
   onChange: (file: File | null) => void
   buttonLabel?: string
+  buttonText?: string
+  readAs?: string
+  onFileLoaded?: (data: any) => void
   disabled?: boolean
   className?: string
 }
@@ -16,18 +20,34 @@ export interface FileFieldProps {
 export const FileField: React.FC<FileFieldProps> = ({
   id,
   name,
+  label,
   fileName,
   accept,
   onChange,
   buttonLabel = 'اختيار ملف...',
+  buttonText,
+  readAs,
+  onFileLoaded,
   disabled = false,
   className = '',
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
+  const effectiveBtnLabel = buttonText || buttonLabel
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null
     onChange(file)
+    if (file && onFileLoaded) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        onFileLoaded(reader.result)
+      }
+      if (readAs === 'text') {
+        reader.readAsText(file)
+      } else {
+        reader.readAsDataURL(file)
+      }
+    }
   }
 
   const handleClear = () => {
@@ -37,6 +57,11 @@ export const FileField: React.FC<FileFieldProps> = ({
 
   return (
     <div className={`file-field-container ${className}`.trim()}>
+      {label && (
+        <label htmlFor={id} className="field-label" style={{ marginBottom: '6px', display: 'block' }}>
+          {label}
+        </label>
+      )}
       <input
         ref={inputRef}
         type="file"
@@ -69,7 +94,7 @@ export const FileField: React.FC<FileFieldProps> = ({
           }}
         >
           <Icon name="folder" size={18} />
-          <span>{buttonLabel}</span>
+          <span>{effectiveBtnLabel}</span>
         </button>
       ) : (
         <div

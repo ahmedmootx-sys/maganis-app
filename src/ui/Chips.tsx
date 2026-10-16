@@ -103,3 +103,11 @@ export const ToggleChip: React.FC<ToggleChipProps> = ({
     </button>
   )
 }
+
+export interface ChipsProps extends ChipProps {
+  selected?: boolean
+}
+
+export const Chips: React.FC<ChipsProps> = ({ selected, active, ...props }) => {
+  return <Chip active={selected ?? active} {...props} />
+}
