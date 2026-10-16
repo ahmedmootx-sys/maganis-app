@@ -542,7 +542,7 @@ export function ActiveWorkoutSession({
             }}
           >
             <IconClock size={18} style={{ color: 'var(--brand)' }} />
-            <span>فترة الراحة:</span>
+            <span>فترة الراحة</span>
             <strong
               style={{
                 color: 'var(--brand)',

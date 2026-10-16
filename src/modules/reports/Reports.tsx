@@ -452,7 +452,7 @@ export function Reports({
               onClick={handleExportReports}
               style={{ fontWeight: 700 }}
             >
-              تصدير التقارير (JSON)
+              تصدير نسخة احتياطية للتقارير
             </button>
             <label
               className="button-secondary small"
@@ -742,7 +742,7 @@ export function Reports({
           }}
         >
           <h4 style={{ fontSize: '14px', margin: '0 0 8px' }}>
-            أكثر الأغذية والوجبات التي تم تناولها وتأكيدها في هذا النطاق:
+            أكثر الأغذية والوجبات التي تم تناولها وتأكيدها في هذا النطاق
           </h4>
           {topFoods.length === 0 ? (
             <p className="muted" style={{ fontSize: '12.5px' }}>

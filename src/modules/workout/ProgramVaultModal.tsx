@@ -269,7 +269,7 @@ export function ProgramVaultModal({
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div className="field">
-            <label htmlFor="rename-input">اسم الجدول الجديد:</label>
+            <label htmlFor="rename-input">اسم الجدول الجديد</label>
             <input
               id="rename-input"
               type="text"

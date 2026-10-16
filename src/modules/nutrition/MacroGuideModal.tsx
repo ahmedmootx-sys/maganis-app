@@ -33,7 +33,7 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
               color: 'var(--ink)',
             }}
           >
-            1. قاعدة الطاقة الإجمالية (TDEE)
+            1. قاعدة إجمالي الحرق اليومي
           </h3>
           <p
             style={{
@@ -43,8 +43,8 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
               margin: 0,
             }}
           >
-            يتم احتساب استهلاك الطاقة اليومي (TDEE) بمعادلة Mifflin-St Jeor أو
-            Katch-McArdle مع معامل النشاط الرياضي ومعدل الحرق الأساسي (BMR):
+            يتم احتساب إجمالي الحرق اليومي بمعادلة Mifflin-St Jeor أو
+            Katch-McArdle مع معامل النشاط الرياضي ومعدل الحرق الأساسي:
           </p>
           <ul
             style={{
@@ -56,13 +56,13 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
             }}
           >
             <li>
-              <strong>التضخيم (Hypertrophy):</strong> فائض سعرات مدروس (+10% إلى
-              +15% فوق الثبات) لزيادة العضلات بأقل نسبة دهون.
+              <strong>التضخيم:</strong> فائض سعرات مدروس (+10% إلى +15% فوق
+              الثبات) لزيادة العضلات بأقل نسبة دهون.
             </li>
             <li>
-              <strong>التنشيف (Cut):</strong> عجز سعرات آمن (-15% إلى -20% تحت
-              الثبات) مع عدم النزول تحت معدل الأيض الأساسي (BMR) لحماية الكتلة
-              العضلية وصحة الهرمونات.
+              <strong>التنشيف:</strong> عجز سعرات آمن (-15% إلى -20% تحت الثبات)
+              مع عدم النزول تحت معدل الحرق الأساسي لحماية الكتلة العضلية وصحة
+              الهرمونات.
             </li>
           </ul>
         </div>
@@ -131,7 +131,7 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
             >
               <strong>المعيار العلمي:</strong> من{' '}
               <strong>1.8 إلى 2.2 جرام</strong> لكل كجم من وزن جسمك الكلي (أو من
-              الكتلة الخالية من الدهون LBM).
+              الكتلة الخالية من الدهون).
               <br />
               <span style={{ color: 'var(--muted)', fontSize: '12px' }}>
                 مثال: لاعب وزنه 75 كجم يحتاج تقريباً 150 جم بروتين يومياً (تساوي

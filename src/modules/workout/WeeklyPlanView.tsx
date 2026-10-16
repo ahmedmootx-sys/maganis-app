@@ -7,7 +7,7 @@ import type {
   WorkoutProgram,
   WorkoutSplitType,
 } from '../shared/types.ts'
-import { WORKOUT_SPLIT_LABELS } from '../shared/types.ts'
+import { WORKOUT_SPLIT_LABELS, WORKOUT_SPLIT_EN } from '../shared/types.ts'
 import { navigationHistory } from '../../utils/navigationHistory.ts'
 import { getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
@@ -1037,6 +1037,18 @@ export function WeeklyPlanView({
           >
             {splitLabel}
           </div>
+          {program.splitType && (
+            <div
+              dir="ltr"
+              style={{
+                fontSize: '12px',
+                color: 'var(--muted)',
+                fontWeight: 600,
+              }}
+            >
+              {WORKOUT_SPLIT_EN[program.splitType]}
+            </div>
+          )}
           <div
             style={{
               display: 'flex',
@@ -1402,7 +1414,7 @@ export function WeeklyPlanView({
                   marginBottom: '8px',
                 }}
               >
-                تغيير النظام التلقائي:
+                تغيير النظام التلقائي
               </div>
               <div
                 style={{

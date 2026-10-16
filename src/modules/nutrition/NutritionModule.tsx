@@ -1709,7 +1709,7 @@ export function NutritionModule({
                       {targets.engineResult.explanationAr.formula}
                     </li>
                     <li>
-                      <strong>الحرق القاعدي (BMR):</strong>{' '}
+                      <strong>الحرق الأساسي:</strong>{' '}
                       {targets.engineResult.explanationAr.bmrText}
                     </li>
                     <li>
@@ -1717,11 +1717,11 @@ export function NutritionModule({
                       {targets.engineResult.explanationAr.lifestyleText}
                     </li>
                     <li>
-                      <strong>حرق التمرين الفعلي (EAT):</strong>{' '}
+                      <strong>حرق التمرين:</strong>{' '}
                       {targets.engineResult.explanationAr.eatText}
                     </li>
                     <li>
-                      <strong>نطاق الاستهلاك (TDEE):</strong>{' '}
+                      <strong>إجمالي الحرق اليومي:</strong>{' '}
                       {targets.engineResult.explanationAr.tdeeRangeText}
                     </li>
                     <li>
@@ -1740,11 +1740,21 @@ export function NutritionModule({
                       borderRadius: '8px',
                       fontSize: '12px',
                       color: 'var(--muted)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
                     }}
                   >
-                    <em>مرجع رياضي:</em> تشير الدراسات إلى أن مكاسب البناء
-                    العضلي تصل لذروتها حول 1.6 جم/كجم (Morton et al., BJSM
-                    2018).
+                    <div>
+                      <em>مرجع رياضي:</em> تشير الدراسات إلى أن مكاسب البناء
+                      العضلي تصل لذروتها حول 1.6 جم/كجم.
+                    </div>
+                    <div
+                      dir="ltr"
+                      style={{ fontSize: '11px', color: 'var(--muted)' }}
+                    >
+                      <bdi>Morton et al., BJSM 2018</bdi>
+                    </div>
                   </div>
                 </div>
               )}
@@ -2565,7 +2575,7 @@ export function NutritionModule({
                   {calibrationData.slopeKgPerWeek} كجم/أسبوع
                 </li>
                 <li>
-                  <strong>الحرق المشاهد (TDEE):</strong>{' '}
+                  <strong>إجمالي الحرق المشاهد:</strong>{' '}
                   {calibrationData.tdeeObserved} كالوِري
                 </li>
                 <li>

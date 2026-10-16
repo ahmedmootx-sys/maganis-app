@@ -3,7 +3,7 @@
  * Enforces Arabic-first, Latin-digits ('latn'), and bidi-safe wrappers.
  */
 
-const EMOJI_REGEX = /\p{Extended_Pictographic}/gu
+const EMOJI_REGEX = /(?:\p{Extended_Pictographic}|\uFE0F|\uFE0E|\u200D)+/gu
 
 /**
  * Strips all pictographic emojis at render time, preserving copyright/registered/trademark symbols.
@@ -80,4 +80,109 @@ export function fmtWeight(
   unit = 'كجم',
 ): string {
   return `${fmtNumber(kg)} ${unit}`
+}
+
+/**
+ * Format a numeric range in Arabic: "من X إلى Y وحدة".
+ */
+export function fmtRange(
+  a: number | string,
+  b: number | string,
+  unit?: string,
+): string {
+  const numA = fmtNumber(a)
+  const numB = fmtNumber(b)
+  if (unit) {
+    return `من ${numA} إلى ${numB} ${unit}`
+  }
+  return `من ${numA} إلى ${numB}`
+}
+
+export interface ArabicPluralForms {
+  zero?: string
+  one: string
+  two?: string
+  few: string
+  many: string
+  other?: string
+}
+
+const arPluralRules = new Intl.PluralRules('ar')
+
+/**
+ * Format Arabic plurals using Intl.PluralRules('ar') adhering to Arabic grammar.
+ */
+export function fmtArabicPlural(
+  count: number,
+  forms: ArabicPluralForms,
+  includeCount = true,
+): string {
+  const rule = arPluralRules.select(count)
+  const numStr = fmtNumber(count)
+
+  let word: string
+  switch (rule) {
+    case 'zero':
+      word = forms.zero ?? forms.few
+      return includeCount ? `${numStr} ${word}` : word
+    case 'one':
+      return forms.one
+    case 'two':
+      return forms.two ?? forms.one
+    case 'few':
+      word = forms.few
+      return includeCount ? `${numStr} ${word}` : word
+    case 'many':
+      word = forms.many
+      return includeCount ? `${numStr} ${word}` : word
+    case 'other':
+    default:
+      word = forms.other ?? forms.many
+      return includeCount ? `${numStr} ${word}` : word
+  }
+}
+
+export function fmtSets(count: number): string {
+  return fmtArabicPlural(count, {
+    one: 'مجموعة واحدة',
+    two: 'مجموعتان',
+    few: 'مجموعات',
+    many: 'مجموعة',
+  })
+}
+
+export function fmtMuscles(count: number): string {
+  return fmtArabicPlural(count, {
+    one: 'عضلة واحدة',
+    two: 'عضلتان',
+    few: 'عضلات',
+    many: 'عضلة',
+  })
+}
+
+export function fmtExercises(count: number): string {
+  return fmtArabicPlural(count, {
+    one: 'تمرين واحد',
+    two: 'تمرينان',
+    few: 'تمارين',
+    many: 'تمريناً',
+  })
+}
+
+export function fmtReps(count: number): string {
+  return fmtArabicPlural(count, {
+    one: 'تكرار واحد',
+    two: 'تكراران',
+    few: 'تكرارات',
+    many: 'تكراراً',
+  })
+}
+
+export function fmtDays(count: number): string {
+  return fmtArabicPlural(count, {
+    one: 'يوم واحد',
+    two: 'يومان',
+    few: 'أيام',
+    many: 'يوماً',
+  })
 }

@@ -186,7 +186,7 @@ export function SessionLogger({
     >
       {/* TopBar with Back */}
       <TopBar
-        title={programDay ? `تسجيل: ${programDay.labelAr}` : 'تسجيل يدوي'}
+        title={programDay ? `تسجيل ${programDay.labelAr}` : 'تسجيل يدوي'}
         onBack={onClose}
       />
 

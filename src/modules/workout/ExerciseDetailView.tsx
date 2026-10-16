@@ -18,6 +18,7 @@ import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import prescriptionRulesData from '../../data/prescription-rules.json'
 import { TopBar, Card, Callout, Button, Segmented } from '../../ui/index.ts'
+import { fmtRange, fmtSets, fmtReps } from '../../utils/bidi.ts'
 
 export interface ExerciseDetailViewProps {
   exerciseId: string
@@ -611,7 +612,7 @@ export function ExerciseDetailView({
                   gap: '4px',
                 }}
               >
-                <span>المصدر العلمي:</span>
+                <span>المصدر العلمي</span>
                 <span dir="ltr">
                   {exercise.medicalSource || exercise.reference}
                 </span>
@@ -737,12 +738,12 @@ export function ExerciseDetailView({
                 </h3>
                 {exercise.tempo && (
                   <p style={{ margin: '0 0 4px 0', fontSize: '13.5px' }}>
-                    <strong>الإيقاع:</strong> {exercise.tempo}
+                    <strong>الإيقاع</strong> {exercise.tempo}
                   </p>
                 )}
                 {exercise.breathing && (
                   <p style={{ margin: 0, fontSize: '13.5px' }}>
-                    <strong>التنفس:</strong> {exercise.breathing}
+                    <strong>التنفس</strong> {exercise.breathing}
                   </p>
                 )}
               </Card>
@@ -788,7 +789,7 @@ export function ExerciseDetailView({
                   color: 'var(--color-text)',
                 }}
               >
-                الجهد والتكرارات الاحتياطية (RIR)
+                الجهد والتكرارات الاحتياطية
               </h3>
               <div
                 style={{
@@ -829,14 +830,11 @@ export function ExerciseDetailView({
                       borderRadius: 'var(--radius-control)',
                     }}
                   >
-                    <strong>
-                      وصفة جدولك ({programPrescription.dayLabel}):
-                    </strong>{' '}
-                    {programPrescription.sets} مجموعات ×{' '}
+                    <strong>وصفة جدولك ({programPrescription.dayLabel})</strong>{' '}
+                    {fmtSets(programPrescription.sets)} ×{' '}
                     {programPrescription.reps === 0
                       ? 'أقصى عدد'
-                      : programPrescription.reps}{' '}
-                    تكرارات
+                      : fmtReps(programPrescription.reps)}
                   </div>
                 )}
               </div>
@@ -863,8 +861,8 @@ export function ExerciseDetailView({
                 }}
               >
                 <div>
-                  <strong>الراحة المقترحة:</strong> {restAnalysis.min} إلى{' '}
-                  {restAnalysis.max} ثانية
+                  <strong>الراحة المقترحة</strong>{' '}
+                  {fmtRange(restAnalysis.min, restAnalysis.max, 'ثانية')}
                   {restAnalysis.actualRest && (
                     <span
                       style={{
@@ -887,10 +885,18 @@ export function ExerciseDetailView({
                   </div>
                 )}
                 <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
-                  {restAnalysis.basis}
+                  {restAnalysis.basis.includes('(ATP-CP)') ? (
+                    <>
+                      {restAnalysis.basis.split('(ATP-CP)')[0]}
+                      <bdi dir="ltr">(ATP-CP)</bdi>
+                      {restAnalysis.basis.split('(ATP-CP)')[1]}
+                    </>
+                  ) : (
+                    restAnalysis.basis
+                  )}
                 </div>
                 <div style={{ marginTop: '4px' }}>
-                  <strong>إيقاع الحركة (Tempo):</strong> {rules.tempo.default}
+                  <strong>إيقاع الحركة</strong> {rules.tempo.default}
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
                   {rules.tempo.basis}
@@ -919,14 +925,19 @@ export function ExerciseDetailView({
                 }}
               >
                 <div>
-                  <strong>الوزن المبدئي:</strong> ابدأ بوزن تقدر تعمل بيه{' '}
+                  <strong>الوزن المبدئي</strong> ابدأ بوزن تقدر تعمل بيه{' '}
                   {programPrescription?.reps || 10} تكرار مع RIR{' '}
                   {expRules.standard_rir}.
                 </div>
                 <div>
-                  <strong>الزيادة التدريجية (Double Progression):</strong> عند
-                  الوصول لأعلى مدى التكرارات في كل المجموعات، زد الوزن بمقدار{' '}
-                  {progressionAdvice.minKg} إلى {progressionAdvice.maxKg} كجم.
+                  <strong>الزيادة التدريجية</strong> عند الوصول لأعلى مدى
+                  التكرارات في كل المجموعات، زد الوزن بمقدار{' '}
+                  {fmtRange(
+                    progressionAdvice.minKg,
+                    progressionAdvice.maxKg,
+                    'كجم',
+                  )}
+                  .
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
                   {progressionAdvice.basis}
@@ -965,14 +976,18 @@ export function ExerciseDetailView({
                       justifyContent: 'space-between',
                     }}
                   >
-                    <span>مجموعاتك في الجدول الحالي:</span>
+                    <span>مجموعاتك في الجدول الحالي</span>
                     <strong style={{ fontSize: '15px' }}>
-                      {weeklySetsAnalysis.totalSets} مجموعات
+                      {fmtSets(weeklySetsAnalysis.totalSets)}
                     </strong>
                   </div>
                   <div>
-                    المدى الموصى به لمستواك: {weeklySetsAnalysis.bandMin} -{' '}
-                    {weeklySetsAnalysis.bandMax} مجموعات أسبوعياً.
+                    المدى الموصى به لمستواك{' '}
+                    {fmtRange(
+                      weeklySetsAnalysis.bandMin,
+                      weeklySetsAnalysis.bandMax,
+                      'مجموعة أسبوعياً',
+                    )}
                   </div>
                   <div
                     style={{

@@ -144,11 +144,19 @@ export type WorkoutSplitType =
   'ppl' | 'upper_lower' | 'arnold' | 'bro_split' | 'full_body'
 
 export const WORKOUT_SPLIT_LABELS: Record<WorkoutSplitType, string> = {
-  ppl: 'دفع / سحب / أرجل (PPL)',
-  upper_lower: 'علوي / سفلي (Upper / Lower)',
-  arnold: 'أرنولد سبليت (Arnold Split)',
-  bro_split: 'تقسيم عضلة باليوم (Bro Split)',
-  full_body: 'جسم كامل (Full Body)',
+  ppl: 'دفع / سحب / أرجل',
+  upper_lower: 'علوي / سفلي',
+  arnold: 'أرنولد سبليت',
+  bro_split: 'تقسيم عضلة باليوم',
+  full_body: 'جسم كامل',
+}
+
+export const WORKOUT_SPLIT_EN: Record<WorkoutSplitType, string> = {
+  ppl: 'Push / Pull / Legs (PPL)',
+  upper_lower: 'Upper / Lower',
+  arnold: 'Arnold Split',
+  bro_split: 'Bro Split',
+  full_body: 'Full Body',
 }
 
 export interface WorkoutProgram {

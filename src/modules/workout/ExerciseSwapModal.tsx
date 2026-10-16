@@ -75,7 +75,7 @@ export function ExerciseSwapModal({
         style={{ maxWidth: '640px', width: '95%' }}
       >
         <div className="modal-header">
-          <h2>استبدال التمرين: {currentExercise.nameAr}</h2>
+          <h2>استبدال التمرين — {currentExercise.nameAr}</h2>
           <button type="button" className="close-btn" onClick={onClose}>
             ✕
           </button>
@@ -111,7 +111,7 @@ export function ExerciseSwapModal({
             <div>
               <Select
                 id="swap-category-filter"
-                label="المجموعة العضلية:"
+                label="المجموعة العضلية"
                 value={selectedCategory}
                 onChange={(val) => setSelectedCategory(val)}
                 options={[
@@ -130,7 +130,7 @@ export function ExerciseSwapModal({
             <div>
               <Select
                 id="swap-equipment-filter"
-                label="الأدوات والمعدات المستخدمة:"
+                label="الأدوات والمعدات المستخدمة"
                 value={selectedEquipment}
                 onChange={(val) => setSelectedEquipment(val)}
                 options={[

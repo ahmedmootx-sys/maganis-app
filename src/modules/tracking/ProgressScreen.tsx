@@ -1220,7 +1220,7 @@ export function ProgressScreen({
         <Sheet
           isOpen={true}
           onClose={() => setSelectedCalendarDate(null)}
-          title={`سجل يوم: ${formatArabicDate(selectedCalendarDate)}`}
+          title={`سجل يوم ${formatArabicDate(selectedCalendarDate)}`}
         >
           <div
             style={{

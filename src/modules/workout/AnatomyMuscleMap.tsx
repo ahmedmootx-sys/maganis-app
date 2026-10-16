@@ -11,6 +11,7 @@ import atlasGroupsData from '../../data/atlas-groups.json'
 import atlasMetaData from '../../../public/atlas/atlas-meta.json'
 import { Segmented, Sheet, Callout } from '../../ui/index.ts'
 import { assetUrl } from '../../utils/assetUrl.ts'
+import { fmtMuscles } from '../../utils/bidi.ts'
 
 export interface AnatomyMuscleMapProps {
   exercise?: Partial<Exercise> | (Partial<Exercise> & Record<string, unknown>)
@@ -584,7 +585,8 @@ export function AnatomyMuscleMap({
               className="atlas-view-switch-btn"
               onClick={() => setView(view === 'A' ? 'P' : 'A')}
             >
-              في {view === 'A' ? 'الخلفي' : 'الأمامي'}: {otherCounts} عضلات
+              في {view === 'A' ? 'الخلفي' : 'الأمامي'} —{' '}
+              {fmtMuscles(otherCounts)}
             </button>
           )}
         </div>
