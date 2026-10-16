@@ -231,6 +231,10 @@ export function ExerciseLibraryModal({
               gap: '8px',
               overflowX: 'auto',
               paddingBottom: '4px',
+              maskImage:
+                'linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent)',
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent)',
             }}
           >
             {/* Muscle Group Chip */}
@@ -463,9 +467,12 @@ export function ExerciseLibraryModal({
                         height: '56px',
                         borderRadius: '10px',
                         overflow: 'hidden',
-                        background: 'var(--card-subtle)',
+                        background: 'var(--color-surface)',
                         border: '1px solid var(--line)',
                         flexShrink: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     >
                       <ExerciseVisual

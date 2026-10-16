@@ -40,7 +40,10 @@ interface AtlasMetaMuscleInfo {
   best_layer?: string
   visible_ratio?: number
   best_view?: string
-  views?: Record<string, { visible_pixels?: number; anchor?: number[] }>
+  views?: Record<
+    string,
+    { visible_pixels?: number; anchor?: number[]; visible_ratio?: number }
+  >
   [key: string]: unknown
 }
 
@@ -159,7 +162,8 @@ export function AnatomyMuscleMap({
         (curVis > 500 && (meta?.views?.[view]?.visible_ratio ?? 0) >= 0.1)
       const inOther =
         meta?.best_view === otherView ||
-        (otherVis > 500 && (meta?.views?.[otherView]?.visible_ratio ?? 0) >= 0.1)
+        (otherVis > 500 &&
+          (meta?.views?.[otherView]?.visible_ratio ?? 0) >= 0.1)
 
       if (inCurrent) {
         if (m.role === 'primary') curPrimary++
@@ -460,7 +464,8 @@ export function AnatomyMuscleMap({
               onClick: () => setReloadKey((k) => k + 1),
             }}
           >
-            تعذر جلب ملف الرسم التشريحي من الخادم. تأكد من اتصال الإنترنت أو إعدادات المسار، مع إمكانية استعراض قائمة العضلات أدناه.
+            تعذر جلب ملف الرسم التشريحي من الخادم. تأكد من اتصال الإنترنت أو
+            إعدادات المسار، مع إمكانية استعراض قائمة العضلات أدناه.
           </Callout>
         </div>
       )}

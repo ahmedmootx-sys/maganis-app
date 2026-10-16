@@ -17,9 +17,9 @@ interface ReportsProps {
 type DateRange = '4w' | '12w' | '1y' | 'all'
 
 const RANGE_LABELS: Record<DateRange, string> = {
-  '4w': 'شهر (4 أسابيع)',
-  '12w': '3 شهور (12 أسبوعاً)',
-  '1y': 'سنة كاملة (52 أسبوعاً)',
+  '4w': '4 أسابيع',
+  '12w': '3 شهور',
+  '1y': 'سنة',
   all: 'الكل',
 }
 
@@ -517,7 +517,7 @@ export function Reports({
               تقارير الالتزام بالتغذية والسعرات والماكروز
             </h3>
             <p className="muted-small" style={{ margin: '4px 0 0' }}>
-              متابعة مدى تحقيقك للأهداف الغذائية خلال ({RANGE_LABELS[range]})
+              متابعة مدى تحقيقك للأهداف الغذائية خلال {RANGE_LABELS[range]}
             </p>
           </div>
           <span

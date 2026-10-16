@@ -63,30 +63,30 @@ const GROUP_NORM_MAP = {
 }
 
 const AR_TARGET_TO_GROUP = {
-  'الصدر': 'chest',
-  'الصدرية': 'chest',
-  'الكتف': 'shoulders',
-  'الدالية': 'shoulders',
-  'الترايسبس': 'triceps',
-  'البايسبس': 'biceps',
-  'الظهر': 'lats',
-  'المجانص': 'lats',
-  'الرومبويدز': 'middle back',
-  'الترابيس': 'traps',
-  'الساعد': 'forearms',
-  'السمانة': 'calves',
-  'المؤخرة': 'glutes',
-  'الجلوتس': 'glutes',
-  'الرباعية': 'quadriceps',
-  'الأمامية': 'quadriceps',
+  الصدر: 'chest',
+  الصدرية: 'chest',
+  الكتف: 'shoulders',
+  الدالية: 'shoulders',
+  الترايسبس: 'triceps',
+  البايسبس: 'biceps',
+  الظهر: 'lats',
+  المجانص: 'lats',
+  الرومبويدز: 'middle back',
+  الترابيس: 'traps',
+  الساعد: 'forearms',
+  السمانة: 'calves',
+  المؤخرة: 'glutes',
+  الجلوتس: 'glutes',
+  الرباعية: 'quadriceps',
+  الأمامية: 'quadriceps',
   'أوتار الركبة': 'hamstrings',
-  'الهمسترنج': 'hamstrings',
-  'البطن': 'abdominals',
-  'الكور': 'abdominals',
-  'القطنية': 'lower back',
-  'المبعدة': 'abductors',
-  'الضامة': 'adductors',
-  'الرقبة': 'neck',
+  الهمسترنج: 'hamstrings',
+  البطن: 'abdominals',
+  الكور: 'abdominals',
+  القطنية: 'lower back',
+  المبعدة: 'abductors',
+  الضامة: 'adductors',
+  الرقبة: 'neck',
 }
 
 const STRICT_VARIANTS = [
@@ -271,13 +271,15 @@ function resolveMuscles(exercise) {
   const secondaryHeadIds = new Set()
 
   for (const g of primaryGroups) {
-    const norm = GROUP_NORM_MAP[g.toLowerCase().trim()] || g.toLowerCase().trim()
+    const norm =
+      GROUP_NORM_MAP[g.toLowerCase().trim()] || g.toLowerCase().trim()
     const heads = groupTable[norm]
     if (heads) for (const h of heads) primaryHeadIds.add(h)
   }
 
   for (const g of secondaryGroups) {
-    const norm = GROUP_NORM_MAP[g.toLowerCase().trim()] || g.toLowerCase().trim()
+    const norm =
+      GROUP_NORM_MAP[g.toLowerCase().trim()] || g.toLowerCase().trim()
     const heads = groupTable[norm]
     if (heads) {
       for (const h of heads) {
@@ -377,19 +379,56 @@ const libResults = exercises.map((ex) => {
 // 44 program exercise occurrences across a comprehensive 6-day PPL+Upper program schedule
 const sampleProgramExerciseIds = [
   // Day 1: Push
-  'chest-1', 'chest-4', 'shoulder-1', 'shoulder-3', 'arm-12', 'arm-15',
+  'chest-1',
+  'chest-4',
+  'shoulder-1',
+  'shoulder-3',
+  'arm-12',
+  'arm-15',
   // Day 2: Pull
-  'back-1', 'back-8', 'back-13', 'back-10', 'arm-1', 'shoulder-5',
+  'back-1',
+  'back-8',
+  'back-13',
+  'back-10',
+  'arm-1',
+  'shoulder-5',
   // Day 3: Legs
-  'leg-1', 'leg-4', 'leg-5', 'leg-6', 'leg-9', 'core-1',
+  'leg-1',
+  'leg-4',
+  'leg-5',
+  'leg-6',
+  'leg-9',
+  'core-1',
   // Day 4: Upper
-  'chest-2', 'chest-5', 'back-1', 'shoulder-2', 'arm-2', 'arm-14',
+  'chest-2',
+  'chest-5',
+  'back-1',
+  'shoulder-2',
+  'arm-2',
+  'arm-14',
   // Day 5: Lower
-  'leg-1', 'leg-11', 'leg-6', 'leg-13', 'leg-10', 'core-5',
+  'leg-1',
+  'leg-11',
+  'leg-6',
+  'leg-13',
+  'leg-10',
+  'core-5',
   // Day 6: Push/Arms
-  'chest-7', 'shoulder-4', 'arm-13', 'arm-3', 'arm-4', 'core-2',
+  'chest-7',
+  'shoulder-4',
+  'arm-13',
+  'arm-3',
+  'arm-4',
+  'core-2',
   // Warmups & accessories (to reach 44)
-  'chest-3', 'back-17', 'leg-19', 'core-7', 'shoulder-14', 'arm-16', 'chest-11', 'leg-14',
+  'chest-3',
+  'back-17',
+  'leg-19',
+  'core-7',
+  'shoulder-14',
+  'arm-16',
+  'chest-11',
+  'leg-14',
 ]
 
 const programResults = sampleProgramExerciseIds.map((id, index) => {
@@ -408,7 +447,9 @@ const programResults = sampleProgramExerciseIds.map((id, index) => {
 
 // Curated check
 const curatedVerification = CURATED_DB_IDS.map((dbId) => {
-  const libEx = exercises.find((e) => extractDbId(e.imageUrl || e.thumbnailUrl) === dbId)
+  const libEx = exercises.find(
+    (e) => extractDbId(e.imageUrl || e.thumbnailUrl) === dbId,
+  )
   if (!libEx) {
     return { dbId, found: false, tier: null, status: 'مفقود في المكتبة' }
   }

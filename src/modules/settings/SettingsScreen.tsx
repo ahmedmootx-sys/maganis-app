@@ -49,9 +49,9 @@ const EXPERIENCE_OPTIONS = [
 ]
 
 const LOCATION_OPTIONS = [
-  { value: 'gym', labelAr: 'صالة ألعاب رياضية (جيم)' },
-  { value: 'home', labelAr: 'المنزل' },
-  { value: 'both', labelAr: 'كلاهما (الجيم والمنزل)' },
+  { value: 'gym', labelAr: 'جيم' },
+  { value: 'home', labelAr: 'منزل' },
+  { value: 'both', labelAr: 'الاثنان' },
 ]
 
 const WEEK_START_OPTIONS = [
@@ -402,7 +402,7 @@ export function SettingsScreen({
               <div>
                 <Select
                   id="settings-week-start"
-                  label="بداية الأسبوع التدريبي"
+                  label="بداية الأسبوع"
                   value={String(profile?.weekStartDay ?? 6)}
                   onChange={handleWeekStartChange}
                   options={WEEK_START_OPTIONS}
@@ -477,15 +477,28 @@ export function SettingsScreen({
           <Card padding="md">
             <KeyValueList
               items={[
-                { key: 'الإصدار', value: '0.2.0', bdi: true },
-                { key: 'طبيعة التخزين', value: 'محلي بالكامل على جهازك' },
+                { key: 'الإصدار', value: '0.2.0', bdi: true, stacked: true },
+                {
+                  key: 'طبيعة التخزين',
+                  value: 'محلي بالكامل على جهازك',
+                  stacked: true,
+                },
                 {
                   key: 'النموذج التشريحي',
                   value:
                     'BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International',
+                  stacked: true,
                 },
-                { key: 'الأيقونات', value: 'Lucide Icons (ISC)' },
-                { key: 'وسائط التمارين', value: 'Gym Visual' },
+                {
+                  key: 'الأيقونات',
+                  value: 'Lucide Icons (ISC)',
+                  stacked: true,
+                },
+                {
+                  key: 'وسائط التمارين',
+                  value: 'Gym Visual',
+                  stacked: true,
+                },
               ]}
             />
           </Card>
@@ -756,7 +769,8 @@ export function SettingsScreen({
         backupOffer={{
           label: 'حفظ نسخة أولاً',
           onBackup: async () => {
-            const { createBackupStore } = await import('../backup/backupStore.ts')
+            const { createBackupStore } =
+              await import('../backup/backupStore.ts')
             const store = createBackupStore()
             await store.exportData(backupData())
           },

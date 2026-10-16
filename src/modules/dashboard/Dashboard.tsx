@@ -110,23 +110,6 @@ function getGoalLabel(profile: UserProfile | null): string {
   return found?.labelAr ?? '—'
 }
 
-function getCompletedDayIndices(
-  sessions: TrackingSession[],
-  program: WorkoutProgram,
-): Set<number> {
-  const validIndices = new Set(program.days.map((d) => d.dayIndex))
-  const completed = new Set<number>()
-  for (const session of sessions) {
-    if (
-      session.programDayIndex !== null &&
-      validIndices.has(session.programDayIndex)
-    ) {
-      completed.add(session.programDayIndex)
-    }
-  }
-  return completed
-}
-
 export function Dashboard({
   profile,
   program,
@@ -149,16 +132,12 @@ export function Dashboard({
     (d) => d.dayIndex === todayDayIndex,
   )
 
-  const completedDays = program
-    ? getCompletedDayIndices(recentSessions, program)
-    : null
-
   const nextWorkoutDay = useMemo(() => {
     if (!program || program.days.length === 0) return null
-    if (!completedDays) return program.days[0]
-    const uncompleted = program.days.find((d) => !completedDays.has(d.dayIndex))
-    return uncompleted ?? program.days[0]
-  }, [program, completedDays])
+    const sorted = [...program.days].sort((a, b) => a.dayIndex - b.dayIndex)
+    const afterToday = sorted.find((d) => d.dayIndex > todayDayIndex)
+    return afterToday ?? sorted[0]
+  }, [program, todayDayIndex])
 
   // Verified safe mascot tips (excluding items marked NEEDS REVIEW in docs/tips-review.md)
   const coachTips = [
@@ -444,7 +423,7 @@ export function Dashboard({
                   <div
                     style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
                   >
-                    الجلسة التالية: {nextWorkoutDay.labelAr} (
+                    الجلسة التالية — {nextWorkoutDay.labelAr} (
                     {nextWorkoutDay.focus})
                   </div>
                 ) : (
@@ -481,7 +460,7 @@ export function Dashboard({
         >
           <Stat
             label="الجلسات هذا الأسبوع"
-            value={sessionsThisWeek}
+            value={`${sessionsThisWeek} من ${program?.days.length ?? profile?.trainingDaysPerWeek ?? 5}`}
             secondary={`${recentSessions.length} إجمالي`}
           />
           <Stat
@@ -489,11 +468,7 @@ export function Dashboard({
             value={currentWeight.value}
             secondary={currentWeight.secondary}
           />
-          <Stat
-            label="الهدف"
-            value={goalLabel}
-            secondary={profile?.body?.sex === 'female' ? 'أنثى' : 'ذكر'}
-          />
+          <Stat label="الهدف" value={goalLabel} />
         </div>
 
         {/* 7-Day Week Strip */}

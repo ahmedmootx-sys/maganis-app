@@ -222,8 +222,19 @@ export function QuickManualMealModal({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label
               htmlFor="quick-meal-pro"
-              style={{ fontSize: '12.5px', fontWeight: 700, color: '#3b82f6' }}
+              style={{
+                fontSize: '12.5px',
+                fontWeight: 700,
+                color: 'var(--ink)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
             >
+              <span
+                className="macro-marker macro-marker--protein"
+                aria-hidden="true"
+              />
               البروتين (جم)
             </label>
             <input
@@ -254,8 +265,19 @@ export function QuickManualMealModal({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label
               htmlFor="quick-meal-carb"
-              style={{ fontSize: '12.5px', fontWeight: 700, color: '#eab308' }}
+              style={{
+                fontSize: '12.5px',
+                fontWeight: 700,
+                color: 'var(--ink)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
             >
+              <span
+                className="macro-marker macro-marker--carbs"
+                aria-hidden="true"
+              />
               الكاربوهيدرات (جم)
             </label>
             <input
@@ -286,8 +308,19 @@ export function QuickManualMealModal({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label
               htmlFor="quick-meal-fat"
-              style={{ fontSize: '12.5px', fontWeight: 700, color: '#ef4444' }}
+              style={{
+                fontSize: '12.5px',
+                fontWeight: 700,
+                color: 'var(--ink)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
             >
+              <span
+                className="macro-marker macro-marker--fats"
+                aria-hidden="true"
+              />
               الدهون (جم)
             </label>
             <input

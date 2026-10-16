@@ -72,15 +72,24 @@ body {
 }
 
 .app {
-  max-width: 720px;
+  max-width: 100%;
   width: 100%;
   margin: 0 auto;
-  padding: 24px 16px 40px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   box-sizing: border-box;
+}
+
+.app.app--shell {
+  max-width: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  gap: 0;
 }
 
 .app-header {
@@ -114,15 +123,21 @@ body {
 }
 
 .app-main {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 16px
+    calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 24px);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-sizing: border-box;
 }
 
 .card {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-card);
   padding: 16px;
 }
 
@@ -962,9 +977,19 @@ button.ghost-danger:hover {
 }
 
 .reports__range-selector {
-  display: flex;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
   margin-bottom: 16px;
+  width: 100%;
+}
+
+.reports__range-selector .option-btn {
+  white-space: nowrap;
+  padding: 8px 4px;
+  font-size: 13px;
+  text-align: center;
+  border-radius: var(--radius-control);
 }
 
 .reports__section {
@@ -1402,17 +1427,17 @@ button.ghost-danger:hover {
 }
 
 .macro-bar-fill.protein {
-  background: #10b981;
+  background: var(--macro-protein);
   height: 100%;
 }
 
 .macro-bar-fill.carbs {
-  background: #3b82f6;
+  background: var(--macro-carbs);
   height: 100%;
 }
 
 .macro-bar-fill.fats {
-  background: #f59e0b;
+  background: var(--macro-fats);
   height: 100%;
 }
 
@@ -1483,20 +1508,20 @@ button.ghost-danger:hover {
 
 .macro-pill.protein,
 .chip.protein {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--macro-protein-bg);
+  color: var(--macro-protein);
 }
 
 .macro-pill.carbs,
 .chip.carbs {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--macro-carbs-bg);
+  color: var(--macro-carbs);
 }
 
 .macro-pill.fats,
 .chip.fats {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--macro-fats-bg);
+  color: var(--macro-fats);
 }
 
 .field-grid-2 {
@@ -2995,20 +3020,20 @@ button.ghost-danger:hover {
 
 [data-theme='dark'] .macro-pill.protein,
 [data-theme='dark'] .chip.protein {
-  background: rgba(16, 185, 129, 0.18);
-  color: #34d399;
+  background: var(--macro-protein-bg);
+  color: var(--macro-protein);
 }
 
 [data-theme='dark'] .macro-pill.carbs,
 [data-theme='dark'] .chip.carbs {
-  background: rgba(59, 130, 246, 0.18);
-  color: #60a5fa;
+  background: var(--macro-carbs-bg);
+  color: var(--macro-carbs);
 }
 
 [data-theme='dark'] .macro-pill.fats,
 [data-theme='dark'] .chip.fats {
-  background: rgba(245, 158, 11, 0.18);
-  color: #fbbf24;
+  background: var(--macro-fats-bg);
+  color: var(--macro-fats);
 }
 
 [data-theme='dark'] .env-badge[data-env='production'] {
@@ -3624,7 +3649,7 @@ input[type='url'],
   flex-direction: column;
   align-items: center;
   padding: 8px 2px;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: var(--card-bg);
   border: 1px solid var(--line);
   font-size: 11.5px;

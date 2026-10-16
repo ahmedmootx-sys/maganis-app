@@ -406,6 +406,7 @@ export function ExerciseDetailView({
       {/* 1. Header: Back button, Arabic title, English small ltr, real Chips */}
       <TopBar
         title={nameAr}
+        subtitle={nameEn ? <span dir="ltr">{nameEn}</span> : undefined}
         onBack={onBack ? onBack : () => window.history.back()}
         actions={
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -433,32 +434,6 @@ export function ExerciseDetailView({
           gap: '14px',
         }}
       >
-        {/* Title & English Subtitle */}
-        <div>
-          <h1
-            style={{
-              fontSize: 'var(--font-size-xl)',
-              fontWeight: 'var(--font-weight-bold)',
-              margin: '0 0 4px 0',
-              color: 'var(--color-text)',
-            }}
-          >
-            {nameAr}
-          </h1>
-          {nameEn && (
-            <div
-              style={{
-                fontSize: 'var(--font-size-sm)',
-                color: 'var(--color-text-2)',
-                direction: 'ltr',
-                textAlign: 'end',
-              }}
-            >
-              {nameEn}
-            </div>
-          )}
-        </div>
-
         {/* Real Meta Chips (not header bullet string) */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
           <span className="chip">
@@ -474,15 +449,7 @@ export function ExerciseDetailView({
               exercise.difficulty}
           </span>
           {exercise.targetSubMuscleAr && (
-            <span
-              className="chip"
-              style={{
-                borderColor: 'var(--color-accent)',
-                color: 'var(--color-accent-text)',
-              }}
-            >
-              {exercise.targetSubMuscleAr}
-            </span>
+            <span className="chip">{exercise.targetSubMuscleAr}</span>
           )}
         </div>
 
@@ -506,10 +473,10 @@ export function ExerciseDetailView({
         <div
           style={{
             position: 'sticky',
-            top: 'var(--top-bar-height)',
+            top: 'calc(var(--top-bar-height) + var(--safe-area-top))',
             zIndex: 15,
             background: 'var(--color-bg)',
-            paddingBlock: '4px',
+            paddingBlock: '6px',
           }}
         >
           <Segmented

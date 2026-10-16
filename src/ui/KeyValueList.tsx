@@ -6,6 +6,7 @@ export interface KeyValueItem {
   id?: string
   value: React.ReactNode
   bdi?: boolean
+  stacked?: boolean
   onClick?: () => void
 }
 
@@ -26,7 +27,7 @@ export const KeyValueList: React.FC<KeyValueListProps> = ({
         return (
           <div
             key={idx}
-            className={`key-value-item ${item.onClick ? 'key-value-item--interactive' : ''}`}
+            className={`key-value-item ${item.stacked ? 'key-value-item--stacked' : ''} ${item.onClick ? 'key-value-item--interactive' : ''}`}
             onClick={item.onClick}
             role={item.onClick ? 'button' : undefined}
             tabIndex={item.onClick ? 0 : undefined}

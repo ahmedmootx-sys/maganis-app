@@ -1079,7 +1079,7 @@ export function WeeklyPlanView({
               gap: '8px',
             }}
           >
-            {program.days.map((day) => {
+            {program.days.map((day, idx) => {
               const isToday = day.dayIndex === todayDayIndex
               const exerciseCount = day.exercises.length
 
@@ -1095,18 +1095,19 @@ export function WeeklyPlanView({
                         height: '40px',
                         borderRadius: '10px',
                         background: isToday
-                          ? 'var(--accent)'
-                          : 'var(--card-subtle)',
+                          ? 'var(--color-accent)'
+                          : 'var(--color-surface-2)',
                         color: isToday ? '#ffffff' : 'var(--ink)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontWeight: 800,
-                        fontSize: '14px',
+                        fontSize: '16px',
                         border: '1px solid var(--line)',
+                        fontVariantNumeric: 'tabular-nums',
                       }}
                     >
-                      {day.labelAr.slice(0, 3)}
+                      {idx + 1}
                     </div>
                   }
                   title={

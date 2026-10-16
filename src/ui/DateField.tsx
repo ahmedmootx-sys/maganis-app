@@ -119,60 +119,72 @@ export const DateField: React.FC<DateFieldProps> = ({
     return value === `${year}-${mm}-${dd}`
   }
 
+  const generatedId = React.useId()
+  const fieldId = id || generatedId
+
   return (
-    <>
-      <button
-        type="button"
-        id={id}
-        className={`field-input ${className}`.trim()}
-        onClick={() => !disabled && setIsOpen(true)}
-        disabled={disabled}
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          textAlign: 'start',
-          minHeight: 'var(--control-height)',
-        }}
-      >
-        <span
+    <div className={`field-group ${className}`.trim()}>
+      {label && (
+        <label htmlFor={fieldId} className="field-label">
+          {label}
+        </label>
+      )}
+      <div className="field-control-wrap">
+        <button
+          type="button"
+          id={fieldId}
+          className="field-input"
+          onClick={() => !disabled && setIsOpen(true)}
+          disabled={disabled}
+          aria-haspopup="dialog"
+          aria-expanded={isOpen}
           style={{
-            color: formattedValue ? 'var(--color-text)' : 'var(--color-text-2)',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            textAlign: 'start',
+            minHeight: 'var(--control-height)',
           }}
         >
-          {formattedValue || placeholder}
-        </span>
-        <Icon
-          name="calendar"
-          size={18}
-          style={{ color: 'var(--color-text-2)' }}
-        />
-      </button>
+          <span
+            style={{
+              color: formattedValue
+                ? 'var(--color-text)'
+                : 'var(--color-text-2)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {formattedValue || placeholder}
+          </span>
+          <Icon
+            name="calendar"
+            size={18}
+            style={{ color: 'var(--color-text-2)' }}
+          />
+        </button>
 
-      {/* Hidden native date input for form semantics and automated testing */}
-      <input
-        type="date"
-        name={name}
-        value={value || ''}
-        min={min}
-        max={max}
-        onChange={(e) => onChange(e.target.value)}
-        tabIndex={-1}
-        style={{
-          position: 'absolute',
-          opacity: 0,
-          pointerEvents: 'none',
-          width: 0,
-          height: 0,
-        }}
-        aria-hidden="true"
-      />
+        {/* Hidden native date input for form semantics and automated testing */}
+        <input
+          type="date"
+          name={name}
+          value={value || ''}
+          min={min}
+          max={max}
+          onChange={(e) => onChange(e.target.value)}
+          tabIndex={-1}
+          style={{
+            position: 'absolute',
+            opacity: 0,
+            pointerEvents: 'none',
+            width: 0,
+            height: 0,
+          }}
+          aria-hidden="true"
+        />
+      </div>
 
       <Sheet isOpen={isOpen} onClose={() => setIsOpen(false)} title={label}>
         {/* Month Navigation */}
@@ -279,6 +291,6 @@ export const DateField: React.FC<DateFieldProps> = ({
           })}
         </div>
       </Sheet>
-    </>
+    </div>
   )
 }

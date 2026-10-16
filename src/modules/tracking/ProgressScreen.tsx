@@ -6,6 +6,7 @@ import { SvgLineChart } from '../reports/SvgLineChart.tsx'
 import { formatArabicDate } from '../../components/DateField.tsx'
 import {
   DateField,
+  Field,
   Button,
   TopBar,
   Sheet,
@@ -58,8 +59,6 @@ const MONTH_NAMES_AR = [
   'نوفمبر',
   'ديسمبر',
 ]
-
-const DAY_NAMES_SHORT = ['سب', 'أح', 'إث', 'ثلا', 'أرب', 'خم', 'جم']
 
 function todayStr(): string {
   const d = new Date()
@@ -505,45 +504,30 @@ export function ProgressScreen({
                   gap: '12px',
                 }}
               >
-                <div className="field">
-                  <label
-                    htmlFor="bw-weight-input"
-                    style={{ fontSize: '13px', fontWeight: 600 }}
-                  >
-                    الوزن (كجم)
-                  </label>
-                  <input
-                    id="bw-weight-input"
-                    type="number"
-                    step="0.1"
-                    min="25"
-                    max="350"
-                    placeholder="مثال: 74.5"
-                    value={weightInput}
-                    onChange={(e) => {
-                      setWeightInput(e.target.value)
-                      setWeightError('')
-                    }}
-                    className="field-input"
-                    style={{ height: '48px', width: '100%' }}
-                  />
-                </div>
+                <Field
+                  id="bw-weight-input"
+                  label="الوزن"
+                  unit="كجم"
+                  type="number"
+                  step="0.1"
+                  min="25"
+                  max="350"
+                  placeholder="مثال: 74.5"
+                  value={weightInput}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setWeightInput(e.target.value)
+                    setWeightError('')
+                  }}
+                />
 
-                <div className="field">
-                  <DateField
-                    id="bw-date-input"
-                    label="تاريخ القياس"
-                    value={weightDate}
-                    onChange={(d) => setWeightDate(d)}
-                  />
-                </div>
+                <DateField
+                  id="bw-date-input"
+                  label="تاريخ القياس"
+                  value={weightDate}
+                  onChange={(d) => setWeightDate(d)}
+                />
 
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                >
+                <Button type="submit" variant="primary" size="lg" fullWidth>
                   حفظ قياس الوزن
                 </Button>
               </form>
@@ -681,217 +665,217 @@ export function ProgressScreen({
               </div>
 
               {/* Month navigation on its own row */}
-                <div
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  paddingBlock: '4px',
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={prevMonth}
+                  aria-label="الشهر السابق"
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    paddingBlock: '4px',
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={prevMonth}
-                    aria-label="الشهر السابق"
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: 'var(--radius-control)',
-                      border: '1px solid var(--color-divider)',
-                      background: 'var(--color-surface-2)',
-                      color: 'var(--color-text)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <IconChevronRight size={18} />
-                  </button>
-                  <span
-                    style={{
-                      fontSize: '15px',
-                      fontWeight: 700,
-                      color: 'var(--color-text)',
-                      textAlign: 'center',
-                    }}
-                  >
-                    {MONTH_NAMES_AR[calMonth]} {calYear}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={nextMonth}
-                    aria-label="الشهر التالي"
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: 'var(--radius-control)',
-                      border: '1px solid var(--color-divider)',
-                      background: 'var(--color-surface-2)',
-                      color: 'var(--color-text)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <IconChevronLeft size={18} />
-                  </button>
-                </div>
-
-                {/* ONE Unified Grid for Header Day Names and Day Cells */}
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
-                    gap: '4px',
-                    width: '100%',
-                  }}
-                >
-                  {/* 7 Header Day Names */}
-                  {orderedDayNames.map((d) => (
-                    <div
-                      key={`hdr-${d.dayIndex}`}
-                      style={{
-                        textAlign: 'center',
-                        fontSize: '12.5px',
-                        fontWeight: 700,
-                        color: 'var(--color-text-2)',
-                        padding: '4px 0',
-                      }}
-                    >
-                      {d.label}
-                    </div>
-                  ))}
-
-                  {/* Empty Offset Cells */}
-                  {Array.from({ length: firstDayIndex }).map((_, i) => (
-                    <div key={`empty-${i}`} />
-                  ))}
-
-                  {/* Day Cells */}
-                  {Array.from({ length: daysInMonth }).map((_, i) => {
-                    const dayNum = i + 1
-                    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
-                    const hasSession = sessionDatesSet.has(dateStr)
-                    const hasNote = noteDatesSet.has(dateStr)
-                    const isCurrentDay = dateStr === todayStr()
-                    const isSelected = dateStr === selectedCalendarDate
-
-                    return (
-                      <button
-                        key={dateStr}
-                        type="button"
-                        onClick={() => setSelectedCalendarDate(dateStr)}
-                        style={{
-                          height: '42px',
-                          borderRadius: 'var(--radius-control)',
-                          border: isCurrentDay
-                            ? '2px solid var(--color-primary)'
-                            : isSelected
-                              ? '1px solid var(--color-text)'
-                              : '1px solid var(--color-divider)',
-                          background: hasSession
-                            ? 'var(--color-primary-subtle, rgba(249, 87, 0, 0.12))'
-                            : 'var(--color-surface-2)',
-                          color: hasSession
-                            ? 'var(--color-primary)'
-                            : 'var(--color-text)',
-                          fontWeight: hasSession || isCurrentDay ? 700 : 500,
-                          fontSize: '13px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          position: 'relative',
-                          padding: 0,
-                        }}
-                      >
-                        <span>{dayNum}</span>
-                        <div
-                          style={{
-                            display: 'flex',
-                            gap: '3px',
-                            position: 'absolute',
-                            bottom: '4px',
-                          }}
-                        >
-                          {hasSession && (
-                            <span
-                              style={{
-                                width: '5px',
-                                height: '5px',
-                                borderRadius: '50%',
-                                background: 'var(--color-primary)',
-                              }}
-                            />
-                          )}
-                          {hasNote && (
-                            <span
-                              style={{
-                                width: '5px',
-                                height: '5px',
-                                borderRadius: '50%',
-                                background: '#0284c7',
-                              }}
-                            />
-                          )}
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-
-                {/* Legend with Both Session and Note Dots */}
-                <div
-                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: 'var(--radius-control)',
+                    border: '1px solid var(--color-divider)',
+                    background: 'var(--color-surface-2)',
+                    color: 'var(--color-text)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '20px',
-                    fontSize: '12px',
-                    color: 'var(--color-text-2)',
-                    paddingTop: '8px',
-                    borderTop: '1px solid var(--color-divider)',
+                    cursor: 'pointer',
                   }}
                 >
+                  <IconChevronRight size={18} />
+                </button>
+                <span
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
+                    textAlign: 'center',
+                  }}
+                >
+                  {MONTH_NAMES_AR[calMonth]} {calYear}
+                </span>
+                <button
+                  type="button"
+                  onClick={nextMonth}
+                  aria-label="الشهر التالي"
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: 'var(--radius-control)',
+                    border: '1px solid var(--color-divider)',
+                    background: 'var(--color-surface-2)',
+                    color: 'var(--color-text)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <IconChevronLeft size={18} />
+                </button>
+              </div>
+
+              {/* ONE Unified Grid for Header Day Names and Day Cells */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
+                  gap: '4px',
+                  width: '100%',
+                }}
+              >
+                {/* 7 Header Day Names */}
+                {orderedDayNames.map((d) => (
                   <div
+                    key={`hdr-${d.dayIndex}`}
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
+                      textAlign: 'center',
+                      fontSize: '12.5px',
+                      fontWeight: 700,
+                      color: 'var(--color-text-2)',
+                      padding: '4px 0',
                     }}
                   >
-                    <span
-                      style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        background: 'var(--color-primary)',
-                      }}
-                    />
-                    <span>جلسة تمرين</span>
+                    {d.label}
                   </div>
-                  <div
+                ))}
+
+                {/* Empty Offset Cells */}
+                {Array.from({ length: firstDayIndex }).map((_, i) => (
+                  <div key={`empty-${i}`} />
+                ))}
+
+                {/* Day Cells */}
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const dayNum = i + 1
+                  const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
+                  const hasSession = sessionDatesSet.has(dateStr)
+                  const hasNote = noteDatesSet.has(dateStr)
+                  const isCurrentDay = dateStr === todayStr()
+                  const isSelected = dateStr === selectedCalendarDate
+
+                  return (
+                    <button
+                      key={dateStr}
+                      type="button"
+                      onClick={() => setSelectedCalendarDate(dateStr)}
+                      style={{
+                        height: '42px',
+                        borderRadius: 'var(--radius-control)',
+                        border: isCurrentDay
+                          ? '2px solid var(--color-primary)'
+                          : isSelected
+                            ? '1px solid var(--color-text)'
+                            : '1px solid var(--color-divider)',
+                        background: hasSession
+                          ? 'var(--color-primary-subtle, rgba(249, 87, 0, 0.12))'
+                          : 'var(--color-surface-2)',
+                        color: hasSession
+                          ? 'var(--color-primary)'
+                          : 'var(--color-text)',
+                        fontWeight: hasSession || isCurrentDay ? 700 : 500,
+                        fontSize: '13px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        position: 'relative',
+                        padding: 0,
+                      }}
+                    >
+                      <span>{dayNum}</span>
+                      <div
+                        style={{
+                          display: 'flex',
+                          gap: '3px',
+                          position: 'absolute',
+                          bottom: '4px',
+                        }}
+                      >
+                        {hasSession && (
+                          <span
+                            style={{
+                              width: '5px',
+                              height: '5px',
+                              borderRadius: '50%',
+                              background: 'var(--color-primary)',
+                            }}
+                          />
+                        )}
+                        {hasNote && (
+                          <span
+                            style={{
+                              width: '5px',
+                              height: '5px',
+                              borderRadius: '50%',
+                              background: '#0284c7',
+                            }}
+                          />
+                        )}
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Legend with Both Session and Note Dots */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '20px',
+                  fontSize: '12px',
+                  color: 'var(--color-text-2)',
+                  paddingTop: '8px',
+                  borderTop: '1px solid var(--color-divider)',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: 'var(--color-primary)',
                     }}
-                  >
-                    <span
-                      style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        background: '#0284c7',
-                      }}
-                    />
-                    <span>ملاحظة يومية</span>
-                  </div>
+                  />
+                  <span>جلسة تمرين</span>
                 </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: '#0284c7',
+                    }}
+                  />
+                  <span>ملاحظة يومية</span>
+                </div>
+              </div>
             </div>
 
             {/* Section 3: Daily Notes */}
@@ -1413,22 +1397,14 @@ export function ProgressScreen({
               </div>
             )}
 
-            <div className="field">
-              <DateField
-                id="sheet-note-date"
-                label="التاريخ"
-                value={newNoteDate}
-                onChange={(d) => setNewNoteDate(d)}
-              />
-            </div>
+            <DateField
+              id="sheet-note-date"
+              label="التاريخ"
+              value={newNoteDate}
+              onChange={(d) => setNewNoteDate(d)}
+            />
 
-            <div className="field">
-              <label
-                htmlFor="sheet-note-text"
-                style={{ fontSize: '13.5px', fontWeight: 600 }}
-              >
-                الملاحظة
-              </label>
+            <Field id="sheet-note-text" label="الملاحظة">
               <textarea
                 id="sheet-note-text"
                 rows={3}
@@ -1438,34 +1414,24 @@ export function ProgressScreen({
                   setNewNoteText(e.target.value)
                   setNoteError('')
                 }}
+                onInput={(e) => {
+                  const el = e.currentTarget
+                  el.style.height = 'auto'
+                  el.style.height = `${el.scrollHeight}px`
+                }}
                 dir="rtl"
                 className="field-input"
                 style={{
                   minHeight: '80px',
-                  resize: 'vertical',
-                  padding: '12px',
-                  borderRadius: '10px',
+                  resize: 'none',
+                  textAlign: 'start',
                 }}
               />
-            </div>
+            </Field>
 
-            <button
-              type="submit"
-              className="btn-primary"
-              style={{
-                height: '48px',
-                borderRadius: '12px',
-                border: 'none',
-                background: 'var(--brand)',
-                color: '#fff',
-                fontSize: '15px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                width: '100%',
-              }}
-            >
+            <Button type="submit" variant="primary" size="lg" fullWidth>
               حفظ الملاحظة
-            </button>
+            </Button>
           </form>
         </Sheet>
       )}

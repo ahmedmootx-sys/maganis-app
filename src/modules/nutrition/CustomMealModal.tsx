@@ -10,7 +10,7 @@ import {
   type FoodItem,
 } from './foodDatabase.ts'
 import type { MealCategory } from './types.ts'
-import { Select, Sheet, Callout } from '../../ui/index.ts'
+import { Select, Sheet, Callout, Button } from '../../ui/index.ts'
 import { IconTrash } from '../../components/Icons.tsx'
 
 export interface CustomMealModalProps {
@@ -226,14 +226,39 @@ export function CustomMealModal({
       title={
         initialMeal ? 'تعديل الوجبة الخاصة' : 'تصميم وجبة خاصة وحساب الماكروز'
       }
+      footer={
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Button
+            type="submit"
+            form="custom-meal-form"
+            variant="primary"
+            size="lg"
+            className="full-width"
+            style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
+          >
+            حفظ الوجبة في وجباتي
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="md"
+            className="full-width"
+            onClick={onClose}
+            style={{ height: '44px', fontSize: '14px' }}
+          >
+            إلغاء
+          </Button>
+        </div>
+      }
     >
       <form
+        id="custom-meal-form"
         onSubmit={handleSubmit}
         style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          padding: '8px 0 24px',
+          padding: '8px 0 16px',
         }}
       >
         {formError && <Callout tone="danger">{formError}</Callout>}
@@ -314,55 +339,28 @@ export function CustomMealModal({
 
         {/* Mode Switcher */}
         <div
-          className="segmented-control"
+          className="segmented"
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            background: 'var(--card-subtle)',
-            padding: '4px',
-            borderRadius: '12px',
-            border: '1px solid var(--line)',
             gap: '4px',
           }}
         >
           <button
             type="button"
+            className={`segmented__item ${mode === 'ingredients' ? 'segmented__item--active' : ''}`}
             onClick={() => setMode('ingredients')}
-            style={{
-              height: '42px',
-              borderRadius: '8px',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '13.5px',
-              cursor: 'pointer',
-              background:
-                mode === 'ingredients' ? 'var(--card-bg)' : 'transparent',
-              color: mode === 'ingredients' ? 'var(--ink)' : 'var(--muted)',
-              boxShadow:
-                mode === 'ingredients' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-              transition: 'all 0.15s ease',
-            }}
+            style={{ minHeight: '40px', fontSize: '13.5px' }}
           >
-            حاسبة المكونات (بالجرام)
+            المكونات بالجرام
           </button>
           <button
             type="button"
+            className={`segmented__item ${mode === 'direct' ? 'segmented__item--active' : ''}`}
             onClick={() => setMode('direct')}
-            style={{
-              height: '42px',
-              borderRadius: '8px',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '13.5px',
-              cursor: 'pointer',
-              background: mode === 'direct' ? 'var(--card-bg)' : 'transparent',
-              color: mode === 'direct' ? 'var(--ink)' : 'var(--muted)',
-              boxShadow:
-                mode === 'direct' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-              transition: 'all 0.15s ease',
-            }}
+            style={{ minHeight: '40px', fontSize: '13.5px' }}
           >
-            إدخال الماكروز المباشر
+            الماكروز مباشرة
           </button>
         </div>
 
@@ -533,9 +531,16 @@ export function CustomMealModal({
                       style={{
                         fontSize: '11px',
                         fontWeight: 700,
-                        color: '#3b82f6',
+                        color: 'var(--ink)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
                       }}
                     >
+                      <span
+                        className="macro-marker macro-marker--protein"
+                        aria-hidden="true"
+                      />
                       بروتين/100ج
                     </label>
                     <input
@@ -567,9 +572,16 @@ export function CustomMealModal({
                       style={{
                         fontSize: '11px',
                         fontWeight: 700,
-                        color: '#eab308',
+                        color: 'var(--ink)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
                       }}
                     >
+                      <span
+                        className="macro-marker macro-marker--carbs"
+                        aria-hidden="true"
+                      />
                       كارب/100ج
                     </label>
                     <input
@@ -599,9 +611,16 @@ export function CustomMealModal({
                       style={{
                         fontSize: '11px',
                         fontWeight: 700,
-                        color: '#ef4444',
+                        color: 'var(--ink)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
                       }}
                     >
+                      <span
+                        className="macro-marker macro-marker--fats"
+                        aria-hidden="true"
+                      />
                       دهون/100ج
                     </label>
                     <input
@@ -663,118 +682,159 @@ export function CustomMealModal({
                 return (
                   <div
                     key={`${ing.foodItemId}-${idx}`}
+                    className="list-row"
                     style={{
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      background: 'var(--card-bg)',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      border: '1px solid var(--line)',
+                      flexDirection: 'column',
+                      background: 'var(--color-surface)',
+                      padding: '12px 14px',
+                      borderRadius: 'var(--radius-card)',
+                      border: '1px solid var(--color-divider)',
                       gap: '8px',
                     }}
                   >
-                    <div style={{ flex: 1 }}>
-                      <div
-                        style={{
-                          fontWeight: 700,
-                          fontSize: '14px',
-                          color: 'var(--ink)',
-                        }}
-                      >
-                        {food.nameAr}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: '12px',
-                          color: 'var(--muted)',
-                          marginTop: '2px',
-                        }}
-                      >
-                        {macros.calories} سعرة • {macros.protein}ج بروتين •{' '}
-                        {macros.carbs}ج كارب • {macros.fats}ج دهون
-                      </div>
+                    {/* Line 1: full-width name */}
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '14.5px',
+                        color: 'var(--color-text)',
+                        width: '100%',
+                      }}
+                    >
+                      {food.nameAr}
                     </div>
+
+                    {/* Line 2: macros (small, may wrap) */}
+                    <div
+                      style={{
+                        fontSize: '12.5px',
+                        color: 'var(--color-text-2)',
+                        lineHeight: 1.4,
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {macros.calories} سعرة • {macros.protein}ج بروتين •{' '}
+                      {macros.carbs}ج كارب • {macros.fats}ج دهون
+                    </div>
+
+                    {/* Line 3: stepper ( - , input , + , unit ) and a 44x44 trash IconButton (Lucide) */}
                     <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        paddingTop: '6px',
+                        borderTop: '1px solid var(--color-divider)',
                       }}
                     >
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleUpdateGrams(idx, Math.max(5, ing.grams - 25))
-                        }
+                      <div
                         style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '6px',
-                          border: '1px solid var(--line)',
-                          background: 'var(--card-subtle)',
-                          fontWeight: 700,
-                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
                         }}
                       >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        min="1"
-                        max="2000"
-                        step="5"
-                        value={ing.grams}
-                        onChange={(e) =>
-                          handleUpdateGrams(idx, Number(e.target.value))
-                        }
-                        style={{
-                          width: '64px',
-                          height: '32px',
-                          padding: '0 4px',
-                          textAlign: 'center',
-                          borderRadius: '6px',
-                          border: '1px solid var(--line)',
-                          fontSize: '14px',
-                          fontWeight: 700,
-                        }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateGrams(idx, ing.grams + 25)}
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '6px',
-                          border: '1px solid var(--line)',
-                          background: 'var(--card-subtle)',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        +
-                      </button>
-                      <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
-                        جم
-                      </span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUpdateGrams(idx, Math.max(5, ing.grams - 25))
+                          }
+                          aria-label="تقليل الكمية"
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: 'var(--radius-control)',
+                            border: '1px solid var(--color-divider)',
+                            background: 'var(--color-surface-2)',
+                            color: 'var(--color-text)',
+                            fontSize: '16px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          -
+                        </button>
+                        <input
+                          type="number"
+                          min="1"
+                          max="2000"
+                          step="5"
+                          value={ing.grams}
+                          onChange={(e) =>
+                            handleUpdateGrams(idx, Number(e.target.value))
+                          }
+                          aria-label={`كمية ${food.nameAr} بالجرام`}
+                          className="field-input"
+                          style={{
+                            width: '68px',
+                            height: '36px',
+                            padding: '0 6px',
+                            textAlign: 'center',
+                            borderRadius: 'var(--radius-control)',
+                            border: '1px solid var(--color-divider)',
+                            fontSize: '14px',
+                            fontWeight: 700,
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateGrams(idx, ing.grams + 25)}
+                          aria-label="زيادة الكمية"
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: 'var(--radius-control)',
+                            border: '1px solid var(--color-divider)',
+                            background: 'var(--color-surface-2)',
+                            color: 'var(--color-text)',
+                            fontSize: '16px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          +
+                        </button>
+                        <span
+                          style={{
+                            fontSize: '12.5px',
+                            color: 'var(--color-text-2)',
+                            marginInlineStart: '2px',
+                          }}
+                        >
+                          جم
+                        </span>
+                      </div>
+
                       <button
                         type="button"
                         onClick={() => handleRemoveIngredient(idx)}
+                        aria-label={`حذف ${food.nameAr}`}
                         style={{
-                          background: 'var(--danger-soft)',
-                          color: 'var(--danger)',
+                          background: 'var(--color-danger-bg)',
+                          color: 'var(--color-danger)',
                           border: 'none',
-                          borderRadius: '6px',
-                          width: '32px',
-                          height: '32px',
+                          borderRadius: 'var(--radius-control)',
+                          width: '44px',
+                          height: '44px',
+                          minWidth: '44px',
+                          minHeight: '44px',
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          padding: 0,
                         }}
                         title="حذف المكون"
                       >
-                        <IconTrash size={16} />
+                        <IconTrash size={20} />
                       </button>
                     </div>
                   </div>
@@ -982,9 +1042,16 @@ export function CustomMealModal({
                 style={{
                   fontSize: '12.5px',
                   fontWeight: 700,
-                  color: '#3b82f6',
+                  color: 'var(--ink)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
                 }}
               >
+                <span
+                  className="macro-marker macro-marker--protein"
+                  aria-hidden="true"
+                />
                 البروتين (جم)
               </label>
               <input
@@ -1013,9 +1080,16 @@ export function CustomMealModal({
                 style={{
                   fontSize: '12.5px',
                   fontWeight: 700,
-                  color: '#eab308',
+                  color: 'var(--ink)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
                 }}
               >
+                <span
+                  className="macro-marker macro-marker--carbs"
+                  aria-hidden="true"
+                />
                 الكاربوهيدرات (جم)
               </label>
               <input
@@ -1044,9 +1118,16 @@ export function CustomMealModal({
                 style={{
                   fontSize: '12.5px',
                   fontWeight: 700,
-                  color: '#ef4444',
+                  color: 'var(--ink)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
                 }}
               >
+                <span
+                  className="macro-marker macro-marker--fats"
+                  aria-hidden="true"
+                />
                 الدهون (جم)
               </label>
               <input
@@ -1116,24 +1197,59 @@ export function CustomMealModal({
             <div
               style={{
                 display: 'flex',
-                gap: '10px',
+                gap: '12px',
                 fontSize: '13px',
                 fontWeight: 700,
+                alignItems: 'center',
+                flexWrap: 'wrap',
               }}
             >
-              <span style={{ color: '#3b82f6' }}>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  color: 'var(--ink)',
+                }}
+              >
+                <span
+                  className="macro-marker macro-marker--protein"
+                  aria-hidden="true"
+                />
                 {mode === 'ingredients'
                   ? calculatedTotals.proteinGrams
                   : directProtein}
                 ج بروتين
               </span>
-              <span style={{ color: '#eab308' }}>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  color: 'var(--ink)',
+                }}
+              >
+                <span
+                  className="macro-marker macro-marker--carbs"
+                  aria-hidden="true"
+                />
                 {mode === 'ingredients'
                   ? calculatedTotals.carbsGrams
                   : directCarbs}
                 ج كارب
               </span>
-              <span style={{ color: '#ef4444' }}>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  color: 'var(--ink)',
+                }}
+              >
+                <span
+                  className="macro-marker macro-marker--fats"
+                  aria-hidden="true"
+                />
                 {mode === 'ingredients'
                   ? calculatedTotals.fatsGrams
                   : directFats}
@@ -1165,32 +1281,6 @@ export function CustomMealModal({
               resize: 'none',
             }}
           />
-        </div>
-
-        {/* Actions */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-            marginTop: '8px',
-          }}
-        >
-          <button
-            type="submit"
-            className="btn-primary-action full-width"
-            style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
-          >
-            حفظ الوجبة في وجباتي
-          </button>
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            onClick={onClose}
-            style={{ height: '44px', fontSize: '14px' }}
-          >
-            إلغاء
-          </button>
         </div>
       </form>
     </Sheet>

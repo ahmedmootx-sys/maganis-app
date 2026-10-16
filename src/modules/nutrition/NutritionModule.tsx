@@ -909,7 +909,19 @@ export function NutritionModule({
                   fontSize: '13px',
                 }}
               >
-                <span style={{ fontWeight: 700, color: '#3b82f6' }}>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span
+                    className="macro-marker macro-marker--protein"
+                    aria-hidden="true"
+                  />
                   البروتين
                 </span>
                 <span
@@ -925,8 +937,8 @@ export function NutritionModule({
               <ProgressBar
                 value={dailyLog.consumedProtein}
                 max={targets.proteinGrams}
-                height={5}
-                color="#3b82f6"
+                height={6}
+                color="var(--macro-protein)"
                 aria-label="البروتين"
               />
             </div>
@@ -943,7 +955,19 @@ export function NutritionModule({
                   fontSize: '13px',
                 }}
               >
-                <span style={{ fontWeight: 700, color: '#eab308' }}>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span
+                    className="macro-marker macro-marker--carbs"
+                    aria-hidden="true"
+                  />
                   الكاربوهيدرات
                 </span>
                 <span
@@ -959,8 +983,8 @@ export function NutritionModule({
               <ProgressBar
                 value={dailyLog.consumedCarbs}
                 max={targets.carbsGrams}
-                height={5}
-                color="#eab308"
+                height={6}
+                color="var(--macro-carbs)"
                 aria-label="الكاربوهيدرات"
               />
             </div>
@@ -977,7 +1001,19 @@ export function NutritionModule({
                   fontSize: '13px',
                 }}
               >
-                <span style={{ fontWeight: 700, color: '#ec4899' }}>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span
+                    className="macro-marker macro-marker--fats"
+                    aria-hidden="true"
+                  />
                   الدهون
                 </span>
                 <span
@@ -993,8 +1029,8 @@ export function NutritionModule({
               <ProgressBar
                 value={dailyLog.consumedFats}
                 max={targets.fatsGrams}
-                height={5}
-                color="#ec4899"
+                height={6}
+                color="var(--macro-fats)"
                 aria-label="الدهون"
               />
             </div>

@@ -137,9 +137,23 @@ export function IconUser(props: IconProps) {
 export function IconDumbbell(props: IconProps) {
   return (
     <IconBase {...props}>
-      <path d="m6.5 6.5 11 11" />
-      <path d="m21 21-1-1a2 2 0 0 0-2.8 0l-.7.7a2 2 0 0 1-2.8 0l-2.1-2.1a2 2 0 0 1 0-2.8l.7-.7a2 2 0 0 0 0-2.8L11 8.5" />
-      <path d="m3 3 1 1a2 2 0 0 0 2.8 0l.7-.7a2 2 0 0 1 2.8 0l2.1 2.1a2 2 0 0 1 0 2.8l-.7.7a2 2 0 0 0 0 2.8L13 15.5" />
+      <path d="M6 12h12" />
+      <path d="M4 7v10" />
+      <path d="M2 9v6" />
+      <path d="M6 9v6" />
+      <path d="M18 9v6" />
+      <path d="M20 7v10" />
+      <path d="M22 9v6" />
+    </IconBase>
+  )
+}
+
+export function IconImage(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <circle cx="9" cy="9" r="2" />
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
     </IconBase>
   )
 }

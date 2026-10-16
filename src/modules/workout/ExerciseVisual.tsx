@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { assetUrl } from '../../utils/assetUrl.ts'
 import type { MuscleGroup } from '../shared/types.ts'
-import { IconDumbbell } from '../../components/Icons.tsx'
+import { IconImage } from '../../components/Icons.tsx'
 
 interface ExerciseVisualProps {
   category?: MuscleGroup | string
@@ -78,7 +78,7 @@ export function ExerciseVisual({
         }}
         title={exerciseName}
       >
-        <IconDumbbell size={size === 'large' ? 36 : 22} />
+        <IconImage size={size === 'large' ? 36 : 22} />
       </div>
     )
   }
@@ -96,9 +96,11 @@ export function ExerciseVisual({
           onError={() => setImgError(true)}
           loading="lazy"
           style={{
-            maxWidth: '240px',
-            maxHeight: '240px',
-            objectFit: 'contain',
+            width: size === 'small' ? '100%' : undefined,
+            height: size === 'small' ? '100%' : undefined,
+            maxWidth: size === 'small' ? '100%' : '220px',
+            maxHeight: size === 'small' ? '100%' : '220px',
+            objectFit: size === 'small' ? 'cover' : 'contain',
             margin: '0 auto',
             display: 'block',
           }}

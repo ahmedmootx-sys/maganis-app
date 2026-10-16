@@ -92,15 +92,27 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
                 marginBottom: '6px',
               }}
             >
-              <strong style={{ color: '#ef4444', fontSize: '14px' }}>
+              <strong
+                style={{
+                  color: 'var(--ink)',
+                  fontSize: '14px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span
+                  className="macro-marker macro-marker--protein"
+                  aria-hidden="true"
+                />
                 أولاً: البروتين (حجر بناء العضلات)
               </strong>
               <span
                 dir="ltr"
                 style={{
                   fontSize: '11.5px',
-                  background: 'rgba(239, 68, 68, 0.12)',
-                  color: '#ef4444',
+                  background: 'var(--macro-protein-bg)',
+                  color: 'var(--macro-protein)',
                   padding: '2px 8px',
                   borderRadius: '999px',
                   fontWeight: 700,
@@ -145,15 +157,27 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
                 marginBottom: '6px',
               }}
             >
-              <strong style={{ color: '#f59e0b', fontSize: '14px' }}>
+              <strong
+                style={{
+                  color: 'var(--ink)',
+                  fontSize: '14px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span
+                  className="macro-marker macro-marker--fats"
+                  aria-hidden="true"
+                />
                 ثانياً: الدهون الصحية (التوازن الهرموني)
               </strong>
               <span
                 dir="ltr"
                 style={{
                   fontSize: '11.5px',
-                  background: 'rgba(245, 158, 11, 0.12)',
-                  color: '#d97706',
+                  background: 'var(--macro-fats-bg)',
+                  color: 'var(--macro-fats)',
                   padding: '2px 8px',
                   borderRadius: '999px',
                   fontWeight: 700,
@@ -193,15 +217,27 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
                 marginBottom: '6px',
               }}
             >
-              <strong style={{ color: '#0ea5e9', fontSize: '14px' }}>
+              <strong
+                style={{
+                  color: 'var(--ink)',
+                  fontSize: '14px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span
+                  className="macro-marker macro-marker--carbs"
+                  aria-hidden="true"
+                />
                 ثالثاً: الكربوهيدرات (وقود التدريب والطاقة)
               </strong>
               <span
                 dir="ltr"
                 style={{
                   fontSize: '11.5px',
-                  background: 'rgba(14, 165, 233, 0.12)',
-                  color: '#0284c7',
+                  background: 'var(--macro-carbs-bg)',
+                  color: 'var(--macro-carbs)',
                   padding: '2px 8px',
                   borderRadius: '999px',
                   fontWeight: 700,

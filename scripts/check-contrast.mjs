@@ -23,7 +23,9 @@ const THEMES = ['light', 'dark']
 
 function parseRgba(colorStr) {
   if (!colorStr) return { r: 255, g: 255, b: 255, a: 1 }
-  const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
+  const match = colorStr.match(
+    /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/,
+  )
   if (!match) return { r: 255, g: 255, b: 255, a: 1 }
   return {
     r: Number(match[1]),
@@ -96,7 +98,9 @@ async function run() {
         const results = await page.evaluate(() => {
           function parseRgb(colorStr) {
             if (!colorStr) return { r: 255, g: 255, b: 255, a: 1 }
-            const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
+            const match = colorStr.match(
+              /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/,
+            )
             if (!match) return { r: 255, g: 255, b: 255, a: 1 }
             return {
               r: Number(match[1]),
@@ -119,7 +123,8 @@ async function run() {
               curr = curr.parentElement
             }
             // Base background
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+            const isDark =
+              document.documentElement.getAttribute('data-theme') === 'dark'
             let r = isDark ? 18 : 255
             let g = isDark ? 18 : 255
             let b = isDark ? 18 : 255
@@ -136,8 +141,8 @@ async function run() {
 
           const items = Array.from(
             document.querySelectorAll(
-              'button, input, select, textarea, .chip, .segmented__btn, .tab-item, a'
-            )
+              'button, input, select, textarea, .chip, .segmented__btn, .tab-item, a',
+            ),
           )
 
           const list = []
@@ -145,11 +150,18 @@ async function run() {
             const rect = el.getBoundingClientRect()
             if (rect.width === 0 || rect.height === 0) continue
             const style = window.getComputedStyle(el)
-            if (style.display === 'none' || style.visibility === 'hidden') continue
+            if (style.display === 'none' || style.visibility === 'hidden')
+              continue
 
             const textColor = parseRgb(style.color)
             const effectiveBg = getEffectiveBg(el)
-            const text = (el.innerText || el.value || el.placeholder || el.getAttribute('aria-label') || '').trim()
+            const text = (
+              el.innerText ||
+              el.value ||
+              el.placeholder ||
+              el.getAttribute('aria-label') ||
+              ''
+            ).trim()
 
             // If element has opacity on itself or ancestors
             let currentOpacity = 1
@@ -167,7 +179,9 @@ async function run() {
               textColor,
               effectiveBg,
               opacity: currentOpacity,
-              disabled: el.hasAttribute('disabled') || el.classList.contains('disabled'),
+              disabled:
+                el.hasAttribute('disabled') ||
+                el.classList.contains('disabled'),
             })
           }
           return list
@@ -206,14 +220,16 @@ async function run() {
     console.warn(`⚠️ Found ${failures.length} contrast issues below 4.5:1:`)
     for (const f of failures.slice(0, 20)) {
       console.warn(
-        `  - [${f.theme.toUpperCase()}] ${f.route} <${f.tag}> "${f.text}" (${f.className}): ratio ${f.ratio}:1 (text ${f.textColor} on bg ${f.bgColor})`
+        `  - [${f.theme.toUpperCase()}] ${f.route} <${f.tag}> "${f.text}" (${f.className}): ratio ${f.ratio}:1 (text ${f.textColor} on bg ${f.bgColor})`,
       )
     }
     if (failures.length > 20) {
       console.warn(`  ... and ${failures.length - 20} more`)
     }
   } else {
-    console.log('✅ All tested visible controls pass WCAG AA contrast >= 4.5:1!')
+    console.log(
+      '✅ All tested visible controls pass WCAG AA contrast >= 4.5:1!',
+    )
   }
 }
 
