@@ -15,19 +15,18 @@ import {
 import { sanitizeInput } from '../../lib/sanitizer.ts'
 import { MUSCLE_ATLAS } from './muscleAtlasData.ts'
 import { resolveExerciseMuscles } from './legacyMuscleMapper.ts'
-import {
-  TopBar,
-  Select,
-  FileField,
-  Button,
-  Segmented,
-} from '../../ui/index.ts'
+import { TopBar, Select, FileField, Button, Segmented } from '../../ui/index.ts'
 import { IconClose } from '../../components/Icons.tsx'
 import atlasGroups from '../../data/atlas-groups.json'
 import atlasMuscles from '../../data/atlas_muscles.json'
 
-const ATLAS_MUSCLE_MAP = new Map<string, { id: string; ar: string; en: string }>(
-  (atlasMuscles.muscles as Array<{ id: string; ar: string; en: string }>).map((m) => [m.id, m]),
+const ATLAS_MUSCLE_MAP = new Map<
+  string,
+  { id: string; ar: string; en: string }
+>(
+  (atlasMuscles.muscles as Array<{ id: string; ar: string; en: string }>).map(
+    (m) => [m.id, m],
+  ),
 )
 
 const ATLAS_SELECT_OPTIONS = (
@@ -660,7 +659,9 @@ export function CustomExerciseBuilder({
                     }}
                   >
                     <span>
-                      {ATLAS_MUSCLE_MAP.get(id)?.ar || MUSCLE_ATLAS[id]?.nameAr || id}
+                      {ATLAS_MUSCLE_MAP.get(id)?.ar ||
+                        MUSCLE_ATLAS[id]?.nameAr ||
+                        id}
                     </span>
                     <button
                       type="button"
@@ -730,67 +731,70 @@ export function CustomExerciseBuilder({
                         gap: '6px',
                       }}
                     >
-                        <span>
-                          {ATLAS_MUSCLE_MAP.get(id)?.ar ||
-                            MUSCLE_ATLAS[id]?.nameAr ||
-                            id}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleToggleSecondary(id)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#92400E',
-                            cursor: 'pointer',
-                            padding: 0,
-                            display: 'inline-flex',
-                          }}
-                          aria-label="إزالة العضلة"
-                        >
-                          <IconClose size={14} />
-                        </button>
+                      <span>
+                        {ATLAS_MUSCLE_MAP.get(id)?.ar ||
+                          MUSCLE_ATLAS[id]?.nameAr ||
+                          id}
                       </span>
-                    ))
-                  )}
-                </div>
-
-                <Select
-                  id="ce-secondary-muscle-picker"
-                  value=""
-                  placeholder="+ اضغط لإضافة عضلة مساعدة..."
-                  onChange={(val) => {
-                    if (val) handleToggleSecondary(val)
-                  }}
-                  options={ATLAS_SELECT_OPTIONS.map((opt) => ({
-                    ...opt,
-                    disabled: secondaryMuscleIds.includes(opt.value),
-                  }))}
-                  sheetTitle="اختر عضلة مساعدة (16 منطقة تشريحية)"
-                />
+                      <button
+                        type="button"
+                        onClick={() => handleToggleSecondary(id)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#92400E',
+                          cursor: 'pointer',
+                          padding: 0,
+                          display: 'inline-flex',
+                        }}
+                        aria-label="إزالة العضلة"
+                      >
+                        <IconClose size={14} />
+                      </button>
+                    </span>
+                  ))
+                )}
               </div>
 
-              {/* Note: Live atlas preview hidden per Task B instructions (Task C replaces it) */}
+              <Select
+                id="ce-secondary-muscle-picker"
+                value=""
+                placeholder="+ اضغط لإضافة عضلة مساعدة..."
+                onChange={(val) => {
+                  if (val) handleToggleSecondary(val)
+                }}
+                options={ATLAS_SELECT_OPTIONS.map((opt) => ({
+                  ...opt,
+                  disabled: secondaryMuscleIds.includes(opt.value),
+                }))}
+                sheetTitle="اختر عضلة مساعدة (16 منطقة تشريحية)"
+              />
             </div>
-          </section>
 
-          {/* Sticky bar: primary "حفظ التمرين", tertiary "إلغاء" */}
-          <div className="sticky-bottom-bar" style={{ display: 'flex', gap: '8px' }}>
-            <Button type="submit" variant="primary" fullWidth size="large">
-              حفظ التمرين
-            </Button>
-            {onCancel && (
-              <Button
-                type="button"
-                variant="tertiary"
-                fullWidth
-                size="large"
-                onClick={onCancel}
-              >
-                إلغاء
-              </Button>
-            )}
+            {/* Note: Live atlas preview hidden per Task B instructions (Task C replaces it) */}
           </div>
+        </section>
+
+        {/* Sticky bar: primary "حفظ التمرين", tertiary "إلغاء" */}
+        <div
+          className="sticky-bottom-bar"
+          style={{ display: 'flex', gap: '8px' }}
+        >
+          <Button type="submit" variant="primary" fullWidth size="large">
+            حفظ التمرين
+          </Button>
+          {onCancel && (
+            <Button
+              type="button"
+              variant="tertiary"
+              fullWidth
+              size="large"
+              onClick={onCancel}
+            >
+              إلغاء
+            </Button>
+          )}
+        </div>
       </form>
     </div>
   )

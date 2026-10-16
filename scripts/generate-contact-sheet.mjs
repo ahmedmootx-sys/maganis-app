@@ -18,7 +18,11 @@ const EXERCISES_TO_RENDER = [
     category: 'الصدر (Chest)',
     tier: 'Tier 1 (مدروس يدوياً)',
     muscles: [
-      { id: 'pec_clavicular', role: 'primary', nameAr: 'عضلة الصدر العلوية (الترقوية)' },
+      {
+        id: 'pec_clavicular',
+        role: 'primary',
+        nameAr: 'عضلة الصدر العلوية (الترقوية)',
+      },
       { id: 'pec_sternal', role: 'secondary', nameAr: 'عضلة الصدر الوسطى' },
       { id: 'pec_costal', role: 'secondary', nameAr: 'عضلة الصدر السفلية' },
       { id: 'delt_anterior', role: 'secondary', nameAr: 'الدالية الأمامية' },
@@ -34,7 +38,11 @@ const EXERCISES_TO_RENDER = [
       { id: 'lats', role: 'primary', nameAr: 'عضلة الظهر العريضة (اللاتس)' },
       { id: 'trap_middle', role: 'secondary', nameAr: 'الترابيس الوسطى' },
       { id: 'trap_lower', role: 'secondary', nameAr: 'الترابيس السفلية' },
-      { id: 'rhomboids', role: 'secondary', nameAr: 'العضلات المعينية (الرومبويدز)' },
+      {
+        id: 'rhomboids',
+        role: 'secondary',
+        nameAr: 'العضلات المعينية (الرومبويدز)',
+      },
     ],
   },
   {
@@ -58,8 +66,16 @@ const EXERCISES_TO_RENDER = [
     tier: 'Tier 1 (مدروس يدوياً)',
     muscles: [
       { id: 'biceps_long', role: 'primary', nameAr: 'البايسبس (الرأس الطويل)' },
-      { id: 'biceps_short', role: 'primary', nameAr: 'البايسبس (الرأس القصير)' },
-      { id: 'brachialis', role: 'secondary', nameAr: 'العضلة العضدية (براكياليس)' },
+      {
+        id: 'biceps_short',
+        role: 'primary',
+        nameAr: 'البايسبس (الرأس القصير)',
+      },
+      {
+        id: 'brachialis',
+        role: 'secondary',
+        nameAr: 'العضلة العضدية (براكياليس)',
+      },
       { id: 'forearm_flexors', role: 'secondary', nameAr: 'قوابض الساعد' },
     ],
   },
@@ -83,10 +99,26 @@ const EXERCISES_TO_RENDER = [
     category: 'الفخذ الخلفي والألوية (Hamstrings & Glutes)',
     tier: 'Tier 1 (مدروس يدوياً)',
     muscles: [
-      { id: 'glute_max', role: 'primary', nameAr: 'الألوية الكبرى (Gluteus Maximus)' },
-      { id: 'hamstring_bf_long', role: 'primary', nameAr: 'الفخذية ذات الرأسين (الطويل)' },
-      { id: 'hamstring_semitendinosus', role: 'primary', nameAr: 'نصف الوترية' },
-      { id: 'erector_spinae', role: 'secondary', nameAr: 'ناصبات العمود الفقري' },
+      {
+        id: 'glute_max',
+        role: 'primary',
+        nameAr: 'الألوية الكبرى (Gluteus Maximus)',
+      },
+      {
+        id: 'hamstring_bf_long',
+        role: 'primary',
+        nameAr: 'الفخذية ذات الرأسين (الطويل)',
+      },
+      {
+        id: 'hamstring_semitendinosus',
+        role: 'primary',
+        nameAr: 'نصف الوترية',
+      },
+      {
+        id: 'erector_spinae',
+        role: 'secondary',
+        nameAr: 'ناصبات العمود الفقري',
+      },
     ],
   },
   {
@@ -96,9 +128,21 @@ const EXERCISES_TO_RENDER = [
     category: 'الجذع والبطن (Core)',
     tier: 'Tier 1 (مدروس يدوياً)',
     muscles: [
-      { id: 'rectus_abdominis_upper', role: 'primary', nameAr: 'عضلات البطن العلوية' },
-      { id: 'rectus_abdominis_lower', role: 'primary', nameAr: 'عضلات البطن السفلية' },
-      { id: 'obliques_external', role: 'secondary', nameAr: 'العضلات المائلة الخارجية' },
+      {
+        id: 'rectus_abdominis_upper',
+        role: 'primary',
+        nameAr: 'عضلات البطن العلوية',
+      },
+      {
+        id: 'rectus_abdominis_lower',
+        role: 'primary',
+        nameAr: 'عضلات البطن السفلية',
+      },
+      {
+        id: 'obliques_external',
+        role: 'secondary',
+        nameAr: 'العضلات المائلة الخارجية',
+      },
     ],
   },
   {
@@ -120,8 +164,12 @@ let cardsHtml = ''
 
 for (const ex of EXERCISES_TO_RENDER) {
   const cardClass = `card-${ex.id}`
-  const primaryIds = ex.muscles.filter((m) => m.role === 'primary').map((m) => m.id)
-  const secondaryIds = ex.muscles.filter((m) => m.role === 'secondary').map((m) => m.id)
+  const primaryIds = ex.muscles
+    .filter((m) => m.role === 'primary')
+    .map((m) => m.id)
+  const secondaryIds = ex.muscles
+    .filter((m) => m.role === 'secondary')
+    .map((m) => m.id)
 
   // Default dim for all muscles in this card
   dynamicScopedCss += `

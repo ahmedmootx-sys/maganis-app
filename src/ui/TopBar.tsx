@@ -43,14 +43,21 @@ export const TopBar: React.FC<TopBarProps> = ({
             leading
           )}
           {(title || subtitle) && (
-            <div className="top-bar__title-group" style={{ display: 'flex', flexDirection: 'column' }}>
-              {title && (typeof title === 'string' ? (
-                <h1 className="top-bar__title">{title}</h1>
-              ) : (
-                title
-              ))}
+            <div
+              className="top-bar__title-group"
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              {title &&
+                (typeof title === 'string' ? (
+                  <h1 className="top-bar__title">{title}</h1>
+                ) : (
+                  title
+                ))}
               {subtitle && (
-                <span className="top-bar__subtitle" style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                <span
+                  className="top-bar__subtitle"
+                  style={{ fontSize: '12px', color: 'var(--muted)' }}
+                >
                   {subtitle}
                 </span>
               )}
@@ -60,15 +67,17 @@ export const TopBar: React.FC<TopBarProps> = ({
         {actions && (
           <div className="top-bar__actions">
             {Array.isArray(actions)
-              ? actions.slice(0, 2).map((act, idx) => (
-                  <IconButton
-                    key={idx}
-                    name={act.icon}
-                    onClick={act.onClick}
-                    aria-label={act.ariaLabel}
-                    size={22}
-                  />
-                ))
+              ? actions
+                  .slice(0, 2)
+                  .map((act, idx) => (
+                    <IconButton
+                      key={idx}
+                      name={act.icon}
+                      onClick={act.onClick}
+                      aria-label={act.ariaLabel}
+                      size={22}
+                    />
+                  ))
               : actions}
           </div>
         )}

@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react'
-import type { UserProfile, Goal, ActivityLevel } from '../onboarding/types.ts'
-import { GOALS, ACTIVITY_LEVELS } from '../onboarding/types.ts'
+import type { UserProfile, Goal } from '../onboarding/types.ts'
+import { GOALS } from '../onboarding/types.ts'
+import {
+  LIFESTYLE_OPTIONS,
+  type LifestyleLevel,
+  mapLifestyleToLegacyActivity,
+  mapLegacyActivityToLifestyle,
+} from '../nutrition/nutritionEngine.ts'
 import type { BackupData } from '../shared/types.ts'
 import {
   TopBar,
@@ -15,6 +21,7 @@ import {
   Button,
   Field,
   Icon,
+  Callout,
 } from '../../ui'
 import { BackupPanel } from '../backup/BackupPanel.tsx'
 
@@ -56,11 +63,6 @@ const WEEK_START_OPTIONS = [
 const GOAL_OPTIONS = GOALS.map((g) => ({
   value: g.value,
   labelAr: g.labelAr,
-}))
-
-const ACTIVITY_OPTIONS = ACTIVITY_LEVELS.map((a) => ({
-  value: a.value,
-  labelAr: a.labelAr,
 }))
 
 export function SettingsScreen({
@@ -140,8 +142,9 @@ export function SettingsScreen({
   const [editAge, setEditAge] = useState(profile?.body?.age ?? 25)
   const [editHeight, setEditHeight] = useState(profile?.body?.heightCm ?? 175)
   const [editWeight, setEditWeight] = useState(profile?.body?.weightKg ?? 75)
-  const [editActivity, setEditActivity] = useState(
-    profile?.body?.activityLevel ?? 'moderate',
+  const [editLifestyle, setEditLifestyle] = useState<LifestyleLevel>(
+    profile?.body?.lifestyle ??
+      mapLegacyActivityToLifestyle(profile?.body?.activityLevel),
   )
   const [editHasIssues, setEditHasIssues] = useState(
     profile?.medical?.hasIssues ?? false,
@@ -161,7 +164,10 @@ export function SettingsScreen({
       setEditAge(profile.body?.age ?? 25)
       setEditHeight(profile.body?.heightCm ?? 175)
       setEditWeight(profile.body?.weightKg ?? 75)
-      setEditActivity(profile.body?.activityLevel ?? 'moderate')
+      setEditLifestyle(
+        profile.body?.lifestyle ??
+          mapLegacyActivityToLifestyle(profile.body?.activityLevel),
+      )
       setEditHasIssues(profile.medical?.hasIssues ?? false)
       setEditRestrictions(
         profile.medical?.notes ||
@@ -172,17 +178,41 @@ export function SettingsScreen({
 
   function handleSaveProfileEdits() {
     if (!profile) return
+
+    // Auto-sync training days into workoutBlocks if not customized by user
+    let updatedWorkoutBlocks = profile.body.workoutBlocks
+    if (!profile.body.hasCustomWorkoutBlocks) {
+      if (updatedWorkoutBlocks && updatedWorkoutBlocks.length > 0) {
+        updatedWorkoutBlocks = updatedWorkoutBlocks.map((b, i) =>
+          i === 0 ? { ...b, sessionsPerWeek: editDays } : b,
+        )
+      } else {
+        updatedWorkoutBlocks = [
+          {
+            type: 'resistance',
+            sessionsPerWeek: editDays,
+            minutesPerSession: profile.body.sessionMinutes ?? 60,
+            intensity: profile.body.sessionIntensity ?? 'moderate',
+          },
+        ]
+      }
+    }
+
     const updated: UserProfile = {
       ...profile,
       name: editName.trim() || undefined,
       primaryGoal: editGoal,
       goals: [editGoal],
       trainingDaysPerWeek: editDays,
-      experienceLevel: editExperience as 'beginner' | 'intermediate' | 'advanced',
+      experienceLevel: editExperience as
+        'beginner' | 'intermediate' | 'advanced',
       trainingLocation: editLocation as 'gym' | 'home' | 'both',
       medical: {
         hasIssues: editHasIssues,
-        injuryTags: editHasIssues && editRestrictions.trim() ? [editRestrictions.trim()] : [],
+        injuryTags:
+          editHasIssues && editRestrictions.trim()
+            ? [editRestrictions.trim()]
+            : [],
         notes: editRestrictions.trim(),
       },
       body: {
@@ -191,7 +221,9 @@ export function SettingsScreen({
         age: editAge,
         heightCm: editHeight,
         weightKg: editWeight,
-        activityLevel: editActivity,
+        activityLevel: mapLifestyleToLegacyActivity(editLifestyle),
+        lifestyle: editLifestyle,
+        workoutBlocks: updatedWorkoutBlocks,
       },
       updatedAt: Date.now(),
     }
@@ -217,9 +249,19 @@ export function SettingsScreen({
     new URLSearchParams(window.location.search).get('debug') === '1'
 
   const goalObj = GOALS.find((g) => g.value === profile?.primaryGoal)
-  const activityObj = ACTIVITY_LEVELS.find(
-    (a) => a.value === profile?.body?.activityLevel,
+
+  const currentLifestyle =
+    profile?.body?.lifestyle ??
+    mapLegacyActivityToLifestyle(profile?.body?.activityLevel)
+  const lifestyleObj = LIFESTYLE_OPTIONS.find(
+    (l) => l.level === currentLifestyle,
   )
+
+  const hasTrainingDaysMismatch =
+    Boolean(profile?.body?.hasCustomWorkoutBlocks) &&
+    Boolean(profile?.body?.workoutBlocks?.length) &&
+    profile?.body?.workoutBlocks?.[0]?.sessionsPerWeek !==
+      profile?.trainingDaysPerWeek
 
   return (
     <div className="settings-screen" dir="rtl">
@@ -237,6 +279,32 @@ export function SettingsScreen({
           width: '100%',
         }}
       >
+        {/* Training days mismatch Callout */}
+        {hasTrainingDaysMismatch && (
+          <Callout
+            variant="warning"
+            title="عدد الأيام مختلف بين ملفك وحاسبة السعرات"
+            message={`ملفك محدد به ${profile?.trainingDaysPerWeek} أيام، بينما حاسبة السعرات محدد بها ${profile?.body?.workoutBlocks?.[0]?.sessionsPerWeek} أيام.`}
+            actionLabel="تطابق"
+            onAction={() => {
+              if (!profile) return
+              const synced: UserProfile = {
+                ...profile,
+                body: {
+                  ...profile.body,
+                  workoutBlocks: profile.body.workoutBlocks?.map((b, i) =>
+                    i === 0
+                      ? { ...b, sessionsPerWeek: profile.trainingDaysPerWeek }
+                      : b,
+                  ),
+                },
+                updatedAt: Date.now(),
+              }
+              onUpdateProfile(synced)
+            }}
+          />
+        )}
+
         {/* Section 1: الملف الشخصي */}
         <Section
           title="الملف الشخصي"
@@ -264,7 +332,7 @@ export function SettingsScreen({
                   onClick: () => setShowEditModal(true),
                 },
                 {
-                  key: 'أيام التمرين',
+                  key: 'جلسات التمرين',
                   value: `${profile?.trainingDaysPerWeek ?? 4} أيام أسبوعياً`,
                   onClick: () => setShowEditModal(true),
                 },
@@ -309,8 +377,8 @@ export function SettingsScreen({
                   onClick: () => setShowEditModal(true),
                 },
                 {
-                  key: 'مستوى النشاط',
-                  value: activityObj?.labelAr || '—',
+                  key: 'نمط النشاط اليومي',
+                  value: `${lifestyleObj?.titleAr || '—'} (معامل ×${lifestyleObj?.factor ?? 1.35})`,
                   onClick: () => setShowEditModal(true),
                 },
                 {
@@ -328,7 +396,9 @@ export function SettingsScreen({
         {/* Section 2: التفضيلات */}
         <Section title="التفضيلات">
           <Card padding="md">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+            >
               <div>
                 <Select
                   id="settings-week-start"
@@ -347,8 +417,14 @@ export function SettingsScreen({
                   borderTop: '1px solid var(--color-divider)',
                 }}
               >
-                <span style={{ fontSize: '14px', fontWeight: 600 }}>وقت الراحة الافتراضي</span>
-                <span style={{ fontSize: '14px', color: 'var(--color-text-2)' }}>60 ثانية</span>
+                <span style={{ fontSize: '14px', fontWeight: 600 }}>
+                  وقت الراحة الافتراضي
+                </span>
+                <span
+                  style={{ fontSize: '14px', color: 'var(--color-text-2)' }}
+                >
+                  60 ثانية
+                </span>
               </div>
               <div
                 style={{
@@ -359,8 +435,14 @@ export function SettingsScreen({
                   borderTop: '1px solid var(--color-divider)',
                 }}
               >
-                <span style={{ fontSize: '14px', fontWeight: 600 }}>نظام الوحدات</span>
-                <span style={{ fontSize: '14px', color: 'var(--color-text-2)' }}>متري (كجم / سم)</span>
+                <span style={{ fontSize: '14px', fontWeight: 600 }}>
+                  نظام الوحدات
+                </span>
+                <span
+                  style={{ fontSize: '14px', color: 'var(--color-text-2)' }}
+                >
+                  متري (كجم / سم)
+                </span>
               </div>
             </div>
           </Card>
@@ -450,11 +532,20 @@ export function SettingsScreen({
         onClose={() => setShowEditModal(false)}
         title="تعديل بيانات الملف الشخصي"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '20px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px',
+            paddingBottom: '20px',
+          }}
+        >
           <Field
             label="الاسم"
             value={editName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEditName(e.target.value)
+            }
             placeholder="مثال: أحمد"
           />
 
@@ -467,7 +558,13 @@ export function SettingsScreen({
           />
 
           <div>
-            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+            <div
+              style={{
+                fontSize: '13.5px',
+                fontWeight: 600,
+                marginBottom: '6px',
+              }}
+            >
               أيام التمرين أسبوعياً
             </div>
             <Segmented
@@ -484,29 +581,53 @@ export function SettingsScreen({
           </div>
 
           <div>
-            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+            <div
+              style={{
+                fontSize: '13.5px',
+                fontWeight: 600,
+                marginBottom: '6px',
+              }}
+            >
               خبرة التدريب
             </div>
             <Segmented
               options={EXPERIENCE_OPTIONS}
               value={editExperience}
-              onChange={(val) => setEditExperience(val as 'beginner' | 'intermediate' | 'advanced')}
+              onChange={(val) =>
+                setEditExperience(
+                  val as 'beginner' | 'intermediate' | 'advanced',
+                )
+              }
             />
           </div>
 
           <div>
-            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+            <div
+              style={{
+                fontSize: '13.5px',
+                fontWeight: 600,
+                marginBottom: '6px',
+              }}
+            >
               مكان التدريب
             </div>
             <Segmented
               options={LOCATION_OPTIONS}
               value={editLocation}
-              onChange={(val) => setEditLocation(val as 'gym' | 'home' | 'both')}
+              onChange={(val) =>
+                setEditLocation(val as 'gym' | 'home' | 'both')
+              }
             />
           </div>
 
           <div>
-            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+            <div
+              style={{
+                fontSize: '13.5px',
+                fontWeight: 600,
+                marginBottom: '6px',
+              }}
+            >
               الجنس
             </div>
             <Segmented
@@ -519,40 +640,61 @@ export function SettingsScreen({
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gap: '8px',
+            }}
+          >
             <Field
               label="العمر"
               unit="سنة"
               inputMode="numeric"
               value={String(editAge)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditAge(Number(e.target.value))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEditAge(Number(e.target.value))
+              }
             />
             <Field
               label="الطول"
               unit="سم"
               inputMode="numeric"
               value={String(editHeight)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditHeight(Number(e.target.value))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEditHeight(Number(e.target.value))
+              }
             />
             <Field
               label="الوزن"
               unit="كجم"
               inputMode="decimal"
               value={String(editWeight)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditWeight(Number(e.target.value))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEditWeight(Number(e.target.value))
+              }
             />
           </div>
 
           <Select
-            id="edit-profile-activity"
-            label="مستوى النشاط اليومي"
-            value={editActivity}
-            onChange={(val) => setEditActivity(val as ActivityLevel)}
-            options={ACTIVITY_OPTIONS}
+            id="edit-profile-lifestyle"
+            label="نمط النشاط اليومي"
+            value={String(editLifestyle)}
+            onChange={(val) => setEditLifestyle(Number(val) as LifestyleLevel)}
+            options={LIFESTYLE_OPTIONS.map((opt) => ({
+              value: String(opt.level),
+              labelAr: `${opt.titleAr} (${opt.descriptionAr} - معامل ×${opt.factor})`,
+            }))}
           />
 
           <div>
-            <div style={{ fontSize: '13.5px', fontWeight: 600, marginBottom: '6px' }}>
+            <div
+              style={{
+                fontSize: '13.5px',
+                fontWeight: 600,
+                marginBottom: '6px',
+              }}
+            >
               هل لديك إصابات سابقة؟
             </div>
             <Segmented
@@ -569,13 +711,27 @@ export function SettingsScreen({
             <Field
               label="تفاصيل الإصابة أو الملاحظات"
               value={editRestrictions}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditRestrictions(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEditRestrictions(e.target.value)
+              }
               placeholder="اكتب تفاصيل الإصابة..."
             />
           )}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
-            <Button variant="primary" size="lg" fullWidth onClick={handleSaveProfileEdits}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              marginTop: '10px',
+            }}
+          >
+            <Button
+              variant="primary"
+              size="lg"
+              fullWidth
+              onClick={handleSaveProfileEdits}
+            >
               حفظ التعديلات
             </Button>
             <Button

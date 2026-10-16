@@ -362,7 +362,10 @@ export function Dashboard({
                   {todayProgramDay.exercises.slice(0, 3).map((pe, idx) => {
                     const ex = getExerciseById(pe.exerciseId)
                     const arabicName =
-                      ex?.nameAr ?? (pe as any).customName ?? 'تمرين مخصص'
+                      ex?.nameAr ??
+                      ((pe as unknown as Record<string, unknown>).customName as
+                        string | undefined) ??
+                      'تمرين مخصص'
                     const englishName = ex?.name ?? ''
                     const repsDisplay = pe.reps ?? 10
                     const setsReps = `${pe.sets} × ${repsDisplay} تكرار`
@@ -645,9 +648,7 @@ export function Dashboard({
             <ProgressBar
               value={consumedCalories}
               max={targetCalories}
-              variant={
-                consumedCalories > targetCalories ? 'warning' : 'accent'
-              }
+              variant={consumedCalories > targetCalories ? 'warning' : 'accent'}
             />
 
             <div

@@ -4,6 +4,7 @@ import type { CalorieMacroTarget } from './types.ts'
 import {
   calculateNutritionTargets,
   calculateBMR as engineCalculateBMR,
+  mapLegacyActivityToLifestyle,
   type LifestyleLevel,
   type NutritionGoal,
   type WorkoutBlockInput,
@@ -39,11 +40,7 @@ export function calculateCalorieMacroTargets(
   // Map or read lifestyle
   let lifestyle: LifestyleLevel = profile.body.lifestyle ?? 2
   if (!profile.body.lifestyle) {
-    const act = profile.body.activityLevel
-    if (act === 'sedentary') lifestyle = 1
-    else if (act === 'light' || act === 'moderate') lifestyle = 2
-    else if (act === 'active') lifestyle = 3
-    else if (act === 'very_active') lifestyle = 4
+    lifestyle = mapLegacyActivityToLifestyle(profile.body.activityLevel)
   }
 
   // Map or read workout blocks
@@ -54,8 +51,8 @@ export function calculateCalorieMacroTargets(
       {
         type: 'resistance',
         sessionsPerWeek: sessions,
-        minutesPerSession: 60,
-        intensity: 'moderate',
+        minutesPerSession: profile.body.sessionMinutes || 60,
+        intensity: profile.body.sessionIntensity || 'moderate',
       },
     ]
   }

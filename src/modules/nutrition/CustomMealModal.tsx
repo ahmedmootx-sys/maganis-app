@@ -427,7 +427,9 @@ export function CustomMealModal({
                   gap: '10px',
                 }}
               >
-                {foodFormError && <Callout tone="danger">{foodFormError}</Callout>}
+                {foodFormError && (
+                  <Callout tone="danger">{foodFormError}</Callout>
+                )}
                 <div style={{ fontSize: '13px', fontWeight: 800 }}>
                   تسجيل مكوّن غذائي جديد في قائمتك:
                 </div>

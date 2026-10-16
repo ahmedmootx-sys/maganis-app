@@ -1191,7 +1191,9 @@
   stroke-width: 0.5px;
   opacity: 0.65;
   cursor: pointer;
-  transition: fill 0.2s, opacity 0.2s;
+  transition:
+    fill 0.2s,
+    opacity 0.2s;
 }
 
 .muscle-neutral:hover {
@@ -1200,16 +1202,16 @@
 }
 
 .muscle-primary {
-  fill: #E53935 !important;
-  stroke: #B71C1C !important;
+  fill: #e53935 !important;
+  stroke: #b71c1c !important;
   stroke-width: 1px !important;
   opacity: 1 !important;
   cursor: pointer;
 }
 
 .muscle-secondary {
-  fill: #FDD835 !important;
-  stroke: #F9A825 !important;
+  fill: #fdd835 !important;
+  stroke: #f9a825 !important;
   stroke-width: 1.2px !important;
   stroke-dasharray: 4 3 !important;
   opacity: 1 !important;
@@ -1318,14 +1320,14 @@
 }
 
 .role-marker--primary {
-  background-color: #E53935;
-  border: 1px solid #B71C1C;
+  background-color: #e53935;
+  border: 1px solid #b71c1c;
   border-radius: 3px; /* Solid Square */
 }
 
 .role-marker--secondary {
-  background-color: #FDD835;
-  border: 1.2px dashed #F9A825;
+  background-color: #fdd835;
+  border: 1.2px dashed #f9a825;
   border-radius: 50%; /* Dashed Circle */
 }
 

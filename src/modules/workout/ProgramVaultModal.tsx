@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import type { SavedWorkoutProgram, WorkoutProgram } from '../shared/types.ts'
 import { formatArabicDate } from '../../lib/dateUtils.ts'
-import {
-  Sheet,
-  ConfirmSheet,
-  ListRow,
-  EmptyState,
-} from '../../ui/index.ts'
+import { Sheet, ConfirmSheet, ListRow, EmptyState } from '../../ui/index.ts'
 import {
   IconMoreVertical,
   IconClipboard,

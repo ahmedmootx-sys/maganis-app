@@ -1,7 +1,8 @@
 import React from 'react'
 import { Icon, type IconName } from './Icon.tsx'
 
-export type CalloutVariant = 'info' | 'warning' | 'danger' | 'success' | 'accent'
+export type CalloutVariant =
+  'info' | 'warning' | 'danger' | 'success' | 'accent'
 
 export interface CalloutAction {
   label: string
@@ -49,7 +50,10 @@ export const Callout: React.FC<CalloutProps> = ({
     rawVariant === 'accent' ? 'info' : rawVariant
   const iconName = icon || DEFAULT_VARIANT_ICONS[rawVariant] || 'info'
   const effectiveAction =
-    action ?? (actionLabel && onAction ? { label: actionLabel, onClick: onAction } : undefined)
+    action ??
+    (actionLabel && onAction
+      ? { label: actionLabel, onClick: onAction }
+      : undefined)
   const content = children ?? message
 
   return (
@@ -64,8 +68,8 @@ export const Callout: React.FC<CalloutProps> = ({
       <div className="callout__content">
         {title && <div className="callout__title">{title}</div>}
         {content && <div className="callout__text">{content}</div>}
-        {effectiveAction && (
-          React.isValidElement(effectiveAction) ? (
+        {effectiveAction &&
+          (React.isValidElement(effectiveAction) ? (
             effectiveAction
           ) : (
             <button
@@ -85,8 +89,7 @@ export const Callout: React.FC<CalloutProps> = ({
             >
               {(effectiveAction as CalloutAction).label}
             </button>
-          )
-        )}
+          ))}
       </div>
     </aside>
   )

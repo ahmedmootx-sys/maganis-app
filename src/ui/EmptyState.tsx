@@ -30,7 +30,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   ...props
 }) => {
   const desc = description ?? message
-  const effectiveAction = action ?? (actionLabel && onAction ? { label: actionLabel, onClick: onAction } : undefined)
+  const effectiveAction =
+    action ??
+    (actionLabel && onAction
+      ? { label: actionLabel, onClick: onAction }
+      : undefined)
 
   return (
     <div className={`empty-state ${className}`.trim()} {...props}>
@@ -43,15 +47,18 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       </div>
       <h3 className="empty-state__title">{title}</h3>
       {desc && <p className="empty-state__desc">{desc}</p>}
-      {effectiveAction && (
-        React.isValidElement(effectiveAction) ? (
+      {effectiveAction &&
+        (React.isValidElement(effectiveAction) ? (
           effectiveAction
         ) : (
-          <Button variant="secondary" size="normal" onClick={(effectiveAction as EmptyStateAction).onClick}>
+          <Button
+            variant="secondary"
+            size="normal"
+            onClick={(effectiveAction as EmptyStateAction).onClick}
+          >
             {(effectiveAction as EmptyStateAction).label}
           </Button>
-        )
-      )}
+        ))}
     </div>
   )
 }

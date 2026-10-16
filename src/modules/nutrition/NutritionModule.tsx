@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type {
-  ActivityLevel,
-  Goal,
-  Sex,
-  UserProfile,
-} from '../onboarding/types.ts'
+import type { Goal, Sex, UserProfile } from '../onboarding/types.ts'
 import { ACTIVITY_LEVELS, GOALS } from '../onboarding/types.ts'
 import type { BodyLogEntry } from '../shared/types.ts'
 import { calculateCalorieMacroTargets } from './calorieCalculator.ts'
@@ -12,6 +7,9 @@ import { CustomMealModal } from './CustomMealModal.tsx'
 import {
   calibrateTDEE,
   validateNutritionInput,
+  LIFESTYLE_OPTIONS,
+  mapLifestyleToLegacyActivity,
+  mapLegacyActivityToLifestyle,
   type FormulaChoice,
   type LifestyleLevel,
   type NutritionPace,
@@ -124,9 +122,6 @@ export function NutritionModule({
   )
   const [editAge, setEditAge] = useState<number>(profile?.body?.age ?? 25)
   const [editSex, setEditSex] = useState<Sex>(profile?.body?.sex ?? 'male')
-  const [editActivity, setEditActivity] = useState<ActivityLevel>(
-    profile?.body?.activityLevel ?? 'moderate',
-  )
   const [editBodyFat, setEditBodyFat] = useState<number | undefined>(
     profile?.body?.bodyFatPercent,
   )
@@ -173,7 +168,6 @@ export function NutritionModule({
       setEditHeight(profile.body.heightCm)
       setEditAge(profile.body.age)
       setEditSex(profile.body.sex)
-      setEditActivity(profile.body.activityLevel)
       setEditBodyFat(profile.body.bodyFatPercent)
       setEditLifestyle(profile.body.lifestyle ?? 2)
       setEditWorkoutBlocks(
@@ -257,6 +251,72 @@ export function NutritionModule({
     if (!profile) return null
     return calculateCalorieMacroTargets(profile)
   }, [profile])
+
+  // Check for migration requirement (legacy user who hasn't reviewed migration yet)
+  const isLegacyUserNeedingReview = Boolean(
+    profile &&
+    !profile.body.lifestyleMigrated &&
+    !profile.body.migrationReviewed,
+  )
+
+  const legacyCalorieTarget = useMemo(() => {
+    if (!profile) return null
+    const bmr =
+      profile.body.sex === 'male'
+        ? 10 * profile.body.weightKg +
+          6.25 * profile.body.heightCm -
+          5 * profile.body.age +
+          5
+        : 10 * profile.body.weightKg +
+          6.25 * profile.body.heightCm -
+          5 * profile.body.age -
+          161
+    const legacyMultiplier =
+      ACTIVITY_LEVELS.find((a) => a.value === profile.body.activityLevel)
+        ?.multiplier ?? 1.55
+    const tdee = Math.round(bmr * legacyMultiplier)
+    const goalDelta =
+      profile.primaryGoal === 'cut'
+        ? -500
+        : profile.primaryGoal === 'hypertrophy'
+          ? 300
+          : 0
+    return Math.round(tdee + goalDelta)
+  }, [profile])
+
+  const proposedLifestyle = useMemo(() => {
+    if (!profile) return 2 as LifestyleLevel
+    return mapLegacyActivityToLifestyle(profile.body.activityLevel)
+  }, [profile])
+
+  const proposedTargets = useMemo(() => {
+    if (!profile) return null
+    const hypotheticalProfile: UserProfile = {
+      ...profile,
+      body: {
+        ...profile.body,
+        lifestyle: proposedLifestyle,
+        workoutBlocks: profile.body.workoutBlocks?.length
+          ? profile.body.workoutBlocks
+          : [
+              {
+                type: 'resistance',
+                sessionsPerWeek: profile.trainingDaysPerWeek ?? 4,
+                minutesPerSession: profile.body.sessionMinutes ?? 60,
+                intensity: profile.body.sessionIntensity ?? 'moderate',
+              },
+            ],
+      },
+    }
+    return calculateCalorieMacroTargets(hypotheticalProfile)
+  }, [profile, proposedLifestyle])
+
+  const hasTrainingDaysMismatch = Boolean(
+    profile?.body?.hasCustomWorkoutBlocks &&
+    profile?.body?.workoutBlocks?.length &&
+    profile.body.workoutBlocks[0].sessionsPerWeek !==
+      profile.trainingDaysPerWeek,
+  )
 
   function handleLogDirectMeal(meal: {
     id: string
@@ -420,6 +480,12 @@ export function NutritionModule({
     }
     setModalError('')
 
+    const hasCustom =
+      editWorkoutBlocks.length > 1 ||
+      (editWorkoutBlocks[0] &&
+        editWorkoutBlocks[0].sessionsPerWeek !== profile.trainingDaysPerWeek) ||
+      Boolean(profile.body.hasCustomWorkoutBlocks)
+
     const updatedProfile: UserProfile = {
       ...profile,
       primaryGoal: editGoal,
@@ -429,10 +495,13 @@ export function NutritionModule({
         weightKg: Number(editWeight) || profile.body.weightKg,
         heightCm: Number(editHeight) || profile.body.heightCm,
         age: Number(editAge) || profile.body.age,
-        activityLevel: editActivity,
+        activityLevel: mapLifestyleToLegacyActivity(editLifestyle),
         bodyFatPercent: editBodyFat ? Number(editBodyFat) : undefined,
         lifestyle: editLifestyle,
         workoutBlocks: editWorkoutBlocks,
+        hasCustomWorkoutBlocks: hasCustom,
+        lifestyleMigrated: true,
+        migrationReviewed: true,
         pace: editPace,
         formulaOverride: editFormulaOverride,
         proteinPerKgOverride: editProteinOverride
@@ -506,9 +575,6 @@ export function NutritionModule({
   )
 
   const currentGoalObj = GOALS.find((g) => g.value === profile.primaryGoal)
-  const currentActivityObj = ACTIVITY_LEVELS.find(
-    (a) => a.value === profile.body.activityLevel,
-  )
 
   return (
     <div
@@ -629,17 +695,124 @@ export function NutritionModule({
           boxSizing: 'border-box',
         }}
       >
-        {/* Outdated / Incomplete Profile Notice Banner */}
-        {(!profile.body.lifestyle ||
-          !profile.body.workoutBlocks ||
-          profile.body.workoutBlocks.length === 0) && (
+        {/* Migration Callout for Existing Users */}
+        {isLegacyUserNeedingReview && proposedTargets && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            <Callout
+              variant="info"
+              title="راجع نمط نشاطك اليومي"
+              message={`قمنا بتحديث نظام السعرات لفصل نمط النشاط اليومي خارج التمرين عن جلسات التمرين حتى لا تُحسب السعرات مرتين.\nالهدف السابق: ${legacyCalorieTarget} كالوِري -> الهدف الدقيق الجديد: ${proposedTargets.targetCalories} كالوِري (${proposedTargets.proteinGrams} جم بروتين).`}
+              actionLabel="تطبيق"
+              onAction={() => {
+                if (!profile || !onUpdateProfile) return
+                const migratedProfile: UserProfile = {
+                  ...profile,
+                  body: {
+                    ...profile.body,
+                    lifestyle: proposedLifestyle,
+                    activityLevel:
+                      mapLifestyleToLegacyActivity(proposedLifestyle),
+                    workoutBlocks: profile.body.workoutBlocks?.length
+                      ? profile.body.workoutBlocks
+                      : [
+                          {
+                            type: 'resistance',
+                            sessionsPerWeek: profile.trainingDaysPerWeek ?? 4,
+                            minutesPerSession:
+                              profile.body.sessionMinutes ?? 60,
+                            intensity:
+                              profile.body.sessionIntensity ?? 'moderate',
+                          },
+                        ],
+                    lifestyleMigrated: true,
+                    migrationReviewed: true,
+                  },
+                  updatedAt: Date.now(),
+                }
+                onUpdateProfile(migratedProfile)
+              }}
+            />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                padding: '0 4px',
+              }}
+            >
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => {
+                  if (!profile || !onUpdateProfile) return
+                  onUpdateProfile({
+                    ...profile,
+                    body: {
+                      ...profile.body,
+                      migrationReviewed: true,
+                    },
+                    updatedAt: Date.now(),
+                  })
+                }}
+                style={{
+                  fontSize: '12px',
+                  color: 'var(--muted)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: '2px 4px',
+                }}
+              >
+                إبقاء الأرقام الحالية
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Training days mismatch Callout */}
+        {hasTrainingDaysMismatch && (
           <Callout
-            title="استكمال البيانات"
-            message="لتفعيل حساب معدل الأيض ومعامل النشاط اليومي وتفاصيل جلسات التمرين بدقة 100% بنظام 2026، استكمل بياناتك الآن."
-            actionLabel="استكمال البيانات"
-            onAction={() => setIsProfileModalOpen(true)}
+            variant="warning"
+            title="عدد الأيام مختلف بين ملفك وحاسبة السعرات"
+            message={`ملفك محدد به ${profile.trainingDaysPerWeek} أيام، بينما حاسبة السعرات محدد بها ${profile.body.workoutBlocks![0].sessionsPerWeek} أيام.`}
+            actionLabel="تطابق"
+            onAction={() => {
+              if (!profile || !onUpdateProfile) return
+              const synced: UserProfile = {
+                ...profile,
+                body: {
+                  ...profile.body,
+                  workoutBlocks: profile.body.workoutBlocks?.map((b, i) =>
+                    i === 0
+                      ? { ...b, sessionsPerWeek: profile.trainingDaysPerWeek }
+                      : b,
+                  ),
+                },
+                updatedAt: Date.now(),
+              }
+              onUpdateProfile(synced)
+            }}
           />
         )}
+
+        {/* Outdated / Incomplete Profile Notice Banner */}
+        {!isLegacyUserNeedingReview &&
+          (!profile.body.lifestyle ||
+            !profile.body.workoutBlocks ||
+            profile.body.workoutBlocks.length === 0) && (
+            <Callout
+              title="استكمال البيانات"
+              message="لتفعيل حساب معدل الأيض ومعامل النشاط اليومي وتفاصيل جلسات التمرين بدقة 100% بنظام 2026، استكمل بياناتك الآن."
+              actionLabel="استكمال البيانات"
+              onAction={() => setIsProfileModalOpen(true)}
+            />
+          )}
 
         {/* Daily Summary Card: Calories & 3 Macros Grouped */}
         <div
@@ -1295,7 +1468,9 @@ export function NutritionModule({
           onClose={() => setMealToDelete(null)}
           onConfirm={() => handleDeleteCustomMeal(mealToDelete.id)}
           title="حذف الوجبة؟"
-          consequences={[`هل أنت متأكد من حذف وجبة «${mealToDelete.nameAr}» نهائياً؟`]}
+          consequences={[
+            `هل أنت متأكد من حذف وجبة «${mealToDelete.nameAr}» نهائياً؟`,
+          ]}
           confirmLabel="نعم، حذف"
           cancelLabel="إلغاء"
           isDestructive={true}
@@ -1309,7 +1484,9 @@ export function NutritionModule({
           onClose={() => setShowResetDailyConfirm(false)}
           onConfirm={doResetDailyLog}
           title="تصفير سجل اليوم؟"
-          consequences={['سيتم حذف جميع الوجبات المسجلة وتصفير عداد السعرات والماكروز لهذا اليوم.']}
+          consequences={[
+            'سيتم حذف جميع الوجبات المسجلة وتصفير عداد السعرات والماكروز لهذا اليوم.',
+          ]}
           confirmLabel="نعم، تصفير السجل"
           cancelLabel="إلغاء"
           isDestructive={true}
@@ -1390,9 +1567,22 @@ export function NutritionModule({
                       : 'غير محددة',
                   },
                   {
-                    id: 'activity',
-                    label: 'معامل النشاط',
-                    value: currentActivityObj?.labelAr || 'متوسط',
+                    id: 'lifestyle',
+                    label: 'نمط النشاط اليومي',
+                    value:
+                      LIFESTYLE_OPTIONS.find(
+                        (l) =>
+                          l.level ===
+                          (profile.body.lifestyle ??
+                            mapLegacyActivityToLifestyle(
+                              profile.body.activityLevel,
+                            )),
+                      )?.titleAr || '—',
+                  },
+                  {
+                    id: 'workouts',
+                    label: 'جلسات التمرين',
+                    value: `${profile.trainingDaysPerWeek} أيام أسبوعياً`,
                   },
                   {
                     id: 'goal',
@@ -1818,34 +2008,17 @@ export function NutritionModule({
               <div className="field">
                 <Select
                   id="calc-lifestyle-select"
-                  label="نمط نشاطك اليومي (خارج أوقات التمرين)"
+                  label="نمط النشاط اليومي (خارج أوقات التمرين)"
                   value={String(editLifestyle)}
                   onChange={(val) =>
                     setEditLifestyle(Number(val) as LifestyleLevel)
                   }
-                  options={[
-                    {
-                      value: '1',
-                      labelAr: '1 = مكتبي أو طالب (خامل غالباً)',
-                      description: 'معامل 1.20',
-                    },
-                    {
-                      value: '2',
-                      labelAr: '2 = حركة يومية خفيفة مع مشي متقطع',
-                      description: 'معامل 1.35',
-                    },
-                    {
-                      value: '3',
-                      labelAr: '3 = وقوف وحركة نشطة أغلب اليوم',
-                      description: 'معامل 1.50',
-                    },
-                    {
-                      value: '4',
-                      labelAr: '4 = عمل بدني شاق ومجهود مستمر',
-                      description: 'معامل 1.65',
-                    },
-                  ]}
-                  sheetTitle="اختر نمط نشاطك اليومي"
+                  options={LIFESTYLE_OPTIONS.map((opt) => ({
+                    value: String(opt.level),
+                    labelAr: `${opt.level} = ${opt.titleAr}`,
+                    description: `${opt.descriptionAr} (معامل ${opt.factor.toFixed(2)})`,
+                  }))}
+                  sheetTitle="اختر نمط النشاط اليومي"
                 />
               </div>
 
@@ -1875,7 +2048,7 @@ export function NutritionModule({
                       color: 'var(--ink)',
                     }}
                   >
-                    جلسات التمارين الرياضية (حساب EAT)
+                    جلسات التمرين (حساب EAT)
                   </span>
                   {editWorkoutBlocks.length < 3 && (
                     <button

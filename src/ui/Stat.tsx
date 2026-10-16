@@ -56,7 +56,14 @@ export const Stat: React.FC<StatProps> = ({
         )}
       </div>
       {secondary && (
-        <span style={{ fontSize: '11px', color: 'var(--muted, var(--color-text-2))', marginTop: '2px', display: 'block' }}>
+        <span
+          style={{
+            fontSize: '11px',
+            color: 'var(--muted, var(--color-text-2))',
+            marginTop: '2px',
+            display: 'block',
+          }}
+        >
           {secondary}
         </span>
       )}

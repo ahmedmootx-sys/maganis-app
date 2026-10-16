@@ -451,7 +451,7 @@ export const Styleguide: React.FC = () => {
 
               {/* Sheet Select (Multi) */}
               <Field label="العضلات المستهدفة (متعدد الاختيار)">
-                <Select
+                <Select<string[]>
                   label="اختر العضلات المستهدفة"
                   multiple
                   options={[
@@ -461,7 +461,7 @@ export const Styleguide: React.FC = () => {
                     { value: 'opt4', label: 'الكتف الأمامي' },
                   ]}
                   values={multiSelectVal}
-                  onChange={(v) => setMultiSelectVal(v as string[])}
+                  onChange={(v) => setMultiSelectVal(v)}
                 />
               </Field>
 

@@ -9,7 +9,9 @@ describe('resolveMuscles Specification and Tier System', () => {
     })
     expect(res.tier).toBe(1)
     expect(res.muscles.length).toBeGreaterThan(0)
-    const primary = res.muscles.filter((m) => m.role === 'primary').map((m) => m.id)
+    const primary = res.muscles
+      .filter((m) => m.role === 'primary')
+      .map((m) => m.id)
     expect(primary).toContain('pec_sternal')
   })
 

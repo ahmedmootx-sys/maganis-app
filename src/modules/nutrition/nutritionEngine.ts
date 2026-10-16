@@ -11,7 +11,7 @@
  */
 
 export type Sex = 'male' | 'female'
-export type LifestyleLevel = 1 | 2 | 3 | 4
+export type LifestyleLevel = 1 | 2 | 3 | 4 | 5
 export type WorkoutType = 'resistance' | 'cardio'
 export type WorkoutIntensity = 'light' | 'moderate' | 'hard'
 export type NutritionGoal = 'gain' | 'maintain' | 'lose'
@@ -23,6 +23,7 @@ export interface WorkoutBlockInput {
   sessionsPerWeek: number
   minutesPerSession: number
   intensity: WorkoutIntensity
+  durationMinutes?: number
 }
 
 export interface NutritionEngineInput {
@@ -130,11 +131,114 @@ export const MET_TABLE: Record<
   },
 }
 
+export interface LifestyleOption {
+  level: LifestyleLevel
+  value: LifestyleLevel
+  factor: number
+  multiplier: number
+  titleAr: string
+  labelAr: string
+  descriptionAr: string
+}
+
 export const LIFESTYLE_FACTORS: Record<LifestyleLevel, number> = {
-  1: 1.2, // desk / student
-  2: 1.35, // some walking
-  3: 1.5, // on feet most of day
-  4: 1.65, // physical labour
+  1: 1.2, // desk / sedentary
+  2: 1.35, // light active / some walking
+  3: 1.5, // moderate active / on feet most of day
+  4: 1.65, // very active / continuous physical effort
+  5: 1.8, // heavy manual labor / exceptional physical effort
+}
+
+export const LIFESTYLE_OPTIONS: LifestyleOption[] = [
+  {
+    level: 1,
+    value: 1,
+    factor: 1.2,
+    multiplier: 1.2,
+    titleAr: 'مكتبي أو طالب (خامل غالباً)',
+    labelAr: '1 = مكتبي أو طالب (خامل غالباً)',
+    descriptionAr: 'معظم اليوم جلوس بلا حركة تذكر طوال ساعات اليوم',
+  },
+  {
+    level: 2,
+    value: 2,
+    factor: 1.35,
+    multiplier: 1.35,
+    titleAr: 'حركة يومية خفيفة مع مشي متقطع',
+    labelAr: '2 = حركة يومية خفيفة مع مشي متقطع',
+    descriptionAr: 'أعمال مكتبية أو منزلية مع فترات مشي متقطعة أو تنقل خفيف',
+  },
+  {
+    level: 3,
+    value: 3,
+    factor: 1.5,
+    multiplier: 1.5,
+    titleAr: 'وقوف وحركة نشطة أغلب اليوم',
+    labelAr: '3 = وقوف وحركة نشطة أغلب اليوم',
+    descriptionAr: 'وظيفة تتطلب الوقوف أو المشي المستمر كالتعليم أو المبيعات',
+  },
+  {
+    level: 4,
+    value: 4,
+    factor: 1.65,
+    multiplier: 1.65,
+    titleAr: 'عمل بدني شاق ومجهود مستمر',
+    labelAr: '4 = عمل بدني شاق ومجهود مستمر',
+    descriptionAr: 'نشاط بدني مكثف طوال اليوم كالبناء أو التحميل أو التوصيل',
+  },
+  {
+    level: 5,
+    value: 5,
+    factor: 1.8,
+    multiplier: 1.8,
+    titleAr: 'مجهود بدني شاق واستثنائي طوال اليوم',
+    labelAr: '5 = مجهود بدني شاق واستثنائي طوال اليوم',
+    descriptionAr: 'أعمال شاقة للغاية وحركة متواصلة مجهدة طوال ساعات اليوم',
+  },
+]
+
+/**
+ * Canonical mapping from legacy 5 activity levels to 5 daily lifestyle levels (excluding exercise).
+ */
+export function mapLegacyActivityToLifestyle(
+  level: string | undefined,
+): LifestyleLevel {
+  switch (level) {
+    case 'sedentary':
+      return 1
+    case 'light':
+      return 2
+    case 'moderate':
+      return 3
+    case 'active':
+      return 4
+    case 'very_active':
+      return 5
+    default:
+      return 2
+  }
+}
+
+/**
+ * Backward compatibility: maps lifestyle level back to legacy activity level key.
+ */
+export function mapLifestyleToLegacyActivity(
+  level: LifestyleLevel,
+): 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active' {
+  switch (level) {
+    case 1:
+      return 'sedentary'
+    case 2:
+      return 'light'
+    case 3:
+      return 'moderate'
+    case 4:
+      return 'active'
+    case 5:
+      return 'very_active'
+    default:
+      return 'moderate'
+  }
 }
 
 // --- Validation ---
@@ -175,8 +279,8 @@ export function validateNutritionInput(input: Partial<NutritionEngineInput>): {
     }
   }
 
-  if (input.lifestyle && ![1, 2, 3, 4].includes(input.lifestyle)) {
-    errorsAr.lifestyle = 'يرجى اختيار نمط النشاط اليومي بين 1 و 4.'
+  if (input.lifestyle && ![1, 2, 3, 4, 5].includes(input.lifestyle)) {
+    errorsAr.lifestyle = 'يرجى اختيار نمط النشاط اليومي بين 1 و 5.'
   }
 
   if (input.workoutBlocks && input.workoutBlocks.length > 3) {
@@ -264,13 +368,11 @@ export function calculateEAT(
   let totalDailyEAT = 0
   for (const block of workoutBlocks) {
     const met = MET_TABLE[block.type]?.[block.intensity] ?? 5.0
+    const minutes = block.minutesPerSession ?? block.durationMinutes ?? 60
+    const sessions = block.sessionsPerWeek ?? 4
     // EAT = (MET - 1) * kg * (minutes/60) * 1.10 * sessions/7
     const blockDaily =
-      (met - 1) *
-      weightKg *
-      (block.minutesPerSession / 60) *
-      1.1 *
-      (block.sessionsPerWeek / 7)
+      (met - 1) * weightKg * (minutes / 60) * 1.1 * (sessions / 7)
     totalDailyEAT += blockDaily
   }
 
@@ -546,6 +648,7 @@ export function calculateNutritionTargets(
     2: 'حركة يومية خفيفة ومشياً (معامل 1.35)',
     3: 'وقوف وحركة أغلب اليوم (معامل 1.50)',
     4: 'عمل بدني شاق ومجهود دائم (معامل 1.65)',
+    5: 'مجهود بدني شاق واستثنائي طوال اليوم (معامل 1.80)',
   }
 
   const explanationAr = {

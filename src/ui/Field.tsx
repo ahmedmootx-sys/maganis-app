@@ -48,24 +48,26 @@ export const Field: React.FC<FieldProps> = ({
 
       <div className="field-control-wrap">
         {children ? (
-          React.isValidElement(children)
-            ? React.cloneElement(
-                children as React.ReactElement<Record<string, unknown>>,
-                {
-                  id: fieldId,
-                  'aria-describedby':
-                    [helperId, errorId].filter(Boolean).join(' ') || undefined,
-                  'aria-invalid': error ? true : undefined,
-                  'aria-required': required ? true : undefined,
-                  className: [
-                    (children.props as { className?: string }).className,
-                    error ? 'field-input--error' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' '),
-                },
-              )
-            : children
+          React.isValidElement(children) ? (
+            React.cloneElement(
+              children as React.ReactElement<Record<string, unknown>>,
+              {
+                id: fieldId,
+                'aria-describedby':
+                  [helperId, errorId].filter(Boolean).join(' ') || undefined,
+                'aria-invalid': error ? true : undefined,
+                'aria-required': required ? true : undefined,
+                className: [
+                  (children.props as { className?: string }).className,
+                  error ? 'field-input--error' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' '),
+              },
+            )
+          ) : (
+            children
+          )
         ) : (
           <input
             id={fieldId}

@@ -17,17 +17,11 @@ import { getExerciseById, EXERCISES } from './exercises.ts'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import prescriptionRulesData from '../../data/prescription-rules.json'
-import {
-  TopBar,
-  Card,
-  Callout,
-  Button,
-  Segmented,
-} from '../../ui/index.ts'
+import { TopBar, Card, Callout, Button, Segmented } from '../../ui/index.ts'
 
 export interface ExerciseDetailViewProps {
   exerciseId: string
-  exercise?: Exercise | any
+  exercise?: Exercise | Partial<Exercise>
   onBack?: () => void
   profile?: UserProfile | null
   program?: WorkoutProgram | null
@@ -41,9 +35,12 @@ export interface ExerciseDetailViewProps {
  * - A name_ar ending with "(English name)" is split into Arabic title + English secondary
  * - Removes any "•" bullet separators
  */
-export function cleanExerciseNames(exercise: any) {
-  let nameAr = exercise.nameAr || exercise.name_ar || ''
-  let nameEn = exercise.name || exercise.name_en || ''
+export function cleanExerciseNames(
+  exercise: Partial<Exercise> | Record<string, unknown>,
+) {
+  const ex = exercise as Record<string, unknown>
+  let nameAr = String(ex.nameAr || ex.name_ar || '')
+  let nameEn = String(ex.name || ex.name_en || '')
 
   // Split nameAr ending with "(English Name)"
   const matchParen = nameAr.match(/^(.*?)\s*\(([^)]+)\)\s*$/)
@@ -84,7 +81,8 @@ function isBoilerplateOrEmpty(text?: string): boolean {
   return false
 }
 
-type TabType = 'understanding' | 'muscles' | 'performance' | 'for_you' | 'history'
+type TabType =
+  'understanding' | 'muscles' | 'performance' | 'for_you' | 'history'
 
 export function ExerciseDetailView({
   exerciseId,
@@ -177,23 +175,58 @@ export function ExerciseDetailView({
     return list
   }, [hasHistory])
 
-  if (!exercise) {
-    return (
-      <div className="card" style={{ padding: '24px', textAlign: 'center' }} dir="rtl">
-        <p className="muted">التمرين غير موجود في قاعدة البيانات.</p>
-        {onBack && (
-          <Button variant="ghost" onClick={onBack}>
-            رجوع
-          </Button>
-        )}
-      </div>
-    )
+  // Prescription Rules & Personalisation computations
+  interface PrescriptionRules {
+    reviewed: boolean
+    disclaimer: string
+    rir_by_experience: Record<
+      string,
+      {
+        standard_rir: number
+        last_set_rir: number
+        initial_weeks?: number
+        initial_rir?: number
+        basis: string
+      }
+    >
+    rpe_to_rir_map: Record<string, { rir: number; textAr: string }>
+    rest_seconds: Record<
+      'compound' | 'isolation' | 'core_bodyweight',
+      { min: number; max: number; basis: string }
+    >
+    tempo: {
+      default: string
+      eccentric_seconds: string
+      concentric_seconds: string
+      pause_seconds: string
+      basis: string
+    }
+    progression: {
+      model: string
+      descriptionAr: string
+      upper_body: { min_kg: number; max_kg: number; basis: string }
+      lower_body: { min_kg: number; max_kg: number; basis: string }
+      time_based_holds: {
+        min_seconds: number
+        max_seconds: number
+        basis: string
+      }
+    }
+    weekly_sets_bands: Record<
+      string,
+      { min: number; max: number; basis: string }
+    >
+    health_flag_rule: {
+      calloutTextAr: string
+      basis: string
+    }
   }
 
-  // Prescription Rules & Personalisation computations
-  const rules = prescriptionRulesData as any
-  const userExperience = (profile?.experienceLevel || 'beginner') as 'beginner' | 'intermediate' | 'advanced'
-  const expRules = rules.rir_by_experience[userExperience] || rules.rir_by_experience.beginner
+  const rules = prescriptionRulesData as unknown as PrescriptionRules
+  const userExperience = (profile?.experienceLevel || 'beginner') as
+    'beginner' | 'intermediate' | 'advanced'
+  const expRules =
+    rules.rir_by_experience[userExperience] || rules.rir_by_experience.beginner
 
   // Program prescription for this exercise
   const programPrescription = useMemo(() => {
@@ -215,7 +248,7 @@ export function ExerciseDetailView({
 
   // Weekly sets calculation for this exercise's muscle group
   const weeklySetsAnalysis = useMemo(() => {
-    if (!program) return null
+    if (!program || !exercise) return null
     const group = exercise.category
     let totalSets = 0
 
@@ -228,7 +261,9 @@ export function ExerciseDetailView({
       }
     }
 
-    const band = rules.weekly_sets_bands[userExperience] || rules.weekly_sets_bands.beginner
+    const band =
+      rules.weekly_sets_bands[userExperience] ||
+      rules.weekly_sets_bands.beginner
     let status: 'below' | 'inside' | 'above' = 'inside'
     let statusTextAr = 'ضمن المدى المثالي'
 
@@ -248,19 +283,30 @@ export function ExerciseDetailView({
       statusTextAr,
       basis: band.basis,
     }
-  }, [program, exercise.category, userExperience, rules])
+  }, [program, exercise, userExperience, rules])
 
   // Rest seconds recommendations and mismatch flagging
   const restAnalysis = useMemo(() => {
+    if (!exercise) {
+      return {
+        isCompound: false,
+        min: 60,
+        max: 120,
+        basis: '',
+        actualRest: undefined as number | undefined,
+        mismatch: false,
+      }
+    }
     const isCompound =
       exercise.equipment === 'barbell' ||
-      exercise.id.includes('squat') ||
-      exercise.id.includes('bench') ||
-      exercise.id.includes('deadlift') ||
-      exercise.id.includes('press') ||
-      exercise.id.includes('row') ||
-      exercise.id.includes('pull_up')
-    const isCoreOrBody = exercise.category === 'core' || exercise.equipment === 'bodyweight'
+      exercise.id?.includes('squat') ||
+      exercise.id?.includes('bench') ||
+      exercise.id?.includes('deadlift') ||
+      exercise.id?.includes('press') ||
+      exercise.id?.includes('row') ||
+      exercise.id?.includes('pull_up')
+    const isCoreOrBody =
+      exercise.category === 'core' || exercise.equipment === 'bodyweight'
 
     const rec = isCoreOrBody
       ? rules.rest_seconds.core_bodyweight
@@ -268,7 +314,10 @@ export function ExerciseDetailView({
         ? rules.rest_seconds.compound
         : rules.rest_seconds.isolation
 
-    const actualRest = exercise.restSeconds || exercise.rest_seconds || programPrescription?.restSeconds
+    const actualRest =
+      exercise.restSeconds ||
+      exercise.rest_seconds ||
+      programPrescription?.restSeconds
 
     let mismatch = false
     if (actualRest && (actualRest < rec.min || actualRest > rec.max)) {
@@ -287,6 +336,7 @@ export function ExerciseDetailView({
 
   // Place & equipment alternatives: if user trains at home or equipment missing
   const alternatives = useMemo(() => {
+    if (!exercise) return []
     const userPlace = profile?.trainingLocation || 'gym'
     const isHome = userPlace === 'home'
     const isUnavailable =
@@ -300,7 +350,9 @@ export function ExerciseDetailView({
       (e) =>
         e.id !== exercise.id &&
         e.category === exercise.category &&
-        (e.equipment === 'dumbbell' || e.equipment === 'bodyweight' || e.equipment === 'band'),
+        (e.equipment === 'dumbbell' ||
+          e.equipment === 'bodyweight' ||
+          e.equipment === 'band'),
     ).slice(0, 3)
 
     return matches
@@ -308,18 +360,49 @@ export function ExerciseDetailView({
 
   // Double progression load advice
   const progressionAdvice = useMemo(() => {
+    if (!exercise) {
+      return {
+        isLower: false,
+        minKg: 1.25,
+        maxKg: 2.5,
+        basis: '',
+      }
+    }
     const isLower = exercise.category === 'legs'
-    const step = isLower ? rules.progression.lower_body : rules.progression.upper_body
+    const step = isLower
+      ? rules.progression.lower_body
+      : rules.progression.upper_body
     return {
       isLower,
       minKg: step.min_kg,
       maxKg: step.max_kg,
       basis: step.basis,
     }
-  }, [exercise.category, rules])
+  }, [exercise, rules])
+
+  if (!exercise) {
+    return (
+      <div
+        className="card"
+        style={{ padding: '24px', textAlign: 'center' }}
+        dir="rtl"
+      >
+        <p className="muted">التمرين غير موجود في قاعدة البيانات.</p>
+        {onBack && (
+          <Button variant="ghost" onClick={onBack}>
+            رجوع
+          </Button>
+        )}
+      </div>
+    )
+  }
 
   return (
-    <div className="exercise-detail-page" dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div
+      className="exercise-detail-page"
+      dir="rtl"
+      style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+    >
       {/* 1. Header: Back button, Arabic title, English small ltr, real Chips */}
       <TopBar
         title={nameAr}
@@ -335,13 +418,21 @@ export function ExerciseDetailView({
                 color: 'var(--color-text-2)',
               }}
             >
-              {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] || exercise.category}
+              {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] ||
+                exercise.category}
             </span>
           </div>
         }
       />
 
-      <div style={{ paddingInline: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div
+        style={{
+          paddingInline: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px',
+        }}
+      >
         {/* Title & English Subtitle */}
         <div>
           <h1
@@ -371,16 +462,25 @@ export function ExerciseDetailView({
         {/* Real Meta Chips (not header bullet string) */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
           <span className="chip">
-            {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] || exercise.category}
+            {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] ||
+              exercise.category}
           </span>
           <span className="chip">
-            {EQUIPMENT_LABELS[exercise.equipment as Equipment] || exercise.equipment}
+            {EQUIPMENT_LABELS[exercise.equipment as Equipment] ||
+              exercise.equipment}
           </span>
           <span className="chip">
-            {DIFFICULTY_LABELS[exercise.difficulty as Difficulty] || exercise.difficulty}
+            {DIFFICULTY_LABELS[exercise.difficulty as Difficulty] ||
+              exercise.difficulty}
           </span>
           {exercise.targetSubMuscleAr && (
-            <span className="chip" style={{ borderColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}>
+            <span
+              className="chip"
+              style={{
+                borderColor: 'var(--color-accent)',
+                color: 'var(--color-accent-text)',
+              }}
+            >
               {exercise.targetSubMuscleAr}
             </span>
           )}
@@ -392,13 +492,26 @@ export function ExerciseDetailView({
           exerciseName={nameAr}
           imageUrl={exercise.imageUrl || exercise.image}
           gifUrl={exercise.gifUrl || exercise.gif}
-          attribution={exercise.attribution || (exercise.medicalSource ? `مرجع: ${exercise.medicalSource}` : undefined)}
+          attribution={
+            exercise.attribution ||
+            (exercise.medicalSource
+              ? `مرجع: ${exercise.medicalSource}`
+              : undefined)
+          }
           size="large"
           showControls={true}
         />
 
         {/* Sticky Tabs Header */}
-        <div style={{ position: 'sticky', top: 'var(--top-bar-height)', zIndex: 15, background: 'var(--color-bg)', paddingBlock: '4px' }}>
+        <div
+          style={{
+            position: 'sticky',
+            top: 'var(--top-bar-height)',
+            zIndex: 15,
+            background: 'var(--color-bg)',
+            paddingBlock: '4px',
+          }}
+        >
           <Segmented
             options={tabOptions}
             value={activeTab}
@@ -408,14 +521,31 @@ export function ExerciseDetailView({
 
         {/* TAB 1: الفهم */}
         {activeTab === 'understanding' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+          >
             {/* ليه التمرين ده؟ */}
-            {(!isBoilerplateOrEmpty(exercise.benefitAr) || !isBoilerplateOrEmpty(exercise.benefit)) && (
+            {(!isBoilerplateOrEmpty(exercise.benefitAr) ||
+              !isBoilerplateOrEmpty(exercise.benefit)) && (
               <Card padding="md">
-                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--color-text)' }}>
+                <h3
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    margin: '0 0 8px 0',
+                    color: 'var(--color-text)',
+                  }}
+                >
                   ليه التمرين ده؟
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--color-text)' }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: '14px',
+                    lineHeight: 1.6,
+                    color: 'var(--color-text)',
+                  }}
+                >
                   {exercise.benefitAr || exercise.benefit}
                 </p>
               </Card>
@@ -426,44 +556,79 @@ export function ExerciseDetailView({
               !isBoilerplateOrEmpty(exercise.mechanics) ||
               !isBoilerplateOrEmpty(exercise.descriptionAr)) && (
               <Card padding="md">
-                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--color-text)' }}>
+                <h3
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    margin: '0 0 8px 0',
+                    color: 'var(--color-text)',
+                  }}
+                >
                   إزاي بيشتغل
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--color-text)' }}>
-                  {exercise.mechanicsAr || exercise.mechanics || exercise.descriptionAr}
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: '14px',
+                    lineHeight: 1.6,
+                    color: 'var(--color-text)',
+                  }}
+                >
+                  {exercise.mechanicsAr ||
+                    exercise.mechanics ||
+                    exercise.descriptionAr}
                 </p>
               </Card>
             )}
 
             {/* بيستهدف إيه */}
-            {(exercise.target || (exercise.targetMusclesAr && exercise.targetMusclesAr.length > 0)) && (
+            {(exercise.target ||
+              (exercise.targetMusclesAr &&
+                exercise.targetMusclesAr.length > 0)) && (
               <Card padding="md">
-                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--color-text)' }}>
+                <h3
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    margin: '0 0 8px 0',
+                    color: 'var(--color-text)',
+                  }}
+                >
                   بيستهدف إيه
                 </h3>
                 {exercise.target && (
-                  <p style={{ margin: '0 0 8px 0', fontSize: '14px', lineHeight: 1.6, color: 'var(--color-text)' }}>
+                  <p
+                    style={{
+                      margin: '0 0 8px 0',
+                      fontSize: '14px',
+                      lineHeight: 1.6,
+                      color: 'var(--color-text)',
+                    }}
+                  >
                     {exercise.target}
                   </p>
                 )}
-                {exercise.targetMusclesAr && exercise.targetMusclesAr.length > 0 && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    {exercise.targetMusclesAr.map((m: string, i: number) => (
-                      <span
-                        key={i}
-                        style={{
-                          fontSize: '12px',
-                          padding: '3px 9px',
-                          borderRadius: 'var(--radius-full)',
-                          background: 'var(--color-surface-2)',
-                          color: 'var(--color-text)',
-                        }}
-                      >
-                        {m}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                {exercise.targetMusclesAr &&
+                  exercise.targetMusclesAr.length > 0 && (
+                    <div
+                      style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}
+                    >
+                      {exercise.targetMusclesAr.map((m: string, i: number) => (
+                        <span
+                          key={i}
+                          style={{
+                            fontSize: '12px',
+                            padding: '3px 9px',
+                            borderRadius: 'var(--radius-full)',
+                            background: 'var(--color-surface-2)',
+                            color: 'var(--color-text)',
+                          }}
+                        >
+                          {m}
+                        </span>
+                      ))}
+                    </div>
+                  )}
               </Card>
             )}
 
@@ -480,7 +645,9 @@ export function ExerciseDetailView({
                 }}
               >
                 <span>المصدر العلمي:</span>
-                <span dir="ltr">{exercise.medicalSource || exercise.reference}</span>
+                <span dir="ltr">
+                  {exercise.medicalSource || exercise.reference}
+                </span>
               </div>
             )}
           </div>
@@ -488,7 +655,9 @@ export function ExerciseDetailView({
 
         {/* TAB 2: العضلات */}
         {activeTab === 'muscles' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+          >
             <AnatomyMuscleMap
               exercise={exercise}
               mapNote={exercise.mapNote || exercise.map_note}
@@ -499,56 +668,104 @@ export function ExerciseDetailView({
 
         {/* TAB 3: الأداء */}
         {activeTab === 'performance' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+          >
             {/* Numbered Steps Cards */}
-            {(exercise.howToStepsAr || exercise.steps) && (
-              <div className="steps-cards-list">
-                {(exercise.howToStepsAr || exercise.steps).map((step: string, i: number) => (
-                  <div key={i} className="step-card">
-                    <span className="step-card__number">{i + 1}</span>
-                    <p className="step-card__text">{step}</p>
-                  </div>
-                ))}
-              </div>
-            )}
+            {(() => {
+              const stepsList = exercise.howToStepsAr || exercise.steps
+              if (!stepsList || stepsList.length === 0) return null
+              return (
+                <div className="steps-cards-list">
+                  {stepsList.map((step: string, i: number) => (
+                    <div key={i} className="step-card">
+                      <span className="step-card__number">{i + 1}</span>
+                      <p className="step-card__text">{step}</p>
+                    </div>
+                  ))}
+                </div>
+              )
+            })()}
 
             {/* أخطاء شائعة (Only if data has them) */}
-            {(exercise.commonMistakes || exercise.common_mistakes) && (
-              <Card padding="md">
-                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--color-danger)' }}>
-                  أخطاء شائعة
-                </h3>
-                <ul style={{ margin: 0, paddingInlineStart: '20px', fontSize: '14px', lineHeight: 1.6 }}>
-                  {(exercise.commonMistakes || exercise.common_mistakes).map((m: string, i: number) => (
-                    <li key={i}>{m}</li>
-                  ))}
-                </ul>
-              </Card>
-            )}
-
-            {/* إشارات الأمان (Only if data has them) */}
-            {(exercise.safetyCues || exercise.safety_cues || exercise.avoidForInjuries) &&
-              (exercise.safetyCues || exercise.safety_cues || exercise.avoidForInjuries).length > 0 && (
+            {(() => {
+              const mistakesList =
+                exercise.commonMistakes || exercise.common_mistakes
+              if (!mistakesList || mistakesList.length === 0) return null
+              return (
                 <Card padding="md">
                   <h3
-                    style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--color-warning)' }}
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      margin: '0 0 8px 0',
+                      color: 'var(--color-danger)',
+                    }}
+                  >
+                    أخطاء شائعة
+                  </h3>
+                  <ul
+                    style={{
+                      margin: 0,
+                      paddingInlineStart: '20px',
+                      fontSize: '14px',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {mistakesList.map((m: string, i: number) => (
+                      <li key={i}>{m}</li>
+                    ))}
+                  </ul>
+                </Card>
+              )
+            })()}
+
+            {/* إشارات الأمان (Only if data has them) */}
+            {(() => {
+              const safetyList =
+                exercise.safetyCues ||
+                exercise.safety_cues ||
+                exercise.avoidForInjuries
+              if (!safetyList || safetyList.length === 0) return null
+              return (
+                <Card padding="md">
+                  <h3
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      margin: '0 0 8px 0',
+                      color: 'var(--color-warning)',
+                    }}
                   >
                     إشارات الأمان والوقاية
                   </h3>
-                  <ul style={{ margin: 0, paddingInlineStart: '20px', fontSize: '14px', lineHeight: 1.6 }}>
-                    {(exercise.safetyCues || exercise.safety_cues || exercise.avoidForInjuries).map(
-                      (c: string, i: number) => (
-                        <li key={i}>{c}</li>
-                      ),
-                    )}
+                  <ul
+                    style={{
+                      margin: 0,
+                      paddingInlineStart: '20px',
+                      fontSize: '14px',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {safetyList.map((c: string, i: number) => (
+                      <li key={i}>{c}</li>
+                    ))}
                   </ul>
                 </Card>
-              )}
+              )
+            })()}
 
             {/* Tempo / Breathing Block (Only if data has them) */}
             {(exercise.tempo || exercise.breathing) && (
               <Card padding="md">
-                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--color-text)' }}>
+                <h3
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    margin: '0 0 8px 0',
+                    color: 'var(--color-text)',
+                  }}
+                >
                   إيقاع الحركة والتنفس
                 </h3>
                 {exercise.tempo && (
@@ -568,7 +785,9 @@ export function ExerciseDetailView({
 
         {/* TAB 4: لك (Personalisation) */}
         {activeTab === 'for_you' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+          >
             {/* Top Label & Disclaimer */}
             <div
               style={{
@@ -594,21 +813,63 @@ export function ExerciseDetailView({
 
             {/* Program Prescription & RIR Guidance */}
             <Card padding="md">
-              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 10px 0', color: 'var(--color-text)' }}>
+              <h3
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  margin: '0 0 10px 0',
+                  color: 'var(--color-text)',
+                }}
+              >
                 الجهد والتكرارات الاحتياطية (RIR)
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  fontSize: '13.5px',
+                }}
+              >
                 <div>
-                  <strong>المستهدف لمستواك ({userExperience === 'beginner' ? 'مبتدئ' : userExperience === 'intermediate' ? 'متوسط' : 'متقدم'}):</strong>{' '}
-                  RIR {expRules.standard_rir} (اترك {expRules.standard_rir} تكرارات قبل الفشل العضلي)
+                  <strong>
+                    المستهدف لمستواك (
+                    {userExperience === 'beginner'
+                      ? 'مبتدئ'
+                      : userExperience === 'intermediate'
+                        ? 'متوسط'
+                        : 'متقدم'}
+                    ):
+                  </strong>{' '}
+                  RIR {expRules.standard_rir} (اترك {expRules.standard_rir}{' '}
+                  تكرارات قبل الفشل العضلي)
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--color-text-2)', lineHeight: 1.5 }}>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--color-text-2)',
+                    lineHeight: 1.5,
+                  }}
+                >
                   {expRules.basis}
                 </div>
                 {programPrescription && (
-                  <div style={{ marginTop: '4px', padding: '8px', background: 'var(--color-surface-2)', borderRadius: 'var(--radius-control)' }}>
-                    <strong>وصفة جدولك ({programPrescription.dayLabel}):</strong>{' '}
-                    {programPrescription.sets} مجموعات × {programPrescription.reps === 0 ? 'أقصى عدد' : programPrescription.reps} تكرارات
+                  <div
+                    style={{
+                      marginTop: '4px',
+                      padding: '8px',
+                      background: 'var(--color-surface-2)',
+                      borderRadius: 'var(--radius-control)',
+                    }}
+                  >
+                    <strong>
+                      وصفة جدولك ({programPrescription.dayLabel}):
+                    </strong>{' '}
+                    {programPrescription.sets} مجموعات ×{' '}
+                    {programPrescription.reps === 0
+                      ? 'أقصى عدد'
+                      : programPrescription.reps}{' '}
+                    تكرارات
                   </div>
                 )}
               </div>
@@ -616,21 +877,46 @@ export function ExerciseDetailView({
 
             {/* Rest & Tempo */}
             <Card padding="md">
-              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 10px 0', color: 'var(--color-text)' }}>
+              <h3
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  margin: '0 0 10px 0',
+                  color: 'var(--color-text)',
+                }}
+              >
                 فترة الراحة والإيقاع
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  fontSize: '13.5px',
+                }}
+              >
                 <div>
-                  <strong>الراحة المقترحة:</strong> {restAnalysis.min} إلى {restAnalysis.max} ثانية
+                  <strong>الراحة المقترحة:</strong> {restAnalysis.min} إلى{' '}
+                  {restAnalysis.max} ثانية
                   {restAnalysis.actualRest && (
-                    <span style={{ marginInlineStart: '6px', color: restAnalysis.mismatch ? 'var(--color-warning)' : 'inherit' }}>
+                    <span
+                      style={{
+                        marginInlineStart: '6px',
+                        color: restAnalysis.mismatch
+                          ? 'var(--color-warning)'
+                          : 'inherit',
+                      }}
+                    >
                       (المسجل بالتمرين: {restAnalysis.actualRest} ثانية)
                     </span>
                   )}
                 </div>
                 {restAnalysis.mismatch && (
-                  <div style={{ fontSize: '12px', color: 'var(--color-warning)' }}>
-                    ملاحظة: الراحة المسجلة تختلف عن المدى العلمي الموصى به لنوع التمرين.
+                  <div
+                    style={{ fontSize: '12px', color: 'var(--color-warning)' }}
+                  >
+                    ملاحظة: الراحة المسجلة تختلف عن المدى العلمي الموصى به لنوع
+                    التمرين.
                   </div>
                 )}
                 <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
@@ -647,15 +933,33 @@ export function ExerciseDetailView({
 
             {/* Progression & First Load */}
             <Card padding="md">
-              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 10px 0', color: 'var(--color-text)' }}>
+              <h3
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  margin: '0 0 10px 0',
+                  color: 'var(--color-text)',
+                }}
+              >
                 خطة التدرج والوزن المبدئي
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  fontSize: '13.5px',
+                }}
+              >
                 <div>
-                  <strong>الوزن المبدئي:</strong> ابدأ بوزن تقدر تعمل بيه {programPrescription?.reps || 10} تكرار مع RIR {expRules.standard_rir}.
+                  <strong>الوزن المبدئي:</strong> ابدأ بوزن تقدر تعمل بيه{' '}
+                  {programPrescription?.reps || 10} تكرار مع RIR{' '}
+                  {expRules.standard_rir}.
                 </div>
                 <div>
-                  <strong>الزيادة التدريجية (Double Progression):</strong> عند الوصول لأعلى مدى التكرارات في كل المجموعات، زد الوزن بمقدار {progressionAdvice.minKg} إلى {progressionAdvice.maxKg} كجم.
+                  <strong>الزيادة التدريجية (Double Progression):</strong> عند
+                  الوصول لأعلى مدى التكرارات في كل المجموعات، زد الوزن بمقدار{' '}
+                  {progressionAdvice.minKg} إلى {progressionAdvice.maxKg} كجم.
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
                   {progressionAdvice.basis}
@@ -666,16 +970,42 @@ export function ExerciseDetailView({
             {/* Weekly Sets Analysis */}
             {weeklySetsAnalysis && (
               <Card padding="md">
-                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 10px 0', color: 'var(--color-text)' }}>
-                  الحجم التدريبي الأسبوعي لعضلة ({MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] || exercise.category})
+                <h3
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    margin: '0 0 10px 0',
+                    color: 'var(--color-text)',
+                  }}
+                >
+                  الحجم التدريبي الأسبوعي لعضلة (
+                  {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] ||
+                    exercise.category}
+                  )
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                    fontSize: '13.5px',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <span>مجموعاتك في الجدول الحالي:</span>
-                    <strong style={{ fontSize: '15px' }}>{weeklySetsAnalysis.totalSets} مجموعات</strong>
+                    <strong style={{ fontSize: '15px' }}>
+                      {weeklySetsAnalysis.totalSets} مجموعات
+                    </strong>
                   </div>
                   <div>
-                    المدى الموصى به لمستواك: {weeklySetsAnalysis.bandMin} - {weeklySetsAnalysis.bandMax} مجموعات أسبوعياً.
+                    المدى الموصى به لمستواك: {weeklySetsAnalysis.bandMin} -{' '}
+                    {weeklySetsAnalysis.bandMax} مجموعات أسبوعياً.
                   </div>
                   <div
                     style={{
@@ -689,7 +1019,9 @@ export function ExerciseDetailView({
                   >
                     حالتك: {weeklySetsAnalysis.statusTextAr}
                   </div>
-                  <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
+                  <div
+                    style={{ fontSize: '12px', color: 'var(--color-text-2)' }}
+                  >
                     {weeklySetsAnalysis.basis}
                   </div>
                 </div>
@@ -699,13 +1031,33 @@ export function ExerciseDetailView({
             {/* Alternatives if Home / Unavailable */}
             {alternatives.length > 0 && (
               <Card padding="md">
-                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--color-text)' }}>
+                <h3
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    margin: '0 0 8px 0',
+                    color: 'var(--color-text)',
+                  }}
+                >
                   بدائل مناسبة لمكان تمرينك (المنزل)
                 </h3>
-                <p style={{ fontSize: '12.5px', color: 'var(--color-text-2)', margin: '0 0 10px 0' }}>
-                  هذا التمرين يتطلب معدات جيم غير متوفرة في منزلك، إليك 3 بدائل بنفس الاستهداف العضلي:
+                <p
+                  style={{
+                    fontSize: '12.5px',
+                    color: 'var(--color-text-2)',
+                    margin: '0 0 10px 0',
+                  }}
+                >
+                  هذا التمرين يتطلب معدات جيم غير متوفرة في منزلك، إليك 3 بدائل
+                  بنفس الاستهداف العضلي:
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
                   {alternatives.map((alt) => (
                     <div
                       key={alt.id}
@@ -719,8 +1071,15 @@ export function ExerciseDetailView({
                       }}
                     >
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '13.5px', fontWeight: 600 }}>{alt.nameAr}</span>
-                        <span style={{ fontSize: '11px', color: 'var(--color-text-2)' }}>
+                        <span style={{ fontSize: '13.5px', fontWeight: 600 }}>
+                          {alt.nameAr}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            color: 'var(--color-text-2)',
+                          }}
+                        >
                           {EQUIPMENT_LABELS[alt.equipment]}
                         </span>
                       </div>
@@ -728,7 +1087,9 @@ export function ExerciseDetailView({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => onSwapExercise(exercise.id, alt.id)}
+                          onClick={() =>
+                            onSwapExercise(exercise.id || exerciseId, alt.id)
+                          }
                         >
                           تبديل في الجدول
                         </Button>
@@ -756,7 +1117,11 @@ export function ExerciseDetailView({
                   أكمل بيانات ملفك في الإعدادات لتخصيص أدق
                 </span>
                 {onNavigateSettings && (
-                  <Button variant="secondary" size="sm" onClick={onNavigateSettings}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={onNavigateSettings}
+                  >
                     الإعدادات
                   </Button>
                 )}
@@ -767,13 +1132,27 @@ export function ExerciseDetailView({
 
         {/* TAB 5: السجل (History) */}
         {activeTab === 'history' && hasHistory && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+          >
             {/* PR Badge & Best Estimated 1RM */}
             {allTimePR.bestSet && (
               <Card padding="md">
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
                       <span
                         style={{
                           fontSize: '11px',
@@ -786,17 +1165,37 @@ export function ExerciseDetailView({
                       >
                         رقم قياسي PR
                       </span>
-                      <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>أفضل أداء مسجل</h3>
+                      <h3
+                        style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}
+                      >
+                        أفضل أداء مسجل
+                      </h3>
                     </div>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-2)', marginTop: '4px' }}>
-                      بتاريخ {allTimePR.bestSet.date}: {allTimePR.bestSet.weightKg} كجم × {allTimePR.bestSet.reps} تكرار
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        color: 'var(--color-text-2)',
+                        marginTop: '4px',
+                      }}
+                    >
+                      بتاريخ {allTimePR.bestSet.date}:{' '}
+                      {allTimePR.bestSet.weightKg} كجم ×{' '}
+                      {allTimePR.bestSet.reps} تكرار
                     </div>
                   </div>
                   <div style={{ textAlign: 'end' }}>
-                    <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-accent-text)' }}>
+                    <div
+                      style={{
+                        fontSize: '20px',
+                        fontWeight: 700,
+                        color: 'var(--color-accent-text)',
+                      }}
+                    >
                       {allTimePR.max1RM} كجم
                     </div>
-                    <div style={{ fontSize: '11px', color: 'var(--color-text-2)' }}>
+                    <div
+                      style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
+                    >
                       1RM التقديري (Epley)
                     </div>
                   </div>
@@ -806,13 +1205,37 @@ export function ExerciseDetailView({
 
             {/* Weight Progression Over Time Line / Bars */}
             <Card padding="md">
-              <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 12px 0', color: 'var(--color-text)' }}>
+              <h3
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  margin: '0 0 12px 0',
+                  color: 'var(--color-text)',
+                }}
+              >
                 تطور الأوزان عبر الجلسات
               </h3>
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '100px', paddingBottom: '4px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  gap: '8px',
+                  height: '100px',
+                  paddingBottom: '4px',
+                }}
+              >
                 {exerciseHistory.map((h, idx) => {
-                  const maxW = Math.max(...h.sets.map((s) => s.weightKg || 0), 10)
-                  const heightPct = Math.min(100, Math.max(20, (maxW / (allTimePR.bestSet?.weightKg || 100)) * 100))
+                  const maxW = Math.max(
+                    ...h.sets.map((s) => s.weightKg || 0),
+                    10,
+                  )
+                  const heightPct = Math.min(
+                    100,
+                    Math.max(
+                      20,
+                      (maxW / (allTimePR.bestSet?.weightKg || 100)) * 100,
+                    ),
+                  )
                   return (
                     <div
                       key={idx}
@@ -826,18 +1249,34 @@ export function ExerciseDetailView({
                         justifyContent: 'flex-end',
                       }}
                     >
-                      <span style={{ fontSize: '10px', color: 'var(--color-text-2)' }}>{maxW}</span>
+                      <span
+                        style={{
+                          fontSize: '10px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        {maxW}
+                      </span>
                       <div
                         style={{
                           width: '100%',
                           maxWidth: '24px',
                           height: `${heightPct}%`,
-                          background: maxW === allTimePR.bestSet?.weightKg ? 'var(--color-accent)' : 'var(--color-surface-2)',
+                          background:
+                            maxW === allTimePR.bestSet?.weightKg
+                              ? 'var(--color-accent)'
+                              : 'var(--color-surface-2)',
                           borderRadius: '4px 4px 0 0',
                           transition: 'height var(--transition-fast)',
                         }}
                       />
-                      <span style={{ fontSize: '9px', color: 'var(--color-text-2)', whiteSpace: 'nowrap' }}>
+                      <span
+                        style={{
+                          fontSize: '9px',
+                          color: 'var(--color-text-2)',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
                         {h.date.slice(5)}
                       </span>
                     </div>
@@ -847,8 +1286,17 @@ export function ExerciseDetailView({
             </Card>
 
             {/* Past Sessions List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '4px 0', color: 'var(--color-text)' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
+              <h3
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  margin: '4px 0',
+                  color: 'var(--color-text)',
+                }}
+              >
                 الجلسات السابقة
               </h3>
               {exerciseHistory.map((sessionItem, sIdx) => (
@@ -865,14 +1313,26 @@ export function ExerciseDetailView({
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: '13px', fontWeight: 600 }}>{sessionItem.date}</div>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-2)', marginTop: '2px' }}>
-                      {sessionItem.sets.map((s) => `${s.weightKg}k×${s.reps}`).join(' · ')}
+                    <div style={{ fontSize: '13px', fontWeight: 600 }}>
+                      {sessionItem.date}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        color: 'var(--color-text-2)',
+                        marginTop: '2px',
+                      }}
+                    >
+                      {sessionItem.sets
+                        .map((s) => `${s.weightKg}k×${s.reps}`)
+                        .join(' · ')}
                     </div>
                   </div>
                   {sessionItem.best1RM > 0 && (
                     <div style={{ textAlign: 'end', fontSize: '12px' }}>
-                      <span style={{ color: 'var(--color-text-2)' }}>1RM: </span>
+                      <span style={{ color: 'var(--color-text-2)' }}>
+                        1RM:{' '}
+                      </span>
                       <strong>{sessionItem.best1RM} كجم</strong>
                     </div>
                   )}

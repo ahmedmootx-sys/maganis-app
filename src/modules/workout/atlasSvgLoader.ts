@@ -29,10 +29,16 @@ export async function loadAtlasSvg(view: 'A' | 'P'): Promise<string> {
   }
 
   // Node / test environment fallback
-  if (typeof process !== 'undefined' && process.cwd) {
+  if (
+    typeof window === 'undefined' &&
+    typeof process !== 'undefined' &&
+    process.cwd
+  ) {
     try {
-      const fs = await import('fs')
-      const path = await import('path')
+      const fsModuleName = 'node:fs'
+      const pathModuleName = 'node:path'
+      const fs = await import(/* @vite-ignore */ fsModuleName)
+      const path = await import(/* @vite-ignore */ pathModuleName)
       const filePath = path.join(process.cwd(), 'public', 'atlas', fileName)
       if (fs.existsSync(filePath)) {
         const text = fs.readFileSync(filePath, 'utf8')

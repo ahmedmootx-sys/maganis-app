@@ -81,7 +81,9 @@ function normalizeKey(str: string): string {
  * Tier 3: Group-level expansion through group-to-heads.json with caption
  * Tier 4: Names only with "لا توجد خريطة تفصيلية لهذا التمرين بعد"
  */
-export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesResult {
+export function resolveMuscles(
+  exercise: ResolveMusclesInput,
+): ResolvedMusclesResult {
   if (!exercise) {
     return {
       tier: 4,
@@ -137,7 +139,8 @@ export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesRe
   // Map primary_muscles.db and secondary_muscles.db
   // Never expand beyond that group (e.g. lower back -> erector_spinae only)
   // -------------------------------------------------------------
-  const groupTable = (groupToHeadsData as { groups: Record<string, string[]> }).groups
+  const groupTable = (groupToHeadsData as { groups: Record<string, string[]> })
+    .groups
 
   const primaryGroupNames: string[] = []
   const secondaryGroupNames: string[] = []
@@ -145,14 +148,20 @@ export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesRe
   // Extract primary groups
   if (Array.isArray(exercise.primary_muscles)) {
     primaryGroupNames.push(...exercise.primary_muscles)
-  } else if (exercise.primary_muscles?.db && Array.isArray(exercise.primary_muscles.db)) {
+  } else if (
+    exercise.primary_muscles?.db &&
+    Array.isArray(exercise.primary_muscles.db)
+  ) {
     primaryGroupNames.push(...exercise.primary_muscles.db)
   }
 
   // Extract secondary groups
   if (Array.isArray(exercise.secondary_muscles)) {
     secondaryGroupNames.push(...exercise.secondary_muscles)
-  } else if (exercise.secondary_muscles?.db && Array.isArray(exercise.secondary_muscles.db)) {
+  } else if (
+    exercise.secondary_muscles?.db &&
+    Array.isArray(exercise.secondary_muscles.db)
+  ) {
     secondaryGroupNames.push(...exercise.secondary_muscles.db)
   }
 
@@ -160,7 +169,8 @@ export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesRe
   if (primaryGroupNames.length === 0) {
     const fallbackGroup = exercise.muscle_group || exercise.category
     if (fallbackGroup) {
-      const nameText = `${exercise.name || ''} ${exercise.name_ar || ''} ${exercise.nameAr || ''}`.toLowerCase()
+      const nameText =
+        `${exercise.name || ''} ${exercise.name_ar || ''} ${exercise.nameAr || ''}`.toLowerCase()
       if (
         fallbackGroup === 'lower back' ||
         fallbackGroup === 'lower_back' ||
@@ -182,7 +192,9 @@ export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesRe
   const secondaryHeadIds = new Set<string>()
 
   for (const groupName of primaryGroupNames) {
-    const norm = GROUP_NORM_MAP[groupName.toLowerCase().trim()] || groupName.toLowerCase().trim()
+    const norm =
+      GROUP_NORM_MAP[groupName.toLowerCase().trim()] ||
+      groupName.toLowerCase().trim()
     const heads = groupTable[norm]
     if (heads) {
       for (const h of heads) primaryHeadIds.add(h)
@@ -190,7 +202,9 @@ export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesRe
   }
 
   for (const groupName of secondaryGroupNames) {
-    const norm = GROUP_NORM_MAP[groupName.toLowerCase().trim()] || groupName.toLowerCase().trim()
+    const norm =
+      GROUP_NORM_MAP[groupName.toLowerCase().trim()] ||
+      groupName.toLowerCase().trim()
     const heads = groupTable[norm]
     if (heads) {
       for (const h of heads) {
@@ -203,8 +217,14 @@ export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesRe
 
   if (primaryHeadIds.size > 0 || secondaryHeadIds.size > 0) {
     const muscles: ExerciseMuscleTarget[] = [
-      ...Array.from(primaryHeadIds).map((id) => ({ id, role: 'primary' as const })),
-      ...Array.from(secondaryHeadIds).map((id) => ({ id, role: 'secondary' as const })),
+      ...Array.from(primaryHeadIds).map((id) => ({
+        id,
+        role: 'primary' as const,
+      })),
+      ...Array.from(secondaryHeadIds).map((id) => ({
+        id,
+        role: 'secondary' as const,
+      })),
     ]
 
     return {
@@ -219,10 +239,12 @@ export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesRe
   // -------------------------------------------------------------
   // TIER 4: Names only (unknown group / unmapped)
   // -------------------------------------------------------------
-  const names =
-    (exercise.primary_muscles && !Array.isArray(exercise.primary_muscles) && exercise.primary_muscles.ar) ||
-    exercise.targetMusclesAr ||
-    [exercise.nameAr || exercise.name_ar || 'تمرين عام']
+  const names = (exercise.primary_muscles &&
+    !Array.isArray(exercise.primary_muscles) &&
+    exercise.primary_muscles.ar) ||
+    exercise.targetMusclesAr || [
+      exercise.nameAr || exercise.name_ar || 'تمرين عام',
+    ]
 
   return {
     tier: 4,
@@ -239,9 +261,21 @@ export function resolveMuscles(exercise: ResolveMusclesInput): ResolvedMusclesRe
  * Tie -> 'A' (أمامي)
  */
 export function computeBestView(muscles: ExerciseMuscleTarget[]): 'A' | 'P' {
-  const metaMuscles = (atlasMetaData as {
-    muscles?: Record<string, { best_view?: 'A' | 'P'; views?: { A?: { visible_pixels?: number }; P?: { visible_pixels?: number } } }>
-  }).muscles || {}
+  const metaMuscles =
+    (
+      atlasMetaData as {
+        muscles?: Record<
+          string,
+          {
+            best_view?: 'A' | 'P'
+            views?: {
+              A?: { visible_pixels?: number }
+              P?: { visible_pixels?: number }
+            }
+          }
+        >
+      }
+    ).muscles || {}
 
   let scoreA = 0
   let scoreP = 0
@@ -250,8 +284,10 @@ export function computeBestView(muscles: ExerciseMuscleTarget[]): 'A' | 'P' {
     const weight = m.role === 'primary' ? 2 : 1
     const meta = metaMuscles[m.id]
     if (meta) {
-      const hasA = (meta.views?.A?.visible_pixels ?? 0) > 0 || meta.best_view === 'A'
-      const hasP = (meta.views?.P?.visible_pixels ?? 0) > 0 || meta.best_view === 'P'
+      const hasA =
+        (meta.views?.A?.visible_pixels ?? 0) > 0 || meta.best_view === 'A'
+      const hasP =
+        (meta.views?.P?.visible_pixels ?? 0) > 0 || meta.best_view === 'P'
 
       if (hasA) scoreA += weight
       if (hasP) scoreP += weight

@@ -1,5 +1,9 @@
 import type { Exercise } from '../shared/types.ts'
-import { resolveMuscles, type ExerciseMuscleTarget } from './muscleResolver.ts'
+import {
+  resolveMuscles,
+  type ExerciseMuscleTarget,
+  type ResolveMusclesInput,
+} from './muscleResolver.ts'
 
 export { resolveMuscles }
 export type { ExerciseMuscleTarget }
@@ -7,7 +11,9 @@ export type { ExerciseMuscleTarget }
 /**
  * Backward-compatible wrapper around resolveMuscles
  */
-export function resolveExerciseMuscles(exercise: Partial<Exercise> | any): {
+export function resolveExerciseMuscles(
+  exercise: Partial<Exercise> | ResolveMusclesInput,
+): {
   muscles: ExerciseMuscleTarget[]
   isProvisional: boolean
   tier?: number

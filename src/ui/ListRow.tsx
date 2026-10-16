@@ -36,8 +36,9 @@ export const ListRow: React.FC<ListRowProps> = ({
 }) => {
   const isInteractive = Boolean(onClick || onLongPress)
 
-  const effectiveSubtitle = subtitle ?? (
-    (secondary || tertiary) ? (
+  const effectiveSubtitle =
+    subtitle ??
+    (secondary || tertiary ? (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {secondary && (
           <span
@@ -52,13 +53,17 @@ export const ListRow: React.FC<ListRowProps> = ({
           </span>
         )}
         {tertiary && (
-          <span style={{ fontSize: '11.5px', color: 'var(--muted-strong, var(--muted))' }}>
+          <span
+            style={{
+              fontSize: '11.5px',
+              color: 'var(--muted-strong, var(--muted))',
+            }}
+          >
             {tertiary}
           </span>
         )}
       </div>
-    ) : undefined
-  )
+    ) : undefined)
 
   return (
     <div
@@ -93,7 +98,9 @@ export const ListRow: React.FC<ListRowProps> = ({
       )}
       <div className="list-row__content">
         <div className="list-row__title">{title}</div>
-        {effectiveSubtitle && <div className="list-row__subtitle">{effectiveSubtitle}</div>}
+        {effectiveSubtitle && (
+          <div className="list-row__subtitle">{effectiveSubtitle}</div>
+        )}
       </div>
       {(trailing || showChevron) && (
         <div className="list-row__trailing">

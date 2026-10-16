@@ -13,7 +13,7 @@ export interface SelectOption {
   disabled?: boolean
 }
 
-export interface SelectProps {
+export interface SelectProps<T = string> {
   id?: string
   label?: string
   sheetTitle?: string
@@ -21,14 +21,14 @@ export interface SelectProps {
   value?: string
   values?: string[]
   multiple?: boolean
-  onChange: (value: any) => void
+  onChange: (value: T) => void
   placeholder?: string
   searchable?: boolean
   disabled?: boolean
   className?: string
 }
 
-export const Select: React.FC<SelectProps> = ({
+export function Select<T = string>({
   id,
   label,
   sheetTitle,
@@ -41,7 +41,7 @@ export const Select: React.FC<SelectProps> = ({
   searchable = true,
   disabled = false,
   className = '',
-}) => {
+}: SelectProps<T>): React.ReactElement {
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [tempValues, setTempValues] = useState<string[]>(values)
@@ -97,13 +97,13 @@ export const Select: React.FC<SelectProps> = ({
           : [...prev, optValue],
       )
     } else {
-      onChange(optValue)
+      ;(onChange as unknown as (val: string) => void)(optValue)
       setIsOpen(false)
     }
   }
 
   const handleApplyMulti = () => {
-    onChange(tempValues)
+    ;(onChange as unknown as (val: string[]) => void)(tempValues)
     setIsOpen(false)
   }
 

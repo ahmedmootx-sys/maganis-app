@@ -73,7 +73,8 @@ export function ExerciseVisual({
           justifyContent: 'center',
           background: 'var(--color-surface-2)',
           color: 'var(--color-text-2)',
-          borderRadius: size === 'large' ? 'var(--radius-card)' : 'var(--radius-control)',
+          borderRadius:
+            size === 'large' ? 'var(--radius-card)' : 'var(--radius-control)',
         }}
         title={exerciseName}
       >
@@ -105,7 +106,14 @@ export function ExerciseVisual({
 
         {/* Start / Peak Frame Indicator or Badge */}
         {hasTwoFrames && isAnimated && (
-          <span className="live-badge" style={{ position: 'absolute', bottom: '8px', insetInlineStart: '8px' }}>
+          <span
+            className="live-badge"
+            style={{
+              position: 'absolute',
+              bottom: '8px',
+              insetInlineStart: '8px',
+            }}
+          >
             {frameIndex === 0 ? 'وضعية البداية' : 'قمة الانقباض'}
           </span>
         )}
@@ -122,7 +130,10 @@ export function ExerciseVisual({
               padding: '4px 10px',
               fontSize: '12px',
               cursor: 'pointer',
-              background: frameIndex === 0 ? 'var(--color-accent)' : 'var(--color-surface-2)',
+              background:
+                frameIndex === 0
+                  ? 'var(--color-accent)'
+                  : 'var(--color-surface-2)',
               color: frameIndex === 0 ? '#14161A' : 'var(--color-text)',
               fontWeight: frameIndex === 0 ? 700 : 500,
               border: 'none',
@@ -139,7 +150,10 @@ export function ExerciseVisual({
               padding: '4px 10px',
               fontSize: '12px',
               cursor: 'pointer',
-              background: frameIndex === 1 ? 'var(--color-accent)' : 'var(--color-surface-2)',
+              background:
+                frameIndex === 1
+                  ? 'var(--color-accent)'
+                  : 'var(--color-surface-2)',
               color: frameIndex === 1 ? '#14161A' : 'var(--color-text)',
               fontWeight: frameIndex === 1 ? 700 : 500,
               border: 'none',
@@ -152,7 +166,9 @@ export function ExerciseVisual({
       )}
 
       {/* Attribution line */}
-      {attribution && <div className="exercise-media-attribution">{attribution}</div>}
+      {attribution && (
+        <div className="exercise-media-attribution">{attribution}</div>
+      )}
     </div>
   )
 }

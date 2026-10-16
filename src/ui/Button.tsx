@@ -24,14 +24,28 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const normalizedVariant =
-    variant === 'ghost' ? 'tertiary' : variant === 'subtle' ? 'secondary' : variant
+    variant === 'ghost'
+      ? 'tertiary'
+      : variant === 'subtle'
+        ? 'secondary'
+        : variant
   const normalizedSize =
-    size === 'sm' ? 'small' : size === 'lg' ? 'large' : size === 'md' ? 'normal' : size
+    size === 'sm'
+      ? 'small'
+      : size === 'lg'
+        ? 'large'
+        : size === 'md'
+          ? 'normal'
+          : size
 
   const classes = [
     'btn',
     `btn--${normalizedVariant}`,
-    normalizedSize === 'large' ? 'btn--large' : normalizedSize === 'small' ? 'btn--small' : '',
+    normalizedSize === 'large'
+      ? 'btn--large'
+      : normalizedSize === 'small'
+        ? 'btn--small'
+        : '',
     fullWidth ? 'btn--full-width' : '',
     loading ? 'btn--loading' : '',
     className,

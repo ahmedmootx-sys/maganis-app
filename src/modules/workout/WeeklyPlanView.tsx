@@ -109,7 +109,10 @@ export function WeeklyPlanView({
   )
 
   useEffect(() => {
-    if (initialSelectedDayIndex !== undefined && initialSelectedDayIndex !== null) {
+    if (
+      initialSelectedDayIndex !== undefined &&
+      initialSelectedDayIndex !== null
+    ) {
       setSelectedDayIndex(initialSelectedDayIndex)
     }
   }, [initialSelectedDayIndex])
@@ -1188,10 +1191,7 @@ export function WeeklyPlanView({
             title="مكتبة التمارين الشاملة"
             secondary="استعراض وتصفية التمارين حسب العضلة والأداة والمستوى"
             trailing={
-              <IconChevronLeft
-                size={16}
-                style={{ color: 'var(--muted)' }}
-              />
+              <IconChevronLeft size={16} style={{ color: 'var(--muted)' }} />
             }
           />
         </section>

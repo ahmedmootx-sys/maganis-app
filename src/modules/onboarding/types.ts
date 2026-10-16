@@ -33,8 +33,13 @@ export interface BodyMetrics {
   weightKg: number
   activityLevel: ActivityLevel
   bodyFatPercent?: number
-  lifestyle?: 1 | 2 | 3 | 4
+  lifestyle?: 1 | 2 | 3 | 4 | 5
   workoutBlocks?: WorkoutBlock[]
+  sessionMinutes?: number
+  sessionIntensity?: 'light' | 'moderate' | 'hard'
+  hasCustomWorkoutBlocks?: boolean
+  lifestyleMigrated?: boolean
+  migrationReviewed?: boolean
   pace?: 'slow' | 'standard' | 'fast'
   formulaOverride?: 'auto' | 'mifflin' | 'katch'
   proteinPerKgOverride?: number
@@ -106,31 +111,31 @@ export const ACTIVITY_LEVELS: ActivityLevelInfo[] = [
   {
     value: 'sedentary',
     labelAr: 'قليل الحركة',
-    hintAr: 'عمل مكتبي بلا تمارين',
+    hintAr: 'خامل بلا حركة تذكر خارج أوقات التمرين',
     multiplier: 1.2,
   },
   {
     value: 'light',
     labelAr: 'خفيف',
-    hintAr: 'تمرين خفيف 1-3 أيام أسبوعياً',
+    hintAr: 'حركة يومية خفيفة مع مشي متقطع',
     multiplier: 1.375,
   },
   {
     value: 'moderate',
     labelAr: 'متوسط',
-    hintAr: 'تمرين معتدل 3-5 أيام أسبوعياً',
+    hintAr: 'وقوف وحركة نشطة أغلب اليوم',
     multiplier: 1.55,
   },
   {
     value: 'active',
     labelAr: 'نشط',
-    hintAr: 'تمارين شاقة 6-7 أيام أسبوعياً',
+    hintAr: 'عمل بدني شاق ومجهود مستمر',
     multiplier: 1.725,
   },
   {
     value: 'very_active',
     labelAr: 'نشط جداً',
-    hintAr: 'تمرين يومي مكثف أو عمل بدني شاق',
+    hintAr: 'مجهود بدني شاق واستثنائي طوال اليوم',
     multiplier: 1.9,
   },
 ]

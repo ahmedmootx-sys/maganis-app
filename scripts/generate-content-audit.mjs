@@ -124,7 +124,8 @@ function resolveMuscles(exercise) {
   if (primaryGroups.length === 0) {
     const fallback = exercise.muscle_group || exercise.category
     if (fallback) {
-      const nameText = `${exercise.name || ''} ${exercise.name_ar || ''} ${exercise.nameAr || ''}`.toLowerCase()
+      const nameText =
+        `${exercise.name || ''} ${exercise.name_ar || ''} ${exercise.nameAr || ''}`.toLowerCase()
       if (
         fallback === 'lower back' ||
         fallback === 'lower_back' ||
@@ -146,13 +147,15 @@ function resolveMuscles(exercise) {
   const secondaryHeadIds = new Set()
 
   for (const g of primaryGroups) {
-    const norm = GROUP_NORM_MAP[g.toLowerCase().trim()] || g.toLowerCase().trim()
+    const norm =
+      GROUP_NORM_MAP[g.toLowerCase().trim()] || g.toLowerCase().trim()
     const heads = groupTable[norm]
     if (heads) for (const h of heads) primaryHeadIds.add(h)
   }
 
   for (const g of secondaryGroups) {
-    const norm = GROUP_NORM_MAP[g.toLowerCase().trim()] || g.toLowerCase().trim()
+    const norm =
+      GROUP_NORM_MAP[g.toLowerCase().trim()] || g.toLowerCase().trim()
     const heads = groupTable[norm]
     if (heads) {
       for (const h of heads) {
@@ -210,10 +213,12 @@ const boilerplatePhrases = Array.from(sentenceCountMap.entries())
   .filter(([, count]) => count >= 3)
   .sort((a, b) => b[1] - a[1])
 
-const top10Boilerplate = boilerplatePhrases.slice(0, 10).map(([phrase, count]) => ({
-  phrase,
-  count,
-}))
+const top10Boilerplate = boilerplatePhrases
+  .slice(0, 10)
+  .map(([phrase, count]) => ({
+    phrase,
+    count,
+  }))
 
 const boilerplateSet = new Set(boilerplatePhrases.map(([p]) => p))
 
@@ -418,9 +423,12 @@ const tier2Pct = Math.round((tierCounts[2] / totalExercises) * 1000) / 10
 const tier3Pct = Math.round((tierCounts[3] / totalExercises) * 1000) / 10
 const tier4Pct = Math.round((tierCounts[4] / totalExercises) * 1000) / 10
 
-const genuineBenefitPct = Math.round((genuineBenefitCount / totalExercises) * 1000) / 10
-const genuineMechanicsPct = Math.round((genuineMechanicsCount / totalExercises) * 1000) / 10
-const genuineStepsPct = Math.round((genuineStepsCount / totalExercises) * 1000) / 10
+const genuineBenefitPct =
+  Math.round((genuineBenefitCount / totalExercises) * 1000) / 10
+const genuineMechanicsPct =
+  Math.round((genuineMechanicsCount / totalExercises) * 1000) / 10
+const genuineStepsPct =
+  Math.round((genuineStepsCount / totalExercises) * 1000) / 10
 const mediaPct = Math.round((mediaCount / totalExercises) * 1000) / 10
 
 // Priority List: exercises with most flagged issues or missing critical fields
@@ -440,8 +448,14 @@ const auditReportJson = {
       tier4: { count: tierCounts[4], percentage: tier4Pct },
     },
     quality_metrics: {
-      genuine_benefit: { count: genuineBenefitCount, percentage: genuineBenefitPct },
-      genuine_mechanics: { count: genuineMechanicsCount, percentage: genuineMechanicsPct },
+      genuine_benefit: {
+        count: genuineBenefitCount,
+        percentage: genuineBenefitPct,
+      },
+      genuine_mechanics: {
+        count: genuineMechanicsCount,
+        percentage: genuineMechanicsPct,
+      },
       genuine_steps: { count: genuineStepsCount, percentage: genuineStepsPct },
       media_coverage: { count: mediaCount, percentage: mediaPct },
     },

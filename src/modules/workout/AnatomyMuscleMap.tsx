@@ -12,7 +12,7 @@ import atlasMetaData from '../../../public/atlas/atlas-meta.json'
 import { Segmented, Sheet } from '../../ui/index.ts'
 
 export interface AnatomyMuscleMapProps {
-  exercise?: Partial<Exercise> | any
+  exercise?: Partial<Exercise> | (Partial<Exercise> & Record<string, unknown>)
   exerciseId?: string
   exerciseName?: string
   category?: string
@@ -35,7 +35,17 @@ for (const g of atlasGroupsData.groups) {
   }
 }
 
-const META_MUSCLES = (atlasMetaData as any).muscles as Record<string, any>
+interface AtlasMetaMuscleInfo {
+  best_layer?: string
+  visible_ratio?: number
+  best_view?: string
+  views?: Record<string, { visible_pixels?: number; anchor?: number[] }>
+  [key: string]: unknown
+}
+
+const META_MUSCLES = (
+  atlasMetaData as unknown as { muscles: Record<string, AtlasMetaMuscleInfo> }
+).muscles
 
 export function AnatomyMuscleMap({
   exercise,
@@ -57,7 +67,14 @@ export function AnatomyMuscleMap({
       muscles: explicitMuscles,
     }
     return resolveMuscles(input)
-  }, [exercise, exerciseId, exerciseName, category, targetMuscles, explicitMuscles])
+  }, [
+    exercise,
+    exerciseId,
+    exerciseName,
+    category,
+    targetMuscles,
+    explicitMuscles,
+  ])
 
   // Active view: 'A' (أمامي) | 'P' (خلفي)
   // Auto-selected initially based on weighted presence
@@ -107,7 +124,9 @@ export function AnatomyMuscleMap({
   const hasDeepMuscles = useMemo(() => {
     return resolved.muscles.some((m) => {
       const meta = META_MUSCLES[m.id]
-      return meta && (meta.best_layer === 'D' || meta.visible_ratio < 0.65)
+      return (
+        meta && (meta.best_layer === 'D' || (meta.visible_ratio ?? 1) < 0.65)
+      )
     })
   }, [resolved.muscles])
 
@@ -142,8 +161,16 @@ export function AnatomyMuscleMap({
 
   // Grouped active muscles for accessible list under figure
   const { primaryList, secondaryList } = useMemo(() => {
-    const primary: Array<{ id: string; def: { id: string; ar: string; en: string }; group: string }> = []
-    const secondary: Array<{ id: string; def: { id: string; ar: string; en: string }; group: string }> = []
+    const primary: Array<{
+      id: string
+      def: { id: string; ar: string; en: string }
+      group: string
+    }> = []
+    const secondary: Array<{
+      id: string
+      def: { id: string; ar: string; en: string }
+      group: string
+    }> = []
 
     for (const m of resolved.muscles) {
       const def = MUSCLE_DEFS[m.id] || { id: m.id, ar: m.id, en: m.id }
@@ -226,17 +253,14 @@ export function AnatomyMuscleMap({
   }, [svgContent, roleMap, showDeep, selectedMuscleId])
 
   // Handle click on SVG to open sheet
-  const handleSvgClick = useCallback(
-    (e: React.MouseEvent) => {
-      const target = e.target as SVGElement
-      const muscleId = target.getAttribute?.('data-muscle')
-      if (muscleId && MUSCLE_DEFS[muscleId]) {
-        setSelectedMuscleId(muscleId)
-        setSheetMuscleId(muscleId)
-      }
-    },
-    [],
-  )
+  const handleSvgClick = useCallback((e: React.MouseEvent) => {
+    const target = e.target as SVGElement
+    const muscleId = target.getAttribute?.('data-muscle')
+    if (muscleId && MUSCLE_DEFS[muscleId]) {
+      setSelectedMuscleId(muscleId)
+      setSheetMuscleId(muscleId)
+    }
+  }, [])
 
   // Zoom controls
   function handleZoomIn() {
@@ -268,8 +292,14 @@ export function AnatomyMuscleMap({
     if (!isDraggingRef.current || zoom <= 1.0) return
     const maxPanX = (zoom - 1) * 140
     const maxPanY = (zoom - 1) * 220
-    const nextX = Math.max(-maxPanX, Math.min(maxPanX, e.clientX - startDragRef.current.x))
-    const nextY = Math.max(-maxPanY, Math.min(maxPanY, e.clientY - startDragRef.current.y))
+    const nextX = Math.max(
+      -maxPanX,
+      Math.min(maxPanX, e.clientX - startDragRef.current.x),
+    )
+    const nextY = Math.max(
+      -maxPanY,
+      Math.min(maxPanY, e.clientY - startDragRef.current.y),
+    )
     setPan({ x: nextX, y: nextY })
   }
 
@@ -280,7 +310,11 @@ export function AnatomyMuscleMap({
   // Zoom to muscle on list row click
   function handleRowClick(mId: string) {
     const meta = META_MUSCLES[mId]
-    if (meta && meta.best_view && meta.best_view !== view) {
+    if (
+      meta &&
+      (meta.best_view === 'A' || meta.best_view === 'P') &&
+      meta.best_view !== view
+    ) {
       setView(meta.best_view)
     }
     setSelectedMuscleId(mId)
@@ -309,11 +343,24 @@ export function AnatomyMuscleMap({
             textAlign: 'center',
           }}
         >
-          <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--color-text)' }}>
+          <div
+            style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: 'var(--color-text)',
+            }}
+          >
             {resolved.note || 'لا توجد خريطة تفصيلية لهذا التمرين بعد'}
           </div>
           {resolved.namesOnly && resolved.namesOnly.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                justifyContent: 'center',
+              }}
+            >
               {resolved.namesOnly.map((name, i) => (
                 <span
                   key={i}
@@ -335,7 +382,8 @@ export function AnatomyMuscleMap({
     )
   }
 
-  const shadeSrc = view === 'A' ? '/atlas/shade-anterior.webp' : '/atlas/shade-posterior.webp'
+  const shadeSrc =
+    view === 'A' ? '/atlas/shade-anterior.webp' : '/atlas/shade-posterior.webp'
   const sheetMuscleDef = sheetMuscleId ? MUSCLE_DEFS[sheetMuscleId] : null
   const sheetMuscleRole = sheetMuscleId ? roleMap.get(sheetMuscleId) : null
 
@@ -364,9 +412,15 @@ export function AnatomyMuscleMap({
             onClick={() => setShowDeep(!showDeep)}
             style={{
               cursor: 'pointer',
-              border: showDeep ? '1.5px solid var(--color-accent)' : '1px solid var(--color-divider)',
-              background: showDeep ? 'var(--color-surface-2)' : 'var(--color-surface)',
-              color: showDeep ? 'var(--color-accent-text)' : 'var(--color-text-2)',
+              border: showDeep
+                ? '1.5px solid var(--color-accent)'
+                : '1px solid var(--color-divider)',
+              background: showDeep
+                ? 'var(--color-surface-2)'
+                : 'var(--color-surface)',
+              color: showDeep
+                ? 'var(--color-accent-text)'
+                : 'var(--color-text-2)',
               fontWeight: showDeep ? 700 : 500,
               padding: '6px 12px',
               borderRadius: 'var(--radius-full)',
@@ -419,7 +473,9 @@ export function AnatomyMuscleMap({
             aria-label="تكبير"
             title="تكبير"
           >
-            <span style={{ fontSize: '18px', lineHeight: 1, fontWeight: 700 }}>+</span>
+            <span style={{ fontSize: '18px', lineHeight: 1, fontWeight: 700 }}>
+              +
+            </span>
           </button>
           <button
             type="button"
@@ -428,7 +484,9 @@ export function AnatomyMuscleMap({
             aria-label="تصغير"
             title="تصغير"
           >
-            <span style={{ fontSize: '18px', lineHeight: 1, fontWeight: 700 }}>−</span>
+            <span style={{ fontSize: '18px', lineHeight: 1, fontWeight: 700 }}>
+              −
+            </span>
           </button>
           {zoom > 1.0 && (
             <button
@@ -476,8 +534,8 @@ export function AnatomyMuscleMap({
       <div className="atlas-status-line">
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>
-            يعرض الآن: {view === 'A' ? 'الأمامي' : 'الخلفي'}. أساسية {currentCounts.primary}، مساعدة{' '}
-            {currentCounts.secondary}
+            يعرض الآن: {view === 'A' ? 'الأمامي' : 'الخلفي'}. أساسية{' '}
+            {currentCounts.primary}، مساعدة {currentCounts.secondary}
           </span>
           {otherCounts > 0 && (
             <button
@@ -511,13 +569,39 @@ export function AnatomyMuscleMap({
             className={`atlas-muscle-row ${selectedMuscleId === id ? 'atlas-muscle-row--active' : ''}`}
             onClick={() => handleRowClick(id)}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, flex: 1 }}>
-              <span className="role-marker role-marker--primary" title="عضلة أساسية" />
-              <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text)' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                minWidth: 0,
+                flex: 1,
+              }}
+            >
+              <span
+                className="role-marker role-marker--primary"
+                title="عضلة أساسية"
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minWidth: 0,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: 'var(--color-text)',
+                  }}
+                >
                   {def.ar}
                 </span>
-                <span style={{ fontSize: '11px', color: 'var(--color-text-2)' }} dir="ltr">
+                <span
+                  style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
+                  dir="ltr"
+                >
                   {def.en}
                 </span>
               </div>
@@ -546,13 +630,39 @@ export function AnatomyMuscleMap({
             className={`atlas-muscle-row ${selectedMuscleId === id ? 'atlas-muscle-row--active' : ''}`}
             onClick={() => handleRowClick(id)}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, flex: 1 }}>
-              <span className="role-marker role-marker--secondary" title="عضلة مساعدة" />
-              <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text)' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                minWidth: 0,
+                flex: 1,
+              }}
+            >
+              <span
+                className="role-marker role-marker--secondary"
+                title="عضلة مساعدة"
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minWidth: 0,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: 'var(--color-text)',
+                  }}
+                >
                   {def.ar}
                 </span>
-                <span style={{ fontSize: '11px', color: 'var(--color-text-2)' }} dir="ltr">
+                <span
+                  style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
+                  dir="ltr"
+                >
                   {def.en}
                 </span>
               </div>
@@ -577,7 +687,8 @@ export function AnatomyMuscleMap({
 
       {/* 6. Attribution Credit */}
       <div className="atlas-attribution">
-        BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International
+        BodyParts3D, © The Database Center for Life Science licensed under CC
+        Attribution 4.0 International
       </div>
 
       {/* 7. Muscle Info Sheet (on tapping SVG shape) */}
@@ -587,12 +698,30 @@ export function AnatomyMuscleMap({
         title={sheetMuscleDef?.ar || 'تفاصيل العضلة'}
       >
         {sheetMuscleDef && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '16px' }} dir="rtl">
-            <div style={{ fontSize: '13px', color: 'var(--color-text-2)' }} dir="ltr">
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px',
+              paddingBottom: '16px',
+            }}
+            dir="rtl"
+          >
+            <div
+              style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
+              dir="ltr"
+            >
               {sheetMuscleDef.en}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                flexWrap: 'wrap',
+              }}
+            >
               <div
                 style={{
                   display: 'flex',
@@ -602,14 +731,21 @@ export function AnatomyMuscleMap({
                   fontWeight: 600,
                   padding: '4px 10px',
                   borderRadius: 'var(--radius-full)',
-                  background: sheetMuscleRole === 'primary' ? 'rgba(229, 57, 53, 0.12)' : 'rgba(253, 216, 53, 0.15)',
+                  background:
+                    sheetMuscleRole === 'primary'
+                      ? 'rgba(229, 57, 53, 0.12)'
+                      : 'rgba(253, 216, 53, 0.15)',
                   color: sheetMuscleRole === 'primary' ? '#E53935' : '#b45309',
                 }}
               >
                 <span
                   className={`role-marker ${sheetMuscleRole === 'primary' ? 'role-marker--primary' : 'role-marker--secondary'}`}
                 />
-                <span>{sheetMuscleRole === 'primary' ? 'عضلة أساسية' : 'عضلة مساعدة'}</span>
+                <span>
+                  {sheetMuscleRole === 'primary'
+                    ? 'عضلة أساسية'
+                    : 'عضلة مساعدة'}
+                </span>
               </div>
 
               {MUSCLE_GROUPS[sheetMuscleDef.id] && (
@@ -627,8 +763,15 @@ export function AnatomyMuscleMap({
               )}
             </div>
 
-            <div style={{ fontSize: '12px', color: 'var(--color-text-2)', lineHeight: 1.6 }}>
-              المسار التشريحي للرأس العضلي محدد وفق قاعدة بيانات BodyParts3D 4.0 المعيارية.
+            <div
+              style={{
+                fontSize: '12px',
+                color: 'var(--color-text-2)',
+                lineHeight: 1.6,
+              }}
+            >
+              المسار التشريحي للرأس العضلي محدد وفق قاعدة بيانات BodyParts3D 4.0
+              المعيارية.
             </div>
           </div>
         )}

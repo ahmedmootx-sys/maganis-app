@@ -32,13 +32,13 @@ describe('Content Preservation & Verbatim Rendering', () => {
   })
 
   it('2. Renders all rich fields verbatim in their designated tabs without shortening or omitting', () => {
-    const richExercise: any = {
+    const richExercise = {
       id: 'test-rich-exercise',
       name: 'Overhead Barbell Military Press',
       nameAr: 'ضغط عسكري بالبار فوق الرأس',
-      category: 'shoulders',
-      equipment: 'barbell',
-      difficulty: 'intermediate',
+      category: 'shoulders' as const,
+      equipment: 'barbell' as const,
+      difficulty: 'intermediate' as const,
       descriptionAr: 'تمرين دفع رأسي للأكتاف',
       benefitAr:
         'بناء قوة الكتف الأمامي وتطوير استقرار الحزام الكتفي بالكامل مع تعزيز الثبات الجذعي تحت الحمل الرأسي المباشر.',
@@ -56,17 +56,23 @@ describe('Content Preservation & Verbatim Rendering', () => {
         'أنزل البار ببطء على مدى 3 ثوانٍ حتى يصل لمستوى أعلى الصدر.',
       ],
       avoidForInjuries: ['الكتف'],
-      medicalSource: 'National Strength and Conditioning Association (NSCA 2024)',
+      medicalSource:
+        'National Strength and Conditioning Association (NSCA 2024)',
       tempo: '3-0-1-0',
       breathing: 'شهيق عند النزول، زفير عند الدفع للأعلى',
     }
 
     render(
-      <ExerciseDetailView exerciseId="test-rich-exercise" exercise={richExercise} />,
+      <ExerciseDetailView
+        exerciseId="test-rich-exercise"
+        exercise={richExercise}
+      />,
     )
 
     // Check Header & Arabic/English titles
-    expect(screen.getAllByText('ضغط عسكري بالبار فوق الرأس').length).toBeGreaterThanOrEqual(1)
+    expect(
+      screen.getAllByText('ضغط عسكري بالبار فوق الرأس').length,
+    ).toBeGreaterThanOrEqual(1)
     expect(screen.getByText('Overhead Barbell Military Press')).toBeDefined()
 
     // 1. Tab "الفهم" (Default active tab)
@@ -80,10 +86,14 @@ describe('Content Preservation & Verbatim Rendering', () => {
         'دفع عمودي صارم يبدأ من عظم الترقوة حتى الامتداد الكامل للذراعين مع ثبات انقباضي في لوحي الكتف دون تقويس الفقرات القطنية.',
       ),
     ).toBeDefined()
-    expect(screen.getByText('الدالية الأمامية (Anterior Deltoid)')).toBeDefined()
+    expect(
+      screen.getByText('الدالية الأمامية (Anterior Deltoid)'),
+    ).toBeDefined()
     expect(screen.getByText('الدالية الجانبية (Lateral Deltoid)')).toBeDefined()
     expect(
-      screen.getByText('National Strength and Conditioning Association (NSCA 2024)'),
+      screen.getByText(
+        'National Strength and Conditioning Association (NSCA 2024)',
+      ),
     ).toBeDefined()
 
     // 2. Tab "الأداء"
@@ -114,18 +124,20 @@ describe('Content Preservation & Verbatim Rendering', () => {
 
     // Verify Tempo, Breathing, and Safety
     expect(screen.getByText('3-0-1-0')).toBeDefined()
-    expect(screen.getByText('شهيق عند النزول، زفير عند الدفع للأعلى')).toBeDefined()
+    expect(
+      screen.getByText('شهيق عند النزول، زفير عند الدفع للأعلى'),
+    ).toBeDefined()
     expect(screen.getByText('الكتف')).toBeDefined()
   })
 
   it('3. 5th Tab "السجل" appears ONLY when the exercise has logged history, and is hidden otherwise', () => {
-    const sampleExercise: any = {
+    const sampleExercise = {
       id: 'bench-history-test',
       name: 'Bench Press',
       nameAr: 'ضغط صدري',
-      category: 'chest',
-      equipment: 'barbell',
-      difficulty: 'beginner',
+      category: 'chest' as const,
+      equipment: 'barbell' as const,
+      difficulty: 'beginner' as const,
       descriptionAr: 'تمرين ضغط صدري بالبار',
     }
 
@@ -183,13 +195,13 @@ describe('Content Preservation & Verbatim Rendering', () => {
   })
 
   it('4. Tab "لك" correctly adapts to user profile, experience RIR, and flags medical injury alerts', () => {
-    const sampleExercise: any = {
+    const sampleExercise = {
       id: 'squat-user-test',
       name: 'Barbell Squat',
       nameAr: 'سكوات بالبار',
-      category: 'legs',
-      equipment: 'barbell',
-      difficulty: 'intermediate',
+      category: 'legs' as const,
+      equipment: 'barbell' as const,
+      difficulty: 'intermediate' as const,
       descriptionAr: 'تمرين سكوات بالبار',
     }
 
@@ -237,6 +249,8 @@ describe('Content Preservation & Verbatim Rendering', () => {
     expect(screen.getByText(/المستهدف لمستواك \(متوسط\)/)).toBeDefined()
 
     // Double progression advice for lower body (legs: 2.5 - 5 kg)
-    expect(screen.getAllByText(/2\.5 إلى 5 كجم/).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText(/2\.5 إلى 5 كجم/).length).toBeGreaterThanOrEqual(
+      1,
+    )
   })
 })

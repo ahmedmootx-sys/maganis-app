@@ -12,7 +12,7 @@ export interface FileFieldProps {
   buttonLabel?: string
   buttonText?: string
   readAs?: string
-  onFileLoaded?: (data: any) => void
+  onFileLoaded?: (data: string) => void
   disabled?: boolean
   className?: string
 }
@@ -40,7 +40,9 @@ export const FileField: React.FC<FileFieldProps> = ({
     if (file && onFileLoaded) {
       const reader = new FileReader()
       reader.onload = () => {
-        onFileLoaded(reader.result)
+        if (typeof reader.result === 'string') {
+          onFileLoaded(reader.result)
+        }
       }
       if (readAs === 'text') {
         reader.readAsText(file)
@@ -58,7 +60,11 @@ export const FileField: React.FC<FileFieldProps> = ({
   return (
     <div className={`file-field-container ${className}`.trim()}>
       {label && (
-        <label htmlFor={id} className="field-label" style={{ marginBottom: '6px', display: 'block' }}>
+        <label
+          htmlFor={id}
+          className="field-label"
+          style={{ marginBottom: '6px', display: 'block' }}
+        >
           {label}
         </label>
       )}

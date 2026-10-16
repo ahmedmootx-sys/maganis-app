@@ -1449,7 +1449,9 @@ export function ProgressScreen({
             setWeightToDelete(null)
           }}
           title="حذف قياس الوزن؟"
-          consequences={[`هل أنت متأكد من حذف قياس الوزن المسجل في ${formatArabicDate(weightToDelete)}؟`]}
+          consequences={[
+            `هل أنت متأكد من حذف قياس الوزن المسجل في ${formatArabicDate(weightToDelete)}؟`,
+          ]}
           confirmLabel="نعم، حذف"
           cancelLabel="إلغاء"
           isDestructive={true}
@@ -1466,7 +1468,9 @@ export function ProgressScreen({
             setNoteToDelete(null)
           }}
           title="حذف الملاحظة؟"
-          consequences={[`هل أنت متأكد من حذف هذه الملاحظة المسجلة في ${formatArabicDate(noteToDelete.date)}؟`]}
+          consequences={[
+            `هل أنت متأكد من حذف هذه الملاحظة المسجلة في ${formatArabicDate(noteToDelete.date)}؟`,
+          ]}
           confirmLabel="نعم، حذف"
           cancelLabel="إلغاء"
           isDestructive={true}

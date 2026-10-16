@@ -97,12 +97,7 @@
     {
       "key": "traps",
       "ar": "الترابيس",
-      "muscles": [
-        "trap_upper",
-        "trap_middle",
-        "trap_lower",
-        "levator_scapulae"
-      ]
+      "muscles": ["trap_upper", "trap_middle", "trap_lower", "levator_scapulae"]
     },
     {
       "key": "neck",

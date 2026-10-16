@@ -175,8 +175,10 @@ export function App({ config }: AppProps) {
   const [showCustomBuilder, setShowCustomBuilder] = useState(false)
   const [showLogger, setShowLogger] = useState(false)
   const [showExerciseLibrary, setShowExerciseLibrary] = useState(false)
-  const [confirmReplaceProgramOpen, setConfirmReplaceProgramOpen] = useState(false)
-  const [confirmDeleteProgramOpen, setConfirmDeleteProgramOpen] = useState(false)
+  const [confirmReplaceProgramOpen, setConfirmReplaceProgramOpen] =
+    useState(false)
+  const [confirmDeleteProgramOpen, setConfirmDeleteProgramOpen] =
+    useState(false)
   const [confirmCancelActiveSessionOpen, setConfirmCancelActiveSessionOpen] =
     useState(false)
   const [activeWorkoutDay, setActiveWorkoutDay] = useState<ProgramDay | null>(

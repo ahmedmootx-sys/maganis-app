@@ -82,7 +82,10 @@ export const Sheet: React.FC<SheetProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               {title && <h3 className="sheet__title">{title}</h3>}
               {subtitle && (
-                <span className="sheet__subtitle" style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                <span
+                  className="sheet__subtitle"
+                  style={{ fontSize: '13px', color: 'var(--muted)' }}
+                >
                   {subtitle}
                 </span>
               )}

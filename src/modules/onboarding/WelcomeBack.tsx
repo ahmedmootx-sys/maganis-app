@@ -1,6 +1,10 @@
 import { useState } from 'react'
-import { ACTIVITY_LEVELS, GOALS } from './types'
+import { GOALS } from './types'
 import type { UserProfile } from './types'
+import {
+  LIFESTYLE_OPTIONS,
+  mapLegacyActivityToLifestyle,
+} from '../nutrition/nutritionEngine.ts'
 
 interface WelcomeBackProps {
   profile: UserProfile
@@ -16,8 +20,11 @@ export function WelcomeBack({ profile, onEdit, onDelete }: WelcomeBackProps) {
   const primaryLabel =
     GOALS.find((x) => x.value === profile.primaryGoal)?.labelAr ??
     profile.primaryGoal
-  const activity = ACTIVITY_LEVELS.find(
-    (x) => x.value === profile.body.activityLevel,
+  const currentLifestyle =
+    profile.body.lifestyle ??
+    mapLegacyActivityToLifestyle(profile.body.activityLevel)
+  const lifestyleObj = LIFESTYLE_OPTIONS.find(
+    (l) => l.level === currentLifestyle,
   )
   const joined = new Date(profile.createdAt).toLocaleDateString('ar-EG')
 
@@ -38,7 +45,7 @@ export function WelcomeBack({ profile, onEdit, onDelete }: WelcomeBackProps) {
           <strong>{primaryLabel}</strong>
         </li>
         <li>
-          <span>أيام التمرين</span>
+          <span>جلسات التمرين</span>
           <strong>{profile.trainingDaysPerWeek} أيام أسبوعياً</strong>
         </li>
         <li>
@@ -66,11 +73,11 @@ export function WelcomeBack({ profile, onEdit, onDelete }: WelcomeBackProps) {
           </strong>
         </li>
         <li>
-          <span>مستوى النشاط</span>
+          <span>نمط النشاط اليومي</span>
           <strong>
-            {activity
-              ? `${activity.labelAr} (×${activity.multiplier})`
-              : profile.body.activityLevel}
+            {lifestyleObj
+              ? `${lifestyleObj.titleAr} (معامل ×${lifestyleObj.factor})`
+              : '—'}
           </strong>
         </li>
       </ul>

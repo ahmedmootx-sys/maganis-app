@@ -10,12 +10,7 @@ import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { formatTime } from './workoutUtils.ts'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
-import {
-  TopBar,
-  ProgressBar,
-  Sheet,
-  ConfirmSheet,
-} from '../../ui/index.ts'
+import { TopBar, ProgressBar, Sheet, ConfirmSheet } from '../../ui/index.ts'
 import {
   IconClock,
   IconMoreVertical,

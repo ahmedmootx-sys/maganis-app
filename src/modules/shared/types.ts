@@ -44,6 +44,28 @@ export interface Exercise {
   muscles?: ExerciseMuscleTarget[]
   /** علامة تدل على أن توزيع العضلات مؤقت وموسع من التصنيف القديم */
   isProvisionalMuscles?: boolean
+  /** فترات الراحة المقترحة */
+  restSeconds?: number
+  rest_seconds?: number
+  /** وسائط بديلة ومصادر */
+  image?: string
+  gifUrl?: string
+  gif?: string
+  attribution?: string
+  /** نصوص وتفاصيل إضافية موروثة */
+  benefit?: string
+  mechanics?: string
+  target?: string
+  reference?: string
+  mapNote?: string
+  map_note?: string
+  steps?: string[]
+  commonMistakes?: string[]
+  common_mistakes?: string[]
+  safetyCues?: string[]
+  safety_cues?: string[]
+  tempo?: string
+  breathing?: string
 }
 
 export type ExerciseSection =
