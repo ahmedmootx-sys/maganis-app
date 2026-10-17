@@ -1,0 +1,49 @@
+{
+  "exercises": {
+    "Barbell_Guillotine_Bench_Press": {
+      "exerciseId": "Barbell_Guillotine_Bench_Press",
+      "flagType": "high_risk",
+      "badgeAr": "عالي الخطورة",
+      "nameAr": "ضغط البار جيلوتين للرقبة (Guillotine Bench Press)",
+      "riskReasonAr": "يضع مفصل الكتف في دوران خارجي حاد مع شد مفرط على الكبسولة المفصلية الأمامية، بالإضافة لخطر سقوط البار على الرقبة في حال الإخفاق.",
+      "saferAlternatives": ["chest-1", "chest-4"],
+      "requiresWarmupConfirmation": true
+    },
+    "chest-19": {
+      "exerciseId": "chest-19",
+      "flagType": "high_risk",
+      "badgeAr": "عالي الخطورة",
+      "nameAr": "ضغط البار جيلوتين للرقبة (Guillotine Bench Press)",
+      "riskReasonAr": "يضع مفصل الكتف في دوران خارجي حاد مع شد مفرط على الكبسولة المفصلية الأمامية، بالإضافة لخطر سقوط البار على الرقبة في حال الإخفاق.",
+      "saferAlternatives": ["chest-1", "chest-4"],
+      "requiresWarmupConfirmation": true
+    },
+    "shoulder-behind-neck": {
+      "exerciseId": "shoulder-behind-neck",
+      "flagType": "high_risk",
+      "badgeAr": "عالي الخطورة",
+      "nameAr": "ضغط كتف خلف الرقبة بالبار",
+      "riskReasonAr": "يتطلب مدى حركي مفرط لدوران الكتف الخارجي ويزيد من احتمالية انحشار أوتار الكفة المدورة (Rotator cuff impingement).",
+      "saferAlternatives": ["shoulder-1", "shoulder-3"],
+      "requiresWarmupConfirmation": true
+    },
+    "lat-pulldown-behind-neck": {
+      "exerciseId": "lat-pulldown-behind-neck",
+      "flagType": "high_risk",
+      "badgeAr": "عالي الخطورة",
+      "nameAr": "سحب عالي خلف الرقبة",
+      "riskReasonAr": "يسبب إجهاداً مفرطاً على الفقرات العنقية ومفصل الكتف مقارنة بالسحب الصدري الأمامي القياسي.",
+      "saferAlternatives": ["back-2", "back-3"],
+      "requiresWarmupConfirmation": true
+    },
+    "upright-row-narrow": {
+      "exerciseId": "upright-row-narrow",
+      "flagType": "caution",
+      "badgeAr": "تنبيه أمان",
+      "nameAr": "سحب عمودي بقبضة ضيقة",
+      "riskReasonAr": "الدوران الداخلي الكامل مع رفع الذراع يضغط على وتر Supraspinatus تحت عظمة الأخرم. يوصى بمسكة عريضة أو استخدام الدامبلز بحرية حركة.",
+      "saferAlternatives": ["shoulder-4", "shoulder-5"],
+      "requiresWarmupConfirmation": false
+    }
+  }
+}

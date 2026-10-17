@@ -51,12 +51,13 @@ describe('calorieCalculator', () => {
     }
 
     const result = calculateCalorieMacroTargets(mockProfile)
-    expect(result.bmr).toBe(1805)
-    expect(result.tdee).toBeGreaterThan(2000)
-    expect(result.targetCalories).toBeGreaterThan(result.tdee) // Surplus
-    expect(result.proteinGrams).toBeGreaterThan(120)
-    expect(result.waterLiters).toBe(2.8) // 80 * 0.035
-    expect(result.engineResult).toBeDefined()
+    expect(result).not.toBeNull()
+    expect(result!.bmr).toBe(1805)
+    expect(result!.tdee).toBeGreaterThan(2000)
+    expect(result!.targetCalories).toBeGreaterThan(result!.tdee) // Surplus
+    expect(result!.proteinGrams).toBeGreaterThan(120)
+    expect(result!.waterLiters).toBe(2.8) // 80 * 0.035
+    expect(result!.engineResult).toBeDefined()
   })
 
   it('calculates calorie deficit and protein for cut goal', () => {
@@ -79,8 +80,9 @@ describe('calorieCalculator', () => {
     }
 
     const result = calculateCalorieMacroTargets(mockProfile)
-    expect(result.targetCalories).toBeLessThanOrEqual(result.tdee)
-    expect(result.proteinGrams).toBeGreaterThan(100)
-    expect(result.engineResult).toBeDefined()
+    expect(result).not.toBeNull()
+    expect(result!.targetCalories).toBeLessThanOrEqual(result!.tdee)
+    expect(result!.proteinGrams).toBeGreaterThan(100)
+    expect(result!.engineResult).toBeDefined()
   })
 })

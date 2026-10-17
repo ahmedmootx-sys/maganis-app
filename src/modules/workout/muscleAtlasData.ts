@@ -81,7 +81,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   pec_sternal: {
     id: 'pec_sternal',
-    nameAr: 'الصدرية الكبرى – الرأس القصي (الصدر الأوسط)',
+    nameAr: 'الصدرية الكبرى، الجزء القصي',
     nameEn: 'Pectoralis major, sternal head',
     view: 'A',
     layer: 'S',
@@ -94,7 +94,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   pec_costal: {
     id: 'pec_costal',
-    nameAr: 'الصدرية الكبرى – الجزء الضلعي (الصدر السفلي)',
+    nameAr: 'الجزء الضلعي (تقسيم تقريبي)',
     nameEn: 'Pectoralis major, costal head',
     view: 'A',
     layer: 'S',

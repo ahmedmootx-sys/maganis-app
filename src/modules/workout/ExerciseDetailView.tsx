@@ -17,6 +17,8 @@ import { getExerciseById, EXERCISES } from './exercises.ts'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
 import { ExerciseVisual } from './ExerciseVisual.tsx'
 import prescriptionRulesData from '../../data/prescription-rules.json'
+import exerciseContentData from '../../data/exercise-content.json'
+import exerciseFlagsData from '../../data/exercise-flags.json'
 import { TopBar, Card, Callout, Button, Segmented } from '../../ui/index.ts'
 import { fmtRange, fmtSets, fmtReps } from '../../utils/bidi.ts'
 
@@ -108,6 +110,22 @@ export function ExerciseDetailView({
     return cleanExerciseNames(exercise)
   }, [exercise])
 
+  // Lookup authored scientific content from exercise-content.json
+  const authoredContent = useMemo(() => {
+    const exId = exercise?.id
+    if (!exId) return null
+    return (exerciseContentData as Record<string, any>)[exId] || null
+  }, [exercise])
+
+  // Lookup risk and safety flags from exercise-flags.json
+  const flagInfo = useMemo(() => {
+    const exId = exercise?.id
+    if (!exId) return null
+    return (
+      (exerciseFlagsData.exercises as Record<string, any>)[exId] || null
+    )
+  }, [exercise])
+
   // Retrieve logged session history for this exercise
   const exerciseHistory = useMemo(() => {
     if (!exerciseId || !sessions || sessions.length === 0) return []
@@ -162,19 +180,16 @@ export function ExerciseDetailView({
     return { max1RM: max, bestSet }
   }, [exerciseHistory])
 
-  // Build Tab options (Sticky Tabs: الفهم | العضلات | الأداء | لك | السجل)
+  // Build Tab options (Sticky Tabs: 5 tabs always present)
   const tabOptions = useMemo(() => {
-    const list: Array<{ value: TabType; label: string }> = [
+    return [
       { value: 'understanding', label: 'الفهم' },
       { value: 'muscles', label: 'العضلات' },
       { value: 'performance', label: 'الأداء' },
       { value: 'for_you', label: 'لك' },
-    ]
-    if (hasHistory) {
-      list.push({ value: 'history', label: 'السجل' })
-    }
-    return list
-  }, [hasHistory])
+      { value: 'history', label: 'السجل' },
+    ] as Array<{ value: TabType; label: string }>
+  }, [])
 
   // Prescription Rules & Personalisation computations
   interface PrescriptionRules {
@@ -435,6 +450,85 @@ export function ExerciseDetailView({
           gap: '14px',
         }}
       >
+        {/* Risk Banner / Callout if flagged */}
+        {flagInfo && (
+          <Callout
+            variant={flagInfo.flagType === 'high_risk' ? 'danger' : 'warning'}
+            title={
+              flagInfo.badgeAr ||
+              (flagInfo.flagType === 'high_risk' ? 'عالي الخطورة' : 'تنبيه أمان')
+            }
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.5 }}>
+                {flagInfo.riskReasonAr}
+              </p>
+              {flagInfo.saferAlternatives &&
+                flagInfo.saferAlternatives.length > 0 && (
+                  <div style={{ marginTop: '4px' }}>
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        marginBottom: '6px',
+                      }}
+                    >
+                      بدائل أكثر أماناً موصى بها:
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '6px',
+                      }}
+                    >
+                      {flagInfo.saferAlternatives.map((altId: string) => {
+                        const altEx = getExerciseById(altId)
+                        const altName = altEx
+                          ? altEx.nameAr || altEx.name
+                          : altId
+                        return (
+                          <div
+                            key={altId}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              background: 'var(--color-surface)',
+                              padding: '4px 8px',
+                              borderRadius: 'var(--radius-control)',
+                              border: '1px solid var(--color-divider)',
+                              fontSize: '12px',
+                            }}
+                          >
+                            <span>{altName}</span>
+                            {onSwapExercise && (
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() =>
+                                  exercise.id &&
+                                  onSwapExercise(exercise.id, altId)
+                                }
+                                style={{
+                                  padding: '2px 6px',
+                                  fontSize: '11px',
+                                  height: '24px',
+                                }}
+                              >
+                                استبدال
+                              </Button>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+            </div>
+          </Callout>
+        )}
+
         {/* Real Meta Chips (not header bullet string) */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
           <span className="chip">
@@ -492,131 +586,296 @@ export function ExerciseDetailView({
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
           >
-            {/* ليه التمرين ده؟ */}
-            {(!isBoilerplateOrEmpty(exercise.benefitAr) ||
-              !isBoilerplateOrEmpty(exercise.benefit)) && (
-              <Card padding="md">
-                <h3
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: 700,
-                    margin: '0 0 8px 0',
-                    color: 'var(--color-text)',
-                  }}
-                >
-                  ليه التمرين ده؟
-                </h3>
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: '14px',
-                    lineHeight: 1.6,
-                    color: 'var(--color-text)',
-                  }}
-                >
-                  {exercise.benefitAr || exercise.benefit}
-                </p>
-              </Card>
-            )}
-
-            {/* إزاي بيشتغل */}
-            {(!isBoilerplateOrEmpty(exercise.mechanicsAr) ||
-              !isBoilerplateOrEmpty(exercise.mechanics) ||
-              !isBoilerplateOrEmpty(exercise.descriptionAr)) && (
-              <Card padding="md">
-                <h3
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: 700,
-                    margin: '0 0 8px 0',
-                    color: 'var(--color-text)',
-                  }}
-                >
-                  إزاي بيشتغل
-                </h3>
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: '14px',
-                    lineHeight: 1.6,
-                    color: 'var(--color-text)',
-                  }}
-                >
-                  {exercise.mechanicsAr ||
-                    exercise.mechanics ||
-                    exercise.descriptionAr}
-                </p>
-              </Card>
-            )}
-
-            {/* بيستهدف إيه */}
-            {(exercise.target ||
-              (exercise.targetMusclesAr &&
-                exercise.targetMusclesAr.length > 0)) && (
-              <Card padding="md">
-                <h3
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: 700,
-                    margin: '0 0 8px 0',
-                    color: 'var(--color-text)',
-                  }}
-                >
-                  بيستهدف إيه
-                </h3>
-                {exercise.target && (
+            {authoredContent ? (
+              <>
+                {/* ليه التمرين ده؟ */}
+                <Card padding="md">
+                  <h3
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      margin: '0 0 8px 0',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    ليه التمرين ده؟
+                  </h3>
                   <p
                     style={{
-                      margin: '0 0 8px 0',
+                      margin: 0,
                       fontSize: '14px',
                       lineHeight: 1.6,
                       color: 'var(--color-text)',
                     }}
                   >
-                    {exercise.target}
+                    {authoredContent.whyThisExerciseAr}
                   </p>
-                )}
-                {exercise.targetMusclesAr &&
-                  exercise.targetMusclesAr.length > 0 && (
-                    <div
-                      style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}
-                    >
-                      {exercise.targetMusclesAr.map((m: string, i: number) => (
-                        <span
-                          key={i}
+                </Card>
+
+                {/* إزاي بيشتغل */}
+                <Card padding="md">
+                  <h3
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      margin: '0 0 8px 0',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    إزاي بيشتغل
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: '14px',
+                      lineHeight: 1.6,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    {authoredContent.howItWorksAr}
+                  </p>
+                </Card>
+
+                {/* بيستهدف إيه */}
+                <Card padding="md">
+                  <h3
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      margin: '0 0 8px 0',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    التركيز التشريحي
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: '14px',
+                      lineHeight: 1.6,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    {authoredContent.anatomicalFocusAr}
+                  </p>
+                </Card>
+
+                {/* المراجع العلمية */}
+                {authoredContent.scientificReferences &&
+                  authoredContent.scientificReferences.length > 0 && (
+                    <Card padding="md">
+                      <h3
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: 700,
+                          margin: '0 0 8px 0',
+                          color: 'var(--color-text)',
+                        }}
+                      >
+                        المراجع العلمية المعتمدة
+                      </h3>
+                      <ul
+                        style={{
+                          margin: 0,
+                          paddingInlineStart: '18px',
+                          fontSize: '12.5px',
+                          lineHeight: 1.6,
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        {authoredContent.scientificReferences.map(
+                          (ref: string, idx: number) => (
+                            <li
+                              key={idx}
+                              dir="ltr"
+                              style={{ textAlign: 'start' }}
+                            >
+                              {ref}
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                      {authoredContent.reviewedBy && (
+                        <div
                           style={{
-                            fontSize: '12px',
-                            padding: '3px 9px',
-                            borderRadius: 'var(--radius-full)',
-                            background: 'var(--color-surface-2)',
-                            color: 'var(--color-text)',
+                            marginTop: '8px',
+                            fontSize: '11px',
+                            color: 'var(--color-text-2)',
                           }}
                         >
-                          {m}
-                        </span>
-                      ))}
-                    </div>
+                          مراجعة: {authoredContent.reviewedBy} (
+                          {authoredContent.reviewedAt})
+                        </div>
+                      )}
+                    </Card>
                   )}
-              </Card>
-            )}
+              </>
+            ) : !isBoilerplateOrEmpty(exercise.benefitAr) ||
+              !isBoilerplateOrEmpty(exercise.mechanicsAr) ||
+              !isBoilerplateOrEmpty(exercise.benefit) ||
+              !isBoilerplateOrEmpty(exercise.mechanics) ? (
+              <>
+                {/* ليه التمرين ده؟ */}
+                {(!isBoilerplateOrEmpty(exercise.benefitAr) ||
+                  !isBoilerplateOrEmpty(exercise.benefit)) && (
+                  <Card padding="md">
+                    <h3
+                      style={{
+                        fontSize: '15px',
+                        fontWeight: 700,
+                        margin: '0 0 8px 0',
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      ليه التمرين ده؟
+                    </h3>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: '14px',
+                        lineHeight: 1.6,
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      {exercise.benefitAr || exercise.benefit}
+                    </p>
+                  </Card>
+                )}
 
-            {/* المصدر العلمي */}
-            {(exercise.medicalSource || exercise.reference) && (
-              <div
-                style={{
-                  fontSize: '11.5px',
-                  color: 'var(--color-text-2)',
-                  paddingInline: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-              >
-                <span>المصدر العلمي</span>
-                <span dir="ltr">
-                  {exercise.medicalSource || exercise.reference}
-                </span>
-              </div>
+                {/* إزاي بيشتغل */}
+                {(!isBoilerplateOrEmpty(exercise.mechanicsAr) ||
+                  !isBoilerplateOrEmpty(exercise.mechanics) ||
+                  !isBoilerplateOrEmpty(exercise.descriptionAr)) && (
+                  <Card padding="md">
+                    <h3
+                      style={{
+                        fontSize: '15px',
+                        fontWeight: 700,
+                        margin: '0 0 8px 0',
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      إزاي بيشتغل
+                    </h3>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: '14px',
+                        lineHeight: 1.6,
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      {exercise.mechanicsAr ||
+                        exercise.mechanics ||
+                        exercise.descriptionAr}
+                    </p>
+                  </Card>
+                )}
+
+                {/* بيستهدف إيه */}
+                {(exercise.target ||
+                  (exercise.targetMusclesAr &&
+                    exercise.targetMusclesAr.length > 0)) && (
+                  <Card padding="md">
+                    <h3
+                      style={{
+                        fontSize: '15px',
+                        fontWeight: 700,
+                        margin: '0 0 8px 0',
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      بيستهدف إيه
+                    </h3>
+                    {exercise.target && (
+                      <p
+                        style={{
+                          margin: '0 0 8px 0',
+                          fontSize: '14px',
+                          lineHeight: 1.6,
+                          color: 'var(--color-text)',
+                        }}
+                      >
+                        {exercise.target}
+                      </p>
+                    )}
+                    {exercise.targetMusclesAr &&
+                      exercise.targetMusclesAr.length > 0 && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '6px',
+                          }}
+                        >
+                          {exercise.targetMusclesAr.map(
+                            (m: string, i: number) => (
+                              <span
+                                key={i}
+                                style={{
+                                  fontSize: '12px',
+                                  padding: '3px 9px',
+                                  borderRadius: 'var(--radius-full)',
+                                  background: 'var(--color-surface-2)',
+                                  color: 'var(--color-text)',
+                                }}
+                              >
+                                {m}
+                              </span>
+                            ),
+                          )}
+                        </div>
+                      )}
+                  </Card>
+                )}
+
+                {/* المصدر العلمي */}
+                {(exercise.medicalSource || exercise.reference) && (
+                  <div
+                    style={{
+                      fontSize: '11.5px',
+                      color: 'var(--color-text-2)',
+                      paddingInline: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    <span>المصدر العلمي</span>
+                    <span dir="ltr">
+                      {exercise.medicalSource || exercise.reference}
+                    </span>
+                  </div>
+                )}
+              </>
+            ) : (
+              /* Honest placeholder card */
+              <Card padding="lg">
+                <div style={{ textAlign: 'center', padding: '20px 12px' }}>
+                  <h3
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      margin: '0 0 8px 0',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    تفاصيل الفهم التشريحي لهذا التمرين قيد المراجعة والتوثيق
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: '13.5px',
+                      color: 'var(--color-text-2)',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    نعمل على توثيق التحليل الحركي والبيوميكانيكي لهذا التمرين بدقة
+                    علمية معتمدة. يمكنك الاطلاع على خطوات التنفيذ الفنية
+                    وإرشادات السلامة في تبويب «الأداء».
+                  </p>
+                </div>
+              </Card>
             )}
           </div>
         )}
@@ -1113,10 +1372,12 @@ export function ExerciseDetailView({
         )}
 
         {/* TAB 5: السجل (History) */}
-        {activeTab === 'history' && hasHistory && (
+        {activeTab === 'history' && (
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
           >
+            {hasHistory ? (
+              <>
             {/* PR Badge & Best Estimated 1RM */}
             {allTimePR.bestSet && (
               <Card padding="md">
@@ -1321,8 +1582,36 @@ export function ExerciseDetailView({
                 </div>
               ))}
             </div>
-          </div>
+          </>
+        ) : (
+          <Card padding="lg">
+            <div style={{ textAlign: 'center', padding: '24px 16px' }}>
+              <h3
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  margin: '0 0 8px 0',
+                  color: 'var(--color-text)',
+                }}
+              >
+                لا يوجد سجل سابق لهذا التمرين
+              </h3>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '13.5px',
+                  color: 'var(--color-text-2)',
+                  lineHeight: 1.6,
+                }}
+              >
+                عند تسجيل جلسات تدريبية تحتوي على هذا التمرين، سيظهر هنا تاريخ
+                الأوزان والتكرارات وأفضل 1RM تقديري وتطور الأداء مع الوقت.
+              </p>
+            </div>
+          </Card>
         )}
+      </div>
+    )}
       </div>
     </div>
   )

@@ -5,6 +5,7 @@ import {
   calculateNutritionTargets,
   calculateBMR as engineCalculateBMR,
   mapLegacyActivityToLifestyle,
+  resolveWeightAndAge,
   type LifestyleLevel,
   type NutritionGoal,
   type WorkoutBlockInput,
@@ -27,15 +28,25 @@ export function getActivityMultiplier(level: ActivityLevel): number {
 }
 
 /**
- * Maps UserProfile to the Evidence-Based Nutrition Engine
+ * Maps UserProfile to the Evidence-Based Nutrition Engine.
+ * Returns null when weight, height, age, or sex is missing (R3: No invented defaults).
  */
 export function calculateCalorieMacroTargets(
   profile: UserProfile,
-): CalorieMacroTarget {
-  const sex = profile.body.sex || 'male'
-  const weightKg = Number(profile.body.weightKg) || 70
-  const heightCm = Number(profile.body.heightCm) || 170
-  const age = Number(profile.body.age) || 25
+  bodyLog?: Array<{ date: string; weightKg: number }> | null,
+): CalorieMacroTarget | null {
+  const resolved = resolveWeightAndAge(profile, bodyLog)
+  if (
+    resolved.weightKg === null ||
+    resolved.heightCm === null ||
+    resolved.age === null ||
+    resolved.sex === null
+  ) {
+    return null
+  }
+
+  const { weightKg, heightCm, age, sex, weightSourceText, isWeightStale } =
+    resolved
 
   // Map or read lifestyle
   let lifestyle: LifestyleLevel = profile.body.lifestyle ?? 2
@@ -59,43 +70,49 @@ export function calculateCalorieMacroTargets(
 
   // Map goal
   let goal: NutritionGoal = 'maintain'
-  if (profile.primaryGoal === 'hypertrophy') {
+  if (profile.bodyGoal === 'gain' || profile.primaryGoal === 'hypertrophy') {
     goal = 'gain'
-  } else if (profile.primaryGoal === 'cut') {
+  } else if (profile.bodyGoal === 'cut' || profile.primaryGoal === 'cut') {
     goal = 'lose'
   }
 
-  const engineRes = calculateNutritionTargets({
-    sex,
-    age,
-    weightKg,
-    heightCm,
-    bodyFatPercent: profile.body.bodyFatPercent,
-    lifestyle,
-    workoutBlocks,
-    goal,
-    pace: profile.body.pace || 'standard',
-    formulaOverride: profile.body.formulaOverride,
-    proteinPerKgOverride: profile.body.proteinPerKgOverride,
-  })
+  try {
+    const engineRes = calculateNutritionTargets({
+      sex,
+      age,
+      weightKg,
+      heightCm,
+      bodyFatPercent: profile.body.bodyFatPercent,
+      lifestyle,
+      workoutBlocks,
+      goal,
+      pace: profile.body.pace || 'standard',
+      formulaOverride: profile.body.formulaOverride,
+      proteinPerKgOverride: profile.body.proteinPerKgOverride,
+    })
 
-  let goalLabelAr = 'المحافظة على الوزن'
-  if (goal === 'gain') {
-    goalLabelAr = `بناء عضلات وتضخيم (فائض +${engineRes.adjustmentKcal} كالوِري)`
-  } else if (goal === 'lose') {
-    goalLabelAr = `تنشيف وحرق دهون (عجز ${engineRes.adjustmentKcal} كالوِري)`
-  }
+    let goalLabelAr = 'المحافظة على الوزن'
+    if (goal === 'gain') {
+      goalLabelAr = `بناء عضلات وتضخيم (فائض +${engineRes.adjustmentKcal} كالوِري)`
+    } else if (goal === 'lose') {
+      goalLabelAr = `تنشيف وحرق دهون (عجز ${engineRes.adjustmentKcal} كالوِري)`
+    }
 
-  return {
-    bmr: engineRes.bmr,
-    tdee: engineRes.tdee,
-    targetCalories: engineRes.targetCalories,
-    displayCalories: engineRes.displayCalories,
-    proteinGrams: engineRes.protein.grams,
-    carbsGrams: engineRes.carbs.grams,
-    fatsGrams: engineRes.fat.grams,
-    goalLabelAr,
-    waterLiters: engineRes.waterLiters,
-    engineResult: engineRes,
+    return {
+      bmr: engineRes.bmr,
+      tdee: engineRes.tdee,
+      targetCalories: engineRes.targetCalories,
+      displayCalories: engineRes.displayCalories,
+      proteinGrams: engineRes.protein.grams,
+      carbsGrams: engineRes.carbs.grams,
+      fatsGrams: engineRes.fat.grams,
+      goalLabelAr,
+      waterLiters: engineRes.waterLiters,
+      engineResult: engineRes,
+      weightSourceText,
+      isWeightStale,
+    }
+  } catch {
+    return null
   }
 }

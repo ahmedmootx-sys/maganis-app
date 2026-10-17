@@ -106,6 +106,7 @@ export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
             <Button
               variant="secondary"
               size="md"
+              leadingIcon="download"
               fullWidth
               onClick={backupOffer.onBackup}
             >
@@ -125,7 +126,7 @@ export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
                 fontWeight: 600,
               }}
             >
-              لتأكيد العملية، يرجى كتابة كلمة "<strong>{requiredWord}</strong>":
+              اكتب «<strong>{requiredWord}</strong>» للتأكيد
             </label>
             <input
               type="text"

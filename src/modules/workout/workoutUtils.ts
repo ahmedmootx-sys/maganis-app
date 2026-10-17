@@ -272,7 +272,10 @@ export function parseAndValidateRoutineJson(
         labelAr: d.labelAr || `اليوم ${idx + 1}`,
         focus: d.focus || 'تمارين متنوعة',
         exercises: (d.exercises || []).map((e: ProgramExercise) => ({
-          exerciseId: String(e.exerciseId),
+          exerciseId:
+            String(e.exerciseId) === 'shoulder-2'
+              ? 'shoulder-15'
+              : String(e.exerciseId),
           sets: Number(e.sets) || 3,
           reps: Number(e.reps) || 10,
           restSeconds: Number(e.restSeconds) || 60,
@@ -290,3 +293,29 @@ export function parseAndValidateRoutineJson(
     }
   }
 }
+
+/**
+ * Heals orphaned or legacy exercise IDs to canonical IDs.
+ * Specifically: 'shoulder-2' was an orphaned ID that canonically maps to 'shoulder-15' (Dumbbell Shoulder Press).
+ */
+export function healExerciseId(id: string): string {
+  if (id === 'shoulder-2') return 'shoulder-15'
+  return id
+}
+
+export function healProgram(
+  program: WorkoutProgram | null,
+): WorkoutProgram | null {
+  if (!program || !Array.isArray(program.days)) return program
+  return {
+    ...program,
+    days: program.days.map((day) => ({
+      ...day,
+      exercises: (day.exercises || []).map((ex) => ({
+        ...ex,
+        exerciseId: healExerciseId(ex.exerciseId),
+      })),
+    })),
+  }
+}
+

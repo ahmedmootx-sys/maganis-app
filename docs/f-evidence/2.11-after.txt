@@ -1,0 +1,3 @@
+Defect 2.11 Test Result: PASS
+High-risk callout rendered: true
+Safer alternatives shown: true

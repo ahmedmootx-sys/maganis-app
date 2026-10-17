@@ -1,0 +1,6 @@
+# Defect 1.1 Before Evidence: Library «+ إضافة تمرين» does nothing
+- Button Bounding Box: {"x":12,"y":0,"width":125,"height":44}
+- Click Position: (74.5, 22)
+- document.elementFromPoint: {"tagName":"SPAN","className":"btn__label","outerHTML":"<span class=\"btn__label\">+ إضافة تمرين</span>"}
+- CustomExerciseBuilder opened count: 0
+- Result: FAIL (Expected builder form to open, but nothing rendered because /library route intercepts render and showCustomBuilder is not rendered under /library).

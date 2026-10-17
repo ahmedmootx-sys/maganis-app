@@ -1,0 +1,136 @@
+{
+  "project": "Maganis",
+  "version": "0.1.0",
+  "updatedAt": "2026-10-17",
+  "task": "TASK F — Fix Round 2",
+  "features": [
+    {
+      "id": "brand-topbar",
+      "titleAr": "العلامة التجارية في الشريط العلوي",
+      "status": "completed",
+      "evidence": "docs/f-evidence/1.5-after.png",
+      "rule": "R7",
+      "description": "TopBar and HTML title consistently display Latin Maganis."
+    },
+    {
+      "id": "library-add-exercise",
+      "titleAr": "زر إضافة تمرين مخصص في المكتبة",
+      "status": "completed",
+      "evidence": "docs/f-evidence/1.1-after.png",
+      "rule": "R1",
+      "description": "Library top bar button triggers CustomExerciseBuilder on first tap without obstruction."
+    },
+    {
+      "id": "bottom-nav-stability",
+      "titleAr": "ثبات شريط التنقل السفلي ومنع توست الخروج الزائف",
+      "status": "completed",
+      "evidence": "docs/f-evidence/1.2-after.png",
+      "rule": "R1",
+      "description": "Tapping navigation tabs does not trigger the exit confirmation toast."
+    },
+    {
+      "id": "muscle-atlas-rendering",
+      "titleAr": "تصيير الأطلس العضلي بدون مساحات سوداء وثبات التكبير",
+      "status": "completed",
+      "evidence": "docs/f-evidence/1.3-after.png",
+      "rule": "R1",
+      "description": "Neutral muscle paths are filled with muted surface color; zoom controls preserve primary/secondary highlights."
+    },
+    {
+      "id": "data-truth-onboarding",
+      "titleAr": "صدقية بيانات التسجيل الأولي (غياب الأرقام الافتراضية)",
+      "status": "completed",
+      "evidence": "docs/f-evidence/2.1-after.png",
+      "rule": "R3",
+      "description": "Onboarding numeric fields open empty without invented defaults."
+    },
+    {
+      "id": "data-truth-nutrition",
+      "titleAr": "صدقية بيانات السعرات والتغذية (غياب أرقام 2555/2000)",
+      "status": "completed",
+      "evidence": "docs/f-evidence/2.14-after.png",
+      "rule": "R3",
+      "description": "Dashboard and nutrition modules display honest empty states when body metrics or targets are missing."
+    },
+    {
+      "id": "nutrition-energy-explanation",
+      "titleAr": "شرح معادلة ميفلين-سانت جور واحتساب الطاقة",
+      "status": "completed",
+      "evidence": "docs/f-evidence/2.14-after.png",
+      "rule": "R4",
+      "description": "Scientific explanation breakdown with Mifflin-St Jeor 1990 and Morton et al. 2018 citations."
+    },
+    {
+      "id": "custom-meal-builder",
+      "titleAr": "بناء وجبة مخصصة وحساب السعرات التلقائي",
+      "status": "completed",
+      "evidence": "docs/f-evidence/2.6-after.png",
+      "rule": "R3",
+      "description": "2x2 macro grid input with automatic Atwater calorie calculation and manual override."
+    },
+    {
+      "id": "food-database-units",
+      "titleAr": "توحيد وحدة الجرام «جم» والتمييز الدقيق لصدور الدجاج",
+      "status": "completed",
+      "evidence": "docs/foods-export.csv",
+      "rule": "R7",
+      "description": "Standardized all food serving units to جم; added separate entries for grilled vs boiled chicken breast."
+    },
+    {
+      "id": "exercise-5-tabs",
+      "titleAr": "الألسنة الخمسة الثابتة لتفاصيل التمرين مع بطاقة السجل الصريحة",
+      "status": "completed",
+      "evidence": "docs/f-evidence/2.8-after.png",
+      "rule": "R1",
+      "description": "Exercise details screen always has 5 tabs; Tab 5 displays honest empty card when no history exists."
+    },
+    {
+      "id": "exercise-orphan-healing",
+      "titleAr": "الشفاء التلقائي لمعرف التمرين المفقود shoulder-2",
+      "status": "completed",
+      "evidence": "docs/f-evidence/2.9-after.txt",
+      "rule": "R1",
+      "description": "workoutStore and workoutUtils automatically remap shoulder-2 to shoulder-15 across load, save, and import."
+    },
+    {
+      "id": "high-risk-exercise-safety",
+      "titleAr": "شارات وبدائل التمارين عالية الخطورة وتأكيد الإحماء",
+      "status": "completed",
+      "evidence": "docs/f-evidence/2.11-after.png",
+      "rule": "R1",
+      "description": "High-risk lifts display caution badges, recommend safer alternatives, and require warmup confirmation."
+    },
+    {
+      "id": "exercise-visual-two-frames",
+      "titleAr": "التبديل بين إطاري التمرين وعزو Gym Visual",
+      "status": "completed",
+      "evidence": "docs/f-evidence/2.12-after.png",
+      "rule": "R1",
+      "description": "Start and contraction frames toggle smoothly with attribution to Gym Visual."
+    },
+    {
+      "id": "punctuation-cleanliness",
+      "titleAr": "إزالة النقطتين الرأسيتين اللاحقة من العناوين والملصقات",
+      "status": "completed",
+      "evidence": "docs/f-evidence/3.8-after.txt",
+      "rule": "R7",
+      "description": "Zero trailing colons in UI headings and labels across the application."
+    },
+    {
+      "id": "progress-lifted-load",
+      "titleAr": "تسمية الحمل المرفوع وحجم المجموعات الأسبوعية",
+      "status": "completed",
+      "evidence": "docs/f-evidence/4.5-after.png",
+      "rule": "R7",
+      "description": "Metric labeled as الحمل المرفوع (كجم) and reports show weekly sets per muscle."
+    },
+    {
+      "id": "verification-harness",
+      "titleAr": "حزمة التحقق الآلي الموحدة (npm run verify)",
+      "status": "completed",
+      "evidence": "scripts/verify.mjs",
+      "rule": "R1",
+      "description": "Automated verification harness running static audits, unit tests, build, and Playwright defect tests."
+    }
+  ]
+}

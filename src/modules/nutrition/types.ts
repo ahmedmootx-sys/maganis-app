@@ -12,6 +12,8 @@ export interface CalorieMacroTarget {
   goalLabelAr: string
   waterLiters: number
   engineResult?: NutritionCalculationResult
+  weightSourceText?: string
+  isWeightStale?: boolean
 }
 
 export type MealCategory = 'breakfast' | 'lunch' | 'dinner' | 'snack'

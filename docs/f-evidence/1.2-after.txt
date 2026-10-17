@@ -1,0 +1,4 @@
+Defect 1.2 Test Result: PASS
+20 random tab taps executed.
+Exit toasts detected in console: 0
+Exit toasts visible in DOM: 0

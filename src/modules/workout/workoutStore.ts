@@ -30,13 +30,41 @@ const CUSTOM_EXERCISES_KEY = 'workout.custom-exercises'
 const DELETED_EXERCISES_KEY = 'workout.deleted-exercises'
 const SAVED_PROGRAMS_KEY = 'workout.saved-programs'
 
+/**
+ * Heals orphaned or legacy exercise IDs to canonical IDs.
+ * Specifically: 'shoulder-2' was an orphaned ID that canonically maps to 'shoulder-15' (Dumbbell Shoulder Press).
+ */
+export function healExerciseId(id: string): string {
+  if (id === 'shoulder-2') return 'shoulder-15'
+  return id
+}
+
+export function healProgram(
+  program: WorkoutProgram | null,
+): WorkoutProgram | null {
+  if (!program || !Array.isArray(program.days)) return program
+  return {
+    ...program,
+    days: program.days.map((day) => ({
+      ...day,
+      exercises: Array.isArray(day.exercises)
+        ? day.exercises.map((ex) => ({
+            ...ex,
+            exerciseId: healExerciseId(ex.exerciseId),
+          }))
+        : [],
+    })),
+  }
+}
+
 export function createWorkoutStore(storage: Storage): WorkoutStore {
   function saveProgram(program: WorkoutProgram): void {
-    storage.set(PROGRAM_KEY, program)
+    storage.set(PROGRAM_KEY, healProgram(program) || program)
   }
 
   function loadProgram(): WorkoutProgram | null {
-    return storage.get<WorkoutProgram | null>(PROGRAM_KEY, null)
+    const raw = storage.get<WorkoutProgram | null>(PROGRAM_KEY, null)
+    return healProgram(raw)
   }
 
   function clearProgram(): void {
@@ -88,7 +116,11 @@ export function createWorkoutStore(storage: Storage): WorkoutStore {
   }
 
   function getSavedPrograms(): SavedWorkoutProgram[] {
-    return storage.get<SavedWorkoutProgram[]>(SAVED_PROGRAMS_KEY, [])
+    const list = storage.get<SavedWorkoutProgram[]>(SAVED_PROGRAMS_KEY, [])
+    return list.map((item) => ({
+      ...item,
+      program: healProgram(item.program) || item.program,
+    }))
   }
 
   function saveProgramToVault(
@@ -96,11 +128,12 @@ export function createWorkoutStore(storage: Storage): WorkoutStore {
     program: WorkoutProgram,
   ): SavedWorkoutProgram {
     const existing = getSavedPrograms()
+    const healed = healProgram(JSON.parse(JSON.stringify(program))) || program
     const newEntry: SavedWorkoutProgram = {
       id: `vault-prog-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       title: title.trim() || `جدول ${existing.length + 1}`,
       savedAt: Date.now(),
-      program: JSON.parse(JSON.stringify(program)),
+      program: healed,
     }
     storage.set(SAVED_PROGRAMS_KEY, [newEntry, ...existing])
     return newEntry

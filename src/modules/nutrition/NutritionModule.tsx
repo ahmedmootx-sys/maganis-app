@@ -10,6 +10,7 @@ import {
   LIFESTYLE_OPTIONS,
   mapLifestyleToLegacyActivity,
   mapLegacyActivityToLifestyle,
+  explainEnergy,
   type FormulaChoice,
   type LifestyleLevel,
   type NutritionPace,
@@ -156,7 +157,7 @@ export function NutritionModule({
   const [modalError, setModalError] = useState('')
 
   // Explanation & Calibration Modal State
-  const [showExplanation, setShowExplanation] = useState(false)
+  const [showExplanation, setShowExplanation] = useState(true)
   const [showResetDailyConfirm, setShowResetDailyConfirm] = useState(false)
   const [isCalibrationModalOpen, setIsCalibrationModalOpen] = useState(false)
   const [quickWeight, setQuickWeight] = useState('')
@@ -250,8 +251,13 @@ export function NutritionModule({
 
   const targets = useMemo(() => {
     if (!profile) return null
-    return calculateCalorieMacroTargets(profile)
-  }, [profile])
+    return calculateCalorieMacroTargets(profile, bodyLog)
+  }, [profile, bodyLog])
+
+  const energyExplanation = useMemo(() => {
+    if (!profile) return null
+    return explainEnergy(profile, bodyLog)
+  }, [profile, bodyLog])
 
   // Check for migration requirement (legacy user who hasn't reviewed migration yet)
   const isLegacyUserNeedingReview = Boolean(
@@ -545,37 +551,34 @@ export function NutritionModule({
     return customMeals.filter((m) => m.category === selectedCategoryFilter)
   }, [customMeals, selectedCategoryFilter])
 
-  if (!profile || !targets) {
-    return (
-      <div className="card" style={{ margin: '16px' }}>
-        <Callout
-          title="الملف غير مكتمل"
-          message="يرجى إكمال بيانات ملفك الشخصي لتشغيل محرك حساب السعرات والماكروز العلمي."
-          actionLabel="إكمال الملف الشخصي"
-          onAction={() => setIsProfileModalOpen(true)}
-        />
-      </div>
-    )
-  }
+  const calPercent = targets
+    ? Math.min(
+        100,
+        Math.round((dailyLog.consumedCalories / targets.targetCalories) * 100),
+      )
+    : 0
+  const proteinPercent = targets
+    ? Math.min(
+        100,
+        Math.round((dailyLog.consumedProtein / targets.proteinGrams) * 100),
+      )
+    : 0
+  const carbsPercent = targets
+    ? Math.min(
+        100,
+        Math.round((dailyLog.consumedCarbs / targets.carbsGrams) * 100),
+      )
+    : 0
+  const fatsPercent = targets
+    ? Math.min(
+        100,
+        Math.round((dailyLog.consumedFats / targets.fatsGrams) * 100),
+      )
+    : 0
 
-  const calPercent = Math.min(
-    100,
-    Math.round((dailyLog.consumedCalories / targets.targetCalories) * 100),
-  )
-  const proteinPercent = Math.min(
-    100,
-    Math.round((dailyLog.consumedProtein / targets.proteinGrams) * 100),
-  )
-  const carbsPercent = Math.min(
-    100,
-    Math.round((dailyLog.consumedCarbs / targets.carbsGrams) * 100),
-  )
-  const fatsPercent = Math.min(
-    100,
-    Math.round((dailyLog.consumedFats / targets.fatsGrams) * 100),
-  )
-
-  const currentGoalObj = GOALS.find((g) => g.value === profile.primaryGoal)
+  const currentGoalObj = profile
+    ? GOALS.find((g) => g.value === profile.primaryGoal)
+    : undefined
 
   return (
     <div
@@ -777,7 +780,7 @@ export function NutritionModule({
         )}
 
         {/* Training days mismatch Callout */}
-        {hasTrainingDaysMismatch && (
+        {profile && hasTrainingDaysMismatch && (
           <Callout
             variant="warning"
             title="عدد الأيام مختلف بين ملفك وحاسبة السعرات"
@@ -803,7 +806,8 @@ export function NutritionModule({
         )}
 
         {/* Outdated / Incomplete Profile Notice Banner */}
-        {!isLegacyUserNeedingReview &&
+        {profile &&
+          !isLegacyUserNeedingReview &&
           (!profile.body.lifestyle ||
             !profile.body.workoutBlocks ||
             profile.body.workoutBlocks.length === 0) && (
@@ -815,9 +819,75 @@ export function NutritionModule({
             />
           )}
 
-        {/* Daily Summary Card: Calories & 3 Macros Grouped */}
-        <div
-          className="card daily-summary-card"
+        {/* If targets is null, show EmptyState */}
+        {!targets ? (
+          <div style={{ padding: '24px 0' }}>
+            <EmptyState
+              title="أدخل بياناتك لعرض الحساب"
+              description="يتطلب حساب السعرات والماكروز معرفة الوزن والطول والعمر والجنس بدقة دون تخمين."
+              actionLabel="إدخال البيانات في الملف الشخصي"
+              onAction={() => setIsProfileModalOpen(true)}
+            />
+          </div>
+        ) : (
+          <>
+            {/* Stale weight warning */}
+            {energyExplanation?.inputs.isWeightStale && (
+              <Callout
+                tone="warning"
+                title="آخر وزن مسجل قديم"
+                message="آخر وزن مسجل منذ أكثر من 30 يوماً — حدّث وزنك لدقة الحساب."
+                actionLabel="تسجيل وزن جديد"
+                onAction={() => setIsCalibrationModalOpen(true)}
+              />
+            )}
+
+            {/* Active goal adjustment banner */}
+            {energyExplanation?.goalAdjustment && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  background: 'var(--card-subtle)',
+                  borderRadius: '10px',
+                  border: '1px solid var(--line)',
+                  fontSize: '13px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontWeight: 700, color: 'var(--ink)' }}>
+                    تعديل السعرات للهدف:
+                  </span>
+                  <span style={{ color: 'var(--brand)', fontWeight: 800 }}>
+                    {energyExplanation.goalAdjustment.adjustmentKcal >= 0
+                      ? `+${energyExplanation.goalAdjustment.adjustmentKcal}`
+                      : energyExplanation.goalAdjustment.adjustmentKcal}{' '}
+                    سعرة ({energyExplanation.goalAdjustment.reasonAr})
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsProfileModalOpen(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--accent)',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  تعديل
+                </button>
+              </div>
+            )}
+
+            {/* Daily Summary Card: Calories & 3 Macros Grouped */}
+            <div
+              className="card daily-summary-card"
           style={{
             padding: '18px',
             borderRadius: '16px',
@@ -1084,6 +1154,8 @@ export function NutritionModule({
             style={{ color: 'var(--muted)', flexShrink: 0 }}
           />
         </div>
+        </>
+        )}
 
         {/* Meal Categories & List Section */}
         <div
@@ -1570,9 +1642,16 @@ export function NutritionModule({
               boxSizing: 'border-box',
             }}
           >
-            {/* KeyValueList of metrics */}
-            <div
-              className="card"
+            {!profile || !targets ? (
+              <EmptyState
+                title="أدخل بياناتك لعرض الحساب"
+                description="يرجى إكمال بيانات ملفك الشخصي في الإعدادات لحساب السعرات ومعدل الحرق بدقة."
+              />
+            ) : (
+              <>
+                {/* KeyValueList of metrics */}
+                <div
+                  className="card"
               style={{
                 borderRadius: '16px',
                 background: 'var(--card-bg)',
@@ -1683,13 +1762,15 @@ export function NutritionModule({
                   padding: 0,
                 }}
               >
-                <span>كيف حسبناها؟ (معادلات 2026)</span>
+                <span>
+                  كيف تم حساب أهدافك؟ (معادلة ميفلين–سانت جور · <bdi dir="ltr">Mifflin-St Jeor 1990</bdi>)
+                </span>
                 <span style={{ fontSize: '13px', color: 'var(--brand)' }}>
                   {showExplanation ? 'إخفاء ▲' : 'عرض ▼'}
                 </span>
               </button>
 
-              {showExplanation && targets.engineResult && (
+              {showExplanation && (targets.engineResult || energyExplanation) && (
                 <div
                   style={{
                     marginTop: '12px',
@@ -1706,31 +1787,49 @@ export function NutritionModule({
                   >
                     <li>
                       <strong>المعادلة:</strong>{' '}
-                      {targets.engineResult.explanationAr.formula}
+                      {energyExplanation?.bmr.formulaName ?? 'معادلة ميفلين–سانت جور (1990)'}
                     </li>
                     <li>
-                      <strong>الحرق الأساسي:</strong>{' '}
-                      {targets.engineResult.explanationAr.bmrText}
+                      <strong>الحرق الأساسي (BMR):</strong>{' '}
+                      {energyExplanation?.bmr.formattedText ?? targets.engineResult?.explanationAr.bmrText}
                     </li>
                     <li>
-                      <strong>معامل نمط الحياة:</strong>{' '}
-                      {targets.engineResult.explanationAr.lifestyleText}
+                      <strong>الحرق القاعدي بنشاط الحياة:</strong>{' '}
+                      {energyExplanation?.baseline.formattedText ?? targets.engineResult?.explanationAr.lifestyleText}
                     </li>
                     <li>
-                      <strong>حرق التمرين:</strong>{' '}
-                      {targets.engineResult.explanationAr.eatText}
+                      <strong>حرق جلسات التمرين (EAT):</strong>{' '}
+                      {energyExplanation?.eat.formattedText ?? targets.engineResult?.explanationAr.eatText}
+                      {energyExplanation && energyExplanation.workoutBlocks.length > 0 && (
+                        <ul
+                          style={{
+                            paddingRight: '16px',
+                            marginTop: '6px',
+                            fontSize: '12.5px',
+                            color: 'var(--color-text-2)',
+                          }}
+                        >
+                          {energyExplanation.workoutBlocks.map((b, i) => (
+                            <li key={i}>
+                              {b.sessionsPerWeek} جلسات/أسبوع × {b.minutes} دقيقة، {b.activity === 'resistance' ? 'مقاومة' : 'كارديو'} {b.intensity === 'hard' ? 'شديدة' : b.intensity === 'light' ? 'خفيفة' : 'متوسطة'} (صافي MET: {b.netMet.toFixed(1)}، معامل EPOC: 1.10) = {b.perSessionKcal} سعرة/جلسة ({b.perDayKcal} سعرة/يوم)
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                     <li>
-                      <strong>إجمالي الحرق اليومي:</strong>{' '}
-                      {targets.engineResult.explanationAr.tdeeRangeText}
+                      <strong>إجمالي الحرق اليومي (TDEE):</strong>{' '}
+                      {energyExplanation?.tdee.formattedText ?? targets.engineResult?.explanationAr.tdeeRangeText}
                     </li>
                     <li>
-                      <strong>تعديل السعرات:</strong>{' '}
-                      {targets.engineResult.explanationAr.adjustmentText}
+                      <strong>تعديل السعرات للهدف:</strong>{' '}
+                      {energyExplanation?.goalAdjustment.formattedText ?? targets.engineResult?.explanationAr.adjustmentText}
                     </li>
                     <li>
                       <strong>أساس احتساب البروتين:</strong>{' '}
-                      {targets.engineResult.explanationAr.proteinBasisText}
+                      {energyExplanation
+                        ? `${energyExplanation.targets.proteinGrams} جم (${energyExplanation.proteinBasis.gPerKg} جم/كجم)`
+                        : targets.engineResult?.explanationAr.proteinBasisText}
                     </li>
                   </ul>
                   <div
@@ -1743,11 +1842,13 @@ export function NutritionModule({
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '4px',
+                      marginTop: '8px',
                     }}
                   >
                     <div>
-                      <em>مرجع رياضي:</em> تشير الدراسات إلى أن مكاسب البناء
-                      العضلي تصل لذروتها حول 1.6 جم/كجم.
+                      <em>مرجع علمي:</em>{' '}
+                      {energyExplanation?.proteinBasis.referenceText ??
+                        'وفق دراسة Morton et al., BJSM 2018: نقطة تشبع البناء العضلي عند ~1.6 جم/كجم والحد الأعلى لنطاق الثقة 95% عند 2.2 جم/كجم، وافتراض التطبيق 1.8 جم/كجم يقع ضمن هذا النطاق.'}
                     </div>
                     <div
                       dir="ltr"
@@ -1759,6 +1860,8 @@ export function NutritionModule({
                 </div>
               )}
             </div>
+            </>
+          )}
 
             {/* Actions: Edit profile & Calibration */}
             <div

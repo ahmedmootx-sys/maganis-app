@@ -54,7 +54,7 @@
     },
     "pec_sternal": {
       "id": "pec_sternal",
-      "ar": "الصدرية الكبرى – الرأس القصي (الصدر الأوسط)",
+      "ar": "الصدرية الكبرى، الجزء القصي",
       "en": "Pectoralis major, sternal head",
       "expected_views": "A",
       "best_view": "A",
@@ -96,7 +96,7 @@
     },
     "pec_costal": {
       "id": "pec_costal",
-      "ar": "الصدرية الكبرى – الجزء الضلعي (الصدر السفلي)",
+      "ar": "الجزء الضلعي (تقسيم تقريبي)",
       "en": "Pectoralis major, costal head",
       "expected_views": "A",
       "best_view": "A",

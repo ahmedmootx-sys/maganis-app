@@ -1,0 +1,70 @@
+{
+  "chest-1": {
+    "exerciseId": "chest-1",
+    "whyThisExerciseAr": "حركة دفع أفقية مركبة تسمح بتحميل ميكانيكي عالٍ جداً على ألياف الصدر القصية، وتوفر ثباتاً هيكلياً بفضل الارتكاز الكامل على المقعد.",
+    "howItWorksAr": "يقترب العضد من خط المنتصف في حركة ضم أفقي (Horizontal Adduction) مع تمديد مفصل الكوع بواسطة الترايسبس، ويكون الحمل الميكانيكي في ذروته عند استطالة عضلات الصدر في أسفل الحركة.",
+    "anatomicalFocusAr": "التركيز الأساسي على الحزمة القصية الضلعية (Sternal-costal head) للصدرية الكبرى، مع عمل الدالية الأمامية والترايسبس كمساعدين رئيسيين.",
+    "scientificReferences": [
+      "Trebs et al., 2010 (EMG analysis of bench press variations)",
+      "Schoenfeld, Science and Development of Muscle Hypertrophy, 2nd ed."
+    ],
+    "reviewedBy": "فريق الإعداد الرياضي لمجانص",
+    "reviewedAt": "2026-10-17"
+  },
+  "chest-4": {
+    "exerciseId": "chest-4",
+    "whyThisExerciseAr": "تغيير زاوية المقعد إلى 30-45 درجة ينقل متّجه القوة ليتطابق مع اتجاه ألياف الحزمة الترقوية العليا للصدر.",
+    "howItWorksAr": "يجمع بين الدفع الأفقي والرفع الرأسي الخفيف، مما يزيد من تفعيل الجزء العلوي من الصدر مقارنة بالمقعد المستوي.",
+    "anatomicalFocusAr": "الحزمة الترقوية (Clavicular head) للصدرية الكبرى والدالية الأمامية.",
+    "scientificReferences": [
+      "Rodríguez-Ridao et al., 2020 (Impact of bench inclination on muscle activation)"
+    ],
+    "reviewedBy": "فريق الإعداد الرياضي لمجانص",
+    "reviewedAt": "2026-10-17"
+  },
+  "legs-1": {
+    "exerciseId": "legs-1",
+    "whyThisExerciseAr": "التمرين الأساسي الأول للجزء السفلي؛ يحقق تفعيلاً متزامناً لمفصلي الركبة والحوض مع استثارة هرمونية وتنسيق عصبي لكامل الجذع.",
+    "howItWorksAr": "ثني مفصل الركبة والورك معاً في المرحلة السلبية، ثم مد المفصلين ضد الجاذبية مع الحفاظ على قوس الظهر الطبيعي وعمودية الجذع النسبية.",
+    "anatomicalFocusAr": "العضلة رباعية الرؤوس (Quadriceps)، العضلة الألوية الكبرى (Gluteus Maximus)، وعضلات أسفل الظهر كمثبتات.",
+    "scientificReferences": [
+      "Schoenfeld, 2010 (Squat biomechanics and muscle activation)",
+      "Kubo et al., 2019 (Effects of squat training with different depths on lower limb volumes)"
+    ],
+    "reviewedBy": "فريق الإعداد الرياضي لمجانص",
+    "reviewedAt": "2026-10-17"
+  },
+  "legs-5": {
+    "exerciseId": "legs-5",
+    "whyThisExerciseAr": "أفضل تمرين لتحفيز البناء العضلي الناتج عن الاستطالة (Stretch-mediated hypertrophy) للأوتار الخلفية وعضلات المؤخرة بفضل مفصلة الحوض الصافية.",
+    "howItWorksAr": "مفصلة حوض خلفية (Hip Hinge) مع ثني طفيف وثابت لمفصل الركبة، مما يضع أوتار الركبة تحت أقصى شد ميكانيكي أثناء النزول.",
+    "anatomicalFocusAr": "العضلات الخلفية للفخذ (Hamstrings) والألوية الكبرى (Gluteus Maximus).",
+    "scientificReferences": [
+      "McAllister et al., 2014 (Muscle activation during various hamstring exercises)"
+    ],
+    "reviewedBy": "فريق الإعداد الرياضي لمجانص",
+    "reviewedAt": "2026-10-17"
+  },
+  "back-4": {
+    "exerciseId": "back-4",
+    "whyThisExerciseAr": "تمرين سحب أفقي حر يحمّل عضلات الظهر العلوية والمتوسطة ويثبت وضعية الجذع عبر التحمل الإيزومتري لعضلات أسفل الظهر.",
+    "howItWorksAr": "سحب البار باتجاه منتصف البطن عبر تقريب لوحي الكتف (Scapular Retraction) وتمديد مفصل الكتف للخلف.",
+    "anatomicalFocusAr": "العريضة الظهرية (Latissimus Dorsi)، الترابيس الوسطى والسفلية، والعضلات المعينية (Rhomboids).",
+    "scientificReferences": [
+      "Edelburg et al., 2024 (Biomechanical load and muscle engagement in rowing variations)"
+    ],
+    "reviewedBy": "فريق الإعداد الرياضي لمجانص",
+    "reviewedAt": "2026-10-17"
+  },
+  "shoulder-1": {
+    "exerciseId": "shoulder-1",
+    "whyThisExerciseAr": "أقوى تمرين ضغط رأسي لزيادة القوة الإجمالية للكتفين والتحكم فوق الرأس (Overhead stability).",
+    "howItWorksAr": "دفع البار عمودياً فوق الرأس مع قفل الجذع وتجنب تقويس الفقرات القطنية، مع فتح ممر لحركة البار بإرجاع الرأس قليلاً في البداية.",
+    "anatomicalFocusAr": "الدالية الأمامية (Anterior Deltoid)، الدالية الجانبية، والترايسبس، وأعلى الترابيس.",
+    "scientificReferences": [
+      "Saeterbakken & Fimland, 2013 (Effects of body position and loading modality on muscle activity in shoulder press)"
+    ],
+    "reviewedBy": "فريق الإعداد الرياضي لمجانص",
+    "reviewedAt": "2026-10-17"
+  }
+}

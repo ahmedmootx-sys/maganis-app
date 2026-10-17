@@ -1,0 +1,45 @@
+[
+  {
+    "activity": "resistance",
+    "intensity": "light",
+    "met": 3.5,
+    "source": "Compendium of Physical Activities (2011, code 02054)",
+    "note": "تمارين مقاومة متعددة (8-15 تكرار، مجهود خفيف إلى معتدل)"
+  },
+  {
+    "activity": "resistance",
+    "intensity": "moderate",
+    "met": 5.0,
+    "source": "estimate",
+    "compendiumReference": "Compendium of Physical Activities (2011, code 02052)",
+    "note": "معدل متوسط معتمد (يرتكز لكود 02052 لتمارين القرفصاء/السكوات 5.0؛ كود التمارين العامة 3.5)"
+  },
+  {
+    "activity": "resistance",
+    "intensity": "hard",
+    "met": 6.0,
+    "source": "Compendium of Physical Activities (2011, code 02050)",
+    "note": "تمارين مقاومة عالية الشدة (كمال أجسام/رفع أثقال مكثف)"
+  },
+  {
+    "activity": "calisthenics",
+    "intensity": "light",
+    "met": 3.8,
+    "source": "Compendium of Physical Activities (2011, code 02030)",
+    "note": "تمارين كاليستينكس بوزن الجسم، مجهود خفيف إلى معتدل"
+  },
+  {
+    "activity": "calisthenics",
+    "intensity": "moderate",
+    "met": 5.0,
+    "source": "estimate",
+    "note": "كاليستينكس متوسط الشدة بتمارين مركبة"
+  },
+  {
+    "activity": "calisthenics",
+    "intensity": "hard",
+    "met": 8.0,
+    "source": "Compendium of Physical Activities (2011, code 02020)",
+    "note": "كاليستينكس عالي الشدة (عقلة، متوازي، تمارين متقدمة شاقة)"
+  }
+]

@@ -67,6 +67,8 @@ export function parseHash(hash: string): RouteMatch {
   return { path: '/home', raw: '#/home', params: {} }
 }
 
+import { setNavSource } from '../utils/navigationHistory.ts'
+
 export function useRouter() {
   const [currentRoute, setCurrentRoute] = useState<RouteMatch>(() => {
     return typeof window !== 'undefined'
@@ -97,6 +99,7 @@ export function useRouter() {
   }, [currentRoute.raw])
 
   const navigate = useCallback((to: string) => {
+    setNavSource('app')
     const formatted = to.startsWith('#')
       ? to
       : `#${to.startsWith('/') ? to : '/' + to}`

@@ -8,6 +8,7 @@ import { Callout } from '../../components/Callout.tsx'
 export interface CustomScheduleModalProps {
   primaryGoal: Goal
   weekStartDay?: number
+  profileDays?: number
   onSaveSchedule: (program: WorkoutProgram) => void
   onClose: () => void
 }
@@ -15,14 +16,27 @@ export interface CustomScheduleModalProps {
 export function CustomScheduleModal({
   primaryGoal,
   weekStartDay = 6,
+  profileDays,
   onSaveSchedule,
   onClose,
 }: CustomScheduleModalProps) {
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1)
   const [scheduleTitle, setScheduleTitle] = useState('جدولي التدريبي الخاص')
-  const [selectedDayIndexes, setSelectedDayIndexes] = useState<number[]>([
-    6, 1, 3, 4,
-  ]) // Default: Sat, Mon, Wed, Thu
+  const initialDays = useMemo(() => {
+    const defaultDaysByCount: Record<number, number[]> = {
+      1: [6],
+      2: [6, 2],
+      3: [6, 1, 3],
+      4: [6, 1, 3, 4],
+      5: [6, 0, 1, 3, 4],
+      6: [6, 0, 1, 2, 3, 4],
+      7: [6, 0, 1, 2, 3, 4, 5],
+    }
+    return profileDays && defaultDaysByCount[profileDays]
+      ? defaultDaysByCount[profileDays]
+      : [6, 1, 3, 4]
+  }, [profileDays])
+  const [selectedDayIndexes, setSelectedDayIndexes] = useState<number[]>(initialDays)
   const [dayFocuses, setDayFocuses] = useState<Record<number, string>>({
     6: 'عضلات الصدر والبايسبس',
     0: 'راحة واستشفاء',
@@ -288,6 +302,22 @@ export function CustomScheduleModal({
                 الأسبوع ستكون أيام راحة واستشفاء.
               </div>
 
+              {profileDays && selectedDayIndexes.length !== profileDays && (
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--accent)',
+                    background: 'var(--accent-soft)',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--accent-line)',
+                  }}
+                >
+                  تنبيه: اخترت {selectedDayIndexes.length} أيام بينما ملفك
+                  الشخصي محدد بـ {profileDays} أيام تدريب.
+                </div>
+              )}
+
               <div
                 style={{
                   display: 'flex',
@@ -323,7 +353,7 @@ export function CustomScheduleModal({
           </section>
         )}
 
-        {/* STEP 3: ListRow per selected day with full-width auto-grow field + Callout + Primary */}
+        {/* STEP 3: ListRow per selected day with single-line field + quick chips + Callout + Primary */}
         {currentStep === 3 && (
           <section className="screen-section">
             <div className="section-title">
@@ -363,8 +393,9 @@ export function CustomScheduleModal({
                     >
                       يوم {w.full}
                     </label>
-                    <textarea
+                    <input
                       id={`focus-${w.dayIndex}`}
+                      type="text"
                       className="field-input"
                       value={dayFocuses[w.dayIndex] || ''}
                       onChange={(e) =>
@@ -372,21 +403,62 @@ export function CustomScheduleModal({
                       }
                       placeholder="مثال: عضلات الصدر والترايسبس..."
                       dir="rtl"
-                      rows={2}
                       style={{
                         width: '100%',
-                        resize: 'vertical',
-                        minHeight: '48px',
+                        height: '42px',
                         lineHeight: '1.4',
                         boxSizing: 'border-box',
                       }}
                     />
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '6px',
+                        marginTop: '2px',
+                      }}
+                    >
+                      {[
+                        'صدر وباي',
+                        'ظهر وتراي',
+                        'أكتاف وبطن',
+                        'أرجل وسمانة',
+                        'علوي',
+                        'سفلي',
+                        'جسم كامل',
+                      ].map((suggestion) => (
+                        <button
+                          key={suggestion}
+                          type="button"
+                          onClick={() =>
+                            handleFocusChange(w.dayIndex, suggestion)
+                          }
+                          style={{
+                            fontSize: '11px',
+                            padding: '3px 8px',
+                            borderRadius: '999px',
+                            border: '1px solid var(--line)',
+                            background:
+                              dayFocuses[w.dayIndex] === suggestion
+                                ? 'var(--accent-soft)'
+                                : 'var(--card-subtle)',
+                            color:
+                              dayFocuses[w.dayIndex] === suggestion
+                                ? 'var(--accent)'
+                                : 'var(--ink)',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 ))}
             </div>
 
             {/* Callout explaining lock */}
-            <Callout variant="accent" title="قفل وحماية الجدول">
+            <Callout variant="info" title="قفل وحماية الجدول">
               سيتم قفل الجدول التدريبي تلقائياً لحمايته من أي استبدال عشوائي أو
               توليد آلي. يمكنك بعد ذلك إضافة وتعديل تمارين كل يوم بكل حرية.
             </Callout>

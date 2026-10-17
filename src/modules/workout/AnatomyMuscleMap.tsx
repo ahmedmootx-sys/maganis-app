@@ -1,4 +1,11 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from 'react'
 import type { Exercise } from '../shared/types.ts'
 import {
   resolveMuscles,
@@ -6,6 +13,7 @@ import {
   type ResolvedMusclesResult,
 } from './muscleResolver.ts'
 import { loadAtlasSvg } from './atlasSvgLoader.ts'
+import { APPROXIMATE_REGIONS } from './approximateRegions.ts'
 import atlasMusclesData from '../../data/atlas_muscles.json'
 import atlasGroupsData from '../../data/atlas-groups.json'
 import atlasMetaData from '../../../public/atlas/atlas-meta.json'
@@ -147,39 +155,97 @@ export function AnatomyMuscleMap({
     })
   }, [resolved.muscles])
 
-  // Counts in current view and other view
-  const { currentCounts, otherCounts } = useMemo(() => {
+  // Drawn counts in current view and other view, and tracking unpainted muscles
+  const { currentCounts, unpaintedCount, unpaintedPrimaries, otherCounts } = useMemo(() => {
     const otherView = view === 'A' ? 'P' : 'A'
     let curPrimary = 0
     let curSecondary = 0
     let otherTotal = 0
+    let unpainted = 0
+    const missingPrimaries: Array<{ id: string; name: string }> = []
 
     for (const m of resolved.muscles) {
+      const approx = APPROXIMATE_REGIONS[m.id]
+      const inApproxCur = approx && approx.view === view
+      const inApproxOther = approx && approx.view === otherView
+
       const meta = META_MUSCLES[m.id]
       const curVis = meta?.views?.[view]?.visible_pixels ?? 0
       const otherVis = meta?.views?.[otherView]?.visible_pixels ?? 0
-      const inCurrent =
+      const inMeshCur =
         meta?.best_view === view ||
         (curVis > 500 && (meta?.views?.[view]?.visible_ratio ?? 0) >= 0.1)
-      const inOther =
+      const inMeshOther =
         meta?.best_view === otherView ||
         (otherVis > 500 &&
           (meta?.views?.[otherView]?.visible_ratio ?? 0) >= 0.1)
 
-      if (inCurrent) {
+      const isDrawnCur = inApproxCur || inMeshCur
+      const isDrawnOther = inApproxOther || inMeshOther
+
+      if (isDrawnCur) {
         if (m.role === 'primary') curPrimary++
         else curSecondary++
+      } else {
+        unpainted++
+        if (m.role === 'primary') {
+          missingPrimaries.push({
+            id: m.id,
+            name: MUSCLE_DEFS[m.id]?.ar || m.id,
+          })
+        }
       }
-      if (inOther && !inCurrent) {
+
+      if (isDrawnOther && !isDrawnCur) {
         otherTotal++
       }
     }
 
     return {
       currentCounts: { primary: curPrimary, secondary: curSecondary },
+      unpaintedCount: unpainted,
+      unpaintedPrimaries: missingPrimaries,
       otherCounts: otherTotal,
     }
   }, [resolved.muscles, view])
+
+  // Center of highlighted muscles' union bounding box for natural zoom origin
+  const zoomOrigin = useMemo(() => {
+    const anchors: Array<[number, number]> = []
+    for (const m of resolved.muscles) {
+      const approx = APPROXIMATE_REGIONS[m.id]
+      if (approx && approx.view === view) {
+        anchors.push(approx.anchor)
+        continue
+      }
+      const meta = META_MUSCLES[m.id] as Record<string, any> | undefined
+      const a = meta?.views?.[view]?.anchor || meta?.anchors?.[view]
+      if (a && Array.isArray(a) && a.length === 2) {
+        anchors.push(a as [number, number])
+      }
+    }
+
+    if (anchors.length === 0) {
+      return { x: 50, y: 50 }
+    }
+
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
+    for (const [x, y] of anchors) {
+      if (x < minX) minX = x
+      if (x > maxX) maxX = x
+      if (y < minY) minY = y
+      if (y > maxY) maxY = y
+    }
+    const midX = (minX + maxX) / 2
+    const midY = (minY + maxY) / 2
+    return {
+      x: +((midX / 1024) * 100).toFixed(1),
+      y: +((midY / 2048) * 100).toFixed(1),
+    }
+  }, [resolved.muscles, view])
+
+  // Memoize SVG HTML container object to prevent DOM wipes on re-render
+  const svgHtml = useMemo(() => ({ __html: svgContent }), [svgContent])
 
   // Grouped active muscles for accessible list under figure
   const { primaryList, secondaryList } = useMemo(() => {
@@ -187,28 +253,31 @@ export function AnatomyMuscleMap({
       id: string
       def: { id: string; ar: string; en: string }
       group: string
+      isApproximate: boolean
     }> = []
     const secondary: Array<{
       id: string
       def: { id: string; ar: string; en: string }
       group: string
+      isApproximate: boolean
     }> = []
 
     for (const m of resolved.muscles) {
       const def = MUSCLE_DEFS[m.id] || { id: m.id, ar: m.id, en: m.id }
       const group = MUSCLE_GROUPS[m.id] || ''
+      const isApproximate = !!APPROXIMATE_REGIONS[m.id]
       if (m.role === 'primary') {
-        primary.push({ id: m.id, def, group })
+        primary.push({ id: m.id, def, group, isApproximate })
       } else {
-        secondary.push({ id: m.id, def, group })
+        secondary.push({ id: m.id, def, group, isApproximate })
       }
     }
 
     return { primaryList: primary, secondaryList: secondary }
   }, [resolved.muscles])
 
-  // Manipulate SVG DOM nodes when svgContent, highlights, showDeep, or selection change
-  useEffect(() => {
+  // Declarative imperative-hybrid highlight application
+  const applyHighlights = useCallback(() => {
     if (!containerRef.current) return
     const svgEl = containerRef.current.querySelector('svg')
     if (!svgEl) return
@@ -272,7 +341,12 @@ export function AnatomyMuscleMap({
         }
       }
     })
-  }, [svgContent, roleMap, showDeep, selectedMuscleId])
+  }, [roleMap, showDeep, selectedMuscleId])
+
+  // Apply highlights synchronously before paint on EVERY commit
+  useLayoutEffect(() => {
+    applyHighlights()
+  })
 
   // Handle click on SVG to open sheet
   const handleSvgClick = useCallback((e: React.MouseEvent) => {
@@ -454,6 +528,17 @@ export function AnatomyMuscleMap({
         )}
       </div>
 
+      {/* Unpainted Primary Muscles Callout (Honest Anatomy Feedback) */}
+      {unpaintedPrimaries.length > 0 && (
+        <div style={{ margin: '8px 0' }}>
+          <Callout variant="warning">
+            العضلة الأساسية (
+            {unpaintedPrimaries.map((p) => p.name).join('، ')}) غير مرسومة في
+            الخريطة الحالية
+          </Callout>
+        </div>
+      )}
+
       {/* Error Callout with Retry (Never leave empty frame without feedback) */}
       {svgError && (
         <div style={{ margin: '8px 0' }}>
@@ -484,6 +569,7 @@ export function AnatomyMuscleMap({
         <div
           className="atlas-viewport"
           style={{
+            transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
             transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
           }}
         >
@@ -504,8 +590,47 @@ export function AnatomyMuscleMap({
           <div
             className="atlas-svg-container"
             onClick={handleSvgClick}
-            dangerouslySetInnerHTML={{ __html: svgContent }}
+            dangerouslySetInnerHTML={svgHtml}
           />
+
+          {/* Approximate Polygon Overlay Layer for muscles absent in BP3D 4.0 */}
+          <svg
+            className="atlas-approx-layer"
+            viewBox="0 0 1024 2048"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              zIndex: 4,
+              pointerEvents: 'auto',
+            }}
+            aria-hidden="true"
+          >
+            {resolved.muscles.map((m) => {
+              const approx = APPROXIMATE_REGIONS[m.id]
+              if (!approx || approx.view !== view) return null
+              const isPrimary = m.role === 'primary'
+              const isSelected = selectedMuscleId === m.id
+              return (
+                <path
+                  key={m.id}
+                  d={approx.path}
+                  data-muscle={m.id}
+                  onClick={handleSvgClick}
+                  className={`muscle-vis ${isPrimary ? 'muscle-primary' : 'muscle-secondary'} muscle-approximate ${isSelected ? 'muscle-targeted-highlight' : ''}`}
+                  fill={
+                    isPrimary
+                      ? 'rgba(229, 57, 53, 0.45)'
+                      : 'rgba(253, 216, 53, 0.45)'
+                  }
+                  stroke={isPrimary ? '#b71c1c' : '#f9a825'}
+                  strokeWidth="1.5"
+                  strokeDasharray="6 4"
+                />
+              )
+            })}
+          </svg>
         </div>
 
         {/* Zoom Controls Overlay with Reset Always Available */}
@@ -544,6 +669,15 @@ export function AnatomyMuscleMap({
         </div>
       </div>
 
+      {/* Note for geometric split between sternal and costal pec */}
+      {resolved.muscles.some(
+        (m) => m.id === 'pec_sternal' || m.id === 'pec_costal',
+      ) && (
+        <div className="atlas-pec-split-note">
+          التقسيم بين الجزأين تقريبي للعرض
+        </div>
+      )}
+
       {/* 3. Tier 3 Caption or Map Note */}
       {resolved.tier === 3 && (
         <div
@@ -578,6 +712,7 @@ export function AnatomyMuscleMap({
           <span>
             يعرض الآن: {view === 'A' ? 'الأمامي' : 'الخلفي'}. أساسية{' '}
             {currentCounts.primary}، مساعدة {currentCounts.secondary}
+            {unpaintedCount > 0 ? ` +${unpaintedCount} غير مرسومة` : ''}
           </span>
           {otherCounts > 0 && (
             <button
@@ -600,12 +735,16 @@ export function AnatomyMuscleMap({
             <span className="role-marker role-marker--secondary" />
             <span>مساعدة</span>
           </div>
+          <div className="atlas-legend-item">
+            <span className="role-marker role-marker--approx" />
+            <span>تقريبي</span>
+          </div>
         </div>
       </div>
 
       {/* 5. Grouped Accessible Muscle List */}
       <div className="atlas-muscle-list" role="list">
-        {primaryList.map(({ id, def, group }) => (
+        {primaryList.map(({ id, def, group, isApproximate }) => (
           <button
             key={id}
             type="button"
@@ -632,15 +771,22 @@ export function AnatomyMuscleMap({
                   minWidth: 0,
                 }}
               >
-                <span
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: 'var(--color-text)',
-                  }}
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
-                  {def.ar}
-                </span>
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    {def.ar}
+                  </span>
+                  {isApproximate && (
+                    <span className="badge-approx">منطقة تقريبية</span>
+                  )}
+                </div>
                 <span
                   style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
                   dir="ltr"
@@ -666,7 +812,7 @@ export function AnatomyMuscleMap({
           </button>
         ))}
 
-        {secondaryList.map(({ id, def, group }) => (
+        {secondaryList.map(({ id, def, group, isApproximate }) => (
           <button
             key={id}
             type="button"
@@ -693,15 +839,22 @@ export function AnatomyMuscleMap({
                   minWidth: 0,
                 }}
               >
-                <span
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: 'var(--color-text)',
-                  }}
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
-                  {def.ar}
-                </span>
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    {def.ar}
+                  </span>
+                  {isApproximate && (
+                    <span className="badge-approx">منطقة تقريبية</span>
+                  )}
+                </div>
                 <span
                   style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
                   dir="ltr"

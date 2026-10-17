@@ -129,6 +129,15 @@ export function App({ config }: AppProps) {
 
   const handleTabChange = useCallback(
     (tabId: TabId) => {
+      if (activeTab === tabId) {
+        // Tapping the already-active tab scrolls to top
+        const scroller =
+          document.querySelector('.app-main') ||
+          document.querySelector('.screen-content') ||
+          window
+        scroller.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
       setActiveTab(tabId)
       switch (tabId) {
         case 'dashboard':
@@ -150,7 +159,7 @@ export function App({ config }: AppProps) {
           break
       }
     },
-    [navigate],
+    [activeTab, navigate],
   )
   const [program, setProgram] = useState<WorkoutProgram | null>(() =>
     workoutStore.loadProgram(),
@@ -326,6 +335,12 @@ export function App({ config }: AppProps) {
     }
   }, [editing])
 
+  // Live File Auto-Sync whenever data changes
+  const [liveSyncManager] = useState(() => createLiveFileSyncManager())
+  useEffect(() => {
+    liveSyncManager.init()
+  }, [liveSyncManager])
+
   // --- Handlers ---
 
   const handleSaved = useCallback((saved: UserProfile) => {
@@ -341,7 +356,12 @@ export function App({ config }: AppProps) {
     [profileStore],
   )
 
-  const handleFactoryReset = useCallback(() => {
+  const handleFactoryReset = useCallback(async () => {
+    try {
+      await liveSyncManager.disable()
+    } catch {
+      // ignore
+    }
     try {
       localStorage.clear()
     } catch {
@@ -364,7 +384,7 @@ export function App({ config }: AppProps) {
     setIsWorkoutSessionExpanded(false)
     setActiveSessionSeconds(0)
     setActiveTab('dashboard')
-  }, [profileStore, workoutStore, storage])
+  }, [profileStore, workoutStore, storage, liveSyncManager])
 
   const doGenerateProgram = useCallback(() => {
     if (!profile) return
@@ -495,7 +515,7 @@ export function App({ config }: AppProps) {
 
   const handleSaveCustomExercise = useCallback(
     (ex: CustomExercise) => {
-      if (editingCustomExercise) {
+      if (editingCustomExercise && editingCustomExercise.id) {
         workoutStore.updateCustomExercise(ex)
       } else {
         workoutStore.addCustomExercise(ex)
@@ -543,12 +563,6 @@ export function App({ config }: AppProps) {
       dayNotes,
     }
   }, [profile, program, sessions, bodyLog, dayNotes, workoutStore])
-
-  // Live File Auto-Sync whenever data changes
-  const [liveSyncManager] = useState(() => createLiveFileSyncManager())
-  useEffect(() => {
-    liveSyncManager.init()
-  }, [liveSyncManager])
 
   useEffect(() => {
     if (
@@ -671,6 +685,18 @@ export function App({ config }: AppProps) {
     }
 
     if (route.path === '/library') {
+      if (showCustomBuilder) {
+        return (
+          <CustomExerciseBuilder
+            initialExercise={editingCustomExercise || undefined}
+            onSave={handleSaveCustomExercise}
+            onCancel={() => {
+              setShowCustomBuilder(false)
+              setEditingCustomExercise(null)
+            }}
+          />
+        )
+      }
       return (
         <ExerciseLibraryModal
           program={program}
@@ -782,6 +808,11 @@ export function App({ config }: AppProps) {
             {showCustomScheduleModal && profile && (
               <CustomScheduleModal
                 primaryGoal={profile.primaryGoal}
+                profileDays={profile.trainingDaysPerWeek}
+                weekStartDay={
+                  (profile as { preferences?: { weekStartDay?: number } })
+                    .preferences?.weekStartDay ?? 6
+                }
                 onSaveSchedule={handleSaveCustomSchedule}
                 onClose={() => setShowCustomScheduleModal(false)}
               />
@@ -941,7 +972,14 @@ export function App({ config }: AppProps) {
               className="maganis-header-mascot"
             />
             <div className="maganis-brand-title">
-              <h1 data-testid="app-title">{config.appName}</h1>
+              <h1
+                data-testid="app-title"
+                lang="en"
+                dir="ltr"
+                style={{ fontWeight: 600 }}
+              >
+                Maganis
+              </h1>
               <span className="maganis-brand-subtitle">
                 الطبيب والمدرب الرياضي الشخصي
               </span>

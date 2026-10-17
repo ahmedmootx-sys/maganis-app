@@ -1,0 +1,3 @@
+# Defect 1.2 Before Evidence: Exit toast shown in browser mode / on back
+- Exit Toast visible in browser mode: false
+- Rule violation: In a normal browser tab the exit toast must NEVER appear (requires standalone mode matchMedia), and tapping tabs or popstate in browser mode should never trigger exit toast.

@@ -74,7 +74,7 @@ export function ToggleChipRow<T = string | number>({
         </label>
       )}
 
-      {/* Single Row Container with Equal Width Columns */}
+      {/* Container with Equal Width Columns */}
       <div
         id={id}
         role="group"
@@ -84,6 +84,7 @@ export function ToggleChipRow<T = string | number>({
           display: 'grid',
           gridAutoFlow: 'column',
           gridAutoColumns: '1fr',
+          gridTemplateColumns: `repeat(${options.length > 4 ? 7 : options.length}, minmax(0, 1fr))`,
           width: '100%',
           gap: '4px',
           boxSizing: 'border-box',
@@ -104,10 +105,10 @@ export function ToggleChipRow<T = string | number>({
               className={`toggle-chip-button ${isSelected ? 'selected' : ''}`}
               style={{
                 minHeight: '44px',
-                padding: '6px 2px',
+                padding: '4px 2px',
                 borderRadius: '8px',
                 fontWeight: isSelected ? 700 : 600,
-                fontSize: '12px',
+                fontSize: '11.5px',
                 cursor: isOptionDisabled ? 'not-allowed' : 'pointer',
                 border: isSelected
                   ? '2px solid var(--accent)'
@@ -129,11 +130,11 @@ export function ToggleChipRow<T = string | number>({
             >
               <span
                 style={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  maxWidth: '100%',
-                  lineHeight: 1.2,
+                  lineHeight: 1.15,
+                  textAlign: 'center',
+                  fontSize: '11px',
+                  whiteSpace: 'normal',
+                  wordBreak: 'keep-all',
                 }}
               >
                 {option.label}

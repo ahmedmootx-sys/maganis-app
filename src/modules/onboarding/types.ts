@@ -8,6 +8,9 @@
 
 export type Goal = 'hypertrophy' | 'cut' | 'flexibility' | 'calisthenics'
 
+export type BodyGoal = 'gain' | 'maintain' | 'cut' | 'recomp'
+export type TrainingStyle = 'weights' | 'calisthenics' | 'mobility' | 'mixed'
+
 export type ActivityLevel =
   'sedentary' | 'light' | 'moderate' | 'active' | 'very_active'
 
@@ -43,6 +46,8 @@ export interface BodyMetrics {
   pace?: 'slow' | 'standard' | 'fast'
   formulaOverride?: 'auto' | 'mifflin' | 'katch'
   proteinPerKgOverride?: number
+  birthDate?: string
+  ageEnteredAt?: number
 }
 
 export interface UserProfile {
@@ -56,6 +61,8 @@ export interface UserProfile {
   weekStartDay?: number
   goals: Goal[]
   primaryGoal: Goal
+  bodyGoal?: BodyGoal
+  trainingStyle?: TrainingStyle[]
   trainingDaysPerWeek: number
   medical: MedicalAssessment
   body: BodyMetrics
@@ -96,6 +103,64 @@ export const GOALS: GoalInfo[] = [
     value: 'calisthenics',
     labelAr: 'كاليستينكس',
     hintAr: 'تقوية التحكم في الجسم بوزن الجسم',
+  },
+]
+
+export interface BodyGoalInfo {
+  value: BodyGoal
+  labelAr: string
+  hintAr: string
+}
+
+export const BODY_GOALS: BodyGoalInfo[] = [
+  {
+    value: 'gain',
+    labelAr: 'بناء عضلات / زيادة الوزن',
+    hintAr: 'فائض طاقة تدريجي لبناء كتلة عضلية نقية بأقل تراكم دهون',
+  },
+  {
+    value: 'maintain',
+    labelAr: 'تثبيت الوزن الحالي',
+    hintAr: 'توازن السعرات للحفاظ على الكتلة والوزن دون زيادة أو نقصان',
+  },
+  {
+    value: 'cut',
+    labelAr: 'تنشيف / خسارة الدهون',
+    hintAr: 'عجز طاقة محسوب لخسارة الدهون مع الحفاظ على الكتلة العضلية',
+  },
+  {
+    value: 'recomp',
+    labelAr: 'إعادة التكوين العضلي (Recomp)',
+    hintAr: 'بناء العضلات وخسارة الدهون بالتزامن على سعرات الثبات',
+  },
+]
+
+export interface TrainingStyleInfo {
+  value: TrainingStyle
+  labelAr: string
+  hintAr: string
+}
+
+export const TRAINING_STYLES: TrainingStyleInfo[] = [
+  {
+    value: 'weights',
+    labelAr: 'أثقال وحديد',
+    hintAr: 'تدريب مقاومة باستخدام البارات والدنابل والأجهزة',
+  },
+  {
+    value: 'calisthenics',
+    labelAr: 'كاليستينكس (وزن الجسم)',
+    hintAr: 'تقوية وتحكم كامل بالجسم باستخدام وزن الجسم',
+  },
+  {
+    value: 'mobility',
+    labelAr: 'مرونة وإطالات',
+    hintAr: 'تحسين المدى الحركي وصحة المفاصل والمطاطية',
+  },
+  {
+    value: 'mixed',
+    labelAr: 'تدريب مدمج / متنوع',
+    hintAr: 'الدمج بين الأثقال والكاليستينكس والمرونة',
   },
 ]
 

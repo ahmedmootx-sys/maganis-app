@@ -1,0 +1,5 @@
+Defect 1.1 Test Result: PASS
+Button BoundingBox: {"x":12,"y":0,"width":125,"height":44}
+Click Point: (74.5, 22)
+elementFromPoint: {"tagName":"SPAN","className":"btn__label","textContent":"+ إضافة تمرين"}
+CustomExerciseBuilder opened: true

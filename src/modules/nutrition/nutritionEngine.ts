@@ -1,3 +1,6 @@
+import type { UserProfile } from '../onboarding/types.ts'
+import { fmtDate } from '../../utils/bidi.ts'
+
 /**
  * Evidence-Based Nutrition & Calorie/Macro Calculation Engine
  * Pure functions only — no DOM dependencies.
@@ -852,3 +855,411 @@ export function calibrateTDEE(params: {
     changeKcal: Math.round(clampedDelta),
   }
 }
+
+// --- Safe calculation that returns null when any core input is missing ---
+export function calculateNutritionTargetsSafe(
+  input: Partial<NutritionEngineInput> | null | undefined,
+): NutritionCalculationResult | null {
+  if (
+    !input ||
+    !input.sex ||
+    !input.age ||
+    input.age <= 0 ||
+    !input.weightKg ||
+    input.weightKg <= 0 ||
+    !input.heightCm ||
+    input.heightCm <= 0
+  ) {
+    return null
+  }
+  try {
+    return calculateNutritionTargets(input as NutritionEngineInput)
+  } catch {
+    return null
+  }
+}
+
+// --- Dynamic Weight & Age Resolver ---
+export function resolveWeightAndAge(
+  profile: Partial<UserProfile> | null | undefined,
+  bodyLog?: Array<{ date: string; weightKg: number }> | null,
+): {
+  weightKg: number | null
+  weightSourceText: string
+  isWeightStale: boolean
+  age: number | null
+  heightCm: number | null
+  sex: Sex | null
+} {
+  if (!profile || !profile.body) {
+    return {
+      weightKg: null,
+      weightSourceText: 'لا توجد بيانات وزن',
+      isWeightStale: false,
+      age: null,
+      heightCm: null,
+      sex: null,
+    }
+  }
+
+  let weightKg: number | null = null
+  let weightSourceText = ''
+  let isWeightStale = false
+
+  const validLogs = (bodyLog || [])
+    .filter(
+      (entry) =>
+        typeof entry.weightKg === 'number' &&
+        !isNaN(entry.weightKg) &&
+        entry.weightKg > 0,
+    )
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  const latestLog = validLogs[0]
+  if (latestLog) {
+    const logDate = new Date(latestLog.date)
+    const now = new Date()
+    const diffDays =
+      (now.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24)
+    if (diffDays <= 30) {
+      weightKg = latestLog.weightKg
+      weightSourceText = `الوزن المستخدم ${latestLog.weightKg} كجم، من قياس ${fmtDate(latestLog.date)}`
+      isWeightStale = false
+    } else {
+      if (profile.body.weightKg && Number(profile.body.weightKg) > 0) {
+        weightKg = Number(profile.body.weightKg)
+        weightSourceText = `الوزن المستخدم ${weightKg} كجم من الملف الشخصي (القياس أقدم من 30 يوماً)`
+        isWeightStale = true
+      } else {
+        weightKg = latestLog.weightKg
+        weightSourceText = `الوزن المستخدم ${latestLog.weightKg} كجم، من قياس ${fmtDate(latestLog.date)} (أقدم من 30 يوماً)`
+        isWeightStale = true
+      }
+    }
+  } else if (profile.body.weightKg && Number(profile.body.weightKg) > 0) {
+    weightKg = Number(profile.body.weightKg)
+    weightSourceText = `الوزن المستخدم ${weightKg} كجم من الملف الشخصي`
+    isWeightStale = false
+  }
+
+  let age: number | null = null
+  if (profile.body.birthDate) {
+    const birth = new Date(profile.body.birthDate)
+    const now = new Date()
+    if (!isNaN(birth.getTime())) {
+      let computedAge = now.getFullYear() - birth.getFullYear()
+      const m = now.getMonth() - birth.getMonth()
+      if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) {
+        computedAge--
+      }
+      age = computedAge
+    }
+  }
+  if (age === null && profile.body.age && Number(profile.body.age) > 0) {
+    const baseAge = Number(profile.body.age)
+    if (profile.body.ageEnteredAt) {
+      const entered = new Date(profile.body.ageEnteredAt)
+      const now = new Date()
+      if (!isNaN(entered.getTime())) {
+        const diffYears =
+          (now.getTime() - entered.getTime()) / (1000 * 60 * 60 * 24 * 365.25)
+        age = Math.floor(baseAge + Math.max(0, diffYears))
+      } else {
+        age = baseAge
+      }
+    } else {
+      age = baseAge
+    }
+  }
+
+  const heightCm =
+    profile.body.heightCm && Number(profile.body.heightCm) > 0
+      ? Number(profile.body.heightCm)
+      : null
+  const sex =
+    profile.body.sex === 'male' || profile.body.sex === 'female'
+      ? profile.body.sex
+      : null
+
+  return {
+    weightKg,
+    weightSourceText,
+    isWeightStale,
+    age,
+    heightCm,
+    sex,
+  }
+}
+
+export interface EnergyExplanationWorkoutBlock {
+  activity: string
+  intensity: string
+  met: number
+  source: string
+  netMet: number
+  minutes: number
+  sessionsPerWeek: number
+  epocFactor: number
+  perSessionKcal: number
+  perDayKcal: number
+  formattedDescription: string
+}
+
+export interface EnergyExplanation {
+  inputs: {
+    sex: Sex
+    age: number
+    weightKg: number
+    weightSourceText: string
+    isWeightStale: boolean
+    heightCm: number
+    lifestyle: LifestyleLevel
+    lifestyleFactor: number
+    lifestyleLabel: string
+    bodyGoal?: string
+    trainingStyle?: string[]
+  }
+  bmr: {
+    formulaName: string
+    terms: {
+      weightTerm: number
+      heightTerm: number
+      ageTerm: number
+      sexConstant: number
+    }
+    value: number
+    formattedText: string
+  }
+  baseline: {
+    factor: number
+    value: number
+    formattedText: string
+  }
+  workoutBlocks: EnergyExplanationWorkoutBlock[]
+  eat: {
+    dailyKcal: number
+    epocNote: string
+    formattedText: string
+  }
+  tdee: {
+    value: number
+    rangeMin: number
+    rangeMax: number
+    formattedText: string
+  }
+  goalAdjustment: {
+    goal: string
+    adjustmentKcal: number
+    reasonAr: string
+    formattedText: string
+  }
+  targets: {
+    targetCalories: number
+    proteinGrams: number
+    carbsGrams: number
+    fatsGrams: number
+  }
+  proteinBasis: {
+    gPerKg: number
+    totalGrams: number
+    referenceText: string
+    plateauGPerKg: number
+    upperCiGPerKg: number
+  }
+}
+
+export function explainEnergy(
+  profile: Partial<UserProfile> | null | undefined,
+  bodyLog?: Array<{ date: string; weightKg: number }> | null,
+): EnergyExplanation | null {
+  const resolved = resolveWeightAndAge(profile, bodyLog)
+  if (
+    resolved.weightKg === null ||
+    resolved.heightCm === null ||
+    resolved.age === null ||
+    resolved.sex === null
+  ) {
+    return null
+  }
+
+  const { weightKg, heightCm, age, sex, weightSourceText, isWeightStale } =
+    resolved
+
+  // BMR terms (Mifflin-St Jeor 1990)
+  const weightTerm = 10 * weightKg
+  const heightTerm = 6.25 * heightCm
+  const ageTerm = 5 * age
+  const sexConstant = sex === 'male' ? 5 : -161
+  const bmrValue = weightTerm + heightTerm - ageTerm + sexConstant
+
+  // Lifestyle factor
+  const lifestyle: LifestyleLevel = profile?.body?.lifestyle ?? 2
+  const lifestyleFactor = LIFESTYLE_FACTORS[lifestyle] ?? 1.35
+  const baselineValue = bmrValue * lifestyleFactor
+
+  // Workout blocks
+  let workoutBlocksInput: WorkoutBlockInput[] =
+    profile?.body?.workoutBlocks ?? []
+  if (workoutBlocksInput.length === 0) {
+    const sessions = profile?.trainingDaysPerWeek || 4
+    workoutBlocksInput = [
+      {
+        type: 'resistance',
+        sessionsPerWeek: sessions,
+        minutesPerSession: profile?.body?.sessionMinutes || 60,
+        intensity: profile?.body?.sessionIntensity || 'moderate',
+      },
+    ]
+  }
+
+  const blocks: EnergyExplanationWorkoutBlock[] = []
+  let totalDailyEAT = 0
+
+  for (const b of workoutBlocksInput) {
+    const met = MET_TABLE[b.type]?.[b.intensity] ?? 5.0
+    const netMet = met - 1
+    const minutes = b.minutesPerSession ?? b.durationMinutes ?? 60
+    const sessions = b.sessionsPerWeek ?? 4
+    const epocFactor = 1.1
+    const perSessionKcal = netMet * weightKg * (minutes / 60) * epocFactor
+    const perDayKcal = (perSessionKcal * sessions) / 7
+
+    totalDailyEAT += perDayKcal
+
+    const intensityAr =
+      b.intensity === 'light'
+        ? 'خفيفة'
+        : b.intensity === 'hard'
+          ? 'شديدة'
+          : 'متوسطة'
+    const activityAr = b.type === 'resistance' ? 'مقاومة' : 'كارديو'
+    const sourceText =
+      b.intensity === 'moderate' && b.type === 'resistance'
+        ? 'Compendium of Physical Activities (2011, code 02052) / estimate'
+        : 'Compendium of Physical Activities (2011)'
+
+    blocks.push({
+      activity: b.type,
+      intensity: b.intensity,
+      met,
+      source: sourceText,
+      netMet,
+      minutes,
+      sessionsPerWeek: sessions,
+      epocFactor,
+      perSessionKcal: Number(perSessionKcal.toFixed(2)),
+      perDayKcal: Number(perDayKcal.toFixed(2)),
+      formattedDescription: `${sessions} جلسات × ${minutes} دقيقة، ${activityAr} ${intensityAr} (MET صافي ${netMet.toFixed(1)})`,
+    })
+  }
+
+  const tdee = baselineValue + totalDailyEAT
+  const tdeeRange = {
+    min: Math.round(tdee * 0.9),
+    max: Math.round(tdee * 1.1),
+  }
+
+  // Goal adjustment
+  const bodyGoal =
+    profile?.bodyGoal ||
+    (profile?.primaryGoal === 'hypertrophy'
+      ? 'gain'
+      : profile?.primaryGoal === 'cut'
+        ? 'cut'
+        : 'maintain')
+  let adjustmentKcal = 0
+  let reasonAr = 'سعرات الثبات (0)'
+
+  if (bodyGoal === 'gain') {
+    adjustmentKcal = Math.round((tdee * 0.1) / 25) * 25
+    reasonAr = 'زيادة تدريجية (+10%)'
+  } else if (bodyGoal === 'cut') {
+    const rawCut = Math.round((tdee * 0.15) / 25) * 25
+    if (tdee - rawCut < bmrValue) {
+      adjustmentKcal = -Math.max(0, Math.round(tdee - bmrValue))
+      reasonAr = 'عجز تدريجي (محدود بحد الحرق الأساسي BMR)'
+    } else {
+      adjustmentKcal = -rawCut
+      reasonAr = 'عجز تدريجي (-15%)'
+    }
+  }
+
+  const targetCalories = Math.round(tdee + adjustmentKcal)
+
+  // Protein basis: Morton et al., BJSM 2018
+  const proteinPerKg = profile?.body?.proteinPerKgOverride ?? 1.8
+  const proteinGrams = Math.round(proteinPerKg * weightKg)
+
+  const fatGrams = Math.round((0.25 * targetCalories) / 9)
+  const remainingKcal = Math.max(
+    0,
+    targetCalories - (proteinGrams * 4 + fatGrams * 9),
+  )
+  const carbsGrams = Math.round(remainingKcal / 4)
+
+  return {
+    inputs: {
+      sex,
+      age,
+      weightKg,
+      weightSourceText,
+      isWeightStale,
+      heightCm,
+      lifestyle,
+      lifestyleFactor,
+      lifestyleLabel:
+        LIFESTYLE_OPTIONS.find((l) => l.level === lifestyle)?.titleAr || '',
+      bodyGoal,
+      trainingStyle: profile?.trainingStyle,
+    },
+    bmr: {
+      formulaName: 'معادلة ميفلين–سانت جور (1990)',
+      terms: {
+        weightTerm,
+        heightTerm,
+        ageTerm,
+        sexConstant,
+      },
+      value: Number(bmrValue.toFixed(2)),
+      formattedText: `الحرق الأساسي (BMR) = 10 × ${weightKg} + 6.25 × ${heightCm} − 5 × ${age} ${sex === 'male' ? '+ 5' : '− 161'} = ${bmrValue.toFixed(2)} كالوِري/يوم`,
+    },
+    baseline: {
+      factor: lifestyleFactor,
+      value: Number(baselineValue.toFixed(2)),
+      formattedText: `الحرق القاعدي بنشاط الحياة = ${bmrValue.toFixed(2)} × ${lifestyleFactor} = ${baselineValue.toFixed(2)} كالوِري/يوم`,
+    },
+    workoutBlocks: blocks,
+    eat: {
+      dailyKcal: Number(totalDailyEAT.toFixed(2)),
+      epocNote: 'افتراض EPOC بنسبة 10%',
+      formattedText: `إجمالي الحرق الرياضي اليومي (EAT) = ${totalDailyEAT.toFixed(2)} كالوِري/يوم (مع افتراض EPOC بنسبة 10%)`,
+    },
+    tdee: {
+      value: Number(tdee.toFixed(2)),
+      rangeMin: tdeeRange.min,
+      rangeMax: tdeeRange.max,
+      formattedText: `إجمالي الحرق اليومي (TDEE) = ${tdee.toFixed(2)} كالوِري/يوم (النطاق: ${tdeeRange.min} إلى ${tdeeRange.max})`,
+    },
+    goalAdjustment: {
+      goal: bodyGoal,
+      adjustmentKcal,
+      reasonAr,
+      formattedText: `تعديل السعرات للهدف: ${adjustmentKcal >= 0 ? `+${adjustmentKcal}` : adjustmentKcal} (${reasonAr})`,
+    },
+    targets: {
+      targetCalories,
+      proteinGrams,
+      carbsGrams,
+      fatsGrams: fatGrams,
+    },
+    proteinBasis: {
+      gPerKg: proteinPerKg,
+      totalGrams: proteinGrams,
+      plateauGPerKg: 1.6,
+      upperCiGPerKg: 2.2,
+      referenceText:
+        'وفق دراسة Morton et al., BJSM 2018: نقطة تشبع البناء العضلي عند ~1.6 جم/كجم والحد الأعلى لنطاق الثقة 95% عند 2.2 جم/كجم، وافتراض التطبيق 1.8 جم/كجم يقع ضمن هذا النطاق.',
+    },
+  }
+}
+

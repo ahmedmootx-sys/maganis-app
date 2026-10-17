@@ -1,0 +1,3 @@
+Defect 2.12 Test Result: PASS
+Gym Visual attribution visible: true
+Toggle buttons count: 2

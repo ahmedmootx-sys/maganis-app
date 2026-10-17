@@ -24,6 +24,7 @@ import {
   Callout,
 } from '../../ui'
 import { BackupPanel } from '../backup/BackupPanel.tsx'
+import { fmtFactor } from '../../utils/bidi.ts'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
 
@@ -51,7 +52,7 @@ const EXPERIENCE_OPTIONS = [
 const LOCATION_OPTIONS = [
   { value: 'gym', labelAr: 'جيم' },
   { value: 'home', labelAr: 'منزل' },
-  { value: 'both', labelAr: 'الاثنان' },
+  { value: 'both', labelAr: 'جيم ومنزل' },
 ]
 
 const WEEK_START_OPTIONS = [
@@ -353,7 +354,7 @@ export function SettingsScreen({
                       ? 'جيم'
                       : profile?.trainingLocation === 'home'
                         ? 'منزل'
-                        : 'الاثنان',
+                        : 'جيم ومنزل',
                   onClick: () => setShowEditModal(true),
                 },
                 {
@@ -378,7 +379,7 @@ export function SettingsScreen({
                 },
                 {
                   key: 'نمط النشاط اليومي',
-                  value: `${lifestyleObj?.titleAr || '—'} (معامل ×${lifestyleObj?.factor ?? 1.35})`,
+                  value: `${lifestyleObj?.titleAr || '—'} (معامل ${fmtFactor(lifestyleObj?.factor ?? 1.35)})`,
                   onClick: () => setShowEditModal(true),
                 },
                 {
@@ -423,7 +424,7 @@ export function SettingsScreen({
                 <span
                   style={{ fontSize: '14px', color: 'var(--color-text-2)' }}
                 >
-                  60 ثانية
+                  حسب نوع التمرين
                 </span>
               </div>
               <div
@@ -496,7 +497,7 @@ export function SettingsScreen({
                 },
                 {
                   key: 'وسائط التمارين',
-                  value: 'Gym Visual',
+                  value: 'مصدر وسائط التمارين: Gym Visual، الحقوق لأصحابها',
                   stacked: true,
                 },
               ]}
@@ -761,9 +762,10 @@ export function SettingsScreen({
         onConfirm={onFactoryReset}
         title="تأكيد إعادة ضبط المصنع الشاملة"
         consequences={[
-          'سيتم مسح حسابك والملف الشخصي نهائياً.',
+          'سيتم مسح ملفك الشخصي وإعداداتك نهائياً.',
           'سيتم مسح الجداول التدريبية والتمارين المخصصة.',
           'سيتم مسح كافة سجلات الوزن، الملاحظات، وسجلات التغذية اليومية.',
+          'سيتم فصل المزامنة الحية لحماية ملف المزامنة الخارجي من الحذف.',
         ]}
         requiredWord="حذف"
         backupOffer={{

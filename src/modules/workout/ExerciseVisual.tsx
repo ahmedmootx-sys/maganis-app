@@ -31,9 +31,16 @@ export function ExerciseVisual({
 }: ExerciseVisualProps) {
   const [frameIndex, setFrameIndex] = useState<0 | 1>(0)
   const [imgError, setImgError] = useState(false)
+  const [frame1Failed, setFrame1Failed] = useState(false)
 
   // Resolve media sources
-  const activeMedia = gifUrl || imageUrl
+  let activeMedia = gifUrl || imageUrl
+
+  // Special remap for chest-19 if designated as guillotine press
+  if (exerciseId === 'chest-19' && exerciseName.includes('جيلوتين')) {
+    activeMedia =
+      'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Guillotine_Bench_Press/0.jpg'
+  }
 
   let frame0 = activeMedia
   let frame1 = activeMedia
@@ -49,7 +56,8 @@ export function ExerciseVisual({
     frame1 = `exercises/${exerciseId}_1.jpg`
   }
 
-  const hasTwoFrames = frame0 && frame1 && frame0 !== frame1
+  const hasTwoFrames =
+    !frame1Failed && Boolean(frame0 && frame1 && frame0 !== frame1)
 
   const rawSrc = hasTwoFrames && frameIndex === 1 ? frame1 : frame0
   const currentSrc =
@@ -83,6 +91,9 @@ export function ExerciseVisual({
     )
   }
 
+  const finalAttribution =
+    attribution || (size === 'large' ? 'Gym Visual / Free Exercise DB' : undefined)
+
   return (
     <div className="exercise-media-box">
       <div
@@ -93,7 +104,14 @@ export function ExerciseVisual({
           src={currentSrc}
           alt={exerciseName}
           className="exercise-media-img"
-          onError={() => setImgError(true)}
+          onError={() => {
+            if (frameIndex === 1) {
+              setFrame1Failed(true)
+              setFrameIndex(0)
+            } else {
+              setImgError(true)
+            }
+          }}
           loading="lazy"
           style={{
             width: size === 'small' ? '100%' : undefined,
@@ -168,8 +186,8 @@ export function ExerciseVisual({
       )}
 
       {/* Attribution line */}
-      {attribution && (
-        <div className="exercise-media-attribution">{attribution}</div>
+      {finalAttribution && (
+        <div className="exercise-media-attribution">{finalAttribution}</div>
       )}
     </div>
   )

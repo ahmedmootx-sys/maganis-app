@@ -108,11 +108,25 @@ export function Select<T = string>({
   }
 
   return (
-    <>
+    <div className={`select-wrapper ${className}`.trim()} style={{ width: '100%' }}>
+      {label && (
+        <label
+          htmlFor={id}
+          style={{
+            display: 'block',
+            fontSize: '13.5px',
+            fontWeight: 600,
+            marginBottom: '6px',
+            color: 'var(--color-text)',
+          }}
+        >
+          {label}
+        </label>
+      )}
       <button
         type="button"
         id={id}
-        className={`field-input ${className}`.trim()}
+        className="field-input"
         onClick={handleOpen}
         disabled={disabled}
         aria-haspopup="dialog"
@@ -155,7 +169,7 @@ export function Select<T = string>({
           ) : undefined
         }
       >
-        {searchable && options.length > 5 && (
+        {searchable && options.length > 8 && (
           <div style={{ marginBottom: '12px' }}>
             <input
               type="search"
@@ -217,6 +231,6 @@ export function Select<T = string>({
           )}
         </div>
       </Sheet>
-    </>
+    </div>
   )
 }

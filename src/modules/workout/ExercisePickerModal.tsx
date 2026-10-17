@@ -101,7 +101,7 @@ export function ExercisePickerModal({
         <div className="modal-body">
           <p className="muted" style={{ margin: '0 0 10px' }}>
             ابحث وتصفح التمارين بالصور والمعدات لإضافتها مباشرة إلى جدولك
-            التدريبي:
+            التدريبي
           </p>
 
           {/* Search */}
@@ -180,11 +180,12 @@ export function ExercisePickerModal({
             تم العثور على <strong>{filteredExercises.length}</strong> تمرين
           </div>
 
-          {/* Exercises Grid with Images */}
+          {/* Exercises List */}
           <div
             style={{
-              maxHeight: '360px',
+              maxHeight: '380px',
               overflowY: 'auto',
+              scrollbarWidth: 'none',
               display: 'flex',
               flexDirection: 'column',
               gap: '8px',
@@ -204,26 +205,34 @@ export function ExercisePickerModal({
               filteredExercises.map((ex) => (
                 <div
                   key={ex.id}
-                  className="card"
+                  className="card exercise-picker-row"
                   onClick={() => onSelectExercise(ex.id)}
                   style={{
-                    display: 'flex',
+                    display: 'grid',
+                    gridTemplateColumns: '56px minmax(0, 1fr) 44px',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
                     gap: '12px',
-                    padding: '10px 14px',
+                    padding: '10px 12px',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid var(--line)',
+                    borderRadius: '12px',
+                    background: 'var(--card-bg)',
+                    boxSizing: 'border-box',
                   }}
                 >
+                  {/* 56px thumbnail at start */}
                   <div
                     style={{
+                      width: '56px',
+                      height: '56px',
+                      flexShrink: 0,
+                      borderRadius: '8px',
+                      overflow: 'hidden',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
-                      flex: 1,
-                      minWidth: 0,
+                      justifyContent: 'center',
+                      background: 'var(--card-subtle)',
                     }}
                   >
                     <ExerciseVisual
@@ -233,74 +242,127 @@ export function ExercisePickerModal({
                       imageUrl={ex.imageUrl}
                       size="small"
                     />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
+                  </div>
+
+                  {/* Text details in middle column */}
+                  <div
+                    style={{
+                      minWidth: 0,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <strong
                         style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          flexWrap: 'wrap',
+                          fontSize: '14.5px',
+                          lineHeight: 1.3,
+                          color: 'var(--text)',
+                          overflowWrap: 'anywhere',
                         }}
                       >
-                        <strong style={{ fontSize: '14px' }}>
-                          {ex.name || ex.nameAr}
-                        </strong>
-                        {ex.targetSubMuscleAr && (
-                          <span className="submuscle-badge">
-                            {ex.targetSubMuscleAr}
-                          </span>
-                        )}
-                        {'isCustom' in ex && (
-                          <span className="chip highlight">مخصص</span>
-                        )}
-                      </div>
-                      {ex.name && ex.nameAr && ex.name !== ex.nameAr && (
-                        <div
-                          style={{
-                            fontSize: '12px',
-                            color: 'var(--primary)',
-                            fontWeight: 600,
-                          }}
+                        {ex.nameAr}
+                      </strong>
+                      {ex.targetSubMuscleAr && (
+                        <span
+                          className="submuscle-badge"
+                          style={{ fontSize: '11px', padding: '2px 6px' }}
                         >
-                          {ex.nameAr}
-                        </div>
+                          {ex.targetSubMuscleAr}
+                        </span>
                       )}
-                      <p
-                        className="muted-small"
+                      {'isCustom' in ex && (
+                        <span
+                          className="chip highlight"
+                          style={{ fontSize: '11px', padding: '2px 6px' }}
+                        >
+                          مخصص
+                        </span>
+                      )}
+                    </div>
+
+                    {ex.name && ex.name !== ex.nameAr && (
+                      <div
+                        dir="ltr"
                         style={{
-                          margin: '2px 0 4px',
+                          fontSize: '12px',
+                          color: 'var(--muted)',
                           display: '-webkit-box',
-                          WebkitLineClamp: 1,
+                          WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
                           overflow: 'hidden',
+                          lineHeight: 1.25,
+                          textAlign: 'right',
+                          overflowWrap: 'anywhere',
                         }}
                       >
-                        {ex.descriptionAr}
-                      </p>
-                      <div className="chips-row" style={{ gap: '4px' }}>
-                        <span className="chip">
-                          {MUSCLE_GROUP_LABELS[ex.category as MuscleGroup] ||
-                            ex.category}
-                        </span>
-                        <span className="chip highlight">
-                          {EQUIPMENT_LABELS[ex.equipment] || ex.equipment}
-                        </span>
-                        <span className="chip">
-                          {DIFFICULTY_LABELS[ex.difficulty] || ex.difficulty}
-                        </span>
+                        <bdi dir="ltr">{ex.name}</bdi>
                       </div>
+                    )}
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '4px',
+                        marginTop: '2px',
+                      }}
+                    >
+                      <span
+                        className="chip"
+                        style={{ fontSize: '11px', padding: '2px 6px' }}
+                      >
+                        {MUSCLE_GROUP_LABELS[ex.category as MuscleGroup] ||
+                          ex.category}
+                      </span>
+                      <span
+                        className="chip highlight"
+                        style={{ fontSize: '11px', padding: '2px 6px' }}
+                      >
+                        {EQUIPMENT_LABELS[ex.equipment] || ex.equipment}
+                      </span>
+                      <span
+                        className="chip"
+                        style={{ fontSize: '11px', padding: '2px 6px' }}
+                      >
+                        {DIFFICULTY_LABELS[ex.difficulty] || ex.difficulty}
+                      </span>
                     </div>
                   </div>
 
+                  {/* 44px «+» IconButton at the end */}
                   <button
                     type="button"
-                    className="button-primary tiny"
+                    className="button-primary"
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      minWidth: '44px',
+                      minHeight: '44px',
+                      borderRadius: '10px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: 0,
+                      fontSize: '22px',
+                      fontWeight: 700,
+                      lineHeight: 1,
+                    }}
                     onClick={(e) => {
                       e.stopPropagation()
                       onSelectExercise(ex.id)
                     }}
+                    aria-label={`إضافة ${ex.nameAr}`}
                   >
-                    + إضافة
+                    +
                   </button>
                 </div>
               ))

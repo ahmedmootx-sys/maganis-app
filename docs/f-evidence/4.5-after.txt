@@ -1,0 +1,3 @@
+Progress Metrics Test Result: PASS
+Lifted Load (الحمل المرفوع) rendered: true
+Weekly Sets Per Muscle (المجموعات الأسبوعية لكل عضلة) rendered: true

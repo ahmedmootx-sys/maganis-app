@@ -1,0 +1,6 @@
+# Defect 1.5 Before Evidence: Brand text in TopBar and title
+- Current TopBar brand text: "مجانص"
+- Expected TopBar brand text: "Maganis" (Latin, lang="en" dir="ltr", semibold)
+- Current HTML <title>: "Maganis — Maganis"
+- Expected HTML <title>: "Maganis"
+- Result: FAIL (Found Arabic "مجانص" instead of Latin "Maganis")

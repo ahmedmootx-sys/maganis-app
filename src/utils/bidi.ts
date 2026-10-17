@@ -186,3 +186,15 @@ export function fmtDays(count: number): string {
     many: 'يوماً',
   })
 }
+
+/**
+ * Format an exact activity factor tag (e.g. "×1.35", "×1.2", "×1.65").
+ */
+export function fmtFactor(factor: number): string {
+  if (typeof factor !== 'number' || isNaN(factor)) return '×1.0'
+  const str = Number.isInteger(factor)
+    ? factor.toString()
+    : factor.toFixed(2).replace(/0$/, '')
+  return `×${str}`
+}
+

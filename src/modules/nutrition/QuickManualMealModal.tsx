@@ -41,12 +41,27 @@ export function QuickManualMealModal({
   onClose,
 }: QuickManualMealModalProps) {
   const [nameAr, setNameAr] = useState('')
-  const [calories, setCalories] = useState<number>(450)
-  const [protein, setProtein] = useState<number>(35)
-  const [carbs, setCarbs] = useState<number>(50)
-  const [fats, setFats] = useState<number>(10)
+  const [protein, setProtein] = useState<string>('')
+  const [carbs, setCarbs] = useState<string>('')
+  const [fats, setFats] = useState<string>('')
+  const [manualCalories, setManualCalories] = useState<string>('')
+  const [isManualCalories, setIsManualCalories] = useState<boolean>(false)
   const [category, setCategory] = useState<MealCategory>('lunch')
   const [saveAsPermanent, setSaveAsPermanent] = useState(true)
+
+  const pNum = parseFloat(protein) || 0
+  const cNum = parseFloat(carbs) || 0
+  const fNum = parseFloat(fats) || 0
+  const derivedCalories = Math.round(pNum * 4 + cNum * 4 + fNum * 9)
+  const activeCalories = isManualCalories
+    ? parseFloat(manualCalories) || 0
+    : derivedCalories
+
+  const caloriesDiff =
+    derivedCalories > 0
+      ? Math.abs(activeCalories - derivedCalories) / derivedCalories
+      : 0
+  const showCaloriesWarning = isManualCalories && derivedCalories > 0 && caloriesDiff > 0.1
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -56,10 +71,10 @@ export function QuickManualMealModal({
     const mealPayload = {
       id: mealId,
       nameAr: trimmedName,
-      calories: Math.max(0, Math.round(Number(calories) || 0)),
-      protein: Math.max(0, Math.round((Number(protein) || 0) * 10) / 10),
-      carbs: Math.max(0, Math.round((Number(carbs) || 0) * 10) / 10),
-      fats: Math.max(0, Math.round((Number(fats) || 0) * 10) / 10),
+      calories: Math.max(0, Math.round(activeCalories)),
+      protein: Math.max(0, Math.round(pNum * 10) / 10),
+      carbs: Math.max(0, Math.round(cNum * 10) / 10),
+      fats: Math.max(0, Math.round(fNum * 10) / 10),
     }
 
     if (onLogMealDirect) {
@@ -74,10 +89,10 @@ export function QuickManualMealModal({
         id: mealId,
         nameAr: trimmedName,
         category,
-        calories: Math.max(0, Math.round(Number(calories) || 0)),
-        proteinGrams: Math.max(0, Math.round((Number(protein) || 0) * 10) / 10),
-        carbsGrams: Math.max(0, Math.round((Number(carbs) || 0) * 10) / 10),
-        fatsGrams: Math.max(0, Math.round((Number(fats) || 0) * 10) / 10),
+        calories: mealPayload.calories,
+        proteinGrams: mealPayload.protein,
+        carbsGrams: mealPayload.carbs,
+        fatsGrams: mealPayload.fats,
         isCustom: true,
         createdAt: new Date().toISOString(),
       })
@@ -93,6 +108,7 @@ export function QuickManualMealModal({
       title="تسجيل وجبة سريعة بالسعرات والماكروز"
     >
       <form
+        noValidate
         onSubmit={handleSubmit}
         style={{
           display: 'flex',
@@ -115,7 +131,7 @@ export function QuickManualMealModal({
             className="field-input"
             value={nameAr}
             onChange={(e) => setNameAr(e.target.value)}
-            placeholder="مثال: غداء خارجي، وجبة بعد التمرين..."
+            placeholder="أدخل اسم الوجبة..."
             required
             style={{
               height: '48px',
@@ -189,19 +205,47 @@ export function QuickManualMealModal({
         >
           {/* Calories */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label
-              htmlFor="quick-meal-cal"
-              style={{ fontSize: '12.5px', fontWeight: 700 }}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
             >
-              السعرات (كالوِري)
-            </label>
+              <label
+                htmlFor="quick-meal-cal"
+                style={{ fontSize: '12.5px', fontWeight: 700 }}
+              >
+                السعرات (كالوِري)
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsManualCalories((prev) => !prev)
+                  if (!isManualCalories)
+                    setManualCalories(String(derivedCalories || ''))
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--accent)',
+                  fontSize: '11.5px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  padding: 0,
+                }}
+              >
+                {isManualCalories ? 'حساب تلقائي' : 'تعديل يدوي'}
+              </button>
+            </div>
             <input
               id="quick-meal-cal"
-              type="number"
-              min="0"
-              max="5000"
-              value={calories}
-              onChange={(e) => setCalories(Number(e.target.value))}
+              type="text"
+              inputMode="decimal"
+              value={isManualCalories ? manualCalories : derivedCalories || ''}
+              readOnly={!isManualCalories}
+              placeholder="السعرات"
+              onChange={(e) => setManualCalories(e.target.value)}
               style={{
                 height: '48px',
                 width: '100%',
@@ -210,11 +254,12 @@ export function QuickManualMealModal({
                 padding: '0 12px',
                 fontSize: '16px',
                 fontWeight: 700,
-                background: 'var(--card-bg)',
+                background: isManualCalories
+                  ? 'var(--card-bg)'
+                  : 'var(--card-subtle)',
                 color: 'var(--ink)',
                 boxSizing: 'border-box',
               }}
-              required
             />
           </div>
 
@@ -239,12 +284,11 @@ export function QuickManualMealModal({
             </label>
             <input
               id="quick-meal-pro"
-              type="number"
-              min="0"
-              max="400"
-              step="0.5"
+              type="text"
+              inputMode="decimal"
               value={protein}
-              onChange={(e) => setProtein(Number(e.target.value))}
+              placeholder="البروتين"
+              onChange={(e) => setProtein(e.target.value)}
               style={{
                 height: '48px',
                 width: '100%',
@@ -257,7 +301,6 @@ export function QuickManualMealModal({
                 color: 'var(--ink)',
                 boxSizing: 'border-box',
               }}
-              required
             />
           </div>
 
@@ -282,12 +325,11 @@ export function QuickManualMealModal({
             </label>
             <input
               id="quick-meal-carb"
-              type="number"
-              min="0"
-              max="500"
-              step="0.5"
+              type="text"
+              inputMode="decimal"
               value={carbs}
-              onChange={(e) => setCarbs(Number(e.target.value))}
+              placeholder="الكارب"
+              onChange={(e) => setCarbs(e.target.value)}
               style={{
                 height: '48px',
                 width: '100%',
@@ -300,7 +342,6 @@ export function QuickManualMealModal({
                 color: 'var(--ink)',
                 boxSizing: 'border-box',
               }}
-              required
             />
           </div>
 
@@ -325,12 +366,11 @@ export function QuickManualMealModal({
             </label>
             <input
               id="quick-meal-fat"
-              type="number"
-              min="0"
-              max="250"
-              step="0.5"
+              type="text"
+              inputMode="decimal"
               value={fats}
-              onChange={(e) => setFats(Number(e.target.value))}
+              placeholder="الدهون"
+              onChange={(e) => setFats(e.target.value)}
               style={{
                 height: '48px',
                 width: '100%',
@@ -343,10 +383,26 @@ export function QuickManualMealModal({
                 color: 'var(--ink)',
                 boxSizing: 'border-box',
               }}
-              required
             />
           </div>
         </div>
+
+        {showCaloriesWarning && (
+          <div
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              backgroundColor: 'var(--color-warning-bg, #fffbeb)',
+              color: 'var(--color-warning-text, #b45309)',
+              border: '1px solid var(--color-warning-border, #fcd34d)',
+              fontSize: '12.5px',
+              lineHeight: 1.5,
+            }}
+          >
+            تنبيه: السعرات المدخلة يدوياً ({activeCalories}) تختلف بأكثر من 10%
+            عن المحسوبة من الماكروز ({derivedCalories} كالوِري).
+          </div>
+        )}
 
         {/* Save to Permanent Meals Checkbox */}
         <div

@@ -61,10 +61,7 @@ export function CustomMealModal({
   const [ingredients, setIngredients] = useState<CustomMealIngredient[]>(
     initialMeal?.ingredients && initialMeal.ingredients.length > 0
       ? initialMeal.ingredients
-      : [
-          { foodItemId: 'chicken-breast-cooked', grams: 150 },
-          { foodItemId: 'cooked-white-rice', grams: 200 },
-        ],
+      : [],
   )
   const [ingredientSearch, setIngredientSearch] = useState('')
 
@@ -73,24 +70,68 @@ export function CustomMealModal({
   const [newFoodName, setNewFoodName] = useState('')
   const [newFoodCategory, setNewFoodCategory] =
     useState<FoodItem['categoryAr']>('بروتين ولحوم')
-  const [newFoodCalories, setNewFoodCalories] = useState<number>(150)
-  const [newFoodProtein, setNewFoodProtein] = useState<number>(20)
-  const [newFoodCarbs, setNewFoodCarbs] = useState<number>(5)
-  const [newFoodFats, setNewFoodFats] = useState<number>(3)
+  const [newFoodProtein, setNewFoodProtein] = useState<string>('')
+  const [newFoodCarbs, setNewFoodCarbs] = useState<string>('')
+  const [newFoodFats, setNewFoodFats] = useState<string>('')
+  const [newFoodCaloriesManual, setNewFoodCaloriesManual] = useState<string>('')
+  const [isNewFoodManualCalories, setIsNewFoodManualCalories] =
+    useState<boolean>(false)
+
+  const nfpNum = parseFloat(newFoodProtein) || 0
+  const nfcNum = parseFloat(newFoodCarbs) || 0
+  const nffNum = parseFloat(newFoodFats) || 0
+  const computedNewFoodCalories = Math.round(
+    nfpNum * 4 + nfcNum * 4 + nffNum * 9,
+  )
+  const activeNewFoodCalories = isNewFoodManualCalories
+    ? parseFloat(newFoodCaloriesManual) || 0
+    : computedNewFoodCalories
+
+  const newFoodCaloriesDiff =
+    computedNewFoodCalories > 0
+      ? Math.abs(activeNewFoodCalories - computedNewFoodCalories) /
+        computedNewFoodCalories
+      : 0
+  const showNewFoodCaloriesWarning =
+    isNewFoodManualCalories &&
+    computedNewFoodCalories > 0 &&
+    newFoodCaloriesDiff > 0.1
 
   // Direct input state
-  const [directCalories, setDirectCalories] = useState<number>(
-    initialMeal?.calories || 450,
+  const [directProtein, setDirectProtein] = useState<string>(
+    initialMeal?.proteinGrams !== undefined
+      ? String(initialMeal.proteinGrams)
+      : '',
   )
-  const [directProtein, setDirectProtein] = useState<number>(
-    initialMeal?.proteinGrams || 35,
+  const [directCarbs, setDirectCarbs] = useState<string>(
+    initialMeal?.carbsGrams !== undefined ? String(initialMeal.carbsGrams) : '',
   )
-  const [directCarbs, setDirectCarbs] = useState<number>(
-    initialMeal?.carbsGrams || 50,
+  const [directFats, setDirectFats] = useState<string>(
+    initialMeal?.fatsGrams !== undefined ? String(initialMeal.fatsGrams) : '',
   )
-  const [directFats, setDirectFats] = useState<number>(
-    initialMeal?.fatsGrams || 10,
+  const [directCaloriesManual, setDirectCaloriesManual] = useState<string>(
+    initialMeal?.calories !== undefined ? String(initialMeal.calories) : '',
   )
+  const [isDirectManualCalories, setIsDirectManualCalories] =
+    useState<boolean>(false)
+
+  const dpNum = parseFloat(directProtein) || 0
+  const dcNum = parseFloat(directCarbs) || 0
+  const dfNum = parseFloat(directFats) || 0
+  const computedDirectCalories = Math.round(dpNum * 4 + dcNum * 4 + dfNum * 9)
+  const activeDirectCalories = isDirectManualCalories
+    ? parseFloat(directCaloriesManual) || 0
+    : computedDirectCalories
+
+  const directCaloriesDiff =
+    computedDirectCalories > 0
+      ? Math.abs(activeDirectCalories - computedDirectCalories) /
+        computedDirectCalories
+      : 0
+  const showDirectCaloriesWarning =
+    isDirectManualCalories &&
+    computedDirectCalories > 0 &&
+    directCaloriesDiff > 0.1
 
   // Load all available foods (predefined + user custom foods)
   const allFoods = useMemo(() => {
@@ -159,16 +200,21 @@ export function CustomMealModal({
       servingUnitAr: 'جرام',
       defaultGrams: 100,
       per100g: {
-        calories: Number(newFoodCalories) || 0,
-        protein: Number(newFoodProtein) || 0,
-        carbs: Number(newFoodCarbs) || 0,
-        fats: Number(newFoodFats) || 0,
+        calories: Number(activeNewFoodCalories) || 0,
+        protein: Number(nfpNum) || 0,
+        carbs: Number(nfcNum) || 0,
+        fats: Number(nffNum) || 0,
       },
     }
 
     saveCustomFoodItem(newFood)
     handleAddIngredientDirect(newFood.id, 100)
     setNewFoodName('')
+    setNewFoodProtein('')
+    setNewFoodCarbs('')
+    setNewFoodFats('')
+    setNewFoodCaloriesManual('')
+    setIsNewFoodManualCalories(false)
     setShowAddCustomFoodForm(false)
     setIngredientSearch('')
   }
@@ -181,10 +227,10 @@ export function CustomMealModal({
       return
     }
 
-    let finalCalories = directCalories
-    let finalProtein = directProtein
-    let finalCarbs = directCarbs
-    let finalFats = directFats
+    let finalCalories = activeDirectCalories
+    let finalProtein = dpNum
+    let finalCarbs = dcNum
+    let finalFats = dfNum
     let finalIngredients: CustomMealIngredient[] | undefined = undefined
 
     if (mode === 'ingredients') {
@@ -253,6 +299,7 @@ export function CustomMealModal({
     >
       <form
         id="custom-meal-form"
+        noValidate
         onSubmit={handleSubmit}
         style={{
           display: 'flex',
@@ -386,9 +433,30 @@ export function CustomMealModal({
                 gap: '8px',
               }}
             >
-              <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 800 }}>
-                مكونات الوجبة الحالية ({ingredients.length}):
-              </h4>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 800 }}>
+                  مكونات الوجبة الحالية
+                </h4>
+                <span
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    background: 'var(--card-bg)',
+                    border: '1px solid var(--line)',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  {ingredients.length}
+                </span>
+              </div>
               <button
                 type="button"
                 className="chip-btn"
@@ -429,7 +497,7 @@ export function CustomMealModal({
                   <Callout tone="danger">{foodFormError}</Callout>
                 )}
                 <div style={{ fontSize: '13px', fontWeight: 800 }}>
-                  تسجيل مكوّن غذائي جديد في قائمتك:
+                  تسجيل مكوّن غذائي جديد في قائمتك
                 </div>
                 <div
                   style={{
@@ -489,10 +557,11 @@ export function CustomMealModal({
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: '6px',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: '10px',
                   }}
                 >
+                  {/* Calories/100g */}
                   <div
                     style={{
                       display: 'flex',
@@ -500,26 +569,89 @@ export function CustomMealModal({
                       gap: '4px',
                     }}
                   >
-                    <label style={{ fontSize: '11px', fontWeight: 700 }}>
-                      سعرات/100ج
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={newFoodCalories}
-                      onChange={(e) =>
-                        setNewFoodCalories(Number(e.target.value))
-                      }
+                    <div
                       style={{
-                        height: '40px',
-                        padding: '0 6px',
-                        borderRadius: '6px',
-                        border: '1px solid var(--line)',
-                        textAlign: 'center',
-                        fontSize: '13px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
                       }}
-                    />
+                    >
+                      <label style={{ fontSize: '11.5px', fontWeight: 700 }}>
+                        سعرات/100 جم
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setIsNewFoodManualCalories(!isNewFoodManualCalories)
+                        }
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          fontSize: '11px',
+                          color: 'var(--accent)',
+                          cursor: 'pointer',
+                          padding: 0,
+                          textDecoration: 'underline',
+                        }}
+                      >
+                        {isNewFoodManualCalories ? 'حساب تلقائي' : 'تعديل يدوي'}
+                      </button>
+                    </div>
+                    {isNewFoodManualCalories ? (
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder={String(computedNewFoodCalories)}
+                        value={newFoodCaloriesManual}
+                        onChange={(e) =>
+                          setNewFoodCaloriesManual(
+                            e.target.value.replace(/[^0-9]/g, ''),
+                          )
+                        }
+                        style={{
+                          height: '40px',
+                          padding: '0 8px',
+                          borderRadius: '8px',
+                          border: '1px solid var(--line)',
+                          textAlign: 'center',
+                          fontSize: '14px',
+                          fontWeight: 700,
+                          background: 'var(--card-bg)',
+                          color: 'var(--ink)',
+                          boxSizing: 'border-box',
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          height: '40px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'var(--card-subtle)',
+                          borderRadius: '8px',
+                          border: '1px solid var(--line)',
+                          fontSize: '14px',
+                          fontWeight: 700,
+                          color: 'var(--accent)',
+                        }}
+                      >
+                        {computedNewFoodCalories}{' '}
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 400,
+                            marginInlineStart: '4px',
+                            color: 'var(--muted)',
+                          }}
+                        >
+                          (تلقائي)
+                        </span>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Protein/100g */}
                   <div
                     style={{
                       display: 'flex',
@@ -529,7 +661,7 @@ export function CustomMealModal({
                   >
                     <label
                       style={{
-                        fontSize: '11px',
+                        fontSize: '11.5px',
                         fontWeight: 700,
                         color: 'var(--ink)',
                         display: 'inline-flex',
@@ -541,26 +673,34 @@ export function CustomMealModal({
                         className="macro-marker macro-marker--protein"
                         aria-hidden="true"
                       />
-                      بروتين/100ج
+                      بروتين/100 جم
                     </label>
                     <input
-                      type="number"
-                      min="0"
-                      step="0.1"
+                      type="text"
+                      inputMode="decimal"
                       value={newFoodProtein}
                       onChange={(e) =>
-                        setNewFoodProtein(Number(e.target.value))
+                        setNewFoodProtein(
+                          e.target.value.replace(/[^0-9.]/g, ''),
+                        )
                       }
+                      placeholder="0"
                       style={{
                         height: '40px',
-                        padding: '0 6px',
-                        borderRadius: '6px',
+                        padding: '0 8px',
+                        borderRadius: '8px',
                         border: '1px solid var(--line)',
                         textAlign: 'center',
-                        fontSize: '13px',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        background: 'var(--card-bg)',
+                        color: 'var(--ink)',
+                        boxSizing: 'border-box',
                       }}
                     />
                   </div>
+
+                  {/* Carbs/100g */}
                   <div
                     style={{
                       display: 'flex',
@@ -570,7 +710,7 @@ export function CustomMealModal({
                   >
                     <label
                       style={{
-                        fontSize: '11px',
+                        fontSize: '11.5px',
                         fontWeight: 700,
                         color: 'var(--ink)',
                         display: 'inline-flex',
@@ -582,24 +722,34 @@ export function CustomMealModal({
                         className="macro-marker macro-marker--carbs"
                         aria-hidden="true"
                       />
-                      كارب/100ج
+                      كارب/100 جم
                     </label>
                     <input
-                      type="number"
-                      min="0"
-                      step="0.1"
+                      type="text"
+                      inputMode="decimal"
                       value={newFoodCarbs}
-                      onChange={(e) => setNewFoodCarbs(Number(e.target.value))}
+                      onChange={(e) =>
+                        setNewFoodCarbs(
+                          e.target.value.replace(/[^0-9.]/g, ''),
+                        )
+                      }
+                      placeholder="0"
                       style={{
                         height: '40px',
-                        padding: '0 6px',
-                        borderRadius: '6px',
+                        padding: '0 8px',
+                        borderRadius: '8px',
                         border: '1px solid var(--line)',
                         textAlign: 'center',
-                        fontSize: '13px',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        background: 'var(--card-bg)',
+                        color: 'var(--ink)',
+                        boxSizing: 'border-box',
                       }}
                     />
                   </div>
+
+                  {/* Fats/100g */}
                   <div
                     style={{
                       display: 'flex',
@@ -609,7 +759,7 @@ export function CustomMealModal({
                   >
                     <label
                       style={{
-                        fontSize: '11px',
+                        fontSize: '11.5px',
                         fontWeight: 700,
                         color: 'var(--ink)',
                         display: 'inline-flex',
@@ -621,25 +771,39 @@ export function CustomMealModal({
                         className="macro-marker macro-marker--fats"
                         aria-hidden="true"
                       />
-                      دهون/100ج
+                      دهون/100 جم
                     </label>
                     <input
-                      type="number"
-                      min="0"
-                      step="0.1"
+                      type="text"
+                      inputMode="decimal"
                       value={newFoodFats}
-                      onChange={(e) => setNewFoodFats(Number(e.target.value))}
+                      onChange={(e) =>
+                        setNewFoodFats(
+                          e.target.value.replace(/[^0-9.]/g, ''),
+                        )
+                      }
+                      placeholder="0"
                       style={{
                         height: '40px',
-                        padding: '0 6px',
-                        borderRadius: '6px',
+                        padding: '0 8px',
+                        borderRadius: '8px',
                         border: '1px solid var(--line)',
                         textAlign: 'center',
-                        fontSize: '13px',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        background: 'var(--card-bg)',
+                        color: 'var(--ink)',
+                        boxSizing: 'border-box',
                       }}
                     />
                   </div>
                 </div>
+
+                {showNewFoodCaloriesWarning && (
+                  <Callout tone="warning">
+                    السعرات المدخلة تختلف بأكثر من 10% عن المحسوبة من الماكروز ({computedNewFoodCalories} سعرة).
+                  </Callout>
+                )}
 
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button
@@ -650,6 +814,8 @@ export function CustomMealModal({
                       height: '40px',
                       padding: '0 16px',
                       fontSize: '13px',
+                      fontWeight: 700,
+                      borderRadius: '8px',
                     }}
                   >
                     حفظ وإضافة للوجبة
@@ -662,6 +828,8 @@ export function CustomMealModal({
                       height: '40px',
                       padding: '0 14px',
                       fontSize: '13px',
+                      fontWeight: 600,
+                      borderRadius: '8px',
                     }}
                   >
                     إلغاء
@@ -714,8 +882,8 @@ export function CustomMealModal({
                         wordBreak: 'break-word',
                       }}
                     >
-                      {macros.calories} سعرة • {macros.protein}ج بروتين •{' '}
-                      {macros.carbs}ج كارب • {macros.fats}ج دهون
+                      {macros.calories} سعرة • {macros.protein}جم بروتين •{' '}
+                      {macros.carbs}جم كارب • {macros.fats}جم دهون
                     </div>
 
                     {/* Line 3: stepper ( - , input , + , unit ) and a 44x44 trash IconButton (Lucide) */}
@@ -739,7 +907,7 @@ export function CustomMealModal({
                         <button
                           type="button"
                           onClick={() =>
-                            handleUpdateGrams(idx, Math.max(5, ing.grams - 25))
+                            handleUpdateGrams(idx, Math.max(0, ing.grams - 25))
                           }
                           aria-label="تقليل الكمية"
                           style={{
@@ -757,17 +925,16 @@ export function CustomMealModal({
                             justifyContent: 'center',
                           }}
                         >
-                          -
+                          {'\u2212'}
                         </button>
                         <input
-                          type="number"
-                          min="1"
-                          max="2000"
-                          step="5"
-                          value={ing.grams}
-                          onChange={(e) =>
-                            handleUpdateGrams(idx, Number(e.target.value))
-                          }
+                          type="text"
+                          inputMode="numeric"
+                          value={ing.grams === 0 ? '' : ing.grams}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^0-9]/g, '')
+                            handleUpdateGrams(idx, val === '' ? 0 : Number(val))
+                          }}
                           aria-label={`كمية ${food.nameAr} بالجرام`}
                           className="field-input"
                           style={{
@@ -806,7 +973,7 @@ export function CustomMealModal({
                           style={{
                             fontSize: '12.5px',
                             color: 'var(--color-text-2)',
-                            marginInlineStart: '2px',
+                            marginInlineStart: '4px',
                           }}
                         >
                           جم
@@ -826,6 +993,7 @@ export function CustomMealModal({
                           height: '44px',
                           minWidth: '44px',
                           minHeight: '44px',
+                          flexShrink: 0,
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
@@ -861,7 +1029,7 @@ export function CustomMealModal({
                   color: 'var(--ink)',
                 }}
               >
-                إضافة سريعة لمكونات أساسية:
+                إضافة سريعة لمكونات أساسية
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {QUICK_STAPLES.map((quick) => (
@@ -882,7 +1050,7 @@ export function CustomMealModal({
                       color: 'var(--ink)',
                     }}
                   >
-                    + {quick.name} ({quick.grams}ج)
+                    + {quick.name} ({quick.grams}جم)
                   </button>
                 ))}
               </div>
@@ -897,7 +1065,7 @@ export function CustomMealModal({
                 }}
               >
                 <label style={{ fontSize: '12.5px', fontWeight: 700 }}>
-                  ابحث في جميع الأطعمة والمكونات:
+                  ابحث في جميع الأطعمة والمكونات
                 </label>
                 <div style={{ position: 'relative' }}>
                   <input
@@ -966,8 +1134,8 @@ export function CustomMealModal({
                                 marginRight: '6px',
                               }}
                             >
-                              ({food.per100g.calories} كالوِري •{' '}
-                              {food.per100g.protein}ج بروتين / 100ج)
+                              ({food.per100g.calories} سعرة •{' '}
+                              {food.per100g.protein}جم بروتين / 100جم)
                             </span>
                           </div>
                           <button
@@ -986,7 +1154,7 @@ export function CustomMealModal({
                               fontSize: '12px',
                             }}
                           >
-                            + أضف ({food.defaultGrams || 100}ج)
+                            + أضف ({food.defaultGrams || 100}جم)
                           </button>
                         </div>
                       ))
@@ -1002,8 +1170,8 @@ export function CustomMealModal({
         {mode === 'direct' && (
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
+              display: 'flex',
+              flexDirection: 'column',
               gap: '12px',
               background: 'var(--card-subtle)',
               padding: '14px',
@@ -1012,143 +1180,233 @@ export function CustomMealModal({
             }}
           >
             <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '12px',
+              }}
             >
-              <label style={{ fontSize: '12.5px', fontWeight: 700 }}>
-                السعرات
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="5000"
-                value={directCalories}
-                onChange={(e) => setDirectCalories(Number(e.target.value))}
-                style={{
-                  height: '48px',
-                  padding: '0 12px',
-                  borderRadius: '8px',
-                  border: '1.5px solid var(--line)',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  boxSizing: 'border-box',
-                }}
-                required
-              />
-            </div>
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <label
-                style={{
-                  fontSize: '12.5px',
-                  fontWeight: 700,
-                  color: 'var(--ink)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
+              {/* Derived / Manual Calories */}
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
               >
-                <span
-                  className="macro-marker macro-marker--protein"
-                  aria-hidden="true"
-                />
-                البروتين (جم)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="500"
-                step="0.5"
-                value={directProtein}
-                onChange={(e) => setDirectProtein(Number(e.target.value))}
-                style={{
-                  height: '48px',
-                  padding: '0 12px',
-                  borderRadius: '8px',
-                  border: '1.5px solid var(--line)',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  boxSizing: 'border-box',
-                }}
-                required
-              />
-            </div>
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <label
-                style={{
-                  fontSize: '12.5px',
-                  fontWeight: 700,
-                  color: 'var(--ink)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <label style={{ fontSize: '12.5px', fontWeight: 700 }}>
+                    السعرات (سعرة)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setIsDirectManualCalories(!isDirectManualCalories)
+                    }
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '11px',
+                      color: 'var(--accent)',
+                      cursor: 'pointer',
+                      padding: 0,
+                      textDecoration: 'underline',
+                    }}
+                  >
+                    {isDirectManualCalories ? 'حساب تلقائي' : 'تعديل يدوي'}
+                  </button>
+                </div>
+                {isDirectManualCalories ? (
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder={String(computedDirectCalories)}
+                    value={directCaloriesManual}
+                    onChange={(e) =>
+                      setDirectCaloriesManual(
+                        e.target.value.replace(/[^0-9]/g, ''),
+                      )
+                    }
+                    style={{
+                      height: '48px',
+                      padding: '0 12px',
+                      borderRadius: '8px',
+                      border: '1.5px solid var(--line)',
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      boxSizing: 'border-box',
+                      background: 'var(--card-bg)',
+                      color: 'var(--ink)',
+                      textAlign: 'center',
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      height: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'var(--card-bg)',
+                      borderRadius: '8px',
+                      border: '1.5px solid var(--line)',
+                      fontSize: '16px',
+                      fontWeight: 800,
+                      color: 'var(--accent)',
+                    }}
+                  >
+                    {computedDirectCalories}{' '}
+                    <span
+                      style={{
+                        fontSize: '11.5px',
+                        fontWeight: 400,
+                        marginInlineStart: '4px',
+                        color: 'var(--muted)',
+                      }}
+                    >
+                      (تلقائي)
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Direct Protein */}
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
               >
-                <span
-                  className="macro-marker macro-marker--carbs"
-                  aria-hidden="true"
+                <label
+                  style={{
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    color: 'var(--ink)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span
+                    className="macro-marker macro-marker--protein"
+                    aria-hidden="true"
+                  />
+                  البروتين (جم)
+                </label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={directProtein}
+                  onChange={(e) =>
+                    setDirectProtein(e.target.value.replace(/[^0-9.]/g, ''))
+                  }
+                  placeholder="0"
+                  style={{
+                    height: '48px',
+                    padding: '0 12px',
+                    borderRadius: '8px',
+                    border: '1.5px solid var(--line)',
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    boxSizing: 'border-box',
+                    background: 'var(--card-bg)',
+                    color: 'var(--ink)',
+                    textAlign: 'center',
+                  }}
                 />
-                الكاربوهيدرات (جم)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="500"
-                step="0.5"
-                value={directCarbs}
-                onChange={(e) => setDirectCarbs(Number(e.target.value))}
-                style={{
-                  height: '48px',
-                  padding: '0 12px',
-                  borderRadius: '8px',
-                  border: '1.5px solid var(--line)',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  boxSizing: 'border-box',
-                }}
-                required
-              />
-            </div>
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <label
-                style={{
-                  fontSize: '12.5px',
-                  fontWeight: 700,
-                  color: 'var(--ink)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
+              </div>
+
+              {/* Direct Carbs */}
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
               >
-                <span
-                  className="macro-marker macro-marker--fats"
-                  aria-hidden="true"
+                <label
+                  style={{
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    color: 'var(--ink)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span
+                    className="macro-marker macro-marker--carbs"
+                    aria-hidden="true"
+                  />
+                  الكاربوهيدرات (جم)
+                </label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={directCarbs}
+                  onChange={(e) =>
+                    setDirectCarbs(e.target.value.replace(/[^0-9.]/g, ''))
+                  }
+                  placeholder="0"
+                  style={{
+                    height: '48px',
+                    padding: '0 12px',
+                    borderRadius: '8px',
+                    border: '1.5px solid var(--line)',
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    boxSizing: 'border-box',
+                    background: 'var(--card-bg)',
+                    color: 'var(--ink)',
+                    textAlign: 'center',
+                  }}
                 />
-                الدهون (جم)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="300"
-                step="0.5"
-                value={directFats}
-                onChange={(e) => setDirectFats(Number(e.target.value))}
-                style={{
-                  height: '48px',
-                  padding: '0 12px',
-                  borderRadius: '8px',
-                  border: '1.5px solid var(--line)',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  boxSizing: 'border-box',
-                }}
-                required
-              />
+              </div>
+
+              {/* Direct Fats */}
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+              >
+                <label
+                  style={{
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    color: 'var(--ink)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span
+                    className="macro-marker macro-marker--fats"
+                    aria-hidden="true"
+                  />
+                  الدهون (جم)
+                </label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={directFats}
+                  onChange={(e) =>
+                    setDirectFats(e.target.value.replace(/[^0-9.]/g, ''))
+                  }
+                  placeholder="0"
+                  style={{
+                    height: '48px',
+                    padding: '0 12px',
+                    borderRadius: '8px',
+                    border: '1.5px solid var(--line)',
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    boxSizing: 'border-box',
+                    background: 'var(--card-bg)',
+                    color: 'var(--ink)',
+                    textAlign: 'center',
+                  }}
+                />
+              </div>
             </div>
+
+            {showDirectCaloriesWarning && (
+              <Callout tone="warning">
+                السعرات المدخلة تختلف بأكثر من 10% عن المحسوبة من الماكروز ({computedDirectCalories} سعرة).
+              </Callout>
+            )}
           </div>
         )}
 
@@ -1169,7 +1427,7 @@ export function CustomMealModal({
               fontWeight: 600,
             }}
           >
-            الماكروز الإجمالية المحسوبة للوجبة:
+            إجمالي الوجبة
           </div>
           <div
             style={{
@@ -1189,7 +1447,7 @@ export function CustomMealModal({
             >
               {mode === 'ingredients'
                 ? calculatedTotals.calories
-                : directCalories}{' '}
+                : activeDirectCalories}{' '}
               <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
                 سعرة حرارية
               </span>
@@ -1218,8 +1476,8 @@ export function CustomMealModal({
                 />
                 {mode === 'ingredients'
                   ? calculatedTotals.proteinGrams
-                  : directProtein}
-                ج بروتين
+                  : dpNum}
+                جم بروتين
               </span>
               <span
                 style={{
@@ -1235,8 +1493,8 @@ export function CustomMealModal({
                 />
                 {mode === 'ingredients'
                   ? calculatedTotals.carbsGrams
-                  : directCarbs}
-                ج كارب
+                  : dcNum}
+                جم كارب
               </span>
               <span
                 style={{
@@ -1252,8 +1510,8 @@ export function CustomMealModal({
                 />
                 {mode === 'ingredients'
                   ? calculatedTotals.fatsGrams
-                  : directFats}
-                ج دهون
+                  : dfNum}
+                جم دهون
               </span>
             </div>
           </div>

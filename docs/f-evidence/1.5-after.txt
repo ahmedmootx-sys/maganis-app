@@ -1,0 +1,3 @@
+Defect 1.5 Test Result: PASS
+TopBar brand text: "Maganis" (Expected: "Maganis")
+HTML <title>: "Maganis" (Expected: "Maganis")

@@ -152,10 +152,11 @@ describe('Activity Consistency & Vector Tests (Task D)', () => {
     }
 
     const targets = calculateCalorieMacroTargets(profile)
-    expect(targets.bmr).toBe(1541)
-    expect(targets.tdee).toBe(2263)
+    expect(targets).not.toBeNull()
+    expect(targets!.bmr).toBe(1541)
+    expect(targets!.tdee).toBe(2263)
     // Evidence-based rate surplus for 58kg: 2263 + 255 = 2518 kcal
-    expect(targets.targetCalories).toBe(2518)
+    expect(targets!.targetCalories).toBe(2518)
   })
 
   it('detects legacy profiles needing review and validates non-silent migration flags', () => {

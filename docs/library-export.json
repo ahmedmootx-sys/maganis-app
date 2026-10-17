@@ -1,0 +1,5789 @@
+[
+  {
+    "id": "chest-1",
+    "nameAr": "ضغط صدري بالبار",
+    "nameEn": "Barbell Bench Press - Medium Grip",
+    "category": "chest",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-4",
+    "nameAr": "ضغط صدري مائل بالبار (بنش عالي)",
+    "nameEn": "Barbell Incline Bench Press - Medium Grip",
+    "category": "chest",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-13",
+    "nameAr": "ضغط صدري مقلوب بالبار (بنش سفلي)",
+    "nameEn": "Decline Barbell Bench Press",
+    "category": "chest",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر سفلي (قصي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-18",
+    "nameAr": "ضغط صدري بالبار قبضة واسعة",
+    "nameEn": "Wide-Grip Barbell Bench Press",
+    "category": "chest",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Barbell_Guillotine_Bench_Press",
+    "nameAr": "ضغط صدري بار للمستوى الترقوي (Guillotine)",
+    "nameEn": "Barbell Guillotine Bench Press",
+    "category": "chest",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": true,
+    "riskReasonAr": "يضع مفصل الكتف في دوران خارجي حاد مع شد مفرط على الكبسولة المفصلية الأمامية، بالإضافة لخطر سقوط البار على الرقبة في حال الإخفاق.",
+    "saferAlternatives": [
+      "chest-1",
+      "chest-4"
+    ],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-2",
+    "nameAr": "ضغط صدري بالدمبل (بنش مستوٍ)",
+    "nameEn": "Dumbbell Bench Press",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-5",
+    "nameAr": "ضغط صدري مائل بالدمبل (بنش عالي)",
+    "nameEn": "Incline Dumbbell Press",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-15",
+    "nameAr": "ضغط صدري مقلوب بالدمبل (بنش سفلي)",
+    "nameEn": "Decline Dumbbell Bench Press",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر سفلي (قصي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-6",
+    "nameAr": "تفتيح صدر بالدمبل (مستوٍ)",
+    "nameEn": "Dumbbell Flyes",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-9",
+    "nameAr": "تفتيح صدر مائل بالدمبل (عالي)",
+    "nameEn": "Incline Dumbbell Flyes",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-12",
+    "nameAr": "تفتيح صدر مقلوب بالدمبل (سفلي)",
+    "nameEn": "Decline Dumbbell Flyes",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "صدر سفلي (قصي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-16",
+    "nameAr": "سحب دمبل مستقيم للصدر واللاتس (بولوفر)",
+    "nameEn": "Straight-Arm Dumbbell Pullover",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-17",
+    "nameAr": "تفتيح صدر بالدمبل بيد واحدة",
+    "nameEn": "One-Arm Flat Bench Dumbbell Flye",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Hammer_Grip_Incline_DB_Bench_Press",
+    "nameAr": "ضغط دمبل مائل بقبضة متوازية (هامر)",
+    "nameEn": "Hammer Grip Incline DB Bench Press",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-7",
+    "nameAr": "تقاطع كابل للصدر (كيبل كروس عالي/وسط)",
+    "nameEn": "Cable Crossover",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-14",
+    "nameAr": "تقاطع كابل للصدر من الأسفل (كيبل سفلي)",
+    "nameEn": "Low Cable Crossover",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-8",
+    "nameAr": "ضغط صدري بالكابل واقفاً",
+    "nameEn": "Cable Chest Press",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cable_Iron_Cross",
+    "nameAr": "تقاطع كابل حديدي (أيرون كروس)",
+    "nameEn": "Cable Iron Cross",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Single-Arm_Cable_Crossover",
+    "nameAr": "تقاطع كابل للصدر بيد واحدة",
+    "nameEn": "Single-Arm Cable Crossover",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-20",
+    "nameAr": "تفتيح صدر على جهاز الفراشة (Pec Deck)",
+    "nameEn": "Butterfly",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-10",
+    "nameAr": "ضغط صدري على الجهاز (Chest Press Machine)",
+    "nameEn": "Leverage Chest Press",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Leverage_Incline_Chest_Press",
+    "nameAr": "ضغط صدري مائل على الجهاز",
+    "nameEn": "Leverage Incline Chest Press",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Leverage_Decline_Chest_Press",
+    "nameAr": "ضغط صدري مقلوب على الجهاز",
+    "nameEn": "Leverage Decline Chest Press",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر سفلي (قصي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Smith_Machine_Bench_Press",
+    "nameAr": "ضغط صدري مستوٍ على جهاز سميث",
+    "nameEn": "Smith Machine Bench Press",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Smith_Machine_Incline_Bench_Press",
+    "nameAr": "ضغط صدري مائل على جهاز سميث",
+    "nameEn": "Smith Machine Incline Bench Press",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Smith_Machine_Decline_Press",
+    "nameAr": "ضغط صدري مقلوب على جهاز سميث",
+    "nameEn": "Smith Machine Decline Press",
+    "category": "chest",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر سفلي (قصي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-11",
+    "nameAr": "متوازي بوزن الجسم للصدر (ميل الجذع للأمام)",
+    "nameEn": "Dips - Chest Version",
+    "category": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر سفلي (قصي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-3",
+    "nameAr": "تمرين الضغط (ضغط أرضي)",
+    "nameEn": "Pushups",
+    "category": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "chest-19",
+    "nameAr": "ضغط مائل لأعلى بوزن الجسم (أسهل للمبتدئين)",
+    "nameEn": "Incline Push-Up",
+    "category": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": true,
+    "riskReasonAr": "يضع مفصل الكتف في دوران خارجي حاد مع شد مفرط على الكبسولة المفصلية الأمامية، بالإضافة لخطر سقوط البار على الرقبة في حال الإخفاق.",
+    "saferAlternatives": [
+      "chest-1",
+      "chest-4"
+    ],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Decline_Push-Up",
+    "nameAr": "ضغط مائل لأسفل بوزن الجسم (تركيز علوي)",
+    "nameEn": "Decline Push-Up",
+    "category": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر علوي (ترقوي)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Svend_Press",
+    "nameAr": "ضغط صدر بالأقراص (Svend Press)",
+    "nameEn": "Svend Press",
+    "category": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Clock_Push-Up",
+    "nameAr": "ضغط دائري حركي (Clock Push-Up)",
+    "nameEn": "Clock Push-Up",
+    "category": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-14",
+    "nameAr": "ديدليفت كلاسيكي بالبار (Deadlift)",
+    "nameEn": "Barbell Deadlift",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات الساعد والقبضة",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "عضلة الظهر العريضة (المجانص)",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "العضلة الرباعية (الفخذ الأمامي)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "أسفل الظهر والفقرات القطنية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-4",
+    "nameAr": "تجديف بالبار منحنياً (Bent-Over Row)",
+    "nameEn": "Bent Over Barbell Row",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-5",
+    "nameAr": "تجديف بالدمبلين منحنياً",
+    "nameEn": "Bent Over Two-Dumbbell Row",
+    "category": "back",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-13",
+    "nameAr": "تجديف بالدمبل بيد واحدة على البنش (منشار)",
+    "nameEn": "One-Arm Dumbbell Row",
+    "category": "back",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-8",
+    "nameAr": "تجديف تي بار بالوزن الحر (T-Bar Row)",
+    "nameEn": "T-Bar Row with Handle",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-1",
+    "nameAr": "سحب عالي للظهر بقبضة واسعة (Lat Pulldown)",
+    "nameEn": "Wide-Grip Lat Pulldown",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-7",
+    "nameAr": "سحب عالي للظهر بقبضة ضيقة V-Bar",
+    "nameEn": "Close-Grip Front Lat Pulldown",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-3",
+    "nameAr": "سحب عالي بقبضة مقلوبة للمجانص والباي",
+    "nameEn": "Underhand Cable Pulldowns",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "One_Arm_Lat_Pulldown",
+    "nameAr": "سحب عالي بالكابل بيد واحدة",
+    "nameEn": "One Arm Lat Pulldown",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Full_Range-Of-Motion_Lat_Pulldown",
+    "nameAr": "سحب عالي بمدى حركي كامل",
+    "nameEn": "Full Range-Of-Motion Lat Pulldown",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-6",
+    "nameAr": "سحب أرضي بالكابل للظهر (Seated Cable Row)",
+    "nameEn": "Seated Cable Rows",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Elevated_Cable_Rows",
+    "nameAr": "سحب كابل من مستوى مرتفع للظهر",
+    "nameEn": "Elevated Cable Rows",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-11",
+    "nameAr": "سحب كابل بالذراعين مفرودتين للمجانص",
+    "nameEn": "Straight-Arm Pulldown",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-10",
+    "nameAr": "عقلة قبضة واسعة فوقية (Pull-Ups)",
+    "nameEn": "Pullups",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Wide-Grip_Rear_Pull-Up",
+    "nameAr": "عقلة خلفية واسعة",
+    "nameEn": "Wide-Grip Rear Pull-Up",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-17",
+    "nameAr": "عقلة قبضة معكوسة للباي واللاتس (Chin-Ups)",
+    "nameEn": "Chin-Up",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلات الساعد والقبضة",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-16",
+    "nameAr": "عقلة أسترالية مقلوبة بوزن الجسم",
+    "nameEn": "Inverted Row",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Rope_Climb",
+    "nameAr": "تسلق الحبل لتقوية الظهر والقبضة",
+    "nameEn": "Rope Climb",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلات الساعد والقبضة",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-20",
+    "nameAr": "هز أكتاف بالبار للترابيس (Barbell Shrug)",
+    "nameEn": "Barbell Shrug",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Dumbbell_Shrug",
+    "nameAr": "هز أكتاف بالدمبل للترابيس (Dumbbell Shrug)",
+    "nameEn": "Dumbbell Shrug",
+    "category": "back",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cable_Shrugs",
+    "nameAr": "شراغز بالكابل للترابيس",
+    "nameEn": "Cable Shrugs",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Middle_Back_Shrug",
+    "nameAr": "شراغز لمنتصف الظهر على البنش",
+    "nameEn": "Middle Back Shrug",
+    "category": "back",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-9",
+    "nameAr": "تمديد الظهر وأسفل الظهر على الجهاز (Hyper)",
+    "nameEn": "Hyperextensions (Back Extensions)",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "أسفل الظهر والفقرات القطنية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Good_Morning",
+    "nameAr": "صباح الخير بالبار لأسفل الظهر والخلفيات",
+    "nameEn": "Good Morning",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Stiff_Leg_Barbell_Good_Morning",
+    "nameAr": "جود مورنينج بالبار بركبتين ثابتتين",
+    "nameEn": "Stiff Leg Barbell Good Morning",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Smith_Machine_Bent_Over_Row",
+    "nameAr": "تجديف منحنياً على جهاز سميث",
+    "nameEn": "Smith Machine Bent Over Row",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-18",
+    "nameAr": "سحب عالي على جهاز الرافعة للمجانص",
+    "nameEn": "Leverage High Row",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-19",
+    "nameAr": "تجديف بالكابل بيد واحدة (شوت جن)",
+    "nameEn": "Shotgun Row",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bent_Over_Two-Arm_Long_Bar_Row",
+    "nameAr": "تجديف بالبار الطويل منحنياً",
+    "nameEn": "Bent Over Two-Arm Long Bar Row",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Sumo_Deadlift",
+    "nameAr": "ديدليفت سومو بوقفة واسعة (Sumo Deadlift)",
+    "nameEn": "Sumo Deadlift",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الفخذ الداخلية (الضامة)",
+      "عضلات الساعد والقبضة",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أسفل الظهر (الفقرات القطنية)",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "العضلة الرباعية (الفخذ الأمامي)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Trap_Bar_Deadlift",
+    "nameAr": "ديدليفت بالبار السداسي (Trap Bar)",
+    "nameEn": "Trap Bar Deadlift",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Deadlift_with_Bands",
+    "nameAr": "ديدليفت بالبار مع أحبال مقاومة",
+    "nameEn": "Deadlift with Bands",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "primaryMuscles": [
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "العضلة الرباعية (الفخذ الأمامي)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "أسفل الظهر والفقرات القطنية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-15",
+    "nameAr": "ديدليفت روماني من منصة مرتفعة",
+    "nameEn": "Romanian Deadlift from Deficit",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أسفل الظهر (الفقرات القطنية)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Kettlebell_One-Legged_Deadlift",
+    "nameAr": "ديدليفت بالكتلبل بساق واحدة",
+    "nameEn": "Kettlebell One-Legged Deadlift",
+    "category": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-19",
+    "nameAr": "تمرين سوبرمان لتقوية أسفل الظهر بوزن الجسم",
+    "nameEn": "Superman",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "أسفل الظهر والفقرات القطنية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-12",
+    "nameAr": "سحب الحبل للوجه والكتف الخلفي (Face Pull)",
+    "nameEn": "Face Pull",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Side_Laterals_to_Front_Raise",
+    "nameAr": "دمج رفرفة جانبية وأمامية",
+    "nameEn": "Side Laterals to Front Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكتف الجانبي (Side Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Upright_Row_-_With_Bands",
+    "nameAr": "تجديف عمودي بحبل المقاومة",
+    "nameEn": "Upright Row - With Bands",
+    "category": "back",
+    "equipment": "band",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Standing_Cable_Lift",
+    "nameAr": "رفع كابل قطري للجذع والظهر",
+    "nameEn": "Standing Cable Lift",
+    "category": "core",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ثبات الجذع والكور العميق"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-1",
+    "nameAr": "سكوات خلفي كامل بالبار (Back Squat)",
+    "nameEn": "Barbell Full Squat",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-11",
+    "nameAr": "سكوات أمامي بالبار (Front Squat)",
+    "nameEn": "Front Barbell Squat",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-14",
+    "nameAr": "سكوات بالبار على الصندوق (Box Squat)",
+    "nameEn": "Box Squat",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الفخذ الداخلية (الضامة)",
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Narrow_Stance_Squats",
+    "nameAr": "سكوات بالبار بوقفة ضيقة للتركيز على الفخذ",
+    "nameEn": "Narrow Stance Squats",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Wide_Stance_Barbell_Squat",
+    "nameAr": "سكوات بالبار بوقفة واسعة للضامة والجلوتس",
+    "nameEn": "Wide Stance Barbell Squat",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "عضلات الفخذ الداخلية (الضامة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Overhead_Squat",
+    "nameAr": "سكوات والبار مرفوع فوق الرأس",
+    "nameEn": "Overhead Squat",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-12",
+    "nameAr": "هاك سكوات على الجهاز (Hack Squat)",
+    "nameEn": "Hack Squat",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-8",
+    "nameAr": "طعنات بالبار للأرجل والجلوتس (Barbell Lunges)",
+    "nameEn": "Barbell Lunge",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Barbell_Walking_Lunge",
+    "nameAr": "طعنات بالمشي بالبار",
+    "nameEn": "Barbell Walking Lunge",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Barbell_Side_Split_Squat",
+    "nameAr": "سكوات جانبي بالبار للفخذ الداخلي",
+    "nameEn": "Barbell Side Split Squat",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-2",
+    "nameAr": "سكوات بالدمبل",
+    "nameEn": "Dumbbell Squat",
+    "category": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Goblet_Squat",
+    "nameAr": "جوبلت سكوات بالدمبل (Goblet Squat)",
+    "nameEn": "Goblet Squat",
+    "category": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-7",
+    "nameAr": "طعنات بالدمبلين (Dumbbell Lunges)",
+    "nameEn": "Dumbbell Lunges",
+    "category": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-3",
+    "nameAr": "سبليت سكوات ثابت بالدمبل",
+    "nameEn": "Split Squat with Dumbbells",
+    "category": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-13",
+    "nameAr": "صعود الدرج بالدمبل (Step-Ups)",
+    "nameEn": "Dumbbell Step Ups",
+    "category": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Step-up_with_Knee_Raise",
+    "nameAr": "صعود الدرج مع رفع الركبة",
+    "nameEn": "Step-up with Knee Raise",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "secondaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-16",
+    "nameAr": "سومو سكوات بالدمبل (Sumo / Plie Squat)",
+    "nameEn": "Plie Dumbbell Squat",
+    "category": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-4",
+    "nameAr": "ضغط الأرجل على جهاز المكبس (Leg Press)",
+    "nameEn": "Leg Press",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-18",
+    "nameAr": "فرد الساقين على الجهاز (Leg Extension للأماميات)",
+    "nameEn": "Leg Extensions",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-5",
+    "nameAr": "ثني الساقين مستلقياً على الجهاز (خلفيات الفخذ)",
+    "nameEn": "Lying Leg Curls",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-17",
+    "nameAr": "ثني الساقين جالساً على الجهاز (خلفيات الفخذ)",
+    "nameEn": "Seated Leg Curl",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Standing_Leg_Curl",
+    "nameAr": "ثني الساق واقفاً بساق واحدة",
+    "nameEn": "Standing Leg Curl",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-6",
+    "nameAr": "ديدليفت روماني بالبار (RDL للخلفيات والألوية)",
+    "nameEn": "Romanian Deadlift",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-15",
+    "nameAr": "ديدليفت بالبار بأرجل مستقيمة",
+    "nameEn": "Stiff-Legged Barbell Deadlift",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Stiff-Legged_Dumbbell_Deadlift",
+    "nameAr": "ديدليفت بالدمبل بأرجل مستقيمة للخلفيات",
+    "nameEn": "Stiff-Legged Dumbbell Deadlift",
+    "category": "legs",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-20",
+    "nameAr": "دفع الحوض بالبار للألوية (Barbell Hip Thrust)",
+    "nameEn": "Barbell Hip Thrust",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-21",
+    "nameAr": "جسر الألوية بالبار على الأرض (Glute Bridge)",
+    "nameEn": "Barbell Glute Bridge",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Single_Leg_Glute_Bridge",
+    "nameAr": "جسر الألوية بساق واحدة بوزن الجسم",
+    "nameEn": "Single Leg Glute Bridge",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "secondaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Glute_Ham_Raise",
+    "nameAr": "رفع الجذع بالخلفيات والألوية (GHD)",
+    "nameEn": "Glute Ham Raise",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Glute_Kickback",
+    "nameAr": "ركل خلفي بالكابل أو الجهاز للألوية (Kickback)",
+    "nameEn": "Glute Kickback",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "secondaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الخلفي (الهمسترنج)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Thigh_Abductor",
+    "nameAr": "فتح الفخذ على الجهاز (Abductor للألوية والخارجيات)",
+    "nameEn": "Thigh Abductor",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الفخذ الخارجية (المبعدة)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "subMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Thigh_Adductor",
+    "nameAr": "ضم الفخذ على الجهاز (Adductor للعضلات الضامة)",
+    "nameEn": "Thigh Adductor",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الفخذ الداخلية (الضامة)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "عضلات الفخذ الداخلية (الضامة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-9",
+    "nameAr": "رفع السمانة واقفاً بالوزن (Standing Calf Raise)",
+    "nameEn": "Standing Calf Raises",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-10",
+    "nameAr": "رفع السمانة جالساً على الجهاز (Seated Calf Raise)",
+    "nameEn": "Seated Calf Raise",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Calf_Press_On_The_Leg_Press_Machine",
+    "nameAr": "رفع السمانة على جهاز مكبس الأرجل",
+    "nameEn": "Calf Press On The Leg Press Machine",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Smith_Machine_Calf_Raise",
+    "nameAr": "رفع السمانة واقفاً على جهاز سميث",
+    "nameEn": "Smith Machine Calf Raise",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Rocking_Standing_Calf_Raise",
+    "nameAr": "رفع السمانة المتأرجح",
+    "nameEn": "Rocking Standing Calf Raise",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Donkey_Calf_Raises",
+    "nameAr": "رفع السمانة بوضعية الدونكي كالف",
+    "nameEn": "Donkey Calf Raises",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات السمانة (الكاحل)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Smith_Machine_Squat",
+    "nameAr": "سكوات على جهاز سميث",
+    "nameEn": "Smith Machine Squat",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Smith_Single-Leg_Split_Squat",
+    "nameAr": "سبليت سكوات على جهاز سميث",
+    "nameEn": "Smith Single-Leg Split Squat",
+    "category": "legs",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "leg-19",
+    "nameAr": "سكوات هوائي بوزن الجسم",
+    "nameEn": "Bodyweight Squat",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bodyweight_Walking_Lunge",
+    "nameAr": "طعنات بالمشي بوزن الجسم",
+    "nameEn": "Bodyweight Walking Lunge",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Scissors_Jump",
+    "nameAr": "قفز تبادلي بالمقص (انفجاري للأرجل)",
+    "nameEn": "Scissors Jump",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Side_Leg_Raises",
+    "nameAr": "رفع الساق جانباً بوزن الجسم",
+    "nameEn": "Side Leg Raises",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الفخذ الداخلية (الضامة)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "One-Arm_Side_Deadlift",
+    "nameAr": "ديدليفت جانبي بيد واحدة",
+    "nameEn": "One-Arm Side Deadlift",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Band_Hip_Adductions",
+    "nameAr": "ضم الفخذ بحبل المقاومة",
+    "nameEn": "Band Hip Adductions",
+    "category": "legs",
+    "equipment": "band",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الفخذ الداخلية (الضامة)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الفخذ الداخلية (الضامة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Reverse_Band_Box_Squat",
+    "nameAr": "سكوات صندوق بأحبال مقاومة معكوسة",
+    "nameEn": "Reverse Band Box Squat",
+    "category": "legs",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الفخذ الخارجية (المبعدة)",
+      "عضلات الفخذ الداخلية (الضامة)",
+      "عضلات السمانة (الكاحل)",
+      "عضلات الساعد والقبضة",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Calf-Machine_Shoulder_Shrug",
+    "nameAr": "شراغز على جهاز السمانة",
+    "nameEn": "Calf-Machine Shoulder Shrug",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Knee_Tuck_Jump",
+    "nameAr": "قفز ضم الركبتين للياقة الأرجل",
+    "nameEn": "Knee Tuck Jump",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الفخذ الخارجية (المبعدة)",
+      "عضلات الفخذ الداخلية (الضامة)",
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-1",
+    "nameAr": "ضغط كتف عسكري بالبار واقفاً (Overhead Press)",
+    "nameEn": "Standing Military Press",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-11",
+    "nameAr": "ضغط كتف بالبار جالساً (Seated Barbell Press)",
+    "nameEn": "Seated Barbell Military Press",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-15",
+    "nameAr": "ضغط كتف بالدمبل جالساً (Dumbbell Shoulder Press)",
+    "nameEn": "Dumbbell Shoulder Press",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Seated_Dumbbell_Press",
+    "nameAr": "ضغط كتف بالدمبل على مقعد مستقيم",
+    "nameEn": "Seated Dumbbell Press",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-6",
+    "nameAr": "ضغط أرنولد الشهير للكتف بالدمبل (Arnold Press)",
+    "nameEn": "Arnold Dumbbell Press",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-16",
+    "nameAr": "ضغط كتف على جهاز الرافعة",
+    "nameEn": "Leverage Shoulder Press",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-19",
+    "nameAr": "كلين آند برس بالبار (قوة انفجارية للكتف والجسم)",
+    "nameEn": "Clean and Press",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات السمانة (الكاحل)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "العضلة الرباعية (الفخذ الأمامي)",
+      "عضلات الترابيس (Traps)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف والترابيس"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Push_Press",
+    "nameAr": "بوش برس بالبار مع مساعدة الساقين",
+    "nameEn": "Push Press",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-3",
+    "nameAr": "رفرفة كتف جانبي بالدمبل (Lateral Raise)",
+    "nameEn": "Side Lateral Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الجانبي (Side Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-9",
+    "nameAr": "رفرفة كتف جانبي بالدمبل جالساً (عزل تام)",
+    "nameEn": "Seated Side Lateral Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الجانبي (Side Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-14",
+    "nameAr": "رفرفة جانبي بالدمبل بيد واحدة",
+    "nameEn": "One-Arm Side Laterals",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الجانبي (Side Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-5",
+    "nameAr": "رفرفة جانبي بالكابل جالساً",
+    "nameEn": "Cable Seated Lateral Raise",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكتف الجانبي (Side Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-4",
+    "nameAr": "رفع كتف أمامي بالدمبل (Front Raise)",
+    "nameEn": "Front Dumbbell Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-13",
+    "nameAr": "رفع كتف أمامي بالكابل",
+    "nameEn": "Front Cable Raise",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Front_Two-Dumbbell_Raise",
+    "nameAr": "رفع أمامي بكلتا اليدين بالدمبل",
+    "nameEn": "Front Two-Dumbbell Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Standing_Front_Barbell_Raise_Over_Head",
+    "nameAr": "رفع بار أمامي حتى أعلى الرأس",
+    "nameEn": "Standing Front Barbell Raise Over Head",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "back-12",
+    "nameAr": "رفرفة كتف خلفي بالدمبل مستلقياً على بنش مائل",
+    "nameEn": "Reverse Flyes",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-7",
+    "nameAr": "رفرفة خلفية مع تثبيت الرأس على البنش",
+    "nameEn": "Bent Over Dumbbell Rear Delt Raise With Head On Bench",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Lying_Rear_Delt_Raise",
+    "nameAr": "رفرفة كتف خلفي مستلقياً على الجانب",
+    "nameEn": "Lying Rear Delt Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cable_Rear_Delt_Fly",
+    "nameAr": "رفرفة كتف خلفي بالكابل المتقاطع",
+    "nameEn": "Cable Rear Delt Fly",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-18",
+    "nameAr": "تجديف بالبار عريض للكتف الخلفي",
+    "nameEn": "Barbell Rear Delt Row",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cable_Rope_Rear-Delt_Rows",
+    "nameAr": "سحب حبل الكابل للكتف الخلفي",
+    "nameEn": "Cable Rope Rear-Delt Rows",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-17",
+    "nameAr": "تجديف عمودي بالبار للأكتاف والترابيس",
+    "nameEn": "Upright Barbell Row",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكتف والترابيس"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Upright_Cable_Row",
+    "nameAr": "تجديف عمودي بالكابل للأكتاف",
+    "nameEn": "Upright Cable Row",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Dumbbell_One-Arm_Upright_Row",
+    "nameAr": "تجديف عمودي بالدمبل بيد واحدة",
+    "nameEn": "Dumbbell One-Arm Upright Row",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكتف والترابيس"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-10",
+    "nameAr": "رفع دمبل بزاوية لوح الكتف (Scaption)",
+    "nameEn": "Dumbbell Scaption",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Dumbbell_Raise",
+    "nameAr": "رفع دمبل مركب للأكتاف",
+    "nameEn": "Dumbbell Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Alternating_Deltoid_Raise",
+    "nameAr": "رفع تبادلي بالدمبل للدالية",
+    "nameEn": "Alternating Deltoid Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Car_Drivers",
+    "nameAr": "تمرين مقود السيارة بالقرص للأكتاف (Car Drivers)",
+    "nameEn": "Car Drivers",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cuban_Press",
+    "nameAr": "ضغط كوبي بالدمبل لتقوية الكفة المدورة",
+    "nameEn": "Cuban Press",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكفة المدورة (Rotator Cuff)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Iron_Cross",
+    "nameAr": "الصليب الحديدي بالدمبل للكتفين",
+    "nameEn": "Iron Cross",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)",
+      "العضلة الرباعية (الفخذ الأمامي)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Standing_Low-Pulley_Deltoid_Raise",
+    "nameAr": "رفع دالية سفلي بالكابل",
+    "nameEn": "Standing Low-Pulley Deltoid Raise",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "shoulder-20",
+    "nameAr": "ضغط الوقوف على اليدين للكتفين (Handstand)",
+    "nameEn": "Handstand Push-Ups",
+    "category": "shoulders",
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Kettlebell_Thruster",
+    "nameAr": "ثراستر بالكتلبل (سكوات مع ضغط كتف)",
+    "nameEn": "Kettlebell Thruster",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "External_Rotation_with_Band",
+    "nameAr": "دوران خارجي بحبل المقاومة للكفة المدورة",
+    "nameEn": "External Rotation with Band",
+    "category": "shoulders",
+    "equipment": "band",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكفة المدورة (Rotator Cuff)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Side_Wrist_Pull",
+    "nameAr": "سحب جانبي للرسغ والكتف",
+    "nameEn": "Side Wrist Pull",
+    "category": "shoulders",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة",
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "subMuscles": [
+      "الكتف الجانبي (Side Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-1",
+    "nameAr": "بايسبس كيرل بالبار مستقيماً (Barbell Curl)",
+    "nameEn": "Barbell Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "بايسبس - الرأس الطويل"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "EZ-Bar_Curl",
+    "nameAr": "بايسبس كيرل ببار الزجزاج (EZ-Bar Curl)",
+    "nameEn": "EZ-Bar Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "بايسبس - الرأس الطويل"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Close-Grip_Standing_Barbell_Curl",
+    "nameAr": "بايسبس كيرل بالبار قبضة ضيقة للرأس الخارجي",
+    "nameEn": "Close-Grip Standing Barbell Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Wide-Grip_Standing_Barbell_Curl",
+    "nameAr": "بايسبس كيرل بالبار قبضة واسعة للرأس الداخلي",
+    "nameEn": "Wide-Grip Standing Barbell Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-2",
+    "nameAr": "بايسبس كيرل بالدمبل بالتناوب",
+    "nameEn": "Dumbbell Bicep Curl",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "بايسبس - الرأس الطويل"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-5",
+    "nameAr": "بايسبس بالدمبل على بنش مائل (استطالة عظمى)",
+    "nameEn": "Incline Dumbbell Curl",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "بايسبس - الرأس القصير (عضلة القمة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Incline_Inner_Biceps_Curl",
+    "nameAr": "بايسبس مائل موجه للرأس الداخلي",
+    "nameEn": "Incline Inner Biceps Curl",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "بايسبس - الرأس القصير (عضلة القمة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-3",
+    "nameAr": "بايسبس مطرقة بالدمبل (Hammer Curls للساعد والرأس الطويل)",
+    "nameEn": "Hammer Curls",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cross_Body_Hammer_Curl",
+    "nameAr": "بايسبس مطرقة متقاطع على الصدر (Cross Body)",
+    "nameEn": "Cross Body Hammer Curl",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "العضدية والساعد (البريكيالس)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Preacher_Curl",
+    "nameAr": "بايسبس ارتكاز على بنش لاري سكوت (Preacher Curl)",
+    "nameEn": "Preacher Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "بايسبس - الرأس القصير (عضلة القمة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-4",
+    "nameAr": "بايسبس تركيز بالدمبل جالساً (Concentration Curl)",
+    "nameEn": "Concentration Curls",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "بايسبس - الرأس الطويل"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Spider_Curl",
+    "nameAr": "سبايدر كيرل بالبار على بنش مائل (Spider Curl)",
+    "nameEn": "Spider Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "بايسبس - الرأس الطويل"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Zottman_Curl",
+    "nameAr": "زوتمان كيرل بالدمبل للبايسبس والساعد (Zottman Curl)",
+    "nameEn": "Zottman Curl",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Seated_Close-Grip_Concentration_Barbell_Curl",
+    "nameAr": "بايسبس تركيز بالبار قبضة ضيقة",
+    "nameEn": "Seated Close-Grip Concentration Barbell Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-6",
+    "nameAr": "بايسبس ارتكاز بالكابل على البنش",
+    "nameEn": "Cable Preacher Curl",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "بايسبس - الرأس القصير (عضلة القمة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-7",
+    "nameAr": "بايسبس مطرقة بحبل الكابل (Cable Rope Hammer)",
+    "nameEn": "Cable Hammer Curls - Rope Attachment",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "العضدية والساعد (البريكيالس)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-8",
+    "nameAr": "بايسبس كابل علوي مزدوج (Double Biceps Cable)",
+    "nameEn": "Overhead Cable Curl",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "بايسبس - الرأس الطويل"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-9",
+    "nameAr": "بايسبس كيرل على الجهاز",
+    "nameEn": "Machine Bicep Curl",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "بايسبس - الرأس الطويل"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-10",
+    "nameAr": "بايسبس مقلوب بالبار لتقوية الساعد والباي",
+    "nameEn": "Reverse Barbell Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Reverse_Cable_Curl",
+    "nameAr": "بايسبس مقلوب بالكابل للساعد",
+    "nameEn": "Reverse Cable Curl",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-11",
+    "nameAr": "بنش برس قبضة ضيقة للترايسبس (Close-Grip Bench)",
+    "nameEn": "Close-Grip Barbell Bench Press",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "JM_Press",
+    "nameAr": "تمرين جي إم برس للكتلة الهائلة للترايسبس (JM Press)",
+    "nameEn": "JM Press",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-14",
+    "nameAr": "كسر الجمجمة للترايسبس ببار EZ (Skull Crushers)",
+    "nameEn": "Lying Triceps Press",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الطويل (Long Head)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Decline_EZ_Bar_Triceps_Extension",
+    "nameAr": "تمديد ترايسبس على بنش مقلوب ببار EZ",
+    "nameEn": "Decline EZ Bar Triceps Extension",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "العضدية والساعد (البريكيالس)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Incline_Barbell_Triceps_Extension",
+    "nameAr": "تمديد ترايسبس بالبار على بنش مائل",
+    "nameEn": "Incline Barbell Triceps Extension",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "بايسبس - الرأس القصير (عضلة القمة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Decline_Close-Grip_Bench_To_Skull_Crusher",
+    "nameAr": "دمج البنش الضيق وكسر الجمجمة للترايسبس",
+    "nameEn": "Decline Close-Grip Bench To Skull Crusher",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ترايسبس - الرأس الطويل (Long Head)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-15",
+    "nameAr": "تمديد ترايسبس بالبار فوق الرأس واقفاً",
+    "nameEn": "Standing Overhead Barbell Triceps Extension",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ترايسبس - الرأس الطويل (Long Head)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-17",
+    "nameAr": "تمديد ترايسبس بالدمبل بكلتا اليدين جالساً",
+    "nameEn": "Seated Triceps Press",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Standing_Dumbbell_Triceps_Extension",
+    "nameAr": "تمديد ترايسبس بالدمبل فوق الرأس واقفاً",
+    "nameEn": "Standing Dumbbell Triceps Extension",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الطويل (Long Head)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-16",
+    "nameAr": "كيك باك للترايسبس بالدمبل (Dumbbell Kickback)",
+    "nameEn": "Tricep Dumbbell Kickback",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Tate_Press",
+    "nameAr": "تيت برس بالدمبل على البنش للترايسبس (Tate Press)",
+    "nameEn": "Tate Press",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-12",
+    "nameAr": "ترايسبس بوش داون بالكابل بالمسطرة (Straight Bar)",
+    "nameEn": "Triceps Pushdown",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-13",
+    "nameAr": "ترايسبس بوش داون بحبل الكابل (Rope Pushdown)",
+    "nameEn": "Triceps Pushdown - Rope Attachment",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Triceps_Pushdown_-_V-Bar_Attachment",
+    "nameAr": "ترايسبس بوش داون بمقبض V-Bar",
+    "nameEn": "Triceps Pushdown - V-Bar Attachment",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Reverse_Grip_Triceps_Pushdown",
+    "nameAr": "ترايسبس بوش داون بقبضة مقلوبة",
+    "nameEn": "Reverse Grip Triceps Pushdown",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cable_One_Arm_Tricep_Extension",
+    "nameAr": "تمديد ترايسبس بالكابل بيد واحدة",
+    "nameEn": "Cable One Arm Tricep Extension",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cable_Lying_Triceps_Extension",
+    "nameAr": "تمديد ترايسبس مستلقياً بالكابل",
+    "nameEn": "Cable Lying Triceps Extension",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-19",
+    "nameAr": "متوازي بوزن الجسم للترايسبس (الجسم عمودي)",
+    "nameEn": "Dips - Triceps Version",
+    "category": "arms",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-18",
+    "nameAr": "غطس ترايسبس على حافة البنش (Bench Dips)",
+    "nameEn": "Bench Dips",
+    "category": "arms",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Seated_Palm-Up_Barbell_Wrist_Curl",
+    "nameAr": "ثني المعصم بالبار والراحة لأعلى للساعد",
+    "nameEn": "Seated Palm-Up Barbell Wrist Curl",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench",
+    "nameAr": "ثني المعصم بالدمبل والراحة لأسفل",
+    "nameEn": "Palms-Down Dumbbell Wrist Curl Over A Bench",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench",
+    "nameAr": "ثني المعصم بالدمبل والراحة لأعلى",
+    "nameEn": "Palms-Up Dumbbell Wrist Curl Over A Bench",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Farmers_Walk",
+    "nameAr": "مشية المزارع بالأوزان الثقيلة لقوة القبضة والساعد",
+    "nameEn": "Farmer's Walk",
+    "category": "arms",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات المؤخرة والألوية (الجلوتس)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "أسفل الظهر (الفقرات القطنية)",
+      "العضلة الرباعية (الفخذ الأمامي)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Wrist_Roller",
+    "nameAr": "بكرة الرسغ بالأوزان لضخامة الساعد",
+    "nameEn": "Wrist Roller",
+    "category": "arms",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Plate_Pinch",
+    "nameAr": "عصر وحمل الأقراص بالأصابع لقوة القبضة",
+    "nameEn": "Plate Pinch",
+    "category": "arms",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cable_Wrist_Curl",
+    "nameAr": "ثني المعصم بالكابل للساعد",
+    "nameEn": "Cable Wrist Curl",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-1",
+    "nameAr": "بلانك ثبات للجذع والكور (Plank)",
+    "nameEn": "Plank",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ثبات الجذع والكور العميق"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-5",
+    "nameAr": "ضغط أرضي مع دوران لبلانك جانبي",
+    "nameEn": "Push Up to Side Plank",
+    "category": "chest",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-2",
+    "nameAr": "كرنش أرضي كلاسيكي لعضلات البطن العلوية (Crunches)",
+    "nameEn": "Crunches",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-18",
+    "nameAr": "كرنش على بنش مائل لأسفل (Decline Crunch)",
+    "nameEn": "Decline Crunch",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-12",
+    "nameAr": "كرنش معكوس برفع الحوض للبطن السفلية (Reverse Crunch)",
+    "nameEn": "Reverse Crunch",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن السفلية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-10",
+    "nameAr": "كرنش متقاطع لعضلات البطن والجوانب",
+    "nameEn": "Cross-Body Crunch",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الخواصر والجانبية (Obliques)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Tuck_Crunch",
+    "nameAr": "كرنش ضم الركبتين للبطن",
+    "nameEn": "Tuck Crunch",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-14",
+    "nameAr": "كرنش على الكرة السويسرية لمدى حركي كامل",
+    "nameEn": "Exercise Ball Crunch",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-20",
+    "nameAr": "كرنش بالكابل مع الركوع للبطن (Cable Kneeling Crunch)",
+    "nameEn": "Cable Crunch",
+    "category": "core",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Kneeling_Cable_Triceps_Extension",
+    "nameAr": "كرنش كابل بحبل المقاومة على الركبتين",
+    "nameEn": "Kneeling Cable Triceps Extension",
+    "category": "arms",
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الجانبي والأوسط"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-17",
+    "nameAr": "رفع الأرجل معلقاً على العقلة للبطن السفلية",
+    "nameEn": "Hanging Leg Raise",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن السفلية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-4",
+    "nameAr": "رفع الأرجل مستلقياً على البنش للبطن السفلية",
+    "nameEn": "Flat Bench Lying Leg Raise",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن السفلية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Seated_Flat_Bench_Leg_Pull-In",
+    "nameAr": "سحب الركبتين للصدر جالساً على البنش",
+    "nameEn": "Seated Flat Bench Leg Pull-In",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Leg_Pull-In",
+    "nameAr": "ضم الساقين للبطن مستلقياً",
+    "nameEn": "Leg Pull-In",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن السفلية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-16",
+    "nameAr": "تمرين عجلة البطن (Ab Wheel Rollout)",
+    "nameEn": "Ab Roller",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ثبات الجذع والكور العميق"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-7",
+    "nameAr": "تويست روسي بالوزن للخصر والخواصر (Russian Twist)",
+    "nameEn": "Russian Twist",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "أسفل الظهر (الفقرات القطنية)"
+    ],
+    "subMuscles": [
+      "عضلات الخواصر والجانبية (Obliques)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-6",
+    "nameAr": "تمرين الدراجة الهوائية للبطن",
+    "nameEn": "Air Bike",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الخواصر والجانبية (Obliques)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-8",
+    "nameAr": "متسلق الجبال السريع لشد البطن وحرق الدهون",
+    "nameEn": "Mountain Climbers",
+    "category": "legs",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "العضلة الرباعية (الفخذ الأمامي)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "الفخذ الأمامي (العضلة الرباعية)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-13",
+    "nameAr": "تمرين الحشرة الميتة (Dead Bug) لثبات الكور وأسفل الظهر",
+    "nameEn": "Dead Bug",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ثبات الجذع والكور العميق"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-15",
+    "nameAr": "تقطيع الخشب بالكابل لخصر وبطن قوية (Woodchopper)",
+    "nameEn": "Standing Cable Wood Chop",
+    "category": "core",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "عضلات الخواصر والجانبية (Obliques)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Pallof_Press",
+    "nameAr": "بالوف برس بالكابل لمقاومة الدوران وثبات الجذع",
+    "nameEn": "Pallof Press",
+    "category": "core",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "ثبات الجذع والكور العميق"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Plate_Twist",
+    "nameAr": "دوران بالقرص للخصر والخواصر",
+    "nameEn": "Plate Twist",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الخواصر والجانبية (Obliques)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Medicine_Ball_Full_Twist",
+    "nameAr": "تويست كامل بالكرة الطبية للبطن",
+    "nameEn": "Medicine Ball Full Twist",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "عضلات الخواصر والجانبية (Obliques)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Dumbbell_Side_Bend",
+    "nameAr": "انحناء جانبي بالدمبل لعضلات الخواصر",
+    "nameEn": "Dumbbell Side Bend",
+    "category": "core",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الخواصر والجانبية (Obliques)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bottoms_Up",
+    "nameAr": "رفع الحوض السفلي للبطن (Bottoms Up)",
+    "nameEn": "Bottoms Up",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Alternating_Floor_Press",
+    "nameAr": "ضغط صدري أرضي بالدمبل بالتناوب",
+    "nameEn": "Alternating Floor Press",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bench_Press_-_With_Bands",
+    "nameAr": "ضغط صدري بالبار مع أحبال المقاومة",
+    "nameEn": "Bench Press - With Bands",
+    "category": "chest",
+    "equipment": "band",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bent-Arm_Dumbbell_Pullover",
+    "nameAr": "بولوفر بالدمبل بذراعين منحنيتين للصدر",
+    "nameEn": "Bent-Arm Dumbbell Pullover",
+    "category": "chest",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bodyweight_Flyes",
+    "nameAr": "تفتيح صدر بوزن الجسم بالأرض",
+    "nameEn": "Bodyweight Flyes",
+    "category": "chest",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "صدر أوسط ومستوٍ"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Barbell_Shrug_Behind_The_Back",
+    "nameAr": "شراغز بالبار من خلف الظهر للترابيس",
+    "nameEn": "Barbell Shrug Behind The Back",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bent_Over_One-Arm_Long_Bar_Row",
+    "nameAr": "تجديف بالبار بيد واحدة للظهر",
+    "nameEn": "Bent Over One-Arm Long Bar Row",
+    "category": "back",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)",
+      "أسفل الظهر (الفقرات القطنية)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bent_Over_Two-Dumbbell_Row_With_Palms_In",
+    "nameAr": "تجديف بالدمبلين بقبضة متوازية للظهر",
+    "nameEn": "Bent Over Two-Dumbbell Row With Palms In",
+    "category": "back",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cable_Incline_Pushdown",
+    "nameAr": "سحب كابل مائل للأسفل للظهر",
+    "nameEn": "Cable Incline Pushdown",
+    "category": "back",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Band_Assisted_Pull-Up",
+    "nameAr": "عقلة بمساعدة حبل المقاومة",
+    "nameEn": "Band Assisted Pull-Up",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات الساعد والقبضة",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Rocky_Pull-Ups_Pulldowns",
+    "nameAr": "سحب عالي وعقلة روكي للظهر",
+    "nameEn": "Rocky Pull-Ups/Pulldowns",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Scapular_Pull-Up",
+    "nameAr": "عقلة تثبيت لوحي الكتف",
+    "nameEn": "Scapular Pull-Up",
+    "category": "back",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الترابيس (Traps)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الظهر العريضة (المجانص)",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "المجانص والظهر العريض (Lats)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Alternating_Cable_Shoulder_Press",
+    "nameAr": "ضغط كتف بالكابل بالتناوب",
+    "nameEn": "Alternating Cable Shoulder Press",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Alternating_Kettlebell_Press",
+    "nameAr": "ضغط كتف بالكتلبل بالتناوب",
+    "nameEn": "Alternating Kettlebell Press",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Band_Pull_Apart",
+    "nameAr": "سحب الحبل للخارج لتقوية لوحي الكتف والدالية الخلفية",
+    "nameEn": "Band Pull Apart",
+    "category": "shoulders",
+    "equipment": "band",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Barbell_Shoulder_Press",
+    "nameAr": "ضغط كتف بالبار",
+    "nameEn": "Barbell Shoulder Press",
+    "category": "shoulders",
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "الكتف الأمامي (Front Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Bent_Over_Low-Pulley_Side_Lateral",
+    "nameAr": "رفرفة جانبية بالكابل المنخفض منحنياً",
+    "nameEn": "Bent Over Low-Pulley Side Lateral",
+    "category": "shoulders",
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "أسفل الظهر (الفقرات القطنية)",
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
+      "عضلات الترابيس (Traps)"
+    ],
+    "subMuscles": [
+      "الكتف الجانبي (Side Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Dumbbell_Lying_One-Arm_Rear_Lateral_Raise",
+    "nameAr": "رفرفة كتف خلفي مستلقياً على البنش",
+    "nameEn": "Dumbbell Lying One-Arm Rear Lateral Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [
+      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
+    ],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Dumbbell_Lying_Rear_Lateral_Raise",
+    "nameAr": "رفرفة خلفية بالدمبلين مستلقياً",
+    "nameEn": "Dumbbell Lying Rear Lateral Raise",
+    "category": "shoulders",
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الخلفي (Rear Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Lateral_Raise_-_With_Bands",
+    "nameAr": "رفرفة كتف جانبي بأحبال المقاومة",
+    "nameEn": "Lateral Raise - With Bands",
+    "category": "shoulders",
+    "equipment": "band",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الكتف (الدالية)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "الكتف الجانبي (Side Delt)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Alternate_Hammer_Curl",
+    "nameAr": "بايسبس مطرقة بالدمبل بالتناوب",
+    "nameEn": "Alternate Hammer Curl",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "العضدية والساعد (البريكيالس)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Alternate_Incline_Dumbbell_Curl",
+    "nameAr": "بايسبس مائل بالدمبل بالتناوب",
+    "nameEn": "Alternate Incline Dumbbell Curl",
+    "category": "arms",
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "subMuscles": [
+      "بايسبس - الرأس القصير (عضلة القمة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Band_Skull_Crusher",
+    "nameAr": "كسر جمجمة بحبل المقاومة للترايسبس",
+    "nameEn": "Band Skull Crusher",
+    "category": "arms",
+    "equipment": "band",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "ترايسبس - الرأس الطويل (Long Head)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Barbell_Curls_Lying_Against_An_Incline",
+    "nameAr": "بايسبس كيرل بالبار على بنش مائل",
+    "nameEn": "Barbell Curls Lying Against An Incline",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلة البايسبس"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "بايسبس - الرأس القصير (عضلة القمة)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Palms-Down_Wrist_Curl_Over_A_Bench",
+    "nameAr": "ثني المعصم والراحة لأسفل على البنش",
+    "nameEn": "Palms-Down Wrist Curl Over A Bench",
+    "category": "arms",
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات الساعد والقبضة"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "arm-20",
+    "nameAr": "ضغط قبضة ضيقة على الدمبل للترايسبس",
+    "nameEn": "Close-Grip Push-Up off of a Dumbbell",
+    "category": "arms",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلة الترايسبس"
+    ],
+    "secondaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)",
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "عضلات الساعد والقبضة (Forearms)"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "3_4_Sit-Up",
+    "nameAr": "تمرين 3/4 سيت أب لعضلات البطن",
+    "nameEn": "3/4 Sit-Up",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Ab_Crunch_Machine",
+    "nameAr": "كرنش على جهاز البطن بالأوزان",
+    "nameEn": "Ab Crunch Machine",
+    "category": "core",
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Alternate_Heel_Touchers",
+    "nameAr": "لمس الكعبين بالتناوب لعضلات الخصر والبطن",
+    "nameEn": "Alternate Heel Touchers",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Barbell_Ab_Rollout_-_On_Knees",
+    "nameAr": "فرد عجلة البطن بالبار على الركبتين",
+    "nameEn": "Barbell Ab Rollout - On Knees",
+    "category": "core",
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "أسفل الظهر (الفقرات القطنية)",
+      "عضلات الكتف (الدالية)"
+    ],
+    "subMuscles": [
+      "ثبات الجذع والكور العميق"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Cocoons",
+    "nameAr": "تمرين الشرانق لشد كامل البطن",
+    "nameEn": "Cocoons",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Gorilla_Chin_Crunch",
+    "nameAr": "عقلة جوريلا مع كرنش للبطن",
+    "nameEn": "Gorilla Chin/Crunch",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "عضلة البايسبس",
+      "عضلة الظهر العريضة (المجانص)"
+    ],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "core-9",
+    "nameAr": "تمرين جاك نايف للبطن والكور",
+    "nameEn": "Jackknife Sit-Up",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن السفلية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Scissor_Kick",
+    "nameAr": "ركلات المقص للأرجل للبطن السفلية",
+    "nameEn": "Scissor Kick",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [],
+    "subMuscles": [
+      "عضلات البطن السفلية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  },
+  {
+    "id": "Spider_Crawl",
+    "nameAr": "زحف العنكبوت للكور واللياقة",
+    "nameEn": "Spider Crawl",
+    "category": "core",
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "primaryMuscles": [
+      "عضلات البطن المستقيمة والجذع (الكور)"
+    ],
+    "secondaryMuscles": [
+      "عضلات الصدر (الصدرية الكبرى)",
+      "عضلات الكتف (الدالية)",
+      "عضلة الترايسبس"
+    ],
+    "subMuscles": [
+      "عضلات البطن العلوية"
+    ],
+    "highRisk": false,
+    "riskReasonAr": null,
+    "saferAlternatives": [],
+    "imagesCount": 2,
+    "hasGif": false
+  }
+]

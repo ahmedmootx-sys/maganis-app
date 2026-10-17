@@ -1,5 +1,11 @@
 import { useState, useMemo } from 'react'
-import type { TrackingSession, BodyLogEntry, DayNote } from '../shared/types.ts'
+import type {
+  TrackingSession,
+  BodyLogEntry,
+  DayNote,
+  MuscleGroup,
+} from '../shared/types.ts'
+import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { getExerciseById } from '../workout/exercises.ts'
 import { SvgLineChart } from '../reports/SvgLineChart.tsx'
@@ -268,6 +274,23 @@ export function ProgressScreen({
         }, 0)
       )
     }, 0)
+  }, [filteredSessions])
+
+  // Weekly sets per muscle group (المجموعات الأسبوعية لكل عضلة)
+  const weeklyMuscleSets = useMemo(() => {
+    const muscleMap: Record<string, number> = {}
+    for (const s of filteredSessions) {
+      for (const ex of s.exercises) {
+        const info = getExerciseById(ex.exerciseId)
+        const group = info?.category || 'other'
+        const label = MUSCLE_GROUP_LABELS[group as MuscleGroup] || group
+        const validSets = ex.sets.filter((st) => st.reps > 0).length
+        muscleMap[label] = (muscleMap[label] || 0) + validSets
+      }
+    }
+    return Object.entries(muscleMap)
+      .map(([muscle, sets]) => ({ muscle, sets }))
+      .sort((a, b) => b.sets - a.sets)
   }, [filteredSessions])
 
   // Personal Records
@@ -1060,7 +1083,7 @@ export function ProgressScreen({
                 secondary="في هذه الفترة"
               />
               <Stat
-                label="إجمالي الحجم المرفوع"
+                label="إجمالي الحمل المرفوع"
                 value={`${totalVolumeInRange.toLocaleString()} كجم`}
                 secondary="مجموع التكرارات بالأوزان"
               />
@@ -1087,12 +1110,12 @@ export function ProgressScreen({
                   color: 'var(--ink)',
                 }}
               >
-                الحجم التدريبي الأسبوعي (كجم)
+                الحمل المرفوع (كجم)
               </h3>
               {volumeByWeek.length === 0 ? (
                 <EmptyState
                   title="لا توجد جلسات تدريبية"
-                  description="سجّل جلسات تمرينك لتبدأ بمتابعة تطور الحجم التدريبي"
+                  description="سجّل جلسات تمرينك لتبدأ بمتابعة تطور الحمل المرفوع"
                 />
               ) : (
                 <SvgLineChart
@@ -1100,6 +1123,72 @@ export function ProgressScreen({
                   height={180}
                   color="#10b981"
                 />
+              )}
+            </div>
+
+            {/* Weekly Sets Per Muscle Group Section */}
+            <div
+              className="card"
+              style={{
+                padding: '16px',
+                borderRadius: '16px',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--line)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+              }}
+            >
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: '15.5px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
+                المجموعات الأسبوعية لكل عضلة
+              </h3>
+              {weeklyMuscleSets.length === 0 ? (
+                <EmptyState
+                  title="لا توجد مجموعات مسجلة"
+                  description="سجّل تمارينك لحساب عدد المجموعات التدريبية المنجزة لكل عضلة"
+                />
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
+                  {weeklyMuscleSets.map((item) => (
+                    <div
+                      key={item.muscle}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '8px 12px',
+                        background: 'var(--card-subtle)',
+                        borderRadius: '10px',
+                      }}
+                    >
+                      <span style={{ fontSize: '13.5px', fontWeight: 600 }}>
+                        {item.muscle}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          color: 'var(--accent)',
+                        }}
+                      >
+                        {item.sets} مجموعات
+                      </span>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
 

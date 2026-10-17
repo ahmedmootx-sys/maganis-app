@@ -23,6 +23,7 @@
     "check:env": "node scripts/check-env.mjs development",
     "check:emoji": "node scripts/check-emoji.mjs",
     "check:ui": "node scripts/check-ui.mjs",
+    "verify": "node scripts/verify.mjs",
     "gates": "npm run check:emoji && npm run lint && npm run format:check && npm run typecheck && npm run test && npm run build",
     "prepare": "husky"
   },

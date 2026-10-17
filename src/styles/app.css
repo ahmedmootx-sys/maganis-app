@@ -174,14 +174,13 @@ button {
 
 button:hover {
   border-color: var(--accent);
-  color: var(--accent);
 }
 
 .button-primary,
 button.primary {
-  background: var(--accent) !important;
-  color: #ffffff !important;
-  border: 1px solid var(--accent) !important;
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-fg) !important;
+  border: 1px solid var(--btn-primary-bg) !important;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(249, 87, 0, 0.25);
   cursor: pointer;
@@ -189,9 +188,9 @@ button.primary {
 
 .button-primary:hover,
 button.primary:hover {
-  background: var(--accent-hover, #ea580c) !important;
-  border-color: var(--accent-hover, #ea580c) !important;
-  color: #ffffff !important;
+  background: var(--btn-primary-hover-bg) !important;
+  border-color: var(--btn-primary-hover-bg) !important;
+  color: var(--btn-primary-hover-fg) !important;
   box-shadow: 0 4px 14px rgba(249, 87, 0, 0.35);
   transform: translateY(-1px);
 }
@@ -3805,12 +3804,10 @@ input[type='url'],
 /* --- Sticky Bottom Bar --- */
 .sticky-bottom-bar {
   position: sticky;
-  bottom: calc(
-    var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px)
-  );
+  bottom: 0;
   background: var(--card-bg);
   border-top: 1px solid var(--line);
-  padding: 12px 16px;
+  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 12px);
   display: flex;
   flex-direction: column;
   gap: 8px;

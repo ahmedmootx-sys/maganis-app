@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
 import { assetUrl } from '../../utils/assetUrl.ts'
 import type { ProfileStore } from './profileStore'
-import { GOALS } from './types'
+import { BODY_GOALS, TRAINING_STYLES } from './types'
 import type {
   ActivityLevel,
   Goal,
+  BodyGoal,
+  TrainingStyle,
   ProfileCore,
   Sex,
   UserProfile,
@@ -25,7 +27,7 @@ import {
   KeyValueList,
   Chips,
 } from '../../ui'
-import { fmtNumber } from '../../utils/bidi.ts'
+import { fmtFactor } from '../../utils/bidi.ts'
 
 export interface OnboardingWizardProps {
   store: ProfileStore
@@ -36,11 +38,13 @@ export interface OnboardingWizardProps {
 
 interface FormState {
   primaryGoal: Goal | null
+  bodyGoal: BodyGoal | null
+  trainingStyle: TrainingStyle[]
   trainingDaysPerWeek: number | null
   sessionMinutes: number
-  sessionIntensity: 'light' | 'moderate' | 'hard'
-  experienceLevel: 'beginner' | 'intermediate' | 'advanced'
-  trainingLocation: 'gym' | 'home' | 'both'
+  sessionIntensity: 'light' | 'moderate' | 'hard' | null
+  experienceLevel: 'beginner' | 'intermediate' | 'advanced' | null
+  trainingLocation: 'gym' | 'home' | 'both' | null
   name: string
   hasIssues: boolean | null
   injuryNotes: string
@@ -49,25 +53,27 @@ interface FormState {
   heightCm: string
   weightKg: string
   activityLevel: ActivityLevel | null
-  lifestyle: LifestyleLevel
+  lifestyle: LifestyleLevel | null
 }
 
 const DEFAULT_FORM: FormState = {
-  primaryGoal: 'hypertrophy',
-  trainingDaysPerWeek: 4,
+  primaryGoal: null,
+  bodyGoal: null,
+  trainingStyle: [],
+  trainingDaysPerWeek: null,
   sessionMinutes: 60,
-  sessionIntensity: 'moderate',
-  experienceLevel: 'beginner',
-  trainingLocation: 'gym',
+  sessionIntensity: null,
+  experienceLevel: null,
+  trainingLocation: null,
   name: '',
-  hasIssues: false,
+  hasIssues: null,
   injuryNotes: '',
-  sex: 'male',
-  age: '25',
-  heightCm: '175',
-  weightKg: '75',
-  activityLevel: 'moderate',
-  lifestyle: 2,
+  sex: null,
+  age: '',
+  heightCm: '',
+  weightKg: '',
+  activityLevel: null,
+  lifestyle: null,
 }
 
 const DRAFT_STORAGE_KEY = 'maganis:onboarding_draft'
@@ -99,28 +105,48 @@ export function OnboardingWizard({
     return 1
   })
 
+  const [injuryNotesTouched, setInjuryNotesTouched] = useState(false)
+
   const [form, setForm] = useState<FormState>(() => {
     if (initialProfile) {
       return {
         primaryGoal: initialProfile.primaryGoal,
-        trainingDaysPerWeek: initialProfile.trainingDaysPerWeek,
+        bodyGoal:
+          initialProfile.bodyGoal ??
+          (initialProfile.primaryGoal === 'cut'
+            ? 'cut'
+            : initialProfile.primaryGoal === 'hypertrophy'
+              ? 'gain'
+              : null),
+        trainingStyle:
+          initialProfile.trainingStyle ??
+          (initialProfile.primaryGoal === 'calisthenics'
+            ? ['calisthenics']
+            : ['weights']),
+        trainingDaysPerWeek: initialProfile.trainingDaysPerWeek ?? null,
         sessionMinutes: initialProfile.body.sessionMinutes ?? 60,
-        sessionIntensity: initialProfile.body.sessionIntensity ?? 'moderate',
-        experienceLevel: initialProfile.experienceLevel ?? 'beginner',
-        trainingLocation: initialProfile.trainingLocation ?? 'gym',
+        sessionIntensity: initialProfile.body.sessionIntensity ?? null,
+        experienceLevel: initialProfile.experienceLevel ?? null,
+        trainingLocation: initialProfile.trainingLocation ?? null,
         name: initialProfile.name ?? '',
         hasIssues: initialProfile.medical.hasIssues,
         injuryNotes:
           initialProfile.medical.notes ||
           initialProfile.medical.injuryTags.join('، '),
         sex: initialProfile.body.sex,
-        age: String(initialProfile.body.age),
-        heightCm: String(initialProfile.body.heightCm),
-        weightKg: String(initialProfile.body.weightKg),
+        age: initialProfile.body.age ? String(initialProfile.body.age) : '',
+        heightCm: initialProfile.body.heightCm
+          ? String(initialProfile.body.heightCm)
+          : '',
+        weightKg: initialProfile.body.weightKg
+          ? String(initialProfile.body.weightKg)
+          : '',
         activityLevel: initialProfile.body.activityLevel,
         lifestyle:
           initialProfile.body.lifestyle ??
-          mapLegacyActivityToLifestyle(initialProfile.body.activityLevel),
+          (initialProfile.body.activityLevel
+            ? mapLegacyActivityToLifestyle(initialProfile.body.activityLevel)
+            : null),
       }
     }
     try {
@@ -156,12 +182,16 @@ export function OnboardingWizard({
   }
 
   // --- Step Validations ---
-  const isStep1Valid = form.primaryGoal !== null
+  const isStep1Valid =
+    form.bodyGoal !== null && form.trainingStyle.length > 0
 
   const isStep2Valid =
     form.trainingDaysPerWeek !== null &&
     form.trainingDaysPerWeek >= 2 &&
-    form.trainingDaysPerWeek <= 6
+    form.trainingDaysPerWeek <= 6 &&
+    form.sessionIntensity !== null &&
+    form.experienceLevel !== null &&
+    form.trainingLocation !== null
 
   const isStep3Valid =
     form.hasIssues !== null &&
@@ -171,17 +201,26 @@ export function OnboardingWizard({
   const heightNum = Number(form.heightCm)
   const weightNum = Number(form.weightKg)
 
-  const isStep4Valid =
-    form.sex !== null &&
+  const isAgeValid =
+    form.age !== '' &&
     Number.isInteger(ageNum) &&
     ageNum >= 14 &&
-    ageNum <= 90 &&
+    ageNum <= 80
+
+  const isHeightValid =
+    form.heightCm !== '' &&
     Number.isFinite(heightNum) &&
     heightNum >= 120 &&
-    heightNum <= 230 &&
+    heightNum <= 230
+
+  const isWeightValid =
+    form.weightKg !== '' &&
     Number.isFinite(weightNum) &&
     weightNum >= 30 &&
     weightNum <= 250
+
+  const isStep4Valid =
+    form.sex !== null && isAgeValid && isHeightValid && isWeightValid
 
   const isStep5Valid =
     form.lifestyle !== null && form.lifestyle >= 1 && form.lifestyle <= 5
@@ -236,10 +275,14 @@ export function OnboardingWizard({
 
     const core: ProfileCore = {
       name: form.name.trim() || undefined,
-      experienceLevel: form.experienceLevel,
-      trainingLocation: form.trainingLocation,
+      experienceLevel: form.experienceLevel ?? 'beginner',
+      trainingLocation: form.trainingLocation ?? 'gym',
       goals: form.primaryGoal ? [form.primaryGoal] : ['hypertrophy'],
-      primaryGoal: form.primaryGoal ?? 'hypertrophy',
+      primaryGoal:
+        form.primaryGoal ??
+        (form.bodyGoal === 'cut' ? 'cut' : 'hypertrophy'),
+      bodyGoal: form.bodyGoal ?? undefined,
+      trainingStyle: form.trainingStyle,
       trainingDaysPerWeek: form.trainingDaysPerWeek ?? 4,
       weekStartDay: 6, // default Saturday
       medical: {
@@ -252,16 +295,18 @@ export function OnboardingWizard({
         age: Number(form.age) || 25,
         heightCm: Number(form.heightCm) || 175,
         weightKg: Number(form.weightKg) || 75,
-        activityLevel: mapLifestyleToLegacyActivity(form.lifestyle),
-        lifestyle: form.lifestyle,
+        activityLevel: form.lifestyle
+          ? mapLifestyleToLegacyActivity(form.lifestyle)
+          : 'moderate',
+        lifestyle: form.lifestyle ?? 2,
         sessionMinutes: form.sessionMinutes,
-        sessionIntensity: form.sessionIntensity,
+        sessionIntensity: form.sessionIntensity ?? 'moderate',
         workoutBlocks: [
           {
             type: 'resistance',
             sessionsPerWeek: form.trainingDaysPerWeek ?? 4,
             minutesPerSession: form.sessionMinutes,
-            intensity: form.sessionIntensity,
+            intensity: form.sessionIntensity ?? 'moderate',
           },
         ],
         hasCustomWorkoutBlocks: false,
@@ -311,7 +356,7 @@ export function OnboardingWizard({
           width: '100%',
         }}
       >
-        {/* Step 1: ما هدفك؟ */}
+        {/* Step 1: الهدف وأسلوب التمرين */}
         {currentStep === 1 && (
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
@@ -350,7 +395,7 @@ export function OnboardingWizard({
                 color: 'var(--color-text)',
               }}
             >
-              ما هدفك؟
+              الهدف وأسلوب التمرين
             </h1>
             <p
               style={{
@@ -359,18 +404,90 @@ export function OnboardingWizard({
                 margin: 0,
               }}
             >
-              اختر الهدف التدريبي والبدني الأساسي الذي تريد التركيز عليه
+              حدد اسمك، هدفك البدني الأساسي، والأساليب التدريبية المفضلة
             </p>
 
-            <OptionList
-              options={GOALS.map((g) => ({
-                value: g.value,
-                title: g.labelAr,
-                subtitle: g.hintAr,
-              }))}
-              value={form.primaryGoal ?? undefined}
-              onChange={(val) => updateForm({ primaryGoal: val as Goal })}
+            <Field
+              label="الاسم (اختياري)"
+              placeholder="أدخل اسمك الأول..."
+              value={form.name}
+              onChange={(e) => updateForm({ name: e.target.value })}
             />
+
+            <div>
+              <div
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  marginBottom: '8px',
+                  color: 'var(--color-text)',
+                }}
+              >
+                1. ما هو هدفك البدني الأساسي؟
+              </div>
+              <OptionList
+                options={BODY_GOALS.map((g) => ({
+                  value: g.value,
+                  title: g.labelAr,
+                  subtitle: g.hintAr,
+                }))}
+                value={form.bodyGoal ?? undefined}
+                onChange={(val) => {
+                  const bg = val as BodyGoal
+                  let pg: Goal = 'hypertrophy'
+                  if (bg === 'cut') pg = 'cut'
+                  else if (bg === 'gain') pg = 'hypertrophy'
+                  else if (form.trainingStyle.includes('calisthenics'))
+                    pg = 'calisthenics'
+                  updateForm({ bodyGoal: bg, primaryGoal: pg })
+                }}
+              />
+            </div>
+
+            <div>
+              <div
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  marginBottom: '8px',
+                  color: 'var(--color-text)',
+                }}
+              >
+                2. ما هو أسلوب تمرينك المفضل؟
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: '8px',
+                }}
+              >
+                {TRAINING_STYLES.map((style) => {
+                  const isSelected = form.trainingStyle.includes(style.value)
+                  return (
+                    <Chips
+                      key={style.value}
+                      selected={isSelected}
+                      onClick={() => {
+                        const next = isSelected
+                          ? form.trainingStyle.filter((s) => s !== style.value)
+                          : [...form.trainingStyle, style.value]
+                        updateForm({ trainingStyle: next })
+                      }}
+                      style={{
+                        minHeight: '44px',
+                        justifyContent: 'center',
+                        fontWeight: 600,
+                        fontSize: '14px',
+                        width: '100%',
+                      }}
+                    >
+                      {style.labelAr}
+                    </Chips>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         )}
 
@@ -431,7 +548,7 @@ export function OnboardingWizard({
                         width: '100%',
                       }}
                     >
-                      {days} {days <= 4 ? 'أيام' : 'أيام'}
+                      {days} أيام
                     </Chips>
                   )
                 })}
@@ -493,7 +610,7 @@ export function OnboardingWizard({
                   { value: 'moderate', label: 'متوسط' },
                   { value: 'hard', label: 'شاق' },
                 ]}
-                value={form.sessionIntensity}
+                value={form.sessionIntensity ?? ''}
                 onChange={(val) =>
                   updateForm({
                     sessionIntensity: val as 'light' | 'moderate' | 'hard',
@@ -518,7 +635,7 @@ export function OnboardingWizard({
                   { value: 'intermediate', label: 'متوسط' },
                   { value: 'advanced', label: 'متقدم' },
                 ]}
-                value={form.experienceLevel}
+                value={form.experienceLevel ?? ''}
                 onChange={(val) =>
                   updateForm({
                     experienceLevel: val as
@@ -542,9 +659,9 @@ export function OnboardingWizard({
                 options={[
                   { value: 'gym', label: 'جيم' },
                   { value: 'home', label: 'منزل' },
-                  { value: 'both', label: 'الاثنان' },
+                  { value: 'both', label: 'جيم ومنزل' },
                 ]}
-                value={form.trainingLocation}
+                value={form.trainingLocation ?? ''}
                 onChange={(val) =>
                   updateForm({
                     trainingLocation: val as 'gym' | 'home' | 'both',
@@ -552,13 +669,6 @@ export function OnboardingWizard({
                 }
               />
             </div>
-
-            <Field
-              label="الاسم (اختياري)"
-              placeholder="اكتب اسمك الأول..."
-              value={form.name}
-              onChange={(e) => updateForm({ name: e.target.value })}
-            />
           </div>
         )}
 
@@ -602,11 +712,12 @@ export function OnboardingWizard({
             {form.hasIssues === true && (
               <Field
                 label="تفاصيل الحالة أو الإصابة"
-                placeholder="مثال: ألم في أسفل الظهر، إصابة بالكتف، تمزق غضروفي..."
+                placeholder="أدخل تفاصيل الحالة أو الإصابة هنا..."
                 value={form.injuryNotes}
                 onChange={(e) => updateForm({ injuryNotes: e.target.value })}
+                onBlur={() => setInjuryNotesTouched(true)}
                 error={
-                  form.injuryNotes.trim().length === 0
+                  injuryNotesTouched && form.injuryNotes.trim().length === 0
                     ? 'يرجى كتابة تفاصيل الإصابة لمساعدتنا في تخصيص برنامجك'
                     : undefined
                 }
@@ -660,7 +771,7 @@ export function OnboardingWizard({
                   { value: 'male', label: 'ذكر' },
                   { value: 'female', label: 'أنثى' },
                 ]}
-                value={form.sex ?? 'male'}
+                value={form.sex ?? ''}
                 onChange={(val) => updateForm({ sex: val as Sex })}
               />
             </div>
@@ -669,25 +780,36 @@ export function OnboardingWizard({
               label="العمر"
               unit="سنة"
               inputMode="numeric"
-              placeholder="مثال: 25"
+              placeholder="أدخل عمرك بالسنوات"
               value={form.age}
               onChange={(e) => updateForm({ age: e.target.value })}
               error={
-                form.age && (ageNum < 14 || ageNum > 90)
-                  ? 'العمر يجب أن يكون بين 14 و90 سنة'
+                form.age !== '' &&
+                (!Number.isInteger(ageNum) || ageNum < 14 || ageNum > 80)
+                  ? 'العمر يجب أن يكون بين 14 و80 سنة'
                   : undefined
               }
             />
+
+            {isAgeValid && ageNum < 18 && (
+              <Callout variant="info">
+                ملاحظة: معادلات حساب السعرات والأيض مصممة ومقننة للبالغين (+18
+                سنة).
+              </Callout>
+            )}
 
             <Field
               label="الطول"
               unit="سم"
               inputMode="numeric"
-              placeholder="مثال: 175"
+              placeholder="أدخل طولك بالسنتيمتر"
               value={form.heightCm}
               onChange={(e) => updateForm({ heightCm: e.target.value })}
               error={
-                form.heightCm && (heightNum < 120 || heightNum > 230)
+                form.heightCm !== '' &&
+                (!Number.isFinite(heightNum) ||
+                  heightNum < 120 ||
+                  heightNum > 230)
                   ? 'الطول يجب أن يكون بين 120 و230 سم'
                   : undefined
               }
@@ -697,11 +819,14 @@ export function OnboardingWizard({
               label="الوزن"
               unit="كجم"
               inputMode="decimal"
-              placeholder="مثال: 75"
+              placeholder="أدخل وزنك بالكيلوجرام"
               value={form.weightKg}
               onChange={(e) => updateForm({ weightKg: e.target.value })}
               error={
-                form.weightKg && (weightNum < 30 || weightNum > 250)
+                form.weightKg !== '' &&
+                (!Number.isFinite(weightNum) ||
+                  weightNum < 30 ||
+                  weightNum > 250)
                   ? 'الوزن يجب أن يكون بين 30 و250 كجم'
                   : undefined
               }
@@ -739,9 +864,9 @@ export function OnboardingWizard({
               options={LIFESTYLE_OPTIONS.map((opt) => ({
                 value: String(opt.level),
                 title: opt.titleAr,
-                subtitle: `${opt.descriptionAr} (معامل ×${fmtNumber(opt.factor)})`,
+                subtitle: `${opt.descriptionAr} (معامل ${fmtFactor(opt.factor)})`,
               }))}
-              value={String(form.lifestyle)}
+              value={form.lifestyle !== null ? String(form.lifestyle) : ''}
               onChange={(val) => {
                 const lvl = Number(val) as LifestyleLevel
                 updateForm({
@@ -807,67 +932,285 @@ export function OnboardingWizard({
             <KeyValueList
               items={[
                 {
-                  key: 'الهدف',
-                  value:
-                    GOALS.find((g) => g.value === form.primaryGoal)?.labelAr ??
-                    '—',
+                  key: 'الهدف البدني',
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {BODY_GOALS.find((g) => g.value === form.bodyGoal)
+                        ?.labelAr ?? '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
+                  onClick: () => setCurrentStep(1),
+                },
+                {
+                  key: 'أسلوب التمرين',
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.trainingStyle
+                        .map(
+                          (s) =>
+                            TRAINING_STYLES.find((t) => t.value === s)?.labelAr,
+                        )
+                        .filter(Boolean)
+                        .join('، ') || '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(1),
                 },
                 {
                   key: 'جلسات التمرين',
-                  value: `${form.trainingDaysPerWeek} أيام أسبوعياً × ${form.sessionMinutes} دقيقة (${form.sessionIntensity === 'light' ? 'خفيف' : form.sessionIntensity === 'hard' ? 'شاق' : 'متوسط'})`,
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {`${form.trainingDaysPerWeek ?? '—'} أيام أسبوعياً × ${form.sessionMinutes} دقيقة (${form.sessionIntensity === 'light' ? 'خفيف' : form.sessionIntensity === 'hard' ? 'شاق' : 'متوسط'})`}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(2),
                 },
                 {
                   key: 'خبرة التدريب',
-                  value:
-                    form.experienceLevel === 'beginner'
-                      ? 'مبتدئ'
-                      : form.experienceLevel === 'intermediate'
-                        ? 'متوسط'
-                        : 'متقدم',
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.experienceLevel === 'beginner'
+                        ? 'مبتدئ'
+                        : form.experienceLevel === 'intermediate'
+                          ? 'متوسط'
+                          : form.experienceLevel === 'advanced'
+                            ? 'متقدم'
+                            : '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(2),
                 },
                 {
                   key: 'مكان التدريب',
-                  value:
-                    form.trainingLocation === 'gym'
-                      ? 'جيم'
-                      : form.trainingLocation === 'home'
-                        ? 'منزل'
-                        : 'الاثنان',
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.trainingLocation === 'gym'
+                        ? 'جيم'
+                        : form.trainingLocation === 'home'
+                          ? 'منزل'
+                          : form.trainingLocation === 'both'
+                            ? 'جيم ومنزل'
+                            : '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(2),
                 },
                 {
                   key: 'الصحة والإصابات',
-                  value: form.hasIssues
-                    ? form.injuryNotes || 'يوجد ملاحظات'
-                    : 'سليم ولا توجد إصابات',
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.hasIssues
+                        ? form.injuryNotes || 'يوجد ملاحظات'
+                        : form.hasIssues === false
+                          ? 'سليم ولا توجد إصابات'
+                          : '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(3),
                 },
                 {
                   key: 'الجنس',
-                  value: form.sex === 'male' ? 'ذكر' : 'أنثى',
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.sex === 'male'
+                        ? 'ذكر'
+                        : form.sex === 'female'
+                          ? 'أنثى'
+                          : '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(4),
                 },
                 {
                   key: 'العمر',
-                  value: `${form.age} سنة`,
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.age ? `${form.age} سنة` : '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(4),
                 },
                 {
                   key: 'الطول',
-                  value: `${form.heightCm} سم`,
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.heightCm ? `${form.heightCm} سم` : '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(4),
                 },
                 {
                   key: 'الوزن',
-                  value: `${form.weightKg} كجم`,
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.weightKg ? `${form.weightKg} كجم` : '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(4),
                 },
                 {
                   key: 'نمط النشاط اليومي',
-                  value: `${LIFESTYLE_OPTIONS.find((l) => l.level === form.lifestyle)?.titleAr ?? '—'} (معامل ×${fmtNumber(LIFESTYLE_OPTIONS.find((l) => l.level === form.lifestyle)?.factor ?? 1.35)})`,
+                  value: (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {form.lifestyle
+                        ? `${LIFESTYLE_OPTIONS.find((l) => l.level === form.lifestyle)?.titleAr ?? '—'} (معامل ${fmtFactor(LIFESTYLE_OPTIONS.find((l) => l.level === form.lifestyle)?.factor ?? 1.35)})`
+                        : '—'}
+                      <span
+                        style={{
+                          fontSize: '14px',
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        ‹
+                      </span>
+                    </span>
+                  ),
                   onClick: () => setCurrentStep(5),
                 },
               ]}

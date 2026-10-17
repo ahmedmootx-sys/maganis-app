@@ -176,8 +176,8 @@ export function Dashboard({
     }
   }, [profile])
 
-  const targetCalories = targets?.targetCalories ?? 2555
-  const targetProtein = targets?.proteinGrams ?? 140
+  const targetCalories = targets?.targetCalories ?? null
+  const targetProtein = targets?.proteinGrams ?? null
   const consumedCalories = dailyNutrition.consumedCalories ?? 0
   const consumedProtein = dailyNutrition.consumedProtein ?? 0
 
@@ -568,84 +568,128 @@ export function Dashboard({
 
         {/* Nutrition Today */}
         <Section title="التغذية اليوم">
-          <Card
-            padding="md"
-            interactive
-            onClick={onOpenNutrition}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                onOpenNutrition?.()
-              }
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'baseline',
-                justifyContent: 'space-between',
-                marginBottom: '10px',
-              }}
-            >
+          {targets === null || targetCalories === null || targetProtein === null ? (
+            <Card padding="md">
               <div
                 style={{
-                  fontSize: '20px',
-                  fontWeight: 800,
-                  color: 'var(--color-text)',
-                  fontVariantNumeric: 'tabular-nums',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '12px 4px',
+                  textAlign: 'center',
                 }}
               >
-                {consumedCalories} / {targetCalories}{' '}
-                <span
+                <div
                   style={{
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    color: 'var(--color-text-2)',
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
                   }}
                 >
-                  سعرة
-                </span>
+                  أدخل بياناتك لعرض الحساب
+                </div>
+                <p
+                  style={{
+                    fontSize: '13px',
+                    color: 'var(--color-text-2)',
+                    margin: 0,
+                    maxWidth: '360px',
+                  }}
+                >
+                  يتطلب حساب السعرات والماكروز معرفة الوزن والطول والعمر والجنس بدقة دون تخمين.
+                </p>
+                {onOpenNutrition && (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={onOpenNutrition}
+                  >
+                    إدخال البيانات
+                  </Button>
+                )}
               </div>
-              <div
-                style={{
-                  fontSize: '12.5px',
-                  fontWeight: 700,
-                  color: 'var(--color-accent-text)',
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {consumedProtein} / {targetProtein} جم بروتين
-              </div>
-            </div>
-
-            <ProgressBar
-              value={consumedCalories}
-              max={targetCalories}
-              variant={consumedCalories > targetCalories ? 'warning' : 'accent'}
-            />
-
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '12px',
-                color: 'var(--color-text-2)',
-                marginTop: '8px',
+            </Card>
+          ) : (
+            <Card
+              padding="md"
+              interactive
+              onClick={onOpenNutrition}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onOpenNutrition?.()
+                }
               }}
             >
-              <span>اضغط لعرض الوجبات وحساب السعرات</span>
-              <span>
-                {Math.round(
-                  targetCalories > 0
-                    ? (consumedCalories / targetCalories) * 100
-                    : 0,
-                )}
-                %
-              </span>
-            </div>
-          </Card>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  justifyContent: 'space-between',
+                  marginBottom: '10px',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: 800,
+                    color: 'var(--color-text)',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {consumedCalories} / {targetCalories}{' '}
+                  <span
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      color: 'var(--color-text-2)',
+                    }}
+                  >
+                    سعرة
+                  </span>
+                </div>
+                <div
+                  style={{
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    color: 'var(--color-accent-text)',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {consumedProtein} / {targetProtein} جم بروتين
+                </div>
+              </div>
+
+              <ProgressBar
+                value={consumedCalories}
+                max={targetCalories}
+                variant={consumedCalories > targetCalories ? 'warning' : 'accent'}
+              />
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontSize: '12px',
+                  color: 'var(--color-text-2)',
+                  marginTop: '8px',
+                }}
+              >
+                <span>اضغط لعرض الوجبات وحساب السعرات</span>
+                <span>
+                  {Math.round(
+                    targetCalories > 0
+                      ? (consumedCalories / targetCalories) * 100
+                      : 0,
+                  )}
+                  %
+                </span>
+              </div>
+            </Card>
+          )}
         </Section>
 
         {/* Mascot Tip: Approved motivation */}

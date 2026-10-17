@@ -141,7 +141,7 @@ describe('Content Preservation & Verbatim Rendering', () => {
       descriptionAr: 'تمرين ضغط صدري بالبار',
     }
 
-    // CASE A: No session history
+    // CASE A: No session history -> In Task F, Tab 5 is ALWAYS present and renders honest empty state!
     const { unmount } = render(
       <ExerciseDetailView
         exerciseId="bench-history-test"
@@ -150,7 +150,10 @@ describe('Content Preservation & Verbatim Rendering', () => {
       />,
     )
 
-    expect(screen.queryByRole('button', { name: 'السجل' })).toBeNull()
+    const historyTabBtn = screen.getByRole('button', { name: 'السجل' })
+    expect(historyTabBtn).toBeDefined()
+    fireEvent.click(historyTabBtn)
+    expect(screen.getByText('لا يوجد سجل سابق لهذا التمرين')).toBeDefined()
     unmount()
 
     // CASE B: Has logged history for this exercise

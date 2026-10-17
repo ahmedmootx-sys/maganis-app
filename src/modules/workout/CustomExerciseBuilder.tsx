@@ -158,6 +158,7 @@ export function CustomExerciseBuilder({
   onCancel,
 }: CustomExerciseBuilderProps) {
   const [nameAr, setNameAr] = useState(initialExercise?.nameAr ?? '')
+  const [nameEn, setNameEn] = useState(initialExercise?.name ?? '')
   const [descriptionAr, setDescriptionAr] = useState(
     initialExercise?.descriptionAr ?? '',
   )
@@ -203,6 +204,10 @@ export function CustomExerciseBuilder({
   const [howToStepsRaw, setHowToStepsRaw] = useState(
     initialExercise?.howToStepsAr?.join('\n') ?? '',
   )
+  const [commonMistakesRaw, setCommonMistakesRaw] = useState(
+    initialExercise?.commonMistakes?.join('\n') ?? '',
+  )
+  const [breathing, setBreathing] = useState(initialExercise?.breathing ?? '')
   const [error, setError] = useState('')
 
   function handleTogglePrimary(id: string) {
@@ -255,12 +260,18 @@ export function CustomExerciseBuilder({
       .map((s) => sanitizeInput(s))
       .filter((s) => s.length > 0)
 
+    const mistakes = commonMistakesRaw
+      .split('\n')
+      .map((s) => sanitizeInput(s))
+      .filter((s) => s.length > 0)
+
     const targetNames = currentMuscles.map(
       (m) => MUSCLE_ATLAS[m.id]?.nameAr || m.id,
     )
 
     const exercise: CustomExercise = {
       id: initialExercise?.id || uniqueId(),
+      name: sanitizeInput(nameEn) || undefined,
       nameAr: trimmed,
       descriptionAr: sanitizeInput(descriptionAr),
       category,
@@ -273,6 +284,8 @@ export function CustomExerciseBuilder({
       targetMusclesAr: targetNames,
       benefitAr: sanitizeInput(benefitAr) || undefined,
       howToStepsAr: steps.length > 0 ? steps : undefined,
+      commonMistakes: mistakes.length > 0 ? mistakes : undefined,
+      breathing: sanitizeInput(breathing) || undefined,
       isCustom: true,
     }
 
@@ -308,6 +321,7 @@ export function CustomExerciseBuilder({
 
       <form
         onSubmit={handleSubmit}
+        noValidate
         data-testid="custom-exercise-form"
         style={{
           display: 'flex',
@@ -364,6 +378,19 @@ export function CustomExerciseBuilder({
                 className="field-input"
                 dir="rtl"
                 required
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="ce-name-en">الاسم بالإنجليزية (اختياري)</label>
+              <input
+                id="ce-name-en"
+                type="text"
+                placeholder="e.g. Incline Wide Grip Bench Press"
+                value={nameEn}
+                onChange={(e) => setNameEn(e.target.value)}
+                className="field-input"
+                dir="ltr"
               />
             </div>
 
@@ -611,6 +638,39 @@ export function CustomExerciseBuilder({
                 value={howToStepsRaw}
                 onChange={(e) => setHowToStepsRaw(e.target.value)}
                 minRows={4}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="ce-mistakes">الأخطاء الشائعة</label>
+              <span
+                style={{
+                  fontSize: '11.5px',
+                  color: 'var(--muted)',
+                  marginBottom: '4px',
+                }}
+              >
+                خطأ في كل سطر
+              </span>
+              <AutoGrowTextarea
+                id="ce-mistakes"
+                placeholder="تقوس الظهر الزائد&#10;النزول السريع غير المتحكم فيه"
+                value={commonMistakesRaw}
+                onChange={(e) => setCommonMistakesRaw(e.target.value)}
+                minRows={2}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="ce-breathing">طريقة التنفس</label>
+              <input
+                id="ce-breathing"
+                type="text"
+                placeholder="شهيق أثناء النزول، وزفير بقوة أثناء الدفع"
+                value={breathing}
+                onChange={(e) => setBreathing(e.target.value)}
+                className="field-input"
+                dir="rtl"
               />
             </div>
           </div>

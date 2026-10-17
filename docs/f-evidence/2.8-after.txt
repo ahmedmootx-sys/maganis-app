@@ -1,0 +1,4 @@
+Defect 2.8 Test Result: PASS
+Found tabs: ["الفهم","العضلات","الأداء","لك","السجل"]
+Has all 5 tabs: true
+Tab 5 empty state rendered honest card: true

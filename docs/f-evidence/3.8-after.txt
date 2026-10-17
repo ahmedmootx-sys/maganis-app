@@ -1,0 +1,3 @@
+Defect 3.8 Test Result: PASS
+Found 0 nodes with trailing colon:
+[]

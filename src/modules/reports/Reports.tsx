@@ -225,26 +225,33 @@ export function Reports({
     return list.sort((a, b) => a.date.localeCompare(b.date))
   }, [cutoff, resetNonce])
 
-  const targetCalories = targets?.targetCalories ?? 2000
-  const targetProtein = targets?.proteinGrams ?? 140
+  const targetCalories = targets?.targetCalories ?? null
+  const targetProtein = targets?.proteinGrams ?? null
 
   const daysWithNutrition = nutritionLogs.filter((l) => l.consumedCalories > 0)
   const totalDaysLogged = daysWithNutrition.length
 
-  const calorieHitDays = daysWithNutrition.filter(
-    (l) =>
-      Math.abs(l.consumedCalories - targetCalories) <= targetCalories * 0.15,
-  ).length
+  const calorieHitDays =
+    targetCalories !== null
+      ? daysWithNutrition.filter(
+          (l) =>
+            Math.abs(l.consumedCalories - targetCalories) <=
+            targetCalories * 0.15,
+        ).length
+      : 0
   const calorieAdherencePct =
-    totalDaysLogged > 0
+    targetCalories !== null && totalDaysLogged > 0
       ? Math.round((calorieHitDays / totalDaysLogged) * 100)
       : 0
 
-  const proteinHitDays = daysWithNutrition.filter(
-    (l) => l.consumedProtein >= targetProtein * 0.9,
-  ).length
+  const proteinHitDays =
+    targetProtein !== null
+      ? daysWithNutrition.filter(
+          (l) => l.consumedProtein >= targetProtein * 0.9,
+        ).length
+      : 0
   const proteinAdherencePct =
-    totalDaysLogged > 0
+    targetProtein !== null && totalDaysLogged > 0
       ? Math.round((proteinHitDays / totalDaysLogged) * 100)
       : 0
 
@@ -526,14 +533,32 @@ export function Reports({
               borderRadius: '999px',
               fontSize: '12px',
               fontWeight: 800,
-              background: calorieAdherencePct >= 70 ? '#f0fdf4' : '#fffbeb',
-              color: calorieAdherencePct >= 70 ? '#166534' : '#b45309',
-              border: `1px solid ${calorieAdherencePct >= 70 ? '#86efac' : '#fde68a'}`,
+              background:
+                !targets
+                  ? 'var(--card-subtle)'
+                  : calorieAdherencePct >= 70
+                    ? '#f0fdf4'
+                    : '#fffbeb',
+              color:
+                !targets
+                  ? 'var(--muted)'
+                  : calorieAdherencePct >= 70
+                    ? '#166534'
+                    : '#b45309',
+              border: `1px solid ${
+                !targets
+                  ? 'var(--line)'
+                  : calorieAdherencePct >= 70
+                    ? '#86efac'
+                    : '#fde68a'
+              }`,
             }}
           >
-            {calorieAdherencePct >= 70
-              ? 'التزام ممتاز بالدايت'
-              : 'بحاجة لزيادة الالتزام'}
+            {!targets
+              ? 'أدخل بياناتك لعرض الحساب'
+              : calorieAdherencePct >= 70
+                ? 'التزام ممتاز بالدايت'
+                : 'بحاجة لزيادة الالتزام'}
           </span>
         </div>
 

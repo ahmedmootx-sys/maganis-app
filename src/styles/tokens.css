@@ -143,6 +143,21 @@
   --color-accent-contrast: #14161a; /* WCAG AA 5.51:1 on #f95700 */
   --color-focus-ring: rgba(249, 87, 0, 0.35);
 
+  /* Primary Button Tokens (Light Mode: WCAG AA >= 4.5:1) */
+  --btn-primary-bg: #d04300;
+  --btn-primary-fg: #ffffff;
+  --btn-primary-hover-bg: #b83800;
+  --btn-primary-hover-fg: #ffffff;
+  --btn-primary-active-bg: #9e3000;
+  --btn-primary-active-fg: #ffffff;
+  --btn-primary-focus-ring: rgba(208, 67, 0, 0.4);
+  --btn-primary-disabled-bg: #eef0f3;
+  --btn-primary-disabled-fg: #6b7280;
+
+  /* Anatomical Atlas Tokens (Light Mode) */
+  --atlas-muscle: #c9ced6;
+  --atlas-line: #a0a5ad;
+
   /* Semantic State Tokens */
   --color-success: #15803d;
   --color-success-bg: #f0fdf4;
@@ -208,6 +223,21 @@
   --color-accent-contrast: #0b0c0e;
   --color-focus-ring: rgba(255, 107, 26, 0.35);
 
+  /* Primary Button Tokens (Dark Mode: WCAG AA >= 4.5:1) */
+  --btn-primary-bg: #ff6b1a;
+  --btn-primary-fg: #0b0c0e;
+  --btn-primary-hover-bg: #ff853f;
+  --btn-primary-hover-fg: #0b0c0e;
+  --btn-primary-active-bg: #ff9b5f;
+  --btn-primary-active-fg: #0b0c0e;
+  --btn-primary-focus-ring: rgba(255, 107, 26, 0.4);
+  --btn-primary-disabled-bg: #212429;
+  --btn-primary-disabled-fg: #9ca3af;
+
+  /* Anatomical Atlas Tokens (Dark Mode) */
+  --atlas-muscle: #3a3f47;
+  --atlas-line: #525862;
+
   --color-success: #22c55e;
   --color-success-bg: #052e16;
   --color-success-border: #14532d;
@@ -259,6 +289,19 @@
     --color-accent-text: #ff853f;
     --color-accent-contrast: #0b0c0e;
     --color-focus-ring: rgba(255, 107, 26, 0.35);
+
+    --btn-primary-bg: #ff6b1a;
+    --btn-primary-fg: #0b0c0e;
+    --btn-primary-hover-bg: #ff853f;
+    --btn-primary-hover-fg: #0b0c0e;
+    --btn-primary-active-bg: #ff9b5f;
+    --btn-primary-active-fg: #0b0c0e;
+    --btn-primary-focus-ring: rgba(255, 107, 26, 0.4);
+    --btn-primary-disabled-bg: #212429;
+    --btn-primary-disabled-fg: #9ca3af;
+
+    --atlas-muscle: #3a3f47;
+    --atlas-line: #525862;
 
     --color-success: #22c55e;
     --color-success-bg: #052e16;

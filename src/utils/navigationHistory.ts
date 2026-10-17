@@ -7,6 +7,17 @@
 
 type BackHandler = () => boolean | void // return false to prevent default pop
 
+export type NavSource = 'app' | 'browser'
+let navSource: NavSource = 'browser'
+
+export function setNavSource(source: NavSource) {
+  navSource = source
+}
+
+export function getNavSource(): NavSource {
+  return navSource
+}
+
 class NavigationHistoryManager {
   private handlerStack: Array<{ id: string; handler: BackHandler }> = []
   private isPushing = false
@@ -75,6 +86,15 @@ class NavigationHistoryManager {
       return
     }
 
+    const currentNavSource = navSource
+    // Reset back to browser for subsequent physical gestures
+    navSource = 'browser'
+
+    // (a) The navigation was not started by the app
+    if (currentNavSource === 'app') {
+      return
+    }
+
     // 1. If there's an active modal or overlay handler in the stack, pop and execute it
     if (this.handlerStack.length > 0) {
       const top = this.handlerStack.pop()
@@ -97,7 +117,19 @@ class NavigationHistoryManager {
       }
     }
 
-    // 3. If stack is empty and at root, check double-press exit behavior
+    // (c) matchMedia('(display-mode: standalone)') is true
+    const isStandalone =
+      typeof window !== 'undefined' &&
+      (window.matchMedia?.('(display-mode: standalone)').matches === true ||
+        (window.navigator as unknown as { standalone?: boolean })?.standalone ===
+          true)
+
+    if (!isStandalone) {
+      // In a normal browser tab the exit toast never appears
+      return
+    }
+
+    // 3. If stack is empty and at root in standalone mode, check double-press exit behavior
     const now = Date.now()
     if (now - this.lastBackPressTime < 2000) {
       // Second back press within 2s: allow normal exit / back

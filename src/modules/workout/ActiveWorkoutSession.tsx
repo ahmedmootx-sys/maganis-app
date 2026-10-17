@@ -11,6 +11,7 @@ import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { formatTime } from './workoutUtils.ts'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import { TopBar, ProgressBar, Sheet, ConfirmSheet } from '../../ui/index.ts'
+import exerciseFlagsData from '../../data/exercise-flags.json'
 import {
   IconClock,
   IconMoreVertical,
@@ -89,13 +90,13 @@ export function ActiveWorkoutSession({
       }
       return programDay.exercises.map((pe) => {
         const defaultSetsCount = Math.max(1, pe.sets || 3)
-        const defaultReps = pe.reps > 0 ? pe.reps : 10
+        const defaultReps = pe.reps > 0 ? pe.reps : 0
         const sets: ActiveSet[] = Array.from(
           { length: defaultSetsCount },
           (_, idx) => ({
             id: uniqueId(),
             setNum: idx + 1,
-            weightKg: 20,
+            weightKg: 0,
             reps: defaultReps,
             isCompleted: false,
           }),
@@ -212,8 +213,16 @@ export function ActiveWorkoutSession({
     }
   }
 
-  // --- Sets Actions ---
-  function handleToggleSetCompleted(exerciseIndex: number, setIndex: number) {
+  // Warmup Confirmation State for high-risk exercises
+  const [warmupConfirmationPending, setWarmupConfirmationPending] = useState<{
+    exerciseIndex: number
+    setIndex: number
+  } | null>(null)
+  const [confirmedWarmups, setConfirmedWarmups] = useState<
+    Record<string, boolean>
+  >({})
+
+  function executeToggleSet(exerciseIndex: number, setIndex: number) {
     setExercisesState((prev) => {
       const next = [...prev]
       const currentEx = { ...next[exerciseIndex] }
@@ -235,6 +244,34 @@ export function ActiveWorkoutSession({
 
       return next
     })
+  }
+
+  // --- Sets Actions ---
+  function handleToggleSetCompleted(exerciseIndex: number, setIndex: number) {
+    const exState = exercisesState[exerciseIndex]
+    const exId = exState?.exerciseId
+    const flag = exId
+      ? (exerciseFlagsData.exercises as Record<string, any>)[exId]
+      : null
+
+    // If exercise requires warmup confirmation and hasn't been confirmed yet
+    if (flag?.requiresWarmupConfirmation && !confirmedWarmups[exId]) {
+      setWarmupConfirmationPending({ exerciseIndex, setIndex })
+      return
+    }
+
+    executeToggleSet(exerciseIndex, setIndex)
+  }
+
+  function handleConfirmWarmup() {
+    if (!warmupConfirmationPending) return
+    const { exerciseIndex, setIndex } = warmupConfirmationPending
+    const exId = exercisesState[exerciseIndex]?.exerciseId
+    if (exId) {
+      setConfirmedWarmups((prev) => ({ ...prev, [exId]: true }))
+    }
+    executeToggleSet(exerciseIndex, setIndex)
+    setWarmupConfirmationPending(null)
   }
 
   function handleUpdateSetField(
@@ -738,7 +775,7 @@ export function ActiveWorkoutSession({
                       const prevExSets = previousHistoryMap[exState.exerciseId]
                       const prevSet = prevExSets?.[sIdx]
                       const prevText = prevSet
-                        ? `${prevSet.weightKg}ك × ${prevSet.reps}`
+                        ? `${prevSet.weightKg}\u00A0كجم × ${prevSet.reps}`
                         : '—'
 
                       return (
@@ -759,7 +796,12 @@ export function ActiveWorkoutSession({
                               type="number"
                               min="0"
                               step="0.5"
-                              value={set.weightKg}
+                              value={set.weightKg === 0 ? '' : set.weightKg}
+                              placeholder={
+                                prevSet && prevSet.weightKg > 0
+                                  ? String(prevSet.weightKg)
+                                  : 'كجم'
+                              }
                               onChange={(e) =>
                                 handleUpdateSetField(
                                   exIdx,
@@ -777,7 +819,12 @@ export function ActiveWorkoutSession({
                               type="number"
                               min="0"
                               step="1"
-                              value={set.reps}
+                              value={set.reps === 0 ? '' : set.reps}
+                              placeholder={
+                                prevSet && prevSet.reps > 0
+                                  ? String(prevSet.reps)
+                                  : 'تكرار'
+                              }
                               onChange={(e) =>
                                 handleUpdateSetField(
                                   exIdx,
@@ -1043,7 +1090,7 @@ export function ActiveWorkoutSession({
                   <strong>{completedSetsCount} مجموعة</strong>
                 </li>
                 <li>
-                  <span>إجمالي الوزن المرفوع</span>
+                  <span>إجمالي الحمل المرفوع</span>
                   <strong>{totalVolumeKg} كجم</strong>
                 </li>
               </ul>
@@ -1099,6 +1146,23 @@ export function ActiveWorkoutSession({
           confirmLabel="نعم، إلغاء وخروج"
           cancelLabel="متابعة التمرين"
           isDestructive={true}
+        />
+      )}
+
+      {/* Warmup Confirmation Sheet for high-risk exercises */}
+      {warmupConfirmationPending && (
+        <ConfirmSheet
+          isOpen={true}
+          onClose={() => setWarmupConfirmationPending(null)}
+          onConfirm={handleConfirmWarmup}
+          title="تأكيد الإحماء قبل بدء التمرين"
+          consequences={[
+            'هذا التمرين مصنف كعالي الخطورة على المفاصل والأوتار.',
+            'تأكد من أداء مجموعات إحماء تدريجية بوزن خفيف وإطالات حركية لتجهيز المفصل وتجنب الإصابة.',
+          ]}
+          confirmLabel="نعم، أتممت الإحماء"
+          cancelLabel="تراجع"
+          isDestructive={false}
         />
       )}
     </div>

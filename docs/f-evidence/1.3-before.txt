@@ -1,0 +1,14 @@
+# Defect 1.3 Before Evidence: Muscle Atlas neutral fill & zoom
+- SVG Data before zoom: {
+  "totalVisPaths": 53,
+  "blackFillsCount": 0,
+  "sampleBlackFills": [],
+  "primaries": 1,
+  "secondaries": 4
+}
+- SVG Data after zoom: {
+  "primaries": 0,
+  "secondaries": 0
+}
+- Black neutral fill bug confirmed: NO
+- Zoom highlight persistence: Primaries 1 -> 0, Secondaries 4 -> 0
