@@ -3,6 +3,9 @@ import { assetUrl } from '../../utils/assetUrl.ts'
 import type { MuscleGroup } from '../shared/types.ts'
 import { IconImage } from '../../components/Icons.tsx'
 
+import { resolveMedia } from '../../utils/mediaResolver.ts'
+import { getExerciseById } from './exercises.ts'
+
 interface ExerciseVisualProps {
   category?: MuscleGroup | string
   exerciseId?: string
@@ -33,22 +36,17 @@ export function ExerciseVisual({
   const [imgError, setImgError] = useState(false)
   const [frame1Failed, setFrame1Failed] = useState(false)
 
-  // Resolve media sources: prefer local bundled assets
-  let frame0 = ''
-  let frame1 = ''
+  // Resolve media sources using unified resolveMedia
+  const rawEx = exerciseId ? getExerciseById(exerciseId) : null
+  const resolved = resolveMedia(rawEx || { id: exerciseId || '', imageUrl: gifUrl || imageUrl })
 
-  if (exerciseId) {
-    frame0 = `exercises/${exerciseId}_0.jpg`
-    frame1 = `exercises/${exerciseId}_1.jpg`
-  } else if (gifUrl || imageUrl) {
-    const activeMedia = gifUrl || imageUrl || ''
-    frame0 = activeMedia
-    frame1 = activeMedia
-    if (activeMedia.endsWith('/0.jpg')) {
-      frame1 = activeMedia.replace(/\/0\.jpg$/i, '/1.jpg')
-    } else if (activeMedia.endsWith('_0.jpg')) {
-      frame1 = activeMedia.replace(/_0\.jpg$/i, '_1.jpg')
-    }
+  let frame0 = resolved.url || gifUrl || imageUrl || ''
+  let frame1 = resolved.frame1Url || frame0
+
+  if (frame0 && frame0.includes('_0.jpg')) {
+    frame1 = frame0.replace('_0.jpg', '_1.jpg')
+  } else if (frame0.endsWith('/0.jpg')) {
+    frame1 = frame0.replace(/\/0\.jpg$/i, '/1.jpg')
   }
 
   const hasTwoFrames =

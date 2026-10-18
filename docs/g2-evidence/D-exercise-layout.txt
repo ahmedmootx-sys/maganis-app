@@ -1,0 +1,10 @@
+RUN  v3.2.7 C:/Users/power tech/Downloads/maganis-project
+
+ ✓ src/modules/workout/exercisePageLayout.test.tsx (3 tests) 265ms
+   ✓ Part D: Exercise Page Layout > D1 & D2: One content column, title wraps without truncation, tag in chips row
+   ✓ Part D: Exercise Page Layout > D3: Tab strip has clear labels, 44px min-height, and includes "مع حالتي"
+   ✓ Part D: Exercise Page Layout > D4 & D5: Sticky bottom bar has top border, correct page section order
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Duration  6.21s

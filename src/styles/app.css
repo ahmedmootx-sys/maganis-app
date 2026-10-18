@@ -1986,6 +1986,56 @@ button.ghost-danger:hover {
   white-space: nowrap;
 }
 
+.set-prev-btn {
+  background: var(--card-subtle, rgba(255, 255, 255, 0.05));
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  font-size: 11.5px;
+  color: var(--ink);
+}
+
+.set-prev-btn:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.bodyweight-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--card-subtle);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.set-row-hint {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--danger, #ef4444);
+  padding: 2px 4px;
+}
+
+.undo-toast-btn {
+  background: #ffffff;
+  color: #1f2937;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-inline-start: 10px;
+}
+
 .set-check-btn {
   width: 44px;
   height: 44px;
@@ -1993,8 +2043,8 @@ button.ghost-danger:hover {
   min-height: 44px;
   border-radius: 50%;
   border: 1.5px solid var(--line);
-  background: var(--bg);
-  color: var(--muted);
+  background: transparent;
+  color: transparent;
   font-size: 16px;
   font-weight: 800;
   display: inline-flex;
@@ -2010,7 +2060,6 @@ button.ghost-danger:hover {
 
 .set-check-btn:hover {
   border-color: #10b981;
-  color: #10b981;
 }
 
 .set-check-btn.checked {
@@ -3814,12 +3863,27 @@ input[type='url'],
   gap: 8px;
   z-index: 90;
   margin: 0 -16px;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: none;
 }
 
-.sticky-bottom-bar button {
+.sticky-bottom-bar--row,
+.sticky-bottom-bar:has(> button:nth-child(2)),
+.sticky-bottom-bar:has(> .btn:nth-child(2)) {
+  flex-direction: row;
+  align-items: center;
+}
+
+.sticky-bottom-bar button,
+.sticky-bottom-bar .btn {
   width: 100%;
   height: 48px;
   font-size: 15px;
   font-weight: 700;
+}
+
+.sticky-bottom-bar--row button,
+.sticky-bottom-bar--row .btn,
+.sticky-bottom-bar:has(> button:nth-child(2)) button,
+.sticky-bottom-bar:has(> .btn:nth-child(2)) .btn {
+  flex: 1;
 }

@@ -171,25 +171,51 @@ export function ProgramVaultModal({
                       secondary={daysStr}
                       tertiary={dateStr}
                       trailing={
-                        <button
-                          type="button"
-                          className="topbar-icon-btn"
+                        <div
                           style={{
-                            width: '38px',
-                            height: '38px',
-                            minWidth: '38px',
-                            minHeight: '38px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
                           }}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setSelectedProgram(item)
-                            setRenameText(item.title)
-                            setIsRenaming(false)
-                          }}
-                          aria-label={`خيارات ${item.title}`}
                         >
-                          <IconMoreVertical size={18} />
-                        </button>
+                          {!isCurrentlyActive && (
+                            <button
+                              type="button"
+                              className="button-primary tiny"
+                              style={{
+                                height: '32px',
+                                padding: '0 10px',
+                                fontSize: '12px',
+                                borderRadius: '8px',
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setConfirmApply(item)
+                              }}
+                            >
+                              تفعيل
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className="topbar-icon-btn"
+                            style={{
+                              width: '38px',
+                              height: '38px',
+                              minWidth: '38px',
+                              minHeight: '38px',
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setSelectedProgram(item)
+                              setRenameText(item.title)
+                              setIsRenaming(false)
+                            }}
+                            aria-label={`خيارات ${item.title}`}
+                          >
+                            <IconMoreVertical size={18} />
+                          </button>
+                        </div>
                       }
                     />
                   )

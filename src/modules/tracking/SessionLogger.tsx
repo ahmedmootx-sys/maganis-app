@@ -601,12 +601,14 @@ export function SessionLogger({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              placeholder="دوّن أي شعور بالإجهاد، أوزان قياسية، أو ملاحظات للأسبوع القادم..."
+              placeholder="مثال: دوّن أي شعور بالإجهاد، أوزان قياسية، أو ملاحظات للأسبوع القادم..."
               dir="rtl"
               className="field-input"
               style={{
-                minHeight: '80px',
-                resize: 'vertical',
+                minHeight: '84px',
+                resize: 'none',
+                overflow: 'hidden',
+                textAlign: 'start',
                 padding: '12px',
                 borderRadius: '10px',
               }}

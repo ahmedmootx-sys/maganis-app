@@ -241,8 +241,8 @@ describe('Content Preservation & Verbatim Rendering', () => {
       />,
     )
 
-    // Click Tab "لك"
-    const forYouTab = screen.getByRole('radio', { name: 'لك' })
+    // Click Tab "مع حالتي"
+    const forYouTab = screen.getByRole('radio', { name: 'مع حالتي' })
     fireEvent.click(forYouTab)
 
     // Medical warning callout rendered

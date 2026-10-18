@@ -200,7 +200,7 @@ export function ExerciseDetailView({
       { value: 'understanding', label: 'الفهم' },
       { value: 'muscles', label: 'العضلات' },
       { value: 'performance', label: 'الأداء' },
-      { value: 'for_you', label: 'لك' },
+      { value: 'for_you', label: 'مع حالتي' },
       { value: 'history', label: 'السجل' },
     ] as Array<{ value: TabType; label: string }>
   }, [])
@@ -433,37 +433,77 @@ export function ExerciseDetailView({
       dir="rtl"
       style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
     >
-      {/* 1. Header: Back button, Arabic title, English small ltr, real Chips */}
+      {/* 1. Header: Back button */}
       <TopBar
-        title={nameAr}
-        subtitle={nameEn ? <span dir="ltr">{nameEn}</span> : undefined}
         onBack={onBack ? onBack : () => window.history.back()}
-        actions={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span
-              style={{
-                fontSize: '11px',
-                padding: '2px 8px',
-                borderRadius: 'var(--radius-full)',
-                background: 'var(--color-surface-2)',
-                color: 'var(--color-text-2)',
-              }}
-            >
-              {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] ||
-                exercise.category}
-            </span>
-          </div>
-        }
+        backAriaLabel="رجوع"
       />
 
       <div
+        className="exercise-detail-container"
         style={{
           paddingInline: '16px',
           display: 'flex',
           flexDirection: 'column',
           gap: '14px',
+          width: '100%',
+          boxSizing: 'border-box',
         }}
       >
+        {/* Title and English subtitle block (wraps naturally, line-height >= 1.5, text-wrap: balance) */}
+        <div
+          className="exercise-detail-title-block"
+          style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}
+        >
+          <h1
+            style={{
+              margin: 0,
+              fontSize: '22px',
+              fontWeight: 800,
+              lineHeight: 1.5,
+              textWrap: 'balance',
+              color: 'var(--color-text)',
+            }}
+          >
+            {nameAr}
+          </h1>
+          {nameEn && (
+            <div style={{ fontSize: '13px', color: 'var(--color-text-2)' }}>
+              <bdi dir="ltr">{nameEn}</bdi>
+            </div>
+          )}
+        </div>
+
+        {/* Real Meta Chips (including category tag moved from TopBar into chips row) */}
+        <div
+          className="exercise-detail-chips-row"
+          style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', width: '100%' }}
+        >
+          <span
+            className="chip chip--accent"
+            style={{
+              fontWeight: 700,
+              background: 'var(--color-accent-subtle, rgba(255, 107, 0, 0.12))',
+              color: 'var(--color-accent-text, #ff6b00)',
+              border: '1px solid var(--color-accent, #ff6b00)',
+            }}
+          >
+            {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] ||
+              exercise.category}
+          </span>
+          <span className="chip">
+            {EQUIPMENT_LABELS[exercise.equipment as Equipment] ||
+              exercise.equipment}
+          </span>
+          <span className="chip">
+            {DIFFICULTY_LABELS[exercise.difficulty as Difficulty] ||
+              exercise.difficulty}
+          </span>
+          {exercise.targetSubMuscleAr && (
+            <span className="chip">{exercise.targetSubMuscleAr}</span>
+          )}
+        </div>
+
         {/* Risk Banner / Callout if flagged */}
         {flagInfo && (
           <Callout
@@ -543,27 +583,8 @@ export function ExerciseDetailView({
           </Callout>
         )}
 
-        {/* Real Meta Chips (not header bullet string) */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          <span className="chip">
-            {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] ||
-              exercise.category}
-          </span>
-          <span className="chip">
-            {EQUIPMENT_LABELS[exercise.equipment as Equipment] ||
-              exercise.equipment}
-          </span>
-          <span className="chip">
-            {DIFFICULTY_LABELS[exercise.difficulty as Difficulty] ||
-              exercise.difficulty}
-          </span>
-          {exercise.targetSubMuscleAr && (
-            <span className="chip">{exercise.targetSubMuscleAr}</span>
-          )}
-        </div>
-
-        {/* Section: الحركة — Visual Movement Explainer */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {/* Section: الحركة — Visual Movement Explainer (G 3.5) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
           <div
             style={{
               fontSize: '16px',
@@ -584,122 +605,32 @@ export function ExerciseDetailView({
           />
         </div>
 
-        {/* Section: مع حالتك — Limitations & Injuries Integration */}
-        {limitationDetails && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              background: 'var(--color-surface-2)',
-              padding: '14px 16px',
-              borderRadius: 'var(--radius-card)',
-              border: '1px solid var(--color-border)',
-            }}
-          >
-            <div
-              style={{
-                fontSize: '15px',
-                fontWeight: 800,
-                color: 'var(--color-text)',
-              }}
-            >
-              مع حالتك الصحية
-            </div>
-
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {Object.entries(limitationDetails.loads || {}).map(([reg, load]) => (
-                <span
-                  key={reg}
-                  className={`badge ${load === 'high' ? 'tag-danger' : load === 'moderate' ? 'tag-warning' : 'tag-muted'}`}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: 'var(--radius-full)',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                  }}
-                >
-                  {getRegionLabel(reg as LimitationRegion)} —{' '}
-                  {load === 'high' ? 'حمل عالٍ' : load === 'moderate' ? 'حمل متوسط' : 'حمل خفيف'}
-                </span>
-              ))}
-            </div>
-
-            {limitationDetails.note_ar && (
-              <p
-                style={{
-                  fontSize: '13px',
-                  color: 'var(--color-text)',
-                  lineHeight: 1.5,
-                  margin: 0,
-                }}
-              >
-                {limitationDetails.note_ar}
-              </p>
-            )}
-
-            {limitationDetails.alternatives && limitationDetails.alternatives.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-text-2)' }}>
-                  بدائل أخف مقترحة
-                </span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {limitationDetails.alternatives.map((altId) => {
-                    const altEx = getExerciseById(altId)
-                    const altName = altEx?.nameAr || altId
-                    return (
-                      <div
-                        key={altId}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '8px 12px',
-                          background: 'var(--color-surface)',
-                          borderRadius: 'var(--radius-control)',
-                          border: '1px solid var(--color-border)',
-                        }}
-                      >
-                        <span style={{ fontSize: '13px', fontWeight: 600 }}>{altName}</span>
-                        {onSwapExercise && exercise.id && (
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() =>
-                              setSwapModalConfirm({
-                                isOpen: true,
-                                newExerciseId: altId,
-                                newExerciseName: altName,
-                              })
-                            }
-                          >
-                            استبدال في اليوم
-                          </Button>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Sticky Tabs Header */}
+        {/* Sticky Tabs Header (44px height, container inherits border radius, no square dark backdrop) */}
         <div
+          className="exercise-detail-tabs-header"
           style={{
             position: 'sticky',
             top: 'calc(var(--top-bar-height) + var(--safe-area-top))',
             zIndex: 15,
             background: 'var(--color-bg)',
             paddingBlock: '6px',
+            width: '100%',
           }}
         >
-          <Segmented
-            options={tabOptions}
-            value={activeTab}
-            onChange={(val) => setActiveTab(val as TabType)}
-          />
+          <div
+            style={{
+              overflowX: 'auto',
+              scrollbarWidth: 'none',
+              borderRadius: 'var(--radius-control)',
+            }}
+          >
+            <Segmented
+              options={tabOptions}
+              value={activeTab}
+              onChange={(val) => setActiveTab(val as TabType)}
+              className="exercise-tabs-segmented"
+            />
+          </div>
         </div>
 
         {/* TAB 1: الفهم */}
@@ -1131,11 +1062,145 @@ export function ExerciseDetailView({
           </div>
         )}
 
-        {/* TAB 4: لك (Personalisation) */}
+        {/* TAB 4: مع حالتي (Personalisation & Health) */}
         {activeTab === 'for_you' && (
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
           >
+            {/* Section: مع حالتك — Limitations & Injuries Integration */}
+            {limitationDetails && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  background: 'var(--color-surface-2)',
+                  padding: '14px 16px',
+                  borderRadius: 'var(--radius-card)',
+                  border: '1px solid var(--color-border)',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 800,
+                    color: 'var(--color-text)',
+                  }}
+                >
+                  مع حالتك الصحية
+                </div>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {Object.entries(limitationDetails.loads || {}).map(
+                    ([reg, load]) => (
+                      <span
+                        key={reg}
+                        className={`badge ${load === 'high' ? 'tag-danger' : load === 'moderate' ? 'tag-warning' : 'tag-muted'}`}
+                        style={{
+                          padding: '4px 10px',
+                          borderRadius: 'var(--radius-full)',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {getRegionLabel(reg as LimitationRegion)} —{' '}
+                        {load === 'high'
+                          ? 'حمل عالٍ'
+                          : load === 'moderate'
+                            ? 'حمل متوسط'
+                            : 'حمل خفيف'}
+                      </span>
+                    ),
+                  )}
+                </div>
+
+                {limitationDetails.note_ar && (
+                  <p
+                    style={{
+                      fontSize: '13px',
+                      color: 'var(--color-text)',
+                      lineHeight: 1.5,
+                      margin: 0,
+                    }}
+                  >
+                    {limitationDetails.note_ar}
+                  </p>
+                )}
+
+                {limitationDetails.alternatives &&
+                  limitationDetails.alternatives.length > 0 && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '6px',
+                        marginTop: '4px',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: '12.5px',
+                          fontWeight: 700,
+                          color: 'var(--color-text-2)',
+                        }}
+                      >
+                        بدائل أخف مقترحة
+                      </span>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '6px',
+                        }}
+                      >
+                        {limitationDetails.alternatives.map((altId) => {
+                          const altEx = getExerciseById(altId)
+                          const altName = altEx?.nameAr || altId
+                          return (
+                            <div
+                              key={altId}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '8px 12px',
+                                background: 'var(--color-surface)',
+                                borderRadius: 'var(--radius-control)',
+                                border: '1px solid var(--color-border)',
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: '13px',
+                                  fontWeight: 600,
+                                }}
+                              >
+                                {altName}
+                              </span>
+                              {onSwapExercise && exercise.id && (
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  onClick={() =>
+                                    setSwapModalConfirm({
+                                      isOpen: true,
+                                      newExerciseId: altId,
+                                      newExerciseName: altName,
+                                    })
+                                  }
+                                >
+                                  استبدال في اليوم
+                                </Button>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+              </div>
+            )}
+
             {/* Top Label & Disclaimer */}
             <div
               style={{

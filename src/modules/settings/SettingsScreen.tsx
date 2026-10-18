@@ -97,6 +97,26 @@ export function SettingsScreen({
     return 'auto'
   })
 
+  const [issueCopied, setIssueCopied] = useState(false)
+
+  function handleReportIssue() {
+    const report = [
+      '=== تقرير مشكلة Maganis ===',
+      `المسار الحالي: ${window.location.hash || '#/'}`,
+      `معرف البناء: ${typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'dev'}`,
+      `أبعاد الشاشة: ${window.innerWidth} × ${window.innerHeight}`,
+      `معامل البكسل (DPR): ${window.devicePixelRatio}`,
+      `المظهر: ${currentThemeMode}`,
+      `حالة Service Worker: ${navigator.serviceWorker?.controller?.state || 'none'}`,
+      `User Agent: ${navigator.userAgent}`,
+      `تاريخ التقرير: ${new Date().toISOString()}`,
+    ].join('\n')
+
+    navigator.clipboard?.writeText?.(report)
+    setIssueCopied(true)
+    setTimeout(() => setIssueCopied(false), 3000)
+  }
+
   useEffect(() => {
     if (currentThemeMode === 'auto') {
       const isDark =
@@ -521,6 +541,9 @@ export function SettingsScreen({
                 marginTop: '16px',
                 paddingTop: '12px',
                 borderTop: '1px solid var(--line)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
               }}
             >
               <Button
@@ -530,6 +553,14 @@ export function SettingsScreen({
               >
                 <Icon name="info" size={16} />
                 <span>معلومات تقنية</span>
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={handleReportIssue}
+                style={{ width: '100%' }}
+              >
+                <Icon name="alert-triangle" size={16} />
+                <span>{issueCopied ? 'تم نسخ تقرير المشكلة للحافظة ✓' : 'تقرير مشكلة'}</span>
               </Button>
             </div>
           </Card>

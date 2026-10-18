@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import type {
   Exercise,
   ProgramDay,
@@ -7,10 +7,11 @@ import type {
 } from '../shared/types.ts'
 import { getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
-import { ExerciseVisual } from './ExerciseVisual.tsx'
+import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { formatTime } from './workoutUtils.ts'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import { TopBar, ProgressBar, Sheet, ConfirmSheet } from '../../ui/index.ts'
+import { plural } from '../../utils/plural.ts'
 import exerciseFlagsData from '../../data/exercise-flags.json'
 import {
   IconClock,
@@ -36,11 +37,42 @@ interface ActiveSet {
   weightKg: number
   reps: number
   isCompleted: boolean
+  hasMissingWeight?: boolean
 }
 
 interface ActiveExerciseState {
   exerciseId: string
   sets: ActiveSet[]
+}
+
+export function getExerciseMeasureType(
+  ex?: Exercise | null,
+): 'weight' | 'bodyweight' | 'timed' {
+  if (!ex) return 'weight'
+  if (
+    ex.measurementType === 'duration' ||
+    ex.nameAr?.includes('بلانك') ||
+    ex.name?.toLowerCase().includes('plank')
+  ) {
+    return 'timed'
+  }
+  if (ex.equipment === 'bodyweight' || ex.measurementType === 'bodyweight') {
+    return 'bodyweight'
+  }
+  return 'weight'
+}
+
+export function isSetReadyToComplete(
+  set: ActiveSet,
+  measureType: 'weight' | 'bodyweight' | 'timed',
+): boolean {
+  if (measureType === 'bodyweight') {
+    return set.reps >= 1
+  }
+  if (measureType === 'timed') {
+    return set.reps >= 1
+  }
+  return set.weightKg > 0 && set.reps >= 1
 }
 
 function uniqueId(): string {
@@ -90,14 +122,13 @@ export function ActiveWorkoutSession({
       }
       return programDay.exercises.map((pe) => {
         const defaultSetsCount = Math.max(1, pe.sets || 3)
-        const defaultReps = pe.reps > 0 ? pe.reps : 0
         const sets: ActiveSet[] = Array.from(
           { length: defaultSetsCount },
           (_, idx) => ({
             id: uniqueId(),
             setNum: idx + 1,
             weightKg: 0,
-            reps: defaultReps,
+            reps: 0,
             isCompleted: false,
           }),
         )
@@ -246,10 +277,36 @@ export function ActiveWorkoutSession({
     })
   }
 
+  // Inline Hint state when clicking disabled checkmark
+  const [inlineHintSetId, setInlineHintSetId] = useState<string | null>(null)
+
+  // Undo delete state
+  const [deletedSetInfo, setDeletedSetInfo] = useState<{
+    exerciseIndex: number
+    setIndex: number
+    set: ActiveSet
+  } | null>(null)
+  const undoTimeoutRef = useRef<number | null>(null)
+
   // --- Sets Actions ---
   function handleToggleSetCompleted(exerciseIndex: number, setIndex: number) {
     const exState = exercisesState[exerciseIndex]
     const exId = exState?.exerciseId
+    const custom = customExercises.find((c) => c.id === exId)
+    const exercise = custom ?? getExerciseById(exId)
+    const measureType = getExerciseMeasureType(exercise)
+    const currentSet = exState.sets[setIndex]
+
+    // If set is not yet completed, enforce completion readiness rule (A1)
+    if (!currentSet.isCompleted) {
+      if (!isSetReadyToComplete(currentSet, measureType)) {
+        setInlineHintSetId(currentSet.id)
+        return
+      }
+    }
+
+    setInlineHintSetId(null)
+
     const flag = exId
       ? (exerciseFlagsData.exercises as Record<string, any>)[exId]
       : null
@@ -292,18 +349,42 @@ export function ActiveWorkoutSession({
       next[exerciseIndex] = currentEx
       return next
     })
+    setInlineHintSetId(null)
+  }
+
+  // Previous-value shortcut (A2)
+  function handleCopyPrevious(exerciseIndex: number, setIndex: number) {
+    const exState = exercisesState[exerciseIndex]
+    const prevExSets = previousHistoryMap[exState.exerciseId]
+    const prevSet =
+      prevExSets?.[setIndex] || (prevExSets && prevExSets.length > 0 ? prevExSets[prevExSets.length - 1] : null)
+    if (!prevSet) return
+
+    setExercisesState((prev) => {
+      const next = [...prev]
+      const currentEx = { ...next[exerciseIndex] }
+      const nextSets = [...currentEx.sets]
+      nextSets[setIndex] = {
+        ...nextSets[setIndex],
+        weightKg: prevSet.weightKg > 0 ? prevSet.weightKg : nextSets[setIndex].weightKg,
+        reps: prevSet.reps > 0 ? prevSet.reps : nextSets[setIndex].reps,
+      }
+      currentEx.sets = nextSets
+      next[exerciseIndex] = currentEx
+      return next
+    })
+    setInlineHintSetId(null)
   }
 
   function handleAddSet(exerciseIndex: number) {
     setExercisesState((prev) => {
       const next = [...prev]
       const currentEx = { ...next[exerciseIndex] }
-      const lastSet = currentEx.sets[currentEx.sets.length - 1]
       const newSet: ActiveSet = {
         id: uniqueId(),
         setNum: currentEx.sets.length + 1,
-        weightKg: lastSet ? lastSet.weightKg : 20,
-        reps: lastSet ? lastSet.reps : 10,
+        weightKg: 0,
+        reps: 0,
         isCompleted: false,
       }
       currentEx.sets = [...currentEx.sets, newSet]
@@ -317,11 +398,37 @@ export function ActiveWorkoutSession({
       const next = [...prev]
       const currentEx = { ...next[exerciseIndex] }
       if (currentEx.sets.length <= 1) return prev
+      const setToRemove = currentEx.sets[setIndex]
       const filtered = currentEx.sets.filter((_, idx) => idx !== setIndex)
       currentEx.sets = filtered.map((s, idx) => ({ ...s, setNum: idx + 1 }))
       next[exerciseIndex] = currentEx
+
+      // Save for 6-second undo (A8)
+      setDeletedSetInfo({ exerciseIndex, setIndex, set: setToRemove })
+      if (undoTimeoutRef.current) clearTimeout(undoTimeoutRef.current)
+      undoTimeoutRef.current = window.setTimeout(() => {
+        setDeletedSetInfo(null)
+      }, 6000)
+
       return next
     })
+  }
+
+  function handleUndoRemoveSet() {
+    if (!deletedSetInfo) return
+    if (undoTimeoutRef.current) clearTimeout(undoTimeoutRef.current)
+
+    const { exerciseIndex, setIndex, set } = deletedSetInfo
+    setExercisesState((prev) => {
+      const next = [...prev]
+      const currentEx = { ...next[exerciseIndex] }
+      const nextSets = [...currentEx.sets]
+      nextSets.splice(setIndex, 0, set)
+      currentEx.sets = nextSets.map((s, idx) => ({ ...s, setNum: idx + 1 }))
+      next[exerciseIndex] = currentEx
+      return next
+    })
+    setDeletedSetInfo(null)
   }
 
   // Modals & Sheets
@@ -374,25 +481,51 @@ export function ActiveWorkoutSession({
 
   const totalVolumeKg = useMemo(() => {
     return exercisesState.reduce((acc, ex) => {
+      const custom = customExercises.find((c) => c.id === ex.exerciseId)
+      const exercise = custom ?? getExerciseById(ex.exerciseId)
+      const measureType = getExerciseMeasureType(exercise)
+      if (measureType !== 'weight') return acc
+
       return (
         acc +
         ex.sets
-          .filter((s) => s.isCompleted)
+          .filter((s) => s.isCompleted && s.weightKg > 0)
           .reduce((sAcc, s) => sAcc + s.weightKg * s.reps, 0)
       )
     }, 0)
-  }, [exercisesState])
+  }, [exercisesState, customExercises])
+
+  const unweightedCompletedSetsCount = useMemo(() => {
+    return exercisesState.reduce((acc, ex) => {
+      const custom = customExercises.find((c) => c.id === ex.exerciseId)
+      const exercise = custom ?? getExerciseById(ex.exerciseId)
+      const measureType = getExerciseMeasureType(exercise)
+      if (measureType !== 'weight') return acc
+
+      return (
+        acc +
+        ex.sets.filter((s) => s.isCompleted && (!s.weightKg || s.weightKg <= 0))
+          .length
+      )
+    }, 0)
+  }, [exercisesState, customExercises])
 
   function handleSaveAndFinish() {
     const todayStr = new Date().toISOString().split('T')[0]
 
     const sessionExercises: SessionExercise[] = exercisesState.map(
       (exState) => {
+        const custom = customExercises.find((c) => c.id === exState.exerciseId)
+        const exercise = custom ?? getExerciseById(exState.exerciseId)
+        const measureType = getExerciseMeasureType(exercise)
+
         const completedSets = exState.sets
           .filter((s) => s.isCompleted)
           .map((s) => ({
             reps: s.reps,
             weightKg: s.weightKg,
+            hasMissingWeight:
+              measureType === 'weight' && (!s.weightKg || s.weightKg <= 0),
           }))
 
         return {
@@ -403,6 +536,9 @@ export function ActiveWorkoutSession({
               : exState.sets.map((s) => ({
                   reps: s.reps,
                   weightKg: s.weightKg,
+                  hasMissingWeight:
+                    measureType === 'weight' &&
+                    (!s.weightKg || s.weightKg <= 0),
                 })),
           completed: completedSets.length > 0,
         }
@@ -414,7 +550,7 @@ export function ActiveWorkoutSession({
       date: todayStr,
       programDayIndex: programDay.dayIndex,
       exercises: sessionExercises,
-      notes: `جلسة تدريب مكتملة في ${formatTime(elapsedSeconds)} — إجمالي الحجم: ${totalVolumeKg} كجم`,
+      notes: `جلسة تدريب مكتملة في ${formatTime(elapsedSeconds)} — إجمالي الحمل المرفوع: ${totalVolumeKg > 0 ? `${totalVolumeKg} كجم` : '—'}`,
       createdAt: Date.now(),
     }
 
@@ -535,7 +671,7 @@ export function ActiveWorkoutSession({
           }}
         >
           <span>
-            {completedSetsCount} من {totalSetsCount} مجموعة مكتملة
+            {completedSetsCount} من {plural(totalSetsCount, 'مجموعة')} مكتملة
           </span>
           <span
             style={{
@@ -543,7 +679,7 @@ export function ActiveWorkoutSession({
               fontVariantNumeric: 'tabular-nums',
             }}
           >
-            {totalVolumeKg} كجم
+            {totalVolumeKg > 0 ? `${totalVolumeKg}\u00A0كجم` : '—'}
           </span>
         </div>
         <ProgressBar
@@ -682,27 +818,11 @@ export function ActiveWorkoutSession({
                     minWidth: 0,
                   }}
                 >
-                  <div
-                    style={{
-                      width: '52px',
-                      height: '52px',
-                      borderRadius: '10px',
-                      overflow: 'hidden',
-                      flexShrink: 0,
-                      background: 'var(--card-subtle)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <ExerciseVisual
-                      category={exercise?.category ?? 'chest'}
-                      exerciseId={exState.exerciseId}
-                      exerciseName={exerciseName}
-                      imageUrl={exercise?.imageUrl}
-                      size="medium"
-                    />
-                  </div>
+                  <ExerciseThumb
+                    exercise={exercise}
+                    exerciseId={exState.exerciseId}
+                    size={52}
+                  />
                   <div style={{ minWidth: 0 }}>
                     <h3
                       className="exercise-name"
@@ -711,6 +831,9 @@ export function ActiveWorkoutSession({
                         fontSize: '15.5px',
                         fontWeight: 700,
                         color: 'var(--ink)',
+                        lineHeight: 1.5,
+                        overflowWrap: 'anywhere',
+                        wordBreak: 'break-word',
                       }}
                     >
                       {exerciseName}
@@ -772,102 +895,166 @@ export function ActiveWorkoutSession({
                   </thead>
                   <tbody>
                     {exState.sets.map((set, sIdx) => {
+                      const measureType = getExerciseMeasureType(exercise)
                       const prevExSets = previousHistoryMap[exState.exerciseId]
                       const prevSet = prevExSets?.[sIdx]
+                      const targetReps =
+                        programDay.exercises.find(
+                          (e) => e.exerciseId === exState.exerciseId,
+                        )?.reps ?? 0
                       const prevText = prevSet
                         ? `${prevSet.weightKg}\u00A0كجم × ${prevSet.reps}`
                         : '—'
+                      const isReady = isSetReadyToComplete(set, measureType)
 
                       return (
-                        <tr
-                          key={set.id}
-                          className={`set-row ${set.isCompleted ? 'set-completed' : ''}`}
-                        >
-                          <td className="col-set">
-                            <span className="set-number-badge">
-                              {set.setNum}
-                            </span>
-                          </td>
-                          <td className="col-prev">
-                            <span className="set-prev-badge">{prevText}</span>
-                          </td>
-                          <td className="col-input">
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.5"
-                              value={set.weightKg === 0 ? '' : set.weightKg}
-                              placeholder={
-                                prevSet && prevSet.weightKg > 0
-                                  ? String(prevSet.weightKg)
-                                  : 'كجم'
-                              }
-                              onChange={(e) =>
-                                handleUpdateSetField(
-                                  exIdx,
-                                  sIdx,
-                                  'weightKg',
-                                  parseFloat(e.target.value) || 0,
-                                )
-                              }
-                              className="set-field-input"
-                              aria-label={`وزن المجموعة ${set.setNum}`}
-                            />
-                          </td>
-                          <td className="col-input">
-                            <input
-                              type="number"
-                              min="0"
-                              step="1"
-                              value={set.reps === 0 ? '' : set.reps}
-                              placeholder={
-                                prevSet && prevSet.reps > 0
-                                  ? String(prevSet.reps)
-                                  : 'تكرار'
-                              }
-                              onChange={(e) =>
-                                handleUpdateSetField(
-                                  exIdx,
-                                  sIdx,
-                                  'reps',
-                                  parseInt(e.target.value, 10) || 0,
-                                )
-                              }
-                              className="set-field-input"
-                              aria-label={`تكرار المجموعة ${set.setNum}`}
-                            />
-                          </td>
-                          <td className="col-check">
-                            <button
-                              type="button"
-                              className={`set-check-btn ${set.isCompleted ? 'checked' : ''}`}
-                              onClick={() =>
-                                handleToggleSetCompleted(exIdx, sIdx)
-                              }
-                              title={
-                                set.isCompleted
-                                  ? 'إلغاء التحديد'
-                                  : 'تأكيد إنهاء المجموعة'
-                              }
-                              aria-label="✓"
-                            >
-                              ✓
-                            </button>
-                          </td>
-                          <td className="col-action">
-                            {exState.sets.length > 1 && (
+                        <React.Fragment key={set.id}>
+                          <tr
+                            className={`set-row ${set.isCompleted ? 'set-completed' : ''}`}
+                          >
+                            <td className="col-set">
+                              <span className="set-number-badge">
+                                {set.setNum}
+                              </span>
+                            </td>
+                            <td className="col-prev">
                               <button
                                 type="button"
-                                className="ghost-danger tiny remove-set-btn"
-                                onClick={() => handleRemoveSet(exIdx, sIdx)}
-                                title="حذف هذه المجموعة"
-                                aria-label="حذف المجموعة"
+                                data-testid={`prev-set-btn-${exIdx}-${sIdx}`}
+                                className="set-prev-badge set-prev-btn"
+                                onClick={() => handleCopyPrevious(exIdx, sIdx)}
+                                title={
+                                  prevSet
+                                    ? 'نسخ قيم الجلسة السابقة'
+                                    : 'لا توجد بيانات سابقة'
+                                }
+                                disabled={!prevSet}
                               >
-                                ✕
+                                {prevText}
                               </button>
-                            )}
-                          </td>
-                        </tr>
+                            </td>
+                            <td className="col-input">
+                              {measureType === 'bodyweight' ? (
+                                <span className="bodyweight-tag">
+                                  وزن الجسم
+                                </span>
+                              ) : measureType === 'timed' ? (
+                                <span className="bodyweight-tag">
+                                  بدون وزن
+                                </span>
+                              ) : (
+                                <input
+                                  type="number"
+                                  min="0"
+                                  step="0.5"
+                                  value={
+                                    set.weightKg === 0 ? '' : set.weightKg
+                                  }
+                                  placeholder={
+                                    prevSet && prevSet.weightKg > 0
+                                      ? String(prevSet.weightKg)
+                                      : 'كجم'
+                                  }
+                                  onChange={(e) =>
+                                    handleUpdateSetField(
+                                      exIdx,
+                                      sIdx,
+                                      'weightKg',
+                                      parseFloat(e.target.value) || 0,
+                                    )
+                                  }
+                                  className="set-field-input"
+                                  aria-label={`وزن المجموعة ${set.setNum}`}
+                                />
+                              )}
+                            </td>
+                            <td className="col-input">
+                              <input
+                                type="number"
+                                min="0"
+                                step="1"
+                                value={set.reps === 0 ? '' : set.reps}
+                                placeholder={
+                                  targetReps > 0
+                                    ? String(targetReps)
+                                    : prevSet && prevSet.reps > 0
+                                      ? String(prevSet.reps)
+                                      : measureType === 'timed'
+                                        ? 'ثوانٍ'
+                                        : 'تكرار'
+                                }
+                                onChange={(e) =>
+                                  handleUpdateSetField(
+                                    exIdx,
+                                    sIdx,
+                                    'reps',
+                                    parseInt(e.target.value, 10) || 0,
+                                  )
+                                }
+                                className="set-field-input"
+                                aria-label={
+                                  measureType === 'timed'
+                                    ? `ثواني المجموعة ${set.setNum}`
+                                    : `تكرار المجموعة ${set.setNum}`
+                                }
+                              />
+                            </td>
+                            <td className="col-check">
+                              <button
+                                type="button"
+                                className={`set-check-btn ${set.isCompleted ? 'checked' : ''} ${!isReady && !set.isCompleted ? 'disabled' : ''}`}
+                                onClick={() =>
+                                  handleToggleSetCompleted(exIdx, sIdx)
+                                }
+                                aria-pressed={set.isCompleted}
+                                title={
+                                  set.isCompleted
+                                    ? 'إلغاء التحديد'
+                                    : isReady
+                                      ? 'تأكيد إنهاء المجموعة'
+                                      : measureType === 'bodyweight'
+                                        ? 'اكتب التكرارات أولًا'
+                                        : measureType === 'timed'
+                                          ? 'اكتب عدد الثواني أولًا'
+                                          : 'اكتب الوزن والتكرارات أولًا'
+                                }
+                                aria-label={
+                                  set.isCompleted
+                                    ? 'مكتملة'
+                                    : 'تأكيد إنهاء المجموعة'
+                                }
+                              >
+                                {set.isCompleted ? '✓' : ''}
+                              </button>
+                            </td>
+                            <td className="col-action">
+                              {exState.sets.length > 1 && (
+                                <button
+                                  type="button"
+                                  className="ghost-danger tiny remove-set-btn"
+                                  onClick={() => handleRemoveSet(exIdx, sIdx)}
+                                  title="حذف هذه المجموعة"
+                                  aria-label="حذف المجموعة"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                          {inlineHintSetId === set.id && (
+                            <tr className="set-hint-row">
+                              <td colSpan={6} style={{ padding: '0 4px 8px' }}>
+                                <div className="set-row-hint" role="alert">
+                                  {measureType === 'bodyweight'
+                                    ? 'اكتب التكرارات أولًا'
+                                    : measureType === 'timed'
+                                      ? 'اكتب عدد الثواني أولًا'
+                                      : 'اكتب الوزن والتكرارات أولًا'}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       )
                     })}
                   </tbody>
@@ -939,7 +1126,7 @@ export function ActiveWorkoutSession({
             إنهاء التمرين
           </span>
           <span style={{ fontSize: '12px', fontWeight: 500, opacity: 0.9 }}>
-            {completedSetsCount} من {totalSetsCount} مجموعة مكتملة
+            {completedSetsCount} من {plural(totalSetsCount, 'مجموعة')} مكتملة
           </span>
         </button>
       </footer>
@@ -1074,6 +1261,67 @@ export function ActiveWorkoutSession({
             </div>
             <div className="modal-body">
               <p>هل ترغب في حفظ هذه الجلسة في سجل التتبع الخاص بك والتقويم؟</p>
+
+              {unweightedCompletedSetsCount > 0 && (
+                <div
+                  className="unweighted-sets-warning"
+                  role="alert"
+                  style={{
+                    background: 'var(--warn-surface, rgba(217, 119, 6, 0.1))',
+                    border: '1px solid var(--warn, #d97706)',
+                    borderRadius: '10px',
+                    padding: '10px 14px',
+                    marginBottom: '14px',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  <p style={{ margin: 0, fontSize: '13.5px', fontWeight: 600 }}>
+                    تنبيه: يوجد {plural(unweightedCompletedSetsCount, 'مجموعة')} بدون وزن مسجل. لن يتم احتسابها في الحمل المرفوع وسيتم تمييزها في السجل.
+                  </p>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+                    <button
+                      type="button"
+                      className="button-secondary tiny"
+                      onClick={() => setShowConfirmFinish(false)}
+                      style={{
+                        flex: 1,
+                        height: '36px',
+                        fontSize: '13px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--line)',
+                        background: 'var(--card-subtle)',
+                        color: 'var(--ink)',
+                        cursor: 'pointer',
+                        fontWeight: 600,
+                      }}
+                    >
+                      أكمل التسجيل
+                    </button>
+                    <button
+                      type="button"
+                      className="button-ghost tiny"
+                      onClick={() => {
+                        setShowConfirmFinish(false)
+                        handleSaveAndFinish()
+                      }}
+                      style={{
+                        flex: 1,
+                        height: '36px',
+                        fontSize: '13px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: 'transparent',
+                        color: 'var(--muted)',
+                        cursor: 'pointer',
+                        fontWeight: 600,
+                      }}
+                    >
+                      احفظ كما هي
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <ul className="summary-list">
                 <li>
                   <span>اليوم التدريبي</span>
@@ -1087,11 +1335,13 @@ export function ActiveWorkoutSession({
                 </li>
                 <li>
                   <span>المجموعات المنجزة</span>
-                  <strong>{completedSetsCount} مجموعة</strong>
+                  <strong>{plural(completedSetsCount, 'مجموعة')}</strong>
                 </li>
                 <li>
                   <span>إجمالي الحمل المرفوع</span>
-                  <strong>{totalVolumeKg} كجم</strong>
+                  <strong data-testid="finish-total-volume">
+                    {totalVolumeKg > 0 ? `${totalVolumeKg}\u00A0كجم` : '—'}
+                  </strong>
                 </li>
               </ul>
             </div>
@@ -1164,6 +1414,49 @@ export function ActiveWorkoutSession({
           cancelLabel="تراجع"
           isDestructive={false}
         />
+      )}
+
+      {/* Undo Toast for deleted set (A8) */}
+      {deletedSetInfo && (
+        <div
+          role="status"
+          className="toast undo-toast"
+          style={{
+            position: 'fixed',
+            bottom: '76px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            background: 'var(--ink, #1f2937)',
+            color: '#fff',
+            padding: '8px 16px',
+            borderRadius: '12px',
+            fontSize: '13.5px',
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+          }}
+        >
+          <span>تم حذف المجموعة</span>
+          <button
+            type="button"
+            className="undo-toast-btn"
+            onClick={handleUndoRemoveSet}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--brand-accent, #38bdf8)',
+              fontWeight: 700,
+              cursor: 'pointer',
+              padding: '4px 8px',
+              fontSize: '13.5px',
+            }}
+          >
+            تراجع
+          </button>
+        </div>
       )}
     </div>
   )

@@ -17,9 +17,8 @@ import { APPROXIMATE_REGIONS } from './approximateRegions.ts'
 import atlasMusclesData from '../../data/atlas_muscles.json'
 import atlasGroupsData from '../../data/atlas-groups.json'
 import atlasMetaData from '../../../public/atlas/atlas-meta.json'
-import { Segmented, Sheet, Callout } from '../../ui/index.ts'
+import { Segmented, Sheet, Callout, Button } from '../../ui/index.ts'
 import { assetUrl } from '../../utils/assetUrl.ts'
-import { fmtMuscles } from '../../utils/bidi.ts'
 import {
   getMuscleInfo,
   getMuscleGymName,
@@ -106,6 +105,7 @@ export function AnatomyMuscleMap({
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [selectedMuscleId, setSelectedMuscleId] = useState<string | null>(null)
   const [sheetMuscleId, setSheetMuscleId] = useState<string | null>(null)
+  const [showUnpaintedSheet, setShowUnpaintedSheet] = useState<boolean>(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
   const isDraggingRef = useRef(false)
@@ -162,22 +162,36 @@ export function AnatomyMuscleMap({
   }, [resolved.muscles])
 
   // Drawn counts in current view and other view, and tracking unpainted muscles
-  const { currentCounts, unpaintedCount, unpaintedPrimaries, otherCounts } = useMemo(() => {
+  const {
+    currentCounts,
+    unpaintedMuscles,
+    unpaintedPrimaries,
+    otherCounts,
+    anteriorCount,
+    posteriorCount,
+  } = useMemo(() => {
     const otherView = view === 'A' ? 'P' : 'A'
     let curPrimary = 0
     let curSecondary = 0
     let otherTotal = 0
-    let unpainted = 0
+    let countA = 0
+    let countP = 0
+    const unpainted: Array<{ id: string; role: 'primary' | 'secondary' }> = []
     const missingPrimaries: Array<{ id: string; name: string }> = []
 
     for (const m of resolved.muscles) {
       const approx = APPROXIMATE_REGIONS[m.id]
       const inApproxCur = approx && approx.view === view
       const inApproxOther = approx && approx.view === otherView
+      const inApproxA = approx && approx.view === 'A'
+      const inApproxP = approx && approx.view === 'P'
 
       const meta = META_MUSCLES[m.id]
       const curVis = meta?.views?.[view]?.visible_pixels ?? 0
       const otherVis = meta?.views?.[otherView]?.visible_pixels ?? 0
+      const aVis = meta?.views?.['A']?.visible_pixels ?? 0
+      const pVis = meta?.views?.['P']?.visible_pixels ?? 0
+
       const inMeshCur =
         meta?.best_view === view ||
         (curVis > 500 && (meta?.views?.[view]?.visible_ratio ?? 0) >= 0.1)
@@ -185,15 +199,32 @@ export function AnatomyMuscleMap({
         meta?.best_view === otherView ||
         (otherVis > 500 &&
           (meta?.views?.[otherView]?.visible_ratio ?? 0) >= 0.1)
+      const inMeshA =
+        meta?.best_view === 'A' ||
+        (aVis > 500 && (meta?.views?.['A']?.visible_ratio ?? 0) >= 0.1)
+      const inMeshP =
+        meta?.best_view === 'P' ||
+        (pVis > 500 && (meta?.views?.['P']?.visible_ratio ?? 0) >= 0.1)
 
       const isDrawnCur = inApproxCur || inMeshCur
       const isDrawnOther = inApproxOther || inMeshOther
+      const isDrawnA = inApproxA || inMeshA
+      const isDrawnP = inApproxP || inMeshP
+
+      if (isDrawnA) countA++
+      if (isDrawnP) countP++
 
       if (isDrawnCur) {
         if (m.role === 'primary') curPrimary++
         else curSecondary++
-      } else {
-        unpainted++
+      }
+
+      if (isDrawnOther && !isDrawnCur) {
+        otherTotal++
+      }
+
+      if (!isDrawnA && !isDrawnP) {
+        unpainted.push({ id: m.id, role: m.role })
         if (m.role === 'primary') {
           missingPrimaries.push({
             id: m.id,
@@ -201,17 +232,15 @@ export function AnatomyMuscleMap({
           })
         }
       }
-
-      if (isDrawnOther && !isDrawnCur) {
-        otherTotal++
-      }
     }
 
     return {
       currentCounts: { primary: curPrimary, secondary: curSecondary },
-      unpaintedCount: unpainted,
+      unpaintedMuscles: unpainted,
       unpaintedPrimaries: missingPrimaries,
       otherCounts: otherTotal,
+      anteriorCount: countA,
+      posteriorCount: countP,
     }
   }, [resolved.muscles, view])
 
@@ -315,7 +344,7 @@ export function AnatomyMuscleMap({
         path.classList.add('muscle-neutral')
       }
 
-      if (showDeep && (!role || META_MUSCLES[muscleId]?.best_layer === 'S')) {
+      if (showDeep && !role && META_MUSCLES[muscleId]?.best_layer === 'S') {
         path.classList.add('muscle-superficial-dimmed')
       }
 
@@ -494,11 +523,23 @@ export function AnatomyMuscleMap({
     <div className="atlas-wrapper" dir="rtl">
       {/* 1. Toolbar: Segmented View Switch & Deep Layer Toggle */}
       <div className="atlas-toolbar">
-        <div style={{ width: '180px' }}>
+        <div style={{ width: '220px' }}>
           <Segmented
             options={[
-              { value: 'A', label: 'أمامي' },
-              { value: 'P', label: 'خلفي' },
+              {
+                value: 'A',
+                label:
+                  anteriorCount > 0
+                    ? `أمامي (${anteriorCount})`
+                    : 'أمامي',
+              },
+              {
+                value: 'P',
+                label:
+                  posteriorCount > 0
+                    ? `خلفي (${posteriorCount})`
+                    : 'خلفي',
+              },
             ]}
             value={view}
             onChange={(v) => {
@@ -511,7 +552,9 @@ export function AnatomyMuscleMap({
         {hasDeepMuscles && (
           <button
             type="button"
-            className="chip"
+            role="checkbox"
+            aria-checked={showDeep}
+            className={`chip ${showDeep ? 'chip--active' : ''}`}
             onClick={() => setShowDeep(!showDeep)}
             style={{
               cursor: 'pointer',
@@ -667,8 +710,8 @@ export function AnatomyMuscleMap({
             type="button"
             className="atlas-zoom-btn"
             onClick={handleReset}
-            aria-label="إعادة ضبط العرض"
-            title="إعادة ضبط العرض"
+            aria-label="إعادة الضبط"
+            title="إعادة الضبط"
           >
             <span style={{ fontSize: '15px', lineHeight: 1 }}>↺</span>
           </button>
@@ -714,21 +757,62 @@ export function AnatomyMuscleMap({
 
       {/* 4. Status Line & Legend */}
       <div className="atlas-status-line">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span>
             يعرض الآن: {view === 'A' ? 'الأمامي' : 'الخلفي'}. أساسية{' '}
             {currentCounts.primary}، مساعدة {currentCounts.secondary}
-            {unpaintedCount > 0 ? ` +${unpaintedCount} غير مرسومة` : ''}
+            {unpaintedMuscles.length > 0 && (
+              <>
+                {' '}
+                <button
+                  type="button"
+                  onClick={() => setShowUnpaintedSheet(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    color: 'var(--color-accent)',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    font: 'inherit',
+                  }}
+                >
+                  {unpaintedMuscles.length === 2
+                    ? 'و2 غير مرسومتين في الأطلس'
+                    : `و${unpaintedMuscles.length} غير مرسومة في الأطلس`}
+                </button>
+              </>
+            )}
           </span>
           {otherCounts > 0 && (
-            <button
-              type="button"
-              className="atlas-view-switch-btn"
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={() => setView(view === 'A' ? 'P' : 'A')}
+              className="atlas-view-switch-btn"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 10px',
+                minHeight: '34px',
+                fontSize: '12.5px',
+              }}
             >
-              في {view === 'A' ? 'الخلفي' : 'الأمامي'} —{' '}
-              {fmtMuscles(otherCounts)}
-            </button>
+              <span>{view === 'A' ? 'عرض الخلفي' : 'عرض الأمامي'}</span>
+              <span
+                style={{
+                  background: 'var(--color-surface-2)',
+                  color: 'var(--color-text)',
+                  padding: '1px 6px',
+                  borderRadius: 'var(--radius-full)',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                }}
+              >
+                {otherCounts}
+              </span>
+            </Button>
           )}
         </div>
 
@@ -1015,6 +1099,107 @@ export function AnatomyMuscleMap({
             )}
           </div>
         )}
+      </Sheet>
+
+      {/* 8. Unpainted in Atlas Muscle Sheet */}
+      <Sheet
+        isOpen={showUnpaintedSheet}
+        onClose={() => setShowUnpaintedSheet(false)}
+        title="عضلات غير مرسومة في الأطلس"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            paddingBottom: '16px',
+          }}
+          dir="rtl"
+        >
+          <p
+            style={{
+              margin: 0,
+              fontSize: '13.5px',
+              color: 'var(--color-text-2)',
+              lineHeight: 1.5,
+            }}
+          >
+            هذه العضلات مستهدفة في التمرين ولكن لا توجد لها طبقة مجسمة مرسومة
+            حالياً في خريطة الأطلس:
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {unpaintedMuscles.map(({ id, role }) => {
+              const def = MUSCLE_DEFS[id]
+              const info = getMuscleInfo(id)
+              return (
+                <div
+                  key={id}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    padding: '10px 12px',
+                    background: 'var(--color-surface-2)',
+                    borderRadius: 'var(--radius-control)',
+                    border: '1px solid var(--color-divider)',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: '6px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      <span
+                        className={`role-marker ${role === 'primary' ? 'role-marker--primary' : 'role-marker--secondary'}`}
+                      />
+                      <strong style={{ fontSize: '14px' }}>
+                        {getMuscleGymName(id, def?.ar)}
+                      </strong>
+                    </div>
+                    <span
+                      style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
+                    >
+                      <bdi dir="ltr">{getMuscleSciName(id) || def?.en}</bdi>
+                    </span>
+                  </div>
+                  {info?.note_ar && (
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        color: 'var(--color-text-2)',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {info.note_ar}
+                    </div>
+                  )}
+                  {info?.where_ar && (
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        color: 'var(--color-text-2)',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      الموضع: {info.where_ar}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
       </Sheet>
     </div>
   )

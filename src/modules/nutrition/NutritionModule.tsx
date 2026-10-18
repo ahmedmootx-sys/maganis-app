@@ -32,6 +32,7 @@ import {
   Stat,
   Select,
   DateField,
+  Segmented,
 } from '../../ui/index.ts'
 import { formatArabicDate } from '../../lib/dateUtils.ts'
 import {
@@ -1998,54 +1999,25 @@ export function NutritionModule({
               )}
 
               {/* Unit Toggle: Segmented control */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  background: 'var(--card-subtle)',
-                  padding: '4px',
-                  borderRadius: '12px',
-                  border: '1px solid var(--line)',
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsImperial(false)}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <Segmented
+                  name="نظام القياس"
+                  options={[
+                    { value: 'metric', label: 'متري' },
+                    { value: 'imperial', label: 'إمبراطوري' },
+                  ]}
+                  value={isImperial ? 'imperial' : 'metric'}
+                  onChange={(val) => setIsImperial(val === 'imperial')}
+                />
+                <div
                   style={{
-                    height: '40px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: !isImperial ? 'var(--card-bg)' : 'transparent',
-                    color: !isImperial ? 'var(--ink)' : 'var(--muted)',
-                    fontWeight: 700,
-                    fontSize: '13.5px',
-                    cursor: 'pointer',
-                    boxShadow: !isImperial
-                      ? '0 1px 3px rgba(0,0,0,0.1)'
-                      : 'none',
+                    fontSize: '12px',
+                    color: 'var(--muted)',
+                    textAlign: 'center',
                   }}
                 >
-                  متري (كجم / سم)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsImperial(true)}
-                  style={{
-                    height: '40px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: isImperial ? 'var(--card-bg)' : 'transparent',
-                    color: isImperial ? 'var(--ink)' : 'var(--muted)',
-                    fontWeight: 700,
-                    fontSize: '13.5px',
-                    cursor: 'pointer',
-                    boxShadow: isImperial
-                      ? '0 1px 3px rgba(0,0,0,0.1)'
-                      : 'none',
-                  }}
-                >
-                  إمبراطوري (باوند / بوصة)
-                </button>
+                  {isImperial ? 'باوند / بوصة' : 'كجم / سم'}
+                </div>
               </div>
 
               {/* Weight Field */}
@@ -2075,6 +2047,9 @@ export function NutritionModule({
                   required
                   style={{ height: '48px', width: '100%' }}
                 />
+                <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '4px' }}>
+                  مصدر الوزن: {bodyLog && bodyLog.length > 0 ? `آخر تسجيل في سجل الوزن (${bodyLog[bodyLog.length - 1].weightKg} كجم)` : `الملف الشخصي (${profile?.body.weightKg ?? 70} كجم)`}
+                </div>
               </div>
 
               {/* Height Field */}
@@ -2186,16 +2161,12 @@ export function NutritionModule({
                 />
               </div>
 
-              {/* Workout Blocks (Vertical Repeater: 1 per row) */}
+              {/* Workout Blocks (Un-nested vertical list) */}
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '12px',
-                  padding: '14px',
-                  borderRadius: '16px',
-                  background: 'var(--card-subtle)',
-                  border: '1px solid var(--line)',
+                  gap: '16px',
                 }}
               >
                 <div
@@ -2471,6 +2442,9 @@ export function NutritionModule({
                 >
                   تعديل البروتين يدوياً (اختياري، جم/كجم)
                 </label>
+                <div style={{ fontSize: '12px', color: 'var(--muted)', marginBottom: '4px' }}>
+                  اتركه فارغاً للحساب التلقائي <bdi dir="ltr">(1.6 - 2.2)</bdi> جم/كجم
+                </div>
                 <input
                   id="calc-protein-override"
                   type="number"
@@ -2479,7 +2453,7 @@ export function NutritionModule({
                   step="0.1"
                   className="field-input"
                   value={editProteinOverride ?? ''}
-                  placeholder="اتركه فارغاً للحساب التلقائي (1.6 - 2.2)"
+                  placeholder="تلقائي (1.6 - 2.2)"
                   onChange={(e) =>
                     setEditProteinOverride(
                       e.target.value ? Number(e.target.value) : undefined,

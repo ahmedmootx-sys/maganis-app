@@ -17,31 +17,22 @@ import { MUSCLE_ATLAS } from './muscleAtlasData.ts'
 import { resolveExerciseMuscles } from './legacyMuscleMapper.ts'
 import { TopBar, Select, FileField, Button, Segmented } from '../../ui/index.ts'
 import { IconClose } from '../../components/Icons.tsx'
-import atlasGroups from '../../data/atlas-groups.json'
-import atlasMuscles from '../../data/atlas_muscles.json'
+import muscleNamesData from '../../data/muscle-names.json'
+import { getMuscleGymName, getMuscleGroup, type MuscleNameEntry } from './muscleNames.ts'
 
-const ATLAS_MUSCLE_MAP = new Map<
-  string,
-  { id: string; ar: string; en: string }
->(
-  (atlasMuscles.muscles as Array<{ id: string; ar: string; en: string }>).map(
-    (m) => [m.id, m],
-  ),
-)
-
-const ATLAS_SELECT_OPTIONS = (
-  atlasGroups.groups as Array<{ key: string; ar: string; muscles: string[] }>
-).flatMap((g) =>
-  g.muscles.map((mId) => {
-    const m = ATLAS_MUSCLE_MAP.get(mId)
-    return {
-      value: mId,
-      labelAr: m?.ar || mId,
-      labelEn: m?.en || '',
-      description: g.ar,
-    }
-  }),
-)
+const MUSCLE_SELECT_OPTIONS = (
+  muscleNamesData.muscles as MuscleNameEntry[]
+).map((m) => {
+  const grp = getMuscleGroup(m.group)
+  return {
+    value: m.id,
+    label: m.gym_ar,
+    labelAr: m.gym_ar,
+    labelEn: m.sci_en,
+    secondary: m.sci_en,
+    description: grp?.gym_ar || m.group,
+  }
+})
 
 export interface CustomExerciseBuilderProps {
   initialExercise?: CustomExercise
@@ -98,7 +89,7 @@ function AutoGrowTextarea({
   value,
   onChange,
   placeholder,
-  minRows = 2,
+  minRows = 3,
   'aria-label': ariaLabel,
 }: {
   id?: string
@@ -142,11 +133,7 @@ function AutoGrowTextarea({
         lineHeight: '1.5',
         boxSizing: 'border-box',
         padding: '10px 12px',
-        borderRadius: '10px',
-        border: '1px solid var(--input-border)',
-        background: 'var(--input-bg)',
-        color: 'var(--ink)',
-        fontSize: '14px',
+        textAlign: 'start',
       }}
     />
   )
@@ -603,10 +590,10 @@ export function CustomExerciseBuilder({
               <label htmlFor="ce-mechanics">ميكانيكا الحركة</label>
               <AutoGrowTextarea
                 id="ce-mechanics"
-                placeholder="مثال: دفع أفقي مع ثني المرفقين بزاوية 45 درجة..."
+                placeholder="مثال: وصف طريقة حركة المفاصل واتجاه الدفع أو السحب"
                 value={mechanicsAr}
                 onChange={(e) => setMechanicsAr(e.target.value)}
-                minRows={2}
+                minRows={3}
               />
             </div>
 
@@ -614,10 +601,10 @@ export function CustomExerciseBuilder({
               <label htmlFor="ce-benefit">الفوائد العلمية للتمرين</label>
               <AutoGrowTextarea
                 id="ce-benefit"
-                placeholder="شرح الفائدة العلمية أو التأثير الوظيفي للتمرين..."
+                placeholder="مثال: زيادة القوة وبناء الكتلة العضلية للمجموعة المستهدفة"
                 value={benefitAr}
                 onChange={(e) => setBenefitAr(e.target.value)}
-                minRows={2}
+                minRows={3}
               />
             </div>
 
@@ -634,10 +621,10 @@ export function CustomExerciseBuilder({
               </span>
               <AutoGrowTextarea
                 id="ce-steps"
-                placeholder="1. استلقِ على المقعد المسطح مع تثبيت القدمين&#10;2. انزل بالوزن ببطء وتحكم إلى منتصف الصدر&#10;3. ادفع بقوة مع الزفير للعودة لنقطة البداية"
+                placeholder="مثال: اكتب كل خطوة في سطر"
                 value={howToStepsRaw}
                 onChange={(e) => setHowToStepsRaw(e.target.value)}
-                minRows={4}
+                minRows={3}
               />
             </div>
 
@@ -654,10 +641,10 @@ export function CustomExerciseBuilder({
               </span>
               <AutoGrowTextarea
                 id="ce-mistakes"
-                placeholder="تقوس الظهر الزائد&#10;النزول السريع غير المتحكم فيه"
+                placeholder="مثال: اكتب كل خطأ في سطر"
                 value={commonMistakesRaw}
                 onChange={(e) => setCommonMistakesRaw(e.target.value)}
-                minRows={2}
+                minRows={3}
               />
             </div>
 
@@ -666,7 +653,7 @@ export function CustomExerciseBuilder({
               <input
                 id="ce-breathing"
                 type="text"
-                placeholder="شهيق أثناء النزول، وزفير بقوة أثناء الدفع"
+                placeholder="مثال: شهيق في اتجاه المقاومة وزفير عند بذل القوة"
                 value={breathing}
                 onChange={(e) => setBreathing(e.target.value)}
                 className="field-input"
@@ -676,7 +663,7 @@ export function CustomExerciseBuilder({
           </div>
         </section>
 
-        {/* Section 6: العضلات المستهدفة (Pickers restyled, old live atlas preview hidden) */}
+        {/* Section 6: العضلات المستهدفة (Pickers using muscle-names.json) */}
         <section className="screen-section">
           <div className="section-title">
             <span>العضلات المستهدفة</span>
@@ -692,8 +679,8 @@ export function CustomExerciseBuilder({
           >
             {/* Primary Muscles Picker */}
             <div className="field">
-              <label style={{ color: '#E53935' }}>
-                العضلة / الرأس الأساسي (Primary Target) *
+              <label style={{ color: '#E53935', fontWeight: 700 }}>
+                العضلة الأساسية *
               </label>
               <div
                 style={{
@@ -718,11 +705,7 @@ export function CustomExerciseBuilder({
                       gap: '6px',
                     }}
                   >
-                    <span>
-                      {ATLAS_MUSCLE_MAP.get(id)?.ar ||
-                        MUSCLE_ATLAS[id]?.nameAr ||
-                        id}
-                    </span>
+                    <span>{getMuscleGymName(id)}</span>
                     <button
                       type="button"
                       onClick={() => handleTogglePrimary(id)}
@@ -745,22 +728,22 @@ export function CustomExerciseBuilder({
               <Select
                 id="ce-primary-muscle-picker"
                 value=""
-                placeholder="+ اضغط لإضافة رأس عضلي رئيسي..."
+                placeholder="+ إضافة عضلة أساسية..."
                 onChange={(val) => {
                   if (val) handleTogglePrimary(val)
                 }}
-                options={ATLAS_SELECT_OPTIONS.map((opt) => ({
+                options={MUSCLE_SELECT_OPTIONS.map((opt) => ({
                   ...opt,
                   disabled: primaryMuscleIds.includes(opt.value),
                 }))}
-                sheetTitle="اختر رأس عضلي رئيسي (16 منطقة تشريحية)"
+                sheetTitle="اختر العضلة الأساسية"
               />
             </div>
 
             {/* Secondary Muscles Picker */}
             <div className="field">
-              <label style={{ color: '#d97706' }}>
-                العضلات المساعدة (Secondary Involvement)
+              <label style={{ color: '#d97706', fontWeight: 700 }}>
+                العضلات المساعدة
               </label>
               <div
                 style={{
@@ -791,11 +774,7 @@ export function CustomExerciseBuilder({
                         gap: '6px',
                       }}
                     >
-                      <span>
-                        {ATLAS_MUSCLE_MAP.get(id)?.ar ||
-                          MUSCLE_ATLAS[id]?.nameAr ||
-                          id}
-                      </span>
+                      <span>{getMuscleGymName(id)}</span>
                       <button
                         type="button"
                         onClick={() => handleToggleSecondary(id)}
@@ -819,37 +798,36 @@ export function CustomExerciseBuilder({
               <Select
                 id="ce-secondary-muscle-picker"
                 value=""
-                placeholder="+ اضغط لإضافة عضلة مساعدة..."
+                placeholder="+ إضافة عضلة مساعدة..."
                 onChange={(val) => {
                   if (val) handleToggleSecondary(val)
                 }}
-                options={ATLAS_SELECT_OPTIONS.map((opt) => ({
+                options={MUSCLE_SELECT_OPTIONS.map((opt) => ({
                   ...opt,
                   disabled: secondaryMuscleIds.includes(opt.value),
                 }))}
-                sheetTitle="اختر عضلة مساعدة (16 منطقة تشريحية)"
+                sheetTitle="اختر العضلات المساعدة"
               />
             </div>
-
-            {/* Note: Live atlas preview hidden per Task B instructions (Task C replaces it) */}
           </div>
         </section>
 
-        {/* Sticky bar: primary "حفظ التمرين", tertiary "إلغاء" */}
+        {/* Sticky bar: primary "حفظ التمرين", outlined secondary "إلغاء" side by side */}
         <div
-          className="sticky-bottom-bar"
-          style={{ display: 'flex', gap: '8px' }}
+          className="sticky-bottom-bar sticky-bottom-bar--row"
+          style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}
         >
-          <Button type="submit" variant="primary" fullWidth size="large">
+          <Button type="submit" variant="primary" fullWidth size="large" style={{ flex: 1 }}>
             حفظ التمرين
           </Button>
           {onCancel && (
             <Button
               type="button"
-              variant="tertiary"
+              variant="secondary"
               fullWidth
               size="large"
               onClick={onCancel}
+              style={{ flex: 1 }}
             >
               إلغاء
             </Button>

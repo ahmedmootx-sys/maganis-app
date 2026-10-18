@@ -11,6 +11,7 @@ export type RoutePath =
   | '/progress'
   | '/settings'
   | '/styleguide'
+  | '/gallery'
 
 export interface RouteMatch {
   path: RoutePath
@@ -61,6 +62,9 @@ export function parseHash(hash: string): RouteMatch {
   }
   if (parts[0] === 'styleguide') {
     return { path: '/styleguide', raw: '#/styleguide', params: {} }
+  }
+  if (parts[0] === 'gallery') {
+    return { path: '/gallery', raw: '#/gallery', params: {} }
   }
 
   // Fallback to home

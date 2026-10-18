@@ -869,6 +869,25 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
+.exercise-tabs-segmented.segmented {
+  min-height: 44px;
+  background-color: var(--color-surface-2);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-divider);
+  padding: 4px;
+  gap: 4px;
+  width: 100%;
+}
+
+.exercise-tabs-segmented .segmented__item {
+  min-height: 44px;
+  height: 44px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: calc(var(--radius-control) - 2px);
+  padding-inline: 8px;
+}
+
 /* Tabs */
 .tabs-container {
   position: sticky;
@@ -952,8 +971,8 @@
   min-height: var(--control-height);
   padding-inline: var(--space-3);
   padding-block: var(--space-2);
-  background-color: var(--color-surface);
-  border: var(--border-width) solid var(--color-divider);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-divider);
   border-radius: var(--radius-control);
   color: var(--color-text);
   font-family: inherit;
@@ -1397,31 +1416,32 @@ body[data-sheet-open='true'] .bottom-nav {
 }
 
 /* Atlas Zoom Controls */
+/* Atlas Zoom Controls */
 .atlas-zoom-controls {
   position: absolute;
-  bottom: var(--space-3);
-  inset-inline-end: var(--space-3);
+  bottom: 12px;
+  inset-inline-start: 12px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 4px;
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-divider);
   border-radius: var(--radius-control);
-  padding: 2px;
+  padding: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
 .atlas-zoom-btn {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--color-divider);
+  background: var(--color-surface-2);
   color: var(--color-text);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
@@ -1431,7 +1451,7 @@ body[data-sheet-open='true'] .bottom-nav {
 }
 
 .atlas-zoom-btn:hover {
-  background: var(--color-surface-2);
+  background: var(--color-surface);
 }
 
 /* Atlas Status Line & Legend */

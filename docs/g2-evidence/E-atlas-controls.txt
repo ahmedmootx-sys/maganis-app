@@ -1,0 +1,12 @@
+RUN  v3.2.7 C:/Users/power tech/Downloads/maganis-project
+
+ ✓ src/modules/workout/atlasControls.test.tsx (4 tests) 573ms
+   ✓ Atlas Controls (TASK G2 E) > E1: targeted muscles do not dim when deep layer is toggled
+   ✓ Atlas Controls (TASK G2 E) > E2: zoom controls have 44x44 minimum touch target and adjust scale
+   ✓ Atlas Controls (TASK G2 E) > E3: shows secondary flip button with posterior count badge
+   ✓ Atlas Controls (TASK G2 E) > E4: opens unpainted muscles modal with gym names on link click
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  16:12:52
+   Duration  5.88s

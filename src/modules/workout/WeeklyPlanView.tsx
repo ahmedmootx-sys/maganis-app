@@ -7,13 +7,13 @@ import type {
   WorkoutProgram,
   WorkoutSplitType,
 } from '../shared/types.ts'
-import { WORKOUT_SPLIT_LABELS, WORKOUT_SPLIT_EN } from '../shared/types.ts'
+import { WORKOUT_SPLIT_LABELS, WORKOUT_SPLIT_EN, MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import { navigationHistory } from '../../utils/navigationHistory.ts'
 import { getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExercisePickerModal } from './ExercisePickerModal.tsx'
 import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
-import { ExerciseVisual } from './ExerciseVisual.tsx'
+import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { generateProgram } from './programGenerator.ts'
 import {
   convertDayToHomeWorkout,
@@ -98,6 +98,19 @@ const SPLIT_TYPE_OPTIONS: {
   },
 ]
 
+export function deriveDayMuscleSummary(exercises: Array<{ exerciseId: string }>): string {
+  if (!exercises || exercises.length === 0) return 'راحة واستشفاء'
+  const cats = new Set<string>()
+  for (const pe of exercises) {
+    const ex = getExerciseById(pe.exerciseId)
+    if (ex?.category) cats.add(ex.category)
+  }
+  if (cats.size === 0) return 'تمارين متنوعة'
+  return Array.from(cats)
+    .map((c) => MUSCLE_GROUP_LABELS[c as keyof typeof MUSCLE_GROUP_LABELS] || c)
+    .join(' / ')
+}
+
 export function WeeklyPlanView({
   program,
   profile,
@@ -107,7 +120,7 @@ export function WeeklyPlanView({
   onUpdateProgram,
   onDeleteProgram,
   onStartRoutine,
-  onOpenScheduleModal,
+  onOpenScheduleModal: _onOpenScheduleModal,
   onOpenVaultModal,
   onOpenLibrary,
   onOpenCustomBuilder,
@@ -512,7 +525,10 @@ export function WeeklyPlanView({
         <TopBar
           onBack={handleBackToOverview}
           title={selectedDay.labelAr}
-          subtitle={selectedDay.focus}
+          subtitle={
+            (program.splitType && WORKOUT_SPLIT_LABELS[program.splitType]) ||
+            'البرنامج التدريبي'
+          }
           actions={
             <button
               type="button"
@@ -534,9 +550,44 @@ export function WeeklyPlanView({
             padding: '16px 16px 80px',
           }}
         >
+          {/* Day Focus Muscle Summary derived from exercises */}
+          <div
+            className="day-focus-strip"
+            style={{
+              padding: '10px 14px',
+              borderRadius: '10px',
+              background: 'var(--card-subtle)',
+              border: '1px solid var(--line)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '12.5px',
+                color: 'var(--muted)',
+                fontWeight: 600,
+              }}
+            >
+              العضلات المستهدفة
+            </span>
+            <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>
+              {deriveDayMuscleSummary(selectedDay.exercises)}
+            </strong>
+          </div>
+
           {/* Section: الإحماء والتسخين */}
           <section className="screen-section">
-            <div className="section-title">
+            <div
+              className="section-title"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                justifyContent: 'flex-start',
+              }}
+            >
               <span>الإحماء والتسخين</span>
               <span className="section-title-counter">
                 {warmupExercises.length}
@@ -558,10 +609,15 @@ export function WeeklyPlanView({
                 </span>
                 <button
                   type="button"
-                  className="ghost-primary tiny"
+                  className="button-secondary tiny"
                   onClick={() => {
                     setAddingSection('warmup')
                     setAddingToDayIndex(selectedDay.dayIndex)
+                  }}
+                  style={{
+                    height: '36px',
+                    padding: '0 12px',
+                    fontSize: '13px',
                   }}
                 >
                   + إضافة
@@ -594,24 +650,11 @@ export function WeeklyPlanView({
                           : undefined
                       }
                       leading={
-                        <div
-                          style={{
-                            width: '56px',
-                            height: '56px',
-                            borderRadius: '10px',
-                            overflow: 'hidden',
-                            background: 'var(--card-subtle)',
-                            border: '1px solid var(--line)',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <ExerciseVisual
-                            category={ex?.category ?? 'chest'}
-                            exerciseId={pe.exerciseId}
-                            exerciseName={arabicName}
-                            size="small"
-                          />
-                        </div>
+                        <ExerciseThumb
+                          exercise={ex}
+                          exerciseId={pe.exerciseId}
+                          size={56}
+                        />
                       }
                       title={arabicName}
                       secondary={englishName}
@@ -690,7 +733,7 @@ export function WeeklyPlanView({
                                 fontVariantNumeric: 'tabular-nums',
                               }}
                             >
-                              {setsReps}
+                              <bdi dir="ltr">{setsReps}</bdi>
                             </span>
                             <IconChevronLeft
                               size={16}
@@ -708,11 +751,30 @@ export function WeeklyPlanView({
 
           {/* Section: التمارين الأساسية */}
           <section className="screen-section">
-            <div className="section-title">
+            <div
+              className="section-title"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                justifyContent: 'flex-start',
+              }}
+            >
               <span>التمارين الأساسية</span>
               <span className="section-title-counter">
                 {primaryExercises.length}
               </span>
+            </div>
+            <div
+              className="section-caption"
+              style={{
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+                marginTop: '2px',
+                marginBottom: '8px',
+              }}
+            >
+              مجموعات × تكرارات
             </div>
 
             {primaryExercises.length === 0 ? (
@@ -730,10 +792,15 @@ export function WeeklyPlanView({
                 </span>
                 <button
                   type="button"
-                  className="ghost-primary tiny"
+                  className="button-secondary tiny"
                   onClick={() => {
                     setAddingSection('primary')
                     setAddingToDayIndex(selectedDay.dayIndex)
+                  }}
+                  style={{
+                    height: '36px',
+                    padding: '0 12px',
+                    fontSize: '13px',
                   }}
                 >
                   + إضافة
@@ -766,24 +833,11 @@ export function WeeklyPlanView({
                           : undefined
                       }
                       leading={
-                        <div
-                          style={{
-                            width: '56px',
-                            height: '56px',
-                            borderRadius: '10px',
-                            overflow: 'hidden',
-                            background: 'var(--card-subtle)',
-                            border: '1px solid var(--line)',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <ExerciseVisual
-                            category={ex?.category ?? 'chest'}
-                            exerciseId={pe.exerciseId}
-                            exerciseName={arabicName}
-                            size="small"
-                          />
-                        </div>
+                        <ExerciseThumb
+                          exercise={ex}
+                          exerciseId={pe.exerciseId}
+                          size={56}
+                        />
                       }
                       title={arabicName}
                       secondary={englishName}
@@ -862,7 +916,7 @@ export function WeeklyPlanView({
                                 fontVariantNumeric: 'tabular-nums',
                               }}
                             >
-                              {setsReps}
+                              <bdi dir="ltr">{setsReps}</bdi>
                             </span>
                             <IconChevronLeft
                               size={16}
@@ -881,7 +935,15 @@ export function WeeklyPlanView({
           {/* Optional Cooldown Section if present */}
           {cooldownExercises.length > 0 && (
             <section className="screen-section">
-              <div className="section-title">
+              <div
+                className="section-title"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  justifyContent: 'flex-start',
+                }}
+              >
                 <span>المرونة والثبات والتهدئة</span>
                 <span className="section-title-counter">
                   {cooldownExercises.length}
@@ -913,24 +975,11 @@ export function WeeklyPlanView({
                           : undefined
                       }
                       leading={
-                        <div
-                          style={{
-                            width: '56px',
-                            height: '56px',
-                            borderRadius: '10px',
-                            overflow: 'hidden',
-                            background: 'var(--card-subtle)',
-                            border: '1px solid var(--line)',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <ExerciseVisual
-                            category={ex?.category ?? 'legs'}
-                            exerciseId={pe.exerciseId}
-                            exerciseName={arabicName}
-                            size="small"
-                          />
-                        </div>
+                        <ExerciseThumb
+                          exercise={ex}
+                          exerciseId={pe.exerciseId}
+                          size={56}
+                        />
                       }
                       title={arabicName}
                       secondary={englishName}
@@ -951,15 +1000,28 @@ export function WeeklyPlanView({
                             ✕
                           </button>
                         ) : (
-                          <span
+                          <div
                             style={{
-                              fontWeight: 700,
-                              fontSize: '13px',
-                              color: 'var(--ink)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
                             }}
                           >
-                            {setsReps}
-                          </span>
+                            <span
+                              style={{
+                                fontWeight: 700,
+                                fontSize: '13px',
+                                color: 'var(--ink)',
+                                fontVariantNumeric: 'tabular-nums',
+                              }}
+                            >
+                              <bdi dir="ltr">{setsReps}</bdi>
+                            </span>
+                            <IconChevronLeft
+                              size={16}
+                              style={{ color: 'var(--muted)' }}
+                            />
+                          </div>
                         )
                       }
                     />
@@ -1306,7 +1368,7 @@ export function WeeklyPlanView({
                       )}
                     </div>
                   }
-                  secondary={day.focus}
+                  secondary={deriveDayMuscleSummary(day.exercises)}
                   trailing={
                     <div
                       style={{
@@ -1440,11 +1502,11 @@ export function WeeklyPlanView({
             }}
             onClick={() => {
               setIsPlusSheetOpen(false)
-              onOpenScheduleModal?.()
+              handleOpenScheduleEditor()
             }}
           >
             <IconCalendar size={18} />
-            <span>جدولي بالأيام</span>
+            <span>جدول الأسبوع</span>
           </button>
         </div>
       </Sheet>

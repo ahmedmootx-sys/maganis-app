@@ -46,6 +46,7 @@ import { ExerciseDetailView } from './modules/workout/ExerciseDetailView.tsx'
 import { ConfirmSheet } from './ui/index.ts'
 import { IconSprite } from './ui/IconSprite.tsx'
 import { Styleguide } from './shell/Styleguide.tsx'
+import { ComponentGallery } from './modules/gallery/ComponentGallery.tsx'
 import { useRouter } from './shell/router.ts'
 import './styles/app.css'
 
@@ -635,6 +636,16 @@ export function App({ config }: AppProps) {
     )
   }
 
+  // --- Component Gallery dev route ---
+  if (route.path === '/gallery') {
+    return (
+      <div className="maganis-shell">
+        <IconSprite />
+        <ComponentGallery />
+      </div>
+    )
+  }
+
   // --- Onboarding state ---
   if (!profile || editing) {
     return (
@@ -1030,6 +1041,9 @@ export function App({ config }: AppProps) {
                 {formatTime(activeSessionSeconds)}
               </div>
               <div className="banner-text">
+                <span className="banner-tag" style={{ fontSize: '11.5px', color: 'var(--brand)', fontWeight: 700, display: 'block' }}>
+                  لديك جلسة غير مكتملة
+                </span>
                 <strong className="banner-title">
                   {activeWorkoutDay.labelAr}
                 </strong>

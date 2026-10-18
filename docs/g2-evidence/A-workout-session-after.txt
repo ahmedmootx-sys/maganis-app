@@ -1,0 +1,11 @@
+RUN  v3.2.7 C:/Users/power tech/Downloads/maganis-project
+
+ ✓ src/modules/workout/ActiveWorkoutSession.test.tsx (5 tests) 878ms
+   ✓ ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A) > A1: ✓ button is disabled / blocks completion until weight > 0 and reps >= 1  480ms
+   ✓ ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A) > A2: previous-value shortcut fills weight and reps from history on click
+   ✓ ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A) > A3: not-done shows empty circle (no check glyph), done shows check glyph and aria-pressed
+   ✓ ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A) > A4: finish sheet uses correct Arabic plurals, warns for missing weights, and shows "—" when no load
+   ✓ ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A) > A8: delete set provides undo Toast with "تم الحذف — تراجع"
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)

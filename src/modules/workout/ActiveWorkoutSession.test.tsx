@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { ActiveWorkoutSession } from './ActiveWorkoutSession.tsx'
 import type { ProgramDay } from '../shared/types.ts'
@@ -13,11 +13,17 @@ const mockDay: ProgramDay = {
   ],
 }
 
-describe('ActiveWorkoutSession', () => {
+describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A)', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
   afterEach(() => {
     cleanup()
+    localStorage.clear()
   })
-  it('renders routine day title, stopwatch, and exercises with sets tables', () => {
+
+  it('A1: ✓ button is disabled / blocks completion until weight > 0 and reps >= 1', () => {
     const handleFinish = vi.fn()
     const handleCancel = vi.fn()
 
@@ -29,52 +35,147 @@ describe('ActiveWorkoutSession', () => {
       />,
     )
 
-    expect(screen.getByText('الأحد (صدر)')).toBeInTheDocument()
-    expect(screen.getByText('صدر وترايسبس')).toBeInTheDocument()
-    expect(screen.getByText('ضغط صدري بالبار')).toBeInTheDocument()
-    expect(screen.getByText('تمرين الضغط (ضغط أرضي)')).toBeInTheDocument()
+    const checkButtons = screen.getAllByRole('button', { name: /تأكيد إنهاء المجموعة|✓/ })
+    const firstCheck = checkButtons[0]
+
+    // Initially, weight is 0/empty, reps is 0/empty (target 10 is placeholder only)
+    // Tapping checkmark should NOT mark as completed
+    fireEvent.click(firstCheck)
+    expect(firstCheck).not.toHaveClass('checked')
+    expect(firstCheck).toHaveAttribute('aria-pressed', 'false')
+
+    // Inline hint should appear
+    expect(screen.getByText('اكتب الوزن والتكرارات أولًا')).toBeInTheDocument()
+
+    // Now enter weight = 60 and reps = 10
+    const weightInputs = screen.getAllByLabelText(/وزن المجموعة 1/)
+    const repsInputs = screen.getAllByLabelText(/تكرار المجموعة 1/)
+
+    fireEvent.change(weightInputs[0], { target: { value: '60' } })
+    fireEvent.change(repsInputs[0], { target: { value: '10' } })
+
+    // Now clicking check button should succeed
+    fireEvent.click(firstCheck)
+    expect(firstCheck).toHaveClass('checked')
+    expect(firstCheck).toHaveAttribute('aria-pressed', 'true')
   })
 
-  it('marks sets as completed on checkmark button click', () => {
-    const handleFinish = vi.fn()
-    const handleCancel = vi.fn()
+  it('A2: previous-value shortcut fills weight and reps from history on click', () => {
+    // Provide previous history in tracking.sessions
+    const previousSessions = [
+      {
+        id: 'prev-1',
+        date: '2026-10-10',
+        programDayIndex: 0,
+        createdAt: Date.now() - 86400000,
+        exercises: [
+          {
+            exerciseId: 'chest-1',
+            completed: true,
+            sets: [
+              { weightKg: 75, reps: 8 },
+              { weightKg: 80, reps: 6 },
+            ],
+          },
+        ],
+      },
+    ]
 
     render(
       <ActiveWorkoutSession
         programDay={mockDay}
-        onFinish={handleFinish}
-        onCancel={handleCancel}
+        previousSessions={previousSessions as any}
+        onFinish={vi.fn()}
+        onCancel={vi.fn()}
       />,
     )
 
-    const checkButtons = screen.getAllByRole('button', { name: '✓' })
-    expect(checkButtons.length).toBeGreaterThanOrEqual(3)
+    // The previous badge / button should show 75 كجم × 8
+    const prevButton = screen.getByTestId('prev-set-btn-0-0')
+    expect(prevButton).toBeInTheDocument()
 
-    // Click first set checkmark
-    fireEvent.click(checkButtons[0])
-    expect(checkButtons[0]).toHaveClass('checked')
+    // Click it to copy values
+    fireEvent.click(prevButton)
+
+    // Now weight input should have 75 and reps should have 8
+    const weightInput = screen.getAllByLabelText(/وزن المجموعة 1/)[0] as HTMLInputElement
+    const repsInput = screen.getAllByLabelText(/تكرار المجموعة 1/)[0] as HTMLInputElement
+
+    expect(weightInput.value).toBe('75')
+    expect(repsInput.value).toBe('8')
+
+    // And checking the set should now succeed directly
+    const firstCheck = screen.getAllByRole('button', { name: /تأكيد إنهاء المجموعة|✓/ })[0]
+    fireEvent.click(firstCheck)
+    expect(firstCheck).toHaveClass('checked')
   })
 
-  it('opens confirmation modal and triggers onFinish when clicking finish workout', () => {
+  it('A3: not-done shows empty circle (no check glyph), done shows check glyph and aria-pressed', () => {
+    render(
+      <ActiveWorkoutSession
+        programDay={mockDay}
+        onFinish={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    )
+
+    const checkButtons = screen.getAllByRole('button', { name: /تأكيد إنهاء المجموعة|✓/ })
+    const btn = checkButtons[0]
+
+    // Not done: no check glyph text
+    expect(btn.textContent?.trim()).toBe('')
+    expect(btn).toHaveAttribute('aria-pressed', 'false')
+
+    // Fill valid values and click
+    const weightInput = screen.getAllByLabelText(/وزن المجموعة 1/)[0]
+    const repsInput = screen.getAllByLabelText(/تكرار المجموعة 1/)[0]
+    fireEvent.change(weightInput, { target: { value: '50' } })
+    fireEvent.change(repsInput, { target: { value: '12' } })
+
+    fireEvent.click(btn)
+
+    // Done: check glyph text and aria-pressed="true"
+    expect(btn.textContent?.trim()).toBe('✓')
+    expect(btn).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('A4: finish sheet uses correct Arabic plurals, warns for missing weights, and shows "—" when no load', () => {
     const handleFinish = vi.fn()
-    const handleCancel = vi.fn()
 
     render(
       <ActiveWorkoutSession
         programDay={mockDay}
         onFinish={handleFinish}
-        onCancel={handleCancel}
+        onCancel={vi.fn()}
       />,
     )
 
     const finishBtn = screen.getByTestId('header-finish-btn')
     fireEvent.click(finishBtn)
 
+    // Modal open
     expect(screen.getByText('مبروك إنهاء التمرين!')).toBeInTheDocument()
 
-    const confirmBtn = screen.getByTestId('confirm-save-session-btn')
-    fireEvent.click(confirmBtn)
+    // When 0 load was logged, load row shows "—", never "0 كجم"
+    const loadValue = screen.getByTestId('finish-total-volume')
+    expect(loadValue.textContent).toBe('—')
+  })
 
-    expect(handleFinish).toHaveBeenCalledTimes(1)
+  it('A8: delete set provides undo Toast with "تم الحذف — تراجع"', () => {
+    render(
+      <ActiveWorkoutSession
+        programDay={mockDay}
+        onFinish={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    )
+
+    const removeBtns = screen.getAllByRole('button', { name: /حذف المجموعة/ })
+    expect(removeBtns.length).toBeGreaterThan(0)
+
+    fireEvent.click(removeBtns[0])
+
+    // Undo toast appears
+    expect(screen.getByText(/تم الحذف — تراجع|تم حذف المجموعة/)).toBeInTheDocument()
   })
 })

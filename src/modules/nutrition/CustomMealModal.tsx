@@ -10,7 +10,7 @@ import {
   type FoodItem,
 } from './foodDatabase.ts'
 import type { MealCategory } from './types.ts'
-import { Select, Sheet, Callout, Button } from '../../ui/index.ts'
+import { Select, Sheet, Callout, Button, Segmented } from '../../ui/index.ts'
 import { IconTrash } from '../../components/Icons.tsx'
 
 export interface CustomMealModalProps {
@@ -273,26 +273,24 @@ export function CustomMealModal({
         initialMeal ? 'تعديل الوجبة الخاصة' : 'تصميم وجبة خاصة وحساب الماكروز'
       }
       footer={
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', width: '100%' }}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="md"
+            onClick={onClose}
+            style={{ flex: 1, height: '48px', fontSize: '14px' }}
+          >
+            إلغاء
+          </Button>
           <Button
             type="submit"
             form="custom-meal-form"
             variant="primary"
             size="lg"
-            className="full-width"
-            style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
+            style={{ flex: 2, height: '48px', fontSize: '15px', fontWeight: 800 }}
           >
-            حفظ الوجبة في وجباتي
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="md"
-            className="full-width"
-            onClick={onClose}
-            style={{ height: '44px', fontSize: '14px' }}
-          >
-            إلغاء
+            حفظ الوجبة
           </Button>
         </div>
       }
@@ -385,31 +383,14 @@ export function CustomMealModal({
         </div>
 
         {/* Mode Switcher */}
-        <div
-          className="segmented"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '4px',
-          }}
-        >
-          <button
-            type="button"
-            className={`segmented__item ${mode === 'ingredients' ? 'segmented__item--active' : ''}`}
-            onClick={() => setMode('ingredients')}
-            style={{ minHeight: '40px', fontSize: '13.5px' }}
-          >
-            المكونات بالجرام
-          </button>
-          <button
-            type="button"
-            className={`segmented__item ${mode === 'direct' ? 'segmented__item--active' : ''}`}
-            onClick={() => setMode('direct')}
-            style={{ minHeight: '40px', fontSize: '13.5px' }}
-          >
-            الماكروز مباشرة
-          </button>
-        </div>
+        <Segmented
+          options={[
+            { value: 'ingredients', label: 'المكونات بالجرام' },
+            { value: 'direct', label: 'الماكروز مباشرة' },
+          ]}
+          value={mode}
+          onChange={(val) => setMode(val as 'ingredients' | 'direct')}
+        />
 
         {/* Mode 1: Ingredients Builder */}
         {mode === 'ingredients' && (
@@ -840,7 +821,7 @@ export function CustomMealModal({
 
             {/* Current Ingredients List */}
             <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
             >
               {ingredients.map((ing, idx) => {
                 const food = getFoodItemById(ing.foodItemId)
@@ -861,125 +842,36 @@ export function CustomMealModal({
                       gap: '8px',
                     }}
                   >
-                    {/* Line 1: full-width name */}
-                    <div
-                      style={{
-                        fontWeight: 700,
-                        fontSize: '14.5px',
-                        color: 'var(--color-text)',
-                        width: '100%',
-                      }}
-                    >
-                      {food.nameAr}
-                    </div>
-
-                    {/* Line 2: macros (small, may wrap) */}
-                    <div
-                      style={{
-                        fontSize: '12.5px',
-                        color: 'var(--color-text-2)',
-                        lineHeight: 1.4,
-                        wordBreak: 'break-word',
-                      }}
-                    >
-                      {macros.calories} سعرة • {macros.protein}جم بروتين •{' '}
-                      {macros.carbs}جم كارب • {macros.fats}جم دهون
-                    </div>
-
-                    {/* Line 3: stepper ( - , input , + , unit ) and a 44x44 trash IconButton (Lucide) */}
+                    {/* Row 1: Full name + 44x44 trash button */}
                     <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        gap: '8px',
                         width: '100%',
-                        paddingTop: '6px',
-                        borderTop: '1px solid var(--color-divider)',
                       }}
                     >
                       <div
                         style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
+                          fontWeight: 700,
+                          fontSize: '14.5px',
+                          color: 'var(--color-text)',
+                          flex: 1,
                         }}
                       >
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleUpdateGrams(idx, Math.max(0, ing.grams - 25))
-                          }
-                          aria-label="تقليل الكمية"
-                          style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: 'var(--radius-control)',
-                            border: '1px solid var(--color-divider)',
-                            background: 'var(--color-surface-2)',
-                            color: 'var(--color-text)',
-                            fontSize: '16px',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          {'\u2212'}
-                        </button>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          value={ing.grams === 0 ? '' : ing.grams}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/[^0-9]/g, '')
-                            handleUpdateGrams(idx, val === '' ? 0 : Number(val))
-                          }}
-                          aria-label={`كمية ${food.nameAr} بالجرام`}
-                          className="field-input"
-                          style={{
-                            width: '68px',
-                            height: '36px',
-                            padding: '0 6px',
-                            textAlign: 'center',
-                            borderRadius: 'var(--radius-control)',
-                            border: '1px solid var(--color-divider)',
-                            fontSize: '14px',
-                            fontWeight: 700,
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleUpdateGrams(idx, ing.grams + 25)}
-                          aria-label="زيادة الكمية"
-                          style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: 'var(--radius-control)',
-                            border: '1px solid var(--color-divider)',
-                            background: 'var(--color-surface-2)',
-                            color: 'var(--color-text)',
-                            fontSize: '16px',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          +
-                        </button>
+                        {food.nameAr}
                         <span
                           style={{
-                            fontSize: '12.5px',
+                            fontSize: '12px',
+                            fontWeight: 500,
                             color: 'var(--color-text-2)',
-                            marginInlineStart: '4px',
+                            marginInlineStart: '6px',
                           }}
                         >
-                          جم
+                          ({macros.calories}&nbsp;سعرة)
                         </span>
                       </div>
-
                       <button
                         type="button"
                         onClick={() => handleRemoveIngredient(idx)}
@@ -1005,6 +897,136 @@ export function CustomMealModal({
                         <IconTrash size={20} />
                       </button>
                     </div>
+
+                    {/* Macros: 3 fixed cells */}
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: '6px',
+                        textAlign: 'center',
+                        background: 'var(--color-surface-2)',
+                        padding: '6px 8px',
+                        borderRadius: 'var(--radius-control)',
+                        fontSize: '12px',
+                        color: 'var(--color-text-2)',
+                      }}
+                    >
+                      <div>
+                        <span
+                          className="macro-marker macro-marker--protein"
+                          aria-hidden="true"
+                          style={{ marginInlineEnd: '4px' }}
+                        />
+                        {macros.protein}&nbsp;جم بروتين
+                      </div>
+                      <div>
+                        <span
+                          className="macro-marker macro-marker--carbs"
+                          aria-hidden="true"
+                          style={{ marginInlineEnd: '4px' }}
+                        />
+                        {macros.carbs}&nbsp;جم كارب
+                      </div>
+                      <div>
+                        <span
+                          className="macro-marker macro-marker--fats"
+                          aria-hidden="true"
+                          style={{ marginInlineEnd: '4px' }}
+                        />
+                        {macros.fats}&nbsp;جم دهون
+                      </div>
+                    </div>
+
+                    {/* Row 2: Stepper ( - , input , + ) each >= 44px + unit */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        paddingTop: '4px',
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUpdateGrams(idx, Math.max(0, ing.grams - 25))
+                        }
+                        aria-label="تقليل الكمية"
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          minWidth: '44px',
+                          minHeight: '44px',
+                          borderRadius: 'var(--radius-control)',
+                          border: '1px solid var(--color-divider)',
+                          background: 'var(--color-surface-2)',
+                          color: 'var(--color-text)',
+                          fontSize: '20px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        {'\u2212'}
+                      </button>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={ing.grams === 0 ? '' : ing.grams}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '')
+                          handleUpdateGrams(idx, val === '' ? 0 : Number(val))
+                        }}
+                        aria-label={`كمية ${food.nameAr} بالجرام`}
+                        className="field-input"
+                        style={{
+                          width: '80px',
+                          height: '44px',
+                          padding: '0 8px',
+                          textAlign: 'center',
+                          borderRadius: 'var(--radius-control)',
+                          border: '1px solid var(--color-divider)',
+                          fontSize: '15px',
+                          fontWeight: 700,
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateGrams(idx, ing.grams + 25)}
+                        aria-label="زيادة الكمية"
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          minWidth: '44px',
+                          minHeight: '44px',
+                          borderRadius: 'var(--radius-control)',
+                          border: '1px solid var(--color-divider)',
+                          background: 'var(--color-surface-2)',
+                          color: 'var(--color-text)',
+                          fontSize: '20px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        +
+                      </button>
+                      <span
+                        style={{
+                          fontSize: '13px',
+                          color: 'var(--color-text-2)',
+                          fontWeight: 600,
+                          marginInlineStart: '4px',
+                        }}
+                      >
+                        جم
+                      </span>
+                    </div>
                   </div>
                 )
               })}
@@ -1029,9 +1051,15 @@ export function CustomMealModal({
                   color: 'var(--ink)',
                 }}
               >
-                إضافة سريعة لمكونات أساسية
+                حصص شائعة
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: '6px',
+                }}
+              >
                 {QUICK_STAPLES.map((quick) => (
                   <button
                     key={quick.id}
@@ -1040,17 +1068,18 @@ export function CustomMealModal({
                       handleAddIngredientDirect(quick.id, quick.grams)
                     }
                     style={{
-                      padding: '6px 10px',
-                      fontSize: '12px',
+                      padding: '8px 10px',
+                      fontSize: '12.5px',
                       fontWeight: 600,
                       borderRadius: '8px',
                       border: '1px solid var(--line)',
                       background: 'var(--card-subtle)',
                       cursor: 'pointer',
                       color: 'var(--ink)',
+                      textAlign: 'center',
                     }}
                   >
-                    + {quick.name} ({quick.grams}جم)
+                    + {quick.name} ({quick.grams}&nbsp;جم)
                   </button>
                 ))}
               </div>
@@ -1477,7 +1506,7 @@ export function CustomMealModal({
                 {mode === 'ingredients'
                   ? calculatedTotals.proteinGrams
                   : dpNum}
-                جم بروتين
+                &nbsp;جم بروتين
               </span>
               <span
                 style={{
@@ -1494,7 +1523,7 @@ export function CustomMealModal({
                 {mode === 'ingredients'
                   ? calculatedTotals.carbsGrams
                   : dcNum}
-                جم كارب
+                &nbsp;جم كارب
               </span>
               <span
                 style={{
@@ -1511,7 +1540,7 @@ export function CustomMealModal({
                 {mode === 'ingredients'
                   ? calculatedTotals.fatsGrams
                   : dfNum}
-                جم دهون
+                &nbsp;جم دهون
               </span>
             </div>
           </div>
@@ -1526,9 +1555,10 @@ export function CustomMealModal({
             value={notesAr}
             onChange={(e) => setNotesAr(e.target.value)}
             placeholder="مثال: صدور دجاج متبلة مع أرز بسمتي وسلطة خضراء..."
-            rows={2}
+            rows={3}
             style={{
               width: '100%',
+              minHeight: '84px',
               padding: '10px 12px',
               borderRadius: '10px',
               border: '1.5px solid var(--line)',
@@ -1537,6 +1567,7 @@ export function CustomMealModal({
               color: 'var(--ink)',
               boxSizing: 'border-box',
               resize: 'none',
+              textAlign: 'start',
             }}
           />
         </div>
