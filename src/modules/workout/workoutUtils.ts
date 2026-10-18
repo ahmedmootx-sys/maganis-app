@@ -128,7 +128,7 @@ export interface ExportedRoutinePayload {
  */
 export function exportRoutineToJson(
   program: WorkoutProgram,
-  title = 'جدول تمارين مجانص',
+  title = 'جدول تمارين Maganis',
 ): string {
   const payload: ExportedRoutinePayload = {
     app: 'maganis',
@@ -146,7 +146,7 @@ export function exportRoutineToJson(
  */
 export function downloadRoutineFile(
   program: WorkoutProgram,
-  title = 'جدول تمارين مجانص',
+  title = 'جدول تمارين Maganis',
 ): void {
   const json = exportRoutineToJson(program, title)
   const blob = new Blob([json], { type: 'application/json;charset=utf-8' })
@@ -167,7 +167,7 @@ export function downloadRoutineFile(
  */
 export async function shareRoutineFile(
   program: WorkoutProgram,
-  title = 'جدول تمارين مجانص',
+  title = 'جدول تمارين Maganis',
 ): Promise<{ shared: boolean; method: 'native' | 'download' }> {
   const json = exportRoutineToJson(program, title)
   const safeTitle = title.replace(/[^\w\u0600-\u06FF-]/g, '_')
@@ -186,8 +186,8 @@ export async function shareRoutineFile(
       ) {
         await navigator.share({
           files: [file],
-          title: `جدول تمارين مجانص: ${title}`,
-          text: `إليك جدول تمارين (${title}) من تطبيق مجانص — يمكنك استيراده في التطبيق مباشرة!`,
+          title: `جدول تمارين Maganis: ${title}`,
+          text: `إليك جدول تمارين (${title}) من تطبيق Maganis — يمكنك استيراده في التطبيق مباشرة!`,
         })
         return { shared: true, method: 'native' }
       }

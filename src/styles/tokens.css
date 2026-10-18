@@ -102,6 +102,11 @@
   --space-6: 24px;
   --space-8: 32px;
 
+  /* Inset Tokens: Task G visual contract (inline >= 16px, block >= 12px) */
+  --inset-inline: 16px;
+  --inset-block: 12px;
+  --inset: 12px 16px;
+
   /* Radii */
   --radius-card: 12px;
   --radius-control: 10px;
@@ -109,13 +114,18 @@
 
   /* Touch Targets & Dimensions */
   --touch-target-min: 44px;
+  --top-bar-height: 56px;
+  --nav-h: 64px;
+  --bottom-nav-height: 64px;
+  --btn-primary-height: 52px;
   --button-height-primary: 52px;
-  --button-height-sm: 36px;
+  --button-height-sm: 44px;
   --content-max-width: 640px;
 
   /* Safe Area Insets */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
 
@@ -139,19 +149,25 @@
   /* Brand Accent: Original orange #f95700 */
   --color-accent: #f95700;
   --color-accent-hover: #ea580c;
+  --color-accent-pressed: #d04300;
+  --color-accent-disabled: #e2e5ea;
   --color-accent-text: #c2410c; /* WCAG AA 4.75:1 on #F4F5F7 */
-  --color-accent-contrast: #14161a; /* WCAG AA 5.51:1 on #f95700 */
+  --color-accent-contrast: #ffffff;
+  --color-accent-tint: rgba(249, 87, 0, 0.14); /* 14% accent tint over surface for selected chips/cards */
   --color-focus-ring: rgba(249, 87, 0, 0.35);
 
+  --on-accent: #ffffff;
+  --on-accent-disabled: #6b7280;
+
   /* Primary Button Tokens (Light Mode: WCAG AA >= 4.5:1) */
-  --btn-primary-bg: #d04300;
+  --btn-primary-bg: #f95700;
   --btn-primary-fg: #ffffff;
-  --btn-primary-hover-bg: #b83800;
+  --btn-primary-hover-bg: #ea580c;
   --btn-primary-hover-fg: #ffffff;
-  --btn-primary-active-bg: #9e3000;
+  --btn-primary-active-bg: #d04300;
   --btn-primary-active-fg: #ffffff;
-  --btn-primary-focus-ring: rgba(208, 67, 0, 0.4);
-  --btn-primary-disabled-bg: #eef0f3;
+  --btn-primary-focus-ring: rgba(249, 87, 0, 0.4);
+  --btn-primary-disabled-bg: #e2e5ea;
   --btn-primary-disabled-fg: #6b7280;
 
   /* Anatomical Atlas Tokens (Light Mode) */
@@ -219,19 +235,25 @@
   /* Brand Accent in Dark: #ff6b1a */
   --color-accent: #ff6b1a;
   --color-accent-hover: #ff853f;
+  --color-accent-pressed: #e04f00;
+  --color-accent-disabled: #2d3139;
   --color-accent-text: #ff853f; /* WCAG AA > 8:1 on #0B0C0E */
-  --color-accent-contrast: #0b0c0e;
+  --color-accent-contrast: #ffffff;
+  --color-accent-tint: rgba(255, 107, 26, 0.14);
   --color-focus-ring: rgba(255, 107, 26, 0.35);
+
+  --on-accent: #ffffff;
+  --on-accent-disabled: #9ca3af;
 
   /* Primary Button Tokens (Dark Mode: WCAG AA >= 4.5:1) */
   --btn-primary-bg: #ff6b1a;
-  --btn-primary-fg: #0b0c0e;
+  --btn-primary-fg: #ffffff;
   --btn-primary-hover-bg: #ff853f;
-  --btn-primary-hover-fg: #0b0c0e;
-  --btn-primary-active-bg: #ff9b5f;
-  --btn-primary-active-fg: #0b0c0e;
+  --btn-primary-hover-fg: #ffffff;
+  --btn-primary-active-bg: #e04f00;
+  --btn-primary-active-fg: #ffffff;
   --btn-primary-focus-ring: rgba(255, 107, 26, 0.4);
-  --btn-primary-disabled-bg: #212429;
+  --btn-primary-disabled-bg: #2d3139;
   --btn-primary-disabled-fg: #9ca3af;
 
   /* Anatomical Atlas Tokens (Dark Mode) */

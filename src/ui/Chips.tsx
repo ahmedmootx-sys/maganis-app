@@ -16,16 +16,32 @@ export const Chip: React.FC<ChipProps> = ({
   onRemove,
   children,
   className = '',
+  role,
   ...props
 }) => {
+  const isInteractive = Boolean(props.onClick || onRemove)
+  const finalRole = role ?? (isInteractive ? (active !== undefined ? 'checkbox' : 'button') : 'button')
+
   return (
     <button
       type="button"
+      role={finalRole}
+      aria-checked={finalRole === 'radio' || finalRole === 'checkbox' ? active : undefined}
+      aria-pressed={finalRole === 'button' && active ? true : undefined}
       className={`chip ${active ? 'chip--active' : ''} ${className}`.trim()}
       {...props}
     >
       {icon && <Icon name={icon} size={16} />}
       <span>{children}</span>
+      {active && !removable && (
+        <span
+          className="chip__check"
+          aria-hidden="true"
+          style={{ display: 'inline-flex', marginInlineStart: '6px' }}
+        >
+          <Icon name="check" size={16} />
+        </span>
+      )}
       {removable && (
         <span
           role="button"
@@ -92,14 +108,24 @@ export const ToggleChip: React.FC<ToggleChipProps> = ({
   return (
     <button
       type="button"
+      role="checkbox"
+      aria-checked={checked}
       aria-pressed={checked}
       disabled={disabled}
       className={`chip ${checked ? 'chip--active' : ''} ${className}`.trim()}
       onClick={() => !disabled && onChange(!checked)}
       {...props}
     >
-      {checked && <Icon name="check" size={16} />}
       <span>{children}</span>
+      {checked && (
+        <span
+          className="chip__check"
+          aria-hidden="true"
+          style={{ display: 'inline-flex', marginInlineStart: '6px' }}
+        >
+          <Icon name="check" size={16} />
+        </span>
+      )}
     </button>
   )
 }
@@ -108,6 +134,20 @@ export interface ChipsProps extends ChipProps {
   selected?: boolean
 }
 
-export const Chips: React.FC<ChipsProps> = ({ selected, active, ...props }) => {
-  return <Chip active={selected ?? active} {...props} />
+export const Chips: React.FC<ChipsProps> = ({
+  selected,
+  active,
+  role,
+  ...props
+}) => {
+  const isSel = selected ?? active
+  const effRole = role ?? 'checkbox'
+  return (
+    <Chip
+      active={isSel}
+      role={effRole}
+      aria-checked={isSel}
+      {...props}
+    />
+  )
 }

@@ -108,3 +108,68 @@ for (const food of FOOD_DATABASE) {
 }
 fs.writeFileSync(path.join(docsDir, 'foods-export.csv'), '\uFEFF' + foodRows.join('\n'), 'utf8')
 console.log(`✓ Exported ${FOOD_DATABASE.length} foods to docs/foods-export.csv`)
+
+// 4. Export Owner Profile Dump
+const ownerProfileDump = {
+  version: 1,
+  exportedAt: new Date().toISOString(),
+  profile: {
+    id: 'owner-prod-verified',
+    name: 'أحمد',
+    primaryGoal: 'hypertrophy',
+    goals: ['hypertrophy'],
+    bodyGoal: 'gain',
+    trainingStyle: ['weights'],
+    trainingDaysPerWeek: 4,
+    splitType: 'upper_lower',
+    experienceLevel: 'intermediate',
+    equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'cables', 'bodyweight'],
+    body: {
+      sex: 'male',
+      age: 28,
+      heightCm: 178,
+      weightKg: 80,
+      activityLevel: 'moderate',
+      lifestyle: 2,
+      pace: 'standard',
+    },
+    medical: {
+      hasIssues: true,
+      injuryTags: ['الكتف'],
+      notes: 'التهاب أوتار خفيف في الكتف الأيمن، تجنب الأوزان الحرة فوق الرأس بأوزان ثقيلة',
+    },
+    limitations: [
+      {
+        region: 'shoulder',
+        severity: 'moderate',
+        notes: 'التهاب أوتار خفيف، استبدال الضغط الحر خلف الرقبة بضغط دمبل أمامي',
+      },
+    ],
+    createdAt: 1700000000000,
+    updatedAt: 1700000000000,
+  },
+  nutritionPlan: {
+    formula: 'Mifflin-St Jeor (1990)',
+    bmr: 1770,
+    eat: 324,
+    tdee: 2094,
+    targetCalories: 2326,
+    adjustmentType: 'surplus',
+    adjustmentAmount: 232,
+    macros: {
+      proteinGrams: 144,
+      proteinPerKg: 1.8,
+      fatsGrams: 65,
+      carbsGrams: 292,
+    },
+    reference: 'Morton et al. BJSM 2018',
+  },
+}
+
+fs.writeFileSync(
+  path.join(docsDir, 'owner-profile-dump.json'),
+  JSON.stringify(ownerProfileDump, null, 2),
+  'utf8',
+)
+console.log(`✓ Exported owner profile dump to docs/owner-profile-dump.json`)
+

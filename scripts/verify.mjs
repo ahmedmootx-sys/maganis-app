@@ -152,7 +152,7 @@ runStep('Exercise Anatomy: Scientific content & high-risk safety flags', () => {
 })
 
 // 9. Vitest Suite
-runStep('Vitest Suite: 146 unit & integration tests', () => {
+runStep('Vitest Suite: 154 unit & integration tests', () => {
   execSync('npx vitest run', { cwd: rootDir, stdio: 'pipe' })
 })
 
@@ -164,6 +164,36 @@ runStep('Production Build: TypeScript check & Vite bundle', () => {
 // 11. Playwright Mobile Defect Suite
 runStep('Playwright Defect Suite: 13 Android mobile defect tests', () => {
   execSync('node scripts/run-f-defects.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 12. Gate 5.1: Layout Insets Verification (>= 200 elements, min 12px edge distance)
+runStep('Gate 5.1: Non-vacuous Layout Insets (>= 200 elements)', () => {
+  execSync('node scripts/gate-inset.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 13. Gate 5.2: Choice Button Visual Contract & Accessibility (>= 50 elements)
+runStep('Gate 5.2: Choice Button Contract & Accessibility (>= 50 elements)', () => {
+  execSync('node scripts/gate-choice.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 14. Gate 5.3: Button Visual Contract & Disabled Opacity = 100% (>= 40 buttons)
+runStep('Gate 5.3: Button Visual Contract & Disabled Opacity (>= 40 buttons)', () => {
+  execSync('node scripts/gate-buttons.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 15. Gate 5.4: Text Polish & Arabic RTL Strictness (>= 100 text nodes)
+runStep('Gate 5.4: Text Polish & Arabic RTL Strictness (>= 100 text nodes)', () => {
+  execSync('node scripts/gate-text.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 16. Gate 5.5: Mobile Geometry, Touch Targets & Nav Bounds (>= 50 controls)
+runStep('Gate 5.5: Mobile Geometry & Touch Targets (>= 50 controls)', () => {
+  execSync('node scripts/gate-geometry.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 17. Gate 5.9: ServiceWorker Lifecycle & 88-Exercise Media Audit (88 exercises, 176 frames)
+runStep('Gate 5.9: ServiceWorker & 88-Exercise Media Audit (88 exercises, 176 frames)', () => {
+  execSync('node scripts/audit-sw-media.mjs', { cwd: rootDir, stdio: 'pipe' })
 })
 
 console.log('\n====================================================')

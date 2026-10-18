@@ -1,0 +1,1767 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-18T00:36:16.372Z",
+  "ffmpegAvailable": false,
+  "exercises": {
+    "chest-1": {
+      "exerciseKey": "chest-1",
+      "matchedName": "Barbell Bench Press - Medium Grip",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-1_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-1_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-2": {
+      "exerciseKey": "chest-2",
+      "matchedName": "Dumbbell Bench Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-2_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-2_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-3": {
+      "exerciseKey": "chest-3",
+      "matchedName": "Pushups",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-3_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-3_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-5": {
+      "exerciseKey": "chest-5",
+      "matchedName": "Incline Dumbbell Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-5_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-5_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-6": {
+      "exerciseKey": "chest-6",
+      "matchedName": "Dumbbell Flyes",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-6_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-6_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-7": {
+      "exerciseKey": "chest-7",
+      "matchedName": "Cable Crossover",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-7_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-7_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-8": {
+      "exerciseKey": "chest-8",
+      "matchedName": "Cable Crossover",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-8_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-8_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-9": {
+      "exerciseKey": "chest-9",
+      "matchedName": "Incline Dumbbell Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-9_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-9_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-10": {
+      "exerciseKey": "chest-10",
+      "matchedName": "Leverage Chest Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-10_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-10_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-11": {
+      "exerciseKey": "chest-11",
+      "matchedName": "Dips - Chest Version",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-11_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-11_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-12": {
+      "exerciseKey": "chest-12",
+      "matchedName": "Decline Dumbbell Flyes",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-12_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-12_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-13": {
+      "exerciseKey": "chest-13",
+      "matchedName": "Decline Barbell Bench Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-13_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-13_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-14": {
+      "exerciseKey": "chest-14",
+      "matchedName": "Push-Up Wide",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-14_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-14_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-15": {
+      "exerciseKey": "chest-15",
+      "matchedName": "Incline Push-Up",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-15_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-15_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-16": {
+      "exerciseKey": "chest-16",
+      "matchedName": "Decline Push-Up",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-16_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-16_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-18": {
+      "exerciseKey": "chest-18",
+      "matchedName": "Dumbbell Flyes",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-18_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-18_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "chest-19": {
+      "exerciseKey": "chest-19",
+      "matchedName": "Smith Machine Bench Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/chest-19_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/chest-19_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-1": {
+      "exerciseKey": "back-1",
+      "matchedName": "Bent Over Barbell Row",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-1_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-1_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-2": {
+      "exerciseKey": "back-2",
+      "matchedName": "Bent Over Two-Dumbbell Row",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-2_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-2_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-3": {
+      "exerciseKey": "back-3",
+      "matchedName": "Pullups",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-3_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-3_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-4": {
+      "exerciseKey": "back-4",
+      "matchedName": "Chin-Up",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-4_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-4_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-5": {
+      "exerciseKey": "back-5",
+      "matchedName": "Wide-Grip Lat Pulldown",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-5_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-5_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-6": {
+      "exerciseKey": "back-6",
+      "matchedName": "V-Bar Pulldown",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-6_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-6_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-7": {
+      "exerciseKey": "back-7",
+      "matchedName": "Seated Cable Rows",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-7_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-7_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-8": {
+      "exerciseKey": "back-8",
+      "matchedName": "One-Arm Dumbbell Row",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-8_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-8_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-9": {
+      "exerciseKey": "back-9",
+      "matchedName": "Barbell Deadlift",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-9_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-9_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-10": {
+      "exerciseKey": "back-10",
+      "matchedName": "Hyperextensions (Back Extensions)",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-10_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-10_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-11": {
+      "exerciseKey": "back-11",
+      "matchedName": "T-Bar Row with Handle",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-11_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-11_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-12": {
+      "exerciseKey": "back-12",
+      "matchedName": "Reverse Flyes",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-12_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-12_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-13": {
+      "exerciseKey": "back-13",
+      "matchedName": "Straight-Arm Pulldown",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-13_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-13_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-14": {
+      "exerciseKey": "back-14",
+      "matchedName": "Inverted Row",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-14_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-14_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-15": {
+      "exerciseKey": "back-15",
+      "matchedName": "Close-Grip Front Lat Pulldown",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-15_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-15_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-16": {
+      "exerciseKey": "back-16",
+      "matchedName": "Rope Climb",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-16_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-16_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-17": {
+      "exerciseKey": "back-17",
+      "matchedName": "Smith Machine Bent Over Row",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-17_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-17_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-18": {
+      "exerciseKey": "back-18",
+      "matchedName": "Underhand Cable Pulldowns",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-18_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-18_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-19": {
+      "exerciseKey": "back-19",
+      "matchedName": "Good Morning",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-19_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-19_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "back-20": {
+      "exerciseKey": "back-20",
+      "matchedName": "Barbell Shrug",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/back-20_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/back-20_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-1": {
+      "exerciseKey": "arm-1",
+      "matchedName": "Barbell Curl",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-1_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-1_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-2": {
+      "exerciseKey": "arm-2",
+      "matchedName": "Dumbbell Bicep Curl",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-2_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-2_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-3": {
+      "exerciseKey": "arm-3",
+      "matchedName": "Hammer Curls",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-3_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-3_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-4": {
+      "exerciseKey": "arm-4",
+      "matchedName": "Preacher Curl",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-4_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-4_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-5": {
+      "exerciseKey": "arm-5",
+      "matchedName": "Incline Dumbbell Curl",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-5_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-5_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-6": {
+      "exerciseKey": "arm-6",
+      "matchedName": "Concentration Curls",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-6_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-6_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-7": {
+      "exerciseKey": "arm-7",
+      "matchedName": "Cable Hammer Curls - Rope Attachment",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-7_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-7_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-8": {
+      "exerciseKey": "arm-8",
+      "matchedName": "Triceps Pushdown",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-8_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-8_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-9": {
+      "exerciseKey": "arm-9",
+      "matchedName": "Triceps Pushdown - Rope Attachment",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-9_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-9_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-10": {
+      "exerciseKey": "arm-10",
+      "matchedName": "Standing Overhead Barbell Triceps Extension",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-10_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-10_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-11": {
+      "exerciseKey": "arm-11",
+      "matchedName": "Dips - Triceps Version",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-11_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-11_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-12": {
+      "exerciseKey": "arm-12",
+      "matchedName": "Lying Triceps Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-12_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-12_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-13": {
+      "exerciseKey": "arm-13",
+      "matchedName": "Seated Triceps Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-13_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-13_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-14": {
+      "exerciseKey": "arm-14",
+      "matchedName": "Close-Grip Barbell Bench Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-14_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-14_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-15": {
+      "exerciseKey": "arm-15",
+      "matchedName": "Tricep Dumbbell Kickback",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-15_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-15_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-17": {
+      "exerciseKey": "arm-17",
+      "matchedName": "Cable Wrist Curl",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-17_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-17_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-18": {
+      "exerciseKey": "arm-18",
+      "matchedName": "Reverse Barbell Curl",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-18_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-18_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-19": {
+      "exerciseKey": "arm-19",
+      "matchedName": "Bench Dips",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-19_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-19_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "arm-20": {
+      "exerciseKey": "arm-20",
+      "matchedName": "Cable Preacher Curl",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/arm-20_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/arm-20_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-1": {
+      "exerciseKey": "leg-1",
+      "matchedName": "Barbell Full Squat",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-1_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-1_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-2": {
+      "exerciseKey": "leg-2",
+      "matchedName": "Dumbbell Squat",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-2_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-2_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-3": {
+      "exerciseKey": "leg-3",
+      "matchedName": "Front Barbell Squat",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-3_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-3_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-4": {
+      "exerciseKey": "leg-4",
+      "matchedName": "Leg Press",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-4_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-4_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-5": {
+      "exerciseKey": "leg-5",
+      "matchedName": "Leg Extensions",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-5_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-5_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-6": {
+      "exerciseKey": "leg-6",
+      "matchedName": "Lying Leg Curls",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-6_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-6_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-7": {
+      "exerciseKey": "leg-7",
+      "matchedName": "Romanian Deadlift",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-7_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-7_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-8": {
+      "exerciseKey": "leg-8",
+      "matchedName": "Barbell Lunge",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-8_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-8_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-9": {
+      "exerciseKey": "leg-9",
+      "matchedName": "Dumbbell Lunges",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-9_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-9_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-10": {
+      "exerciseKey": "leg-10",
+      "matchedName": "Standing Calf Raises",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-10_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-10_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-11": {
+      "exerciseKey": "leg-11",
+      "matchedName": "Seated Calf Raise",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-11_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-11_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-13": {
+      "exerciseKey": "leg-13",
+      "matchedName": "Glute Ham Raise",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-13_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-13_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-14": {
+      "exerciseKey": "leg-14",
+      "matchedName": "Barbell Hip Thrust",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-14_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-14_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-15": {
+      "exerciseKey": "leg-15",
+      "matchedName": "Hack Squat",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-15_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-15_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-16": {
+      "exerciseKey": "leg-16",
+      "matchedName": "Goblet Squat",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-16_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-16_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-17": {
+      "exerciseKey": "leg-17",
+      "matchedName": "Step-up with Knee Raise",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-17_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-17_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-18": {
+      "exerciseKey": "leg-18",
+      "matchedName": "Sumo Deadlift",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-18_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-18_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-19": {
+      "exerciseKey": "leg-19",
+      "matchedName": "Bodyweight Squat",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-19_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-19_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "leg-20": {
+      "exerciseKey": "leg-20",
+      "matchedName": "Calf-Machine Shoulder Shrug",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/leg-20_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/leg-20_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-1": {
+      "exerciseKey": "core-1",
+      "matchedName": "Plank",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-1_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-1_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-2": {
+      "exerciseKey": "core-2",
+      "matchedName": "Crunches",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-2_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-2_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-3": {
+      "exerciseKey": "core-3",
+      "matchedName": "Russian Twist",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-3_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-3_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-4": {
+      "exerciseKey": "core-4",
+      "matchedName": "Cable Crunch",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-4_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-4_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-5": {
+      "exerciseKey": "core-5",
+      "matchedName": "Hanging Leg Raise",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-5_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-5_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-6": {
+      "exerciseKey": "core-6",
+      "matchedName": "Ab Roller",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-6_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-6_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-7": {
+      "exerciseKey": "core-7",
+      "matchedName": "Push Up to Side Plank",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-7_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-7_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-9": {
+      "exerciseKey": "core-9",
+      "matchedName": "Mountain Climbers",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-9_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-9_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-11": {
+      "exerciseKey": "core-11",
+      "matchedName": "Dead Bug",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-11_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-11_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-12": {
+      "exerciseKey": "core-12",
+      "matchedName": "Reverse Crunch",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-12_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-12_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-14": {
+      "exerciseKey": "core-14",
+      "matchedName": "Toe Touchers",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-14_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-14_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-15": {
+      "exerciseKey": "core-15",
+      "matchedName": "Flutter Kicks",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-15_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-15_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    },
+    "core-18": {
+      "exerciseKey": "core-18",
+      "matchedName": "Decline Crunch",
+      "frameCount": 2,
+      "confirmed": false,
+      "frames": [
+        {
+          "index": 0,
+          "url": "/exercises/core-18_0.jpg",
+          "label": "بداية"
+        },
+        {
+          "index": 1,
+          "url": "/exercises/core-18_1.jpg",
+          "label": "نهاية"
+        }
+      ],
+      "startFrame": 0,
+      "endFrame": 1
+    }
+  }
+}

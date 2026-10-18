@@ -50,6 +50,18 @@ export interface BodyMetrics {
   ageEnteredAt?: number
 }
 
+import type {
+  UserLimitation,
+  PainLogEntry,
+} from '../workout/limitations.ts'
+
+export type {
+  UserLimitation,
+  LimitationRegion,
+  LimitationStatus,
+  PainLogEntry,
+} from '../workout/limitations.ts'
+
 export interface UserProfile {
   id: string
   createdAt: number
@@ -66,6 +78,11 @@ export interface UserProfile {
   trainingDaysPerWeek: number
   medical: MedicalAssessment
   body: BodyMetrics
+  limitations?: UserLimitation[]
+  redFlag?: boolean
+  redFlagDismissed?: boolean
+  schedule?: Record<number, string>
+  painLog?: PainLogEntry[]
 }
 
 /** Profile fields the user provides; identity/timestamps are assigned by the store. */
@@ -86,22 +103,22 @@ export interface GoalInfo {
 export const GOALS: GoalInfo[] = [
   {
     value: 'hypertrophy',
-    labelAr: 'تضخيم',
+    labelAr: 'بناء عضلات / زيادة الوزن',
     hintAr: 'بناء العضلات وزيادة الحجم',
   },
   {
     value: 'cut',
-    labelAr: 'تنشيف',
+    labelAr: 'خسارة دهون / تنشيف',
     hintAr: 'خسارة الدهون مع الحفاظ على العضلات',
   },
   {
     value: 'flexibility',
-    labelAr: 'مرونة',
+    labelAr: 'مرونة وإطالات',
     hintAr: 'تحسين المدى الحركي والمطاطية',
   },
   {
     value: 'calisthenics',
-    labelAr: 'كاليستينكس',
+    labelAr: 'كاليستينكس (وزن الجسم)',
     hintAr: 'تقوية التحكم في الجسم بوزن الجسم',
   },
 ]
@@ -120,12 +137,12 @@ export const BODY_GOALS: BodyGoalInfo[] = [
   },
   {
     value: 'maintain',
-    labelAr: 'تثبيت الوزن الحالي',
+    labelAr: 'المحافظة على الوزن الحالي',
     hintAr: 'توازن السعرات للحفاظ على الكتلة والوزن دون زيادة أو نقصان',
   },
   {
     value: 'cut',
-    labelAr: 'تنشيف / خسارة الدهون',
+    labelAr: 'خسارة دهون / تنشيف',
     hintAr: 'عجز طاقة محسوب لخسارة الدهون مع الحفاظ على الكتلة العضلية',
   },
   {

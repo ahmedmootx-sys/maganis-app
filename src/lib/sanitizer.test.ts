@@ -7,8 +7,8 @@ describe('sanitizeInput', () => {
   })
 
   it('strips non-printable control characters', () => {
-    const dirty = 'مجانص\u0000\u0007\u001Fتمرين'
-    expect(sanitizeInput(dirty)).toBe('مجانصتمرين')
+    const dirty = 'تمرين\u0000\u0007\u001Fتمرين'
+    expect(sanitizeInput(dirty)).toBe('تمرينتمرين')
   })
 
   it('preserves valid unicode arabic characters and newlines', () => {

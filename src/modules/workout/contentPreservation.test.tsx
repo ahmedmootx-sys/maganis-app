@@ -97,7 +97,7 @@ describe('Content Preservation & Verbatim Rendering', () => {
     ).toBeDefined()
 
     // 2. Tab "الأداء"
-    const perfTabButton = screen.getByRole('button', { name: 'الأداء' })
+    const perfTabButton = screen.getByRole('radio', { name: 'الأداء' })
     fireEvent.click(perfTabButton)
 
     // Verify all 4 steps are rendered verbatim
@@ -150,7 +150,7 @@ describe('Content Preservation & Verbatim Rendering', () => {
       />,
     )
 
-    const historyTabBtn = screen.getByRole('button', { name: 'السجل' })
+    const historyTabBtn = screen.getByRole('radio', { name: 'السجل' })
     expect(historyTabBtn).toBeDefined()
     fireEvent.click(historyTabBtn)
     expect(screen.getByText('لا يوجد سجل سابق لهذا التمرين')).toBeDefined()
@@ -186,7 +186,7 @@ describe('Content Preservation & Verbatim Rendering', () => {
     )
 
     // The 5th tab must be in the document
-    const historyTab = screen.getByRole('button', { name: 'السجل' })
+    const historyTab = screen.getByRole('radio', { name: 'السجل' })
     expect(historyTab).toBeDefined()
 
     // Click history tab and verify PR calculations
@@ -242,7 +242,7 @@ describe('Content Preservation & Verbatim Rendering', () => {
     )
 
     // Click Tab "لك"
-    const forYouTab = screen.getByRole('button', { name: 'لك' })
+    const forYouTab = screen.getByRole('radio', { name: 'لك' })
     fireEvent.click(forYouTab)
 
     // Medical warning callout rendered

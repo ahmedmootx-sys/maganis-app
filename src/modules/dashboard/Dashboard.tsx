@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { assetUrl } from '../../utils/assetUrl'
-import { formatArabicDate, getOrderedWeekdays } from '../../lib/dateUtils'
+import { formatArabicDate } from '../../lib/dateUtils'
 import type {
   TrackingSession,
   BodyLogEntry,
@@ -21,8 +21,16 @@ import {
   ProgressBar,
   Callout,
   Icon,
+  ConfirmSheet,
 } from '../../ui'
-import { calculateCalorieMacroTargets } from '../nutrition/calorieCalculator'
+import { Ratio } from '../../ui/Ratio'
+import { computeEnergyPlan } from '../nutrition/computeEnergyPlan'
+import {
+  getOrDeriveSchedule,
+  getScheduledSessionsCount,
+  getNextSession,
+  getOrderedWeekdays,
+} from '../workout/scheduleManager'
 
 export interface DashboardProps {
   profile: UserProfile | null
@@ -33,6 +41,7 @@ export interface DashboardProps {
   onViewDay?: (day: ProgramDay) => void
   onOpenNutrition?: () => void
   onSyncTrainingDays?: () => void
+  onUpdateProfile?: (profile: UserProfile) => void
 }
 
 function getGreeting(name?: string): string {
@@ -119,6 +128,7 @@ export function Dashboard({
   onViewDay,
   onOpenNutrition,
   onSyncTrainingDays,
+  onUpdateProfile,
 }: DashboardProps) {
   const weekStartDay = profile?.weekStartDay ?? 6
   const greeting = getGreeting(profile?.name)
@@ -127,17 +137,50 @@ export function Dashboard({
   const currentWeight = getCurrentWeightDisplay(bodyLog, profile)
   const goalLabel = getGoalLabel(profile)
 
-  const todayDayIndex = new Date().getDay()
-  const todayProgramDay = program?.days.find(
-    (d) => d.dayIndex === todayDayIndex,
+  // Schedule decoupled from program definition
+  const schedule = useMemo(
+    () => getOrDeriveSchedule(profile, program),
+    [profile, program],
+  )
+  const scheduledCount = useMemo(
+    () => getScheduledSessionsCount(schedule),
+    [schedule],
   )
 
-  const nextWorkoutDay = useMemo(() => {
-    if (!program || program.days.length === 0) return null
-    const sorted = [...program.days].sort((a, b) => a.dayIndex - b.dayIndex)
-    const afterToday = sorted.find((d) => d.dayIndex > todayDayIndex)
-    return afterToday ?? sorted[0]
-  }, [program, todayDayIndex])
+  const todayDayIndex = new Date().getDay()
+  const todaySlot = schedule[todayDayIndex]
+  const todayProgramDay = useMemo(() => {
+    if (!program || !todaySlot || todaySlot === 'rest' || todaySlot === 'cardio') {
+      return null
+    }
+    return (
+      program.days.find(
+        (d) => (d.id && d.id === todaySlot) || String(d.dayIndex) === todaySlot,
+      ) ?? null
+    )
+  }, [program, todaySlot])
+
+  const nextSessionInfo = useMemo(
+    () => getNextSession(schedule, todayDayIndex, program, weekStartDay),
+    [schedule, todayDayIndex, program, weekStartDay],
+  )
+  const nextWorkoutDay = !todayProgramDay && nextSessionInfo ? nextSessionInfo.day : null
+
+  // Red Flag state & confirmation
+  const [redFlagDismissed, setRedFlagDismissed] = useState(() => {
+    try {
+      return localStorage.getItem('maganis:redflag_dismissed') === 'true'
+    } catch {
+      return false
+    }
+  })
+  const [showRedFlagConfirm, setShowRedFlagConfirm] = useState(false)
+
+  // Mismatch edit modal state
+  const [showMismatchEditModal, setShowMismatchEditModal] = useState(false)
+  const [selectedGoalDays, setSelectedGoalDays] = useState(
+    profile?.trainingDaysPerWeek ?? 4,
+  )
 
   // Verified safe mascot tips (excluding items marked NEEDS REVIEW in docs/tips-review.md)
   const coachTips = [
@@ -167,17 +210,13 @@ export function Dashboard({
     }
   }, [todayKey])
 
-  const targets = useMemo(() => {
-    if (!profile) return null
-    try {
-      return calculateCalorieMacroTargets(profile)
-    } catch {
-      return null
-    }
-  }, [profile])
-
-  const targetCalories = targets?.targetCalories ?? null
-  const targetProtein = targets?.proteinGrams ?? null
+  // Single source of truth for nutrition targets
+  const energyPlan = useMemo(
+    () => computeEnergyPlan(profile, bodyLog),
+    [profile, bodyLog],
+  )
+  const targetCalories = energyPlan?.target ?? null
+  const targetProtein = energyPlan?.proteinGrams ?? null
   const consumedCalories = dailyNutrition.consumedCalories ?? 0
   const consumedProtein = dailyNutrition.consumedProtein ?? 0
 
@@ -236,9 +275,11 @@ export function Dashboard({
                 fontSize: '17px',
                 color: 'var(--color-text)',
                 letterSpacing: '-0.02em',
+                fontFamily: 'Inter, Roboto, system-ui, sans-serif',
+                whiteSpace: 'nowrap',
               }}
             >
-              مجانص
+              <bdi dir="ltr">Maganis</bdi>
             </span>
           </div>
         }
@@ -255,21 +296,75 @@ export function Dashboard({
           padding: '16px',
         }}
       >
-        {/* Single-line Callout when training days differ */}
+        {/* Red Flag Persistent Medical Callout */}
+        {profile?.redFlag && !redFlagDismissed && (
+          <Callout
+            variant="danger"
+            title="تنبيه طبي هام"
+            action={
+              <Button
+                size="sm"
+                variant="subtle"
+                onClick={() => setShowRedFlagConfirm(true)}
+              >
+                فهمت واستشرت طبيباً
+              </Button>
+            }
+          >
+            أشرت في تقييمك الصحي إلى وجود أعراض أو إصابات تتطلب فحصاً طبياً. نوصي بعدم البدء بأوزان ثقيلة ومراجعة طبيب مختص قبل ممارسة أي تمرين.
+          </Callout>
+        )}
+
+        {/* Training days mismatch Callout with 3 distinct actions */}
         {trainingDaysMismatch && (
           <Callout
             variant="warning"
             title="اختلاف في أيام التدريب"
-            action={
-              onSyncTrainingDays ? (
-                <Button size="sm" variant="subtle" onClick={onSyncTrainingDays}>
-                  تطابق
-                </Button>
-              ) : undefined
-            }
           >
-            جدولك الحالي {trainingDaysMismatch.programDays} أيام بينما هدف ملفك
-            الشخصي {trainingDaysMismatch.goalDays} أيام أسبوعياً.
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div>
+                جدولك الحالي {trainingDaysMismatch.programDays} أيام بينما هدف ملفك الشخصي {trainingDaysMismatch.goalDays} أيام أسبوعياً.
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <Button
+                  size="sm"
+                  variant="subtle"
+                  onClick={() => {
+                    if (profile && onUpdateProfile && program) {
+                      onUpdateProfile({
+                        ...profile,
+                        trainingDaysPerWeek: program.days.length,
+                      })
+                    } else if (onSyncTrainingDays) {
+                      onSyncTrainingDays()
+                    }
+                  }}
+                >
+                  اعتمد {trainingDaysMismatch.programDays} أيام
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    if (program && program.days.length > 0) {
+                      onViewDay?.(program.days[0])
+                    }
+                  }}
+                >
+                  أضف يومًا
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setSelectedGoalDays(profile?.trainingDaysPerWeek ?? 4)
+                    setShowMismatchEditModal(true)
+                  }}
+                >
+                  عدّل عدد الأيام
+                </Button>
+              </div>
+            </div>
           </Callout>
         )}
 
@@ -460,7 +555,7 @@ export function Dashboard({
         >
           <Stat
             label="الجلسات هذا الأسبوع"
-            value={`${sessionsThisWeek} من ${program?.days.length ?? profile?.trainingDaysPerWeek ?? 5}`}
+            value={`${sessionsThisWeek} من ${scheduledCount}`}
             secondary={`${recentSessions.length} إجمالي`}
           />
           <Stat
@@ -487,27 +582,27 @@ export function Dashboard({
             }}
           >
             {orderedWeekdays.map((w) => {
-              const isToday = w.dayIndex === todayDayIndex
-              const isDone = sessionDatesThisWeek.has(w.dayIndex)
-              const hasWorkout = program?.days.some(
-                (d) => d.dayIndex === w.dayIndex,
-              )
+              const isToday = w.weekday === todayDayIndex
+              const isDone = sessionDatesThisWeek.has(w.weekday)
+              const slot = schedule[w.weekday]
+              const isTrainingDay = Boolean(slot && slot !== 'rest' && slot !== 'cardio')
+              const isCardio = slot === 'cardio'
               return (
                 <div
-                  key={w.dayIndex}
+                  key={w.weekday}
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     gap: '6px',
                     padding: '6px 2px',
-                    borderRadius: 'var(--radius-sm)',
+                    borderRadius: 'var(--radius-control)',
                     background: isToday
                       ? 'var(--color-surface-2)'
                       : 'transparent',
                     border: isToday
-                      ? '1px solid var(--color-accent)'
-                      : '1px solid transparent',
+                      ? '1.5px solid var(--color-accent)'
+                      : '1.5px solid transparent',
                   }}
                 >
                   <span
@@ -519,34 +614,46 @@ export function Dashboard({
                         : 'var(--color-text)',
                     }}
                   >
-                    {w.short}
+                    {w.shortAr}
                   </span>
                   <div
                     style={{
-                      width: '18px',
-                      height: '18px',
+                      width: '20px',
+                      height: '20px',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       background: isDone
                         ? 'var(--color-success)'
-                        : hasWorkout
-                          ? 'var(--color-surface-2)'
-                          : 'transparent',
+                        : isTrainingDay
+                          ? 'var(--color-accent-subtle, rgba(255, 107, 0, 0.15))'
+                          : 'var(--color-surface-2)',
                       color: isDone ? '#FFFFFF' : 'var(--color-text-2)',
                       fontSize: '11px',
+                      border: isTrainingDay && !isDone
+                        ? '1.5px solid var(--color-accent)'
+                        : '1px solid transparent',
                     }}
                   >
                     {isDone ? (
                       <Icon name="check" size={12} />
-                    ) : hasWorkout ? (
+                    ) : isTrainingDay ? (
                       <div
                         style={{
                           width: '6px',
                           height: '6px',
                           borderRadius: '50%',
                           background: 'var(--color-accent)',
+                        }}
+                      />
+                    ) : isCardio ? (
+                      <div
+                        style={{
+                          width: '6px',
+                          height: '6px',
+                          borderRadius: '50%',
+                          border: '1.5px solid var(--color-accent)',
                         }}
                       />
                     ) : (
@@ -568,7 +675,7 @@ export function Dashboard({
 
         {/* Nutrition Today */}
         <Section title="التغذية اليوم">
-          {targets === null || targetCalories === null || targetProtein === null ? (
+          {energyPlan === null || targetCalories === null || targetProtein === null ? (
             <Card padding="md">
               <div
                 style={{
@@ -632,34 +739,17 @@ export function Dashboard({
                   marginBottom: '10px',
                 }}
               >
-                <div
-                  style={{
-                    fontSize: '20px',
-                    fontWeight: 800,
-                    color: 'var(--color-text)',
-                    fontVariantNumeric: 'tabular-nums',
-                  }}
-                >
-                  {consumedCalories} / {targetCalories}{' '}
-                  <span
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      color: 'var(--color-text-2)',
-                    }}
-                  >
-                    سعرة
-                  </span>
+                <div style={{ fontSize: '18px', fontWeight: 800 }}>
+                  <Ratio current={consumedCalories} target={targetCalories} unit="سعرة" />
                 </div>
                 <div
                   style={{
-                    fontSize: '12.5px',
+                    fontSize: '13px',
                     fontWeight: 700,
                     color: 'var(--color-accent-text)',
-                    fontVariantNumeric: 'tabular-nums',
                   }}
                 >
-                  {consumedProtein} / {targetProtein} جم بروتين
+                  <Ratio current={consumedProtein} target={targetProtein} unit="جم بروتين" />
                 </div>
               </div>
 
@@ -712,6 +802,80 @@ export function Dashboard({
           {dailyTip}
         </Callout>
       </div>
+
+      {/* Red Flag Confirmation Sheet */}
+      <ConfirmSheet
+        isOpen={showRedFlagConfirm}
+        title="تأكيد الاستشارة الطبية"
+        message="هل استشرت طبيباً مختصاً وتأكدت من أمان ممارسة التمارين الرياضية لحالتك الصحية؟"
+        confirmLabel="نعم، تأكدت"
+        cancelLabel="إلغاء"
+        onConfirm={() => {
+          try {
+            localStorage.setItem('maganis:redflag_dismissed', 'true')
+          } catch {
+            // ignore
+          }
+          setRedFlagDismissed(true)
+          setShowRedFlagConfirm(false)
+        }}
+        onCancel={() => setShowRedFlagConfirm(false)}
+      />
+
+      {/* Goal Days Edit Modal */}
+      <ConfirmSheet
+        isOpen={showMismatchEditModal}
+        title="تعديل عدد أيام التدريب المستهدفة"
+        confirmLabel="حفظ التعديل"
+        cancelLabel="إلغاء"
+        onConfirm={() => {
+          if (profile && onUpdateProfile) {
+            onUpdateProfile({
+              ...profile,
+              trainingDaysPerWeek: selectedGoalDays,
+            })
+          }
+          setShowMismatchEditModal(false)
+        }}
+        onCancel={() => setShowMismatchEditModal(false)}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '8px 0' }}>
+          <div style={{ fontSize: '13.5px', color: 'var(--color-text-2)' }}>
+            حدد عدد أيام التدريب التي ترغب بالالتزام بها أسبوعياً في خطتك:
+          </div>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+            {[2, 3, 4, 5, 6].map((days) => (
+              <button
+                key={days}
+                type="button"
+                onClick={() => setSelectedGoalDays(days)}
+                style={{
+                  minWidth: '44px',
+                  minHeight: '44px',
+                  borderRadius: 'var(--radius-control)',
+                  border:
+                    selectedGoalDays === days
+                      ? '1.5px solid var(--color-accent)'
+                      : '1px solid var(--color-divider)',
+                  background:
+                    selectedGoalDays === days
+                      ? 'var(--color-surface-2)'
+                      : 'var(--color-surface)',
+                  color:
+                    selectedGoalDays === days
+                      ? 'var(--color-accent-text)'
+                      : 'var(--color-text)',
+                  fontWeight: 800,
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                }}
+              >
+                {days}
+              </button>
+            ))}
+          </div>
+        </div>
+      </ConfirmSheet>
     </div>
   )
 }

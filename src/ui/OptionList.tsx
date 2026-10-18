@@ -63,28 +63,19 @@ export const OptionList: React.FC<OptionListProps> = ({
               )}
             </div>
             <div className="option-row__indicator">
-              {multiple ? (
-                isSelected ? (
-                  <Icon name="check-circle-2" size={20} />
-                ) : (
-                  <div
-                    style={{
-                      width: 18,
-                      height: 18,
-                      borderRadius: 4,
-                      border: '1.5px solid var(--color-divider)',
-                    }}
-                  />
-                )
-              ) : isSelected ? (
+              {isSelected ? (
+                <Icon
+                  name="check-circle-2"
+                  size={20}
+                  className="option-row__check-icon"
+                />
+              ) : multiple ? (
                 <div
                   style={{
                     width: 18,
                     height: 18,
-                    borderRadius: '50%',
-                    border: '5px solid var(--color-accent)',
-                    backgroundColor: 'var(--color-surface)',
-                    boxSizing: 'border-box',
+                    borderRadius: 4,
+                    border: '1.5px solid var(--color-divider)',
                   }}
                 />
               ) : (

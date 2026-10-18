@@ -97,7 +97,7 @@ describe('SettingsScreen', () => {
       />,
     )
 
-    const darkBtn = screen.getByRole('button', { name: /داكن/ })
+    const darkBtn = screen.getByRole('radio', { name: /داكن/ })
     fireEvent.click(darkBtn)
     expect(handleChangeMode).toHaveBeenCalledWith('dark')
   })

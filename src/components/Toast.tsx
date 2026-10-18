@@ -2,30 +2,35 @@ import React, { useEffect } from 'react'
 
 export interface ToastProps {
   message: string | null
-  duration?: number // default: 3000ms
+  duration?: number // default: 3000ms (0 for persistent)
   onDismiss?: () => void
   icon?: React.ReactNode
+  action?: {
+    label: string
+    onClick: () => void
+  }
 }
 
 /**
  * Toast Component
  * Placement rule: Bottom, above the BottomNav (64px) and safe-area inset.
- * Visual rules: Max 2 lines, 3 seconds duration, never over interactive controls or TopBar.
- * Container has `pointer-events: none` to never block underlying controls.
+ * Visual rules: Max 2 lines, 3 seconds duration (or persistent if action), never over interactive controls or TopBar.
+ * Container has `pointer-events: none` to never block underlying controls, but action button has pointer-events: auto.
  */
 export const Toast: React.FC<ToastProps> = ({
   message,
   duration = 3000,
   onDismiss,
   icon,
+  action,
 }) => {
   useEffect(() => {
-    if (!message || !onDismiss) return
+    if (!message || !onDismiss || duration === 0 || (action && duration === 3000)) return
     const timer = setTimeout(() => {
       onDismiss()
     }, duration)
     return () => clearTimeout(timer)
-  }, [message, duration, onDismiss])
+  }, [message, duration, onDismiss, action])
 
   if (!message) return null
 
@@ -89,6 +94,27 @@ export const Toast: React.FC<ToastProps> = ({
         >
           {message}
         </span>
+        {action && (
+          <button
+            type="button"
+            onClick={action.onClick}
+            style={{
+              pointerEvents: 'auto',
+              background: 'var(--brand, #ea580c)',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '999px',
+              padding: '6px 14px',
+              fontSize: '12.5px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              marginRight: '8px',
+              flexShrink: 0,
+            }}
+          >
+            {action.label}
+          </button>
+        )}
       </div>
     </div>
   )

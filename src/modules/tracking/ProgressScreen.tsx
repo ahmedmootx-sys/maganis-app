@@ -876,7 +876,7 @@ export function ProgressScreen({
                       width: '8px',
                       height: '8px',
                       borderRadius: '50%',
-                      background: 'var(--color-primary)',
+                      background: 'var(--color-accent)',
                     }}
                   />
                   <span>جلسة تمرين</span>

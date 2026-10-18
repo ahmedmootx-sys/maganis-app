@@ -15,11 +15,16 @@ import {
 } from '../shared/types.ts'
 import { getExerciseById, EXERCISES } from './exercises.ts'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
-import { ExerciseVisual } from './ExerciseVisual.tsx'
+import { MovementExplainer } from './MovementExplainer.tsx'
+import {
+  getExerciseDetailsWithLimitations,
+  getRegionLabel,
+  type LimitationRegion,
+} from './limitations.ts'
 import prescriptionRulesData from '../../data/prescription-rules.json'
 import exerciseContentData from '../../data/exercise-content.json'
 import exerciseFlagsData from '../../data/exercise-flags.json'
-import { TopBar, Card, Callout, Button, Segmented } from '../../ui/index.ts'
+import { TopBar, Card, Callout, Button, Segmented, ConfirmSheet } from '../../ui/index.ts'
 import { fmtRange, fmtSets, fmtReps } from '../../utils/bidi.ts'
 
 export interface ExerciseDetailViewProps {
@@ -98,11 +103,20 @@ export function ExerciseDetailView({
   onNavigateSettings,
 }: ExerciseDetailViewProps) {
   const [activeTab, setActiveTab] = useState<TabType>('understanding')
+  const [swapModalConfirm, setSwapModalConfirm] = useState<{
+    isOpen: boolean
+    newExerciseId: string
+    newExerciseName: string
+  }>({ isOpen: false, newExerciseId: '', newExerciseName: '' })
 
   // Find exercise in unified library or use passed object
   const exercise = useMemo(() => {
     return passedExercise || getExerciseById(exerciseId) || null
   }, [passedExercise, exerciseId])
+
+  const limitationDetails = useMemo(() => {
+    return getExerciseDetailsWithLimitations(exercise?.id || exerciseId)
+  }, [exercise?.id, exerciseId])
 
   // Clean strings at render time
   const { nameAr, nameEn } = useMemo(() => {
@@ -548,21 +562,128 @@ export function ExerciseDetailView({
           )}
         </div>
 
-        {/* Media Frame: GIF / Image with start/peak toggle & attribution */}
-        <ExerciseVisual
-          exerciseId={exercise.id}
-          exerciseName={nameAr}
-          imageUrl={exercise.imageUrl || exercise.image}
-          gifUrl={exercise.gifUrl || exercise.gif}
-          attribution={
-            exercise.attribution ||
-            (exercise.medicalSource
-              ? `مرجع: ${exercise.medicalSource}`
-              : undefined)
-          }
-          size="large"
-          showControls={true}
-        />
+        {/* Section: الحركة — Visual Movement Explainer */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div
+            style={{
+              fontSize: '16px',
+              fontWeight: 800,
+              color: 'var(--color-text)',
+            }}
+          >
+            الحركة
+          </div>
+          <MovementExplainer
+            exerciseKey={exercise.id || exerciseId}
+            exerciseName={nameAr}
+            images={
+              exercise.imageUrl
+                ? [exercise.imageUrl, exercise.gifUrl].filter(Boolean) as string[]
+                : []
+            }
+          />
+        </div>
+
+        {/* Section: مع حالتك — Limitations & Injuries Integration */}
+        {limitationDetails && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              background: 'var(--color-surface-2)',
+              padding: '14px 16px',
+              borderRadius: 'var(--radius-card)',
+              border: '1px solid var(--color-border)',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '15px',
+                fontWeight: 800,
+                color: 'var(--color-text)',
+              }}
+            >
+              مع حالتك الصحية
+            </div>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {Object.entries(limitationDetails.loads || {}).map(([reg, load]) => (
+                <span
+                  key={reg}
+                  className={`badge ${load === 'high' ? 'tag-danger' : load === 'moderate' ? 'tag-warning' : 'tag-muted'}`}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                  }}
+                >
+                  {getRegionLabel(reg as LimitationRegion)} —{' '}
+                  {load === 'high' ? 'حمل عالٍ' : load === 'moderate' ? 'حمل متوسط' : 'حمل خفيف'}
+                </span>
+              ))}
+            </div>
+
+            {limitationDetails.note_ar && (
+              <p
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-text)',
+                  lineHeight: 1.5,
+                  margin: 0,
+                }}
+              >
+                {limitationDetails.note_ar}
+              </p>
+            )}
+
+            {limitationDetails.alternatives && limitationDetails.alternatives.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+                <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-text-2)' }}>
+                  بدائل أخف مقترحة
+                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {limitationDetails.alternatives.map((altId) => {
+                    const altEx = getExerciseById(altId)
+                    const altName = altEx?.nameAr || altId
+                    return (
+                      <div
+                        key={altId}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '8px 12px',
+                          background: 'var(--color-surface)',
+                          borderRadius: 'var(--radius-control)',
+                          border: '1px solid var(--color-border)',
+                        }}
+                      >
+                        <span style={{ fontSize: '13px', fontWeight: 600 }}>{altName}</span>
+                        {onSwapExercise && exercise.id && (
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() =>
+                              setSwapModalConfirm({
+                                isOpen: true,
+                                newExerciseId: altId,
+                                newExerciseName: altName,
+                              })
+                            }
+                          >
+                            استبدال في اليوم
+                          </Button>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Sticky Tabs Header */}
         <div
@@ -1611,8 +1732,33 @@ export function ExerciseDetailView({
           </Card>
         )}
       </div>
-    )}
+      )}
       </div>
+
+      <ConfirmSheet
+        isOpen={swapModalConfirm.isOpen}
+        onClose={() =>
+          setSwapModalConfirm({
+            isOpen: false,
+            newExerciseId: '',
+            newExerciseName: '',
+          })
+        }
+        title="تأكيد استبدال التمرين"
+        message={`هل تريد استبدال (${nameAr}) بالتمرين البديل (${swapModalConfirm.newExerciseName}) في جدول اليوم؟`}
+        confirmLabel="استبدال"
+        cancelLabel="إلغاء"
+        onConfirm={() => {
+          if (exercise?.id && onSwapExercise) {
+            onSwapExercise(exercise.id, swapModalConfirm.newExerciseId)
+          }
+          setSwapModalConfirm({
+            isOpen: false,
+            newExerciseId: '',
+            newExerciseName: '',
+          })
+        }}
+      />
     </div>
   )
 }

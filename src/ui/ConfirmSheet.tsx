@@ -4,10 +4,13 @@ import { Button } from './Button.tsx'
 
 export interface ConfirmSheetProps {
   isOpen: boolean
-  onClose: () => void
+  onClose?: () => void
+  onCancel?: () => void
   onConfirm: () => void
   title: string
-  consequences: string[]
+  consequences?: string[]
+  message?: string
+  children?: React.ReactNode
   confirmLabel?: string
   cancelLabel?: string
   isDestructive?: boolean
@@ -22,16 +25,20 @@ export interface ConfirmSheetProps {
 export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
   isOpen,
   onClose,
+  onCancel,
   onConfirm,
   title,
-  consequences,
+  consequences = [],
+  message,
+  children,
   confirmLabel = 'تأكيد',
   cancelLabel = 'إلغاء',
-  isDestructive = true,
+  isDestructive = false,
   requiredWord,
   backupOffer,
   className = '',
 }) => {
+  const handleClose = onClose || onCancel || (() => {})
   const [typedWord, setTypedWord] = useState('')
 
   React.useEffect(() => {
@@ -45,13 +52,15 @@ export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
   const handleConfirm = () => {
     if (!canConfirm) return
     onConfirm()
-    onClose()
+    handleClose()
   }
+
+  const effectiveConsequences = consequences.length > 0 ? consequences : message ? [message] : []
 
   return (
     <Sheet
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title={title}
       className={className}
       footer={
@@ -65,14 +74,15 @@ export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
           >
             {confirmLabel}
           </Button>
-          <Button variant="tertiary" fullWidth onClick={onClose}>
+          <Button variant="secondary" fullWidth onClick={handleClose}>
             {cancelLabel}
           </Button>
         </div>
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {consequences.length > 0 && (
+        {children}
+        {effectiveConsequences.length > 0 && (
           <ul
             style={{
               margin: 0,
@@ -82,7 +92,7 @@ export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
               lineHeight: 1.6,
             }}
           >
-            {consequences.map((c, idx) => (
+            {effectiveConsequences.map((c, idx) => (
               <li key={idx}>{c}</li>
             ))}
           </ul>

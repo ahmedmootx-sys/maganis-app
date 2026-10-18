@@ -7,3 +7,5 @@ interface ImportMetaEnv {
   readonly VITE_LOG_LEVEL?: string
   readonly VITE_DEV_PORT?: string
 }
+
+declare const __BUILD_ID__: string

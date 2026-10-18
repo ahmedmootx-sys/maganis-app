@@ -33,27 +33,22 @@ export function ExerciseVisual({
   const [imgError, setImgError] = useState(false)
   const [frame1Failed, setFrame1Failed] = useState(false)
 
-  // Resolve media sources
-  let activeMedia = gifUrl || imageUrl
+  // Resolve media sources: prefer local bundled assets
+  let frame0 = ''
+  let frame1 = ''
 
-  // Special remap for chest-19 if designated as guillotine press
-  if (exerciseId === 'chest-19' && exerciseName.includes('جيلوتين')) {
-    activeMedia =
-      'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Guillotine_Bench_Press/0.jpg'
-  }
-
-  let frame0 = activeMedia
-  let frame1 = activeMedia
-
-  if (activeMedia) {
+  if (exerciseId) {
+    frame0 = `exercises/${exerciseId}_0.jpg`
+    frame1 = `exercises/${exerciseId}_1.jpg`
+  } else if (gifUrl || imageUrl) {
+    const activeMedia = gifUrl || imageUrl || ''
+    frame0 = activeMedia
+    frame1 = activeMedia
     if (activeMedia.endsWith('/0.jpg')) {
       frame1 = activeMedia.replace(/\/0\.jpg$/i, '/1.jpg')
     } else if (activeMedia.endsWith('_0.jpg')) {
       frame1 = activeMedia.replace(/_0\.jpg$/i, '_1.jpg')
     }
-  } else if (exerciseId) {
-    frame0 = `exercises/${exerciseId}_0.jpg`
-    frame1 = `exercises/${exerciseId}_1.jpg`
   }
 
   const hasTwoFrames =
@@ -64,11 +59,10 @@ export function ExerciseVisual({
     rawSrc &&
     (rawSrc.startsWith('http://') ||
       rawSrc.startsWith('https://') ||
-      rawSrc.startsWith('data:') ||
-      rawSrc.startsWith('/'))
+      rawSrc.startsWith('data:'))
       ? rawSrc
       : rawSrc
-        ? assetUrl(rawSrc)
+        ? assetUrl(rawSrc.startsWith('/') ? rawSrc.slice(1) : rawSrc)
         : ''
 
   if (imgError || !currentSrc) {
@@ -77,16 +71,43 @@ export function ExerciseVisual({
         className={`exercise-visual-circle white-theme size-${size}`}
         style={{
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           background: 'var(--color-surface-2)',
           color: 'var(--color-text-2)',
           borderRadius:
             size === 'large' ? 'var(--radius-card)' : 'var(--radius-control)',
+          width: size === 'small' ? '48px' : '100%',
+          height:
+            size === 'small'
+              ? '48px'
+              : size === 'medium'
+                ? '120px'
+                : '180px',
+          minWidth: size === 'small' ? '48px' : undefined,
+          minHeight: size === 'small' ? '48px' : undefined,
+          border: '1px solid var(--color-border)',
+          textAlign: 'center',
+          padding: '2px',
+          boxSizing: 'border-box',
+          gap: '2px',
         }}
         title={exerciseName}
       >
-        <IconImage size={size === 'large' ? 36 : 22} />
+        <IconImage
+          size={size === 'large' ? 32 : size === 'medium' ? 22 : 16}
+        />
+        <span
+          style={{
+            fontSize: size === 'small' ? '8.5px' : '12px',
+            color: 'var(--color-text-2)',
+            fontWeight: 600,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          لا توجد صورة
+        </span>
       </div>
     )
   }
@@ -99,6 +120,17 @@ export function ExerciseVisual({
       <div
         className={`exercise-media-frame size-${size} ${isAnimated ? 'animated-showcase' : ''}`}
         title={exerciseName}
+        style={{
+          minHeight: size === 'small' ? '48px' : '140px',
+          minWidth: size === 'small' ? '48px' : undefined,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--color-surface-2)',
+          borderRadius:
+            size === 'large' ? 'var(--radius-card)' : 'var(--radius-control)',
+          overflow: 'hidden',
+        }}
       >
         <img
           src={currentSrc}
@@ -108,11 +140,14 @@ export function ExerciseVisual({
             if (frameIndex === 1) {
               setFrame1Failed(true)
               setFrameIndex(0)
+            } else if (rawSrc.startsWith('http') && exerciseId) {
+              // Try local fallback
+              setFrameIndex(0)
             } else {
               setImgError(true)
             }
           }}
-          loading="lazy"
+          loading="eager"
           style={{
             width: size === 'small' ? '100%' : undefined,
             height: size === 'small' ? '100%' : undefined,

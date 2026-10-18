@@ -1,0 +1,919 @@
+{
+  "version": 1,
+  "authored_by": "coach (Claude), 2026-10-18",
+  "status": "naming_only",
+  "note": "Arabic gym slang names (primary) with the scientific English name (secondary), for every atlas muscle id. sci_en is the anatomical identity of the id and matches atlas_muscles.json. gym_ar and gym_ar_alt are colloquial names, not scientific claims. where_ar is a plain location hint. Do not change ids. Do not add or remove ids without updating the atlas.",
+  "display_rule": {
+    "primary_line": "gym_ar",
+    "secondary_line": "sci_en, rendered inside <bdi dir=\"ltr\">, smaller, muted colour",
+    "chip_label": "short_ar",
+    "detail_sheet_lines": [
+      "gym_ar",
+      "sci_en",
+      "where_ar",
+      "group name",
+      "note_ar when atlas != mesh"
+    ],
+    "search_matches": [
+      "gym_ar",
+      "short_ar",
+      "gym_ar_alt",
+      "sci_en"
+    ],
+    "never_show": "the old formal Arabic names (for example الدالية، المستقيمة الفخذية) anywhere in the UI; they survive only inside gym_ar_alt for search"
+  },
+  "atlas_values": {
+    "mesh": "drawn from a real BodyParts3D mesh",
+    "derived_approx": "geometric split of one mesh; label as approximate",
+    "no_mesh": "no mesh exists in BodyParts3D 4.0; cannot be painted; show text only"
+  },
+  "groups": [
+    {
+      "id": "chest",
+      "gym_ar": "صدر",
+      "sci_en": "Chest (pectoral muscles)",
+      "members": [
+        "pec_clavicular",
+        "pec_sternal",
+        "pec_costal",
+        "pec_minor"
+      ]
+    },
+    {
+      "id": "serratus",
+      "gym_ar": "سيراتس",
+      "sci_en": "Serratus anterior",
+      "members": [
+        "serratus_anterior"
+      ]
+    },
+    {
+      "id": "shoulders",
+      "gym_ar": "أكتاف",
+      "sci_en": "Deltoids",
+      "members": [
+        "delt_anterior",
+        "delt_lateral",
+        "delt_posterior"
+      ]
+    },
+    {
+      "id": "rotator_cuff",
+      "gym_ar": "كفة الكتف",
+      "sci_en": "Rotator cuff",
+      "members": [
+        "teres_minor",
+        "infraspinatus",
+        "supraspinatus"
+      ]
+    },
+    {
+      "id": "traps",
+      "gym_ar": "ترابس",
+      "sci_en": "Trapezius (upper) and levator scapulae",
+      "members": [
+        "trap_upper",
+        "levator_scapulae"
+      ]
+    },
+    {
+      "id": "upper_back",
+      "gym_ar": "آبر باك",
+      "sci_en": "Upper back (mid/lower trapezius, rhomboids, teres major)",
+      "members": [
+        "trap_middle",
+        "trap_lower",
+        "rhomboids",
+        "teres_major"
+      ]
+    },
+    {
+      "id": "lats",
+      "gym_ar": "لاتس",
+      "sci_en": "Latissimus dorsi",
+      "members": [
+        "lats"
+      ]
+    },
+    {
+      "id": "lower_back",
+      "gym_ar": "لوير باك",
+      "sci_en": "Lower back (spinal erectors, quadratus lumborum)",
+      "members": [
+        "erector_spinae",
+        "quadratus_lumborum"
+      ]
+    },
+    {
+      "id": "biceps",
+      "gym_ar": "باي",
+      "sci_en": "Biceps and brachialis",
+      "members": [
+        "biceps_long",
+        "biceps_short",
+        "brachialis"
+      ]
+    },
+    {
+      "id": "triceps",
+      "gym_ar": "تراي",
+      "sci_en": "Triceps brachii",
+      "members": [
+        "triceps_long",
+        "triceps_lateral",
+        "triceps_medial"
+      ]
+    },
+    {
+      "id": "forearms",
+      "gym_ar": "ساعد",
+      "sci_en": "Forearm muscles",
+      "members": [
+        "brachioradialis",
+        "forearm_flexors",
+        "forearm_extensors"
+      ]
+    },
+    {
+      "id": "abs",
+      "gym_ar": "بطن",
+      "sci_en": "Abdominal wall",
+      "members": [
+        "rectus_abdominis_upper",
+        "rectus_abdominis_lower",
+        "obliques_external",
+        "transversus_abdominis"
+      ]
+    },
+    {
+      "id": "hip",
+      "gym_ar": "ورك",
+      "sci_en": "Hip muscles (flexors, tensor fasciae latae, sartorius)",
+      "members": [
+        "iliopsoas",
+        "tfl",
+        "sartorius"
+      ]
+    },
+    {
+      "id": "quads",
+      "gym_ar": "فخذ أمامي",
+      "sci_en": "Quadriceps",
+      "members": [
+        "rectus_femoris",
+        "vastus_lateralis",
+        "vastus_medialis",
+        "vastus_intermedius"
+      ]
+    },
+    {
+      "id": "hamstrings",
+      "gym_ar": "فخذ خلفي",
+      "sci_en": "Hamstrings",
+      "members": [
+        "hamstring_bf_long",
+        "hamstring_bf_short",
+        "hamstring_semitendinosus",
+        "hamstring_semimembranosus"
+      ]
+    },
+    {
+      "id": "glutes",
+      "gym_ar": "جلوتس",
+      "sci_en": "Gluteal muscles",
+      "members": [
+        "glute_max",
+        "glute_med",
+        "glute_min"
+      ]
+    },
+    {
+      "id": "adductors",
+      "gym_ar": "فخذ داخلي",
+      "sci_en": "Hip adductors",
+      "members": [
+        "adductors"
+      ]
+    },
+    {
+      "id": "lower_leg",
+      "gym_ar": "الساق",
+      "sci_en": "Lower leg (calf and shin)",
+      "members": [
+        "tibialis_anterior",
+        "gastrocnemius_medial",
+        "gastrocnemius_lateral",
+        "soleus"
+      ]
+    },
+    {
+      "id": "neck",
+      "gym_ar": "رقبة",
+      "sci_en": "Neck",
+      "members": [
+        "neck_scm"
+      ]
+    }
+  ],
+  "muscles": [
+    {
+      "id": "pec_clavicular",
+      "gym_ar": "صدر علوي",
+      "short_ar": "صدر علوي",
+      "gym_ar_alt": [
+        "أبر تشست",
+        "الصدرية الكبرى العلوية"
+      ],
+      "sci_en": "Pectoralis major — clavicular head",
+      "where_ar": "أعلى الصدر تحت الترقوة",
+      "group": "chest",
+      "atlas": "mesh"
+    },
+    {
+      "id": "pec_sternal",
+      "gym_ar": "صدر أوسط",
+      "short_ar": "صدر أوسط",
+      "gym_ar_alt": [
+        "ميد تشست"
+      ],
+      "sci_en": "Pectoralis major — sternal head",
+      "where_ar": "منتصف الصدر بجانب عظمة القص",
+      "group": "chest",
+      "atlas": "derived_approx",
+      "note_ar": "الحد بين الصدر الأوسط والسفلي تقريبي: قطع هندسي 65/35 لمجسم واحد في الأطلس، وليس حدًّا تشريحيًّا مرسومًا."
+    },
+    {
+      "id": "pec_costal",
+      "gym_ar": "صدر سفلي",
+      "short_ar": "صدر سفلي",
+      "gym_ar_alt": [
+        "لوير تشست"
+      ],
+      "sci_en": "Pectoralis major — costal head",
+      "where_ar": "أسفل الصدر",
+      "group": "chest",
+      "atlas": "derived_approx",
+      "note_ar": "نفس ملاحظة الصدر الأوسط: تقسيم تقريبي."
+    },
+    {
+      "id": "pec_minor",
+      "gym_ar": "الصدرية الصغرى",
+      "short_ar": "صدرية صغرى",
+      "gym_ar_alt": [],
+      "sci_en": "Pectoralis minor",
+      "where_ar": "عضلة صغيرة عميقة تحت الصدر الكبيرة، تثبّت لوح الكتف",
+      "group": "chest",
+      "atlas": "mesh",
+      "note_ar": "لا يوجد لها اسم دارج في الجيم."
+    },
+    {
+      "id": "serratus_anterior",
+      "gym_ar": "سيراتس",
+      "short_ar": "سيراتس",
+      "gym_ar_alt": [
+        "المنشارية الأمامية",
+        "عضلات الضلوع"
+      ],
+      "sci_en": "Serratus anterior",
+      "where_ar": "على جانب القفص الصدري تحت الإبط",
+      "group": "serratus",
+      "atlas": "mesh"
+    },
+    {
+      "id": "delt_anterior",
+      "gym_ar": "كتف أمامي",
+      "short_ar": "كتف أمامي",
+      "gym_ar_alt": [
+        "فرونت دلت",
+        "الدالية الأمامية"
+      ],
+      "sci_en": "Anterior deltoid",
+      "where_ar": "مقدمة الكتف",
+      "group": "shoulders",
+      "atlas": "mesh"
+    },
+    {
+      "id": "delt_lateral",
+      "gym_ar": "كتف جانبي",
+      "short_ar": "كتف جانبي",
+      "gym_ar_alt": [
+        "لاتيرال دلت",
+        "سايد دلت",
+        "الدالية الجانبية"
+      ],
+      "sci_en": "Lateral deltoid",
+      "where_ar": "جانب الكتف، هي اللي بتدّي عرض الكتف",
+      "group": "shoulders",
+      "atlas": "mesh"
+    },
+    {
+      "id": "delt_posterior",
+      "gym_ar": "كتف خلفي",
+      "short_ar": "كتف خلفي",
+      "gym_ar_alt": [
+        "ريير دلت",
+        "ريار دلت",
+        "الدالية الخلفية"
+      ],
+      "sci_en": "Posterior deltoid",
+      "where_ar": "خلف الكتف",
+      "group": "shoulders",
+      "atlas": "mesh"
+    },
+    {
+      "id": "biceps_long",
+      "gym_ar": "باي – الرأس الطويل",
+      "short_ar": "باي طويل",
+      "gym_ar_alt": [
+        "بايسبس",
+        "الباي الخارجي"
+      ],
+      "sci_en": "Biceps brachii — long head",
+      "where_ar": "الجزء الخارجي من مقدمة الذراع",
+      "group": "biceps",
+      "atlas": "mesh"
+    },
+    {
+      "id": "biceps_short",
+      "gym_ar": "باي – الرأس القصير",
+      "short_ar": "باي قصير",
+      "gym_ar_alt": [
+        "بايسبس",
+        "الباي الداخلي"
+      ],
+      "sci_en": "Biceps brachii — short head",
+      "where_ar": "الجزء الداخلي من مقدمة الذراع",
+      "group": "biceps",
+      "atlas": "mesh"
+    },
+    {
+      "id": "brachialis",
+      "gym_ar": "براكيالس",
+      "short_ar": "براكيالس",
+      "gym_ar_alt": [
+        "بركيالس",
+        "العضدية"
+      ],
+      "sci_en": "Brachialis",
+      "where_ar": "تحت الباي، وبتزوّد عرض الذراع",
+      "group": "biceps",
+      "atlas": "mesh"
+    },
+    {
+      "id": "brachioradialis",
+      "gym_ar": "براكيورادياليس",
+      "short_ar": "براكيو",
+      "gym_ar_alt": [
+        "براكيو",
+        "الساعد العلوي"
+      ],
+      "sci_en": "Brachioradialis",
+      "where_ar": "أعلى الساعد من ناحية الإبهام",
+      "group": "forearms",
+      "atlas": "mesh"
+    },
+    {
+      "id": "forearm_flexors",
+      "gym_ar": "ساعد داخلي",
+      "short_ar": "ساعد داخلي",
+      "gym_ar_alt": [
+        "قابضات الساعد",
+        "باطن الساعد"
+      ],
+      "sci_en": "Forearm flexors",
+      "where_ar": "باطن الساعد من ناحية الكف",
+      "group": "forearms",
+      "atlas": "mesh"
+    },
+    {
+      "id": "forearm_extensors",
+      "gym_ar": "ساعد خارجي",
+      "short_ar": "ساعد خارجي",
+      "gym_ar_alt": [
+        "باسطات الساعد",
+        "ظهر الساعد"
+      ],
+      "sci_en": "Forearm extensors",
+      "where_ar": "ظهر الساعد من ناحية ظهر اليد",
+      "group": "forearms",
+      "atlas": "mesh"
+    },
+    {
+      "id": "rectus_abdominis_upper",
+      "gym_ar": "بطن علوي",
+      "short_ar": "بطن علوي",
+      "gym_ar_alt": [
+        "سيكس باك علوي",
+        "أبس"
+      ],
+      "sci_en": "Rectus abdominis — upper",
+      "where_ar": "الجزء العلوي من السيكس باك",
+      "group": "abs",
+      "atlas": "no_mesh",
+      "note_ar": "لا يوجد مجسم لها في أطلس BodyParts3D 4.0."
+    },
+    {
+      "id": "rectus_abdominis_lower",
+      "gym_ar": "بطن سفلي",
+      "short_ar": "بطن سفلي",
+      "gym_ar_alt": [
+        "سيكس باك سفلي"
+      ],
+      "sci_en": "Rectus abdominis — lower",
+      "where_ar": "الجزء السفلي من السيكس باك تحت السرة",
+      "group": "abs",
+      "atlas": "no_mesh",
+      "note_ar": "لا يوجد مجسم لها في أطلس BodyParts3D 4.0."
+    },
+    {
+      "id": "obliques_external",
+      "gym_ar": "أوبليك",
+      "short_ar": "أوبليك",
+      "gym_ar_alt": [
+        "جوانب البطن",
+        "المائلة الخارجية"
+      ],
+      "sci_en": "External obliques",
+      "where_ar": "جانبا البطن",
+      "group": "abs",
+      "atlas": "mesh"
+    },
+    {
+      "id": "transversus_abdominis",
+      "gym_ar": "بطن عميقة",
+      "short_ar": "بطن عميقة",
+      "gym_ar_alt": [
+        "ترانسفيرس",
+        "حزام البطن الداخلي"
+      ],
+      "sci_en": "Transversus abdominis",
+      "where_ar": "طبقة عميقة حول البطن زي حزام داخلي",
+      "group": "abs",
+      "atlas": "no_mesh",
+      "note_ar": "لا يوجد مجسم لها في أطلس BodyParts3D 4.0."
+    },
+    {
+      "id": "iliopsoas",
+      "gym_ar": "إليوبسواس",
+      "short_ar": "إليوبسواس",
+      "gym_ar_alt": [
+        "قابضة الورك",
+        "الحرقفية القطنية"
+      ],
+      "sci_en": "Iliopsoas",
+      "where_ar": "عميقة بين أسفل الظهر ومقدمة الورك",
+      "group": "hip",
+      "atlas": "mesh"
+    },
+    {
+      "id": "tfl",
+      "gym_ar": "جانب الورك الأمامي",
+      "short_ar": "جانب الورك",
+      "gym_ar_alt": [
+        "الموترة للفافة العريضة"
+      ],
+      "sci_en": "Tensor fasciae latae",
+      "where_ar": "جانب مقدمة الورك",
+      "group": "hip",
+      "atlas": "mesh"
+    },
+    {
+      "id": "sartorius",
+      "gym_ar": "الخياطية",
+      "short_ar": "خياطية",
+      "gym_ar_alt": [
+        "ساريتوريوس"
+      ],
+      "sci_en": "Sartorius",
+      "where_ar": "شريط مائل على الفخذ من الورك لداخل الركبة",
+      "group": "hip",
+      "atlas": "mesh"
+    },
+    {
+      "id": "rectus_femoris",
+      "gym_ar": "فخذ أمامي – منتصف",
+      "short_ar": "فخذ أمامي وسط",
+      "gym_ar_alt": [
+        "ركتس فيمورس",
+        "كوادز",
+        "المستقيمة الفخذية"
+      ],
+      "sci_en": "Rectus femoris",
+      "where_ar": "منتصف مقدمة الفخذ",
+      "group": "quads",
+      "atlas": "mesh"
+    },
+    {
+      "id": "vastus_lateralis",
+      "gym_ar": "فخذ أمامي – خارجي",
+      "short_ar": "فخذ أمامي خارجي",
+      "gym_ar_alt": [
+        "فاستس لاتيراليس",
+        "كوادز",
+        "المتسعة الوحشية"
+      ],
+      "sci_en": "Vastus lateralis",
+      "where_ar": "الجانب الخارجي من الفخذ",
+      "group": "quads",
+      "atlas": "mesh"
+    },
+    {
+      "id": "vastus_medialis",
+      "gym_ar": "فخذ أمامي – داخلي",
+      "short_ar": "فخذ أمامي داخلي",
+      "gym_ar_alt": [
+        "الدمعة",
+        "فاستس ميديالس",
+        "كوادز",
+        "المتسعة الإنسية"
+      ],
+      "sci_en": "Vastus medialis",
+      "where_ar": "الجانب الداخلي من الفخذ فوق الركبة (الدمعة)",
+      "group": "quads",
+      "atlas": "mesh"
+    },
+    {
+      "id": "vastus_intermedius",
+      "gym_ar": "فخذ أمامي – عميق",
+      "short_ar": "فخذ أمامي عميق",
+      "gym_ar_alt": [
+        "فاستس إنترميديس",
+        "كوادز",
+        "المتسعة المتوسطة"
+      ],
+      "sci_en": "Vastus intermedius",
+      "where_ar": "عميقة تحت منتصف الفخذ ولا تظهر من الخارج",
+      "group": "quads",
+      "atlas": "mesh"
+    },
+    {
+      "id": "adductors",
+      "gym_ar": "فخذ داخلي",
+      "short_ar": "فخذ داخلي",
+      "gym_ar_alt": [
+        "أدكتورز",
+        "المقرّبات"
+      ],
+      "sci_en": "Hip adductors",
+      "where_ar": "الفخذ من الداخل",
+      "group": "adductors",
+      "atlas": "mesh"
+    },
+    {
+      "id": "tibialis_anterior",
+      "gym_ar": "مقدمة الساق",
+      "short_ar": "مقدمة الساق",
+      "gym_ar_alt": [
+        "تيبياليس",
+        "الظنبوبية الأمامية"
+      ],
+      "sci_en": "Tibialis anterior",
+      "where_ar": "أمام الساق بجانب العظمة",
+      "group": "lower_leg",
+      "atlas": "mesh"
+    },
+    {
+      "id": "neck_scm",
+      "gym_ar": "رقبة جانبية",
+      "short_ar": "رقبة جانبية",
+      "gym_ar_alt": [
+        "القصية الترقوية الخشائية"
+      ],
+      "sci_en": "Sternocleidomastoid",
+      "where_ar": "جانب الرقبة من خلف الأذن لعظمة القص",
+      "group": "neck",
+      "atlas": "mesh"
+    },
+    {
+      "id": "trap_upper",
+      "gym_ar": "ترابس علوي",
+      "short_ar": "ترابس علوي",
+      "gym_ar_alt": [
+        "تراب",
+        "ترابيس",
+        "شبه المنحرفة العلوية"
+      ],
+      "sci_en": "Upper trapezius",
+      "where_ar": "أعلى الظهر بين الرقبة والكتف",
+      "group": "traps",
+      "atlas": "mesh"
+    },
+    {
+      "id": "trap_middle",
+      "gym_ar": "ترابس أوسط",
+      "short_ar": "ترابس أوسط",
+      "gym_ar_alt": [
+        "تراب أوسط",
+        "آبر باك"
+      ],
+      "sci_en": "Middle trapezius",
+      "where_ar": "أعلى منتصف الظهر بين لوحي الكتف",
+      "group": "upper_back",
+      "atlas": "mesh"
+    },
+    {
+      "id": "trap_lower",
+      "gym_ar": "ترابس سفلي",
+      "short_ar": "ترابس سفلي",
+      "gym_ar_alt": [
+        "تراب سفلي",
+        "آبر باك"
+      ],
+      "sci_en": "Lower trapezius",
+      "where_ar": "منتصف الظهر أسفل لوحي الكتف",
+      "group": "upper_back",
+      "atlas": "mesh"
+    },
+    {
+      "id": "rhomboids",
+      "gym_ar": "رومبويد",
+      "short_ar": "رومبويد",
+      "gym_ar_alt": [
+        "رومبويدز",
+        "المعينية",
+        "آبر باك"
+      ],
+      "sci_en": "Rhomboids",
+      "where_ar": "بين لوحي الكتف تحت الترابس",
+      "group": "upper_back",
+      "atlas": "mesh"
+    },
+    {
+      "id": "levator_scapulae",
+      "gym_ar": "رافعة الكتف",
+      "short_ar": "رافعة الكتف",
+      "gym_ar_alt": [
+        "ليفاتور"
+      ],
+      "sci_en": "Levator scapulae",
+      "where_ar": "جانب خلف الرقبة، بتشدّ لوح الكتف لأعلى",
+      "group": "traps",
+      "atlas": "mesh"
+    },
+    {
+      "id": "lats",
+      "gym_ar": "لاتس",
+      "short_ar": "لاتس",
+      "gym_ar_alt": [
+        "الظهر العريض",
+        "جناحين الظهر",
+        "الظهرية العريضة"
+      ],
+      "sci_en": "Latissimus dorsi",
+      "where_ar": "جناحا الظهر من تحت الإبط لأسفل الظهر",
+      "group": "lats",
+      "atlas": "no_mesh",
+      "note_ar": "لا يوجد مجسم لها في أطلس BodyParts3D 4.0."
+    },
+    {
+      "id": "teres_major",
+      "gym_ar": "تيرس ميجر",
+      "short_ar": "تيرس ميجر",
+      "gym_ar_alt": [
+        "المدورة الكبيرة",
+        "آبر باك"
+      ],
+      "sci_en": "Teres major",
+      "where_ar": "تحت الإبط خلف الكتف، بجانب اللاتس",
+      "group": "upper_back",
+      "atlas": "mesh"
+    },
+    {
+      "id": "teres_minor",
+      "gym_ar": "تيرس مينور",
+      "short_ar": "تيرس مينور",
+      "gym_ar_alt": [
+        "المدورة الصغيرة"
+      ],
+      "sci_en": "Teres minor",
+      "where_ar": "خلف الكتف، جزء من كفة الكتف",
+      "group": "rotator_cuff",
+      "atlas": "mesh"
+    },
+    {
+      "id": "infraspinatus",
+      "gym_ar": "إنفراسبيناتس",
+      "short_ar": "إنفراسبيناتس",
+      "gym_ar_alt": [
+        "تحت الشوكة",
+        "كفة الكتف الخلفية"
+      ],
+      "sci_en": "Infraspinatus",
+      "where_ar": "خلف لوح الكتف",
+      "group": "rotator_cuff",
+      "atlas": "mesh"
+    },
+    {
+      "id": "supraspinatus",
+      "gym_ar": "سوبراسبيناتس",
+      "short_ar": "سوبراسبيناتس",
+      "gym_ar_alt": [
+        "فوق الشوكة",
+        "كفة الكتف العلوية"
+      ],
+      "sci_en": "Supraspinatus",
+      "where_ar": "أعلى لوح الكتف تحت الترابس",
+      "group": "rotator_cuff",
+      "atlas": "mesh"
+    },
+    {
+      "id": "triceps_long",
+      "gym_ar": "تراي – الرأس الطويل",
+      "short_ar": "تراي طويل",
+      "gym_ar_alt": [
+        "ترايسبس"
+      ],
+      "sci_en": "Triceps brachii — long head",
+      "where_ar": "الجزء الداخلي الكبير من خلف الذراع",
+      "group": "triceps",
+      "atlas": "mesh"
+    },
+    {
+      "id": "triceps_lateral",
+      "gym_ar": "تراي – الرأس الجانبي",
+      "short_ar": "تراي جانبي",
+      "gym_ar_alt": [
+        "ترايسبس",
+        "تراي خارجي"
+      ],
+      "sci_en": "Triceps brachii — lateral head",
+      "where_ar": "الجزء الخارجي من خلف الذراع",
+      "group": "triceps",
+      "atlas": "mesh"
+    },
+    {
+      "id": "triceps_medial",
+      "gym_ar": "تراي – الرأس الأوسط",
+      "short_ar": "تراي أوسط",
+      "gym_ar_alt": [
+        "ترايسبس",
+        "تراي داخلي",
+        "تراي عميق"
+      ],
+      "sci_en": "Triceps brachii — medial head",
+      "where_ar": "الجزء العميق قرب الكوع من خلف الذراع",
+      "group": "triceps",
+      "atlas": "mesh"
+    },
+    {
+      "id": "erector_spinae",
+      "gym_ar": "إريكتور (أسفل الظهر)",
+      "short_ar": "إريكتور",
+      "gym_ar_alt": [
+        "لوير باك",
+        "الناصبة الفقارية"
+      ],
+      "sci_en": "Erector spinae",
+      "where_ar": "عضلتان طوليتان على جانبي العمود الفقري، وأوضح جزء فيهم في أسفل الظهر",
+      "group": "lower_back",
+      "atlas": "mesh"
+    },
+    {
+      "id": "quadratus_lumborum",
+      "gym_ar": "جانب أسفل الظهر",
+      "short_ar": "جانب أسفل الظهر",
+      "gym_ar_alt": [
+        "كيو إل",
+        "المربعة القطنية"
+      ],
+      "sci_en": "Quadratus lumborum",
+      "where_ar": "جانب أسفل الظهر بين آخر ضلع والحوض",
+      "group": "lower_back",
+      "atlas": "no_mesh",
+      "note_ar": "لا يوجد مجسم لها في أطلس BodyParts3D 4.0."
+    },
+    {
+      "id": "glute_max",
+      "gym_ar": "جلوتس كبير",
+      "short_ar": "جلوتس كبير",
+      "gym_ar_alt": [
+        "جلوتس",
+        "المؤخرة",
+        "الألوية الكبرى"
+      ],
+      "sci_en": "Gluteus maximus",
+      "where_ar": "المؤخرة، وأكبر عضلات الجلوتس",
+      "group": "glutes",
+      "atlas": "mesh"
+    },
+    {
+      "id": "glute_med",
+      "gym_ar": "جلوتس وسطي",
+      "short_ar": "جلوتس وسطي",
+      "gym_ar_alt": [
+        "جلوتس",
+        "الألوية الوسطى"
+      ],
+      "sci_en": "Gluteus medius",
+      "where_ar": "جانب الحوض الخارجي فوق مفصل الورك",
+      "group": "glutes",
+      "atlas": "mesh"
+    },
+    {
+      "id": "glute_min",
+      "gym_ar": "جلوتس صغير",
+      "short_ar": "جلوتس صغير",
+      "gym_ar_alt": [
+        "جلوتس",
+        "الألوية الصغرى"
+      ],
+      "sci_en": "Gluteus minimus",
+      "where_ar": "عميقة تحت الجلوتس الوسطي",
+      "group": "glutes",
+      "atlas": "mesh"
+    },
+    {
+      "id": "hamstring_bf_long",
+      "gym_ar": "فخذ خلفي – خارجي (طويل)",
+      "short_ar": "هامسترنج خارجي",
+      "gym_ar_alt": [
+        "هامسترنج",
+        "الفخذ الخلفي"
+      ],
+      "sci_en": "Biceps femoris — long head",
+      "where_ar": "خلف الفخذ من الجانب الخارجي، سطحية",
+      "group": "hamstrings",
+      "atlas": "mesh"
+    },
+    {
+      "id": "hamstring_bf_short",
+      "gym_ar": "فخذ خلفي – خارجي (قصير)",
+      "short_ar": "هامسترنج خارجي قصير",
+      "gym_ar_alt": [
+        "هامسترنج",
+        "الفخذ الخلفي"
+      ],
+      "sci_en": "Biceps femoris — short head",
+      "where_ar": "خلف الفخذ من الجانب الخارجي، تحت الطويلة",
+      "group": "hamstrings",
+      "atlas": "mesh"
+    },
+    {
+      "id": "hamstring_semitendinosus",
+      "gym_ar": "فخذ خلفي – داخلي (سطحي)",
+      "short_ar": "هامسترنج داخلي",
+      "gym_ar_alt": [
+        "هامسترنج",
+        "سيميتندينوسس",
+        "نصف الوترية"
+      ],
+      "sci_en": "Semitendinosus",
+      "where_ar": "خلف الفخذ من الجانب الداخلي، سطحية",
+      "group": "hamstrings",
+      "atlas": "mesh"
+    },
+    {
+      "id": "hamstring_semimembranosus",
+      "gym_ar": "فخذ خلفي – داخلي (عميق)",
+      "short_ar": "هامسترنج داخلي عميق",
+      "gym_ar_alt": [
+        "هامسترنج",
+        "سيميممبرانوسس",
+        "نصف الغشائية"
+      ],
+      "sci_en": "Semimembranosus",
+      "where_ar": "خلف الفخذ من الجانب الداخلي، تحت نصف الوترية",
+      "group": "hamstrings",
+      "atlas": "mesh"
+    },
+    {
+      "id": "gastrocnemius_medial",
+      "gym_ar": "سمانة – داخلي",
+      "short_ar": "سمانة داخلي",
+      "gym_ar_alt": [
+        "جاستروكنيميس",
+        "سمانة"
+      ],
+      "sci_en": "Gastrocnemius — medial head",
+      "where_ar": "الجزء الداخلي من السمانة",
+      "group": "lower_leg",
+      "atlas": "mesh"
+    },
+    {
+      "id": "gastrocnemius_lateral",
+      "gym_ar": "سمانة – خارجي",
+      "short_ar": "سمانة خارجي",
+      "gym_ar_alt": [
+        "جاستروكنيميس",
+        "سمانة"
+      ],
+      "sci_en": "Gastrocnemius — lateral head",
+      "where_ar": "الجزء الخارجي من السمانة",
+      "group": "lower_leg",
+      "atlas": "mesh"
+    },
+    {
+      "id": "soleus",
+      "gym_ar": "سمانة عميقة (سولس)",
+      "short_ar": "سولس",
+      "gym_ar_alt": [
+        "سولس",
+        "النعلية"
+      ],
+      "sci_en": "Soleus",
+      "where_ar": "عميقة تحت السمانة السطحية، وبتشتغل أكتر والركبة مثنية",
+      "group": "lower_leg",
+      "atlas": "mesh"
+    }
+  ]
+}

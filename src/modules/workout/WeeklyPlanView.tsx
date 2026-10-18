@@ -17,10 +17,9 @@ import { ExerciseVisual } from './ExerciseVisual.tsx'
 import { generateProgram } from './programGenerator.ts'
 import {
   convertDayToHomeWorkout,
-  downloadRoutineFile,
   parseAndValidateRoutineJson,
-  shareRoutineFile,
 } from './workoutUtils.ts'
+import type { UserProfile } from '../onboarding/types.ts'
 import {
   TopBar,
   Sheet,
@@ -28,7 +27,17 @@ import {
   ListRow,
   EmptyState,
   Toast,
+  Select,
+  Button,
+  Callout,
 } from '../../ui/index.ts'
+import { getExerciseTags } from './limitations.ts'
+import {
+  getOrDeriveSchedule,
+  getOrderedWeekdays,
+  type ScheduleSlotType,
+} from './scheduleManager.ts'
+import { saveFile } from '../../utils/saveFile.ts'
 import {
   IconSearch,
   IconPlus,
@@ -36,7 +45,6 @@ import {
   IconChevronLeft,
   IconLock,
   IconUnlock,
-  IconShare,
   IconDownload,
   IconUpload,
   IconTrash,
@@ -47,6 +55,8 @@ import {
 
 export interface WeeklyPlanViewProps {
   program: WorkoutProgram | null
+  profile?: UserProfile | null
+  onUpdateProfile?: (updatedProfile: UserProfile) => void
   customExercises?: CustomExercise[]
   userInjuries?: string[]
   onUpdateProgram?: (updatedProgram: WorkoutProgram) => void
@@ -90,6 +100,8 @@ const SPLIT_TYPE_OPTIONS: {
 
 export function WeeklyPlanView({
   program,
+  profile,
+  onUpdateProfile,
   customExercises = [],
   userInjuries = [],
   onUpdateProgram,
@@ -107,6 +119,21 @@ export function WeeklyPlanView({
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(
     initialSelectedDayIndex,
   )
+
+  // Week Schedule Editor State
+  const [isScheduleEditorOpen, setIsScheduleEditorOpen] = useState(false)
+  const [draftSchedule, setDraftSchedule] = useState<Record<number, ScheduleSlotType>>({})
+
+  // Export Sheet State
+  const [isExportSheetOpen, setIsExportSheetOpen] = useState(false)
+  const [exportFormat, setExportFormat] = useState<'pdf' | 'csv' | 'json'>('pdf')
+
+  // Pre-session Warning for Limitation High Loads
+  const [preSessionWarningDay, setPreSessionWarningDay] = useState<ProgramDay | null>(null)
+
+  // Red Flag Dismissed in this session
+  const [redFlagDismissed, setRedFlagDismissed] = useState(false)
+  const [showRedFlagConfirm, setShowRedFlagConfirm] = useState(false)
 
   useEffect(() => {
     if (
@@ -326,6 +353,80 @@ export function WeeklyPlanView({
     onUpdateProgram({ ...program, days: newDays })
     setIsDayOverflowOpen(false)
     showToast('تم تحويل تمارين اليوم إلى بدائل منزلية')
+  }
+
+  function exportProgramToCsv(p: WorkoutProgram): string {
+    const rows = [
+      ['اليوم', 'التركيز', 'اسم التمرين', 'المجموعات', 'التكرارات', 'الراحة (ثانية)'],
+    ]
+    for (const d of p.days) {
+      for (const ex of d.exercises) {
+        const def = getExerciseById(ex.exerciseId)
+        rows.push([
+          d.labelAr,
+          d.focus,
+          def?.nameAr || ex.exerciseId,
+          String(ex.sets),
+          String(ex.reps),
+          String(ex.restSeconds),
+        ])
+      }
+    }
+    return '\uFEFF' + rows.map((r) => r.map((c) => `"${(c || '').replace(/"/g, '""')}"`).join(',')).join('\r\n')
+  }
+
+  const handleOpenScheduleEditor = () => {
+    const currentSchedule = getOrDeriveSchedule(profile, program)
+    setDraftSchedule({ ...currentSchedule })
+    setIsScheduleEditorOpen(true)
+  }
+
+  const handleSaveScheduleEditor = () => {
+    if (profile && onUpdateProfile) {
+      onUpdateProfile({
+        ...profile,
+        schedule: draftSchedule,
+      })
+      showToast('تم حفظ جدول الأسبوع بنجاح')
+    }
+    setIsScheduleEditorOpen(false)
+  }
+
+  const handleExportProgram = async () => {
+    if (!program) return
+    if (exportFormat === 'pdf') {
+      setIsExportSheetOpen(false)
+      setTimeout(() => {
+        window.print()
+      }, 250)
+      return
+    }
+
+    if (exportFormat === 'csv') {
+      const csv = exportProgramToCsv(program)
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+      const res = await saveFile(blob, `maganis-program-${program.id || 'export'}.csv`, 'text/csv')
+      setIsExportSheetOpen(false)
+      if (res.downloadNoticeNeeded) {
+        showToast('تم حفظ ملف CSV في مجلد التنزيلات')
+      } else {
+        showToast('تم حفظ ملف CSV بنجاح')
+      }
+      return
+    }
+
+    if (exportFormat === 'json') {
+      const jsonStr = JSON.stringify(program, null, 2)
+      const blob = new Blob([jsonStr], { type: 'application/json' })
+      const res = await saveFile(blob, `maganis-program-${program.id || 'backup'}.json`, 'application/json')
+      setIsExportSheetOpen(false)
+      if (res.downloadNoticeNeeded) {
+        showToast('تم حفظ ملف JSON في مجلد التنزيلات')
+      } else {
+        showToast('تم حفظ ملف JSON بنجاح')
+      }
+      return
+    }
   }
 
   function handleImportFile(file: File) {
@@ -874,7 +975,17 @@ export function WeeklyPlanView({
           <button
             type="button"
             className="button-primary full-width"
-            onClick={() => onStartRoutine?.(selectedDay)}
+            onClick={() => {
+              const highExercises = selectedDay.exercises.filter((pe) => {
+                const tags = getExerciseTags(pe.exerciseId, profile?.limitations)
+                return tags.some((t) => t.level === 'high')
+              })
+              if (highExercises.length > 0) {
+                setPreSessionWarningDay(selectedDay)
+              } else {
+                onStartRoutine?.(selectedDay)
+              }
+            }}
           >
             ابدأ التمرين
           </button>
@@ -1018,6 +1129,54 @@ export function WeeklyPlanView({
           padding: '16px',
         }}
       >
+        {/* Red Flag Persistent Callout */}
+        {profile?.redFlag && !redFlagDismissed && (
+          <Callout
+            variant="danger"
+            title="تنبيه صحي"
+            action={
+              <Button
+                size="sm"
+                variant="subtle"
+                onClick={() => setShowRedFlagConfirm(true)}
+              >
+                تأكيد
+              </Button>
+            }
+          >
+            ينصح بمراجعة طبيب قبل التمرين، خصوصًا للمنطقة المصابة.
+          </Callout>
+        )}
+
+        {/* Training days mismatch Callout */}
+        {profile?.trainingDaysPerWeek &&
+          program.days.length !== profile.trainingDaysPerWeek && (
+            <Callout
+              variant="warning"
+              title="اختلاف في أيام التدريب"
+              action={
+                <Button
+                  size="sm"
+                  variant="subtle"
+                  onClick={() => {
+                    if (profile && onUpdateProfile) {
+                      onUpdateProfile({
+                        ...profile,
+                        trainingDaysPerWeek: program.days.length,
+                      })
+                      showToast(`تم اعتماد ${program.days.length} أيام في الملف الشخصي`)
+                    }
+                  }}
+                >
+                  اعتمد {program.days.length} أيام
+                </Button>
+              }
+            >
+              برنامجك فيه {program.days.length} أيام لكن اخترت{' '}
+              {profile.trainingDaysPerWeek} أيام في الملف الشخصي.
+            </Callout>
+          )}
+
         {/* Program Header: Name + N أيام أسبوعياً + small "مقفل" status */}
         <div
           className="card"
@@ -1323,11 +1482,12 @@ export function WeeklyPlanView({
               gap: '10px',
             }}
             onClick={() => {
-              shareRoutineFile(program, splitLabel)
+              setIsManageSheetOpen(false)
+              handleOpenScheduleEditor()
             }}
           >
-            <IconShare size={18} />
-            <span>مشاركة الجدول</span>
+            <IconCalendar size={18} />
+            <span>جدول الأسبوع</span>
           </button>
 
           <button
@@ -1339,12 +1499,12 @@ export function WeeklyPlanView({
               gap: '10px',
             }}
             onClick={() => {
-              downloadRoutineFile(program, splitLabel)
-              showToast('تم تنزيل ملف الجدول بنجاح')
+              setIsManageSheetOpen(false)
+              setIsExportSheetOpen(true)
             }}
           >
             <IconDownload size={18} />
-            <span>تنزيل كملف</span>
+            <span>تصدير البرنامج</span>
           </button>
 
           <button
@@ -1513,6 +1673,199 @@ export function WeeklyPlanView({
         confirmLabel="حذف الجدول"
         cancelLabel="إلغاء"
         isDestructive={true}
+      />
+
+      {/* Export Program Sheet */}
+      <Sheet
+        isOpen={isExportSheetOpen}
+        onClose={() => setIsExportSheetOpen(false)}
+        title="تصدير البرنامج"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            paddingBottom: '16px',
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                marginBottom: '8px',
+              }}
+            >
+              صيغة التصدير
+            </div>
+            <Select
+              options={[
+                { value: 'pdf', label: 'ملف للطباعة (PDF)' },
+                { value: 'csv', label: 'جدول بيانات (CSV)' },
+                {
+                  value: 'json',
+                  label: 'نسخة احتياطية قابلة للاستيراد (JSON)',
+                },
+              ]}
+              value={exportFormat}
+              onChange={(val) =>
+                setExportFormat(val as 'pdf' | 'csv' | 'json')
+              }
+            />
+          </div>
+
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
+            onClick={handleExportProgram}
+          >
+            حفظ الملف
+          </Button>
+        </div>
+      </Sheet>
+
+      {/* Week Schedule Editor Sheet */}
+      <Sheet
+        isOpen={isScheduleEditorOpen}
+        onClose={() => setIsScheduleEditorOpen(false)}
+        title="جدول الأسبوع"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px',
+            paddingBottom: '16px',
+          }}
+        >
+          <p
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-text-2)',
+              margin: 0,
+            }}
+          >
+            حدد تمرين كل يوم من أيام الأسبوع حسب خطتك التدريبية
+          </p>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+            }}
+          >
+            {getOrderedWeekdays(profile?.weekStartDay ?? 6).map((w) => {
+              const currentSlot = draftSchedule[w.weekday] || 'rest'
+              const options = [
+                ...(program?.days.map((d) => ({
+                  value: d.id ?? String(d.dayIndex),
+                  label: `${d.labelAr} (${d.focus})`,
+                })) || []),
+                { value: 'cardio', label: 'كارديو خفيف' },
+                { value: 'rest', label: 'راحة' },
+              ]
+
+              return (
+                <div
+                  key={w.weekday}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    padding: '8px 12px',
+                    background: 'var(--color-surface-2)',
+                    borderRadius: 'var(--radius-control)',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 700,
+                      width: '70px',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {w.nameAr}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <Select
+                      options={options}
+                      value={currentSlot}
+                      onChange={(val) => {
+                        setDraftSchedule((prev) => ({
+                          ...prev,
+                          [w.weekday]: val,
+                        }))
+                      }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
+            onClick={handleSaveScheduleEditor}
+          >
+            حفظ الجدول
+          </Button>
+        </div>
+      </Sheet>
+
+      {/* Pre-session High Load Warning */}
+      <ConfirmSheet
+        isOpen={!!preSessionWarningDay}
+        onClose={() => setPreSessionWarningDay(null)}
+        title="تنبيه أحمال التمارين لحالتك"
+        consequences={[
+          preSessionWarningDay
+            ? `هذا اليوم يحتوي على تمارين بحمل عالٍ على المناطق المصابة لديك (${preSessionWarningDay.exercises
+                .filter((pe) =>
+                  getExerciseTags(pe.exerciseId, profile?.limitations).some(
+                    (t) => t.level === 'high',
+                  ),
+                )
+                .map((pe) => {
+                  const ex = getExerciseById(pe.exerciseId)
+                  return ex?.nameAr || pe.exerciseId
+                })
+                .join('، ')}). هل تود إكمال الجلسة بحذر؟`
+            : '',
+        ]}
+        confirmLabel="أكمل بحذر"
+        cancelLabel="إلغاء"
+        onConfirm={() => {
+          if (preSessionWarningDay) {
+            onStartRoutine?.(preSessionWarningDay)
+            setPreSessionWarningDay(null)
+          }
+        }}
+      />
+
+      {/* Red Flag Dismiss Confirm Sheet */}
+      <ConfirmSheet
+        isOpen={showRedFlagConfirm}
+        onClose={() => setShowRedFlagConfirm(false)}
+        title="تأكيد مراجعة الطبيب"
+        consequences={[
+          'هل قمت بمراجعة الطبيب المختص أو هل هذا التحذير لا ينطبق على حالتك؟',
+        ]}
+        confirmLabel="راجعت الطبيب / لا ينطبق"
+        cancelLabel="إبقاء التحذير"
+        onConfirm={() => {
+          setRedFlagDismissed(true)
+          setShowRedFlagConfirm(false)
+          if (profile && onUpdateProfile) {
+            onUpdateProfile({ ...profile, redFlag: false })
+          }
+        }}
       />
 
       {toastMessage && <Toast message={toastMessage} />}

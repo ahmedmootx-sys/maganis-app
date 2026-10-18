@@ -13,7 +13,7 @@ export const APPROXIMATE_REGIONS: Record<string, ApproximateRegion> = {
   lats: {
     id: 'lats',
     view: 'P',
-    ar: 'الظهرية العريضة (المجانص)',
+    ar: 'الظهرية العريضة (لاتس)',
     en: 'Latissimus dorsi',
     path: 'M 505 660 L 430 690 L 380 770 L 375 920 L 460 1020 L 505 1020 Z M 519 660 L 594 690 L 644 770 L 649 920 L 564 1020 L 519 1020 Z',
     anchor: [512, 850],

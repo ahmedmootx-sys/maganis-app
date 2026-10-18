@@ -133,6 +133,7 @@ export interface ProgramExercise {
 }
 
 export interface ProgramDay {
+  id?: string
   dayIndex: number
   labelAr: string
   focus: string

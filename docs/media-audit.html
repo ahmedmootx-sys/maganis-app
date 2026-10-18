@@ -1,0 +1,2244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>Maganis - Media & ServiceWorker Audit (Gate 5.9)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 24px; margin: 0; }
+    h1 { margin-top: 0; color: #38bdf8; }
+    .summary-card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 24px; display: flex; gap: 24px; }
+    .stat { font-size: 14px; color: #94a3b8; }
+    .stat strong { font-size: 20px; color: #f8fafc; display: block; }
+    table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 12px; overflow: hidden; }
+    th, td { padding: 12px 16px; text-align: right; border-bottom: 1px solid #334155; }
+    th { background: #0f172a; color: #cbd5e1; font-size: 13px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge-pass { background: #166534; color: #bbf7d0; }
+    .badge-fail { background: #991b1b; color: #fecaca; }
+    .row-fail { background: rgba(239, 68, 68, 0.1); }
+  </style>
+</head>
+<body>
+  <h1>تقرير تدقيق الوسائط والـ ServiceWorker (Gate 5.9)</h1>
+  <div class="summary-card">
+    <div class="stat">التمارين المفحوصة<strong>88 / 88</strong></div>
+    <div class="stat">الإطارات المفحوصة<strong>176</strong></div>
+    <div class="stat">الإطارات الفاشلة<strong>0</strong></div>
+    <div class="stat">Service Worker (Load 2)<strong>نشط ومسجل ✓</strong></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>المعرف</th>
+        <th>اسم التمرين</th>
+        <th>عدد الإطارات</th>
+        <th>الإطارات والحالة</th>
+        <th>النتيجة</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    <tr class="row-pass">
+      <td><code>chest-1</code></td>
+      <td><strong>Barbell Bench Press - Medium Grip</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (7ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-1_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (7ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-1_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-2</code></td>
+      <td><strong>Dumbbell Bench Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-2_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-2_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-3</code></td>
+      <td><strong>Pushups</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-3_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-3_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-5</code></td>
+      <td><strong>Incline Dumbbell Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-5_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (7ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-5_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-6</code></td>
+      <td><strong>Dumbbell Flyes</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-6_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-6_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-7</code></td>
+      <td><strong>Cable Crossover</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-7_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-7_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-8</code></td>
+      <td><strong>Cable Crossover</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-8_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-8_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-9</code></td>
+      <td><strong>Incline Dumbbell Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-9_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-9_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-10</code></td>
+      <td><strong>Leverage Chest Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-10_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (8ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-10_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-11</code></td>
+      <td><strong>Dips - Chest Version</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-11_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-11_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-12</code></td>
+      <td><strong>Decline Dumbbell Flyes</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-12_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-12_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-13</code></td>
+      <td><strong>Decline Barbell Bench Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-13_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-13_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-14</code></td>
+      <td><strong>Push-Up Wide</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-14_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-14_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-15</code></td>
+      <td><strong>Incline Push-Up</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-15_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-15_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-16</code></td>
+      <td><strong>Decline Push-Up</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-16_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-16_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-18</code></td>
+      <td><strong>Dumbbell Flyes</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-18_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-18_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>chest-19</code></td>
+      <td><strong>Smith Machine Bench Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-19_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/chest-19_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-1</code></td>
+      <td><strong>Bent Over Barbell Row</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-1_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-1_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-2</code></td>
+      <td><strong>Bent Over Two-Dumbbell Row</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-2_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-2_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-3</code></td>
+      <td><strong>Pullups</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-3_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-3_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-4</code></td>
+      <td><strong>Chin-Up</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-4_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-4_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-5</code></td>
+      <td><strong>Wide-Grip Lat Pulldown</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-5_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-5_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-6</code></td>
+      <td><strong>V-Bar Pulldown</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-6_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-6_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-7</code></td>
+      <td><strong>Seated Cable Rows</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-7_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-7_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-8</code></td>
+      <td><strong>One-Arm Dumbbell Row</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-8_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-8_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-9</code></td>
+      <td><strong>Barbell Deadlift</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-9_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-9_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-10</code></td>
+      <td><strong>Hyperextensions (Back Extensions)</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-10_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-10_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-11</code></td>
+      <td><strong>T-Bar Row with Handle</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-11_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-11_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-12</code></td>
+      <td><strong>Reverse Flyes</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-12_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-12_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-13</code></td>
+      <td><strong>Straight-Arm Pulldown</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-13_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-13_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-14</code></td>
+      <td><strong>Inverted Row</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-14_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-14_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-15</code></td>
+      <td><strong>Close-Grip Front Lat Pulldown</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-15_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-15_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-16</code></td>
+      <td><strong>Rope Climb</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-16_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-16_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-17</code></td>
+      <td><strong>Smith Machine Bent Over Row</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-17_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-17_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-18</code></td>
+      <td><strong>Underhand Cable Pulldowns</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/back-18_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-18_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-19</code></td>
+      <td><strong>Good Morning</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-19_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-19_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>back-20</code></td>
+      <td><strong>Barbell Shrug</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-20_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/back-20_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-1</code></td>
+      <td><strong>Barbell Curl</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-1_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-1_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-2</code></td>
+      <td><strong>Dumbbell Bicep Curl</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-2_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-2_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-3</code></td>
+      <td><strong>Hammer Curls</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-3_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-3_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-4</code></td>
+      <td><strong>Preacher Curl</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-4_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-4_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-5</code></td>
+      <td><strong>Incline Dumbbell Curl</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-5_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-5_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-6</code></td>
+      <td><strong>Concentration Curls</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-6_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (7ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-6_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-7</code></td>
+      <td><strong>Cable Hammer Curls - Rope Attachment</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-7_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-7_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-8</code></td>
+      <td><strong>Triceps Pushdown</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-8_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-8_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-9</code></td>
+      <td><strong>Triceps Pushdown - Rope Attachment</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-9_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-9_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-10</code></td>
+      <td><strong>Standing Overhead Barbell Triceps Extension</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-10_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-10_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-11</code></td>
+      <td><strong>Dips - Triceps Version</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-11_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-11_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-12</code></td>
+      <td><strong>Lying Triceps Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-12_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-12_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-13</code></td>
+      <td><strong>Seated Triceps Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-13_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-13_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-14</code></td>
+      <td><strong>Close-Grip Barbell Bench Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-14_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-14_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-15</code></td>
+      <td><strong>Tricep Dumbbell Kickback</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-15_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-15_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-17</code></td>
+      <td><strong>Cable Wrist Curl</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-17_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-17_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-18</code></td>
+      <td><strong>Reverse Barbell Curl</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-18_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-18_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-19</code></td>
+      <td><strong>Bench Dips</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-19_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-19_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>arm-20</code></td>
+      <td><strong>Cable Preacher Curl</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-20_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/arm-20_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-1</code></td>
+      <td><strong>Barbell Full Squat</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-1_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-1_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-2</code></td>
+      <td><strong>Dumbbell Squat</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-2_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-2_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-3</code></td>
+      <td><strong>Front Barbell Squat</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-3_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-3_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-4</code></td>
+      <td><strong>Leg Press</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-4_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-4_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-5</code></td>
+      <td><strong>Leg Extensions</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-5_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-5_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-6</code></td>
+      <td><strong>Lying Leg Curls</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-6_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-6_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-7</code></td>
+      <td><strong>Romanian Deadlift</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-7_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-7_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-8</code></td>
+      <td><strong>Barbell Lunge</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-8_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-8_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-9</code></td>
+      <td><strong>Dumbbell Lunges</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-9_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-9_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-10</code></td>
+      <td><strong>Standing Calf Raises</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-10_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-10_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-11</code></td>
+      <td><strong>Seated Calf Raise</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-11_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-11_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-13</code></td>
+      <td><strong>Glute Ham Raise</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-13_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-13_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-14</code></td>
+      <td><strong>Barbell Hip Thrust</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-14_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (7ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-14_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-15</code></td>
+      <td><strong>Hack Squat</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-15_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-15_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-16</code></td>
+      <td><strong>Goblet Squat</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-16_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-16_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-17</code></td>
+      <td><strong>Step-up with Knee Raise</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-17_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-17_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-18</code></td>
+      <td><strong>Sumo Deadlift</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-18_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-18_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-19</code></td>
+      <td><strong>Bodyweight Squat</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-19_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-19_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>leg-20</code></td>
+      <td><strong>Calf-Machine Shoulder Shrug</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-20_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/leg-20_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-1</code></td>
+      <td><strong>Plank</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-1_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-1_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-2</code></td>
+      <td><strong>Crunches</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-2_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-2_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-3</code></td>
+      <td><strong>Russian Twist</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-3_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-3_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-4</code></td>
+      <td><strong>Cable Crunch</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-4_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-4_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-5</code></td>
+      <td><strong>Hanging Leg Raise</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-5_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-5_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-6</code></td>
+      <td><strong>Ab Roller</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (5ms)</span>
+              <br/>
+              <img src="../public/exercises/core-6_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-6_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-7</code></td>
+      <td><strong>Push Up to Side Plank</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-7_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-7_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-9</code></td>
+      <td><strong>Mountain Climbers</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-9_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-9_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-11</code></td>
+      <td><strong>Dead Bug</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-11_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-11_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-12</code></td>
+      <td><strong>Reverse Crunch</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-12_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-12_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-14</code></td>
+      <td><strong>Toe Touchers</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-14_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-14_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-15</code></td>
+      <td><strong>Flutter Kicks</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-15_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-15_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+
+    <tr class="row-pass">
+      <td><code>core-18</code></td>
+      <td><strong>Decline Crunch</strong></td>
+      <td>2 إطارات</td>
+      <td>
+        <div style="display: flex; gap: 8px;">
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">بداية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-18_0.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="بداية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+            <div style="text-align: center; font-size: 11px;">
+              <span class="badge badge-pass">نهاية: 200 (6ms)</span>
+              <br/>
+              <img src="../public/exercises/core-18_1.jpg" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; margin-top: 4px;" alt="نهاية" onerror="this.style.opacity=0.3" />
+            </div>
+          
+        </div>
+      </td>
+      <td><span class="badge badge-pass">✓ PASS</span></td>
+    </tr>
+  
+    </tbody>
+  </table>
+</body>
+</html>

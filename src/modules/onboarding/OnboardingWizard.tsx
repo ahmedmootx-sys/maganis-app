@@ -29,6 +29,16 @@ import {
 } from '../../ui'
 import { fmtFactor } from '../../utils/bidi.ts'
 
+import {
+  REGIONS,
+  STATUS_OPTIONS,
+  getRegionLabel,
+  type UserLimitation,
+  type LimitationStatus,
+  type LimitationRegion,
+} from '../workout/limitations.ts'
+import { Icon } from '../../ui/Icon.tsx'
+
 export interface OnboardingWizardProps {
   store: ProfileStore
   initialProfile?: UserProfile | null
@@ -47,6 +57,8 @@ interface FormState {
   trainingLocation: 'gym' | 'home' | 'both' | null
   name: string
   hasIssues: boolean | null
+  limitations: UserLimitation[]
+  redFlag: boolean | null
   injuryNotes: string
   sex: Sex | null
   age: string
@@ -67,6 +79,8 @@ const DEFAULT_FORM: FormState = {
   trainingLocation: null,
   name: '',
   hasIssues: null,
+  limitations: [],
+  redFlag: null,
   injuryNotes: '',
   sex: null,
   age: '',
@@ -105,8 +119,6 @@ export function OnboardingWizard({
     return 1
   })
 
-  const [injuryNotesTouched, setInjuryNotesTouched] = useState(false)
-
   const [form, setForm] = useState<FormState>(() => {
     if (initialProfile) {
       return {
@@ -130,6 +142,8 @@ export function OnboardingWizard({
         trainingLocation: initialProfile.trainingLocation ?? null,
         name: initialProfile.name ?? '',
         hasIssues: initialProfile.medical.hasIssues,
+        limitations: initialProfile.limitations ?? [],
+        redFlag: initialProfile.redFlag ?? null,
         injuryNotes:
           initialProfile.medical.notes ||
           initialProfile.medical.injuryTags.join('، '),
@@ -181,6 +195,38 @@ export function OnboardingWizard({
     setForm((prev) => ({ ...prev, ...patch }))
   }
 
+  const toggleLimitationRegion = (regionId: LimitationRegion) => {
+    setForm((prev) => {
+      const exists = prev.limitations.some((l) => l.region === regionId)
+      if (exists) {
+        return {
+          ...prev,
+          limitations: prev.limitations.filter((l) => l.region !== regionId),
+        }
+      } else {
+        return {
+          ...prev,
+          limitations: [
+            ...prev.limitations,
+            { region: regionId, status: 'current_pain' },
+          ],
+        }
+      }
+    })
+  }
+
+  const updateLimitationStatus = (
+    regionId: LimitationRegion,
+    status: LimitationStatus,
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      limitations: prev.limitations.map((l) =>
+        l.region === regionId ? { ...l, status } : l,
+      ),
+    }))
+  }
+
   // --- Step Validations ---
   const isStep1Valid =
     form.bodyGoal !== null && form.trainingStyle.length > 0
@@ -195,7 +241,52 @@ export function OnboardingWizard({
 
   const isStep3Valid =
     form.hasIssues !== null &&
-    (form.hasIssues === false || form.injuryNotes.trim().length > 0)
+    (form.hasIssues === false ||
+      (form.limitations.length > 0 && form.redFlag !== null))
+
+  function getMissingStepReason(step: number, f: FormState): string {
+    switch (step) {
+      case 1:
+        if (!f.bodyGoal && f.trainingStyle.length === 0) {
+          return 'اختر الهدف وأسلوب التدريب للمتابعة'
+        }
+        if (!f.bodyGoal) {
+          return 'اختر الهدف البدني الأساسي للمتابعة'
+        }
+        return 'اختر أسلوب تمرينك المفضل للمتابعة'
+      case 2:
+        if (f.trainingDaysPerWeek === null) {
+          return 'حدد أيام التمرين في الأسبوع للمتابعة'
+        }
+        if (f.sessionIntensity === null) {
+          return 'حدد شدة الجلسة التدريبية للمتابعة'
+        }
+        if (f.experienceLevel === null) {
+          return 'حدد خبرة التدريب للمتابعة'
+        }
+        return 'حدد مكان التدريب للمتابعة'
+      case 3:
+        if (f.hasIssues === null) {
+          return 'حدد ما إذا كانت لديك إصابة أو حالة صحية للمتابعة'
+        }
+        if (f.limitations.length === 0) {
+          return 'اختر منطقة الإصابة أو الألم للمتابعة'
+        }
+        if (f.redFlag === null) {
+          return 'أجب عن سؤال الفحص الصحي للمتابعة'
+        }
+        return 'أكمل البيانات الصحية للمتابعة'
+      case 4:
+        if (f.sex === null) return 'حدد الجنس للمتابعة'
+        if (!f.age) return 'أدخل العمر للمتابعة'
+        if (!f.heightCm) return 'أدخل الطول للمتابعة'
+        return 'أدخل الوزن الحالي للمتابعة'
+      case 5:
+        return 'اختر نمط النشاط اليومي للمتابعة'
+      default:
+        return ''
+    }
+  }
 
   const ageNum = Number(form.age)
   const heightNum = Number(form.heightCm)
@@ -290,6 +381,8 @@ export function OnboardingWizard({
         injuryTags,
         notes: form.injuryNotes.trim(),
       },
+      limitations: form.hasIssues ? form.limitations : [],
+      redFlag: Boolean(form.hasIssues && form.redFlag),
       body: {
         sex: form.sex ?? 'male',
         age: Number(form.age) || 25,
@@ -453,21 +546,24 @@ export function OnboardingWizard({
                   color: 'var(--color-text)',
                 }}
               >
-                2. ما هو أسلوب تمرينك المفضل؟
+                2. ما هو أسلوب تمرينك المفضل؟ (اختر واحدًا أو أكثر)
               </div>
               <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '8px',
+                  gap: '10px',
                 }}
               >
                 {TRAINING_STYLES.map((style) => {
                   const isSelected = form.trainingStyle.includes(style.value)
                   return (
-                    <Chips
+                    <button
                       key={style.value}
-                      selected={isSelected}
+                      type="button"
+                      role="checkbox"
+                      aria-checked={isSelected}
+                      className={`option-row ${isSelected ? 'option-row--selected' : ''}`}
                       onClick={() => {
                         const next = isSelected
                           ? form.trainingStyle.filter((s) => s !== style.value)
@@ -475,15 +571,44 @@ export function OnboardingWizard({
                         updateForm({ trainingStyle: next })
                       }}
                       style={{
-                        minHeight: '44px',
-                        justifyContent: 'center',
-                        fontWeight: 600,
-                        fontSize: '14px',
-                        width: '100%',
+                        minHeight: '56px',
+                        borderRadius: '12px',
+                        padding: '12px 16px',
+                        boxSizing: 'border-box',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '8px',
+                        cursor: 'pointer',
+                        textAlign: 'start',
                       }}
                     >
-                      {style.labelAr}
-                    </Chips>
+                      <span
+                        style={{
+                          fontSize: '13.5px',
+                          fontWeight: isSelected ? 700 : 600,
+                          lineHeight: 1.35,
+                          color: isSelected
+                            ? 'var(--color-text)'
+                            : 'var(--color-text-2)',
+                          wordBreak: 'break-word',
+                          whiteSpace: 'normal',
+                          flex: 1,
+                        }}
+                      >
+                        {style.labelAr}
+                      </span>
+                      {isSelected && (
+                        <span
+                          style={{
+                            color: 'var(--color-accent)',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Icon name="check" size={18} />
+                        </span>
+                      )}
+                    </button>
                   )
                 })}
               </div>
@@ -706,22 +831,189 @@ export function OnboardingWizard({
               value={
                 form.hasIssues === null ? '' : form.hasIssues ? 'yes' : 'no'
               }
-              onChange={(val) => updateForm({ hasIssues: val === 'yes' })}
+              onChange={(val) => {
+                const isYes = val === 'yes'
+                updateForm({
+                  hasIssues: isYes,
+                  ...(isYes ? {} : { limitations: [], redFlag: false }),
+                })
+              }}
             />
 
             {form.hasIssues === true && (
-              <Field
-                label="تفاصيل الحالة أو الإصابة"
-                placeholder="أدخل تفاصيل الحالة أو الإصابة هنا..."
-                value={form.injuryNotes}
-                onChange={(e) => updateForm({ injuryNotes: e.target.value })}
-                onBlur={() => setInjuryNotesTouched(true)}
-                error={
-                  injuryNotesTouched && form.injuryNotes.trim().length === 0
-                    ? 'يرجى كتابة تفاصيل الإصابة لمساعدتنا في تخصيص برنامجك'
-                    : undefined
-                }
-              />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      marginBottom: '8px',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    اختر منطقة الإصابة أو الألم (واحدة أو أكثر)
+                  </div>
+                  <div
+                    role="group"
+                    aria-label="مناطق الإصابة"
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: '10px',
+                    }}
+                  >
+                    {REGIONS.map((region) => {
+                      const isSelected = form.limitations.some(
+                        (l) => l.region === region.id,
+                      )
+                      return (
+                        <button
+                          key={region.id}
+                          type="button"
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          onClick={() => toggleLimitationRegion(region.id)}
+                          style={{
+                            borderRadius: '12px',
+                            minHeight: '52px',
+                            padding: '12px 16px',
+                            border: isSelected
+                              ? '1.5px solid var(--color-accent)'
+                              : '1px solid var(--color-border)',
+                            background: isSelected
+                              ? 'var(--color-accent-tint, rgba(249, 87, 0, 0.14))'
+                              : 'var(--color-surface-2)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '8px',
+                            cursor: 'pointer',
+                            textAlign: 'start',
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: '13.5px',
+                              fontWeight: isSelected ? 700 : 600,
+                              color: isSelected
+                                ? 'var(--color-text)'
+                                : 'var(--color-text-2)',
+                            }}
+                          >
+                            {region.labelAr}
+                          </span>
+                          {isSelected && (
+                            <span
+                              style={{
+                                color: 'var(--color-accent)',
+                                flexShrink: 0,
+                              }}
+                            >
+                              <Icon name="check" size={18} />
+                            </span>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {form.limitations.length > 0 && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '12px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      حالة كل منطقة
+                    </div>
+                    {form.limitations.map((lim) => (
+                      <div
+                        key={lim.region}
+                        style={{
+                          background: 'var(--color-surface-2)',
+                          padding: '12px 14px',
+                          borderRadius: '10px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px',
+                        }}
+                      >
+                        <div style={{ fontSize: '13px', fontWeight: 700 }}>
+                          {getRegionLabel(lim.region)}
+                        </div>
+                        <Segmented
+                          options={STATUS_OPTIONS.map((s) => ({
+                            value: s.id,
+                            label: s.labelAr,
+                          }))}
+                          value={lim.status}
+                          onChange={(val) =>
+                            updateLimitationStatus(
+                              lim.region,
+                              val as LimitationStatus,
+                            )
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <Field
+                  label="تفاصيل أو ملاحظات إضافية (اختياري)"
+                  placeholder="أدخل أي ملاحظات ترغب في تسجيلها هنا..."
+                  value={form.injuryNotes}
+                  onChange={(e) => updateForm({ injuryNotes: e.target.value })}
+                />
+
+                <div
+                  style={{
+                    background: 'var(--color-surface-2)',
+                    padding: '14px 16px',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                    border: '1px solid var(--color-border)',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: 'var(--color-text)',
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    هل عندك تنميل أو ضعف مفاجئ أو ألم شديد بعد إصابة قوية؟
+                  </div>
+                  <Segmented
+                    options={[
+                      { value: 'no', label: 'لا' },
+                      { value: 'yes', label: 'نعم' },
+                    ]}
+                    value={
+                      form.redFlag === null ? '' : form.redFlag ? 'yes' : 'no'
+                    }
+                    onChange={(val) => updateForm({ redFlag: val === 'yes' })}
+                  />
+                </div>
+              </div>
             )}
 
             <Callout variant="info" title="إخلاء مسؤولية طبية">
@@ -1075,10 +1367,21 @@ export function OnboardingWizard({
                         gap: '6px',
                       }}
                     >
-                      {form.hasIssues
-                        ? form.injuryNotes || 'يوجد ملاحظات'
-                        : form.hasIssues === false
-                          ? 'سليم ولا توجد إصابات'
+                      {form.hasIssues === false
+                        ? 'سليم ولا توجد إصابات'
+                        : form.hasIssues === true
+                          ? form.limitations.length > 0
+                            ? form.limitations
+                                .map(
+                                  (l) =>
+                                    `${getRegionLabel(l.region)} (${
+                                      STATUS_OPTIONS.find((s) => s.id === l.status)
+                                        ?.labelAr ?? l.status
+                                    })`,
+                                )
+                                .join('، ') +
+                              (form.redFlag ? ' [تحذير صحي]' : '')
+                            : 'يوجد ملاحظات'
                           : '—'}
                       <span
                         style={{
@@ -1237,6 +1540,19 @@ export function OnboardingWizard({
           zIndex: 100,
         }}
       >
+        {!isCurrentStepValid && (
+          <div
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-accent)',
+              textAlign: 'center',
+              paddingBottom: '2px',
+              fontWeight: 600,
+            }}
+          >
+            {getMissingStepReason(currentStep, form)}
+          </div>
+        )}
         <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
           {currentStep > 1 && (
             <Button

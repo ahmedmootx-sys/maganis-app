@@ -22,7 +22,7 @@ export function Segmented<T extends string | number>({
   return (
     <div
       className={`segmented ${className}`.trim()}
-      role="group"
+      role="radiogroup"
       aria-label={name}
     >
       {options.map((opt) => {
@@ -32,7 +32,8 @@ export function Segmented<T extends string | number>({
           <button
             key={String(opt.value)}
             type="button"
-            aria-pressed={isSelected}
+            role="radio"
+            aria-checked={isSelected}
             className={`segmented__item ${isSelected ? 'segmented__item--active' : ''}`.trim()}
             onClick={() => onChange(opt.value)}
           >

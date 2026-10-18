@@ -109,8 +109,8 @@ export function createBackupStore(): BackupStore {
         ) {
           await navigator.share({
             files: [file],
-            title: 'نسخة احتياطية من تطبيق مجانص',
-            text: 'إليك ملف النسخة الاحتياطية لبياناتك من تطبيق مجانص (Maganis).',
+            title: 'نسخة احتياطية من تطبيق Maganis',
+            text: 'إليك ملف النسخة الاحتياطية لبياناتك من تطبيق Maganis.',
           })
           recordExport()
           return true

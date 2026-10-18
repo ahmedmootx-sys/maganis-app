@@ -3,6 +3,7 @@ import type { Goal, Sex, UserProfile } from '../onboarding/types.ts'
 import { ACTIVITY_LEVELS, GOALS } from '../onboarding/types.ts'
 import type { BodyLogEntry } from '../shared/types.ts'
 import { calculateCalorieMacroTargets } from './calorieCalculator.ts'
+import { computeEnergyPlan } from './computeEnergyPlan.ts'
 import { CustomMealModal } from './CustomMealModal.tsx'
 import {
   calibrateTDEE,
@@ -251,12 +252,39 @@ export function NutritionModule({
 
   const targets = useMemo(() => {
     if (!profile) return null
-    return calculateCalorieMacroTargets(profile, bodyLog)
+    const plan = computeEnergyPlan(profile, bodyLog)
+    if (!plan) return null
+    const base = calculateCalorieMacroTargets(profile, bodyLog)
+    return {
+      ...base,
+      targetCalories: plan.target,
+      proteinGrams: plan.proteinGrams,
+      carbsGrams: plan.carbGrams,
+      fatsGrams: plan.fatGrams,
+      bmr: plan.bmr,
+      tdee: plan.tdee,
+      adjustmentKcal: plan.adjustmentKcal,
+      goalLabelAr: base?.goalLabelAr ?? '',
+      engineResult: base?.engineResult,
+    }
   }, [profile, bodyLog])
 
   const energyExplanation = useMemo(() => {
     if (!profile) return null
-    return explainEnergy(profile, bodyLog)
+    const exp = explainEnergy(profile, bodyLog)
+    const plan = computeEnergyPlan(profile, bodyLog)
+    if (exp && plan) {
+      exp.bmr.value = plan.bmr
+      exp.baseline.value = plan.baseline
+      exp.eat.dailyKcal = plan.eat
+      exp.tdee.value = plan.tdee
+      exp.goalAdjustment.adjustmentKcal = plan.adjustmentKcal
+      exp.targets.targetCalories = plan.target
+      exp.targets.proteinGrams = plan.proteinGrams
+      exp.targets.carbsGrams = plan.carbGrams
+      exp.targets.fatsGrams = plan.fatGrams
+    }
+    return exp
   }, [profile, bodyLog])
 
   // Check for migration requirement (legacy user who hasn't reviewed migration yet)
@@ -858,13 +886,13 @@ export function NutritionModule({
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontWeight: 700, color: 'var(--ink)' }}>
-                    تعديل السعرات للهدف:
+                    تعديل السعرات للهدف
                   </span>
                   <span style={{ color: 'var(--brand)', fontWeight: 800 }}>
                     {energyExplanation.goalAdjustment.adjustmentKcal >= 0
                       ? `+${energyExplanation.goalAdjustment.adjustmentKcal}`
                       : energyExplanation.goalAdjustment.adjustmentKcal}{' '}
-                    سعرة ({energyExplanation.goalAdjustment.reasonAr})
+                    سعرة — {energyExplanation.goalAdjustment.reasonAr.replace(/^\(|\)$/g, '')}
                   </span>
                 </div>
                 <button
@@ -1114,7 +1142,7 @@ export function NutritionModule({
                 paddingTop: '4px',
               }}
             >
-              الوجبات المسجلة:{' '}
+              الوجبات المسجلة —{' '}
               {dailyLog.loggedMeals.map((m) => m.nameAr).join(' • ')}
             </div>
           )}
@@ -1786,19 +1814,19 @@ export function NutritionModule({
                     }}
                   >
                     <li>
-                      <strong>المعادلة:</strong>{' '}
+                      <strong>المعادلة</strong>{' '}
                       {energyExplanation?.bmr.formulaName ?? 'معادلة ميفلين–سانت جور (1990)'}
                     </li>
                     <li>
-                      <strong>الحرق الأساسي (BMR):</strong>{' '}
+                      <strong>الحرق الأساسي (BMR)</strong>{' '}
                       {energyExplanation?.bmr.formattedText ?? targets.engineResult?.explanationAr.bmrText}
                     </li>
                     <li>
-                      <strong>الحرق القاعدي بنشاط الحياة:</strong>{' '}
+                      <strong>الحرق القاعدي بنشاط الحياة</strong>{' '}
                       {energyExplanation?.baseline.formattedText ?? targets.engineResult?.explanationAr.lifestyleText}
                     </li>
                     <li>
-                      <strong>حرق جلسات التمرين (EAT):</strong>{' '}
+                      <strong>حرق جلسات التمرين (حساب حرق التمرين)</strong>{' '}
                       {energyExplanation?.eat.formattedText ?? targets.engineResult?.explanationAr.eatText}
                       {energyExplanation && energyExplanation.workoutBlocks.length > 0 && (
                         <ul
@@ -1818,15 +1846,15 @@ export function NutritionModule({
                       )}
                     </li>
                     <li>
-                      <strong>إجمالي الحرق اليومي (TDEE):</strong>{' '}
+                      <strong>إجمالي الحرق اليومي (TDEE)</strong>{' '}
                       {energyExplanation?.tdee.formattedText ?? targets.engineResult?.explanationAr.tdeeRangeText}
                     </li>
                     <li>
-                      <strong>تعديل السعرات للهدف:</strong>{' '}
+                      <strong>تعديل السعرات للهدف</strong>{' '}
                       {energyExplanation?.goalAdjustment.formattedText ?? targets.engineResult?.explanationAr.adjustmentText}
                     </li>
                     <li>
-                      <strong>أساس احتساب البروتين:</strong>{' '}
+                      <strong>أساس احتساب البروتين</strong>{' '}
                       {energyExplanation
                         ? `${energyExplanation.targets.proteinGrams} جم (${energyExplanation.proteinBasis.gPerKg} جم/كجم)`
                         : targets.engineResult?.explanationAr.proteinBasisText}
@@ -1846,7 +1874,7 @@ export function NutritionModule({
                     }}
                   >
                     <div>
-                      <em>مرجع علمي:</em>{' '}
+                      <em>مرجع علمي</em>{' '}
                       {energyExplanation?.proteinBasis.referenceText ??
                         'وفق دراسة Morton et al., BJSM 2018: نقطة تشبع البناء العضلي عند ~1.6 جم/كجم والحد الأعلى لنطاق الثقة 95% عند 2.2 جم/كجم، وافتراض التطبيق 1.8 جم/كجم يقع ضمن هذا النطاق.'}
                     </div>
@@ -2184,7 +2212,7 @@ export function NutritionModule({
                       color: 'var(--ink)',
                     }}
                   >
-                    جلسات التمرين (حساب EAT)
+                    جلسات التمرين (حساب حرق التمرين)
                   </span>
                   {editWorkoutBlocks.length < 3 && (
                     <button
@@ -2242,7 +2270,7 @@ export function NutritionModule({
                           color: 'var(--ink)',
                         }}
                       >
-                        نشاط #{idx + 1}
+                        النشاط {idx + 1}
                       </span>
                       {editWorkoutBlocks.length > 1 && (
                         <button

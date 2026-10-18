@@ -25,6 +25,7 @@ import {
 } from '../../ui'
 import { BackupPanel } from '../backup/BackupPanel.tsx'
 import { fmtFactor } from '../../utils/bidi.ts'
+import { DiagnosticsSheet } from './DiagnosticsSheet.tsx'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
 
@@ -59,6 +60,10 @@ const WEEK_START_OPTIONS = [
   { value: '6', labelAr: 'السبت' },
   { value: '0', labelAr: 'الأحد' },
   { value: '1', labelAr: 'الإثنين' },
+  { value: '2', labelAr: 'الثلاثاء' },
+  { value: '3', labelAr: 'الأربعاء' },
+  { value: '4', labelAr: 'الخميس' },
+  { value: '5', labelAr: 'الجمعة' },
 ]
 
 const GOAL_OPTIONS = GOALS.map((g) => ({
@@ -125,6 +130,7 @@ export function SettingsScreen({
   }
 
   // --- Profile Edit State ---
+  const [showDiagnostics, setShowDiagnostics] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editName, setEditName] = useState(profile?.name ?? '')
   const [editGoal, setEditGoal] = useState<Goal>(
@@ -478,7 +484,15 @@ export function SettingsScreen({
           <Card padding="md">
             <KeyValueList
               items={[
-                { key: 'الإصدار', value: '0.2.0', bdi: true, stacked: true },
+                {
+                  key: 'الإصدار',
+                  value:
+                    typeof __BUILD_ID__ !== 'undefined'
+                      ? __BUILD_ID__
+                      : '0.2.0',
+                  bdi: true,
+                  stacked: true,
+                },
                 {
                   key: 'طبيعة التخزين',
                   value: 'محلي بالكامل على جهازك',
@@ -502,6 +516,22 @@ export function SettingsScreen({
                 },
               ]}
             />
+            <div
+              style={{
+                marginTop: '16px',
+                paddingTop: '12px',
+                borderTop: '1px solid var(--line)',
+              }}
+            >
+              <Button
+                variant="secondary"
+                onClick={() => setShowDiagnostics(true)}
+                style={{ width: '100%' }}
+              >
+                <Icon name="info" size={16} />
+                <span>معلومات تقنية</span>
+              </Button>
+            </div>
           </Card>
         </Section>
 
@@ -780,6 +810,11 @@ export function SettingsScreen({
         confirmLabel="حذف كل شيء والبدء من جديد"
         cancelLabel="تراجع"
         isDestructive
+      />
+
+      <DiagnosticsSheet
+        isOpen={showDiagnostics}
+        onClose={() => setShowDiagnostics(false)}
       />
     </div>
   )

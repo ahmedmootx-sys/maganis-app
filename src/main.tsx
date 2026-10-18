@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App.tsx'
 import { ConfigError, loadConfig } from './config/appConfig.ts'
 import { ConfigErrorView } from './components/ConfigError.tsx'
+import { updateManager } from './utils/updateManager.ts'
 import './styles/app.css'
 
 const container = document.getElementById('root')
@@ -35,19 +36,11 @@ try {
         navigator.serviceWorker
           .register(`${import.meta.env.BASE_URL}sw.js`)
           .then((reg) => {
-            reg.addEventListener('updatefound', () => {
-              const newWorker = reg.installing
-              if (newWorker) {
-                newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'activated') {
-                    window.location.reload()
-                  }
-                })
-              }
-            })
+            updateManager.init(reg)
           })
           .catch(() => {
-            // SW registration failed - app still works offline-first
+            // SW registration failed - check version anyway
+            updateManager.checkForUpdate()
           })
       })
     }

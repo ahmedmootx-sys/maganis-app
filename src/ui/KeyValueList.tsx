@@ -45,7 +45,7 @@ export const KeyValueList: React.FC<KeyValueListProps> = ({
           >
             <span className="key-value-item__key">{itemKey}</span>
             <span className="key-value-item__val">
-              {item.bdi ? <bdi>{item.value}</bdi> : item.value}
+              {item.bdi ? <bdi dir="ltr">{item.value}</bdi> : item.value}
             </span>
           </div>
         )

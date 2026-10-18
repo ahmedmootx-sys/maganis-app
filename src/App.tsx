@@ -34,6 +34,7 @@ import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
 import { MuscleAtlasDebug } from './modules/workout/MuscleAtlasDebug.tsx'
 import { ProgressScreen } from './modules/tracking/ProgressScreen.tsx'
 import { Toast } from './components/Toast.tsx'
+import { updateManager } from './utils/updateManager.ts'
 import {
   IconUser,
   IconDumbbell,
@@ -251,6 +252,13 @@ export function App({ config }: AppProps) {
 
   // --- Mobile Back Gesture & Hardware Back Button Handling ---
   const [backToastMessage, setBackToastMessage] = useState<string | null>(null)
+  const [hasAppUpdate, setHasAppUpdate] = useState(false)
+
+  useEffect(() => {
+    return updateManager.subscribe((avail) => {
+      setHasAppUpdate(avail)
+    })
+  }, [])
 
   useEffect(() => {
     navigationHistory.setOnShowToast((msg) => {
@@ -752,6 +760,10 @@ export function App({ config }: AppProps) {
             onOpenNutrition={() => {
               setActiveTab('nutrition')
             }}
+            onUpdateProfile={(updated) => {
+              profileStore.saveProfile(updated)
+              setProfile(updated)
+            }}
           />
         )
 
@@ -842,6 +854,11 @@ export function App({ config }: AppProps) {
 
             <WeeklyPlanView
               program={program}
+              profile={profile}
+              onUpdateProfile={(updated) => {
+                profileStore.saveProfile(updated)
+                setProfile(updated)
+              }}
               customExercises={workoutStore.getCustomExercises()}
               userInjuries={
                 profile?.medical.hasIssues ? profile.medical.injuryTags : []
@@ -1148,6 +1165,17 @@ export function App({ config }: AppProps) {
           message={backToastMessage}
           onDismiss={() => setBackToastMessage(null)}
         />
+
+        {hasAppUpdate && (
+          <Toast
+            message="تحديث جديد جاهز"
+            duration={0}
+            action={{
+              label: 'تحديث الآن',
+              onClick: () => updateManager.applyUpdate(),
+            }}
+          />
+        )}
       </div>
     </>
   )

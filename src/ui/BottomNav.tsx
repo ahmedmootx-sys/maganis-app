@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Icon, type IconName } from './Icon.tsx'
 
 export type BottomNavTabId =
-  'home' | 'training' | 'nutrition' | 'progress' | 'settings'
+  | 'home' | 'training' | 'nutrition' | 'progress' | 'settings'
 
 export interface BottomNavTab {
   id: BottomNavTabId
@@ -32,10 +32,33 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   hidden = false,
   className = '',
 }) => {
+  const navRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const el = navRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const height =
+          entry.borderBoxSize?.[0]?.blockSize ??
+          entry.target.getBoundingClientRect().height
+        if (height > 0) {
+          document.documentElement.style.setProperty(
+            '--nav-h',
+            `${Math.round(height)}px`,
+          )
+        }
+      }
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   if (hidden) return null
 
   return (
     <nav
+      ref={navRef}
       className={`bottom-nav ${className}`.trim()}
       aria-label="التنقل الرئيسي"
       data-testid="bottom-nav"

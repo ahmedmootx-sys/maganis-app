@@ -143,9 +143,14 @@ export function Select<T = string>({
         <span
           style={{
             color: selectedLabels ? 'var(--color-text)' : 'var(--color-text-2)',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
+            whiteSpace: 'normal',
+            lineHeight: 1.35,
+            wordBreak: 'break-word',
           }}
         >
           {selectedLabels || placeholder}
@@ -216,7 +221,7 @@ export function Select<T = string>({
                     <div className="option-row__title">{getOptLabel(opt)}</div>
                     {opt.secondary && (
                       <div className="option-row__subtitle">
-                        {opt.secondary}
+                        <bdi dir="ltr">{opt.secondary}</bdi>
                       </div>
                     )}
                   </div>

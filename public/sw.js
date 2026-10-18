@@ -1,4 +1,5 @@
-const CACHE_NAME = 'maganis-v5'
+const CACHE_VERSION = '__BUILD_ID__'
+const CACHE_NAME = 'maganis-' + CACHE_VERSION
 
 // Use the service worker's own scope to determine the base path
 // This makes it work on both localhost (/) and GitHub Pages (/maganis-app/)
@@ -19,6 +20,12 @@ const STATIC_ASSETS = [
   BASE + 'atlas/shade-anterior.webp',
   BASE + 'atlas/shade-posterior.webp',
 ]
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
+})
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -48,6 +55,12 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url)
 
   if (url.origin !== location.origin) return
+
+  // Always bypass cache for version.json and explicit no-store requests
+  if (url.pathname.endsWith('version.json') || request.cache === 'no-store') {
+    event.respondWith(fetch(request))
+    return
+  }
 
   // Skip caching for development requests or live reloads
   if (

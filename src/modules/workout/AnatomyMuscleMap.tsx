@@ -20,6 +20,12 @@ import atlasMetaData from '../../../public/atlas/atlas-meta.json'
 import { Segmented, Sheet, Callout } from '../../ui/index.ts'
 import { assetUrl } from '../../utils/assetUrl.ts'
 import { fmtMuscles } from '../../utils/bidi.ts'
+import {
+  getMuscleInfo,
+  getMuscleGymName,
+  getMuscleSciName,
+  getMuscleGroup,
+} from './muscleNames.ts'
 
 export interface AnatomyMuscleMapProps {
   exercise?: Partial<Exercise> | (Partial<Exercise> & Record<string, unknown>)
@@ -781,7 +787,7 @@ export function AnatomyMuscleMap({
                       color: 'var(--color-text)',
                     }}
                   >
-                    {def.ar}
+                    {getMuscleGymName(id, def.ar)}
                   </span>
                   {isApproximate && (
                     <span className="badge-approx">منطقة تقريبية</span>
@@ -789,9 +795,8 @@ export function AnatomyMuscleMap({
                 </div>
                 <span
                   style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
-                  dir="ltr"
                 >
-                  {def.en}
+                  <bdi dir="ltr">{getMuscleSciName(id) || def.en}</bdi>
                 </span>
               </div>
             </div>
@@ -849,7 +854,7 @@ export function AnatomyMuscleMap({
                       color: 'var(--color-text)',
                     }}
                   >
-                    {def.ar}
+                    {getMuscleGymName(id, def.ar)}
                   </span>
                   {isApproximate && (
                     <span className="badge-approx">منطقة تقريبية</span>
@@ -857,9 +862,8 @@ export function AnatomyMuscleMap({
                 </div>
                 <span
                   style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
-                  dir="ltr"
                 >
-                  {def.en}
+                  <bdi dir="ltr">{getMuscleSciName(id) || def.en}</bdi>
                 </span>
               </div>
             </div>
@@ -891,9 +895,13 @@ export function AnatomyMuscleMap({
       <Sheet
         isOpen={!!sheetMuscleId}
         onClose={() => setSheetMuscleId(null)}
-        title={sheetMuscleDef?.ar || 'تفاصيل العضلة'}
+        title={
+          sheetMuscleId
+            ? getMuscleGymName(sheetMuscleId, sheetMuscleDef?.ar)
+            : 'تفاصيل العضلة'
+        }
       >
-        {sheetMuscleDef && (
+        {sheetMuscleId && (
           <div
             style={{
               display: 'flex',
@@ -905,10 +913,26 @@ export function AnatomyMuscleMap({
           >
             <div
               style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
-              dir="ltr"
             >
-              {sheetMuscleDef.en}
+              <bdi dir="ltr">
+                {getMuscleSciName(sheetMuscleId) || sheetMuscleDef?.en}
+              </bdi>
             </div>
+
+            {getMuscleInfo(sheetMuscleId)?.where_ar && (
+              <div
+                style={{
+                  fontSize: '13.5px',
+                  lineHeight: 1.5,
+                  color: 'var(--color-text)',
+                  background: 'var(--color-surface-2)',
+                  padding: '10px 14px',
+                  borderRadius: 'var(--radius-control)',
+                }}
+              >
+                {getMuscleInfo(sheetMuscleId)?.where_ar}
+              </div>
+            )}
 
             <div
               style={{
@@ -930,8 +954,15 @@ export function AnatomyMuscleMap({
                   background:
                     sheetMuscleRole === 'primary'
                       ? 'rgba(229, 57, 53, 0.12)'
-                      : 'rgba(253, 216, 53, 0.15)',
-                  color: sheetMuscleRole === 'primary' ? '#E53935' : '#b45309',
+                      : sheetMuscleRole === 'secondary'
+                        ? 'rgba(253, 216, 53, 0.15)'
+                        : 'var(--color-surface-2)',
+                  color:
+                    sheetMuscleRole === 'primary'
+                      ? '#E53935'
+                      : sheetMuscleRole === 'secondary'
+                        ? '#b45309'
+                        : 'var(--color-text-2)',
                 }}
               >
                 <span
@@ -939,12 +970,15 @@ export function AnatomyMuscleMap({
                 />
                 <span>
                   {sheetMuscleRole === 'primary'
-                    ? 'عضلة أساسية'
-                    : 'عضلة مساعدة'}
+                    ? 'عضلة أساسية في هذا التمرين'
+                    : sheetMuscleRole === 'secondary'
+                      ? 'عضلة مساعدة في هذا التمرين'
+                      : 'غير مستهدفة مباشرة في هذا التمرين'}
                 </span>
               </div>
 
-              {MUSCLE_GROUPS[sheetMuscleDef.id] && (
+              {(getMuscleInfo(sheetMuscleId)?.group ||
+                (sheetMuscleDef && MUSCLE_GROUPS[sheetMuscleDef.id])) && (
                 <span
                   style={{
                     fontSize: '12px',
@@ -954,21 +988,31 @@ export function AnatomyMuscleMap({
                     color: 'var(--color-text)',
                   }}
                 >
-                  المجموعة: {MUSCLE_GROUPS[sheetMuscleDef.id]}
+                  المجموعة:{' '}
+                  {getMuscleInfo(sheetMuscleId)?.group
+                    ? getMuscleGroup(getMuscleInfo(sheetMuscleId)!.group)
+                        ?.gym_ar || getMuscleInfo(sheetMuscleId)?.group
+                    : sheetMuscleDef
+                      ? MUSCLE_GROUPS[sheetMuscleDef.id]
+                      : ''}
                 </span>
               )}
             </div>
 
-            <div
-              style={{
-                fontSize: '12px',
-                color: 'var(--color-text-2)',
-                lineHeight: 1.6,
-              }}
-            >
-              المسار التشريحي للرأس العضلي محدد وفق قاعدة بيانات BodyParts3D 4.0
-              المعيارية.
-            </div>
+            {getMuscleInfo(sheetMuscleId)?.note_ar && (
+              <div
+                style={{
+                  fontSize: '12px',
+                  color: 'var(--color-text-2)',
+                  lineHeight: 1.5,
+                  padding: '8px 12px',
+                  background: 'var(--color-surface-2)',
+                  borderRadius: 'var(--radius-control)',
+                }}
+              >
+                {getMuscleInfo(sheetMuscleId)?.note_ar}
+              </div>
+            )}
           </div>
         )}
       </Sheet>

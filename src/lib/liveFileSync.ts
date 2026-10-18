@@ -144,7 +144,7 @@ export function createLiveFileSyncManager(): LiveFileSyncManager {
         suggestedName: 'maganis-data.json',
         types: [
           {
-            description: 'ملف بيانات مجانص JSON',
+            description: 'ملف بيانات Maganis JSON',
             accept: { 'application/json': ['.json'] },
           },
         ],
