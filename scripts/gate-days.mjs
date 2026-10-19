@@ -22,13 +22,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 
 async function runGate() {
-  console.log('🚀 Running Gate: gate-days (TASK G3 Part 5 — Day Management & Cardio)...')
+  console.log(
+    '🚀 Running Gate: gate-days (TASK G3 Part 5 — Day Management & Cardio)...',
+  )
 
   const failures = []
   let checksPassed = 0
 
   // 1. Static inspection of WeeklyPlanView.tsx
-  const weeklyPlanPath = path.join(rootDir, 'src/modules/workout/WeeklyPlanView.tsx')
+  const weeklyPlanPath = path.join(
+    rootDir,
+    'src/modules/workout/WeeklyPlanView.tsx',
+  )
   if (!fs.existsSync(weeklyPlanPath)) {
     console.error('❌ WeeklyPlanView.tsx does not exist!')
     process.exit(1)
@@ -87,14 +92,16 @@ async function runGate() {
   if (
     weeklyPlanSrc.includes('CardioDayScreen') ||
     weeklyPlanSrc.includes('cardioConfig') ||
-    (weeklyPlanSrc.includes("kind === 'cardio'") && weeklyPlanSrc.includes('plannedMinutes'))
+    (weeklyPlanSrc.includes("kind === 'cardio'") &&
+      weeklyPlanSrc.includes('plannedMinutes'))
   ) {
     checksPassed++
     console.log('✓ Found dedicated Cardio Day view in WeeklyPlanView')
   } else {
     failures.push({
       test: 'CARDIO_DAY_SCREEN',
-      error: 'WeeklyPlanView does not have a dedicated Cardio Day view handling activity and plannedMinutes',
+      error:
+        'WeeklyPlanView does not have a dedicated Cardio Day view handling activity and plannedMinutes',
     })
   }
 
@@ -116,13 +123,19 @@ async function runGate() {
     } else {
       failures.push({
         test: 'CALLOUT_STRENGTH_ONLY',
-        error: 'Training days Callout compares total program.days.length without excluding cardio days',
+        error:
+          'Training days Callout compares total program.days.length without excluding cardio days',
       })
     }
 
     // Check (f): Callout must have 2 actions
     const buttonMatches = calloutCode.match(/<Button/g) || []
-    if (buttonMatches.length >= 2 || (calloutCode.includes('action=') && calloutCode.includes('<Button') && calloutCode.includes('variant="secondary"'))) {
+    if (
+      buttonMatches.length >= 2 ||
+      (calloutCode.includes('action=') &&
+        calloutCode.includes('<Button') &&
+        calloutCode.includes('variant="secondary"'))
+    ) {
       checksPassed++
       console.log('✓ Callout provides 2 actions')
     } else {
@@ -139,7 +152,10 @@ async function runGate() {
   }
 
   // 2. Static inspection of Dashboard.tsx (Home Week Strip)
-  const dashboardPath = path.join(rootDir, 'src/modules/dashboard/Dashboard.tsx')
+  const dashboardPath = path.join(
+    rootDir,
+    'src/modules/dashboard/Dashboard.tsx',
+  )
   if (!fs.existsSync(dashboardPath)) {
     console.error('❌ Dashboard.tsx does not exist!')
     process.exit(1)
@@ -147,30 +163,43 @@ async function runGate() {
   const dashboardSrc = fs.readFileSync(dashboardPath, 'utf8')
 
   // Check (g): Legend line «قوة · كارديو · راحة»
-  if (dashboardSrc.includes('قوة · كارديو · راحة') || dashboardSrc.includes('قوة') && dashboardSrc.includes('كارديو') && dashboardSrc.includes('راحة')) {
+  if (
+    dashboardSrc.includes('قوة · كارديو · راحة') ||
+    (dashboardSrc.includes('قوة') &&
+      dashboardSrc.includes('كارديو') &&
+      dashboardSrc.includes('راحة'))
+  ) {
     checksPassed++
     console.log('✓ Home week strip includes legend line «قوة · كارديو · راحة»')
   } else {
     failures.push({
       test: 'WEEK_STRIP_LEGEND',
-      error: 'Home week strip in Dashboard.tsx is missing the legend line «قوة · كارديو · راحة»',
+      error:
+        'Home week strip in Dashboard.tsx is missing the legend line «قوة · كارديو · راحة»',
     })
   }
 
   // Check (h): Kind icons in week strip (dumbbell, activity/heart, moon/rest)
-  const stripMatch = dashboardSrc.match(/className="week-strip"[\s\S]*?<\/div>\s*<\/Section>/)
+  const stripMatch = dashboardSrc.match(
+    /className="week-strip"[\s\S]*?<\/div>\s*<\/Section>/,
+  )
   if (stripMatch) {
     const stripCode = stripMatch[0]
     const hasKindIcons =
       (stripCode.includes('dumbbell') || stripCode.includes('IconDumbbell')) &&
-      (stripCode.includes('activity') || stripCode.includes('heart') || stripCode.includes('IconActivity'))
+      (stripCode.includes('activity') ||
+        stripCode.includes('heart') ||
+        stripCode.includes('IconActivity'))
     if (hasKindIcons) {
       checksPassed++
-      console.log('✓ Home week strip uses explicit kind icons (strength, cardio, rest)')
+      console.log(
+        '✓ Home week strip uses explicit kind icons (strength, cardio, rest)',
+      )
     } else {
       failures.push({
         test: 'WEEK_STRIP_KIND_ICONS',
-        error: 'Home week strip renders dots instead of explicit kind icons for strength, cardio, and rest',
+        error:
+          'Home week strip renders dots instead of explicit kind icons for strength, cardio, and rest',
       })
     }
   } else {
@@ -181,7 +210,8 @@ async function runGate() {
   }
 
   // 3. Functional Energy & Strength Session Verification
-  const { computeEnergyPlan } = await import('../src/modules/nutrition/computeEnergyPlan.ts')
+  const { computeEnergyPlan } =
+    await import('../src/modules/nutrition/computeEnergyPlan.ts')
   const baseProfile = {
     primaryGoal: 'recomposition',
     trainingDaysPerWeek: 4,
@@ -202,18 +232,57 @@ async function runGate() {
     title: 'برنامج اختبار',
     trainingDaysPerWeek: 4,
     days: [
-      { dayIndex: 0, labelAr: 'يوم 1', kind: 'strength', focus: 'صدر', exercises: [] },
-      { dayIndex: 1, labelAr: 'يوم 2', kind: 'strength', focus: 'ظهر', exercises: [] },
-      { dayIndex: 2, labelAr: 'يوم 3', kind: 'strength', focus: 'أرجل', exercises: [] },
-      { dayIndex: 3, labelAr: 'يوم 4', kind: 'strength', focus: 'أكتاف', exercises: [] },
-      { dayIndex: 4, labelAr: 'يوم كارديو', kind: 'cardio', focus: 'كارديو', exercises: [], cardioConfig: { activity: 'جري', plannedMinutes: 30, effort: 'moderate' } },
+      {
+        dayIndex: 0,
+        labelAr: 'يوم 1',
+        kind: 'strength',
+        focus: 'صدر',
+        exercises: [],
+      },
+      {
+        dayIndex: 1,
+        labelAr: 'يوم 2',
+        kind: 'strength',
+        focus: 'ظهر',
+        exercises: [],
+      },
+      {
+        dayIndex: 2,
+        labelAr: 'يوم 3',
+        kind: 'strength',
+        focus: 'أرجل',
+        exercises: [],
+      },
+      {
+        dayIndex: 3,
+        labelAr: 'يوم 4',
+        kind: 'strength',
+        focus: 'أكتاف',
+        exercises: [],
+      },
+      {
+        dayIndex: 4,
+        labelAr: 'يوم كارديو',
+        kind: 'cardio',
+        focus: 'كارديو',
+        exercises: [],
+        cardioConfig: {
+          activity: 'جري',
+          plannedMinutes: 30,
+          effort: 'moderate',
+        },
+      },
     ],
   }
 
-  const strengthCount = programWithCardio.days.filter((d) => d.kind !== 'cardio').length
+  const strengthCount = programWithCardio.days.filter(
+    (d) => d.kind !== 'cardio',
+  ).length
   if (strengthCount === 4) {
     checksPassed++
-    console.log(`✓ Strength session count strictly excludes cardio days (${strengthCount} strength days)`)
+    console.log(
+      `✓ Strength session count strictly excludes cardio days (${strengthCount} strength days)`,
+    )
   } else {
     failures.push({
       test: 'STRENGTH_COUNT_CARDIO_EXCLUDED',
@@ -222,9 +291,16 @@ async function runGate() {
   }
 
   const planAfter = computeEnergyPlan(baseProfile)
-  if (planBefore && planAfter && planBefore.tdee === planAfter.tdee && planBefore.target === planAfter.target) {
+  if (
+    planBefore &&
+    planAfter &&
+    planBefore.tdee === planAfter.tdee &&
+    planBefore.target === planAfter.target
+  ) {
     checksPassed++
-    console.log(`✓ Cardio day leaves TDEE (${planBefore.tdee} kcal) and target (${planBefore.target} kcal) unchanged`)
+    console.log(
+      `✓ Cardio day leaves TDEE (${planBefore.tdee} kcal) and target (${planBefore.target} kcal) unchanged`,
+    )
   } else {
     failures.push({
       test: 'TDEE_UNCHANGED_BY_CARDIO',
@@ -233,16 +309,22 @@ async function runGate() {
   }
 
   // Print results
-  console.log(`\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`)
+  console.log(
+    `\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`,
+  )
   if (failures.length > 0) {
-    console.error(`\n❌ FAIL: ${failures.length} day management contract violations detected:`)
+    console.error(
+      `\n❌ FAIL: ${failures.length} day management contract violations detected:`,
+    )
     for (const f of failures) {
       console.error(`  [${f.test}] ${f.error}`)
     }
     process.exit(1)
   }
 
-  console.log('\n✓ gate-days passed cleanly! Day management, rename, cardio contract, and week strip verified.')
+  console.log(
+    '\n✓ gate-days passed cleanly! Day management, rename, cardio contract, and week strip verified.',
+  )
   process.exit(0)
 }
 

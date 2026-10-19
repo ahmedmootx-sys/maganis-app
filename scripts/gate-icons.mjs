@@ -17,12 +17,7 @@ const rootDir = path.resolve(__dirname, '..')
 
 const FORBIDDEN_GLYPHS = ['▲', '▼', '✕']
 
-const SCAN_DIRS = [
-  'src/App.tsx',
-  'src/components',
-  'src/modules',
-  'src/ui',
-]
+const SCAN_DIRS = ['src/App.tsx', 'src/components', 'src/modules', 'src/ui']
 
 async function runGate() {
   console.log('🚀 Running Gate: gate-icons (Icon Unification Contract)...')
@@ -35,7 +30,8 @@ async function runGate() {
     if (!fs.existsSync(fullTarget)) continue
 
     const filesToScan = fs.statSync(fullTarget).isDirectory()
-      ? fs.readdirSync(fullTarget, { recursive: true })
+      ? fs
+          .readdirSync(fullTarget, { recursive: true })
           .filter((f) => /\.(tsx?|jsx?)$/.test(f))
           .map((f) => path.join(fullTarget, f))
       : [fullTarget]
@@ -46,7 +42,8 @@ async function runGate() {
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         // ignore comments or test files
-        if (line.trim().startsWith('//') || line.trim().startsWith('*')) continue
+        if (line.trim().startsWith('//') || line.trim().startsWith('*'))
+          continue
         if (file.endsWith('.test.ts') || file.endsWith('.test.tsx')) continue
 
         for (const glyph of FORBIDDEN_GLYPHS) {
@@ -72,11 +69,17 @@ async function runGate() {
     console.log(`❌ Found ${failures.length} bare text glyph icon occurrences`)
   }
 
-  console.log(`\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`)
+  console.log(
+    `\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`,
+  )
   if (failures.length > 0) {
-    console.error(`\n❌ FAIL: ${failures.length} icon unification violations detected:`)
+    console.error(
+      `\n❌ FAIL: ${failures.length} icon unification violations detected:`,
+    )
     for (const f of failures) {
-      console.error(`  [${f.test}] ${f.file}:${f.line} contains «${f.glyph}»: ${f.snippet}`)
+      console.error(
+        `  [${f.test}] ${f.file}:${f.line} contains «${f.glyph}»: ${f.snippet}`,
+      )
     }
     process.exit(1)
   }

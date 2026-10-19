@@ -298,19 +298,19 @@ export const Select: React.FC<SelectProps> = ({
         </div>
 
         {/* Chevron Icon */}
-          <span
-            className="select-chevron"
-            aria-hidden="true"
-            style={{
-              color: 'var(--muted)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 0.2s ease',
-            }}
-          >
-            <Icon name="chevron-down" size={14} />
-          </span>
+        <span
+          className="select-chevron"
+          aria-hidden="true"
+          style={{
+            color: 'var(--muted)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+          }}
+        >
+          <Icon name="chevron-down" size={14} />
+        </span>
       </button>
 
       {/* Bottom Sheet Modal */}

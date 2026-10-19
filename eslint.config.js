@@ -15,6 +15,7 @@ export default tseslint.config(
       '**/public/**',
       '**/.cache/**',
       '**/tools/**',
+      '**/scratch/**',
     ],
   },
   {

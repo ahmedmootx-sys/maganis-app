@@ -46,7 +46,10 @@ function checkFile(filePath) {
 
     for (const noun of SINGULAR_NOUNS) {
       // Pattern: (3|4|5|6|7|8|9|10)\s+noun
-      const directRegex = new RegExp(`(?:\\b|[^0-9])([3-9]|10)\\s+${noun}(?:\\b|[^a-zA-Z0-9_\u0621-\u064A])`, 'g')
+      const directRegex = new RegExp(
+        `(?:\\b|[^0-9])([3-9]|10)\\s+${noun}(?:\\b|[^a-zA-Z0-9_\u0621-\u064A])`,
+        'g',
+      )
       let match
       while ((match = directRegex.exec(line)) !== null) {
         pluralViolations.push({
@@ -66,7 +69,8 @@ function scanDir(dir) {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (['node_modules', 'dist', '.git', 'docs'].includes(entry.name)) continue
+      if (['node_modules', 'dist', '.git', 'docs'].includes(entry.name))
+        continue
       scanDir(fullPath)
     } else if (/\.(tsx|ts|jsx|js|html)$/.test(entry.name)) {
       checkFile(fullPath)
@@ -78,12 +82,16 @@ console.log('🚀 Running Arabic Plurals Verification Gate...')
 scanDir(path.join(rootDir, 'src'))
 
 if (pluralViolations.length > 0) {
-  console.error(`❌ Found ${pluralViolations.length} Arabic plural violations (digit 3-10 followed by singular noun):`)
+  console.error(
+    `❌ Found ${pluralViolations.length} Arabic plural violations (digit 3-10 followed by singular noun):`,
+  )
   for (const v of pluralViolations) {
     console.error(`   - [${v.file}:${v.line}] "${v.matched}" in: ${v.content}`)
   }
   process.exit(1)
 } else {
-  console.log('✅ Arabic Plurals Verification PASSED: 0 plural violations found across codebase.')
+  console.log(
+    '✅ Arabic Plurals Verification PASSED: 0 plural violations found across codebase.',
+  )
   process.exit(0)
 }

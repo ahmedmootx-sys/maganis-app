@@ -46,7 +46,7 @@ async function runGate() {
   if (fs.existsSync(ownerProfilePath)) {
     ownerDump = JSON.parse(fs.readFileSync(ownerProfilePath, 'utf8'))
   }
-  const ownerProfile = ownerDump ? (ownerDump.profile || ownerDump) : null
+  const ownerProfile = ownerDump ? ownerDump.profile || ownerDump : null
 
   let totalStatesExamined = 0
   const violations = []
@@ -79,42 +79,69 @@ async function runGate() {
         const page = await context.newPage()
 
         // Set profile in storage
-        await page.addInitScript(({ profile, themeMode, fScale }) => {
-          if (profile) {
-            localStorage.setItem('maganis:profile.active', JSON.stringify(profile))
-            localStorage.setItem('maganis:workout.program', JSON.stringify({
-              id: 'test-prog',
-              primaryGoal: 'hypertrophy',
-              trainingDaysPerWeek: 4,
-              splitType: 'upper_lower',
-              days: [
-                {
-                  dayIndex: 6,
-                  labelAr: 'يوم السبت: علوي',
-                  focus: 'صدر، ظهر، ذراعين',
-                  exercises: [{ exerciseId: 'chest-1', sets: 4, reps: 8, restSeconds: 90, section: 'primary' }]
-                },
-                {
-                  dayIndex: 0,
-                  labelAr: 'يوم الأحد: سفلي',
-                  focus: 'أرجل وبطن',
-                  exercises: [{ exerciseId: 'squat', sets: 4, reps: 8, restSeconds: 120, section: 'primary' }]
-                }
-              ]
-            }))
-          }
-          document.documentElement.setAttribute('data-theme', themeMode)
-          if (fScale !== 1.0) {
-            document.documentElement.style.fontSize = `${fScale * 100}%`
-          }
-        }, { profile: ownerProfile, themeMode: theme, fScale: fontScale })
+        await page.addInitScript(
+          ({ profile, themeMode, fScale }) => {
+            if (profile) {
+              localStorage.setItem(
+                'maganis:profile.active',
+                JSON.stringify(profile),
+              )
+              localStorage.setItem(
+                'maganis:workout.program',
+                JSON.stringify({
+                  id: 'test-prog',
+                  primaryGoal: 'hypertrophy',
+                  trainingDaysPerWeek: 4,
+                  splitType: 'upper_lower',
+                  days: [
+                    {
+                      dayIndex: 6,
+                      labelAr: 'يوم السبت: علوي',
+                      focus: 'صدر، ظهر، ذراعين',
+                      exercises: [
+                        {
+                          exerciseId: 'chest-1',
+                          sets: 4,
+                          reps: 8,
+                          restSeconds: 90,
+                          section: 'primary',
+                        },
+                      ],
+                    },
+                    {
+                      dayIndex: 0,
+                      labelAr: 'يوم الأحد: سفلي',
+                      focus: 'أرجل وبطن',
+                      exercises: [
+                        {
+                          exerciseId: 'squat',
+                          sets: 4,
+                          reps: 8,
+                          restSeconds: 120,
+                          section: 'primary',
+                        },
+                      ],
+                    },
+                  ],
+                }),
+              )
+            }
+            document.documentElement.setAttribute('data-theme', themeMode)
+            if (fScale !== 1.0) {
+              document.documentElement.style.fontSize = `${fScale * 100}%`
+            }
+          },
+          { profile: ownerProfile, themeMode: theme, fScale: fontScale },
+        )
 
         for (const route of mainRoutes) {
           totalStatesExamined++
           const stateLabel = `${route} @ ${vp.name} f:${fontScale} th:${theme}`
 
           try {
-            await page.goto(`${baseUrl}#${route}`, { waitUntil: 'domcontentloaded' })
+            await page.goto(`${baseUrl}#${route}`, {
+              waitUntil: 'domcontentloaded',
+            })
             await page.waitForTimeout(300)
 
             const evalResult = await page.evaluate(() => {
@@ -122,29 +149,41 @@ async function runGate() {
               const winH = window.innerHeight
 
               // Detect modal vs page scroller
-              const modal = document.querySelector('.modal-fullscreen, .fullscreen-route')
-              const scroller = (modal ? modal.querySelector('.screen-content') : null) ||
-                               document.querySelector('.screen-content') ||
-                               document.querySelector('.wizard-step-body') ||
-                               document.querySelector('.app-main') ||
-                               document.querySelector('main') ||
-                               document.body
+              const modal = document.querySelector(
+                '.modal-fullscreen, .fullscreen-route',
+              )
+              const scroller =
+                (modal ? modal.querySelector('.screen-content') : null) ||
+                document.querySelector('.screen-content') ||
+                document.querySelector('.wizard-step-body') ||
+                document.querySelector('.app-main') ||
+                document.querySelector('main') ||
+                document.body
 
               if (scroller) {
-                scroller.scrollTop = scroller.scrollHeight - scroller.clientHeight + 100
+                scroller.scrollTop =
+                  scroller.scrollHeight - scroller.clientHeight + 100
               }
               window.scrollTo(0, document.body.scrollHeight)
 
               const isModal = Boolean(modal)
-              const bottomNav = !isModal ? document.querySelector('.bottom-nav') : null
-              const stickyFooter = document.querySelector('.wizard-footer, .docked-footer, .modal-footer, .sticky-bottom-bar')
+              const bottomNav = !isModal
+                ? document.querySelector('.bottom-nav')
+                : null
+              const stickyFooter = document.querySelector(
+                '.wizard-footer, .docked-footer, .modal-footer, .sticky-bottom-bar',
+              )
               const fixedBarrier = stickyFooter || bottomNav
 
               // (a) Scroller last content item to next fixed element gap
               if (scroller) {
-                const children = Array.from(scroller.children).filter(el => {
+                const children = Array.from(scroller.children).filter((el) => {
                   const s = window.getComputedStyle(el)
-                  return s.display !== 'none' && s.visibility !== 'hidden' && s.position !== 'fixed'
+                  return (
+                    s.display !== 'none' &&
+                    s.visibility !== 'hidden' &&
+                    s.position !== 'fixed'
+                  )
                 })
 
                 if (children.length > 0) {
@@ -156,12 +195,15 @@ async function runGate() {
                     barrierTop = bRect.top
                   }
 
-                  const isOverflowing = scroller.scrollHeight > scroller.clientHeight + 10
+                  const isOverflowing =
+                    scroller.scrollHeight > scroller.clientHeight + 10
                   if (isOverflowing) {
                     const gap = barrierTop - lastRect.bottom
                     // Gap must be between 8 and 32 px
                     if (gap > 32.5 || gap < 7.5) {
-                      issues.push(`Gap between last content (${lastChild.className || lastChild.tagName}) and barrier is ${gap.toFixed(1)}px (allowed: 8-32px)`)
+                      issues.push(
+                        `Gap between last content (${lastChild.className || lastChild.tagName}) and barrier is ${gap.toFixed(1)}px (allowed: 8-32px)`,
+                      )
                     }
                   }
 
@@ -170,12 +212,22 @@ async function runGate() {
                     const cr = child.getBoundingClientRect()
                     if (cr.height >= 48 && cr.width > 0) {
                       const text = child.textContent?.trim() || ''
-                      const hasMediaOrControl = child.querySelector('img, svg, canvas, video, input, textarea, select, button') !== null
+                      const hasMediaOrControl =
+                        child.querySelector(
+                          'img, svg, canvas, video, input, textarea, select, button',
+                        ) !== null
                       const cs = window.getComputedStyle(child)
-                      const hasBg = cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && cs.backgroundColor !== 'transparent'
-                      const hasBorder = (parseInt(cs.borderTopWidth) > 0 || parseInt(cs.borderBottomWidth) > 0) && cs.borderStyle !== 'none'
+                      const hasBg =
+                        cs.backgroundColor !== 'rgba(0, 0, 0, 0)' &&
+                        cs.backgroundColor !== 'transparent'
+                      const hasBorder =
+                        (parseInt(cs.borderTopWidth) > 0 ||
+                          parseInt(cs.borderBottomWidth) > 0) &&
+                        cs.borderStyle !== 'none'
                       if (!text && !hasMediaOrControl && !hasBg && !hasBorder) {
-                        issues.push(`Blank block detected: element ${child.tagName}.${child.className} height=${cr.height.toFixed(1)}px has no content/media/bg/border`)
+                        issues.push(
+                          `Blank block detected: element ${child.tagName}.${child.className} height=${cr.height.toFixed(1)}px has no content/media/bg/border`,
+                        )
                       }
                     }
                   }
@@ -185,18 +237,25 @@ async function runGate() {
               // (b) & (c) Footer checks if stickyFooter exists
               if (stickyFooter) {
                 const fRect = stickyFooter.getBoundingClientRect()
-                const parentRect = stickyFooter.parentElement?.getBoundingClientRect()
+                const parentRect =
+                  stickyFooter.parentElement?.getBoundingClientRect()
                 if (parentRect) {
                   const diff = Math.abs(fRect.bottom - parentRect.bottom)
                   if (diff > 2.0 && fRect.bottom < winH - 2) {
-                    issues.push(`Footer bottom (${fRect.bottom.toFixed(1)}px) does not equal container bottom (${parentRect.bottom.toFixed(1)}px), diff=${diff.toFixed(1)}px`)
+                    issues.push(
+                      `Footer bottom (${fRect.bottom.toFixed(1)}px) does not equal container bottom (${parentRect.bottom.toFixed(1)}px), diff=${diff.toFixed(1)}px`,
+                    )
                   }
                 }
                 if (fRect.height > 88.5) {
-                  issues.push(`Footer height ${fRect.height.toFixed(1)}px exceeds 88px maximum`)
+                  issues.push(
+                    `Footer height ${fRect.height.toFixed(1)}px exceeds 88px maximum`,
+                  )
                 }
                 if (winH <= 640 && fRect.height > winH * 0.25) {
-                  issues.push(`Footer height ${fRect.height.toFixed(1)}px exceeds 25% of viewport (${(winH * 0.25).toFixed(1)}px) at height ${winH}`)
+                  issues.push(
+                    `Footer height ${fRect.height.toFixed(1)}px exceeds 25% of viewport (${(winH * 0.25).toFixed(1)}px) at height ${winH}`,
+                  )
                 }
               }
 
@@ -209,7 +268,10 @@ async function runGate() {
               stateLogs.push(`PASS: ${stateLabel}`)
             }
           } catch (e) {
-            violations.push({ state: stateLabel, issues: [`Error testing route: ${e.message}`] })
+            violations.push({
+              state: stateLabel,
+              issues: [`Error testing route: ${e.message}`],
+            })
           }
         }
 
@@ -222,7 +284,9 @@ async function runGate() {
             totalStatesExamined++
             const stateLabel = `Onboarding Step ${step} @ ${vp.name} f:${fontScale} th:${theme}`
             try {
-              await page.goto(`${baseUrl}#onboarding`, { waitUntil: 'domcontentloaded' })
+              await page.goto(`${baseUrl}#onboarding`, {
+                waitUntil: 'domcontentloaded',
+              })
               await page.waitForTimeout(300)
 
               const evalResult = await page.evaluate(() => {
@@ -230,28 +294,41 @@ async function runGate() {
                 const winH = window.innerHeight
                 window.scrollTo(0, document.body.scrollHeight)
 
-                const footer = document.querySelector('.wizard-fullscreen-container > div:last-child') ||
-                               document.querySelector('[data-testid="wizard-footer"]') ||
-                               document.querySelector('.sticky-bottom-bar')
+                const footer =
+                  document.querySelector(
+                    '.wizard-fullscreen-container > div:last-child',
+                  ) ||
+                  document.querySelector('[data-testid="wizard-footer"]') ||
+                  document.querySelector('.sticky-bottom-bar')
                 if (footer) {
                   const fRect = footer.getBoundingClientRect()
                   if (fRect.height > 88.5) {
-                    issues.push(`Onboarding footer height ${fRect.height.toFixed(1)}px exceeds 88px maximum`)
+                    issues.push(
+                      `Onboarding footer height ${fRect.height.toFixed(1)}px exceeds 88px maximum`,
+                    )
                   }
                   if (winH <= 640 && fRect.height > winH * 0.25) {
-                    issues.push(`Onboarding footer height ${fRect.height.toFixed(1)}px exceeds 25% of viewport (${(winH * 0.25).toFixed(1)}px) at height ${winH}`)
+                    issues.push(
+                      `Onboarding footer height ${fRect.height.toFixed(1)}px exceeds 25% of viewport (${(winH * 0.25).toFixed(1)}px) at height ${winH}`,
+                    )
                   }
                 }
                 return { issues }
               })
 
               if (evalResult.issues.length > 0) {
-                violations.push({ state: stateLabel, issues: evalResult.issues })
+                violations.push({
+                  state: stateLabel,
+                  issues: evalResult.issues,
+                })
               } else {
                 stateLogs.push(`PASS: ${stateLabel}`)
               }
             } catch (e) {
-              violations.push({ state: stateLabel, issues: [`Error: ${e.message}`] })
+              violations.push({
+                state: stateLabel,
+                issues: [`Error: ${e.message}`],
+              })
             }
           }
         }
@@ -279,7 +356,9 @@ async function runGate() {
     process.exit(1)
   }
 
-  console.log(`✅ All ${totalStatesExamined} route states passed the docking & bottom void gate!`)
+  console.log(
+    `✅ All ${totalStatesExamined} route states passed the docking & bottom void gate!`,
+  )
 }
 
 runGate().catch((err) => {

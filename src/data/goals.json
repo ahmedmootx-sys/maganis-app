@@ -3,7 +3,7 @@
     "value": "gain",
     "labelAr": "بناء عضلات / زيادة الوزن",
     "hintAr": "فائض طاقة مدروس لبناء الكتلة العضلية بأقل دهون ممكنة",
-    "adjustmentPct": 0.10
+    "adjustmentPct": 0.1
   },
   "maintain": {
     "value": "maintain",

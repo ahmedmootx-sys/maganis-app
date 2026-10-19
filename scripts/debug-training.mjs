@@ -30,26 +30,45 @@ async function run() {
 
   await page.addInitScript((profile) => {
     localStorage.setItem('maganis:profile.active', JSON.stringify(profile))
-    localStorage.setItem('maganis:workout.program', JSON.stringify({
-      id: 'test-prog',
-      primaryGoal: 'hypertrophy',
-      trainingDaysPerWeek: 4,
-      splitType: 'upper_lower',
-      days: [
-        {
-          dayIndex: 6,
-          labelAr: 'يوم السبت: علوي',
-          focus: 'صدر، ظهر، ذراعين',
-          exercises: [{ exerciseId: 'barbell-bench-press', sets: 4, reps: 8, restSeconds: 90, section: 'primary' }]
-        },
-        {
-          dayIndex: 0,
-          labelAr: 'يوم الأحد: سفلي',
-          focus: 'أرجل وبطن',
-          exercises: [{ exerciseId: 'squat', sets: 4, reps: 8, restSeconds: 120, section: 'primary' }]
-        }
-      ]
-    }))
+    localStorage.setItem(
+      'maganis:workout.program',
+      JSON.stringify({
+        id: 'test-prog',
+        primaryGoal: 'hypertrophy',
+        trainingDaysPerWeek: 4,
+        splitType: 'upper_lower',
+        days: [
+          {
+            dayIndex: 6,
+            labelAr: 'يوم السبت: علوي',
+            focus: 'صدر، ظهر، ذراعين',
+            exercises: [
+              {
+                exerciseId: 'barbell-bench-press',
+                sets: 4,
+                reps: 8,
+                restSeconds: 90,
+                section: 'primary',
+              },
+            ],
+          },
+          {
+            dayIndex: 0,
+            labelAr: 'يوم الأحد: سفلي',
+            focus: 'أرجل وبطن',
+            exercises: [
+              {
+                exerciseId: 'squat',
+                sets: 4,
+                reps: 8,
+                restSeconds: 120,
+                section: 'primary',
+              },
+            ],
+          },
+        ],
+      }),
+    )
   }, ownerProfile)
 
   for (const r of ['/training', '/exercise/barbell-bench-press', '/library']) {
@@ -59,15 +78,23 @@ async function run() {
 
     const res = await page.evaluate(() => {
       // Find all scrollers
-      const scrollers = Array.from(document.querySelectorAll('.screen-content, .wizard-step-body, .app-main'))
+      const scrollers = Array.from(
+        document.querySelectorAll(
+          '.screen-content, .wizard-step-body, .app-main',
+        ),
+      )
       const bottomNav = document.querySelector('.bottom-nav')
       const bottomNavRect = bottomNav ? bottomNav.getBoundingClientRect() : null
 
       return scrollers.map((s, idx) => {
         s.scrollTop = s.scrollHeight
-        const children = Array.from(s.children).filter(el => {
+        const children = Array.from(s.children).filter((el) => {
           const st = window.getComputedStyle(el)
-          return st.display !== 'none' && st.visibility !== 'hidden' && st.position !== 'fixed'
+          return (
+            st.display !== 'none' &&
+            st.visibility !== 'hidden' &&
+            st.position !== 'fixed'
+          )
         })
         const last = children[children.length - 1]
         const lastRect = last ? last.getBoundingClientRect() : null
@@ -82,8 +109,17 @@ async function run() {
           clientHeight: s.clientHeight,
           scrollTop: s.scrollTop,
           lastTag: last ? `${last.tagName}.${last.className}` : null,
-          lastRect: lastRect ? { top: lastRect.top, bottom: lastRect.bottom, height: lastRect.height } : null,
-          gapToNav: bottomNavRect && lastRect ? bottomNavRect.top - lastRect.bottom : null
+          lastRect: lastRect
+            ? {
+                top: lastRect.top,
+                bottom: lastRect.bottom,
+                height: lastRect.height,
+              }
+            : null,
+          gapToNav:
+            bottomNavRect && lastRect
+              ? bottomNavRect.top - lastRect.bottom
+              : null,
         }
       })
     })

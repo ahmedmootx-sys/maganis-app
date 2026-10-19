@@ -15,7 +15,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 
 async function runGate() {
-  console.log('🚀 Running Gate 5.1: Layout Insets Verification (Non-vacuous)...')
+  console.log(
+    '🚀 Running Gate 5.1: Layout Insets Verification (Non-vacuous)...',
+  )
 
   const server = await preview({
     root: rootDir,
@@ -47,7 +49,14 @@ async function runGate() {
       splitType: 'upper_lower',
       experienceLevel: 'intermediate',
       equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'bodyweight'],
-      body: { weightKg: 80, heightCm: 178, age: 28, sex: 'male', lifestyle: 2, activityLevel: 'moderate' },
+      body: {
+        weightKg: 80,
+        heightCm: 178,
+        age: 28,
+        sex: 'male',
+        lifestyle: 2,
+        activityLevel: 'moderate',
+      },
       medical: { hasIssues: true, injuryTags: ['الكتف'], notes: '' },
       createdAt: 1700000000000,
       updatedAt: 1700000000000,
@@ -65,8 +74,20 @@ async function runGate() {
           labelAr: 'اليوم 1: علوي (قوة وبناء)',
           focus: 'صدر، ظهر، كتف، ذراعين',
           exercises: [
-            { exerciseId: 'chest-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
-            { exerciseId: 'back-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
+            {
+              exerciseId: 'chest-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
+            {
+              exerciseId: 'back-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
           ],
         },
       ],
@@ -132,7 +153,9 @@ async function runGate() {
         const rightDist = 360 - rect.right
 
         // If element is a full-width container itself, its padding must be >= 12px
-        const isContainer = el.classList.contains('screen-content') || el.classList.contains('screen-container')
+        const isContainer =
+          el.classList.contains('screen-content') ||
+          el.classList.contains('screen-container')
         if (isContainer) {
           const pLeft = parseFloat(style.paddingLeft) || 0
           const pRight = parseFloat(style.paddingRight) || 0
@@ -179,19 +202,25 @@ async function runGate() {
 
   // Non-vacuous check: MUST examine >= 200 elements
   if (totalExamined < 200) {
-    console.error(`❌ Gate 5.1 FAILED: Only examined ${totalExamined} elements (minimum required: 200).`)
+    console.error(
+      `❌ Gate 5.1 FAILED: Only examined ${totalExamined} elements (minimum required: 200).`,
+    )
     process.exit(1)
   }
 
   if (violations.length > 0) {
-    console.error(`❌ Gate 5.1 FAILED: Found ${violations.length} inset violations:`)
+    console.error(
+      `❌ Gate 5.1 FAILED: Found ${violations.length} inset violations:`,
+    )
     for (const v of violations.slice(0, 10)) {
       console.error(`   - [${v.route}] <${v.tag} class="${v.cls}">: ${v.error}`)
     }
     process.exit(1)
   }
 
-  console.log(`✅ Gate 5.1 PASSED: ${totalExamined} elements examined, 0 inset violations.`)
+  console.log(
+    `✅ Gate 5.1 PASSED: ${totalExamined} elements examined, 0 inset violations.`,
+  )
   process.exit(0)
 }
 

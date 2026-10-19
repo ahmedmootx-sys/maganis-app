@@ -66,14 +66,19 @@ function verifyDiskCasing(relPath, basePath = '') {
     const entries = fs.readdirSync(curDir)
     const exactMatch = entries.find((e) => e === part)
     if (!exactMatch) {
-      const caseInsensitiveMatch = entries.find((e) => e.toLowerCase() === part.toLowerCase())
+      const caseInsensitiveMatch = entries.find(
+        (e) => e.toLowerCase() === part.toLowerCase(),
+      )
       if (caseInsensitiveMatch) {
         return {
           ok: false,
           error: `Case mismatch: URL references '${part}', but file on disk is named '${caseInsensitiveMatch}'`,
         }
       }
-      return { ok: false, error: `File not found on disk: ${path.join(curDir, part)}` }
+      return {
+        ok: false,
+        error: `File not found on disk: ${path.join(curDir, part)}`,
+      }
     }
     curDir = path.join(curDir, exactMatch)
   }
@@ -99,7 +104,9 @@ async function runGate() {
   }
 
   const baseUrl = server.resolvedUrls.local[0].replace(/\/$/, '')
-  console.log(`📡 Vite preview listening at ${baseUrl} (base: ${server.config.base})`)
+  console.log(
+    `📡 Vite preview listening at ${baseUrl} (base: ${server.config.base})`,
+  )
 
   const failures = []
   const testedUrls = new Set()
@@ -113,7 +120,9 @@ async function runGate() {
     const { EXERCISES } = await import('../src/modules/workout/exercises.ts')
     const { resolveMedia } = await import('../src/utils/mediaResolver.ts')
 
-    console.log(`📋 Auditing media for all ${EXERCISES.length} catalog exercises...`)
+    console.log(
+      `📋 Auditing media for all ${EXERCISES.length} catalog exercises...`,
+    )
 
     // 3. Load and audit media-frames.json
     const mediaFramesPath = path.resolve(rootDir, 'src/data/media-frames.json')
@@ -171,7 +180,9 @@ async function runGate() {
 
         // Case A: Local asset URL
         if (targetUrl.startsWith('/') || !targetUrl.includes('://')) {
-          let fetchPath = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`
+          let fetchPath = targetUrl.startsWith('/')
+            ? targetUrl
+            : `/${targetUrl}`
           const basePrefix = (server.config.base || '').replace(/\/$/, '')
           if (basePrefix && fetchPath.startsWith(basePrefix)) {
             fetchPath = fetchPath.slice(basePrefix.length)
@@ -247,7 +258,10 @@ async function runGate() {
     }
 
     // 5. Check owner's 41 exercises mapping
-    const ownerMappingPath = path.resolve(rootDir, 'docs/program-import-mapping.csv')
+    const ownerMappingPath = path.resolve(
+      rootDir,
+      'docs/program-import-mapping.csv',
+    )
     if (fs.existsSync(ownerMappingPath)) {
       const csvContent = fs.readFileSync(ownerMappingPath, 'utf8')
       const lines = csvContent.split(/\r?\n/).filter(Boolean).slice(1)
@@ -263,9 +277,10 @@ async function runGate() {
           if (res.url) ownerCoveredCount++
         }
       }
-      console.log(`👤 Owner's 41 exercises: ${ownerMappedCount} mapped in catalog, ${ownerCoveredCount} with verified media`)
+      console.log(
+        `👤 Owner's 41 exercises: ${ownerMappedCount} mapped in catalog, ${ownerCoveredCount} with verified media`,
+      )
     }
-
   } finally {
     if (server) {
       server.httpServer.close()
@@ -275,14 +290,20 @@ async function runGate() {
   // Print results
   console.log('\n📊 Gate Summary:')
   console.log(`- Total unique URLs tested: ${testedUrls.size}`)
-  console.log(`- Exercises with media: ${exercisesWithMediaCount} (${twoFrameCount} two-frame animated, ${singleFrameCount} static single-frame)`)
+  console.log(
+    `- Exercises with media: ${exercisesWithMediaCount} (${twoFrameCount} two-frame animated, ${singleFrameCount} static single-frame)`,
+  )
   console.log(`- Exercises with null media: ${exercisesNullMediaCount}`)
   console.log(`- Total failures / violations: ${failures.length}`)
 
   if (failures.length > 0) {
-    console.error(`\n❌ FAIL: ${failures.length} media URL violations detected:`)
+    console.error(
+      `\n❌ FAIL: ${failures.length} media URL violations detected:`,
+    )
     for (const f of failures.slice(0, 30)) {
-      console.error(`  [${f.type}] Exercise: ${f.exerciseId || f.key || 'N/A'} | URL: ${f.url || 'N/A'}`)
+      console.error(
+        `  [${f.type}] Exercise: ${f.exerciseId || f.key || 'N/A'} | URL: ${f.url || 'N/A'}`,
+      )
       console.error(`    ↳ ${f.error}`)
     }
     if (failures.length > 30) {
@@ -291,7 +312,9 @@ async function runGate() {
     process.exit(1)
   }
 
-  console.log('\n✓ gate-media-urls passed cleanly! All exercise media URLs verified under Vite preview.')
+  console.log(
+    '\n✓ gate-media-urls passed cleanly! All exercise media URLs verified under Vite preview.',
+  )
   process.exit(0)
 }
 

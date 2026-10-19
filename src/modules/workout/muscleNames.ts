@@ -20,12 +20,14 @@ export interface MuscleGroupEntry {
 }
 
 const MUSCLES_BY_ID: Record<string, MuscleNameEntry> = {}
-for (const m of (muscleNamesData as { muscles: MuscleNameEntry[] }).muscles || []) {
+for (const m of (muscleNamesData as { muscles: MuscleNameEntry[] }).muscles ||
+  []) {
   MUSCLES_BY_ID[m.id] = m
 }
 
 const GROUPS_BY_ID: Record<string, MuscleGroupEntry> = {}
-for (const g of (muscleNamesData as { groups: MuscleGroupEntry[] }).groups || []) {
+for (const g of (muscleNamesData as { groups: MuscleGroupEntry[] }).groups ||
+  []) {
   GROUPS_BY_ID[g.id] = g
 }
 

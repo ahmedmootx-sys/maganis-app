@@ -121,8 +121,8 @@ class NavigationHistoryManager {
     const isStandalone =
       typeof window !== 'undefined' &&
       (window.matchMedia?.('(display-mode: standalone)').matches === true ||
-        (window.navigator as unknown as { standalone?: boolean })?.standalone ===
-          true)
+        (window.navigator as unknown as { standalone?: boolean })
+          ?.standalone === true)
 
     if (!isStandalone) {
       // In a normal browser tab the exit toast never appears

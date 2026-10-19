@@ -39,7 +39,13 @@ async function main() {
       splitType: 'upper_lower',
       experienceLevel: 'intermediate',
       equipmentAvailable: ['barbell', 'dumbbell'],
-      body: { weightKg: 80, heightCm: 178, birthDate: '1995-05-15', gender: 'male', activityLevel: 'moderate' },
+      body: {
+        weightKg: 80,
+        heightCm: 178,
+        birthDate: '1995-05-15',
+        gender: 'male',
+        activityLevel: 'moderate',
+      },
       medical: { hasIssues: false, injuryTags: [], notes: '' },
       createdAt: 1700000000000,
       updatedAt: 1700000000000,
@@ -71,14 +77,17 @@ async function main() {
     const centerY = box.y + box.height / 2
     console.log('Button bounding box:', box)
 
-    const elInfo = await page.evaluate(({ x, y }) => {
-      const el = document.elementFromPoint(x, y)
-      return {
-        tagName: el?.tagName,
-        className: el?.className,
-        outerHTML: el?.outerHTML?.slice(0, 150),
-      }
-    }, { x: centerX, y: centerY })
+    const elInfo = await page.evaluate(
+      ({ x, y }) => {
+        const el = document.elementFromPoint(x, y)
+        return {
+          tagName: el?.tagName,
+          className: el?.className,
+          outerHTML: el?.outerHTML?.slice(0, 150),
+        }
+      },
+      { x: centerX, y: centerY },
+    )
     console.log('elementFromPoint at center:', elInfo)
 
     // Log before click screenshot
@@ -89,7 +98,12 @@ async function main() {
     await page.waitForTimeout(600)
 
     // Check if Custom Exercise builder opened
-    const builderVisible = (await page.locator('form[data-testid="custom-exercise-form"], form:has-text("إضافة تمرين مخصص"), h1:has-text("إضافة تمرين مخصص"), h2:has-text("إضافة تمرين مخصص")').count()) > 0
+    const builderVisible =
+      (await page
+        .locator(
+          'form[data-testid="custom-exercise-form"], form:has-text("إضافة تمرين مخصص"), h1:has-text("إضافة تمرين مخصص"), h2:has-text("إضافة تمرين مخصص")',
+        )
+        .count()) > 0
     console.log('Did CustomExerciseBuilder open?', builderVisible)
 
     const report = [
@@ -108,7 +122,7 @@ async function main() {
   await server.close()
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err)
   process.exit(1)
 })

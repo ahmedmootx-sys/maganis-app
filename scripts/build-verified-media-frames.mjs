@@ -7,7 +7,9 @@ const rootDir = path.resolve(__dirname, '..')
 
 async function run() {
   const { EXERCISES } = await import('../src/modules/workout/exercises.ts')
-  const diskFiles = new Set(fs.readdirSync(path.join(rootDir, 'public/exercises')))
+  const diskFiles = new Set(
+    fs.readdirSync(path.join(rootDir, 'public/exercises')),
+  )
 
   const existingFramesPath = path.join(rootDir, 'src/data/media-frames.json')
   let existingMeta = {}
@@ -26,8 +28,12 @@ async function run() {
     const has1 = diskFiles.has(f1Name)
 
     if (has0 && has1) {
-      const s0 = fs.statSync(path.join(rootDir, 'public/exercises', f0Name)).size
-      const s1 = fs.statSync(path.join(rootDir, 'public/exercises', f1Name)).size
+      const s0 = fs.statSync(
+        path.join(rootDir, 'public/exercises', f0Name),
+      ).size
+      const s1 = fs.statSync(
+        path.join(rootDir, 'public/exercises', f1Name),
+      ).size
 
       if (s0 > 0 && s1 > 0) {
         updatedExercises[ex.id] = {
@@ -54,7 +60,9 @@ async function run() {
   }
 
   fs.writeFileSync(existingFramesPath, JSON.stringify(output, null, 2), 'utf8')
-  console.log(`✓ Wrote ${Object.keys(updatedExercises).length} verified exercises into media-frames.json`)
+  console.log(
+    `✓ Wrote ${Object.keys(updatedExercises).length} verified exercises into media-frames.json`,
+  )
 
   // Also update public/exercises/exerciseMediaMap.json for runtime consistency
   const mapPath = path.join(rootDir, 'public/exercises/exerciseMediaMap.json')
@@ -67,7 +75,9 @@ async function run() {
     }
   }
   fs.writeFileSync(mapPath, JSON.stringify(mapOutput, null, 2), 'utf8')
-  console.log(`✓ Wrote ${Object.keys(mapOutput).length} entries into exerciseMediaMap.json`)
+  console.log(
+    `✓ Wrote ${Object.keys(mapOutput).length} entries into exerciseMediaMap.json`,
+  )
 }
 
 run().catch((err) => {

@@ -273,7 +273,14 @@ export function CustomMealModal({
         initialMeal ? 'تعديل الوجبة الخاصة' : 'تصميم وجبة خاصة وحساب الماكروز'
       }
       footer={
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', width: '100%' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '8px',
+            width: '100%',
+          }}
+        >
           <Button
             type="button"
             variant="ghost"
@@ -288,7 +295,12 @@ export function CustomMealModal({
             form="custom-meal-form"
             variant="primary"
             size="lg"
-            style={{ flex: 2, height: '48px', fontSize: '15px', fontWeight: 800 }}
+            style={{
+              flex: 2,
+              height: '48px',
+              fontSize: '15px',
+              fontWeight: 800,
+            }}
           >
             حفظ الوجبة
           </Button>
@@ -710,9 +722,7 @@ export function CustomMealModal({
                       inputMode="decimal"
                       value={newFoodCarbs}
                       onChange={(e) =>
-                        setNewFoodCarbs(
-                          e.target.value.replace(/[^0-9.]/g, ''),
-                        )
+                        setNewFoodCarbs(e.target.value.replace(/[^0-9.]/g, ''))
                       }
                       placeholder="0"
                       style={{
@@ -759,9 +769,7 @@ export function CustomMealModal({
                       inputMode="decimal"
                       value={newFoodFats}
                       onChange={(e) =>
-                        setNewFoodFats(
-                          e.target.value.replace(/[^0-9.]/g, ''),
-                        )
+                        setNewFoodFats(e.target.value.replace(/[^0-9.]/g, ''))
                       }
                       placeholder="0"
                       style={{
@@ -782,7 +790,8 @@ export function CustomMealModal({
 
                 {showNewFoodCaloriesWarning && (
                   <Callout tone="warning">
-                    السعرات المدخلة تختلف بأكثر من 10% عن المحسوبة من الماكروز ({computedNewFoodCalories} سعرة).
+                    السعرات المدخلة تختلف بأكثر من 10% عن المحسوبة من الماكروز (
+                    {computedNewFoodCalories} سعرة).
                   </Callout>
                 )}
 
@@ -1433,7 +1442,8 @@ export function CustomMealModal({
 
             {showDirectCaloriesWarning && (
               <Callout tone="warning">
-                السعرات المدخلة تختلف بأكثر من 10% عن المحسوبة من الماكروز ({computedDirectCalories} سعرة).
+                السعرات المدخلة تختلف بأكثر من 10% عن المحسوبة من الماكروز (
+                {computedDirectCalories} سعرة).
               </Callout>
             )}
           </div>
@@ -1503,9 +1513,7 @@ export function CustomMealModal({
                   className="macro-marker macro-marker--protein"
                   aria-hidden="true"
                 />
-                {mode === 'ingredients'
-                  ? calculatedTotals.proteinGrams
-                  : dpNum}
+                {mode === 'ingredients' ? calculatedTotals.proteinGrams : dpNum}
                 &nbsp;جم بروتين
               </span>
               <span
@@ -1520,9 +1528,7 @@ export function CustomMealModal({
                   className="macro-marker macro-marker--carbs"
                   aria-hidden="true"
                 />
-                {mode === 'ingredients'
-                  ? calculatedTotals.carbsGrams
-                  : dcNum}
+                {mode === 'ingredients' ? calculatedTotals.carbsGrams : dcNum}
                 &nbsp;جم كارب
               </span>
               <span
@@ -1537,9 +1543,7 @@ export function CustomMealModal({
                   className="macro-marker macro-marker--fats"
                   aria-hidden="true"
                 />
-                {mode === 'ingredients'
-                  ? calculatedTotals.fatsGrams
-                  : dfNum}
+                {mode === 'ingredients' ? calculatedTotals.fatsGrams : dfNum}
                 &nbsp;جم دهون
               </span>
             </div>

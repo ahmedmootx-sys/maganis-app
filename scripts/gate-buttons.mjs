@@ -15,7 +15,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 
 async function runGate() {
-  console.log('🚀 Running Gate 5.3: Button Visual Contract & Disabled Opacity (Non-vacuous)...')
+  console.log(
+    '🚀 Running Gate 5.3: Button Visual Contract & Disabled Opacity (Non-vacuous)...',
+  )
 
   const server = await preview({
     root: rootDir,
@@ -43,7 +45,14 @@ async function runGate() {
       splitType: 'upper_lower',
       experienceLevel: 'intermediate',
       equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'bodyweight'],
-      body: { weightKg: 80, heightCm: 178, age: 28, sex: 'male', lifestyle: 2, activityLevel: 'moderate' },
+      body: {
+        weightKg: 80,
+        heightCm: 178,
+        age: 28,
+        sex: 'male',
+        lifestyle: 2,
+        activityLevel: 'moderate',
+      },
       medical: { hasIssues: true, injuryTags: ['الكتف'], notes: '' },
       createdAt: 1700000000000,
       updatedAt: 1700000000000,
@@ -61,8 +70,20 @@ async function runGate() {
           labelAr: 'اليوم 1: علوي (قوة وبناء)',
           focus: 'صدر، ظهر، كتف، ذراعين',
           exercises: [
-            { exerciseId: 'chest-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
-            { exerciseId: 'back-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
+            {
+              exerciseId: 'chest-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
+            {
+              exerciseId: 'back-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
           ],
         },
       ],
@@ -101,7 +122,10 @@ async function runGate() {
         if (style.display === 'none' || style.visibility === 'hidden') continue
 
         // Check disabled opacity contract: must NOT reduce opacity to 0.5/50%
-        if (btn.hasAttribute('disabled') || btn.classList.contains('disabled')) {
+        if (
+          btn.hasAttribute('disabled') ||
+          btn.classList.contains('disabled')
+        ) {
           const opacity = parseFloat(style.opacity)
           if (opacity < 0.95) {
             issues.push({
@@ -126,19 +150,25 @@ async function runGate() {
   console.log(`📊 Gate 5.3 Examined Buttons: ${totalExamined}`)
 
   if (totalExamined < 40) {
-    console.error(`❌ Gate 5.3 FAILED: Only examined ${totalExamined} buttons (minimum required: 40).`)
+    console.error(
+      `❌ Gate 5.3 FAILED: Only examined ${totalExamined} buttons (minimum required: 40).`,
+    )
     process.exit(1)
   }
 
   if (violations.length > 0) {
-    console.error(`❌ Gate 5.3 FAILED: Found ${violations.length} button contract violations:`)
+    console.error(
+      `❌ Gate 5.3 FAILED: Found ${violations.length} button contract violations:`,
+    )
     for (const v of violations.slice(0, 10)) {
       console.error(`   - [${v.route}] "${v.text}": ${v.error}`)
     }
     process.exit(1)
   }
 
-  console.log(`✅ Gate 5.3 PASSED: ${totalExamined} buttons examined, 0 contract violations.`)
+  console.log(
+    `✅ Gate 5.3 PASSED: ${totalExamined} buttons examined, 0 contract violations.`,
+  )
   process.exit(0)
 }
 

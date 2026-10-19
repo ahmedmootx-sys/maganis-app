@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { ActiveWorkoutSession } from './ActiveWorkoutSession.tsx'
-import type { ProgramDay } from '../shared/types.ts'
+import type { ProgramDay, TrackingSession } from '../shared/types.ts'
 
 const mockDay: ProgramDay = {
   dayIndex: 0,
@@ -35,7 +35,9 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
       />,
     )
 
-    const checkButtons = screen.getAllByRole('button', { name: /تأكيد إنهاء المجموعة|✓/ })
+    const checkButtons = screen.getAllByRole('button', {
+      name: /تأكيد إنهاء المجموعة|✓/,
+    })
     const firstCheck = checkButtons[0]
 
     // Initially, weight is 0/empty, reps is 0/empty (target 10 is placeholder only)
@@ -84,7 +86,7 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
     render(
       <ActiveWorkoutSession
         programDay={mockDay}
-        previousSessions={previousSessions as any}
+        previousSessions={previousSessions as unknown as TrackingSession[]}
         onFinish={vi.fn()}
         onCancel={vi.fn()}
       />,
@@ -98,14 +100,20 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
     fireEvent.click(prevButton)
 
     // Now weight input should have 75 and reps should have 8
-    const weightInput = screen.getAllByLabelText(/وزن المجموعة 1/)[0] as HTMLInputElement
-    const repsInput = screen.getAllByLabelText(/تكرار المجموعة 1/)[0] as HTMLInputElement
+    const weightInput = screen.getAllByLabelText(
+      /وزن المجموعة 1/,
+    )[0] as HTMLInputElement
+    const repsInput = screen.getAllByLabelText(
+      /تكرار المجموعة 1/,
+    )[0] as HTMLInputElement
 
     expect(weightInput.value).toBe('75')
     expect(repsInput.value).toBe('8')
 
     // And checking the set should now succeed directly
-    const firstCheck = screen.getAllByRole('button', { name: /تأكيد إنهاء المجموعة|✓/ })[0]
+    const firstCheck = screen.getAllByRole('button', {
+      name: /تأكيد إنهاء المجموعة|✓/,
+    })[0]
     fireEvent.click(firstCheck)
     expect(firstCheck).toHaveClass('checked')
   })
@@ -119,7 +127,9 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
       />,
     )
 
-    const checkButtons = screen.getAllByRole('button', { name: /تأكيد إنهاء المجموعة|✓/ })
+    const checkButtons = screen.getAllByRole('button', {
+      name: /تأكيد إنهاء المجموعة|✓/,
+    })
     const btn = checkButtons[0]
 
     // Not done: no check glyph text
@@ -176,6 +186,8 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
     fireEvent.click(removeBtns[0])
 
     // Undo toast appears
-    expect(screen.getByText(/تم الحذف — تراجع|تم حذف المجموعة/)).toBeInTheDocument()
+    expect(
+      screen.getByText(/تم الحذف — تراجع|تم حذف المجموعة/),
+    ).toBeInTheDocument()
   })
 })

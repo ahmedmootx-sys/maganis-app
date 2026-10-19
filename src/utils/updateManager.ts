@@ -26,7 +26,10 @@ class UpdateManager {
       if (!newWorker) return
 
       newWorker.addEventListener('statechange', () => {
-        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+        if (
+          newWorker.state === 'installed' &&
+          navigator.serviceWorker.controller
+        ) {
           this.waitingWorker = newWorker
           this.notifyUpdate(true)
         }
@@ -69,7 +72,11 @@ class UpdateManager {
 
       if (response.ok) {
         const data = await response.json()
-        if (typeof __BUILD_ID__ !== 'undefined' && data.buildId && data.buildId !== __BUILD_ID__) {
+        if (
+          typeof __BUILD_ID__ !== 'undefined' &&
+          data.buildId &&
+          data.buildId !== __BUILD_ID__
+        ) {
           this.notifyUpdate(true)
         }
       }

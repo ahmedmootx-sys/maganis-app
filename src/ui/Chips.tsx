@@ -20,13 +20,17 @@ export const Chip: React.FC<ChipProps> = ({
   ...props
 }) => {
   const isInteractive = Boolean(props.onClick || onRemove)
-  const finalRole = role ?? (isInteractive ? (active !== undefined ? 'checkbox' : 'button') : 'button')
+  const finalRole =
+    role ??
+    (isInteractive ? (active !== undefined ? 'checkbox' : 'button') : 'button')
 
   return (
     <button
       type="button"
       role={finalRole}
-      aria-checked={finalRole === 'radio' || finalRole === 'checkbox' ? active : undefined}
+      aria-checked={
+        finalRole === 'radio' || finalRole === 'checkbox' ? active : undefined
+      }
       aria-pressed={finalRole === 'button' && active ? true : undefined}
       className={`chip ${active ? 'chip--active' : ''} ${className}`.trim()}
       {...props}
@@ -142,12 +146,5 @@ export const Chips: React.FC<ChipsProps> = ({
 }) => {
   const isSel = selected ?? active
   const effRole = role ?? 'checkbox'
-  return (
-    <Chip
-      active={isSel}
-      role={effRole}
-      aria-checked={isSel}
-      {...props}
-    />
-  )
+  return <Chip active={isSel} role={effRole} aria-checked={isSel} {...props} />
 }

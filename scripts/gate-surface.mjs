@@ -22,7 +22,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 
 async function runGate() {
-  console.log('🚀 Running Gate: gate-surface (Surface Contract: Page, Card, Bar)...')
+  console.log(
+    '🚀 Running Gate: gate-surface (Surface Contract: Page, Card, Bar)...',
+  )
 
   const failures = []
   let checksPassed = 0
@@ -54,20 +56,25 @@ async function runGate() {
   } else {
     failures.push({
       test: 'CSS_CARD_CONTRACT',
-      error: '.card in components.css does not satisfy radius 16 and padding 16 contract',
+      error:
+        '.card in components.css does not satisfy radius 16 and padding 16 contract',
     })
   }
 
   // 3. Check bars: radius 0 & full-bleed
   const appCssPath = path.join(rootDir, 'src/styles/app.css')
   const appCssSrc = fs.readFileSync(appCssPath, 'utf8')
-  if (appCssSrc.includes('.sticky-bottom-bar {') && appCssSrc.includes('margin: 0 -16px;')) {
+  if (
+    appCssSrc.includes('.sticky-bottom-bar {') &&
+    appCssSrc.includes('margin: 0 -16px;')
+  ) {
     checksPassed++
     console.log('✓ .sticky-bottom-bar has full-bleed margin')
   } else {
     failures.push({
       test: 'CSS_BAR_FULLBLEED',
-      error: '.sticky-bottom-bar in app.css is missing full-bleed negative margin',
+      error:
+        '.sticky-bottom-bar in app.css is missing full-bleed negative margin',
     })
   }
 
@@ -91,14 +98,31 @@ async function runGate() {
     })
     const page = await context.newPage()
 
-    const ownerDump = JSON.parse(fs.readFileSync(path.join(rootDir, 'docs/owner-profile-dump.json'), 'utf8'))
+    const ownerDump = JSON.parse(
+      fs.readFileSync(
+        path.join(rootDir, 'docs/owner-profile-dump.json'),
+        'utf8',
+      ),
+    )
     await page.goto(`${baseUrl}#/home`, { waitUntil: 'domcontentloaded' })
     await page.evaluate((dump) => {
-      localStorage.setItem('maganis-dev:profile.active', JSON.stringify(dump.profile))
-      localStorage.setItem('maganis:profile.active', JSON.stringify(dump.profile))
+      localStorage.setItem(
+        'maganis-dev:profile.active',
+        JSON.stringify(dump.profile),
+      )
+      localStorage.setItem(
+        'maganis:profile.active',
+        JSON.stringify(dump.profile),
+      )
       if (dump.program) {
-        localStorage.setItem('maganis-dev:workout.active', JSON.stringify(dump.program))
-        localStorage.setItem('maganis:workout.active', JSON.stringify(dump.program))
+        localStorage.setItem(
+          'maganis-dev:workout.active',
+          JSON.stringify(dump.program),
+        )
+        localStorage.setItem(
+          'maganis:workout.active',
+          JSON.stringify(dump.program),
+        )
       }
     }, ownerDump)
     await page.reload({ waitUntil: 'domcontentloaded' })
@@ -132,7 +156,9 @@ async function runGate() {
       }
       if (cardRadiusOk) {
         checksPassed++
-        console.log(`✓ All ${cardMetrics.length} rendered cards have computed border-radius = 16px`)
+        console.log(
+          `✓ All ${cardMetrics.length} rendered cards have computed border-radius = 16px`,
+        )
       }
     } else {
       failures.push({
@@ -143,7 +169,9 @@ async function runGate() {
 
     // Inspect bars
     const barMetrics = await page.evaluate(() => {
-      const bars = Array.from(document.querySelectorAll('.topbar, .sticky-bottom-bar, .bottom-nav'))
+      const bars = Array.from(
+        document.querySelectorAll('.topbar, .sticky-bottom-bar, .bottom-nav'),
+      )
       return bars.map((b) => {
         const cs = window.getComputedStyle(b)
         return {
@@ -167,7 +195,9 @@ async function runGate() {
       }
       if (barRadiusOk) {
         checksPassed++
-        console.log(`✓ All ${barMetrics.length} rendered bars have computed border-radius = 0px`)
+        console.log(
+          `✓ All ${barMetrics.length} rendered bars have computed border-radius = 0px`,
+        )
       }
     }
 
@@ -182,9 +212,13 @@ async function runGate() {
     if (server) await server.close()
   }
 
-  console.log(`\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`)
+  console.log(
+    `\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`,
+  )
   if (failures.length > 0) {
-    console.error(`\n❌ FAIL: ${failures.length} surface contract violations detected:`)
+    console.error(
+      `\n❌ FAIL: ${failures.length} surface contract violations detected:`,
+    )
     for (const f of failures) {
       console.error(`  [${f.test}] ${f.error}`)
     }

@@ -56,7 +56,10 @@ export function computeEnergyPlan(
   bodyLog?: Array<{ date: string; weightKg: number }> | null,
   activitiesOverride?: WorkoutBlockInput[] | null,
 ): EnergyPlanResult | null {
-  const resolved = resolveWeightAndAge(profile as unknown as Partial<UserProfile>, bodyLog)
+  const resolved = resolveWeightAndAge(
+    profile as unknown as Partial<UserProfile>,
+    bodyLog,
+  )
   if (
     resolved.weightKg === null ||
     resolved.heightCm === null ||
@@ -74,7 +77,9 @@ export function computeEnergyPlan(
   const heightTerm = 6.25 * heightCm
   const ageTerm = 5 * age
   const sexConstant = sex === 'male' ? 5 : -161
-  const bmr = Number((weightTerm + heightTerm - ageTerm + sexConstant).toFixed(2))
+  const bmr = Number(
+    (weightTerm + heightTerm - ageTerm + sexConstant).toFixed(2),
+  )
 
   // 2. Baseline
   const lifestyle: LifestyleLevel = profile?.body?.lifestyle ?? 2
@@ -119,13 +124,13 @@ export function computeEnergyPlan(
     profile?.bodyGoal ||
     (primaryGoal === 'hypertrophy'
       ? 'gain'
-      : (primaryGoal === 'cut' || primaryGoal === 'fat_loss')
+      : primaryGoal === 'cut' || primaryGoal === 'fat_loss'
         ? 'cut'
         : 'maintain')
 
   let adjustmentPct = 0
   if (bodyGoal === 'gain') {
-    adjustmentPct = 0.10 // +10%
+    adjustmentPct = 0.1 // +10%
   } else if (bodyGoal === 'cut') {
     adjustmentPct = -0.15 // -15%
   }
@@ -145,13 +150,14 @@ export function computeEnergyPlan(
   const defaultProteinPerKg =
     primaryGoal === 'fat_loss' || primaryGoal === 'cut'
       ? 2.2
-      : (primaryGoal === 'hypertrophy' || primaryGoal === 'recomposition')
+      : primaryGoal === 'hypertrophy' || primaryGoal === 'recomposition'
         ? 2.0
-        : (primaryGoal === 'endurance' || primaryGoal === 'health')
+        : primaryGoal === 'endurance' || primaryGoal === 'health'
           ? 1.6
           : 1.8
 
-  const proteinPerKg = profile?.body?.proteinPerKgOverride ?? defaultProteinPerKg
+  const proteinPerKg =
+    profile?.body?.proteinPerKgOverride ?? defaultProteinPerKg
   const proteinGrams = Math.round(weightKg * proteinPerKg)
   const proteinKcal = proteinGrams * 4
 

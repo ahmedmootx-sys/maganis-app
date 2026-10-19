@@ -28,7 +28,9 @@ const ROUTES = [
 ]
 
 async function runGate() {
-  console.log('🚀 Running Gate: gate-overflow (Zero Horizontal Overflow on 360x640)...')
+  console.log(
+    '🚀 Running Gate: gate-overflow (Zero Horizontal Overflow on 360x640)...',
+  )
 
   const failures = []
   let checksPassed = 0
@@ -53,14 +55,31 @@ async function runGate() {
     const page = await context.newPage()
 
     // Seed mock profile and program from owner dump
-    const ownerDump = JSON.parse(fs.readFileSync(path.join(rootDir, 'docs/owner-profile-dump.json'), 'utf8'))
+    const ownerDump = JSON.parse(
+      fs.readFileSync(
+        path.join(rootDir, 'docs/owner-profile-dump.json'),
+        'utf8',
+      ),
+    )
     await page.goto(`${baseUrl}#/home`, { waitUntil: 'domcontentloaded' })
     await page.evaluate((dump) => {
-      localStorage.setItem('maganis-dev:profile.active', JSON.stringify(dump.profile))
-      localStorage.setItem('maganis:profile.active', JSON.stringify(dump.profile))
+      localStorage.setItem(
+        'maganis-dev:profile.active',
+        JSON.stringify(dump.profile),
+      )
+      localStorage.setItem(
+        'maganis:profile.active',
+        JSON.stringify(dump.profile),
+      )
       if (dump.program) {
-        localStorage.setItem('maganis-dev:workout.active', JSON.stringify(dump.program))
-        localStorage.setItem('maganis:workout.active', JSON.stringify(dump.program))
+        localStorage.setItem(
+          'maganis-dev:workout.active',
+          JSON.stringify(dump.program),
+        )
+        localStorage.setItem(
+          'maganis:workout.active',
+          JSON.stringify(dump.program),
+        )
       }
     }, ownerDump)
     await page.reload({ waitUntil: 'domcontentloaded' })
@@ -85,7 +104,9 @@ async function runGate() {
             if (rect.right > winWidth + 1 || rect.left < -1) {
               offenders.push({
                 tag: el.tagName.toLowerCase(),
-                className: el.className ? String(el.className).slice(0, 40) : '',
+                className: el.className
+                  ? String(el.className).slice(0, 40)
+                  : '',
                 left: Math.round(rect.left),
                 right: Math.round(rect.right),
                 width: Math.round(rect.width),
@@ -105,7 +126,9 @@ async function runGate() {
 
       if (overflowInfo.docWidth <= 360 && overflowInfo.totalOffenders === 0) {
         checksPassed++
-        console.log(`✓ ${route}: No horizontal overflow (scrollWidth = ${overflowInfo.docWidth}px <= 360px)`)
+        console.log(
+          `✓ ${route}: No horizontal overflow (scrollWidth = ${overflowInfo.docWidth}px <= 360px)`,
+        )
       } else {
         failures.push({
           test: 'HORIZONTAL_OVERFLOW',
@@ -127,21 +150,27 @@ async function runGate() {
     if (server) await server.close()
   }
 
-  console.log(`\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`)
+  console.log(
+    `\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`,
+  )
   if (failures.length > 0) {
     console.error(`\n❌ FAIL: ${failures.length} overflow violations detected:`)
     for (const f of failures) {
       console.error(`  [${f.test}] ${f.route}: ${f.error}`)
       if (f.offenders) {
         for (const o of f.offenders) {
-          console.error(`     <${o.tag} class="${o.className}"> left:${o.left} right:${o.right} width:${o.width}`)
+          console.error(
+            `     <${o.tag} class="${o.className}"> left:${o.left} right:${o.right} width:${o.width}`,
+          )
         }
       }
     }
     process.exit(1)
   }
 
-  console.log('\n✓ gate-overflow passed cleanly! Zero horizontal overflow on 360x640.')
+  console.log(
+    '\n✓ gate-overflow passed cleanly! Zero horizontal overflow on 360x640.',
+  )
   process.exit(0)
 }
 

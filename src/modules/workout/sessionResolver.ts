@@ -4,10 +4,7 @@ import type {
   ProgramExercise,
   WorkoutProgram,
 } from '../shared/types.ts'
-import {
-  ALL_WEEKDAYS,
-  getOrDeriveSchedule,
-} from './scheduleManager.ts'
+import { ALL_WEEKDAYS, getOrDeriveSchedule } from './scheduleManager.ts'
 
 export interface Prescription {
   sets: number
@@ -29,7 +26,10 @@ export function cleanDayName(name: string | undefined): string {
   if (!name) return 'يوم تدريبي'
   // Remove weekday prefix like "الإثنين — ", "الأحد: ", etc.
   let cleaned = name
-    .replace(/^(السبت|الأحد|الإثنين|الثلاثاء|الأربعاء|الخميس|الجمعة)\s*([—:–-]\s*)?/i, '')
+    .replace(
+      /^(السبت|الأحد|الإثنين|الثلاثاء|الأربعاء|الخميس|الجمعة)\s*([—:–-]\s*)?/i,
+      '',
+    )
     .trim()
   if (!cleaned) {
     cleaned = 'يوم تدريبي'

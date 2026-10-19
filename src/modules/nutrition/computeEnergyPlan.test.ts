@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { computeEnergyPlan, type ComputableProfile } from './computeEnergyPlan.ts'
+import {
+  computeEnergyPlan,
+  type ComputableProfile,
+} from './computeEnergyPlan.ts'
 
 describe('computeEnergyPlan Single Source of Truth & Fixtures', () => {
   it('Fixture N1: 59 kg, 169 cm, 20 y, male, lifestyle 2, resistance 5x75 min, gain', () => {
@@ -40,7 +43,7 @@ describe('computeEnergyPlan Single Source of Truth & Fixtures', () => {
     expect(plan.tdee).toBe(2326)
 
     // Adjustment: 10% of 2325.97 = 232.6 -> 233
-    expect(plan.adjustmentPct).toBe(0.10)
+    expect(plan.adjustmentPct).toBe(0.1)
     expect(plan.adjustmentKcal).toBe(233)
 
     // Target: 2326 + 233 = 2559

@@ -560,7 +560,11 @@ export function SettingsScreen({
                 style={{ width: '100%' }}
               >
                 <Icon name="alert-triangle" size={16} />
-                <span>{issueCopied ? 'تم نسخ تقرير المشكلة للحافظة ✓' : 'تقرير مشكلة'}</span>
+                <span>
+                  {issueCopied
+                    ? 'تم نسخ تقرير المشكلة للحافظة ✓'
+                    : 'تقرير مشكلة'}
+                </span>
               </Button>
             </div>
           </Card>

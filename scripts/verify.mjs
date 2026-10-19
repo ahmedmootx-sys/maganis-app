@@ -54,16 +54,27 @@ runStep('Data Truth: No Invented Fallbacks (2555/2000/140) in UI', () => {
     const code = fs.readFileSync(full, 'utf8')
     for (const token of forbiddenTokens) {
       if (code.includes(token)) {
-        throw new Error(`Found forbidden invented fallback token "${token}" in ${rel}`)
+        throw new Error(
+          `Found forbidden invented fallback token "${token}" in ${rel}`,
+        )
       }
     }
   }
 
   // Check Onboarding wizard initial state is empty
-  const wizardFile = path.join(rootDir, 'src/modules/onboarding/OnboardingWizard.tsx')
+  const wizardFile = path.join(
+    rootDir,
+    'src/modules/onboarding/OnboardingWizard.tsx',
+  )
   const wizardCode = fs.readFileSync(wizardFile, 'utf8')
-  if (wizardCode.includes("useState(25)") || wizardCode.includes("useState(175)") || wizardCode.includes("useState(75)")) {
-    throw new Error('OnboardingWizard still contains invented numeric defaults (25, 175, 75)')
+  if (
+    wizardCode.includes('useState(25)') ||
+    wizardCode.includes('useState(175)') ||
+    wizardCode.includes('useState(75)')
+  ) {
+    throw new Error(
+      'OnboardingWizard still contains invented numeric defaults (25, 175, 75)',
+    )
   }
 })
 
@@ -81,9 +92,13 @@ runStep('Punctuation: No trailing colons in UI headings/labels', () => {
     const matches = content.match(regex)
     if (matches && matches.length > 0) {
       // Filter out intentional clock or code displays
-      const cleanMatches = matches.filter(m => !m.includes('00:') && !m.includes('TDEE:'))
+      const cleanMatches = matches.filter(
+        (m) => !m.includes('00:') && !m.includes('TDEE:'),
+      )
       if (cleanMatches.length > 0) {
-        throw new Error(`Trailing colons found in ${f}: ${cleanMatches.join(', ')}`)
+        throw new Error(
+          `Trailing colons found in ${f}: ${cleanMatches.join(', ')}`,
+        )
       }
     }
   }
@@ -94,14 +109,16 @@ runStep('Standard Unit: Arabic Grams («جم») throughout nutrition', () => {
   const foodDbPath = path.join(rootDir, 'src/modules/nutrition/foodDatabase.ts')
   const foodDbCode = fs.readFileSync(foodDbPath, 'utf8')
   if (foodDbCode.includes('جرام') || foodDbCode.includes("'g'")) {
-    throw new Error('foodDatabase.ts uses non-standard gram unit (must use «جم»)')
+    throw new Error(
+      'foodDatabase.ts uses non-standard gram unit (must use «جم»)',
+    )
   }
 })
 
 // 5. Latin Numerals (No Indic digits in core data)
 runStep('Typography: Latin digits only (0-9, no ٠-٩)', () => {
   const dataDir = path.join(rootDir, 'src/data')
-  const dataFiles = fs.readdirSync(dataDir).filter(f => f.endsWith('.json'))
+  const dataFiles = fs.readdirSync(dataDir).filter((f) => f.endsWith('.json'))
   const arabicIndicRegex = /[\u0660-\u0669]/
 
   for (const df of dataFiles) {
@@ -113,20 +130,36 @@ runStep('Typography: Latin digits only (0-9, no ٠-٩)', () => {
 })
 
 // 6. Food Database Integrity & Distinction
-runStep('Nutrition Data: Atwater integrity & chicken breast distinction', () => {
-  const foodDbPath = path.join(rootDir, 'src/modules/nutrition/foodDatabase.ts')
-  const content = fs.readFileSync(foodDbPath, 'utf8')
-  if (!content.includes('صدور دجاج مشوية') || !content.includes('صدور دجاج مسلوقة')) {
-    throw new Error('foodDatabase.ts must distinguish grilled vs boiled chicken breast')
-  }
-})
+runStep(
+  'Nutrition Data: Atwater integrity & chicken breast distinction',
+  () => {
+    const foodDbPath = path.join(
+      rootDir,
+      'src/modules/nutrition/foodDatabase.ts',
+    )
+    const content = fs.readFileSync(foodDbPath, 'utf8')
+    if (
+      !content.includes('صدور دجاج مشوية') ||
+      !content.includes('صدور دجاج مسلوقة')
+    ) {
+      throw new Error(
+        'foodDatabase.ts must distinguish grilled vs boiled chicken breast',
+      )
+    }
+  },
+)
 
 // 7. Orphan ID Healing
 runStep('Workout Engine: Orphan shoulder-2 -> shoulder-15 healing', () => {
   const utilsPath = path.join(rootDir, 'src/modules/workout/workoutUtils.ts')
   const utilsCode = fs.readFileSync(utilsPath, 'utf8')
-  if (!utilsCode.includes("'shoulder-2'") || !utilsCode.includes("'shoulder-15'")) {
-    throw new Error('workoutUtils.ts is missing healExerciseId remap for shoulder-2')
+  if (
+    !utilsCode.includes("'shoulder-2'") ||
+    !utilsCode.includes("'shoulder-15'")
+  ) {
+    throw new Error(
+      'workoutUtils.ts is missing healExerciseId remap for shoulder-2',
+    )
   }
 })
 
@@ -135,19 +168,25 @@ runStep('Exercise Anatomy: Scientific content & high-risk safety flags', () => {
   const contentFile = path.join(rootDir, 'src/data/exercise-content.json')
   const flagsFile = path.join(rootDir, 'src/data/exercise-flags.json')
 
-  if (!fs.existsSync(contentFile)) throw new Error('src/data/exercise-content.json is missing')
-  if (!fs.existsSync(flagsFile)) throw new Error('src/data/exercise-flags.json is missing')
+  if (!fs.existsSync(contentFile))
+    throw new Error('src/data/exercise-content.json is missing')
+  if (!fs.existsSync(flagsFile))
+    throw new Error('src/data/exercise-flags.json is missing')
 
   const content = JSON.parse(fs.readFileSync(contentFile, 'utf8'))
   const rawFlags = JSON.parse(fs.readFileSync(flagsFile, 'utf8'))
   const flags = rawFlags.exercises || rawFlags
 
   if (!content['chest-1'] || !content['legs-1']) {
-    throw new Error('Missing core exercise content for major compound lifts (chest-1, legs-1)')
+    throw new Error(
+      'Missing core exercise content for major compound lifts (chest-1, legs-1)',
+    )
   }
 
   if (!flags['chest-19'] && !flags['Barbell_Guillotine_Bench_Press']) {
-    throw new Error('Missing high-risk safety flags for guillotine press / upright row')
+    throw new Error(
+      'Missing high-risk safety flags for guillotine press / upright row',
+    )
   }
 })
 
@@ -172,19 +211,28 @@ runStep('Gate 5.1: Non-vacuous Layout Insets (>= 200 elements)', () => {
 })
 
 // 13. Gate 5.2: Choice Button Visual Contract & Accessibility (>= 50 elements)
-runStep('Gate 5.2: Choice Button Contract & Accessibility (>= 50 elements)', () => {
-  execSync('node scripts/gate-choice.mjs', { cwd: rootDir, stdio: 'pipe' })
-})
+runStep(
+  'Gate 5.2: Choice Button Contract & Accessibility (>= 50 elements)',
+  () => {
+    execSync('node scripts/gate-choice.mjs', { cwd: rootDir, stdio: 'pipe' })
+  },
+)
 
 // 14. Gate 5.3: Button Visual Contract & Disabled Opacity = 100% (>= 40 buttons)
-runStep('Gate 5.3: Button Visual Contract & Disabled Opacity (>= 40 buttons)', () => {
-  execSync('node scripts/gate-buttons.mjs', { cwd: rootDir, stdio: 'pipe' })
-})
+runStep(
+  'Gate 5.3: Button Visual Contract & Disabled Opacity (>= 40 buttons)',
+  () => {
+    execSync('node scripts/gate-buttons.mjs', { cwd: rootDir, stdio: 'pipe' })
+  },
+)
 
 // 15. Gate 5.4: Text Polish & Arabic RTL Strictness (>= 100 text nodes)
-runStep('Gate 5.4: Text Polish & Arabic RTL Strictness (>= 100 text nodes)', () => {
-  execSync('node scripts/gate-text.mjs', { cwd: rootDir, stdio: 'pipe' })
-})
+runStep(
+  'Gate 5.4: Text Polish & Arabic RTL Strictness (>= 100 text nodes)',
+  () => {
+    execSync('node scripts/gate-text.mjs', { cwd: rootDir, stdio: 'pipe' })
+  },
+)
 
 // 16. Gate 5.5: Mobile Geometry, Touch Targets & Nav Bounds (>= 50 controls)
 runStep('Gate 5.5: Mobile Geometry & Touch Targets (>= 50 controls)', () => {
@@ -192,9 +240,12 @@ runStep('Gate 5.5: Mobile Geometry & Touch Targets (>= 50 controls)', () => {
 })
 
 // 17. Gate 5.9: ServiceWorker Lifecycle & 88-Exercise Media Audit (88 exercises, 176 frames)
-runStep('Gate 5.9: ServiceWorker & 88-Exercise Media Audit (88 exercises, 176 frames)', () => {
-  execSync('node scripts/audit-sw-media.mjs', { cwd: rootDir, stdio: 'pipe' })
-})
+runStep(
+  'Gate 5.9: ServiceWorker & 88-Exercise Media Audit (88 exercises, 176 frames)',
+  () => {
+    execSync('node scripts/audit-sw-media.mjs', { cwd: rootDir, stdio: 'pipe' })
+  },
+)
 
 // --- Task G3 Master Gates ---
 // 18. Gate G3.1: Bottom Void and Docking Contract
@@ -224,7 +275,10 @@ runStep('Gate G3.3c: Surface Contract (Card 16px, Bar 0px Full-Bleed)', () => {
 
 // 23. Gate G3.3d: Energy & Nutrition Target Agreement
 runStep('Gate G3.3d: Energy & Nutrition Target Agreement', () => {
-  execSync('node scripts/gate-energy-agreement.mjs', { cwd: rootDir, stdio: 'pipe' })
+  execSync('node scripts/gate-energy-agreement.mjs', {
+    cwd: rootDir,
+    stdio: 'pipe',
+  })
 })
 
 // 24. Gate G3.3e: Zero Horizontal Overflow on 360x640
@@ -249,7 +303,10 @@ runStep('Gate G3.5: Day Management (Rename, Add, Cardio & Mismatch)', () => {
 
 // 28. Gate G3.6: Session Agreement & Owner Program Import
 runStep('Gate G3.6: Session Agreement & Owner Program Import', () => {
-  execSync('node scripts/gate-session-agreement.mjs', { cwd: rootDir, stdio: 'pipe' })
+  execSync('node scripts/gate-session-agreement.mjs', {
+    cwd: rootDir,
+    stdio: 'pipe',
+  })
 })
 
 console.log('\n====================================================')
@@ -258,7 +315,9 @@ if (overallFailures > 0) {
   process.exit(1)
 } else {
   console.log('✅ ALL VERIFICATION GATES PASSED!')
-  console.log('   The application is fully verified, type-safe, and mobile-ready.')
+  console.log(
+    '   The application is fully verified, type-safe, and mobile-ready.',
+  )
   console.log('====================================================\n')
   process.exit(0)
 }

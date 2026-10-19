@@ -19,7 +19,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 
 async function runGate() {
-  console.log('🚀 Running Gate 5.4: Text Polish & RTL Strictness (Non-vacuous)...')
+  console.log(
+    '🚀 Running Gate 5.4: Text Polish & RTL Strictness (Non-vacuous)...',
+  )
 
   const server = await preview({
     root: rootDir,
@@ -47,7 +49,14 @@ async function runGate() {
       splitType: 'upper_lower',
       experienceLevel: 'intermediate',
       equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'bodyweight'],
-      body: { weightKg: 80, heightCm: 178, age: 28, sex: 'male', lifestyle: 2, activityLevel: 'moderate' },
+      body: {
+        weightKg: 80,
+        heightCm: 178,
+        age: 28,
+        sex: 'male',
+        lifestyle: 2,
+        activityLevel: 'moderate',
+      },
       medical: { hasIssues: true, injuryTags: ['الكتف'], notes: '' },
       createdAt: 1700000000000,
       updatedAt: 1700000000000,
@@ -65,8 +74,20 @@ async function runGate() {
           labelAr: 'اليوم 1: علوي (قوة وبناء)',
           focus: 'صدر، ظهر، كتف، ذراعين',
           exercises: [
-            { exerciseId: 'chest-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
-            { exerciseId: 'back-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
+            {
+              exerciseId: 'chest-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
+            {
+              exerciseId: 'back-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
           ],
         },
       ],
@@ -107,7 +128,8 @@ async function runGate() {
             const parent = node.parentElement
             if (!parent) return NodeFilter.FILTER_REJECT
             const tag = parent.tagName.toLowerCase()
-            if (tag === 'script' || tag === 'style') return NodeFilter.FILTER_REJECT
+            if (tag === 'script' || tag === 'style')
+              return NodeFilter.FILTER_REJECT
             const text = node.textContent?.trim()
             if (!text) return NodeFilter.FILTER_REJECT
             return NodeFilter.FILTER_ACCEPT
@@ -124,7 +146,16 @@ async function runGate() {
 
         // 1. Trailing colons in headings, labels, button labels
         if (
-          ['h1', 'h2', 'h3', 'h4', 'label', 'button', 'span', 'strong'].includes(parentTag) &&
+          [
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'label',
+            'button',
+            'span',
+            'strong',
+          ].includes(parentTag) &&
           !parent.closest('code')
         ) {
           if (/[::]\s*$/.test(text) && !/^\d{1,2}:\d{2}/.test(text)) {
@@ -168,19 +199,25 @@ async function runGate() {
   console.log(`📊 Gate 5.4 Examined Text Nodes: ${totalExamined}`)
 
   if (totalExamined < 100) {
-    console.error(`❌ Gate 5.4 FAILED: Only examined ${totalExamined} text nodes (minimum required: 100).`)
+    console.error(
+      `❌ Gate 5.4 FAILED: Only examined ${totalExamined} text nodes (minimum required: 100).`,
+    )
     process.exit(1)
   }
 
   if (violations.length > 0) {
-    console.error(`❌ Gate 5.4 FAILED: Found ${violations.length} text polish violations:`)
+    console.error(
+      `❌ Gate 5.4 FAILED: Found ${violations.length} text polish violations:`,
+    )
     for (const v of violations.slice(0, 10)) {
       console.error(`   - [${v.route}] "${v.text}": ${v.error}`)
     }
     process.exit(1)
   }
 
-  console.log(`✅ Gate 5.4 PASSED: ${totalExamined} text nodes examined, 0 polish violations.`)
+  console.log(
+    `✅ Gate 5.4 PASSED: ${totalExamined} text nodes examined, 0 polish violations.`,
+  )
   process.exit(0)
 }
 

@@ -159,7 +159,8 @@ export function Dashboard({
     () => getNextSession(schedule, todayDayIndex, program, weekStartDay),
     [schedule, todayDayIndex, program, weekStartDay],
   )
-  const nextWorkoutDay = !todayProgramDay && nextSessionInfo ? nextSessionInfo.day : null
+  const nextWorkoutDay =
+    !todayProgramDay && nextSessionInfo ? nextSessionInfo.day : null
 
   // Red Flag state & confirmation
   const [redFlagDismissed, setRedFlagDismissed] = useState(() => {
@@ -306,19 +307,20 @@ export function Dashboard({
               </Button>
             }
           >
-            أشرت في تقييمك الصحي إلى وجود أعراض أو إصابات تتطلب فحصاً طبياً. نوصي بعدم البدء بأوزان ثقيلة ومراجعة طبيب مختص قبل ممارسة أي تمرين.
+            أشرت في تقييمك الصحي إلى وجود أعراض أو إصابات تتطلب فحصاً طبياً.
+            نوصي بعدم البدء بأوزان ثقيلة ومراجعة طبيب مختص قبل ممارسة أي تمرين.
           </Callout>
         )}
 
         {/* Training days mismatch Callout with 3 distinct actions */}
         {trainingDaysMismatch && (
-          <Callout
-            variant="warning"
-            title="اختلاف في أيام التدريب"
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Callout variant="warning" title="اختلاف في أيام التدريب">
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               <div>
-                جدولك الحالي {trainingDaysMismatch.programDays} أيام بينما هدف ملفك الشخصي {trainingDaysMismatch.goalDays} أيام أسبوعياً.
+                جدولك الحالي {trainingDaysMismatch.programDays} أيام بينما هدف
+                ملفك الشخصي {trainingDaysMismatch.goalDays} أيام أسبوعياً.
               </div>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <Button
@@ -567,7 +569,9 @@ export function Dashboard({
               const isToday = w.weekday === todayDayIndex
               const isDone = sessionDatesThisWeek.has(w.weekday)
               const slot = schedule[w.weekday]
-              const isTrainingDay = Boolean(slot && slot !== 'rest' && slot !== 'cardio')
+              const isTrainingDay = Boolean(
+                slot && slot !== 'rest' && slot !== 'cardio',
+              )
               const isCardio = slot === 'cardio'
               return (
                 <div
@@ -613,9 +617,10 @@ export function Dashboard({
                           : 'var(--color-surface-2)',
                       color: isDone ? '#FFFFFF' : 'var(--color-text-2)',
                       fontSize: '11px',
-                      border: isTrainingDay && !isDone
-                        ? '1.5px solid var(--color-accent)'
-                        : '1px solid transparent',
+                      border:
+                        isTrainingDay && !isDone
+                          ? '1.5px solid var(--color-accent)'
+                          : '1px solid transparent',
                     }}
                   >
                     {isDone ? (
@@ -650,7 +655,9 @@ export function Dashboard({
 
         {/* Nutrition Today */}
         <Section title="التغذية اليوم">
-          {energyPlan === null || targetCalories === null || targetProtein === null ? (
+          {energyPlan === null ||
+          targetCalories === null ||
+          targetProtein === null ? (
             <Card padding="md">
               <div
                 style={{
@@ -679,14 +686,11 @@ export function Dashboard({
                     maxWidth: '360px',
                   }}
                 >
-                  يتطلب حساب السعرات والماكروز معرفة الوزن والطول والعمر والجنس بدقة دون تخمين.
+                  يتطلب حساب السعرات والماكروز معرفة الوزن والطول والعمر والجنس
+                  بدقة دون تخمين.
                 </p>
                 {onOpenNutrition && (
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={onOpenNutrition}
-                  >
+                  <Button variant="primary" size="sm" onClick={onOpenNutrition}>
                     إدخال البيانات
                   </Button>
                 )}
@@ -715,7 +719,11 @@ export function Dashboard({
                 }}
               >
                 <div style={{ fontSize: '18px', fontWeight: 800 }}>
-                  <Ratio current={consumedCalories} target={targetCalories} unit="سعرة" />
+                  <Ratio
+                    current={consumedCalories}
+                    target={targetCalories}
+                    unit="سعرة"
+                  />
                 </div>
                 <div
                   style={{
@@ -724,14 +732,20 @@ export function Dashboard({
                     color: 'var(--color-accent-text)',
                   }}
                 >
-                  <Ratio current={consumedProtein} target={targetProtein} unit="جم بروتين" />
+                  <Ratio
+                    current={consumedProtein}
+                    target={targetProtein}
+                    unit="جم بروتين"
+                  />
                 </div>
               </div>
 
               <ProgressBar
                 value={consumedCalories}
                 max={targetCalories}
-                variant={consumedCalories > targetCalories ? 'warning' : 'accent'}
+                variant={
+                  consumedCalories > targetCalories ? 'warning' : 'accent'
+                }
               />
 
               <div
@@ -814,11 +828,20 @@ export function Dashboard({
         }}
         onCancel={() => setShowMismatchEditModal(false)}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '8px 0' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            padding: '8px 0',
+          }}
+        >
           <div style={{ fontSize: '13.5px', color: 'var(--color-text-2)' }}>
             حدد عدد أيام التدريب التي ترغب بالالتزام بها أسبوعياً في خطتك:
           </div>
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+          <div
+            style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}
+          >
             {[2, 3, 4, 5, 6].map((days) => (
               <button
                 key={days}

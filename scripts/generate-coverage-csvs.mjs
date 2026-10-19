@@ -17,8 +17,12 @@ async function run() {
 
   // 1. Read owner program mapping to know which exercises are owner-verified
   const ownerMappingPath = path.join(rootDir, 'docs/program-import-mapping.csv')
-  const ownerLines = fs.readFileSync(ownerMappingPath, 'utf8').split(/\r?\n/).filter(Boolean).slice(1)
-  
+  const ownerLines = fs
+    .readFileSync(ownerMappingPath, 'utf8')
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .slice(1)
+
   const ownerVerifiedKeys = new Set()
   const ownerProgramRows = []
 
@@ -44,7 +48,8 @@ async function run() {
   }
 
   // 2. Generate docs/exercise-coverage.csv (all 261 catalog exercises)
-  const catalogHeader = 'id,name_en,name_ar,media_kind,frame_count,source,verified_by_owner\n'
+  const catalogHeader =
+    'id,name_en,name_ar,media_kind,frame_count,source,verified_by_owner\n'
   const catalogRows = []
 
   let catalogWithMedia = 0
@@ -73,26 +78,31 @@ async function run() {
 
     const verifiedByOwner = ownerVerifiedKeys.has(ex.id) ? 'true' : 'false'
 
-    catalogRows.push([
-      escapeCsv(ex.id),
-      escapeCsv(ex.nameEn || ex.name || ''),
-      escapeCsv(ex.nameAr || ''),
-      escapeCsv(mediaKind),
-      frameCount,
-      escapeCsv(source),
-      escapeCsv(verifiedByOwner),
-    ].join(','))
+    catalogRows.push(
+      [
+        escapeCsv(ex.id),
+        escapeCsv(ex.nameEn || ex.name || ''),
+        escapeCsv(ex.nameAr || ''),
+        escapeCsv(mediaKind),
+        frameCount,
+        escapeCsv(source),
+        escapeCsv(verifiedByOwner),
+      ].join(','),
+    )
   }
 
   fs.writeFileSync(
     path.join(rootDir, 'docs/exercise-coverage.csv'),
     catalogHeader + catalogRows.join('\n') + '\n',
-    'utf8'
+    'utf8',
   )
-  console.log(`✓ Generated docs/exercise-coverage.csv (${EXERCISES.length} exercises: ${catalogWithMedia} with media, ${catalogNullMedia} null media)`)
+  console.log(
+    `✓ Generated docs/exercise-coverage.csv (${EXERCISES.length} exercises: ${catalogWithMedia} with media, ${catalogNullMedia} null media)`,
+  )
 
   // 3. Generate docs/exercise-coverage-program.csv (owner's 41 exercises)
-  const programHeader = 'appendix_name,matched_key,matched_name,match_type,content_status,media_kind,frame_count,source,verified_by_owner\n'
+  const programHeader =
+    'appendix_name,matched_key,matched_name,match_type,content_status,media_kind,frame_count,source,verified_by_owner\n'
   const programRows = []
 
   let ownerWithMedia = 0
@@ -125,25 +135,29 @@ async function run() {
       ownerNullMedia++
     }
 
-    programRows.push([
-      escapeCsv(row.appx),
-      escapeCsv(row.key),
-      escapeCsv(row.name),
-      escapeCsv(row.matchType),
-      escapeCsv(row.contentStatus),
-      escapeCsv(mediaKind),
-      frameCount,
-      escapeCsv(source),
-      escapeCsv(verifiedByOwner),
-    ].join(','))
+    programRows.push(
+      [
+        escapeCsv(row.appx),
+        escapeCsv(row.key),
+        escapeCsv(row.name),
+        escapeCsv(row.matchType),
+        escapeCsv(row.contentStatus),
+        escapeCsv(mediaKind),
+        frameCount,
+        escapeCsv(source),
+        escapeCsv(verifiedByOwner),
+      ].join(','),
+    )
   }
 
   fs.writeFileSync(
     path.join(rootDir, 'docs/exercise-coverage-program.csv'),
     programHeader + programRows.join('\n') + '\n',
-    'utf8'
+    'utf8',
   )
-  console.log(`✓ Generated docs/exercise-coverage-program.csv (${ownerProgramRows.length} exercises: ${ownerWithMedia} with media, ${ownerNullMedia} without media)`)
+  console.log(
+    `✓ Generated docs/exercise-coverage-program.csv (${ownerProgramRows.length} exercises: ${ownerWithMedia} with media, ${ownerNullMedia} without media)`,
+  )
 }
 
 run().catch((err) => {

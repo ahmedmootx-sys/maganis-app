@@ -16,7 +16,10 @@ describe('Part D: Exercise Page Layout', () => {
 
   it('D1 & D2: One content column, title wraps without truncation, tag in chips row', () => {
     const { container } = render(
-      <ExerciseDetailView exerciseId="incline_chest_press" exercise={testExercise} />,
+      <ExerciseDetailView
+        exerciseId="incline_chest_press"
+        exercise={testExercise}
+      />,
     )
 
     // Check title element is rendered in content column, not truncated
@@ -33,7 +36,9 @@ describe('Part D: Exercise Page Layout', () => {
     expect(topBarActions?.textContent || '').not.toContain('صدر')
 
     // Verify all primary blocks are direct children of the content container
-    const contentContainer = container.querySelector('.exercise-detail-container')
+    const contentContainer = container.querySelector(
+      '.exercise-detail-container',
+    )
     expect(contentContainer).not.toBeNull()
     const children = Array.from(contentContainer?.children || [])
     expect(children.length).toBeGreaterThanOrEqual(4)
@@ -47,7 +52,10 @@ describe('Part D: Exercise Page Layout', () => {
 
   it('D3: Tab strip has clear labels, 44px min-height, and includes "مع حالتي"', () => {
     const { container } = render(
-      <ExerciseDetailView exerciseId="incline_chest_press" exercise={testExercise} />,
+      <ExerciseDetailView
+        exerciseId="incline_chest_press"
+        exercise={testExercise}
+      />,
     )
 
     // Check tab labels within the tabs segmented control
@@ -65,10 +73,15 @@ describe('Part D: Exercise Page Layout', () => {
 
   it('D5: Page order is title & chips -> movement section -> tabs', () => {
     const { container } = render(
-      <ExerciseDetailView exerciseId="incline_chest_press" exercise={testExercise} />,
+      <ExerciseDetailView
+        exerciseId="incline_chest_press"
+        exercise={testExercise}
+      />,
     )
 
-    const contentContainer = container.querySelector('.exercise-detail-container')
+    const contentContainer = container.querySelector(
+      '.exercise-detail-container',
+    )
     expect(contentContainer).not.toBeNull()
     const children = Array.from(contentContainer?.children || [])
 
@@ -78,9 +91,15 @@ describe('Part D: Exercise Page Layout', () => {
     expect(children[1].className).toContain('exercise-detail-chips-row')
 
     // Find indices
-    const chipsIdx = children.findIndex((c) => c.className.includes('exercise-detail-chips-row'))
-    const movementIdx = children.findIndex((c) => c.textContent?.includes('الحركة'))
-    const tabsIdx = children.findIndex((c) => c.className.includes('exercise-detail-tabs-header'))
+    const chipsIdx = children.findIndex((c) =>
+      c.className.includes('exercise-detail-chips-row'),
+    )
+    const movementIdx = children.findIndex((c) =>
+      c.textContent?.includes('الحركة'),
+    )
+    const tabsIdx = children.findIndex((c) =>
+      c.className.includes('exercise-detail-tabs-header'),
+    )
 
     expect(chipsIdx).toBeLessThan(movementIdx)
     expect(movementIdx).toBeLessThan(tabsIdx)

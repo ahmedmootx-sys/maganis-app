@@ -10,11 +10,13 @@ const rootDir = path.resolve(__dirname, '..')
 const docsDir = path.join(rootDir, 'docs')
 
 // Read flags
-const flagsRaw = JSON.parse(fs.readFileSync(path.join(rootDir, 'src/data/exercise-flags.json'), 'utf8'))
+const flagsRaw = JSON.parse(
+  fs.readFileSync(path.join(rootDir, 'src/data/exercise-flags.json'), 'utf8'),
+)
 const flags = flagsRaw.exercises || flagsRaw
 
 // 1. Export Exercises JSON
-const exercisesExport = EXERCISES.map(ex => {
+const exercisesExport = EXERCISES.map((ex) => {
   const flag = flags[ex.id] || null
   return {
     id: ex.id,
@@ -34,8 +36,14 @@ const exercisesExport = EXERCISES.map(ex => {
   }
 })
 
-fs.writeFileSync(path.join(docsDir, 'library-export.json'), JSON.stringify(exercisesExport, null, 2), 'utf8')
-console.log(`✓ Exported ${exercisesExport.length} exercises to docs/library-export.json`)
+fs.writeFileSync(
+  path.join(docsDir, 'library-export.json'),
+  JSON.stringify(exercisesExport, null, 2),
+  'utf8',
+)
+console.log(
+  `✓ Exported ${exercisesExport.length} exercises to docs/library-export.json`,
+)
 
 // 2. Export Exercises CSV
 const csvEscape = (val) => {
@@ -75,8 +83,14 @@ for (const ex of exercisesExport) {
   ]
   exCsvRows.push(row.join(','))
 }
-fs.writeFileSync(path.join(docsDir, 'library-export.csv'), '\uFEFF' + exCsvRows.join('\n'), 'utf8')
-console.log(`✓ Exported ${exercisesExport.length} exercises to docs/library-export.csv`)
+fs.writeFileSync(
+  path.join(docsDir, 'library-export.csv'),
+  '\uFEFF' + exCsvRows.join('\n'),
+  'utf8',
+)
+console.log(
+  `✓ Exported ${exercisesExport.length} exercises to docs/library-export.csv`,
+)
 
 // 3. Export Foods CSV
 const foodHeaders = [
@@ -106,7 +120,11 @@ for (const food of FOOD_DATABASE) {
   ]
   foodRows.push(row.join(','))
 }
-fs.writeFileSync(path.join(docsDir, 'foods-export.csv'), '\uFEFF' + foodRows.join('\n'), 'utf8')
+fs.writeFileSync(
+  path.join(docsDir, 'foods-export.csv'),
+  '\uFEFF' + foodRows.join('\n'),
+  'utf8',
+)
 console.log(`✓ Exported ${FOOD_DATABASE.length} foods to docs/foods-export.csv`)
 
 // 4. Export Owner Profile Dump
@@ -123,7 +141,13 @@ const ownerProfileDump = {
     trainingDaysPerWeek: 4,
     splitType: 'upper_lower',
     experienceLevel: 'intermediate',
-    equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'cables', 'bodyweight'],
+    equipmentAvailable: [
+      'barbell',
+      'dumbbell',
+      'machine',
+      'cables',
+      'bodyweight',
+    ],
     body: {
       sex: 'male',
       age: 28,
@@ -136,13 +160,15 @@ const ownerProfileDump = {
     medical: {
       hasIssues: true,
       injuryTags: ['الكتف'],
-      notes: 'التهاب أوتار خفيف في الكتف الأيمن، تجنب الأوزان الحرة فوق الرأس بأوزان ثقيلة',
+      notes:
+        'التهاب أوتار خفيف في الكتف الأيمن، تجنب الأوزان الحرة فوق الرأس بأوزان ثقيلة',
     },
     limitations: [
       {
         region: 'shoulder',
         severity: 'moderate',
-        notes: 'التهاب أوتار خفيف، استبدال الضغط الحر خلف الرقبة بضغط دمبل أمامي',
+        notes:
+          'التهاب أوتار خفيف، استبدال الضغط الحر خلف الرقبة بضغط دمبل أمامي',
       },
     ],
     createdAt: 1700000000000,
@@ -172,4 +198,3 @@ fs.writeFileSync(
   'utf8',
 )
 console.log(`✓ Exported owner profile dump to docs/owner-profile-dump.json`)
-

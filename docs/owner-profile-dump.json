@@ -5,13 +5,9 @@
     "id": "owner-prod-verified",
     "name": "أحمد",
     "primaryGoal": "hypertrophy",
-    "goals": [
-      "hypertrophy"
-    ],
+    "goals": ["hypertrophy"],
     "bodyGoal": "gain",
-    "trainingStyle": [
-      "weights"
-    ],
+    "trainingStyle": ["weights"],
     "trainingDaysPerWeek": 4,
     "splitType": "upper_lower",
     "experienceLevel": "intermediate",
@@ -33,9 +29,7 @@
     },
     "medical": {
       "hasIssues": true,
-      "injuryTags": [
-        "الكتف"
-      ],
+      "injuryTags": ["الكتف"],
       "notes": "التهاب أوتار خفيف في الكتف الأيمن، تجنب الأوزان الحرة فوق الرأس بأوزان ثقيلة"
     },
     "limitations": [

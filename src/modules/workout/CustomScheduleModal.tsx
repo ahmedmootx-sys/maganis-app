@@ -36,7 +36,8 @@ export function CustomScheduleModal({
       ? defaultDaysByCount[profileDays]
       : [6, 1, 3, 4]
   }, [profileDays])
-  const [selectedDayIndexes, setSelectedDayIndexes] = useState<number[]>(initialDays)
+  const [selectedDayIndexes, setSelectedDayIndexes] =
+    useState<number[]>(initialDays)
   const [dayFocuses, setDayFocuses] = useState<Record<number, string>>({
     6: 'عضلات الصدر والبايسبس',
     0: 'راحة واستشفاء',
@@ -418,7 +419,6 @@ export function CustomScheduleModal({
               سيتم قفل الجدول التدريبي تلقائياً لحمايته من أي استبدال عشوائي أو
               توليد آلي. يمكنك بعد ذلك إضافة وتعديل تمارين كل يوم بكل حرية.
             </Callout>
-
           </section>
         )}
       </div>
@@ -456,7 +456,14 @@ export function CustomScheduleModal({
             {error}
           </div>
         )}
-        <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: '8px',
+            width: '100%',
+            alignItems: 'center',
+          }}
+        >
           {currentStep > 1 && (
             <button
               type="button"

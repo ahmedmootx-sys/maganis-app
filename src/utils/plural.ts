@@ -30,79 +30,79 @@ export type PluralNoun =
   | 'سعرة'
 
 export const PLURAL_NOUNS: Record<PluralNoun, PluralEntry> = {
-  'مجموعة': {
+  مجموعة: {
     one: 'مجموعة',
     two: 'مجموعتان',
     few: 'مجموعات',
     many: 'مجموعة',
   },
-  'تمرين': {
+  تمرين: {
     one: 'تمرين',
     two: 'تمرينان',
     few: 'تمارين',
     many: 'تمرين',
   },
-  'جلسة': {
+  جلسة: {
     one: 'جلسة',
     two: 'جلستان',
     few: 'جلسات',
     many: 'جلسة',
   },
-  'يوم': {
+  يوم: {
     one: 'يوم',
     two: 'يومان',
     few: 'أيام',
     many: 'يوم',
   },
-  'أسبوع': {
+  أسبوع: {
     one: 'أسبوع',
     two: 'أسبوعان',
     few: 'أسابيع',
     many: 'أسبوع',
   },
-  'دقيقة': {
+  دقيقة: {
     one: 'دقيقة',
     two: 'دقيقتان',
     few: 'دقائق',
     many: 'دقيقة',
   },
-  'ثانية': {
+  ثانية: {
     one: 'ثانية',
     two: 'ثانيتان',
     few: 'ثوانٍ',
     many: 'ثانية',
   },
-  'تكرار': {
+  تكرار: {
     one: 'تكرار',
     two: 'تكراران',
     few: 'تكرارات',
     many: 'تكرار',
   },
-  'وجبة': {
+  وجبة: {
     one: 'وجبة',
     two: 'وجبتان',
     few: 'وجبات',
     many: 'وجبة',
   },
-  'مكوّن': {
+  مكوّن: {
     one: 'مكوّن',
     two: 'مكوّنان',
     few: 'مكوّنات',
     many: 'مكوّن',
   },
-  'عضلة': {
+  عضلة: {
     one: 'عضلة',
     two: 'عضلتان',
     few: 'عضلات',
     many: 'عضلة',
   },
-  'نشاط': {
+  نشاط: {
     one: 'نشاط',
     two: 'نشاطان',
     few: 'أنشطة',
     many: 'نشاط',
   },
-  'سعرة': {
+  سعرة: {
     one: 'سعرة',
     two: 'سعرتان',
     few: 'سعرات',
@@ -116,7 +116,11 @@ export const PLURAL_NOUNS: Record<PluralNoun, PluralEntry> = {
  * @param noun the base noun key from the dictionary
  * @param forceNumber if true, forces the number prefix even for 1 and 2 (e.g. "1 مجموعة" instead of "مجموعة")
  */
-export function plural(n: number, noun: PluralNoun, forceNumber = false): string {
+export function plural(
+  n: number,
+  noun: PluralNoun,
+  forceNumber = false,
+): string {
   const entry = PLURAL_NOUNS[noun]
   if (!entry) {
     return `${n} ${noun}`

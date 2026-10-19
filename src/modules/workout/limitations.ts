@@ -11,9 +11,7 @@ export type LimitationRegion =
   | 'ankle_foot'
 
 export type LimitationStatus =
-  | 'current_pain'
-  | 'old_recovered'
-  | 'under_treatment'
+  'current_pain' | 'old_recovered' | 'under_treatment'
 
 export interface UserLimitation {
   region: LimitationRegion
@@ -37,11 +35,12 @@ export const REGIONS: RegionInfo[] = [
   { id: 'ankle_foot', labelAr: 'الكاحل والقدم' },
 ]
 
-export const STATUS_OPTIONS: Array<{ id: LimitationStatus; labelAr: string }> = [
-  { id: 'current_pain', labelAr: 'ألم حالي' },
-  { id: 'old_recovered', labelAr: 'إصابة قديمة وتعافيت' },
-  { id: 'under_treatment', labelAr: 'تحت علاج طبيب' },
-]
+export const STATUS_OPTIONS: Array<{ id: LimitationStatus; labelAr: string }> =
+  [
+    { id: 'current_pain', labelAr: 'ألم حالي' },
+    { id: 'old_recovered', labelAr: 'إصابة قديمة وتعافيت' },
+    { id: 'under_treatment', labelAr: 'تحت علاج طبيب' },
+  ]
 
 export const PAIN_TYPES = [
   { id: 'acute', labelAr: 'حاد' },
@@ -87,8 +86,11 @@ export function getExerciseTags(
   if (!limitations || limitations.length === 0) return []
 
   const entries =
-    (regionLoadData as unknown as { entries?: Record<string, ExerciseRegionLoadEntry> })
-      .entries || {}
+    (
+      regionLoadData as unknown as {
+        entries?: Record<string, ExerciseRegionLoadEntry>
+      }
+    ).entries || {}
   const entry = entries[exerciseKey]
 
   const tags: RegionTag[] = []
@@ -156,7 +158,10 @@ export function getExerciseTags(
 
 export function getExerciseDetailsWithLimitations(exerciseKey: string) {
   const entries =
-    (regionLoadData as unknown as { entries?: Record<string, ExerciseRegionLoadEntry> })
-      .entries || {}
+    (
+      regionLoadData as unknown as {
+        entries?: Record<string, ExerciseRegionLoadEntry>
+      }
+    ).entries || {}
   return entries[exerciseKey] || null
 }

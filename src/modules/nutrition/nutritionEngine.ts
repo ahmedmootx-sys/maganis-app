@@ -919,8 +919,7 @@ export function resolveWeightAndAge(
   if (latestLog) {
     const logDate = new Date(latestLog.date)
     const now = new Date()
-    const diffDays =
-      (now.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24)
+    const diffDays = (now.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24)
     if (diffDays <= 30) {
       weightKg = latestLog.weightKg
       weightSourceText = `الوزن المستخدم ${latestLog.weightKg} كجم، من قياس ${fmtDate(latestLog.date)}`
@@ -1262,4 +1261,3 @@ export function explainEnergy(
     },
   }
 }
-

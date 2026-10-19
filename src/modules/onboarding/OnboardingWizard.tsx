@@ -228,8 +228,7 @@ export function OnboardingWizard({
   }
 
   // --- Step Validations ---
-  const isStep1Valid =
-    form.bodyGoal !== null && form.trainingStyle.length > 0
+  const isStep1Valid = form.bodyGoal !== null && form.trainingStyle.length > 0
 
   const isStep2Valid =
     form.trainingDaysPerWeek !== null &&
@@ -293,10 +292,7 @@ export function OnboardingWizard({
   const weightNum = Number(form.weightKg)
 
   const isAgeValid =
-    form.age !== '' &&
-    Number.isInteger(ageNum) &&
-    ageNum >= 14 &&
-    ageNum <= 80
+    form.age !== '' && Number.isInteger(ageNum) && ageNum >= 14 && ageNum <= 80
 
   const isHeightValid =
     form.heightCm !== '' &&
@@ -370,8 +366,7 @@ export function OnboardingWizard({
       trainingLocation: form.trainingLocation ?? 'gym',
       goals: form.primaryGoal ? [form.primaryGoal] : ['hypertrophy'],
       primaryGoal:
-        form.primaryGoal ??
-        (form.bodyGoal === 'cut' ? 'cut' : 'hypertrophy'),
+        form.primaryGoal ?? (form.bodyGoal === 'cut' ? 'cut' : 'hypertrophy'),
       bodyGoal: form.bodyGoal ?? undefined,
       trainingStyle: form.trainingStyle,
       trainingDaysPerWeek: form.trainingDaysPerWeek ?? 4,
@@ -1395,8 +1390,9 @@ export function OnboardingWizard({
                                 .map(
                                   (l) =>
                                     `${getRegionLabel(l.region)} (${
-                                      STATUS_OPTIONS.find((s) => s.id === l.status)
-                                        ?.labelAr ?? l.status
+                                      STATUS_OPTIONS.find(
+                                        (s) => s.id === l.status,
+                                      )?.labelAr ?? l.status
                                     })`,
                                 )
                                 .join('، ') +
@@ -1575,7 +1571,14 @@ export function OnboardingWizard({
             {getMissingStepReason(currentStep, form)}
           </div>
         )}
-        <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: '8px',
+            width: '100%',
+            alignItems: 'center',
+          }}
+        >
           {currentStep > 1 && (
             <Button
               variant="subtle"

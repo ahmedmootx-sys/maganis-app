@@ -23,7 +23,9 @@ const mediaFramesPath = path.join(rootDir, 'src/data/media-frames.json')
 const docsDir = path.join(rootDir, 'docs')
 
 async function runGate() {
-  console.log('🚀 Running Gate 5.9: ServiceWorker & 88-Exercise Media Audit (Non-vacuous)...')
+  console.log(
+    '🚀 Running Gate 5.9: ServiceWorker & 88-Exercise Media Audit (Non-vacuous)...',
+  )
 
   if (!fs.existsSync(mediaFramesPath)) {
     throw new Error(`Missing media-frames.json at ${mediaFramesPath}`)
@@ -32,7 +34,9 @@ async function runGate() {
   const mediaData = JSON.parse(fs.readFileSync(mediaFramesPath, 'utf8'))
   const exercises = Object.values(mediaData.exercises || {})
 
-  console.log(`📋 Found ${exercises.length} exercises in media-frames.json to audit.`)
+  console.log(
+    `📋 Found ${exercises.length} exercises in media-frames.json to audit.`,
+  )
 
   const server = await preview({
     root: rootDir,
@@ -230,12 +234,16 @@ async function runGate() {
 
   // Non-vacuous check: >= 88 exercises and >= 170 frames
   if (auditResults.length < 88) {
-    console.error(`❌ Gate 5.9 FAILED: Only audited ${auditResults.length} exercises (minimum required: 88).`)
+    console.error(
+      `❌ Gate 5.9 FAILED: Only audited ${auditResults.length} exercises (minimum required: 88).`,
+    )
     process.exit(1)
   }
 
   if (totalFramesExamined < 170) {
-    console.error(`❌ Gate 5.9 FAILED: Only examined ${totalFramesExamined} frames (minimum required: 170).`)
+    console.error(
+      `❌ Gate 5.9 FAILED: Only examined ${totalFramesExamined} frames (minimum required: 170).`,
+    )
     process.exit(1)
   }
 
@@ -244,7 +252,9 @@ async function runGate() {
     process.exit(1)
   }
 
-  console.log(`✅ Gate 5.9 PASSED: All 88 exercises and ${totalFramesExamined} keyframes verified with active ServiceWorker.`)
+  console.log(
+    `✅ Gate 5.9 PASSED: All 88 exercises and ${totalFramesExamined} keyframes verified with active ServiceWorker.`,
+  )
   process.exit(0)
 }
 

@@ -37,9 +37,14 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
   const [showRomOverlay, setShowRomOverlay] = useState(false)
 
   // Load frames from media-frames.json or verified local images
-  const exerciseFramesInfo =
-    (mediaFramesData as unknown as { exercises: Record<string, { frames: Array<{ index: number; url: string; label: string }> }> })
-      .exercises?.[exerciseKey]
+  const exerciseFramesInfo = (
+    mediaFramesData as unknown as {
+      exercises: Record<
+        string,
+        { frames: Array<{ index: number; url: string; label: string }> }
+      >
+    }
+  ).exercises?.[exerciseKey]
 
   const frames: Array<{ url: string; label: string }> =
     exerciseFramesInfo?.frames?.map((f) => ({
@@ -49,7 +54,12 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
     (images.length > 0 && !images[0]?.startsWith('http')
       ? images.map((img, idx) => ({
           url: img.startsWith('/') ? img.slice(1) : img,
-          label: idx === 0 ? 'بداية' : idx === images.length - 1 ? 'نهاية' : `مرحلة ${idx + 1}`,
+          label:
+            idx === 0
+              ? 'بداية'
+              : idx === images.length - 1
+                ? 'نهاية'
+                : `مرحلة ${idx + 1}`,
         }))
       : [])
 
@@ -57,8 +67,13 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
 
   // Check prefers-reduced-motion
   useEffect(() => {
-    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function'
+    ) {
+      const prefersReduced = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches
       if (prefersReduced) {
         setIsPlaying(false)
       }
@@ -69,7 +84,7 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
   useEffect(() => {
     if (!isPlaying || totalFrames <= 1) return
 
-    const intervalMs = (1000 / (speed * 1.5))
+    const intervalMs = 1000 / (speed * 1.5)
     const timer = setInterval(() => {
       setActiveFrameIdx((prev) => (prev + 1) % totalFrames)
     }, intervalMs)
@@ -78,9 +93,11 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
   }, [isPlaying, speed, totalFrames])
 
   // Authored visual details
-  const authoredEntry =
-    (exerciseVisualData as unknown as { entries: Record<string, ExerciseVisualEntry> })
-      .entries?.[exerciseKey]
+  const authoredEntry = (
+    exerciseVisualData as unknown as {
+      entries: Record<string, ExerciseVisualEntry>
+    }
+  ).entries?.[exerciseKey]
 
   const isReviewed = Boolean(authoredEntry?.reviewed)
 
@@ -97,7 +114,13 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
           boxSizing: 'border-box',
         }}
       >
-        <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text)' }}>
+        <span
+          style={{
+            fontSize: '15px',
+            fontWeight: 700,
+            color: 'var(--color-text)',
+          }}
+        >
           الحركة وتفاصيل الأداء
         </span>
         <div
@@ -123,7 +146,9 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
             type="button"
             onClick={() => {
               console.info(`[Report Missing Media] exerciseKey: ${exerciseKey}`)
-              alert('تم استلام البلاغ! سنعمل على توفير الشرح المرئي في التحديث القادم.')
+              alert(
+                'تم استلام البلاغ! سنعمل على توفير الشرح المرئي في التحديث القادم.',
+              )
             }}
             style={{
               background: 'var(--color-surface)',
@@ -165,7 +190,13 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
           alignItems: 'center',
         }}
       >
-        <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text)' }}>
+        <span
+          style={{
+            fontSize: '15px',
+            fontWeight: 700,
+            color: 'var(--color-text)',
+          }}
+        >
           الحركة وتفاصيل الأداء
         </span>
         {totalFrames >= 2 && (
@@ -329,7 +360,9 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
                 variant="secondary"
                 size="small"
                 disabled={activeFrameIdx === totalFrames - 1}
-                onClick={() => setActiveFrameIdx((idx) => Math.min(totalFrames - 1, idx + 1))}
+                onClick={() =>
+                  setActiveFrameIdx((idx) => Math.min(totalFrames - 1, idx + 1))
+                }
               >
                 التالي
               </Button>
@@ -363,8 +396,12 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
                     gap: '4px',
                     padding: '4px',
                     borderRadius: '8px',
-                    border: isSel ? '2px solid var(--color-accent)' : '1px solid var(--color-divider)',
-                    background: isSel ? 'var(--color-accent-tint)' : 'var(--color-surface)',
+                    border: isSel
+                      ? '2px solid var(--color-accent)'
+                      : '1px solid var(--color-divider)',
+                    background: isSel
+                      ? 'var(--color-accent-tint)'
+                      : 'var(--color-surface)',
                     cursor: 'pointer',
                     flexShrink: 0,
                     width: '64px',
@@ -374,13 +411,19 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
                   <img
                     src={assetUrl(frame.url)}
                     alt={frame.label}
-                    style={{ width: '56px', height: '56px', objectFit: 'contain' }}
+                    style={{
+                      width: '56px',
+                      height: '56px',
+                      objectFit: 'contain',
+                    }}
                   />
                   <span
                     style={{
                       fontSize: '10px',
                       fontWeight: isSel ? 700 : 500,
-                      color: isSel ? 'var(--color-text)' : 'var(--color-text-2)',
+                      color: isSel
+                        ? 'var(--color-text)'
+                        : 'var(--color-text-2)',
                     }}
                   >
                     {frame.label}
@@ -394,7 +437,14 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
 
       {/* Authored Content or Uncompleted Notice */}
       {isReviewed && authoredEntry ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            marginTop: '4px',
+          }}
+        >
           {/* Phase Caption */}
           {authoredEntry.phases?.[activeFrameIdx]?.caption_ar && (
             <div
@@ -407,14 +457,23 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
                 borderRadius: '8px',
               }}
             >
-              <strong>إرشاد المرحلة:</strong> {authoredEntry.phases[activeFrameIdx].caption_ar}
+              <strong>إرشاد المرحلة:</strong>{' '}
+              {authoredEntry.phases[activeFrameIdx].caption_ar}
             </div>
           )}
 
           {/* Cues */}
           {authoredEntry.cues_ar && authoredEntry.cues_ar.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-text-2)' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+            >
+              <span
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: 'var(--color-text-2)',
+                }}
+              >
                 ركّز على:
               </span>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>

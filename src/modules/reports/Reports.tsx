@@ -533,18 +533,16 @@ export function Reports({
               borderRadius: '999px',
               fontSize: '12px',
               fontWeight: 800,
-              background:
-                !targets
-                  ? 'var(--card-subtle)'
-                  : calorieAdherencePct >= 70
-                    ? '#f0fdf4'
-                    : '#fffbeb',
-              color:
-                !targets
-                  ? 'var(--muted)'
-                  : calorieAdherencePct >= 70
-                    ? '#166534'
-                    : '#b45309',
+              background: !targets
+                ? 'var(--card-subtle)'
+                : calorieAdherencePct >= 70
+                  ? '#f0fdf4'
+                  : '#fffbeb',
+              color: !targets
+                ? 'var(--muted)'
+                : calorieAdherencePct >= 70
+                  ? '#166534'
+                  : '#b45309',
               border: `1px solid ${
                 !targets
                   ? 'var(--line)'

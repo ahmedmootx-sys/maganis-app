@@ -21,13 +21,21 @@ function versionPlugin() {
       const v = { buildId, gitHash, builtAt: buildTime }
       const pubDir = path.resolve(__dirname, 'public')
       if (!fs.existsSync(pubDir)) fs.mkdirSync(pubDir, { recursive: true })
-      fs.writeFileSync(path.join(pubDir, 'version.json'), JSON.stringify(v, null, 2), 'utf8')
+      fs.writeFileSync(
+        path.join(pubDir, 'version.json'),
+        JSON.stringify(v, null, 2),
+        'utf8',
+      )
     },
     closeBundle() {
       const v = { buildId, gitHash, builtAt: buildTime }
       const distDir = path.resolve(__dirname, 'dist')
       if (fs.existsSync(distDir)) {
-        fs.writeFileSync(path.join(distDir, 'version.json'), JSON.stringify(v, null, 2), 'utf8')
+        fs.writeFileSync(
+          path.join(distDir, 'version.json'),
+          JSON.stringify(v, null, 2),
+          'utf8',
+        )
         const distSw = path.join(distDir, 'sw.js')
         if (fs.existsSync(distSw)) {
           let content = fs.readFileSync(distSw, 'utf8')

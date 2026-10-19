@@ -10,6 +10,7 @@
 تعتمد النسخة الحالية من تطبيق **مجانص** في مكتبة التمارين على المصادر المفتوحة التالية:
 
 ### أ. قاعدة بيانات التمارين المفتوحة (Free Exercise DB / Gym Visual)
+
 - **المستودع الأصلي**: [yuhonas/free-exercise-db](https://github.com/yuhonas/free-exercise-db)
 - **المصدر البصري**: رسومات ورسوم متحركة مستخرجة من رسومات Gym Visual ومكتبات التمارين المفتوحة.
 - **نوع الوسائط**: صور رقمية بصيغة JPG (إطاران: وضعية البداية `0.jpg` وقمة الانقباض `1.jpg`).
@@ -18,6 +19,7 @@
   - الاستخدام الحالي محصور في بيئة التشغيل المحلي والأغراض غير التجارية والتجريبية.
 
 ### ب. النماذج التشريحية (BodyParts3D / Anatomography)
+
 - **المصدر**: BodyParts3D, © The Database Center for Life Sciences (DBCLS) licensed under CC Attribution-Share Alike 2.1 Japan.
 - **التوثيق**: مفصل بالكامل في `docs/atlas-missing-muscles.md`.
 

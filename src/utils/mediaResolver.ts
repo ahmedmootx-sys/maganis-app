@@ -24,9 +24,12 @@ interface ExerciseFramesEntry {
   endFrame?: number
 }
 
-const framesDb = (mediaFramesData as unknown as {
-  exercises: Record<string, ExerciseFramesEntry>
-}).exercises || {}
+const framesDb =
+  (
+    mediaFramesData as unknown as {
+      exercises: Record<string, ExerciseFramesEntry>
+    }
+  ).exercises || {}
 
 /**
  * Single source of truth for resolving exercise media / thumbnails.
@@ -90,10 +93,7 @@ export function resolveMedia(
       const trimmed = candidate.trim()
 
       // Disallow external URLs (offline PWA contract requires local assets or explicit null)
-      if (
-        !trimmed.startsWith('http://') &&
-        !trimmed.startsWith('https://')
-      ) {
+      if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
         let f1: string | null = null
 
         if (trimmed.endsWith('/0.jpg')) {

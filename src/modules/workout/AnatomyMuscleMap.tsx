@@ -254,8 +254,12 @@ export function AnatomyMuscleMap({
         anchors.push(approx.anchor)
         continue
       }
-      const meta = META_MUSCLES[m.id] as Record<string, any> | undefined
-      const a = meta?.views?.[view]?.anchor || meta?.anchors?.[view]
+      const meta = META_MUSCLES[m.id]
+      const a =
+        meta?.views?.[view]?.anchor ||
+        (meta as { anchors?: Record<string, number[]> } | undefined)?.anchors?.[
+          view
+        ]
       if (a && Array.isArray(a) && a.length === 2) {
         anchors.push(a as [number, number])
       }
@@ -265,7 +269,10 @@ export function AnatomyMuscleMap({
       return { x: 50, y: 50 }
     }
 
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
+    let minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity
     for (const [x, y] of anchors) {
       if (x < minX) minX = x
       if (x > maxX) maxX = x
@@ -322,7 +329,10 @@ export function AnatomyMuscleMap({
 
     // 1. Ensure secondary hatch pattern defs exists
     if (!svgEl.querySelector('#secondary-hatch')) {
-      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs')
+      const defs = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'defs',
+      )
       defs.innerHTML = `
         <pattern id="secondary-hatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
           <rect width="8" height="8" fill="var(--atlas-secondary, #fdd835)" />
@@ -346,7 +356,8 @@ export function AnatomyMuscleMap({
       const approx = APPROXIMATE_REGIONS[muscleId]
       const visibleInView = approx
         ? approx.view === view
-        : (meta?.best_view === view || (meta?.views?.[view]?.visible_pixels ?? 0) > 300)
+        : meta?.best_view === view ||
+          (meta?.views?.[view]?.visible_pixels ?? 0) > 300
 
       if (!visibleInView) {
         ;(path as SVGElement).style.display = 'none'
@@ -390,7 +401,8 @@ export function AnatomyMuscleMap({
       const approx = APPROXIMATE_REGIONS[muscleId]
       const visibleInView = approx
         ? approx.view === view
-        : (meta?.best_view === view || (meta?.views?.[view]?.visible_pixels ?? 0) > 300)
+        : meta?.best_view === view ||
+          (meta?.views?.[view]?.visible_pixels ?? 0) > 300
 
       path.classList.remove(
         'muscle-full-active',
@@ -561,17 +573,11 @@ export function AnatomyMuscleMap({
             options={[
               {
                 value: 'A',
-                label:
-                  anteriorCount > 0
-                    ? `أمامي (${anteriorCount})`
-                    : 'أمامي',
+                label: anteriorCount > 0 ? `أمامي (${anteriorCount})` : 'أمامي',
               },
               {
                 value: 'P',
-                label:
-                  posteriorCount > 0
-                    ? `خلفي (${posteriorCount})`
-                    : 'خلفي',
+                label: posteriorCount > 0 ? `خلفي (${posteriorCount})` : 'خلفي',
               },
             ]}
             value={view}
@@ -614,9 +620,8 @@ export function AnatomyMuscleMap({
       {unpaintedPrimaries.length > 0 && (
         <div style={{ margin: '8px 0' }}>
           <Callout variant="warning">
-            العضلة الأساسية (
-            {unpaintedPrimaries.map((p) => p.name).join('، ')}) غير مرسومة في
-            الخريطة الحالية
+            العضلة الأساسية ({unpaintedPrimaries.map((p) => p.name).join('، ')})
+            غير مرسومة في الخريطة الحالية
           </Callout>
         </div>
       )}
@@ -786,7 +791,14 @@ export function AnatomyMuscleMap({
 
       {/* 4. Status Line & Legend */}
       <div className="atlas-status-line">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            flexWrap: 'wrap',
+          }}
+        >
           <span>
             يعرض الآن: {view === 'A' ? 'الأمامي' : 'الخلفي'}. أساسية{' '}
             {currentCounts.primary}، مساعدة {currentCounts.secondary}
@@ -860,8 +872,10 @@ export function AnatomyMuscleMap({
           </div>
         </div>
         {(((exercise as Record<string, unknown>)?.muscles_status &&
-          (exercise as Record<string, unknown>)?.muscles_status !== 'complete' &&
-          (exercise as Record<string, unknown>)?.muscles_status !== 'verified') ||
+          (exercise as Record<string, unknown>)?.muscles_status !==
+            'complete' &&
+          (exercise as Record<string, unknown>)?.muscles_status !==
+            'verified') ||
           resolved.isProvisional) && (
           <div style={{ width: '100%', marginTop: '6px', textAlign: 'center' }}>
             <span
@@ -1045,9 +1059,7 @@ export function AnatomyMuscleMap({
             }}
             dir="rtl"
           >
-            <div
-              style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
-            >
+            <div style={{ fontSize: '13px', color: 'var(--color-text-2)' }}>
               <bdi dir="ltr">
                 {getMuscleSciName(sheetMuscleId) || sheetMuscleDef?.en}
               </bdi>

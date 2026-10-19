@@ -77,7 +77,12 @@ export function ExerciseSwapModal({
       >
         <div className="modal-header">
           <h2>استبدال التمرين — {currentExercise.nameAr}</h2>
-          <button type="button" className="close-btn" onClick={onClose} aria-label="إغلاق">
+          <button
+            type="button"
+            className="close-btn"
+            onClick={onClose}
+            aria-label="إغلاق"
+          >
             <Icon name="x" size={18} />
           </button>
         </div>

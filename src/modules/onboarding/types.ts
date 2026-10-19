@@ -50,10 +50,7 @@ export interface BodyMetrics {
   ageEnteredAt?: number
 }
 
-import type {
-  UserLimitation,
-  PainLogEntry,
-} from '../workout/limitations.ts'
+import type { UserLimitation, PainLogEntry } from '../workout/limitations.ts'
 
 export type {
   UserLimitation,

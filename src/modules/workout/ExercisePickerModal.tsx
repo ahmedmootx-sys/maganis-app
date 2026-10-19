@@ -94,7 +94,12 @@ export function ExercisePickerModal({
       >
         <div className="modal-header">
           <h2>إضافة تمرين إلى {dayLabelAr}</h2>
-          <button type="button" className="close-btn" onClick={onClose} aria-label="إغلاق">
+          <button
+            type="button"
+            className="close-btn"
+            onClick={onClose}
+            aria-label="إغلاق"
+          >
             <Icon name="x" size={18} />
           </button>
         </div>

@@ -197,4 +197,3 @@ export function fmtFactor(factor: number): string {
     : factor.toFixed(2).replace(/0$/, '')
   return `×${str}`
 }
-

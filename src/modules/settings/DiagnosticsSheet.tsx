@@ -126,7 +126,9 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
         shareCsv: testShare('text/csv', 'table.csv') ? 'true' : 'false',
         sharePdf: testShare('application/pdf', 'doc.pdf') ? 'true' : 'false',
         shareText: testShare('text/plain', 'note.txt') ? 'true' : 'false',
-        shareJson: testShare('application/json', 'data.json') ? 'true' : 'false',
+        shareJson: testShare('application/json', 'data.json')
+          ? 'true'
+          : 'false',
         storagePersisted: persisted,
         userAgent: navigator.userAgent.slice(0, 120),
       })
@@ -161,11 +163,25 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
   }
 
   const items = [
-    { key: 'معرف البناء (Build ID)', value: info.buildId, bdi: true, stacked: true },
+    {
+      key: 'معرف البناء (Build ID)',
+      value: info.buildId,
+      bdi: true,
+      stacked: true,
+    },
     { key: 'نمط العرض (Display Mode)', value: info.displayMode, bdi: true },
-    { key: 'سياق آمن (isSecureContext)', value: info.isSecureContext, bdi: true },
+    {
+      key: 'سياق آمن (isSecureContext)',
+      value: info.isSecureContext,
+      bdi: true,
+    },
     { key: 'حالة مسار الخدمة (SW State)', value: info.swState, bdi: true },
-    { key: 'نسخة التخزين (Cache)', value: info.cacheVersion, bdi: true, stacked: true },
+    {
+      key: 'نسخة التخزين (Cache)',
+      value: info.cacheVersion,
+      bdi: true,
+      stacked: true,
+    },
     { key: 'أبعاد الشاشة (Viewport)', value: info.viewport, bdi: true },
     { key: 'كثافة البكسل (DPR)', value: info.dpr, bdi: true },
     { key: 'حجم الخط الأساسي (Font)', value: info.rootFontSize, bdi: true },
@@ -175,8 +191,17 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
     { key: 'مشاركة ملف PDF', value: info.sharePdf, bdi: true },
     { key: 'مشاركة ملف نصي TXT', value: info.shareText, bdi: true },
     { key: 'مشاركة ملف JSON', value: info.shareJson, bdi: true },
-    { key: 'تخزين دائم (Storage Persisted)', value: info.storagePersisted, bdi: true },
-    { key: 'معرف المتصفح (User Agent)', value: info.userAgent, bdi: true, stacked: true },
+    {
+      key: 'تخزين دائم (Storage Persisted)',
+      value: info.storagePersisted,
+      bdi: true,
+    },
+    {
+      key: 'معرف المتصفح (User Agent)',
+      value: info.userAgent,
+      bdi: true,
+      stacked: true,
+    },
   ]
 
   return (
@@ -187,15 +212,15 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
       subtitle="بيانات تشغيل التطبيق على هذا الجهاز"
       footer={
         <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-          <Button
-            variant="primary"
-            onClick={handleCopy}
-            style={{ flex: 1 }}
-          >
+          <Button variant="primary" onClick={handleCopy} style={{ flex: 1 }}>
             <Icon name={copied ? 'check' : 'copy'} size={18} />
             <span>{copied ? 'تم النسخ' : 'نسخ المعلومات'}</span>
           </Button>
-          <Button variant="secondary" onClick={onClose} style={{ minWidth: '90px' }}>
+          <Button
+            variant="secondary"
+            onClick={onClose}
+            style={{ minWidth: '90px' }}
+          >
             إغلاق
           </Button>
         </div>

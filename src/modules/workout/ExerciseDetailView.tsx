@@ -24,8 +24,31 @@ import {
 import prescriptionRulesData from '../../data/prescription-rules.json'
 import exerciseContentData from '../../data/exercise-content.json'
 import exerciseFlagsData from '../../data/exercise-flags.json'
-import { TopBar, Card, Callout, Button, Segmented, ConfirmSheet } from '../../ui/index.ts'
+import {
+  TopBar,
+  Card,
+  Callout,
+  Button,
+  Segmented,
+  ConfirmSheet,
+} from '../../ui/index.ts'
 import { fmtRange, fmtSets, fmtReps } from '../../utils/bidi.ts'
+
+interface AuthoredExerciseContent {
+  whyThisExerciseAr?: string
+  howItWorksAr?: string
+  anatomicalFocusAr?: string
+  scientificReferences?: string[]
+  reviewedBy?: string
+  reviewedAt?: string
+}
+
+interface ExerciseFlagInfo {
+  flagType?: string
+  badgeAr?: string
+  riskReasonAr?: string
+  saferAlternatives?: string[]
+}
 
 export interface ExerciseDetailViewProps {
   exerciseId: string
@@ -128,7 +151,10 @@ export function ExerciseDetailView({
   const authoredContent = useMemo(() => {
     const exId = exercise?.id
     if (!exId) return null
-    return (exerciseContentData as Record<string, any>)[exId] || null
+    return (
+      (exerciseContentData as Record<string, AuthoredExerciseContent>)[exId] ||
+      null
+    )
   }, [exercise])
 
   // Lookup risk and safety flags from exercise-flags.json
@@ -136,7 +162,8 @@ export function ExerciseDetailView({
     const exId = exercise?.id
     if (!exId) return null
     return (
-      (exerciseFlagsData.exercises as Record<string, any>)[exId] || null
+      (exerciseFlagsData.exercises as Record<string, ExerciseFlagInfo>)[exId] ||
+      null
     )
   }, [exercise])
 
@@ -428,10 +455,7 @@ export function ExerciseDetailView({
   }
 
   return (
-    <div
-      className="exercise-detail-page screen-container"
-      dir="rtl"
-    >
+    <div className="exercise-detail-page screen-container" dir="rtl">
       {/* 1. Header: Back button */}
       <TopBar
         onBack={onBack ? onBack : () => window.history.back()}
@@ -453,7 +477,12 @@ export function ExerciseDetailView({
         {/* Title and English subtitle block (wraps naturally, line-height >= 1.5, text-wrap: balance) */}
         <div
           className="exercise-detail-title-block"
-          style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+            width: '100%',
+          }}
         >
           <h1
             style={{
@@ -477,7 +506,12 @@ export function ExerciseDetailView({
         {/* Real Meta Chips (including category tag moved from TopBar into chips row) */}
         <div
           className="exercise-detail-chips-row"
-          style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', width: '100%' }}
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '8px',
+            width: '100%',
+          }}
         >
           <span
             className="chip chip--accent"
@@ -510,10 +544,14 @@ export function ExerciseDetailView({
             variant={flagInfo.flagType === 'high_risk' ? 'danger' : 'warning'}
             title={
               flagInfo.badgeAr ||
-              (flagInfo.flagType === 'high_risk' ? 'عالي الخطورة' : 'تنبيه أمان')
+              (flagInfo.flagType === 'high_risk'
+                ? 'عالي الخطورة'
+                : 'تنبيه أمان')
             }
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.5 }}>
                 {flagInfo.riskReasonAr}
               </p>
@@ -584,7 +622,14 @@ export function ExerciseDetailView({
         )}
 
         {/* Section: الحركة — Visual Movement Explainer (G 3.5) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            width: '100%',
+          }}
+        >
           <div
             style={{
               fontSize: '16px',
@@ -599,7 +644,9 @@ export function ExerciseDetailView({
             exerciseName={nameAr}
             images={
               exercise.imageUrl
-                ? [exercise.imageUrl, exercise.gifUrl].filter(Boolean) as string[]
+                ? ([exercise.imageUrl, exercise.gifUrl].filter(
+                    Boolean,
+                  ) as string[])
                 : []
             }
           />
@@ -922,8 +969,8 @@ export function ExerciseDetailView({
                       lineHeight: 1.6,
                     }}
                   >
-                    نعمل على توثيق التحليل الحركي والبيوميكانيكي لهذا التمرين بدقة
-                    علمية معتمدة. يمكنك الاطلاع على خطوات التنفيذ الفنية
+                    نعمل على توثيق التحليل الحركي والبيوميكانيكي لهذا التمرين
+                    بدقة علمية معتمدة. يمكنك الاطلاع على خطوات التنفيذ الفنية
                     وإرشادات السلامة في تبويب «الأداء».
                   </p>
                 </div>
@@ -1564,240 +1611,252 @@ export function ExerciseDetailView({
           >
             {hasHistory ? (
               <>
-            {/* PR Badge & Best Estimated 1RM */}
-            {allTimePR.bestSet && (
-              <Card padding="md">
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div>
+                {/* PR Badge & Best Estimated 1RM */}
+                {allTimePR.bestSet && (
+                  <Card padding="md">
                     <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
+                        justifyContent: 'space-between',
                       }}
                     >
-                      <span
-                        style={{
-                          fontSize: '11px',
-                          fontWeight: 700,
-                          padding: '2px 8px',
-                          borderRadius: 'var(--radius-full)',
-                          background: 'var(--color-accent)',
-                          color: '#14161A',
-                        }}
-                      >
-                        رقم قياسي PR
-                      </span>
-                      <h3
-                        style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}
-                      >
-                        أفضل أداء مسجل
-                      </h3>
+                      <div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: '11px',
+                              fontWeight: 700,
+                              padding: '2px 8px',
+                              borderRadius: 'var(--radius-full)',
+                              background: 'var(--color-accent)',
+                              color: '#14161A',
+                            }}
+                          >
+                            رقم قياسي PR
+                          </span>
+                          <h3
+                            style={{
+                              margin: 0,
+                              fontSize: '15px',
+                              fontWeight: 700,
+                            }}
+                          >
+                            أفضل أداء مسجل
+                          </h3>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '12px',
+                            color: 'var(--color-text-2)',
+                            marginTop: '4px',
+                          }}
+                        >
+                          بتاريخ {allTimePR.bestSet.date}:{' '}
+                          {allTimePR.bestSet.weightKg} كجم ×{' '}
+                          {allTimePR.bestSet.reps} تكرار
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'end' }}>
+                        <div
+                          style={{
+                            fontSize: '20px',
+                            fontWeight: 700,
+                            color: 'var(--color-accent-text)',
+                          }}
+                        >
+                          {allTimePR.max1RM} كجم
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '11px',
+                            color: 'var(--color-text-2)',
+                          }}
+                        >
+                          1RM التقديري (Epley)
+                        </div>
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        fontSize: '12px',
-                        color: 'var(--color-text-2)',
-                        marginTop: '4px',
-                      }}
-                    >
-                      بتاريخ {allTimePR.bestSet.date}:{' '}
-                      {allTimePR.bestSet.weightKg} كجم ×{' '}
-                      {allTimePR.bestSet.reps} تكرار
-                    </div>
+                  </Card>
+                )}
+
+                {/* Weight Progression Over Time Line / Bars */}
+                <Card padding="md">
+                  <h3
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 700,
+                      margin: '0 0 12px 0',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    تطور الأوزان عبر الجلسات
+                  </h3>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-end',
+                      gap: '8px',
+                      height: '100px',
+                      paddingBottom: '4px',
+                    }}
+                  >
+                    {exerciseHistory.map((h, idx) => {
+                      const maxW = Math.max(
+                        ...h.sets.map((s) => s.weightKg || 0),
+                        10,
+                      )
+                      const heightPct = Math.min(
+                        100,
+                        Math.max(
+                          20,
+                          (maxW / (allTimePR.bestSet?.weightKg || 100)) * 100,
+                        ),
+                      )
+                      return (
+                        <div
+                          key={idx}
+                          style={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '4px',
+                            height: '100%',
+                            justifyContent: 'flex-end',
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: '10px',
+                              color: 'var(--color-text-2)',
+                            }}
+                          >
+                            {maxW}
+                          </span>
+                          <div
+                            style={{
+                              width: '100%',
+                              maxWidth: '24px',
+                              height: `${heightPct}%`,
+                              background:
+                                maxW === allTimePR.bestSet?.weightKg
+                                  ? 'var(--color-accent)'
+                                  : 'var(--color-surface-2)',
+                              borderRadius: '4px 4px 0 0',
+                              transition: 'height var(--transition-fast)',
+                            }}
+                          />
+                          <span
+                            style={{
+                              fontSize: '9px',
+                              color: 'var(--color-text-2)',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {h.date.slice(5)}
+                          </span>
+                        </div>
+                      )
+                    })}
                   </div>
-                  <div style={{ textAlign: 'end' }}>
+                </Card>
+
+                {/* Past Sessions List */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: 700,
+                      margin: '4px 0',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    الجلسات السابقة
+                  </h3>
+                  {exerciseHistory.map((sessionItem, sIdx) => (
                     <div
+                      key={sIdx}
                       style={{
-                        fontSize: '20px',
-                        fontWeight: 700,
-                        color: 'var(--color-accent-text)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 14px',
+                        borderRadius: 'var(--radius-control)',
+                        background: 'var(--color-surface)',
+                        border: '1px solid var(--color-divider)',
                       }}
                     >
-                      {allTimePR.max1RM} كجم
+                      <div>
+                        <div style={{ fontSize: '13px', fontWeight: 600 }}>
+                          {sessionItem.date}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '12px',
+                            color: 'var(--color-text-2)',
+                            marginTop: '2px',
+                          }}
+                        >
+                          {sessionItem.sets
+                            .map((s) => `${s.weightKg}k×${s.reps}`)
+                            .join(' · ')}
+                        </div>
+                      </div>
+                      {sessionItem.best1RM > 0 && (
+                        <div style={{ textAlign: 'end', fontSize: '12px' }}>
+                          <span style={{ color: 'var(--color-text-2)' }}>
+                            1RM:{' '}
+                          </span>
+                          <strong>{sessionItem.best1RM} كجم</strong>
+                        </div>
+                      )}
                     </div>
-                    <div
-                      style={{ fontSize: '11px', color: 'var(--color-text-2)' }}
-                    >
-                      1RM التقديري (Epley)
-                    </div>
-                  </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <Card padding="lg">
+                <div style={{ textAlign: 'center', padding: '24px 16px' }}>
+                  <h3
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      margin: '0 0 8px 0',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    لا يوجد سجل سابق لهذا التمرين
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: '13.5px',
+                      color: 'var(--color-text-2)',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    عند تسجيل جلسات تدريبية تحتوي على هذا التمرين، سيظهر هنا
+                    تاريخ الأوزان والتكرارات وأفضل 1RM تقديري وتطور الأداء مع
+                    الوقت.
+                  </p>
                 </div>
               </Card>
             )}
-
-            {/* Weight Progression Over Time Line / Bars */}
-            <Card padding="md">
-              <h3
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  margin: '0 0 12px 0',
-                  color: 'var(--color-text)',
-                }}
-              >
-                تطور الأوزان عبر الجلسات
-              </h3>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  gap: '8px',
-                  height: '100px',
-                  paddingBottom: '4px',
-                }}
-              >
-                {exerciseHistory.map((h, idx) => {
-                  const maxW = Math.max(
-                    ...h.sets.map((s) => s.weightKg || 0),
-                    10,
-                  )
-                  const heightPct = Math.min(
-                    100,
-                    Math.max(
-                      20,
-                      (maxW / (allTimePR.bestSet?.weightKg || 100)) * 100,
-                    ),
-                  )
-                  return (
-                    <div
-                      key={idx}
-                      style={{
-                        flex: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '4px',
-                        height: '100%',
-                        justifyContent: 'flex-end',
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          color: 'var(--color-text-2)',
-                        }}
-                      >
-                        {maxW}
-                      </span>
-                      <div
-                        style={{
-                          width: '100%',
-                          maxWidth: '24px',
-                          height: `${heightPct}%`,
-                          background:
-                            maxW === allTimePR.bestSet?.weightKg
-                              ? 'var(--color-accent)'
-                              : 'var(--color-surface-2)',
-                          borderRadius: '4px 4px 0 0',
-                          transition: 'height var(--transition-fast)',
-                        }}
-                      />
-                      <span
-                        style={{
-                          fontSize: '9px',
-                          color: 'var(--color-text-2)',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {h.date.slice(5)}
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-            </Card>
-
-            {/* Past Sessions List */}
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-            >
-              <h3
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  margin: '4px 0',
-                  color: 'var(--color-text)',
-                }}
-              >
-                الجلسات السابقة
-              </h3>
-              {exerciseHistory.map((sessionItem, sIdx) => (
-                <div
-                  key={sIdx}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '10px 14px',
-                    borderRadius: 'var(--radius-control)',
-                    background: 'var(--color-surface)',
-                    border: '1px solid var(--color-divider)',
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: '13px', fontWeight: 600 }}>
-                      {sessionItem.date}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: '12px',
-                        color: 'var(--color-text-2)',
-                        marginTop: '2px',
-                      }}
-                    >
-                      {sessionItem.sets
-                        .map((s) => `${s.weightKg}k×${s.reps}`)
-                        .join(' · ')}
-                    </div>
-                  </div>
-                  {sessionItem.best1RM > 0 && (
-                    <div style={{ textAlign: 'end', fontSize: '12px' }}>
-                      <span style={{ color: 'var(--color-text-2)' }}>
-                        1RM:{' '}
-                      </span>
-                      <strong>{sessionItem.best1RM} كجم</strong>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <Card padding="lg">
-            <div style={{ textAlign: 'center', padding: '24px 16px' }}>
-              <h3
-                style={{
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  margin: '0 0 8px 0',
-                  color: 'var(--color-text)',
-                }}
-              >
-                لا يوجد سجل سابق لهذا التمرين
-              </h3>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '13.5px',
-                  color: 'var(--color-text-2)',
-                  lineHeight: 1.6,
-                }}
-              >
-                عند تسجيل جلسات تدريبية تحتوي على هذا التمرين، سيظهر هنا تاريخ
-                الأوزان والتكرارات وأفضل 1RM تقديري وتطور الأداء مع الوقت.
-              </p>
-            </div>
-          </Card>
+          </div>
         )}
-      </div>
-      )}
       </div>
 
       <ConfirmSheet

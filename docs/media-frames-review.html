@@ -1,1435 +1,2555 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <title>مراجعة إطارات التمارين — Maganis Keyframes Review</title>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
-    h1 { margin-bottom: 8px; color: #f97316; }
-    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: bold; background: #9a3412; color: #fff; margin-bottom: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .card-title { font-weight: bold; font-size: 15px; color: #e2e8f0; display: flex; justify-content: space-between; }
-    .frames-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
-    .frame-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .frame-img { width: 90px; height: 90px; object-fit: contain; border-radius: 6px; background: #000; border: 1px solid #475569; }
-    .frame-lbl { font-size: 11px; color: #94a3b8; }
-  </style>
-</head>
-<body>
-  <h1>مراجعة إطارات الحركة للتمارين (Keyframes Review)</h1>
-  <div class="status-badge">⚠️ ffmpeg غير مثبت محلياً — استخدام صور البداية والنهاية الحالية</div>
-  <p>إجمالي التمارين المفحوصة: 88 تمريناً. حتى تأكيد المراجع البشري، يُعتمد الإطار الأول (بداية) والأخير (نهاية).</p>
+  <head>
+    <meta charset="UTF-8" />
+    <title>مراجعة إطارات التمارين — Maganis Keyframes Review</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #0f172a;
+        color: #f8fafc;
+        margin: 0;
+        padding: 24px;
+      }
+      h1 {
+        margin-bottom: 8px;
+        color: #f97316;
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: bold;
+        background: #9a3412;
+        color: #fff;
+        margin-bottom: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .card-title {
+        font-weight: bold;
+        font-size: 15px;
+        color: #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+      }
+      .frames-strip {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+      }
+      .frame-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .frame-img {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+        border-radius: 6px;
+        background: #000;
+        border: 1px solid #475569;
+      }
+      .frame-lbl {
+        font-size: 11px;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>مراجعة إطارات الحركة للتمارين (Keyframes Review)</h1>
+    <div class="status-badge">
+      ⚠️ ffmpeg غير مثبت محلياً — استخدام صور البداية والنهاية الحالية
+    </div>
+    <p>
+      إجمالي التمارين المفحوصة: 88 تمريناً. حتى تأكيد المراجع البشري، يُعتمد
+      الإطار الأول (بداية) والأخير (نهاية).
+    </p>
 
-  <div class="grid">
-    <div class="card">
-      <div class="card-title">
-        <span>Barbell Bench Press - Medium Grip</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-1</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-1_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-1_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dumbbell Bench Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-2</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-2_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-2_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Pushups</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-3</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-3_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-3_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Incline Dumbbell Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-5</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-5_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-5_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dumbbell Flyes</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-6</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-6_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-6_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Cable Crossover</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-7</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-7_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-7_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Cable Crossover</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-8</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-8_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-8_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Incline Dumbbell Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-9</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-9_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-9_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Leverage Chest Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-10</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-10_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-10_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dips - Chest Version</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-11</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-11_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-11_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Decline Dumbbell Flyes</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-12</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-12_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-12_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Decline Barbell Bench Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-13</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-13_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-13_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Push-Up Wide</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-14</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-14_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-14_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Incline Push-Up</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-15</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-15_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-15_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Decline Push-Up</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-16</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-16_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-16_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dumbbell Flyes</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-18</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-18_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-18_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Smith Machine Bench Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">chest-19</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-19_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/chest-19_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Bent Over Barbell Row</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-1</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-1_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-1_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Bent Over Two-Dumbbell Row</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-2</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-2_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-2_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Pullups</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-3</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-3_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-3_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Chin-Up</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-4</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-4_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-4_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Wide-Grip Lat Pulldown</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-5</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-5_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-5_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>V-Bar Pulldown</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-6</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-6_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-6_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Seated Cable Rows</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-7</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-7_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-7_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>One-Arm Dumbbell Row</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-8</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-8_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-8_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Barbell Deadlift</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-9</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-9_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-9_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Hyperextensions (Back Extensions)</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-10</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-10_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-10_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>T-Bar Row with Handle</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-11</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-11_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-11_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Reverse Flyes</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-12</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-12_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-12_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Straight-Arm Pulldown</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-13</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-13_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-13_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Inverted Row</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-14</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-14_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-14_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Close-Grip Front Lat Pulldown</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-15</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-15_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-15_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Rope Climb</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-16</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-16_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-16_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Smith Machine Bent Over Row</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-17</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-17_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-17_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Underhand Cable Pulldowns</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-18</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-18_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-18_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Good Morning</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-19</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-19_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-19_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Barbell Shrug</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">back-20</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-20_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/back-20_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Barbell Curl</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-1</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-1_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-1_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dumbbell Bicep Curl</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-2</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-2_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-2_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Hammer Curls</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-3</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-3_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-3_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Preacher Curl</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-4</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-4_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-4_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Incline Dumbbell Curl</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-5</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-5_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-5_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Concentration Curls</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-6</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-6_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-6_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Cable Hammer Curls - Rope Attachment</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-7</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-7_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-7_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Triceps Pushdown</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-8</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-8_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-8_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Triceps Pushdown - Rope Attachment</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-9</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-9_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-9_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Standing Overhead Barbell Triceps Extension</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-10</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-10_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-10_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dips - Triceps Version</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-11</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-11_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-11_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Lying Triceps Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-12</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-12_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-12_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Seated Triceps Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-13</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-13_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-13_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Close-Grip Barbell Bench Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-14</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-14_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-14_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Tricep Dumbbell Kickback</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-15</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-15_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-15_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Cable Wrist Curl</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-17</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-17_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-17_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Reverse Barbell Curl</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-18</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-18_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-18_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Bench Dips</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-19</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-19_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-19_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Cable Preacher Curl</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">arm-20</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-20_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/arm-20_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Barbell Full Squat</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-1</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-1_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-1_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dumbbell Squat</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-2</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-2_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-2_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Front Barbell Squat</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-3</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-3_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-3_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Leg Press</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-4</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-4_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-4_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Leg Extensions</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-5</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-5_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-5_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Lying Leg Curls</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-6</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-6_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-6_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Romanian Deadlift</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-7</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-7_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-7_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Barbell Lunge</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-8</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-8_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-8_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dumbbell Lunges</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-9</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-9_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-9_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Standing Calf Raises</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-10</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-10_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-10_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Seated Calf Raise</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-11</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-11_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-11_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Glute Ham Raise</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-13</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-13_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-13_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Barbell Hip Thrust</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-14</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-14_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-14_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Hack Squat</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-15</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-15_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-15_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Goblet Squat</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-16</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-16_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-16_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Step-up with Knee Raise</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-17</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-17_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-17_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Sumo Deadlift</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-18</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-18_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-18_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Bodyweight Squat</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-19</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-19_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-19_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Calf-Machine Shoulder Shrug</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">leg-20</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-20_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/leg-20_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Plank</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-1</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-1_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-1_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Crunches</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-2</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-2_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-2_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Russian Twist</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-3</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-3_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-3_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Cable Crunch</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-4</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-4_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-4_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Hanging Leg Raise</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-5</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-5_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-5_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Ab Roller</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-6</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-6_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-6_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Push Up to Side Plank</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-7</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-7_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-7_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Mountain Climbers</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-9</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-9_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-9_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Dead Bug</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-11</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-11_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-11_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Reverse Crunch</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-12</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-12_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-12_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Toe Touchers</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-14</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-14_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-14_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Flutter Kicks</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-15</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-15_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-15_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">
-        <span>Decline Crunch</span>
-        <span style="font-size: 12px; color: #94a3b8;"><bdi dir="ltr">core-18</bdi></span>
-      </div>
-      <div class="frames-strip">
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-18_0.jpg" alt="بداية" loading="lazy" />
-          <span class="frame-lbl">بداية</span>
-        </div>
-        <div class="frame-box">
-          <img class="frame-img" src="../public/exercises/core-18_1.jpg" alt="نهاية" loading="lazy" />
-          <span class="frame-lbl">نهاية</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">
+          <span>Barbell Bench Press - Medium Grip</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-1</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-1_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-1_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dumbbell Bench Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-2</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-2_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-2_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Pushups</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-3</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-3_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-3_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Incline Dumbbell Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-5</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-5_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-5_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dumbbell Flyes</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-6</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-6_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-6_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Cable Crossover</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-7</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-7_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-7_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Cable Crossover</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-8</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-8_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-8_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Incline Dumbbell Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-9</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-9_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-9_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Leverage Chest Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-10</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-10_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-10_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dips - Chest Version</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-11</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-11_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-11_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Decline Dumbbell Flyes</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-12</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-12_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-12_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Decline Barbell Bench Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-13</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-13_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-13_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Push-Up Wide</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-14</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-14_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-14_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Incline Push-Up</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-15</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-15_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-15_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Decline Push-Up</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-16</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-16_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-16_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dumbbell Flyes</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-18</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-18_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-18_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Smith Machine Bench Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">chest-19</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-19_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/chest-19_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Bent Over Barbell Row</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-1</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-1_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-1_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Bent Over Two-Dumbbell Row</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-2</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-2_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-2_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Pullups</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-3</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-3_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-3_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Chin-Up</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-4</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-4_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-4_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Wide-Grip Lat Pulldown</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-5</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-5_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-5_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>V-Bar Pulldown</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-6</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-6_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-6_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Seated Cable Rows</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-7</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-7_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-7_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>One-Arm Dumbbell Row</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-8</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-8_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-8_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Barbell Deadlift</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-9</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-9_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-9_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Hyperextensions (Back Extensions)</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-10</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-10_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-10_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>T-Bar Row with Handle</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-11</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-11_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-11_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Reverse Flyes</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-12</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-12_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-12_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Straight-Arm Pulldown</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-13</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-13_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-13_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Inverted Row</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-14</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-14_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-14_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Close-Grip Front Lat Pulldown</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-15</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-15_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-15_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Rope Climb</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-16</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-16_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-16_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Smith Machine Bent Over Row</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-17</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-17_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-17_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Underhand Cable Pulldowns</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-18</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-18_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-18_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Good Morning</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-19</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-19_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-19_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Barbell Shrug</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">back-20</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-20_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/back-20_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Barbell Curl</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-1</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-1_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-1_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dumbbell Bicep Curl</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-2</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-2_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-2_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Hammer Curls</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-3</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-3_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-3_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Preacher Curl</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-4</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-4_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-4_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Incline Dumbbell Curl</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-5</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-5_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-5_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Concentration Curls</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-6</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-6_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-6_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Cable Hammer Curls - Rope Attachment</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-7</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-7_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-7_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Triceps Pushdown</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-8</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-8_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-8_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Triceps Pushdown - Rope Attachment</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-9</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-9_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-9_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Standing Overhead Barbell Triceps Extension</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-10</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-10_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-10_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dips - Triceps Version</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-11</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-11_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-11_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Lying Triceps Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-12</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-12_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-12_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Seated Triceps Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-13</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-13_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-13_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Close-Grip Barbell Bench Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-14</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-14_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-14_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Tricep Dumbbell Kickback</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-15</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-15_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-15_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Cable Wrist Curl</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-17</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-17_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-17_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Reverse Barbell Curl</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-18</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-18_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-18_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Bench Dips</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-19</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-19_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-19_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Cable Preacher Curl</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">arm-20</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-20_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/arm-20_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Barbell Full Squat</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-1</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-1_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-1_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dumbbell Squat</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-2</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-2_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-2_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Front Barbell Squat</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-3</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-3_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-3_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Leg Press</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-4</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-4_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-4_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Leg Extensions</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-5</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-5_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-5_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Lying Leg Curls</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-6</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-6_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-6_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Romanian Deadlift</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-7</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-7_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-7_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Barbell Lunge</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-8</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-8_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-8_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dumbbell Lunges</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-9</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-9_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-9_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Standing Calf Raises</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-10</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-10_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-10_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Seated Calf Raise</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-11</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-11_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-11_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Glute Ham Raise</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-13</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-13_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-13_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Barbell Hip Thrust</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-14</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-14_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-14_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Hack Squat</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-15</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-15_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-15_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Goblet Squat</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-16</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-16_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-16_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Step-up with Knee Raise</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-17</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-17_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-17_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Sumo Deadlift</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-18</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-18_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-18_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Bodyweight Squat</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-19</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-19_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-19_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Calf-Machine Shoulder Shrug</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">leg-20</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-20_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/leg-20_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Plank</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-1</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-1_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-1_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Crunches</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-2</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-2_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-2_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Russian Twist</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-3</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-3_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-3_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Cable Crunch</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-4</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-4_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-4_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Hanging Leg Raise</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-5</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-5_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-5_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Ab Roller</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-6</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-6_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-6_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Push Up to Side Plank</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-7</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-7_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-7_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Mountain Climbers</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-9</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-9_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-9_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dead Bug</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-11</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-11_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-11_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Reverse Crunch</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-12</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-12_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-12_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Toe Touchers</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-14</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-14_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-14_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Flutter Kicks</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-15</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-15_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-15_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <span>Decline Crunch</span>
+          <span style="font-size: 12px; color: #94a3b8"
+            ><bdi dir="ltr">core-18</bdi></span
+          >
+        </div>
+        <div class="frames-strip">
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-18_0.jpg"
+              alt="بداية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">بداية</span>
+          </div>
+          <div class="frame-box">
+            <img
+              class="frame-img"
+              src="../public/exercises/core-18_1.jpg"
+              alt="نهاية"
+              loading="lazy"
+            />
+            <span class="frame-lbl">نهاية</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

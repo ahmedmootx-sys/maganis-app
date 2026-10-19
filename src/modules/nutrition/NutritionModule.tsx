@@ -661,627 +661,636 @@ export function NutritionModule({
         <div
           className="day-switcher-bar"
           style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '8px 16px',
-          background: 'var(--card-bg)',
-          borderBottom: '1px solid var(--line)',
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => setSelectedDate((d) => addDays(d, -1))}
-          aria-label="اليوم السابق"
-          style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '8px',
-            border: 'none',
-            background: 'var(--card-subtle)',
-            color: 'var(--ink)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
+            justifyContent: 'space-between',
+            padding: '8px 16px',
+            background: 'var(--card-bg)',
+            borderBottom: '1px solid var(--line)',
           }}
         >
-          <IconChevronRight size={18} />
-        </button>
-
-        <div
-          style={{
-            fontSize: '14.5px',
-            fontWeight: 700,
-            color: 'var(--ink)',
-            textAlign: 'center',
-          }}
-        >
-          {isToday
-            ? `اليوم، ${formatArabicDate(selectedDate)}`
-            : formatArabicDate(selectedDate)}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setSelectedDate((d) => addDays(d, 1))}
-          aria-label="اليوم التالي"
-          style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '8px',
-            border: 'none',
-            background: 'var(--card-subtle)',
-            color: 'var(--ink)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-          }}
-        >
-          <IconChevronLeft size={18} />
-        </button>
-      </div>
-
-      <div
-        className="screen-content"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          padding: '0 16px',
-          maxWidth: '720px',
-          margin: '0 auto',
-          width: '100%',
-          boxSizing: 'border-box',
-        }}
-      >
-        {/* Migration Callout for Existing Users */}
-        {isLegacyUserNeedingReview && proposedTargets && (
-          <div
+          <button
+            type="button"
+            onClick={() => setSelectedDate((d) => addDays(d, -1))}
+            aria-label="اليوم السابق"
             style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '8px',
+              border: 'none',
+              background: 'var(--card-subtle)',
+              color: 'var(--ink)',
               display: 'flex',
-              flexDirection: 'column',
-              gap: '6px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
             }}
           >
-            <Callout
-              variant="info"
-              title="راجع نمط نشاطك اليومي"
-              message={`قمنا بتحديث نظام السعرات لفصل نمط النشاط اليومي خارج التمرين عن جلسات التمرين حتى لا تُحسب السعرات مرتين.\nالهدف السابق: ${legacyCalorieTarget} سعرة -> الهدف الدقيق الجديد: ${proposedTargets.targetCalories} سعرة (${proposedTargets.proteinGrams} جم بروتين).`}
-              actionLabel="تطبيق"
-              onAction={() => {
-                if (!profile || !onUpdateProfile) return
-                const migratedProfile: UserProfile = {
-                  ...profile,
-                  body: {
-                    ...profile.body,
-                    lifestyle: proposedLifestyle,
-                    activityLevel:
-                      mapLifestyleToLegacyActivity(proposedLifestyle),
-                    workoutBlocks: profile.body.workoutBlocks?.length
-                      ? profile.body.workoutBlocks
-                      : [
-                          {
-                            type: 'resistance',
-                            sessionsPerWeek: profile.trainingDaysPerWeek ?? 4,
-                            minutesPerSession:
-                              profile.body.sessionMinutes ?? 60,
-                            intensity:
-                              profile.body.sessionIntensity ?? 'moderate',
-                          },
-                        ],
-                    lifestyleMigrated: true,
-                    migrationReviewed: true,
-                  },
-                  updatedAt: Date.now(),
-                }
-                onUpdateProfile(migratedProfile)
-              }}
-            />
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                padding: '0 4px',
-              }}
-            >
-              <button
-                type="button"
-                className="btn-ghost"
-                onClick={() => {
-                  if (!profile || !onUpdateProfile) return
-                  onUpdateProfile({
-                    ...profile,
-                    body: {
-                      ...profile.body,
-                      migrationReviewed: true,
-                    },
-                    updatedAt: Date.now(),
-                  })
-                }}
-                style={{
-                  fontSize: '12px',
-                  color: 'var(--muted)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  padding: '2px 4px',
-                }}
-              >
-                إبقاء الأرقام الحالية
-              </button>
-            </div>
-          </div>
-        )}
+            <IconChevronRight size={18} />
+          </button>
 
-        {/* Training days mismatch Callout */}
-        {profile && hasTrainingDaysMismatch && (
-          <Callout
-            variant="warning"
-            title="عدد الأيام مختلف بين ملفك وحاسبة السعرات"
-            message={`ملفك محدد به ${profile.trainingDaysPerWeek} أيام، بينما حاسبة السعرات محدد بها ${profile.body.workoutBlocks![0].sessionsPerWeek} أيام.`}
-            actionLabel="تطابق"
-            onAction={() => {
-              if (!profile || !onUpdateProfile) return
-              const synced: UserProfile = {
-                ...profile,
-                body: {
-                  ...profile.body,
-                  workoutBlocks: profile.body.workoutBlocks?.map((b, i) =>
-                    i === 0
-                      ? { ...b, sessionsPerWeek: profile.trainingDaysPerWeek }
-                      : b,
-                  ),
-                },
-                updatedAt: Date.now(),
-              }
-              onUpdateProfile(synced)
+          <div
+            style={{
+              fontSize: '14.5px',
+              fontWeight: 700,
+              color: 'var(--ink)',
+              textAlign: 'center',
             }}
-          />
-        )}
-
-        {/* Outdated / Incomplete Profile Notice Banner */}
-        {profile &&
-          !isLegacyUserNeedingReview &&
-          (!profile.body.lifestyle ||
-            !profile.body.workoutBlocks ||
-            profile.body.workoutBlocks.length === 0) && (
-            <Callout
-              title="استكمال البيانات"
-              message="لتفعيل حساب معدل الأيض ومعامل النشاط اليومي وتفاصيل جلسات التمرين بدقة 100% بنظام 2026، استكمل بياناتك الآن."
-              actionLabel="استكمال البيانات"
-              onAction={() => setIsProfileModalOpen(true)}
-            />
-          )}
-
-        {/* If targets is null, show EmptyState */}
-        {!targets ? (
-          <div style={{ padding: '24px 0' }}>
-            <EmptyState
-              title="أدخل بياناتك لعرض الحساب"
-              description="يتطلب حساب السعرات والماكروز معرفة الوزن والطول والعمر والجنس بدقة دون تخمين."
-              actionLabel="إدخال البيانات في الملف الشخصي"
-              onAction={() => setIsProfileModalOpen(true)}
-            />
+          >
+            {isToday
+              ? `اليوم، ${formatArabicDate(selectedDate)}`
+              : formatArabicDate(selectedDate)}
           </div>
-        ) : (
-          <>
-            {/* Stale weight warning */}
-            {energyExplanation?.inputs.isWeightStale && (
-              <Callout
-                tone="warning"
-                title="آخر وزن مسجل قديم"
-                message="آخر وزن مسجل منذ أكثر من 30 يوماً — حدّث وزنك لدقة الحساب."
-                actionLabel="تسجيل وزن جديد"
-                onAction={() => setIsCalibrationModalOpen(true)}
-              />
-            )}
 
-            {/* Active goal adjustment banner */}
-            {energyExplanation?.goalAdjustment && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '10px 14px',
-                  background: 'var(--card-subtle)',
-                  borderRadius: '10px',
-                  border: '1px solid var(--line)',
-                  fontSize: '13px',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontWeight: 700, color: 'var(--ink)' }}>
-                    تعديل السعرات للهدف
-                  </span>
-                  <span style={{ color: 'var(--brand)', fontWeight: 800 }}>
-                    {energyExplanation.goalAdjustment.adjustmentKcal >= 0
-                      ? `+${energyExplanation.goalAdjustment.adjustmentKcal}`
-                      : energyExplanation.goalAdjustment.adjustmentKcal}{' '}
-                    سعرة — {energyExplanation.goalAdjustment.reasonAr.replace(/^\(|\)$/g, '')}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsProfileModalOpen(true)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'var(--color-accent-text, var(--accent))',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    textDecoration: 'underline',
-                  }}
-                >
-                  تعديل
-                </button>
-              </div>
-            )}
+          <button
+            type="button"
+            onClick={() => setSelectedDate((d) => addDays(d, 1))}
+            aria-label="اليوم التالي"
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '8px',
+              border: 'none',
+              background: 'var(--card-subtle)',
+              color: 'var(--ink)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <IconChevronLeft size={18} />
+          </button>
+        </div>
 
-            {/* Daily Summary Card: Calories & 3 Macros Grouped */}
-            <div
-              className="card daily-summary-card"
+        <div
+          className="screen-content"
           style={{
-            padding: '18px',
-            borderRadius: '16px',
-            background: 'var(--card-bg)',
-            border: '1px solid var(--line)',
             display: 'flex',
             flexDirection: 'column',
             gap: '16px',
+            padding: '0 16px',
+            maxWidth: '720px',
+            margin: '0 auto',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
-          {/* Calories Row */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {/* Migration Callout for Existing Users */}
+          {isLegacyUserNeedingReview && proposedTargets && (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
+              <Callout
+                variant="info"
+                title="راجع نمط نشاطك اليومي"
+                message={`قمنا بتحديث نظام السعرات لفصل نمط النشاط اليومي خارج التمرين عن جلسات التمرين حتى لا تُحسب السعرات مرتين.\nالهدف السابق: ${legacyCalorieTarget} سعرة -> الهدف الدقيق الجديد: ${proposedTargets.targetCalories} سعرة (${proposedTargets.proteinGrams} جم بروتين).`}
+                actionLabel="تطبيق"
+                onAction={() => {
+                  if (!profile || !onUpdateProfile) return
+                  const migratedProfile: UserProfile = {
+                    ...profile,
+                    body: {
+                      ...profile.body,
+                      lifestyle: proposedLifestyle,
+                      activityLevel:
+                        mapLifestyleToLegacyActivity(proposedLifestyle),
+                      workoutBlocks: profile.body.workoutBlocks?.length
+                        ? profile.body.workoutBlocks
+                        : [
+                            {
+                              type: 'resistance',
+                              sessionsPerWeek: profile.trainingDaysPerWeek ?? 4,
+                              minutesPerSession:
+                                profile.body.sessionMinutes ?? 60,
+                              intensity:
+                                profile.body.sessionIntensity ?? 'moderate',
+                            },
+                          ],
+                      lifestyleMigrated: true,
+                      migrationReviewed: true,
+                    },
+                    updatedAt: Date.now(),
+                  }
+                  onUpdateProfile(migratedProfile)
+                }}
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  padding: '0 4px',
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => {
+                    if (!profile || !onUpdateProfile) return
+                    onUpdateProfile({
+                      ...profile,
+                      body: {
+                        ...profile.body,
+                        migrationReviewed: true,
+                      },
+                      updatedAt: Date.now(),
+                    })
+                  }}
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--muted)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    padding: '2px 4px',
+                  }}
+                >
+                  إبقاء الأرقام الحالية
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Training days mismatch Callout */}
+          {profile && hasTrainingDaysMismatch && (
+            <Callout
+              variant="warning"
+              title="عدد الأيام مختلف بين ملفك وحاسبة السعرات"
+              message={`ملفك محدد به ${profile.trainingDaysPerWeek} أيام، بينما حاسبة السعرات محدد بها ${profile.body.workoutBlocks![0].sessionsPerWeek} أيام.`}
+              actionLabel="تطابق"
+              onAction={() => {
+                if (!profile || !onUpdateProfile) return
+                const synced: UserProfile = {
+                  ...profile,
+                  body: {
+                    ...profile.body,
+                    workoutBlocks: profile.body.workoutBlocks?.map((b, i) =>
+                      i === 0
+                        ? { ...b, sessionsPerWeek: profile.trainingDaysPerWeek }
+                        : b,
+                    ),
+                  },
+                  updatedAt: Date.now(),
+                }
+                onUpdateProfile(synced)
+              }}
+            />
+          )}
+
+          {/* Outdated / Incomplete Profile Notice Banner */}
+          {profile &&
+            !isLegacyUserNeedingReview &&
+            (!profile.body.lifestyle ||
+              !profile.body.workoutBlocks ||
+              profile.body.workoutBlocks.length === 0) && (
+              <Callout
+                title="استكمال البيانات"
+                message="لتفعيل حساب معدل الأيض ومعامل النشاط اليومي وتفاصيل جلسات التمرين بدقة 100% بنظام 2026، استكمل بياناتك الآن."
+                actionLabel="استكمال البيانات"
+                onAction={() => setIsProfileModalOpen(true)}
+              />
+            )}
+
+          {/* If targets is null, show EmptyState */}
+          {!targets ? (
+            <div style={{ padding: '24px 0' }}>
+              <EmptyState
+                title="أدخل بياناتك لعرض الحساب"
+                description="يتطلب حساب السعرات والماكروز معرفة الوزن والطول والعمر والجنس بدقة دون تخمين."
+                actionLabel="إدخال البيانات في الملف الشخصي"
+                onAction={() => setIsProfileModalOpen(true)}
+              />
+            </div>
+          ) : (
+            <>
+              {/* Stale weight warning */}
+              {energyExplanation?.inputs.isWeightStale && (
+                <Callout
+                  tone="warning"
+                  title="آخر وزن مسجل قديم"
+                  message="آخر وزن مسجل منذ أكثر من 30 يوماً — حدّث وزنك لدقة الحساب."
+                  actionLabel="تسجيل وزن جديد"
+                  onAction={() => setIsCalibrationModalOpen(true)}
+                />
+              )}
+
+              {/* Active goal adjustment banner */}
+              {energyExplanation?.goalAdjustment && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '10px 14px',
+                    background: 'var(--card-subtle)',
+                    borderRadius: '10px',
+                    border: '1px solid var(--line)',
+                    fontSize: '13px',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <span style={{ fontWeight: 700, color: 'var(--ink)' }}>
+                      تعديل السعرات للهدف
+                    </span>
+                    <span style={{ color: 'var(--brand)', fontWeight: 800 }}>
+                      {energyExplanation.goalAdjustment.adjustmentKcal >= 0
+                        ? `+${energyExplanation.goalAdjustment.adjustmentKcal}`
+                        : energyExplanation.goalAdjustment.adjustmentKcal}{' '}
+                      سعرة —{' '}
+                      {energyExplanation.goalAdjustment.reasonAr.replace(
+                        /^\(|\)$/g,
+                        '',
+                      )}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsProfileModalOpen(true)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--color-accent-text, var(--accent))',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      textDecoration: 'underline',
+                    }}
+                  >
+                    تعديل
+                  </button>
+                </div>
+              )}
+
+              {/* Daily Summary Card: Calories & 3 Macros Grouped */}
+              <div
+                className="card daily-summary-card"
+                style={{
+                  padding: '18px',
+                  borderRadius: '16px',
+                  background: 'var(--card-bg)',
+                  border: '1px solid var(--line)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                }}
+              >
+                {/* Calories Row */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'baseline',
+                    }}
+                  >
+                    <div>
+                      <span
+                        style={{
+                          fontSize: '12.5px',
+                          color: 'var(--muted)',
+                          fontWeight: 600,
+                        }}
+                      >
+                        السعرات المستهلكة
+                      </span>
+                      <div
+                        style={{
+                          fontSize: '26px',
+                          fontWeight: 800,
+                          color: 'var(--brand)',
+                          fontVariantNumeric: 'tabular-nums',
+                        }}
+                      >
+                        {dailyLog.consumedCalories}{' '}
+                        <span
+                          style={{
+                            fontSize: '15px',
+                            color: 'var(--muted)',
+                            fontWeight: 500,
+                          }}
+                        >
+                          / {targets.targetCalories} سعرة
+                        </span>
+                      </div>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        color: calPercent >= 100 ? '#10b981' : 'var(--muted)',
+                        fontVariantNumeric: 'tabular-nums',
+                      }}
+                    >
+                      {calPercent}%
+                    </span>
+                  </div>
+                  <ProgressBar
+                    value={dailyLog.consumedCalories}
+                    max={targets.targetCalories}
+                    height={8}
+                    color={calPercent >= 100 ? '#10b981' : 'var(--brand)'}
+                    aria-label="شريط السعرات اليومية"
+                  />
+                </div>
+
+                {/* 3 Macro Bars Grouped */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                    paddingTop: '12px',
+                    borderTop: '1px solid var(--line)',
+                  }}
+                >
+                  {/* Protein */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '13px',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: 700,
+                          color: 'var(--color-text)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
+                        <span
+                          className="macro-marker macro-marker--protein"
+                          aria-hidden="true"
+                        />
+                        البروتين
+                      </span>
+                      <span
+                        style={{
+                          fontVariantNumeric: 'tabular-nums',
+                          color: 'var(--ink)',
+                        }}
+                      >
+                        {dailyLog.consumedProtein} / {targets.proteinGrams} جم (
+                        {proteinPercent}%)
+                      </span>
+                    </div>
+                    <ProgressBar
+                      value={dailyLog.consumedProtein}
+                      max={targets.proteinGrams}
+                      height={6}
+                      color="var(--macro-protein)"
+                      aria-label="البروتين"
+                    />
+                  </div>
+
+                  {/* Carbs */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '13px',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: 700,
+                          color: 'var(--color-text)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
+                        <span
+                          className="macro-marker macro-marker--carbs"
+                          aria-hidden="true"
+                        />
+                        الكاربوهيدرات
+                      </span>
+                      <span
+                        style={{
+                          fontVariantNumeric: 'tabular-nums',
+                          color: 'var(--ink)',
+                        }}
+                      >
+                        {dailyLog.consumedCarbs} / {targets.carbsGrams} جم (
+                        {carbsPercent}%)
+                      </span>
+                    </div>
+                    <ProgressBar
+                      value={dailyLog.consumedCarbs}
+                      max={targets.carbsGrams}
+                      height={6}
+                      color="var(--macro-carbs)"
+                      aria-label="الكاربوهيدرات"
+                    />
+                  </div>
+
+                  {/* Fats */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '13px',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: 700,
+                          color: 'var(--color-text)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
+                        <span
+                          className="macro-marker macro-marker--fats"
+                          aria-hidden="true"
+                        />
+                        الدهون
+                      </span>
+                      <span
+                        style={{
+                          fontVariantNumeric: 'tabular-nums',
+                          color: 'var(--ink)',
+                        }}
+                      >
+                        {dailyLog.consumedFats} / {targets.fatsGrams} جم (
+                        {fatsPercent}%)
+                      </span>
+                    </div>
+                    <ProgressBar
+                      value={dailyLog.consumedFats}
+                      max={targets.fatsGrams}
+                      height={6}
+                      color="var(--macro-fats)"
+                      aria-label="الدهون"
+                    />
+                  </div>
+                </div>
+
+                {dailyLog.loggedMeals.length > 0 && (
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: 'var(--muted)',
+                      paddingTop: '4px',
+                    }}
+                  >
+                    الوجبات المسجلة —{' '}
+                    {dailyLog.loggedMeals.map((m) => m.nameAr).join(' • ')}
+                  </div>
+                )}
+              </div>
+
+              {/* 'احتياجك اليومي العلمي' Row */}
+              <div
+                className="card"
+                onClick={() => setShowBodyTargetsDetails(true)}
+                style={{
+                  padding: '16px',
+                  borderRadius: '16px',
+                  background: 'var(--card-bg)',
+                  border: '1px solid var(--line)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '12px',
+                  cursor: 'pointer',
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: 700,
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    احتياجك اليومي العلمي
+                  </span>
+                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                    {targets.targetCalories} سعرة ({targets.goalLabelAr}) · BMR{' '}
+                    {targets.bmr} · TDEE {targets.tdee}
+                  </span>
+                </div>
+                <IconChevronLeft
+                  size={20}
+                  style={{ color: 'var(--muted)', flexShrink: 0 }}
+                />
+              </div>
+            </>
+          )}
+
+          {/* Meal Categories & List Section */}
+          <div
+            className="section-meals"
+            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+          >
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'baseline',
+                alignItems: 'center',
               }}
             >
-              <div>
-                <span
-                  style={{
-                    fontSize: '12.5px',
-                    color: 'var(--muted)',
-                    fontWeight: 600,
-                  }}
-                >
-                  السعرات المستهلكة
-                </span>
-                <div
-                  style={{
-                    fontSize: '26px',
-                    fontWeight: 800,
-                    color: 'var(--brand)',
-                    fontVariantNumeric: 'tabular-nums',
-                  }}
-                >
-                  {dailyLog.consumedCalories}{' '}
-                  <span
-                    style={{
-                      fontSize: '15px',
-                      color: 'var(--muted)',
-                      fontWeight: 500,
-                    }}
-                  >
-                    / {targets.targetCalories} سعرة
-                  </span>
-                </div>
-              </div>
-              <span
+              <h3
                 style={{
-                  fontSize: '13px',
+                  margin: 0,
+                  fontSize: '16px',
                   fontWeight: 700,
-                  color: calPercent >= 100 ? '#10b981' : 'var(--muted)',
-                  fontVariantNumeric: 'tabular-nums',
+                  color: 'var(--ink)',
                 }}
               >
-                {calPercent}%
-              </span>
-            </div>
-            <ProgressBar
-              value={dailyLog.consumedCalories}
-              max={targets.targetCalories}
-              height={8}
-              color={calPercent >= 100 ? '#10b981' : 'var(--brand)'}
-              aria-label="شريط السعرات اليومية"
-            />
-          </div>
-
-          {/* 3 Macro Bars Grouped */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-              paddingTop: '12px',
-              borderTop: '1px solid var(--line)',
-            }}
-          >
-            {/* Protein */}
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '13px',
-                }}
-              >
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: 'var(--color-text)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                >
-                  <span
-                    className="macro-marker macro-marker--protein"
-                    aria-hidden="true"
-                  />
-                  البروتين
-                </span>
-                <span
-                  style={{
-                    fontVariantNumeric: 'tabular-nums',
-                    color: 'var(--ink)',
-                  }}
-                >
-                  {dailyLog.consumedProtein} / {targets.proteinGrams} جم (
-                  {proteinPercent}%)
-                </span>
-              </div>
-              <ProgressBar
-                value={dailyLog.consumedProtein}
-                max={targets.proteinGrams}
-                height={6}
-                color="var(--macro-protein)"
-                aria-label="البروتين"
-              />
-            </div>
-
-            {/* Carbs */}
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '13px',
-                }}
-              >
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: 'var(--color-text)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                >
-                  <span
-                    className="macro-marker macro-marker--carbs"
-                    aria-hidden="true"
-                  />
-                  الكاربوهيدرات
-                </span>
-                <span
-                  style={{
-                    fontVariantNumeric: 'tabular-nums',
-                    color: 'var(--ink)',
-                  }}
-                >
-                  {dailyLog.consumedCarbs} / {targets.carbsGrams} جم (
-                  {carbsPercent}%)
-                </span>
-              </div>
-              <ProgressBar
-                value={dailyLog.consumedCarbs}
-                max={targets.carbsGrams}
-                height={6}
-                color="var(--macro-carbs)"
-                aria-label="الكاربوهيدرات"
-              />
-            </div>
-
-            {/* Fats */}
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '13px',
-                }}
-              >
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: 'var(--color-text)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                >
-                  <span
-                    className="macro-marker macro-marker--fats"
-                    aria-hidden="true"
-                  />
-                  الدهون
-                </span>
-                <span
-                  style={{
-                    fontVariantNumeric: 'tabular-nums',
-                    color: 'var(--ink)',
-                  }}
-                >
-                  {dailyLog.consumedFats} / {targets.fatsGrams} جم (
-                  {fatsPercent}%)
-                </span>
-              </div>
-              <ProgressBar
-                value={dailyLog.consumedFats}
-                max={targets.fatsGrams}
-                height={6}
-                color="var(--macro-fats)"
-                aria-label="الدهون"
-              />
-            </div>
-          </div>
-
-          {dailyLog.loggedMeals.length > 0 && (
-            <div
-              style={{
-                fontSize: '12px',
-                color: 'var(--muted)',
-                paddingTop: '4px',
-              }}
-            >
-              الوجبات المسجلة —{' '}
-              {dailyLog.loggedMeals.map((m) => m.nameAr).join(' • ')}
-            </div>
-          )}
-        </div>
-
-        {/* 'احتياجك اليومي العلمي' Row */}
-        <div
-          className="card"
-          onClick={() => setShowBodyTargetsDetails(true)}
-          style={{
-            padding: '16px',
-            borderRadius: '16px',
-            background: 'var(--card-bg)',
-            border: '1px solid var(--line)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px',
-            cursor: 'pointer',
-          }}
-          role="button"
-          tabIndex={0}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span
-              style={{ fontSize: '15px', fontWeight: 700, color: 'var(--ink)' }}
-            >
-              احتياجك اليومي العلمي
-            </span>
-            <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-              {targets.targetCalories} سعرة ({targets.goalLabelAr}) · BMR{' '}
-              {targets.bmr} · TDEE {targets.tdee}
-            </span>
-          </div>
-          <IconChevronLeft
-            size={20}
-            style={{ color: 'var(--muted)', flexShrink: 0 }}
-          />
-        </div>
-        </>
-        )}
-
-        {/* Meal Categories & List Section */}
-        <div
-          className="section-meals"
-          style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <h3
-              style={{
-                margin: 0,
-                fontSize: '16px',
-                fontWeight: 700,
-                color: 'var(--ink)',
-              }}
-            >
-              قائمة الوجبات ({filteredCustomMeals.length})
-            </h3>
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => {
-                setEditingCustomMeal(null)
-                setIsCustomMealModalOpen(true)
-              }}
-              style={{
-                fontSize: '13.5px',
-                fontWeight: 600,
-                color: 'var(--color-accent-text, var(--brand))',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              + تصميم وجبة
-            </button>
-          </div>
-
-          {/* Category Filter Chips (No Emoji) */}
-          <div
-            className="chips-row"
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '8px',
-              paddingBottom: '4px',
-            }}
-          >
-            <button
-              type="button"
-              className={
-                'chip-btn' +
-                (selectedCategoryFilter === 'all' ? ' selected' : '')
-              }
-              onClick={() => setSelectedCategoryFilter('all')}
-              style={{
-                padding: '8px 14px',
-                borderRadius: '999px',
-                fontSize: '13px',
-                fontWeight: 600,
-                border: '1px solid var(--line)',
-                background:
-                  selectedCategoryFilter === 'all'
-                    ? 'var(--accent)'
-                    : 'var(--card-subtle)',
-                color:
-                  selectedCategoryFilter === 'all'
-                    ? 'var(--on-accent, #000000)'
-                    : 'var(--ink)',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              الكل ({customMeals.length})
-            </button>
-            {(Object.keys(CATEGORY_LABELS) as MealCategory[]).map((cat) => (
+                قائمة الوجبات ({filteredCustomMeals.length})
+              </h3>
               <button
-                key={cat}
+                type="button"
+                className="btn-ghost"
+                onClick={() => {
+                  setEditingCustomMeal(null)
+                  setIsCustomMealModalOpen(true)
+                }}
+                style={{
+                  fontSize: '13.5px',
+                  fontWeight: 600,
+                  color: 'var(--color-accent-text, var(--brand))',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                + تصميم وجبة
+              </button>
+            </div>
+
+            {/* Category Filter Chips (No Emoji) */}
+            <div
+              className="chips-row"
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                paddingBottom: '4px',
+              }}
+            >
+              <button
                 type="button"
                 className={
                   'chip-btn' +
-                  (selectedCategoryFilter === cat ? ' selected' : '')
+                  (selectedCategoryFilter === 'all' ? ' selected' : '')
                 }
-                onClick={() => setSelectedCategoryFilter(cat)}
+                onClick={() => setSelectedCategoryFilter('all')}
                 style={{
                   padding: '8px 14px',
                   borderRadius: '999px',
@@ -1289,265 +1298,171 @@ export function NutritionModule({
                   fontWeight: 600,
                   border: '1px solid var(--line)',
                   background:
-                    selectedCategoryFilter === cat
+                    selectedCategoryFilter === 'all'
                       ? 'var(--accent)'
                       : 'var(--card-subtle)',
                   color:
-                    selectedCategoryFilter === cat
+                    selectedCategoryFilter === 'all'
                       ? 'var(--on-accent, #000000)'
                       : 'var(--ink)',
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                 }}
               >
-                {CATEGORY_LABELS[cat]} (
-                {customMeals.filter((m) => m.category === cat).length})
+                الكل ({customMeals.length})
               </button>
-            ))}
-          </div>
+              {(Object.keys(CATEGORY_LABELS) as MealCategory[]).map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  className={
+                    'chip-btn' +
+                    (selectedCategoryFilter === cat ? ' selected' : '')
+                  }
+                  onClick={() => setSelectedCategoryFilter(cat)}
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: '999px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    border: '1px solid var(--line)',
+                    background:
+                      selectedCategoryFilter === cat
+                        ? 'var(--accent)'
+                        : 'var(--card-subtle)',
+                    color:
+                      selectedCategoryFilter === cat
+                        ? 'var(--on-accent, #000000)'
+                        : 'var(--ink)',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {CATEGORY_LABELS[cat]} (
+                  {customMeals.filter((m) => m.category === cat).length})
+                </button>
+              ))}
+            </div>
 
-          {/* Meals List */}
-          {filteredCustomMeals.length === 0 ? (
-            <EmptyState
-              title="لا توجد وجبات في هذا القسم"
-              description="صمّم وجبتك بالجرامات أو سجّل وجبة سريعة بالأرقام"
-              actionLabel="+ إضافة وجبة"
-              onAction={() => setIsCustomMealModalOpen(true)}
-            />
-          ) : (
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-            >
-              {filteredCustomMeals.map((meal) => {
-                const isJustLogged = recentlyLoggedId === meal.id
-                return (
-                  <div
-                    key={meal.id}
-                    className="card meal-list-row"
-                    style={{
-                      padding: '12px 16px',
-                      borderRadius: '12px',
-                      background: 'var(--card-bg)',
-                      border: '1px solid var(--line)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: '12px',
-                    }}
-                  >
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <strong
-                        style={{
-                          fontSize: '15px',
-                          color: 'var(--ink)',
-                          display: 'block',
-                        }}
-                      >
-                        {meal.nameAr}
-                      </strong>
-                      <span
-                        style={{
-                          fontSize: '12.5px',
-                          color: 'var(--muted)',
-                          marginTop: '2px',
-                          display: 'block',
-                          fontVariantNumeric: 'tabular-nums',
-                        }}
-                      >
-                        {meal.calories} سعرة · ب: {meal.proteinGrams}ج · ك:{' '}
-                        {meal.carbsGrams}ج · د: {meal.fatsGrams}ج
-                      </span>
-                    </div>
-
+            {/* Meals List */}
+            {filteredCustomMeals.length === 0 ? (
+              <EmptyState
+                title="لا توجد وجبات في هذا القسم"
+                description="صمّم وجبتك بالجرامات أو سجّل وجبة سريعة بالأرقام"
+                actionLabel="+ إضافة وجبة"
+                onAction={() => setIsCustomMealModalOpen(true)}
+              />
+            ) : (
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+              >
+                {filteredCustomMeals.map((meal) => {
+                  const isJustLogged = recentlyLoggedId === meal.id
+                  return (
                     <div
+                      key={meal.id}
+                      className="card meal-list-row"
                       style={{
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        background: 'var(--card-bg)',
+                        border: '1px solid var(--line)',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        flexShrink: 0,
+                        justifyContent: 'space-between',
+                        gap: '12px',
                       }}
                     >
-                      <button
-                        type="button"
-                        onClick={() => handleLogCustomMeal(meal)}
-                        style={{
-                          height: '38px',
-                          padding: '0 12px',
-                          borderRadius: '8px',
-                          border: 'none',
-                          background: isJustLogged ? '#10b981' : 'var(--brand)',
-                          color: '#fff',
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                        }}
-                      >
-                        {isJustLogged && <IconCheck size={16} />}
-                        <span>{isJustLogged ? 'تم التسجيل' : 'أكلتها'}</span>
-                      </button>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <strong
+                          style={{
+                            fontSize: '15px',
+                            color: 'var(--ink)',
+                            display: 'block',
+                          }}
+                        >
+                          {meal.nameAr}
+                        </strong>
+                        <span
+                          style={{
+                            fontSize: '12.5px',
+                            color: 'var(--muted)',
+                            marginTop: '2px',
+                            display: 'block',
+                            fontVariantNumeric: 'tabular-nums',
+                          }}
+                        >
+                          {meal.calories} سعرة · ب: {meal.proteinGrams}ج · ك:{' '}
+                          {meal.carbsGrams}ج · د: {meal.fatsGrams}ج
+                        </span>
+                      </div>
 
-                      <button
-                        type="button"
-                        className="btn-icon"
-                        onClick={() => setMealActionTarget(meal)}
-                        aria-label={`خيارات وجبة ${meal.nameAr}`}
+                      <div
                         style={{
-                          width: '38px',
-                          height: '38px',
-                          borderRadius: '8px',
-                          border: 'none',
-                          background: 'var(--card-subtle)',
-                          color: 'var(--ink)',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
+                          gap: '6px',
+                          flexShrink: 0,
                         }}
                       >
-                        <IconMoreVertical size={18} />
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => handleLogCustomMeal(meal)}
+                          style={{
+                            height: '38px',
+                            padding: '0 12px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            background: isJustLogged
+                              ? '#10b981'
+                              : 'var(--brand)',
+                            color: '#fff',
+                            fontSize: '13px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                          }}
+                        >
+                          {isJustLogged && <IconCheck size={16} />}
+                          <span>{isJustLogged ? 'تم التسجيل' : 'أكلتها'}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          className="btn-icon"
+                          onClick={() => setMealActionTarget(meal)}
+                          aria-label={`خيارات وجبة ${meal.nameAr}`}
+                          style={{
+                            width: '38px',
+                            height: '38px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            background: 'var(--card-subtle)',
+                            color: 'var(--ink)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <IconMoreVertical size={18} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
+                  )
+                })}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Plus Sheet: Quick Log / Custom Meal / Macro Guide */}
-      <Sheet
-        isOpen={showPlusSheet}
-        onClose={() => setShowPlusSheet(false)}
-        title="إضافة وتتبع التغذية"
-      >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-            padding: '8px 0',
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => {
-              setShowPlusSheet(false)
-              setIsQuickManualModalOpen(true)
-            }}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px',
-              padding: '14px 16px',
-              borderRadius: '12px',
-              border: 'none',
-              background: 'var(--card-subtle)',
-              textAlign: 'right',
-              cursor: 'pointer',
-              width: '100%',
-            }}
-          >
-            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
-              تسجيل وجبة سريعة
-            </strong>
-            <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
-              سجل سعرات وماكروز وجبة مباشرة بالأرقام
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setShowPlusSheet(false)
-              setEditingCustomMeal(null)
-              setIsCustomMealModalOpen(true)
-            }}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px',
-              padding: '14px 16px',
-              borderRadius: '12px',
-              border: 'none',
-              background: 'var(--card-subtle)',
-              textAlign: 'right',
-              cursor: 'pointer',
-              width: '100%',
-            }}
-          >
-            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
-              تصميم وجبة بالمكونات
-            </strong>
-            <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
-              احسب الماكروز بالجرام من قاعدة الأغذية المصرية والعربية
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setShowPlusSheet(false)
-              setShowMacroGuide(true)
-            }}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px',
-              padding: '14px 16px',
-              borderRadius: '12px',
-              border: 'none',
-              background: 'var(--card-subtle)',
-              textAlign: 'right',
-              cursor: 'pointer',
-              width: '100%',
-            }}
-          >
-            <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
-              دليل الماكروز والتغذية
-            </strong>
-            <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
-              شرح مبسط لكيفية تقسيم البروتين والكارب والدهون
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setShowPlusSheet(false)
-              handleResetDailyLog()
-            }}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px',
-              padding: '14px 16px',
-              borderRadius: '12px',
-              border: 'none',
-              background: 'var(--danger-surface, rgba(220, 38, 38, 0.08))',
-              color: 'var(--danger)',
-              textAlign: 'right',
-              cursor: 'pointer',
-              width: '100%',
-            }}
-          >
-            <strong style={{ fontSize: '15px' }}>تصفير عداد اليوم</strong>
-            <span style={{ fontSize: '12.5px', opacity: 0.8 }}>
-              إعادة عداد السعرات والماكروز لليوم الحالي إلى الصفر
-            </span>
-          </button>
-        </div>
-      </Sheet>
-
-      {/* Meal Actions Sheet */}
-      {mealActionTarget && (
+        {/* Plus Sheet: Quick Log / Custom Meal / Macro Guide */}
         <Sheet
-          isOpen={true}
-          onClose={() => setMealActionTarget(null)}
-          title={`خيارات: ${mealActionTarget.nameAr}`}
+          isOpen={showPlusSheet}
+          onClose={() => setShowPlusSheet(false)}
+          title="إضافة وتتبع التغذية"
         >
           <div
             style={{
@@ -1560,423 +1475,237 @@ export function NutritionModule({
             <button
               type="button"
               onClick={() => {
-                setEditingCustomMeal(mealActionTarget)
-                setMealActionTarget(null)
-                setIsCustomMealModalOpen(true)
+                setShowPlusSheet(false)
+                setIsQuickManualModalOpen(true)
               }}
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
+                flexDirection: 'column',
+                gap: '2px',
                 padding: '14px 16px',
                 borderRadius: '12px',
                 border: 'none',
                 background: 'var(--card-subtle)',
-                color: 'var(--ink)',
-                fontSize: '15px',
-                fontWeight: 600,
                 textAlign: 'right',
-                width: '100%',
                 cursor: 'pointer',
+                width: '100%',
               }}
             >
-              <IconEdit size={18} />
-              <span>تعديل الوجبة</span>
+              <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
+                تسجيل وجبة سريعة
+              </strong>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
+                سجل سعرات وماكروز وجبة مباشرة بالأرقام
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => {
-                setMealToDelete(mealActionTarget)
-                setMealActionTarget(null)
+                setShowPlusSheet(false)
+                setEditingCustomMeal(null)
+                setIsCustomMealModalOpen(true)
               }}
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
+                flexDirection: 'column',
+                gap: '2px',
+                padding: '14px 16px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'var(--card-subtle)',
+                textAlign: 'right',
+                cursor: 'pointer',
+                width: '100%',
+              }}
+            >
+              <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
+                تصميم وجبة بالمكونات
+              </strong>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
+                احسب الماكروز بالجرام من قاعدة الأغذية المصرية والعربية
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowPlusSheet(false)
+                setShowMacroGuide(true)
+              }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2px',
+                padding: '14px 16px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'var(--card-subtle)',
+                textAlign: 'right',
+                cursor: 'pointer',
+                width: '100%',
+              }}
+            >
+              <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>
+                دليل الماكروز والتغذية
+              </strong>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
+                شرح مبسط لكيفية تقسيم البروتين والكارب والدهون
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowPlusSheet(false)
+                handleResetDailyLog()
+              }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2px',
                 padding: '14px 16px',
                 borderRadius: '12px',
                 border: 'none',
                 background: 'var(--danger-surface, rgba(220, 38, 38, 0.08))',
                 color: 'var(--danger)',
-                fontSize: '15px',
-                fontWeight: 600,
                 textAlign: 'right',
-                width: '100%',
                 cursor: 'pointer',
+                width: '100%',
               }}
             >
-              <IconTrash size={18} />
-              <span>حذف الوجبة</span>
+              <strong style={{ fontSize: '15px' }}>تصفير عداد اليوم</strong>
+              <span style={{ fontSize: '12.5px', opacity: 0.8 }}>
+                إعادة عداد السعرات والماكروز لليوم الحالي إلى الصفر
+              </span>
             </button>
           </div>
         </Sheet>
-      )}
 
-      {/* Delete Meal Confirm Sheet */}
-      {mealToDelete && (
-        <ConfirmSheet
-          isOpen={true}
-          onClose={() => setMealToDelete(null)}
-          onConfirm={() => handleDeleteCustomMeal(mealToDelete.id)}
-          title="حذف الوجبة؟"
-          consequences={[
-            `هل أنت متأكد من حذف وجبة «${mealToDelete.nameAr}» نهائياً؟`,
-          ]}
-          confirmLabel="نعم، حذف"
-          cancelLabel="إلغاء"
-          isDestructive={true}
-        />
-      )}
-
-      {/* Reset Daily Log Confirm Sheet */}
-      {showResetDailyConfirm && (
-        <ConfirmSheet
-          isOpen={true}
-          onClose={() => setShowResetDailyConfirm(false)}
-          onConfirm={doResetDailyLog}
-          title="تصفير سجل اليوم؟"
-          consequences={[
-            'سيتم حذف جميع الوجبات المسجلة وتصفير عداد السعرات والماكروز لهذا اليوم.',
-          ]}
-          confirmLabel="نعم، تصفير السجل"
-          cancelLabel="إلغاء"
-          isDestructive={true}
-        />
-      )}
-
-      {/* Body & Targets Detail Sub-Screen */}
-      {showBodyTargetsDetails && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 500,
-            background: 'var(--bg)',
-            display: 'flex',
-            flexDirection: 'column',
-            overflowY: 'auto',
-            WebkitOverflowScrolling: 'touch',
-          }}
-        >
-          <TopBar
-            title="ملف جسمك واحتياجك العلمي"
-            onBack={() => setShowBodyTargetsDetails(false)}
-          />
-
-          <div
-            className="screen-content"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-              padding: '16px',
-              maxWidth: '680px',
-              margin: '0 auto',
-              width: '100%',
-              boxSizing: 'border-box',
-            }}
+        {/* Meal Actions Sheet */}
+        {mealActionTarget && (
+          <Sheet
+            isOpen={true}
+            onClose={() => setMealActionTarget(null)}
+            title={`خيارات: ${mealActionTarget.nameAr}`}
           >
-            {!profile || !targets ? (
-              <EmptyState
-                title="أدخل بياناتك لعرض الحساب"
-                description="يرجى إكمال بيانات ملفك الشخصي في الإعدادات لحساب السعرات ومعدل الحرق بدقة."
-              />
-            ) : (
-              <>
-                {/* KeyValueList of metrics */}
-                <div
-                  className="card"
-              style={{
-                borderRadius: '16px',
-                background: 'var(--card-bg)',
-                border: '1px solid var(--line)',
-                padding: '8px 16px',
-              }}
-            >
-              <KeyValueList
-                items={[
-                  {
-                    id: 'weight',
-                    label: 'الوزن',
-                    value: `${profile.body.weightKg} كجم`,
-                  },
-                  {
-                    id: 'height',
-                    label: 'الطول',
-                    value: `${profile.body.heightCm} سم`,
-                  },
-                  {
-                    id: 'age',
-                    label: 'العمر',
-                    value: `${profile.body.age} سنة`,
-                  },
-                  {
-                    id: 'sex',
-                    label: 'الجنس',
-                    value: profile.body.sex === 'male' ? 'ذكر' : 'أنثى',
-                  },
-                  {
-                    id: 'bf',
-                    label: 'نسبة دهون الجسم',
-                    value: profile.body.bodyFatPercent
-                      ? `${profile.body.bodyFatPercent}%`
-                      : 'غير محددة',
-                  },
-                  {
-                    id: 'lifestyle',
-                    label: 'نمط النشاط اليومي',
-                    value:
-                      LIFESTYLE_OPTIONS.find(
-                        (l) =>
-                          l.level ===
-                          (profile.body.lifestyle ??
-                            mapLegacyActivityToLifestyle(
-                              profile.body.activityLevel,
-                            )),
-                      )?.titleAr || '—',
-                  },
-                  {
-                    id: 'workouts',
-                    label: 'جلسات التمرين',
-                    value: `${profile.trainingDaysPerWeek} أيام أسبوعياً`,
-                  },
-                  {
-                    id: 'goal',
-                    label: 'الهدف الأساسي',
-                    value: currentGoalObj?.labelAr || 'تضخيم',
-                  },
-                ]}
-              />
-            </div>
-
-            {/* BMR and TDEE Stats */}
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '12px',
-              }}
-            >
-              <Stat
-                label="الحرق الأساسي"
-                value={`${targets.bmr} سعرة`}
-                secondary={<span dir="ltr">BMR</span>}
-              />
-              <Stat
-                label="الحرق بالنشاط"
-                value={`${targets.tdee} سعرة`}
-                secondary={<span dir="ltr">TDEE</span>}
-              />
-            </div>
-
-            {/* Scientific Explanation Expandable */}
-            <div
-              className="card"
-              style={{
-                borderRadius: '16px',
-                background: 'var(--card-bg)',
-                border: '1px solid var(--line)',
-                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                padding: '8px 0',
               }}
             >
               <button
                 type="button"
-                onClick={() => setShowExplanation(!showExplanation)}
+                onClick={() => {
+                  setEditingCustomMeal(mealActionTarget)
+                  setMealActionTarget(null)
+                  setIsCustomMealModalOpen(true)
+                }}
                 style={{
-                  width: '100%',
                   display: 'flex',
-                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  background: 'transparent',
+                  gap: '12px',
+                  padding: '14px 16px',
+                  borderRadius: '12px',
                   border: 'none',
-                  fontSize: '15px',
-                  fontWeight: 700,
+                  background: 'var(--card-subtle)',
                   color: 'var(--ink)',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  textAlign: 'right',
+                  width: '100%',
                   cursor: 'pointer',
-                  padding: 0,
                 }}
               >
-                <span>
-                  كيف تم حساب أهدافك؟ (معادلة ميفلين–سانت جور · <bdi dir="ltr">Mifflin-St Jeor 1990</bdi>)
-                </span>
-                <span style={{ fontSize: '13px', color: 'var(--brand)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  {showExplanation ? 'إخفاء' : 'عرض'}
-                  <Icon name={showExplanation ? 'chevron-up' : 'chevron-down'} size={14} />
-                </span>
+                <IconEdit size={18} />
+                <span>تعديل الوجبة</span>
               </button>
 
-              {showExplanation && (targets.engineResult || energyExplanation) && (
-                <div
-                  style={{
-                    marginTop: '12px',
-                    fontSize: '13px',
-                    lineHeight: 1.7,
-                  }}
-                >
-                  <ul
-                    style={{
-                      paddingRight: '18px',
-                      margin: '8px 0',
-                      color: 'var(--ink)',
-                    }}
-                  >
-                    <li>
-                      <strong>المعادلة</strong>{' '}
-                      {energyExplanation?.bmr.formulaName ?? 'معادلة ميفلين–سانت جور (1990)'}
-                    </li>
-                    <li>
-                      <strong>الحرق الأساسي (BMR)</strong>{' '}
-                      {energyExplanation?.bmr.formattedText ?? targets.engineResult?.explanationAr.bmrText}
-                    </li>
-                    <li>
-                      <strong>الحرق القاعدي بنشاط الحياة</strong>{' '}
-                      {energyExplanation?.baseline.formattedText ?? targets.engineResult?.explanationAr.lifestyleText}
-                    </li>
-                    <li>
-                      <strong>حرق جلسات التمرين (حساب حرق التمرين)</strong>{' '}
-                      {energyExplanation?.eat.formattedText ?? targets.engineResult?.explanationAr.eatText}
-                      {energyExplanation && energyExplanation.workoutBlocks.length > 0 && (
-                        <ul
-                          style={{
-                            paddingRight: '16px',
-                            marginTop: '6px',
-                            fontSize: '12.5px',
-                            color: 'var(--color-text-2)',
-                          }}
-                        >
-                          {energyExplanation.workoutBlocks.map((b, i) => (
-                            <li key={i}>
-                              {b.sessionsPerWeek} جلسات/أسبوع × {b.minutes} دقيقة، {b.activity === 'resistance' ? 'مقاومة' : 'كارديو'} {b.intensity === 'hard' ? 'شديدة' : b.intensity === 'light' ? 'خفيفة' : 'متوسطة'} (صافي MET: {b.netMet.toFixed(1)}، معامل EPOC: 1.10) = {b.perSessionKcal} سعرة/جلسة ({b.perDayKcal} سعرة/يوم)
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                    <li>
-                      <strong>إجمالي الحرق اليومي (TDEE)</strong>{' '}
-                      {energyExplanation?.tdee.formattedText ?? targets.engineResult?.explanationAr.tdeeRangeText}
-                    </li>
-                    <li>
-                      <strong>تعديل السعرات للهدف</strong>{' '}
-                      {energyExplanation?.goalAdjustment.formattedText ?? targets.engineResult?.explanationAr.adjustmentText}
-                    </li>
-                    <li>
-                      <strong>أساس احتساب البروتين</strong>{' '}
-                      {energyExplanation
-                        ? `${energyExplanation.targets.proteinGrams} جم (${energyExplanation.proteinBasis.gPerKg} جم/كجم)`
-                        : targets.engineResult?.explanationAr.proteinBasisText}
-                    </li>
-                  </ul>
-                  <div
-                    style={{
-                      background: 'var(--card-subtle)',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      fontSize: '12px',
-                      color: 'var(--muted)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                      marginTop: '8px',
-                    }}
-                  >
-                    <div>
-                      <em>مرجع علمي</em>{' '}
-                      {energyExplanation?.proteinBasis.referenceText ??
-                        'وفق دراسة Morton et al., BJSM 2018: نقطة تشبع البناء العضلي عند ~1.6 جم/كجم والحد الأعلى لنطاق الثقة 95% عند 2.2 جم/كجم، وافتراض التطبيق 1.8 جم/كجم يقع ضمن هذا النطاق.'}
-                    </div>
-                    <div
-                      dir="ltr"
-                      style={{ fontSize: '11px', color: 'var(--muted)' }}
-                    >
-                      <bdi>Morton et al., BJSM 2018</bdi>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            </>
-          )}
-
-            {/* Actions: Edit profile & Calibration */}
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
-            >
-              <Button
-                variant="primary"
-                size="lg"
-                fullWidth
+              <button
+                type="button"
                 onClick={() => {
-                  setShowBodyTargetsDetails(false)
-                  setIsProfileModalOpen(true)
+                  setMealToDelete(mealActionTarget)
+                  setMealActionTarget(null)
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '14px 16px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: 'var(--danger-surface, rgba(220, 38, 38, 0.08))',
+                  color: 'var(--danger)',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  textAlign: 'right',
+                  width: '100%',
+                  cursor: 'pointer',
                 }}
               >
-                تعديل بيانات وزني وهدفي
-              </Button>
-
-              <Button
-                variant="secondary"
-                size="lg"
-                fullWidth
-                onClick={() => {
-                  setShowBodyTargetsDetails(false)
-                  setIsCalibrationModalOpen(true)
-                }}
-              >
-                معايرة السعرات الذكية
-              </Button>
+                <IconTrash size={18} />
+                <span>حذف الوجبة</span>
+              </button>
             </div>
+          </Sheet>
+        )}
 
-            {/* Safety Disclaimer Footnote */}
-            <p
-              style={{
-                fontSize: '11.5px',
-                color: 'var(--muted)',
-                lineHeight: 1.5,
-                margin: '8px 0',
-                textAlign: 'center',
-              }}
-            >
-              تنويه طبي: هذه الأرقام والخطط الغذائية هي تقديرات حسابية إرشادية
-              مستندة للأدبيات الرياضية وليست استشارة طبية. يُرجى استشارة طبيب أو
-              أخصائي تغذية قبل اتباع أي حمية صارمة.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Screen 10: Calculator Settings (Full-Screen Route) */}
-      {isProfileModalOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 500,
-            background: 'var(--bg)',
-            display: 'flex',
-            flexDirection: 'column',
-            overflowY: 'auto',
-            WebkitOverflowScrolling: 'touch',
-          }}
-        >
-          <TopBar
-            title="إعدادات الحاسبة واحتياج السعرات"
-            onBack={() => setIsProfileModalOpen(false)}
+        {/* Delete Meal Confirm Sheet */}
+        {mealToDelete && (
+          <ConfirmSheet
+            isOpen={true}
+            onClose={() => setMealToDelete(null)}
+            onConfirm={() => handleDeleteCustomMeal(mealToDelete.id)}
+            title="حذف الوجبة؟"
+            consequences={[
+              `هل أنت متأكد من حذف وجبة «${mealToDelete.nameAr}» نهائياً؟`,
+            ]}
+            confirmLabel="نعم، حذف"
+            cancelLabel="إلغاء"
+            isDestructive={true}
           />
+        )}
 
-          <form
-            onSubmit={handleSaveProfileChanges}
+        {/* Reset Daily Log Confirm Sheet */}
+        {showResetDailyConfirm && (
+          <ConfirmSheet
+            isOpen={true}
+            onClose={() => setShowResetDailyConfirm(false)}
+            onConfirm={doResetDailyLog}
+            title="تصفير سجل اليوم؟"
+            consequences={[
+              'سيتم حذف جميع الوجبات المسجلة وتصفير عداد السعرات والماكروز لهذا اليوم.',
+            ]}
+            confirmLabel="نعم، تصفير السجل"
+            cancelLabel="إلغاء"
+            isDestructive={true}
+          />
+        )}
+
+        {/* Body & Targets Detail Sub-Screen */}
+        {showBodyTargetsDetails && (
+          <div
+            role="dialog"
+            aria-modal="true"
             style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 500,
+              background: 'var(--bg)',
               display: 'flex',
               flexDirection: 'column',
-              flex: 1,
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
             }}
           >
+            <TopBar
+              title="ملف جسمك واحتياجك العلمي"
+              onBack={() => setShowBodyTargetsDetails(false)}
+            />
+
             <div
               className="screen-content"
               style={{
@@ -1988,548 +1717,934 @@ export function NutritionModule({
                 margin: '0 auto',
                 width: '100%',
                 boxSizing: 'border-box',
-                flex: 1,
               }}
             >
-              {modalError && (
-                <div
-                  role="alert"
-                  style={{
-                    padding: '12px 16px',
-                    borderRadius: '10px',
-                    background: 'var(--danger-surface, rgba(220, 38, 38, 0.1))',
-                    color: 'var(--danger)',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                  }}
-                >
-                  {modalError}
-                </div>
+              {!profile || !targets ? (
+                <EmptyState
+                  title="أدخل بياناتك لعرض الحساب"
+                  description="يرجى إكمال بيانات ملفك الشخصي في الإعدادات لحساب السعرات ومعدل الحرق بدقة."
+                />
+              ) : (
+                <>
+                  {/* KeyValueList of metrics */}
+                  <div
+                    className="card"
+                    style={{
+                      borderRadius: '16px',
+                      background: 'var(--card-bg)',
+                      border: '1px solid var(--line)',
+                      padding: '8px 16px',
+                    }}
+                  >
+                    <KeyValueList
+                      items={[
+                        {
+                          id: 'weight',
+                          label: 'الوزن',
+                          value: `${profile.body.weightKg} كجم`,
+                        },
+                        {
+                          id: 'height',
+                          label: 'الطول',
+                          value: `${profile.body.heightCm} سم`,
+                        },
+                        {
+                          id: 'age',
+                          label: 'العمر',
+                          value: `${profile.body.age} سنة`,
+                        },
+                        {
+                          id: 'sex',
+                          label: 'الجنس',
+                          value: profile.body.sex === 'male' ? 'ذكر' : 'أنثى',
+                        },
+                        {
+                          id: 'bf',
+                          label: 'نسبة دهون الجسم',
+                          value: profile.body.bodyFatPercent
+                            ? `${profile.body.bodyFatPercent}%`
+                            : 'غير محددة',
+                        },
+                        {
+                          id: 'lifestyle',
+                          label: 'نمط النشاط اليومي',
+                          value:
+                            LIFESTYLE_OPTIONS.find(
+                              (l) =>
+                                l.level ===
+                                (profile.body.lifestyle ??
+                                  mapLegacyActivityToLifestyle(
+                                    profile.body.activityLevel,
+                                  )),
+                            )?.titleAr || '—',
+                        },
+                        {
+                          id: 'workouts',
+                          label: 'جلسات التمرين',
+                          value: `${profile.trainingDaysPerWeek} أيام أسبوعياً`,
+                        },
+                        {
+                          id: 'goal',
+                          label: 'الهدف الأساسي',
+                          value: currentGoalObj?.labelAr || 'تضخيم',
+                        },
+                      ]}
+                    />
+                  </div>
+
+                  {/* BMR and TDEE Stats */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '12px',
+                    }}
+                  >
+                    <Stat
+                      label="الحرق الأساسي"
+                      value={`${targets.bmr} سعرة`}
+                      secondary={<span dir="ltr">BMR</span>}
+                    />
+                    <Stat
+                      label="الحرق بالنشاط"
+                      value={`${targets.tdee} سعرة`}
+                      secondary={<span dir="ltr">TDEE</span>}
+                    />
+                  </div>
+
+                  {/* Scientific Explanation Expandable */}
+                  <div
+                    className="card"
+                    style={{
+                      borderRadius: '16px',
+                      background: 'var(--card-bg)',
+                      border: '1px solid var(--line)',
+                      padding: '16px',
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setShowExplanation(!showExplanation)}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        background: 'transparent',
+                        border: 'none',
+                        fontSize: '15px',
+                        fontWeight: 700,
+                        color: 'var(--ink)',
+                        cursor: 'pointer',
+                        padding: 0,
+                      }}
+                    >
+                      <span>
+                        كيف تم حساب أهدافك؟ (معادلة ميفلين–سانت جور ·{' '}
+                        <bdi dir="ltr">Mifflin-St Jeor 1990</bdi>)
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '13px',
+                          color: 'var(--brand)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
+                      >
+                        {showExplanation ? 'إخفاء' : 'عرض'}
+                        <Icon
+                          name={showExplanation ? 'chevron-up' : 'chevron-down'}
+                          size={14}
+                        />
+                      </span>
+                    </button>
+
+                    {showExplanation &&
+                      (targets.engineResult || energyExplanation) && (
+                        <div
+                          style={{
+                            marginTop: '12px',
+                            fontSize: '13px',
+                            lineHeight: 1.7,
+                          }}
+                        >
+                          <ul
+                            style={{
+                              paddingRight: '18px',
+                              margin: '8px 0',
+                              color: 'var(--ink)',
+                            }}
+                          >
+                            <li>
+                              <strong>المعادلة</strong>{' '}
+                              {energyExplanation?.bmr.formulaName ??
+                                'معادلة ميفلين–سانت جور (1990)'}
+                            </li>
+                            <li>
+                              <strong>الحرق الأساسي (BMR)</strong>{' '}
+                              {energyExplanation?.bmr.formattedText ??
+                                targets.engineResult?.explanationAr.bmrText}
+                            </li>
+                            <li>
+                              <strong>الحرق القاعدي بنشاط الحياة</strong>{' '}
+                              {energyExplanation?.baseline.formattedText ??
+                                targets.engineResult?.explanationAr
+                                  .lifestyleText}
+                            </li>
+                            <li>
+                              <strong>
+                                حرق جلسات التمرين (حساب حرق التمرين)
+                              </strong>{' '}
+                              {energyExplanation?.eat.formattedText ??
+                                targets.engineResult?.explanationAr.eatText}
+                              {energyExplanation &&
+                                energyExplanation.workoutBlocks.length > 0 && (
+                                  <ul
+                                    style={{
+                                      paddingRight: '16px',
+                                      marginTop: '6px',
+                                      fontSize: '12.5px',
+                                      color: 'var(--color-text-2)',
+                                    }}
+                                  >
+                                    {energyExplanation.workoutBlocks.map(
+                                      (b, i) => (
+                                        <li key={i}>
+                                          {b.sessionsPerWeek} جلسات/أسبوع ×{' '}
+                                          {b.minutes} دقيقة،{' '}
+                                          {b.activity === 'resistance'
+                                            ? 'مقاومة'
+                                            : 'كارديو'}{' '}
+                                          {b.intensity === 'hard'
+                                            ? 'شديدة'
+                                            : b.intensity === 'light'
+                                              ? 'خفيفة'
+                                              : 'متوسطة'}{' '}
+                                          (صافي MET: {b.netMet.toFixed(1)}،
+                                          معامل EPOC: 1.10) = {b.perSessionKcal}{' '}
+                                          سعرة/جلسة ({b.perDayKcal} سعرة/يوم)
+                                        </li>
+                                      ),
+                                    )}
+                                  </ul>
+                                )}
+                            </li>
+                            <li>
+                              <strong>إجمالي الحرق اليومي (TDEE)</strong>{' '}
+                              {energyExplanation?.tdee.formattedText ??
+                                targets.engineResult?.explanationAr
+                                  .tdeeRangeText}
+                            </li>
+                            <li>
+                              <strong>تعديل السعرات للهدف</strong>{' '}
+                              {energyExplanation?.goalAdjustment
+                                .formattedText ??
+                                targets.engineResult?.explanationAr
+                                  .adjustmentText}
+                            </li>
+                            <li>
+                              <strong>أساس احتساب البروتين</strong>{' '}
+                              {energyExplanation
+                                ? `${energyExplanation.targets.proteinGrams} جم (${energyExplanation.proteinBasis.gPerKg} جم/كجم)`
+                                : targets.engineResult?.explanationAr
+                                    .proteinBasisText}
+                            </li>
+                          </ul>
+                          <div
+                            style={{
+                              background: 'var(--card-subtle)',
+                              padding: '10px 12px',
+                              borderRadius: '8px',
+                              fontSize: '12px',
+                              color: 'var(--muted)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '4px',
+                              marginTop: '8px',
+                            }}
+                          >
+                            <div>
+                              <em>مرجع علمي</em>{' '}
+                              {energyExplanation?.proteinBasis.referenceText ??
+                                'وفق دراسة Morton et al., BJSM 2018: نقطة تشبع البناء العضلي عند ~1.6 جم/كجم والحد الأعلى لنطاق الثقة 95% عند 2.2 جم/كجم، وافتراض التطبيق 1.8 جم/كجم يقع ضمن هذا النطاق.'}
+                            </div>
+                            <div
+                              dir="ltr"
+                              style={{
+                                fontSize: '11px',
+                                color: 'var(--muted)',
+                              }}
+                            >
+                              <bdi>Morton et al., BJSM 2018</bdi>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                  </div>
+                </>
               )}
 
-              {/* Unit Toggle: Segmented control */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <Segmented
-                  name="نظام القياس"
-                  options={[
-                    { value: 'metric', label: 'متري' },
-                    { value: 'imperial', label: 'إمبراطوري' },
-                  ]}
-                  value={isImperial ? 'imperial' : 'metric'}
-                  onChange={(val) => setIsImperial(val === 'imperial')}
-                />
-                <div
-                  style={{
-                    fontSize: '12px',
-                    color: 'var(--muted)',
-                    textAlign: 'center',
-                  }}
-                >
-                  {isImperial ? 'باوند / بوصة' : 'كجم / سم'}
-                </div>
-              </div>
-
-              {/* Weight Field */}
-              <div className="field">
-                <label
-                  htmlFor="calc-weight"
-                  style={{ fontSize: '13.5px', fontWeight: 700 }}
-                >
-                  الوزن ({isImperial ? 'باوند' : 'كجم'})
-                </label>
-                <input
-                  id="calc-weight"
-                  type="number"
-                  step="0.1"
-                  className="field-input"
-                  value={
-                    isImperial
-                      ? Number((editWeight * 2.20462).toFixed(1))
-                      : editWeight
-                  }
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value) || 0
-                    setEditWeight(
-                      isImperial ? Number((val / 2.20462).toFixed(1)) : val,
-                    )
-                  }}
-                  required
-                  style={{ height: '48px', width: '100%' }}
-                />
-                <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '4px' }}>
-                  مصدر الوزن: {bodyLog && bodyLog.length > 0 ? `آخر تسجيل في سجل الوزن (${bodyLog[bodyLog.length - 1].weightKg} كجم)` : `الملف الشخصي (${profile?.body.weightKg ?? 70} كجم)`}
-                </div>
-              </div>
-
-              {/* Height Field */}
-              <div className="field">
-                <label
-                  htmlFor="calc-height"
-                  style={{ fontSize: '13.5px', fontWeight: 700 }}
-                >
-                  الطول ({isImperial ? 'بوصة' : 'سم'})
-                </label>
-                <input
-                  id="calc-height"
-                  type="number"
-                  step="0.5"
-                  className="field-input"
-                  value={
-                    isImperial
-                      ? Number((editHeight / 2.54).toFixed(1))
-                      : editHeight
-                  }
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value) || 0
-                    setEditHeight(
-                      isImperial ? Number((val * 2.54).toFixed(1)) : val,
-                    )
-                  }}
-                  required
-                  style={{ height: '48px', width: '100%' }}
-                />
-              </div>
-
-              {/* Age Field */}
-              <div className="field">
-                <label
-                  htmlFor="calc-age"
-                  style={{ fontSize: '13.5px', fontWeight: 700 }}
-                >
-                  العمر (بالسنوات)
-                </label>
-                <input
-                  id="calc-age"
-                  type="number"
-                  min="12"
-                  max="100"
-                  className="field-input"
-                  value={editAge}
-                  onChange={(e) => setEditAge(Number(e.target.value))}
-                  required
-                  style={{ height: '48px', width: '100%' }}
-                />
-              </div>
-
-              {/* Sex Select */}
-              <div className="field">
-                <Select
-                  id="calc-sex-select"
-                  label="الجنس"
-                  value={editSex}
-                  onChange={(val) => setEditSex(val as Sex)}
-                  options={[
-                    { value: 'male', labelAr: 'ذكر', labelEn: 'Male' },
-                    { value: 'female', labelAr: 'أنثى', labelEn: 'Female' },
-                  ]}
-                  sheetTitle="اختر الجنس"
-                />
-              </div>
-
-              {/* Body Fat % (Optional) */}
-              <div className="field">
-                <label
-                  htmlFor="calc-bf"
-                  style={{ fontSize: '13.5px', fontWeight: 700 }}
-                >
-                  نسبة دهون الجسم (اختياري، %)
-                </label>
-                <input
-                  id="calc-bf"
-                  type="number"
-                  min="3"
-                  max="65"
-                  step="0.5"
-                  className="field-input"
-                  value={editBodyFat ?? ''}
-                  placeholder="مثال: 18"
-                  onChange={(e) =>
-                    setEditBodyFat(
-                      e.target.value ? Number(e.target.value) : undefined,
-                    )
-                  }
-                  style={{ height: '48px', width: '100%' }}
-                />
-              </div>
-
-              {/* Lifestyle Level Select */}
-              <div className="field">
-                <Select
-                  id="calc-lifestyle-select"
-                  label="نمط النشاط اليومي (خارج أوقات التمرين)"
-                  value={String(editLifestyle)}
-                  onChange={(val) =>
-                    setEditLifestyle(Number(val) as LifestyleLevel)
-                  }
-                  options={LIFESTYLE_OPTIONS.map((opt) => ({
-                    value: String(opt.level),
-                    labelAr: `${opt.level} = ${opt.titleAr}`,
-                    description: `${opt.descriptionAr} (معامل ${opt.factor.toFixed(2)})`,
-                  }))}
-                  sheetTitle="اختر نمط النشاط اليومي"
-                />
-              </div>
-
-              {/* Workout Blocks (Un-nested vertical list) */}
+              {/* Actions: Edit profile & Calibration */}
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '16px',
+                  gap: '10px',
                 }}
               >
+                <Button
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  onClick={() => {
+                    setShowBodyTargetsDetails(false)
+                    setIsProfileModalOpen(true)
+                  }}
+                >
+                  تعديل بيانات وزني وهدفي
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  fullWidth
+                  onClick={() => {
+                    setShowBodyTargetsDetails(false)
+                    setIsCalibrationModalOpen(true)
+                  }}
+                >
+                  معايرة السعرات الذكية
+                </Button>
+              </div>
+
+              {/* Safety Disclaimer Footnote */}
+              <p
+                style={{
+                  fontSize: '11.5px',
+                  color: 'var(--muted)',
+                  lineHeight: 1.5,
+                  margin: '8px 0',
+                  textAlign: 'center',
+                }}
+              >
+                تنويه طبي: هذه الأرقام والخطط الغذائية هي تقديرات حسابية إرشادية
+                مستندة للأدبيات الرياضية وليست استشارة طبية. يُرجى استشارة طبيب
+                أو أخصائي تغذية قبل اتباع أي حمية صارمة.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Screen 10: Calculator Settings (Full-Screen Route) */}
+        {isProfileModalOpen && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 500,
+              background: 'var(--bg)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
+            }}
+          >
+            <TopBar
+              title="إعدادات الحاسبة واحتياج السعرات"
+              onBack={() => setIsProfileModalOpen(false)}
+            />
+
+            <form
+              onSubmit={handleSaveProfileChanges}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 1,
+              }}
+            >
+              <div
+                className="screen-content"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                  padding: '16px',
+                  maxWidth: '680px',
+                  margin: '0 auto',
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  flex: 1,
+                }}
+              >
+                {modalError && (
+                  <div
+                    role="alert"
+                    style={{
+                      padding: '12px 16px',
+                      borderRadius: '10px',
+                      background:
+                        'var(--danger-surface, rgba(220, 38, 38, 0.1))',
+                      color: 'var(--danger)',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {modalError}
+                  </div>
+                )}
+
+                {/* Unit Toggle: Segmented control */}
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
+                    flexDirection: 'column',
+                    gap: '6px',
                   }}
                 >
-                  <span
+                  <Segmented
+                    name="نظام القياس"
+                    options={[
+                      { value: 'metric', label: 'متري' },
+                      { value: 'imperial', label: 'إمبراطوري' },
+                    ]}
+                    value={isImperial ? 'imperial' : 'metric'}
+                    onChange={(val) => setIsImperial(val === 'imperial')}
+                  />
+                  <div
                     style={{
-                      fontSize: '14px',
-                      fontWeight: 700,
-                      color: 'var(--ink)',
+                      fontSize: '12px',
+                      color: 'var(--muted)',
+                      textAlign: 'center',
                     }}
                   >
-                    جلسات التمرين (حساب حرق التمرين)
-                  </span>
-                  {editWorkoutBlocks.length < 3 && (
-                    <button
-                      type="button"
-                      className="btn-ghost"
-                      onClick={() =>
-                        setEditWorkoutBlocks([
-                          ...editWorkoutBlocks,
-                          {
-                            type: 'cardio',
-                            sessionsPerWeek: 3,
-                            minutesPerSession: 30,
-                            intensity: 'moderate',
-                          },
-                        ])
-                      }
-                      style={{
-                        fontSize: '13px',
-                        fontWeight: 600,
-                        color: 'var(--brand)',
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      + إضافة نشاط
-                    </button>
-                  )}
+                    {isImperial ? 'باوند / بوصة' : 'كجم / سم'}
+                  </div>
                 </div>
 
-                {editWorkoutBlocks.map((block, idx) => (
+                {/* Weight Field */}
+                <div className="field">
+                  <label
+                    htmlFor="calc-weight"
+                    style={{ fontSize: '13.5px', fontWeight: 700 }}
+                  >
+                    الوزن ({isImperial ? 'باوند' : 'كجم'})
+                  </label>
+                  <input
+                    id="calc-weight"
+                    type="number"
+                    step="0.1"
+                    className="field-input"
+                    value={
+                      isImperial
+                        ? Number((editWeight * 2.20462).toFixed(1))
+                        : editWeight
+                    }
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value) || 0
+                      setEditWeight(
+                        isImperial ? Number((val / 2.20462).toFixed(1)) : val,
+                      )
+                    }}
+                    required
+                    style={{ height: '48px', width: '100%' }}
+                  />
                   <div
-                    key={idx}
+                    style={{
+                      fontSize: '12px',
+                      color: 'var(--muted)',
+                      marginTop: '4px',
+                    }}
+                  >
+                    مصدر الوزن:{' '}
+                    {bodyLog && bodyLog.length > 0
+                      ? `آخر تسجيل في سجل الوزن (${bodyLog[bodyLog.length - 1].weightKg} كجم)`
+                      : `الملف الشخصي (${profile?.body.weightKg ?? 70} كجم)`}
+                  </div>
+                </div>
+
+                {/* Height Field */}
+                <div className="field">
+                  <label
+                    htmlFor="calc-height"
+                    style={{ fontSize: '13.5px', fontWeight: 700 }}
+                  >
+                    الطول ({isImperial ? 'بوصة' : 'سم'})
+                  </label>
+                  <input
+                    id="calc-height"
+                    type="number"
+                    step="0.5"
+                    className="field-input"
+                    value={
+                      isImperial
+                        ? Number((editHeight / 2.54).toFixed(1))
+                        : editHeight
+                    }
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value) || 0
+                      setEditHeight(
+                        isImperial ? Number((val * 2.54).toFixed(1)) : val,
+                      )
+                    }}
+                    required
+                    style={{ height: '48px', width: '100%' }}
+                  />
+                </div>
+
+                {/* Age Field */}
+                <div className="field">
+                  <label
+                    htmlFor="calc-age"
+                    style={{ fontSize: '13.5px', fontWeight: 700 }}
+                  >
+                    العمر (بالسنوات)
+                  </label>
+                  <input
+                    id="calc-age"
+                    type="number"
+                    min="12"
+                    max="100"
+                    className="field-input"
+                    value={editAge}
+                    onChange={(e) => setEditAge(Number(e.target.value))}
+                    required
+                    style={{ height: '48px', width: '100%' }}
+                  />
+                </div>
+
+                {/* Sex Select */}
+                <div className="field">
+                  <Select
+                    id="calc-sex-select"
+                    label="الجنس"
+                    value={editSex}
+                    onChange={(val) => setEditSex(val as Sex)}
+                    options={[
+                      { value: 'male', labelAr: 'ذكر', labelEn: 'Male' },
+                      { value: 'female', labelAr: 'أنثى', labelEn: 'Female' },
+                    ]}
+                    sheetTitle="اختر الجنس"
+                  />
+                </div>
+
+                {/* Body Fat % (Optional) */}
+                <div className="field">
+                  <label
+                    htmlFor="calc-bf"
+                    style={{ fontSize: '13.5px', fontWeight: 700 }}
+                  >
+                    نسبة دهون الجسم (اختياري، %)
+                  </label>
+                  <input
+                    id="calc-bf"
+                    type="number"
+                    min="3"
+                    max="65"
+                    step="0.5"
+                    className="field-input"
+                    value={editBodyFat ?? ''}
+                    placeholder="مثال: 18"
+                    onChange={(e) =>
+                      setEditBodyFat(
+                        e.target.value ? Number(e.target.value) : undefined,
+                      )
+                    }
+                    style={{ height: '48px', width: '100%' }}
+                  />
+                </div>
+
+                {/* Lifestyle Level Select */}
+                <div className="field">
+                  <Select
+                    id="calc-lifestyle-select"
+                    label="نمط النشاط اليومي (خارج أوقات التمرين)"
+                    value={String(editLifestyle)}
+                    onChange={(val) =>
+                      setEditLifestyle(Number(val) as LifestyleLevel)
+                    }
+                    options={LIFESTYLE_OPTIONS.map((opt) => ({
+                      value: String(opt.level),
+                      labelAr: `${opt.level} = ${opt.titleAr}`,
+                      description: `${opt.descriptionAr} (معامل ${opt.factor.toFixed(2)})`,
+                    }))}
+                    sheetTitle="اختر نمط النشاط اليومي"
+                  />
+                </div>
+
+                {/* Workout Blocks (Un-nested vertical list) */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                  }}
+                >
+                  <div
                     style={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      gap: '10px',
-                      padding: '14px',
-                      borderRadius: '12px',
-                      background: 'var(--card-bg)',
-                      border: '1px solid var(--line)',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                     }}
                   >
-                    <div
+                    <span
                       style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        color: 'var(--ink)',
                       }}
                     >
-                      <span
+                      جلسات التمرين (حساب حرق التمرين)
+                    </span>
+                    {editWorkoutBlocks.length < 3 && (
+                      <button
+                        type="button"
+                        className="btn-ghost"
+                        onClick={() =>
+                          setEditWorkoutBlocks([
+                            ...editWorkoutBlocks,
+                            {
+                              type: 'cardio',
+                              sessionsPerWeek: 3,
+                              minutesPerSession: 30,
+                              intensity: 'moderate',
+                            },
+                          ])
+                        }
                         style={{
-                          fontSize: '13.5px',
-                          fontWeight: 700,
-                          color: 'var(--ink)',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          color: 'var(--brand)',
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
                         }}
                       >
-                        النشاط {idx + 1}
-                      </span>
-                      {editWorkoutBlocks.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setEditWorkoutBlocks(
-                              editWorkoutBlocks.filter((_, i) => i !== idx),
-                            )
-                          }
-                          aria-label="حذف هذا النشاط"
-                          style={{
-                            border: 'none',
-                            background: 'transparent',
-                            color: 'var(--danger)',
-                            cursor: 'pointer',
-                            fontSize: '12.5px',
-                            fontWeight: 600,
-                          }}
-                        >
-                          حذف
-                        </button>
-                      )}
-                    </div>
+                        + إضافة نشاط
+                      </button>
+                    )}
+                  </div>
 
-                    <Select
-                      id={`block-type-${idx}`}
-                      label="نوع التمرين"
-                      value={block.type}
-                      onChange={(val) => {
-                        const updated = [...editWorkoutBlocks]
-                        updated[idx] = {
-                          ...updated[idx],
-                          type: val as 'resistance' | 'cardio',
-                        }
-                        setEditWorkoutBlocks(updated)
-                      }}
-                      options={[
-                        { value: 'resistance', labelAr: 'حديد ومقاومة' },
-                        { value: 'cardio', labelAr: 'كارديو وجري' },
-                      ]}
-                      sheetTitle="اختر نوع التمرين"
-                    />
-
+                  {editWorkoutBlocks.map((block, idx) => (
                     <div
+                      key={idx}
                       style={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '8px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px',
+                        padding: '14px',
+                        borderRadius: '12px',
+                        background: 'var(--card-bg)',
+                        border: '1px solid var(--line)',
                       }}
                     >
-                      <div className="field">
-                        <label style={{ fontSize: '12.5px', fontWeight: 600 }}>
-                          الجلسات أسبوعياً
-                        </label>
-                        <input
-                          type="number"
-                          min="1"
-                          max="14"
-                          value={block.sessionsPerWeek}
-                          onChange={(e) => {
-                            const updated = [...editWorkoutBlocks]
-                            updated[idx] = {
-                              ...updated[idx],
-                              sessionsPerWeek:
-                                parseInt(e.target.value, 10) || 1,
-                            }
-                            setEditWorkoutBlocks(updated)
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: '13.5px',
+                            fontWeight: 700,
+                            color: 'var(--ink)',
                           }}
-                          className="field-input"
-                          style={{ height: '48px', width: '100%' }}
-                        />
-                      </div>
-                      <div className="field">
-                        <label style={{ fontSize: '12.5px', fontWeight: 600 }}>
-                          الدقائق لكل جلسة
-                        </label>
-                        <input
-                          type="number"
-                          min="10"
-                          max="180"
-                          step="5"
-                          value={block.minutesPerSession}
-                          onChange={(e) => {
-                            const updated = [...editWorkoutBlocks]
-                            updated[idx] = {
-                              ...updated[idx],
-                              minutesPerSession:
-                                parseInt(e.target.value, 10) || 10,
+                        >
+                          النشاط {idx + 1}
+                        </span>
+                        {editWorkoutBlocks.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setEditWorkoutBlocks(
+                                editWorkoutBlocks.filter((_, i) => i !== idx),
+                              )
                             }
-                            setEditWorkoutBlocks(updated)
-                          }}
-                          className="field-input"
-                          style={{ height: '48px', width: '100%' }}
-                        />
+                            aria-label="حذف هذا النشاط"
+                            style={{
+                              border: 'none',
+                              background: 'transparent',
+                              color: 'var(--danger)',
+                              cursor: 'pointer',
+                              fontSize: '12.5px',
+                              fontWeight: 600,
+                            }}
+                          >
+                            حذف
+                          </button>
+                        )}
                       </div>
+
+                      <Select
+                        id={`block-type-${idx}`}
+                        label="نوع التمرين"
+                        value={block.type}
+                        onChange={(val) => {
+                          const updated = [...editWorkoutBlocks]
+                          updated[idx] = {
+                            ...updated[idx],
+                            type: val as 'resistance' | 'cardio',
+                          }
+                          setEditWorkoutBlocks(updated)
+                        }}
+                        options={[
+                          { value: 'resistance', labelAr: 'حديد ومقاومة' },
+                          { value: 'cardio', labelAr: 'كارديو وجري' },
+                        ]}
+                        sheetTitle="اختر نوع التمرين"
+                      />
+
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr',
+                          gap: '8px',
+                        }}
+                      >
+                        <div className="field">
+                          <label
+                            style={{ fontSize: '12.5px', fontWeight: 600 }}
+                          >
+                            الجلسات أسبوعياً
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="14"
+                            value={block.sessionsPerWeek}
+                            onChange={(e) => {
+                              const updated = [...editWorkoutBlocks]
+                              updated[idx] = {
+                                ...updated[idx],
+                                sessionsPerWeek:
+                                  parseInt(e.target.value, 10) || 1,
+                              }
+                              setEditWorkoutBlocks(updated)
+                            }}
+                            className="field-input"
+                            style={{ height: '48px', width: '100%' }}
+                          />
+                        </div>
+                        <div className="field">
+                          <label
+                            style={{ fontSize: '12.5px', fontWeight: 600 }}
+                          >
+                            الدقائق لكل جلسة
+                          </label>
+                          <input
+                            type="number"
+                            min="10"
+                            max="180"
+                            step="5"
+                            value={block.minutesPerSession}
+                            onChange={(e) => {
+                              const updated = [...editWorkoutBlocks]
+                              updated[idx] = {
+                                ...updated[idx],
+                                minutesPerSession:
+                                  parseInt(e.target.value, 10) || 10,
+                              }
+                              setEditWorkoutBlocks(updated)
+                            }}
+                            className="field-input"
+                            style={{ height: '48px', width: '100%' }}
+                          />
+                        </div>
+                      </div>
+
+                      <Select
+                        id={`block-intensity-${idx}`}
+                        label="شدة التمرين"
+                        value={block.intensity}
+                        onChange={(val) => {
+                          const updated = [...editWorkoutBlocks]
+                          updated[idx] = {
+                            ...updated[idx],
+                            intensity: val as 'light' | 'moderate' | 'hard',
+                          }
+                          setEditWorkoutBlocks(updated)
+                        }}
+                        options={[
+                          { value: 'light', labelAr: 'خفيفة (راحة طويلة)' },
+                          { value: 'moderate', labelAr: 'متوسطة (عادية)' },
+                          { value: 'hard', labelAr: 'شديدة (جهد عالي)' },
+                        ]}
+                        sheetTitle="اختر شدة التمرين"
+                      />
                     </div>
-
-                    <Select
-                      id={`block-intensity-${idx}`}
-                      label="شدة التمرين"
-                      value={block.intensity}
-                      onChange={(val) => {
-                        const updated = [...editWorkoutBlocks]
-                        updated[idx] = {
-                          ...updated[idx],
-                          intensity: val as 'light' | 'moderate' | 'hard',
-                        }
-                        setEditWorkoutBlocks(updated)
-                      }}
-                      options={[
-                        { value: 'light', labelAr: 'خفيفة (راحة طويلة)' },
-                        { value: 'moderate', labelAr: 'متوسطة (عادية)' },
-                        { value: 'hard', labelAr: 'شديدة (جهد عالي)' },
-                      ]}
-                      sheetTitle="اختر شدة التمرين"
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Goal Select */}
-              <div className="field">
-                <Select
-                  id="calc-goal-select"
-                  label="الهدف الأساسي"
-                  value={editGoal}
-                  onChange={(val) => setEditGoal(val as Goal)}
-                  options={GOALS.map((g) => ({
-                    value: g.value,
-                    labelAr: g.labelAr,
-                    labelEn: g.hintAr,
-                  }))}
-                  sheetTitle="اختر هدفك التدريبي"
-                />
-              </div>
-
-              {/* Pace Select */}
-              <div className="field">
-                <Select
-                  id="calc-pace-select"
-                  label="وتيرة التقدم"
-                  value={editPace}
-                  onChange={(val) => setEditPace(val as NutritionPace)}
-                  options={[
-                    {
-                      value: 'conservative',
-                      labelAr: 'بطيء ومحافظ (تغيير طفيف في الوزن)',
-                    },
-                    {
-                      value: 'standard',
-                      labelAr: 'معتدل (المعدل العلمي الموصى به)',
-                    },
-                    {
-                      value: 'aggressive',
-                      labelAr: 'سريع ومكثف',
-                    },
-                  ]}
-                  sheetTitle="اختر وتيرة التقدم"
-                />
-              </div>
-
-              {/* Advanced Calculation Formula Select */}
-              <div className="field">
-                <Select
-                  id="calc-formula-select"
-                  label="معادلة الحساب المعتمدة"
-                  value={editFormulaOverride}
-                  onChange={(val) =>
-                    setEditFormulaOverride(val as FormulaChoice)
-                  }
-                  options={[
-                    {
-                      value: 'auto',
-                      labelAr: 'تلقائي (الأفضل علمياً حسب معطياتك)',
-                    },
-                    {
-                      value: 'mifflin',
-                      labelAr: 'ميفلين سانت جيور (الأكثر دقة للأصحاء)',
-                    },
-                    {
-                      value: 'katch',
-                      labelAr: 'كاتش-ماكاردل (تتطلب نسبة دهون دقيقة)',
-                    },
-                    {
-                      value: 'cunningham',
-                      labelAr: 'كامينغهام (للرياضيين المتقدمين)',
-                    },
-                  ]}
-                  sheetTitle="اختر معادلة الحساب"
-                />
-              </div>
-
-              {/* Protein Override Field */}
-              <div className="field">
-                <label
-                  htmlFor="calc-protein-override"
-                  style={{ fontSize: '13.5px', fontWeight: 700 }}
-                >
-                  تعديل البروتين يدوياً (اختياري، جم/كجم)
-                </label>
-                <div style={{ fontSize: '12px', color: 'var(--muted)', marginBottom: '4px' }}>
-                  اتركه فارغاً للحساب التلقائي <bdi dir="ltr">(1.6 - 2.2)</bdi> جم/كجم
+                  ))}
                 </div>
-                <input
-                  id="calc-protein-override"
-                  type="number"
-                  min="1.2"
-                  max="3.5"
-                  step="0.1"
-                  className="field-input"
-                  value={editProteinOverride ?? ''}
-                  placeholder="تلقائي (1.6 - 2.2)"
-                  onChange={(e) =>
-                    setEditProteinOverride(
-                      e.target.value ? Number(e.target.value) : undefined,
-                    )
-                  }
-                  style={{ height: '48px', width: '100%' }}
-                />
-              </div>
-            </div>
 
-            {/* Sticky Bottom Bar */}
-            <div
-              className="sticky-actions-bar"
-              style={{
-                position: 'sticky',
-                bottom: 0,
-                background: 'var(--bg)',
-                padding: '12px 16px',
-                borderTop: '1px solid var(--line)',
-                zIndex: 20,
-                display: 'flex',
-                gap: '12px',
-                maxWidth: '680px',
-                margin: '0 auto',
-                width: '100%',
-                boxSizing: 'border-box',
-              }}
-            >
-              <button
-                type="button"
-                className="btn-ghost"
-                onClick={() => setIsProfileModalOpen(false)}
+                {/* Goal Select */}
+                <div className="field">
+                  <Select
+                    id="calc-goal-select"
+                    label="الهدف الأساسي"
+                    value={editGoal}
+                    onChange={(val) => setEditGoal(val as Goal)}
+                    options={GOALS.map((g) => ({
+                      value: g.value,
+                      labelAr: g.labelAr,
+                      labelEn: g.hintAr,
+                    }))}
+                    sheetTitle="اختر هدفك التدريبي"
+                  />
+                </div>
+
+                {/* Pace Select */}
+                <div className="field">
+                  <Select
+                    id="calc-pace-select"
+                    label="وتيرة التقدم"
+                    value={editPace}
+                    onChange={(val) => setEditPace(val as NutritionPace)}
+                    options={[
+                      {
+                        value: 'conservative',
+                        labelAr: 'بطيء ومحافظ (تغيير طفيف في الوزن)',
+                      },
+                      {
+                        value: 'standard',
+                        labelAr: 'معتدل (المعدل العلمي الموصى به)',
+                      },
+                      {
+                        value: 'aggressive',
+                        labelAr: 'سريع ومكثف',
+                      },
+                    ]}
+                    sheetTitle="اختر وتيرة التقدم"
+                  />
+                </div>
+
+                {/* Advanced Calculation Formula Select */}
+                <div className="field">
+                  <Select
+                    id="calc-formula-select"
+                    label="معادلة الحساب المعتمدة"
+                    value={editFormulaOverride}
+                    onChange={(val) =>
+                      setEditFormulaOverride(val as FormulaChoice)
+                    }
+                    options={[
+                      {
+                        value: 'auto',
+                        labelAr: 'تلقائي (الأفضل علمياً حسب معطياتك)',
+                      },
+                      {
+                        value: 'mifflin',
+                        labelAr: 'ميفلين سانت جيور (الأكثر دقة للأصحاء)',
+                      },
+                      {
+                        value: 'katch',
+                        labelAr: 'كاتش-ماكاردل (تتطلب نسبة دهون دقيقة)',
+                      },
+                      {
+                        value: 'cunningham',
+                        labelAr: 'كامينغهام (للرياضيين المتقدمين)',
+                      },
+                    ]}
+                    sheetTitle="اختر معادلة الحساب"
+                  />
+                </div>
+
+                {/* Protein Override Field */}
+                <div className="field">
+                  <label
+                    htmlFor="calc-protein-override"
+                    style={{ fontSize: '13.5px', fontWeight: 700 }}
+                  >
+                    تعديل البروتين يدوياً (اختياري، جم/كجم)
+                  </label>
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: 'var(--muted)',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    اتركه فارغاً للحساب التلقائي{' '}
+                    <bdi dir="ltr">(1.6 - 2.2)</bdi> جم/كجم
+                  </div>
+                  <input
+                    id="calc-protein-override"
+                    type="number"
+                    min="1.2"
+                    max="3.5"
+                    step="0.1"
+                    className="field-input"
+                    value={editProteinOverride ?? ''}
+                    placeholder="تلقائي (1.6 - 2.2)"
+                    onChange={(e) =>
+                      setEditProteinOverride(
+                        e.target.value ? Number(e.target.value) : undefined,
+                      )
+                    }
+                    style={{ height: '48px', width: '100%' }}
+                  />
+                </div>
+              </div>
+
+              {/* Sticky Bottom Bar */}
+              <div
+                className="sticky-actions-bar"
                 style={{
-                  height: '48px',
-                  flex: '0 0 90px',
-                  borderRadius: '12px',
-                  border: '1px solid var(--line)',
-                  background: 'transparent',
-                  color: 'var(--ink)',
-                  fontSize: '15px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
+                  position: 'sticky',
+                  bottom: 0,
+                  background: 'var(--bg)',
+                  padding: '12px 16px',
+                  borderTop: '1px solid var(--line)',
+                  zIndex: 20,
+                  display: 'flex',
+                  gap: '12px',
+                  maxWidth: '680px',
+                  margin: '0 auto',
+                  width: '100%',
+                  boxSizing: 'border-box',
                 }}
               >
-                إلغاء
-              </button>
-              <button
-                type="submit"
-                className="btn-primary"
-                style={{
-                  height: '48px',
-                  flex: 1,
-                  borderRadius: '12px',
-                  border: 'none',
-                  background: 'var(--brand)',
-                  color: '#fff',
-                  fontSize: '16px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
-              >
-                تطبيق وحساب السعرات
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => setIsProfileModalOpen(false)}
+                  style={{
+                    height: '48px',
+                    flex: '0 0 90px',
+                    borderRadius: '12px',
+                    border: '1px solid var(--line)',
+                    background: 'transparent',
+                    color: 'var(--ink)',
+                    fontSize: '15px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  style={{
+                    height: '48px',
+                    flex: 1,
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'var(--brand)',
+                    color: '#fff',
+                    fontSize: '16px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  تطبيق وحساب السعرات
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
 
       {/* Smart Calibration Sheet */}
@@ -2718,8 +2833,7 @@ export function NutritionModule({
                   marginTop: '4px',
                 }}
               >
-                تطبيق الهدف المعاير ({calibrationData.newTargetCalories}{' '}
-                سعرة)
+                تطبيق الهدف المعاير ({calibrationData.newTargetCalories} سعرة)
               </button>
             </div>
           ) : (

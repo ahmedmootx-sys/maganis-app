@@ -108,7 +108,10 @@ export function Select<T = string>({
   }
 
   return (
-    <div className={`select-wrapper ${className}`.trim()} style={{ width: '100%' }}>
+    <div
+      className={`select-wrapper ${className}`.trim()}
+      style={{ width: '100%' }}
+    >
       {label && (
         <label
           htmlFor={id}

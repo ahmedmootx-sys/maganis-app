@@ -25,12 +25,24 @@ async function main() {
 
   await context.addInitScript(() => {
     const mockProfile = {
-      id: 'prof-user-1', name: 'كابتن أحمد', goals: ['hypertrophy'], primaryGoal: 'hypertrophy',
-      trainingDaysPerWeek: 4, splitType: 'upper_lower', experienceLevel: 'intermediate',
+      id: 'prof-user-1',
+      name: 'كابتن أحمد',
+      goals: ['hypertrophy'],
+      primaryGoal: 'hypertrophy',
+      trainingDaysPerWeek: 4,
+      splitType: 'upper_lower',
+      experienceLevel: 'intermediate',
       equipmentAvailable: ['barbell', 'dumbbell'],
-      body: { weightKg: 80, heightCm: 178, birthDate: '1995-05-15', gender: 'male', activityLevel: 'moderate' },
+      body: {
+        weightKg: 80,
+        heightCm: 178,
+        birthDate: '1995-05-15',
+        gender: 'male',
+        activityLevel: 'moderate',
+      },
       medical: { hasIssues: false, injuryTags: [], notes: '' },
-      createdAt: 1700000000000, updatedAt: 1700000000000,
+      createdAt: 1700000000000,
+      updatedAt: 1700000000000,
     }
     localStorage.setItem('maganis:profile.active', JSON.stringify(mockProfile))
   })
@@ -41,7 +53,7 @@ async function main() {
 
   // Switch to "العضلات" tab
   const tabBtn = page.locator('.segmented button:has-text("العضلات")')
-  if (await tabBtn.count() > 0) {
+  if ((await tabBtn.count()) > 0) {
     await tabBtn.click()
     await page.waitForTimeout(500)
   }
@@ -54,8 +66,16 @@ async function main() {
     const blackFills = []
     for (const p of visPaths) {
       const computed = window.getComputedStyle(p).fill
-      if (computed === 'rgb(0, 0, 0)' || computed === '#000000' || computed === 'black') {
-        blackFills.push({ id: p.id, dataMuscle: p.getAttribute('data-muscle'), fill: computed })
+      if (
+        computed === 'rgb(0, 0, 0)' ||
+        computed === '#000000' ||
+        computed === 'black'
+      ) {
+        blackFills.push({
+          id: p.id,
+          dataMuscle: p.getAttribute('data-muscle'),
+          fill: computed,
+        })
       }
     }
     const primaries = svg.querySelectorAll('.muscle-primary').length
@@ -73,7 +93,7 @@ async function main() {
 
   // Now click zoom in (+)
   const zoomIn = page.locator('button.atlas-zoom-btn:has-text("+")')
-  if (await zoomIn.count() > 0) {
+  if ((await zoomIn.count()) > 0) {
     await zoomIn.click()
     await page.waitForTimeout(300)
   }

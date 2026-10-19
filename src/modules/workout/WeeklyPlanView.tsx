@@ -9,7 +9,11 @@ import type {
   DayKind,
   CardioConfig,
 } from '../shared/types.ts'
-import { WORKOUT_SPLIT_LABELS, WORKOUT_SPLIT_EN, MUSCLE_GROUP_LABELS } from '../shared/types.ts'
+import {
+  WORKOUT_SPLIT_LABELS,
+  WORKOUT_SPLIT_EN,
+  MUSCLE_GROUP_LABELS,
+} from '../shared/types.ts'
 import { navigationHistory } from '../../utils/navigationHistory.ts'
 import { getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
@@ -35,6 +39,7 @@ import {
   Field,
   Icon,
 } from '../../ui/index.ts'
+import type { IconName } from '../../ui/Icon.tsx'
 import { getExerciseTags } from './limitations.ts'
 import {
   getOrDeriveSchedule,
@@ -42,7 +47,11 @@ import {
   ALL_WEEKDAYS,
   type ScheduleSlotType,
 } from './scheduleManager.ts'
-import { resolveSession, formatPrescription, cleanDayName } from './sessionResolver.ts'
+import {
+  resolveSession,
+  formatPrescription,
+  cleanDayName,
+} from './sessionResolver.ts'
 import { saveFile } from '../../utils/saveFile.ts'
 import {
   IconSearch,
@@ -104,7 +113,9 @@ const SPLIT_TYPE_OPTIONS: {
   },
 ]
 
-export function deriveDayMuscleSummary(exercises: Array<{ exerciseId: string }>): string {
+export function deriveDayMuscleSummary(
+  exercises: Array<{ exerciseId: string }>,
+): string {
   if (!exercises || exercises.length === 0) return 'راحة واستشفاء'
   const cats = new Set<string>()
   for (const pe of exercises) {
@@ -138,7 +149,7 @@ export function CardioDayScreen({
     effort: 'moderate',
   }
 
-  const activities = [
+  const activities: Array<{ id: string; label: string; icon: IconName }> = [
     { id: 'جري', label: 'جري خارجي / سير', icon: 'activity' },
     { id: 'مشي سريع', label: 'مشي سريع / انحدار', icon: 'flame' },
     { id: 'دراجة ثابتة', label: 'دراجة ثابتة', icon: 'activity' },
@@ -303,7 +314,7 @@ export function CardioDayScreen({
                     textAlign: 'right',
                   }}
                 >
-                  <Icon name={act.icon as any} size={16} />
+                  <Icon name={act.icon} size={16} />
                   <span>{act.label}</span>
                 </button>
               )
@@ -449,13 +460,16 @@ export function CardioDayScreen({
             }}
           >
             <div>
-              • <strong>المنطقة الثانية (Zone 2):</strong> سرعة يمكنك التحدث خلالها براحة لبناء قاعدة هوائية وحرق الدهون ودعم الاستشفاء.
+              • <strong>المنطقة الثانية (Zone 2):</strong> سرعة يمكنك التحدث
+              خلالها براحة لبناء قاعدة هوائية وحرق الدهون ودعم الاستشفاء.
             </div>
             <div>
-              • <strong>الترطيب:</strong> اشرب 250-500 مل ماء قبل وأثناء الجلسة لمنع الإجهاد الحراري.
+              • <strong>الترطيب:</strong> اشرب 250-500 مل ماء قبل وأثناء الجلسة
+              لمنع الإجهاد الحراري.
             </div>
             <div>
-              • <strong>التوقيت:</strong> يفضل أداء الكارديو بعد تمارين المقاومة أو في أيام منفصلة لتجنب إجهاد العضلات الرئيسي.
+              • <strong>التوقيت:</strong> يفضل أداء الكارديو بعد تمارين المقاومة
+              أو في أيام منفصلة لتجنب إجهاد العضلات الرئيسي.
             </div>
           </div>
         </section>
@@ -500,14 +514,19 @@ export function WeeklyPlanView({
 
   // Week Schedule Editor State
   const [isScheduleEditorOpen, setIsScheduleEditorOpen] = useState(false)
-  const [draftSchedule, setDraftSchedule] = useState<Record<number, ScheduleSlotType>>({})
+  const [draftSchedule, setDraftSchedule] = useState<
+    Record<number, ScheduleSlotType>
+  >({})
 
   // Export Sheet State
   const [isExportSheetOpen, setIsExportSheetOpen] = useState(false)
-  const [exportFormat, setExportFormat] = useState<'pdf' | 'csv' | 'json'>('pdf')
+  const [exportFormat, setExportFormat] = useState<'pdf' | 'csv' | 'json'>(
+    'pdf',
+  )
 
   // Pre-session Warning for Limitation High Loads
-  const [preSessionWarningDay, setPreSessionWarningDay] = useState<ProgramDay | null>(null)
+  const [preSessionWarningDay, setPreSessionWarningDay] =
+    useState<ProgramDay | null>(null)
 
   // Red Flag Dismissed in this session
   const [redFlagDismissed, setRedFlagDismissed] = useState(false)
@@ -654,7 +673,9 @@ export function WeeklyPlanView({
       days: [...program.days, newDay],
     })
     setIsAddDaySheetOpen(false)
-    showToast(isCardio ? 'تمت إضافة يوم كارديو جديد' : 'تمت إضافة يوم تدريبي جديد')
+    showToast(
+      isCardio ? 'تمت إضافة يوم كارديو جديد' : 'تمت إضافة يوم تدريبي جديد',
+    )
   }
 
   function handleRenameDay(dayIndex: number, newName: string) {
@@ -848,7 +869,14 @@ export function WeeklyPlanView({
 
   function exportProgramToCsv(p: WorkoutProgram): string {
     const rows = [
-      ['اليوم', 'التركيز', 'اسم التمرين', 'المجموعات', 'التكرارات', 'الراحة (ثانية)'],
+      [
+        'اليوم',
+        'التركيز',
+        'اسم التمرين',
+        'المجموعات',
+        'التكرارات',
+        'الراحة (ثانية)',
+      ],
     ]
     for (const d of p.days) {
       for (const ex of d.exercises) {
@@ -863,7 +891,14 @@ export function WeeklyPlanView({
         ])
       }
     }
-    return '\uFEFF' + rows.map((r) => r.map((c) => `"${(c || '').replace(/"/g, '""')}"`).join(',')).join('\r\n')
+    return (
+      '\uFEFF' +
+      rows
+        .map((r) =>
+          r.map((c) => `"${(c || '').replace(/"/g, '""')}"`).join(','),
+        )
+        .join('\r\n')
+    )
   }
 
   const handleOpenScheduleEditor = () => {
@@ -896,7 +931,11 @@ export function WeeklyPlanView({
     if (exportFormat === 'csv') {
       const csv = exportProgramToCsv(program)
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
-      const res = await saveFile(blob, `maganis-program-${program.id || 'export'}.csv`, 'text/csv')
+      const res = await saveFile(
+        blob,
+        `maganis-program-${program.id || 'export'}.csv`,
+        'text/csv',
+      )
       setIsExportSheetOpen(false)
       if (res.downloadNoticeNeeded) {
         showToast('تم حفظ ملف CSV في مجلد التنزيلات')
@@ -909,7 +948,11 @@ export function WeeklyPlanView({
     if (exportFormat === 'json') {
       const jsonStr = JSON.stringify(program, null, 2)
       const blob = new Blob([jsonStr], { type: 'application/json' })
-      const res = await saveFile(blob, `maganis-program-${program.id || 'backup'}.json`, 'application/json')
+      const res = await saveFile(
+        blob,
+        `maganis-program-${program.id || 'backup'}.json`,
+        'application/json',
+      )
       setIsExportSheetOpen(false)
       if (res.downloadNoticeNeeded) {
         showToast('تم حفظ ملف JSON في مجلد التنزيلات')
@@ -1012,7 +1055,9 @@ export function WeeklyPlanView({
             onClose={() => setIsDayOverflowOpen(false)}
             title={`خيارات ${selectedDay.labelAr}`}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               <button
                 type="button"
                 className="ghost-secondary full-width"
@@ -1650,7 +1695,10 @@ export function WeeklyPlanView({
             className="button-primary full-width"
             onClick={() => {
               const highExercises = selectedDay.exercises.filter((pe) => {
-                const tags = getExerciseTags(pe.exerciseId, profile?.limitations)
+                const tags = getExerciseTags(
+                  pe.exerciseId,
+                  profile?.limitations,
+                )
                 return tags.some((t) => t.level === 'high')
               })
               if (highExercises.length > 0) {
@@ -1921,8 +1969,13 @@ export function WeeklyPlanView({
 
         {/* Training days mismatch Callout */}
         {(() => {
-          const strengthDaysCount = program.days.filter((d) => d.kind !== 'cardio').length
-          if (!profile?.trainingDaysPerWeek || strengthDaysCount === profile.trainingDaysPerWeek) {
+          const strengthDaysCount = program.days.filter(
+            (d) => d.kind !== 'cardio',
+          ).length
+          if (
+            !profile?.trainingDaysPerWeek ||
+            strengthDaysCount === profile.trainingDaysPerWeek
+          ) {
             return null
           }
           return (
@@ -1940,7 +1993,9 @@ export function WeeklyPlanView({
                           ...profile,
                           trainingDaysPerWeek: strengthDaysCount,
                         })
-                        showToast(`تم اعتماد ${strengthDaysCount} أيام في الملف الشخصي`)
+                        showToast(
+                          `تم اعتماد ${strengthDaysCount} أيام في الملف الشخصي`,
+                        )
                       }
                     }}
                   >
@@ -1956,8 +2011,9 @@ export function WeeklyPlanView({
                 </div>
               }
             >
-              برنامجك فيه {strengthDaysCount} أيام تمارين مقاومة (تم استثناء الكارديو)، بينما اخترت{' '}
-              {profile.trainingDaysPerWeek} أيام في الملف الشخصي.
+              برنامجك فيه {strengthDaysCount} أيام تمارين مقاومة (تم استثناء
+              الكارديو)، بينما اخترت {profile.trainingDaysPerWeek} أيام في الملف
+              الشخصي.
             </Callout>
           )
         })()}
@@ -2055,20 +2111,28 @@ export function WeeklyPlanView({
             {program.days.map((day, idx) => {
               const isToday = Boolean(
                 todaySession.programDay &&
-                  ((day.id && todaySession.programDay.id && day.id === todaySession.programDay.id) ||
-                    day.dayIndex === todaySession.programDay.dayIndex),
+                ((day.id &&
+                  todaySession.programDay.id &&
+                  day.id === todaySession.programDay.id) ||
+                  day.dayIndex === todaySession.programDay.dayIndex),
               )
               const isCardio = day.kind === 'cardio'
               const exerciseCount = day.exercises.length
               const cleanName = cleanDayName(day.name || day.labelAr)
               const schedule = getOrDeriveSchedule(profile, program)
               const scheduledWeekday = Object.entries(schedule).find(
-                ([_wd, slot]) => slot === day.id || slot === String(day.dayIndex),
+                ([_wd, slot]) =>
+                  slot === day.id || slot === String(day.dayIndex),
               )?.[0]
-              const weekdayInfo = scheduledWeekday !== undefined
-                ? ALL_WEEKDAYS.find((w) => w.weekday === Number(scheduledWeekday))
-                : null
-              const displayTitle = weekdayInfo ? `${weekdayInfo.nameAr} · ${cleanName}` : cleanName
+              const weekdayInfo =
+                scheduledWeekday !== undefined
+                  ? ALL_WEEKDAYS.find(
+                      (w) => w.weekday === Number(scheduledWeekday),
+                    )
+                  : null
+              const displayTitle = weekdayInfo
+                ? `${weekdayInfo.nameAr} · ${cleanName}`
+                : cleanName
 
               return (
                 <ListRow
@@ -2100,11 +2164,7 @@ export function WeeklyPlanView({
                         fontVariantNumeric: 'tabular-nums',
                       }}
                     >
-                      {isCardio ? (
-                        <Icon name="activity" size={18} />
-                      ) : (
-                        idx + 1
-                      )}
+                      {isCardio ? <Icon name="activity" size={18} /> : idx + 1}
                     </div>
                   }
                   title={
@@ -2592,9 +2652,7 @@ export function WeeklyPlanView({
                 },
               ]}
               value={exportFormat}
-              onChange={(val) =>
-                setExportFormat(val as 'pdf' | 'csv' | 'json')
-              }
+              onChange={(val) => setExportFormat(val as 'pdf' | 'csv' | 'json')}
             />
           </div>
 
@@ -2844,9 +2902,7 @@ export function WeeklyPlanView({
               onClick={() => handleToggleDayKind(dayMenuTarget.dayIndex)}
             >
               <Icon
-                name={
-                  dayMenuTarget.kind === 'cardio' ? 'dumbbell' : 'activity'
-                }
+                name={dayMenuTarget.kind === 'cardio' ? 'dumbbell' : 'activity'}
                 size={16}
               />
               <span>

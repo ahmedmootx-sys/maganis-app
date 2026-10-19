@@ -61,7 +61,8 @@ export function QuickManualMealModal({
     derivedCalories > 0
       ? Math.abs(activeCalories - derivedCalories) / derivedCalories
       : 0
-  const showCaloriesWarning = isManualCalories && derivedCalories > 0 && caloriesDiff > 0.1
+  const showCaloriesWarning =
+    isManualCalories && derivedCalories > 0 && caloriesDiff > 0.1
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

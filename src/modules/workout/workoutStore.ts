@@ -119,7 +119,9 @@ export function createWorkoutStore(storage: Storage): WorkoutStore {
   function getSavedPrograms(): SavedWorkoutProgram[] {
     const list = storage.get<SavedWorkoutProgram[]>(SAVED_PROGRAMS_KEY, [])
     const hasOwnerDraft = list.some(
-      (p) => p.id === 'vault-prog-ahmed-upper-lower-5d' || p.title.includes('برنامج أحمد'),
+      (p) =>
+        p.id === 'vault-prog-ahmed-upper-lower-5d' ||
+        p.title.includes('برنامج أحمد'),
     )
     let fullList = list
     if (!hasOwnerDraft) {

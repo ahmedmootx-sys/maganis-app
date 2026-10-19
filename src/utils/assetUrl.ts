@@ -8,7 +8,8 @@
  * // prod: '/maganis-app/branding/maganis-mascot-inner.png'
  */
 export function assetUrl(path: string): string {
-  const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '/'
+  const base =
+    (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '/'
   // Strip leading slash from path to avoid double slashes
   const cleanPath = path.startsWith('/') ? path.slice(1) : path
   return `${base}${cleanPath}`

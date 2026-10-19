@@ -164,7 +164,12 @@
   --color-accent-disabled: #e2e5ea;
   --color-accent-text: #b83a00; /* WCAG AA >= 5:1 on light backgrounds */
   --color-accent-contrast: #0b0c0e;
-  --color-accent-tint: rgba(249, 87, 0, 0.14); /* 14% accent tint over surface for selected chips/cards */
+  --color-accent-tint: rgba(
+    249,
+    87,
+    0,
+    0.14
+  ); /* 14% accent tint over surface for selected chips/cards */
   --color-focus-ring: rgba(249, 87, 0, 0.35);
 
   --on-accent: #0b0c0e;

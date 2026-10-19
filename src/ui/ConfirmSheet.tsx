@@ -55,7 +55,8 @@ export const ConfirmSheet: React.FC<ConfirmSheetProps> = ({
     handleClose()
   }
 
-  const effectiveConsequences = consequences.length > 0 ? consequences : message ? [message] : []
+  const effectiveConsequences =
+    consequences.length > 0 ? consequences : message ? [message] : []
 
   return (
     <Sheet

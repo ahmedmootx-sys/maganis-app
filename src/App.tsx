@@ -1033,7 +1033,15 @@ export function App({ config }: AppProps) {
                 {formatTime(activeSessionSeconds)}
               </div>
               <div className="banner-text">
-                <span className="banner-tag" style={{ fontSize: '11.5px', color: 'var(--brand)', fontWeight: 700, display: 'block' }}>
+                <span
+                  className="banner-tag"
+                  style={{
+                    fontSize: '11.5px',
+                    color: 'var(--brand)',
+                    fontWeight: 700,
+                    display: 'block',
+                  }}
+                >
                   لديك جلسة غير مكتملة
                 </span>
                 <strong className="banner-title">
@@ -1061,7 +1069,11 @@ export function App({ config }: AppProps) {
                 type="button"
                 className="ghost-danger tiny"
                 onClick={() => setConfirmCancelActiveSessionOpen(true)}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
               >
                 <IconClose size={14} /> إلغاء
               </button>

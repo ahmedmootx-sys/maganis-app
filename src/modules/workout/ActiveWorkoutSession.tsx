@@ -309,7 +309,12 @@ export function ActiveWorkoutSession({
     setInlineHintSetId(null)
 
     const flag = exId
-      ? (exerciseFlagsData.exercises as Record<string, any>)[exId]
+      ? (
+          exerciseFlagsData.exercises as Record<
+            string,
+            { requiresWarmupConfirmation?: boolean }
+          >
+        )[exId]
       : null
 
     // If exercise requires warmup confirmation and hasn't been confirmed yet
@@ -358,7 +363,10 @@ export function ActiveWorkoutSession({
     const exState = exercisesState[exerciseIndex]
     const prevExSets = previousHistoryMap[exState.exerciseId]
     const prevSet =
-      prevExSets?.[setIndex] || (prevExSets && prevExSets.length > 0 ? prevExSets[prevExSets.length - 1] : null)
+      prevExSets?.[setIndex] ||
+      (prevExSets && prevExSets.length > 0
+        ? prevExSets[prevExSets.length - 1]
+        : null)
     if (!prevSet) return
 
     setExercisesState((prev) => {
@@ -367,7 +375,8 @@ export function ActiveWorkoutSession({
       const nextSets = [...currentEx.sets]
       nextSets[setIndex] = {
         ...nextSets[setIndex],
-        weightKg: prevSet.weightKg > 0 ? prevSet.weightKg : nextSets[setIndex].weightKg,
+        weightKg:
+          prevSet.weightKg > 0 ? prevSet.weightKg : nextSets[setIndex].weightKg,
         reps: prevSet.reps > 0 ? prevSet.reps : nextSets[setIndex].reps,
       }
       currentEx.sets = nextSets
@@ -965,17 +974,13 @@ export function ActiveWorkoutSession({
                                   وزن الجسم
                                 </span>
                               ) : measureType === 'timed' ? (
-                                <span className="bodyweight-tag">
-                                  بدون وزن
-                                </span>
+                                <span className="bodyweight-tag">بدون وزن</span>
                               ) : (
                                 <input
                                   type="number"
                                   min="0"
                                   step="0.5"
-                                  value={
-                                    set.weightKg === 0 ? '' : set.weightKg
-                                  }
+                                  value={set.weightKg === 0 ? '' : set.weightKg}
                                   placeholder={
                                     prevSet && prevSet.weightKg > 0
                                       ? String(prevSet.weightKg)
@@ -1302,9 +1307,13 @@ export function ActiveWorkoutSession({
                   }}
                 >
                   <p style={{ margin: 0, fontSize: '13.5px', fontWeight: 600 }}>
-                    تنبيه: يوجد {plural(unweightedCompletedSetsCount, 'مجموعة')} بدون وزن مسجل. لن يتم احتسابها في الحمل المرفوع وسيتم تمييزها في السجل.
+                    تنبيه: يوجد {plural(unweightedCompletedSetsCount, 'مجموعة')}{' '}
+                    بدون وزن مسجل. لن يتم احتسابها في الحمل المرفوع وسيتم
+                    تمييزها في السجل.
                   </p>
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+                  <div
+                    style={{ display: 'flex', gap: '8px', marginTop: '10px' }}
+                  >
                     <button
                       type="button"
                       className="button-secondary tiny"
@@ -1352,7 +1361,8 @@ export function ActiveWorkoutSession({
                 <li>
                   <span>اليوم التدريبي</span>
                   <strong>
-                    {cleanDayName(programDay.name || programDay.labelAr)} ({programDay.focus})
+                    {cleanDayName(programDay.name || programDay.labelAr)} (
+                    {programDay.focus})
                   </strong>
                 </li>
                 <li>

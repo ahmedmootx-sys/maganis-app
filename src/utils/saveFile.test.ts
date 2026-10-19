@@ -23,7 +23,9 @@ describe('saveFile capability ladder', () => {
     })
 
     // Attach picker
-    ;(globalThis as unknown as { showSaveFilePicker: typeof showSaveFilePicker }).showSaveFilePicker = showSaveFilePicker
+    ;(
+      globalThis as unknown as { showSaveFilePicker: typeof showSaveFilePicker }
+    ).showSaveFilePicker = showSaveFilePicker
 
     const blob = new Blob(['test'], { type: 'text/csv' })
     const res = await saveFile(blob, 'program.csv', 'text/csv')
@@ -31,12 +33,14 @@ describe('saveFile capability ladder', () => {
     expect(res.method).toBe('picker')
     expect(showSaveFilePicker).toHaveBeenCalled()
 
-    delete (globalThis as unknown as { showSaveFilePicker?: unknown }).showSaveFilePicker
+    delete (globalThis as unknown as { showSaveFilePicker?: unknown })
+      .showSaveFilePicker
   })
 
   it('Branch 2: Uses navigator.share when canShare is true (e.g. text/csv on Chrome Android)', async () => {
     // Ensure showSaveFilePicker is absent
-    delete (globalThis as unknown as { showSaveFilePicker?: unknown }).showSaveFilePicker
+    delete (globalThis as unknown as { showSaveFilePicker?: unknown })
+      .showSaveFilePicker
 
     const shareMock = vi.fn().mockResolvedValue(undefined)
     const canShareMock = vi.fn().mockImplementation(({ files }) => {
@@ -58,7 +62,8 @@ describe('saveFile capability ladder', () => {
   })
 
   it('Branch 3: Falls back to anchor download for JSON (unsupported MIME in navigator.share)', async () => {
-    delete (globalThis as unknown as { showSaveFilePicker?: unknown }).showSaveFilePicker
+    delete (globalThis as unknown as { showSaveFilePicker?: unknown })
+      .showSaveFilePicker
 
     const shareMock = vi.fn()
     const canShareMock = vi.fn().mockImplementation(({ files }) => {

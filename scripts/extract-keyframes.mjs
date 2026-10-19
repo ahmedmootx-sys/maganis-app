@@ -37,11 +37,18 @@ try {
   hasFfmpeg = true
   console.log('✓ ffmpeg is available on system PATH.')
 } catch {
-  console.log('⚠️ ffmpeg is NOT available on this system. Falling back to local two-frame assets (_0.jpg / _1.jpg).')
+  console.log(
+    '⚠️ ffmpeg is NOT available on this system. Falling back to local two-frame assets (_0.jpg / _1.jpg).',
+  )
 }
 
 // Load exercise media map
-const mediaMapPath = path.join(rootDir, 'public', 'exercises', 'exerciseMediaMap.json')
+const mediaMapPath = path.join(
+  rootDir,
+  'public',
+  'exercises',
+  'exerciseMediaMap.json',
+)
 let mediaMap = {}
 if (fs.existsSync(mediaMapPath)) {
   mediaMap = JSON.parse(fs.readFileSync(mediaMapPath, 'utf8'))
@@ -70,7 +77,12 @@ for (const key of exerciseKeys) {
       frames: images.map((img, idx) => ({
         index: idx,
         url: img,
-        label: idx === 0 ? 'بداية' : idx === images.length - 1 ? 'نهاية' : `مرحلة ${idx + 1}`,
+        label:
+          idx === 0
+            ? 'بداية'
+            : idx === images.length - 1
+              ? 'نهاية'
+              : `مرحلة ${idx + 1}`,
       })),
       startFrame: 0,
       endFrame: images.length - 1,
@@ -89,7 +101,9 @@ for (const key of exerciseKeys) {
 }
 
 fs.writeFileSync(mediaFramesPath, JSON.stringify(framesData, null, 2), 'utf8')
-console.log(`✓ Generated ${mediaFramesPath} with ${Object.keys(framesData.exercises).length} exercise entries.`)
+console.log(
+  `✓ Generated ${mediaFramesPath} with ${Object.keys(framesData.exercises).length} exercise entries.`,
+)
 
 // Generate review HTML page
 let html = `<!DOCTYPE html>

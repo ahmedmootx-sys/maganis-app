@@ -14,7 +14,9 @@
 2. **حساب التباعد السفلي الصارم (Scroller Padding-Bottom)**:
    - **المسارات التي تحتوي على شريط التنقل السفلي (`BottomNav`)**:
      ```css
-     padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 24px);
+     padding-bottom: calc(
+       var(--bottom-nav-h) + env(safe-area-inset-bottom) + 24px
+     );
      ```
    - **المسارات التي لا تحتوي على شريط التنقل السفلي** (مثل الشاشات الكاملة والنماذج):
      ```css

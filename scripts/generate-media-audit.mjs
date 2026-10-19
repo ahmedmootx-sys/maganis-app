@@ -28,7 +28,11 @@ function resolveMedia(exercise) {
 
   // 1. Frames DB lookup
   const frameEntry = framesDb[exId]
-  if (frameEntry && Array.isArray(frameEntry.frames) && frameEntry.frames.length > 0) {
+  if (
+    frameEntry &&
+    Array.isArray(frameEntry.frames) &&
+    frameEntry.frames.length > 0
+  ) {
     const f1 = frameEntry.frames[0]?.url || null
     return {
       url: f1,
@@ -41,7 +45,8 @@ function resolveMedia(exercise) {
 
   // 2. Direct media on exercise
   if (exercise.media) {
-    const directThumb = exercise.media.thumbnailUrl || exercise.media.videoUrl || null
+    const directThumb =
+      exercise.media.thumbnailUrl || exercise.media.videoUrl || null
     if (directThumb) {
       return {
         url: directThumb,
@@ -228,7 +233,9 @@ const html = `<!DOCTYPE html>
         </tr>
       </thead>
       <tbody>
-        ${results.map((r, i) => `
+        ${results
+          .map(
+            (r, i) => `
           <tr>
             <td>${i + 1}</td>
             <td><code dir="ltr">${r.id}</code></td>
@@ -242,7 +249,9 @@ const html = `<!DOCTYPE html>
             </td>
             <td><small dir="ltr" style="color: #94a3b8;">${r.resolvedUrl}</small></td>
           </tr>
-        `).join('')}
+        `,
+          )
+          .join('')}
       </tbody>
     </table>
   </div>
@@ -251,4 +260,6 @@ const html = `<!DOCTYPE html>
 
 fs.writeFileSync('docs/media-audit.html', html, 'utf8')
 console.log('✅ Generated docs/media-audit.html successfully.')
-console.log(`📊 Total: ${exercises.length}, Keyframed: ${keyframedCount}, Direct: ${directCount}, SVG: ${svgFallbackCount}, Nulls: ${nullCount}`)
+console.log(
+  `📊 Total: ${exercises.length}, Keyframed: ${keyframedCount}, Direct: ${directCount}, SVG: ${svgFallbackCount}, Nulls: ${nullCount}`,
+)

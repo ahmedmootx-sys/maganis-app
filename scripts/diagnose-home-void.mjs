@@ -36,7 +36,10 @@ async function run() {
       const p = dump.profile || dump
       localStorage.setItem('maganis:profile.active', JSON.stringify(p))
       if (p.workoutProgram) {
-        localStorage.setItem('maganis:workout.program', JSON.stringify(p.workoutProgram))
+        localStorage.setItem(
+          'maganis:workout.program',
+          JSON.stringify(p.workoutProgram),
+        )
       }
     }
   }, ownerProfile)
@@ -47,7 +50,8 @@ async function run() {
 
   // Measure last 6 children of the main content/scroller
   const report = await page.evaluate(() => {
-    const appMain = document.querySelector('.app-main') || document.querySelector('main')
+    const appMain =
+      document.querySelector('.app-main') || document.querySelector('main')
     const scroller = document.querySelector('.screen-content') || appMain
     const bottomNav = document.querySelector('.bottom-nav')
 
@@ -67,10 +71,16 @@ async function run() {
       return {
         tag: el.tagName,
         className: el.className,
-        rect: { top: r.top, bottom: r.bottom, height: r.height, left: r.left, right: r.right },
+        rect: {
+          top: r.top,
+          bottom: r.bottom,
+          height: r.height,
+          left: r.left,
+          right: r.right,
+        },
         marginBottom: computed.marginBottom,
         paddingBottom: computed.paddingBottom,
-        textSnippet: el.textContent?.trim().slice(0, 40)
+        textSnippet: el.textContent?.trim().slice(0, 40),
       }
     })
 
@@ -79,19 +89,24 @@ async function run() {
 
     const lastChild = children[children.length - 1]
     const lastChildRect = lastChild ? lastChild.getBoundingClientRect() : null
-    const gapToNav = bottomNavRect && lastChildRect ? (bottomNavRect.top - lastChildRect.bottom) : null
+    const gapToNav =
+      bottomNavRect && lastChildRect
+        ? bottomNavRect.top - lastChildRect.bottom
+        : null
 
     return {
       windowHeight: window.innerHeight,
       scrollY: window.scrollY,
       bodyScrollHeight: document.body.scrollHeight,
-      appMainPaddingBottom: appMainComputed ? appMainComputed.paddingBottom : null,
+      appMainPaddingBottom: appMainComputed
+        ? appMainComputed.paddingBottom
+        : null,
       scrollerPaddingBottom: scrollerComputed.paddingBottom,
       scrollerMarginBottom: scrollerComputed.marginBottom,
       bottomNavRect,
       lastChildRect,
       gapToNav,
-      last6
+      last6,
     }
   })
 
@@ -101,7 +116,7 @@ async function run() {
   await server.httpServer.close()
 }
 
-run().catch(err => {
+run().catch((err) => {
   console.error(err)
   process.exit(1)
 })

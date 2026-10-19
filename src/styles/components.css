@@ -1481,7 +1481,10 @@ body[data-sheet-open='true'] .bottom-nav {
   stroke-dasharray: 6 4 !important;
 }
 
-.atlas-focus-mode .muscle-vis:not(.muscle-targeted-highlight):not(.muscle-primary):not(.muscle-secondary),
+.atlas-focus-mode
+  .muscle-vis:not(.muscle-targeted-highlight):not(.muscle-primary):not(
+    .muscle-secondary
+  ),
 .atlas-focus-mode .muscle-neutral {
   fill: var(--atlas-dimmed, rgba(140, 145, 155, 0.25)) !important;
   stroke: transparent !important;
@@ -1598,7 +1601,13 @@ body[data-sheet-open='true'] .bottom-nav {
 
 .role-marker--secondary {
   background-color: var(--atlas-secondary, #fdd835);
-  background-image: repeating-linear-gradient(45deg, var(--atlas-secondary-stroke, #f9a825), var(--atlas-secondary-stroke, #f9a825) 1.5px, transparent 1.5px, transparent 4px);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--atlas-secondary-stroke, #f9a825),
+    var(--atlas-secondary-stroke, #f9a825) 1.5px,
+    transparent 1.5px,
+    transparent 4px
+  );
   border: 1.5px solid var(--atlas-secondary-stroke, #f9a825);
   border-radius: 50%;
 }

@@ -25,16 +25,32 @@ async function main() {
 
   await context.addInitScript(() => {
     const mockProfile = {
-      id: 'prof-user-1', name: 'كابتن أحمد', goals: ['hypertrophy'], primaryGoal: 'hypertrophy',
-      trainingDaysPerWeek: 4, splitType: 'upper_lower', experienceLevel: 'intermediate',
+      id: 'prof-user-1',
+      name: 'كابتن أحمد',
+      goals: ['hypertrophy'],
+      primaryGoal: 'hypertrophy',
+      trainingDaysPerWeek: 4,
+      splitType: 'upper_lower',
+      experienceLevel: 'intermediate',
       equipmentAvailable: ['barbell', 'dumbbell'],
-      body: { weightKg: 80, heightCm: 178, birthDate: '1995-05-15', gender: 'male', activityLevel: 'moderate' },
+      body: {
+        weightKg: 80,
+        heightCm: 178,
+        birthDate: '1995-05-15',
+        gender: 'male',
+        activityLevel: 'moderate',
+      },
       medical: { hasIssues: false, injuryTags: [], notes: '' },
-      createdAt: 1700000000000, updatedAt: 1700000000000,
+      createdAt: 1700000000000,
+      updatedAt: 1700000000000,
     }
     const mockProgram = {
-      id: 'prog-1', createdAt: 1700000000000, primaryGoal: 'hypertrophy', trainingDaysPerWeek: 4,
-      splitType: 'upper_lower', days: [{ dayIndex: 0, labelAr: 'اليوم 1', focus: 'صدر', exercises: [] }],
+      id: 'prog-1',
+      createdAt: 1700000000000,
+      primaryGoal: 'hypertrophy',
+      trainingDaysPerWeek: 4,
+      splitType: 'upper_lower',
+      days: [{ dayIndex: 0, labelAr: 'اليوم 1', focus: 'صدر', exercises: [] }],
     }
     localStorage.setItem('maganis:profile.active', JSON.stringify(mockProfile))
     localStorage.setItem('maganis:workout.program', JSON.stringify(mockProgram))
@@ -55,7 +71,12 @@ async function main() {
   })
   await page.waitForTimeout(300)
 
-  const toastVisibleInBrowser = (await page.locator('.toast:has-text("اضغط مرة أخرى للخروج"), [role="alert"]:has-text("اضغط مرة أخرى للخروج")').count()) > 0
+  const toastVisibleInBrowser =
+    (await page
+      .locator(
+        '.toast:has-text("اضغط مرة أخرى للخروج"), [role="alert"]:has-text("اضغط مرة أخرى للخروج")',
+      )
+      .count()) > 0
 
   await page.screenshot({ path: path.join(evidenceDir, '1.2-before.png') })
 

@@ -25,7 +25,13 @@ export const Toast: React.FC<ToastProps> = ({
   action,
 }) => {
   useEffect(() => {
-    if (!message || !onDismiss || duration === 0 || (action && duration === 3000)) return
+    if (
+      !message ||
+      !onDismiss ||
+      duration === 0 ||
+      (action && duration === 3000)
+    )
+      return
     const timer = setTimeout(() => {
       onDismiss()
     }, duration)

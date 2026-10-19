@@ -63,7 +63,9 @@ function contrastRatio(rgb1, rgb2) {
 }
 
 async function run() {
-  console.log('🚀 Running Gate: gate-contrast (WCAG AA 4.5:1 Contrast Contract)...')
+  console.log(
+    '🚀 Running Gate: gate-contrast (WCAG AA 4.5:1 Contrast Contract)...',
+  )
 
   const server = await createServer({
     server: { port: 5199, strictPort: true },
@@ -92,14 +94,31 @@ async function run() {
       })
       const page = await context.newPage()
 
-      const ownerDump = JSON.parse(fs.readFileSync(path.join(rootDir, 'docs/owner-profile-dump.json'), 'utf8'))
+      const ownerDump = JSON.parse(
+        fs.readFileSync(
+          path.join(rootDir, 'docs/owner-profile-dump.json'),
+          'utf8',
+        ),
+      )
       await page.goto(`${baseUrl}#/home`, { waitUntil: 'domcontentloaded' })
       await page.evaluate((dump) => {
-        localStorage.setItem('maganis-dev:profile.active', JSON.stringify(dump.profile))
-        localStorage.setItem('maganis:profile.active', JSON.stringify(dump.profile))
+        localStorage.setItem(
+          'maganis-dev:profile.active',
+          JSON.stringify(dump.profile),
+        )
+        localStorage.setItem(
+          'maganis:profile.active',
+          JSON.stringify(dump.profile),
+        )
         if (dump.program) {
-          localStorage.setItem('maganis-dev:workout.active', JSON.stringify(dump.program))
-          localStorage.setItem('maganis:workout.active', JSON.stringify(dump.program))
+          localStorage.setItem(
+            'maganis-dev:workout.active',
+            JSON.stringify(dump.program),
+          )
+          localStorage.setItem(
+            'maganis:workout.active',
+            JSON.stringify(dump.program),
+          )
         }
       }, ownerDump)
       await page.reload({ waitUntil: 'domcontentloaded' })
@@ -216,7 +235,9 @@ async function run() {
 
   console.log(`\nChecked ${totalChecked} controls across routes and themes.`)
   if (failures.length > 0) {
-    console.error(`❌ FAIL: Found ${failures.length} contrast issues below 4.5:1:`)
+    console.error(
+      `❌ FAIL: Found ${failures.length} contrast issues below 4.5:1:`,
+    )
     for (const f of failures.slice(0, 20)) {
       console.error(
         `  - [${f.theme.toUpperCase()}] ${f.route} <${f.tag}> "${f.text}" (${f.className}): ratio ${f.ratio}:1 (text ${f.textColor} on bg ${f.bgColor})`,
@@ -228,7 +249,9 @@ async function run() {
     process.exit(1)
   }
 
-  console.log('✓ gate-contrast passed cleanly! All controls pass WCAG AA contrast >= 4.5:1.')
+  console.log(
+    '✓ gate-contrast passed cleanly! All controls pass WCAG AA contrast >= 4.5:1.',
+  )
   process.exit(0)
 }
 

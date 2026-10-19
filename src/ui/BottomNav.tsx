@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { Icon, type IconName } from './Icon.tsx'
 
 export type BottomNavTabId =
-  | 'home' | 'training' | 'nutrition' | 'progress' | 'settings'
+  'home' | 'training' | 'nutrition' | 'progress' | 'settings'
 
 export interface BottomNavTab {
   id: BottomNavTabId

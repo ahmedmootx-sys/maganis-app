@@ -18,7 +18,11 @@ import { resolveExerciseMuscles } from './legacyMuscleMapper.ts'
 import { TopBar, Select, FileField, Button, Segmented } from '../../ui/index.ts'
 import { IconClose } from '../../components/Icons.tsx'
 import muscleNamesData from '../../data/muscle-names.json'
-import { getMuscleGymName, getMuscleGroup, type MuscleNameEntry } from './muscleNames.ts'
+import {
+  getMuscleGymName,
+  getMuscleGroup,
+  type MuscleNameEntry,
+} from './muscleNames.ts'
 
 const MUSCLE_SELECT_OPTIONS = (
   muscleNamesData.muscles as MuscleNameEntry[]
@@ -817,7 +821,13 @@ export function CustomExerciseBuilder({
           className="sticky-bottom-bar sticky-bottom-bar--row"
           style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}
         >
-          <Button type="submit" variant="primary" fullWidth size="large" style={{ flex: 1 }}>
+          <Button
+            type="submit"
+            variant="primary"
+            fullWidth
+            size="large"
+            style={{ flex: 1 }}
+          >
             حفظ التمرين
           </Button>
           {onCancel && (

@@ -6,16 +6,9 @@
     "category": "chest",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -29,16 +22,9 @@
     "category": "chest",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -52,16 +38,9 @@
     "category": "chest",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر سفلي (قصي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر سفلي (قصي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -75,16 +54,9 @@
     "category": "chest",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -98,22 +70,12 @@
     "category": "chest",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": true,
     "riskReasonAr": "يضع مفصل الكتف في دوران خارجي حاد مع شد مفرط على الكبسولة المفصلية الأمامية، بالإضافة لخطر سقوط البار على الرقبة في حال الإخفاق.",
-    "saferAlternatives": [
-      "chest-1",
-      "chest-4"
-    ],
+    "saferAlternatives": ["chest-1", "chest-4"],
     "imagesCount": 2,
     "hasGif": false
   },
@@ -124,16 +86,9 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -147,16 +102,9 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -170,16 +118,9 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر سفلي (قصي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر سفلي (قصي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -193,13 +134,9 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -213,15 +150,9 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -235,13 +166,9 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "صدر سفلي (قصي)"
-    ],
+    "subMuscles": ["صدر سفلي (قصي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -255,17 +182,13 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [
       "عضلة الظهر (لاتس)",
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -279,13 +202,9 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -299,16 +218,9 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -322,15 +234,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -344,15 +250,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -366,16 +266,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -389,13 +282,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -409,13 +298,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -429,13 +314,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -449,16 +330,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -472,16 +346,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -495,16 +362,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر سفلي (قصي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر سفلي (قصي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -518,16 +378,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -541,16 +394,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -564,16 +410,9 @@
     "category": "chest",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر سفلي (قصي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر سفلي (قصي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -587,16 +426,9 @@
     "category": "chest",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر سفلي (قصي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر سفلي (قصي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -610,16 +442,9 @@
     "category": "chest",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -633,22 +458,12 @@
     "category": "chest",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": true,
     "riskReasonAr": "يضع مفصل الكتف في دوران خارجي حاد مع شد مفرط على الكبسولة المفصلية الأمامية، بالإضافة لخطر سقوط البار على الرقبة في حال الإخفاق.",
-    "saferAlternatives": [
-      "chest-1",
-      "chest-4"
-    ],
+    "saferAlternatives": ["chest-1", "chest-4"],
     "imagesCount": 2,
     "hasGif": false
   },
@@ -659,16 +474,9 @@
     "category": "chest",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر علوي (ترقوي)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر علوي (ترقوي)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -682,17 +490,13 @@
     "category": "chest",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [
       "عضلات الساعد والقبضة",
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -706,16 +510,9 @@
     "category": "chest",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -729,9 +526,7 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أسفل الظهر (الفقرات القطنية)"
-    ],
+    "primaryMuscles": ["أسفل الظهر (الفقرات القطنية)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات الساعد والقبضة",
@@ -742,9 +537,7 @@
       "العضلة الرباعية (الفخذ الأمامي)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "أسفل الظهر والفقرات القطنية"
-    ],
+    "subMuscles": ["أسفل الظهر والفقرات القطنية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -758,17 +551,13 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلة الظهر (لاتس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -782,17 +571,13 @@
     "category": "back",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلة الظهر (لاتس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -806,17 +591,13 @@
     "category": "back",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلة الظهر (لاتس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -830,16 +611,9 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
-    "secondaryMuscles": [
-      "عضلة البايسبس",
-      "عضلة الظهر (لاتس)"
-    ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
+    "secondaryMuscles": ["عضلة البايسبس", "عضلة الظهر (لاتس)"],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -853,17 +627,13 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -877,17 +647,13 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -901,17 +667,13 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -925,16 +687,12 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -948,17 +706,13 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -972,17 +726,13 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلة الظهر (لاتس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -996,16 +746,12 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1019,13 +765,9 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1039,16 +781,12 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1062,17 +800,13 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1086,17 +820,13 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلات الساعد والقبضة",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1110,15 +840,9 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
+    "secondaryMuscles": ["عضلة الظهر (لاتس)"],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1132,18 +856,14 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلات الساعد والقبضة",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1157,13 +877,9 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "primaryMuscles": ["عضلات الترابيس (Traps)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "subMuscles": ["عضلات الترابيس (Traps)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1177,13 +893,9 @@
     "category": "back",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "primaryMuscles": ["عضلات الترابيس (Traps)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "subMuscles": ["عضلات الترابيس (Traps)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1197,13 +909,9 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "primaryMuscles": ["عضلات الترابيس (Traps)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "subMuscles": ["عضلات الترابيس (Traps)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1217,13 +925,9 @@
     "category": "back",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "subMuscles": ["عضلات الترابيس (Traps)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1237,16 +941,12 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أسفل الظهر (الفقرات القطنية)"
-    ],
+    "primaryMuscles": ["أسفل الظهر (الفقرات القطنية)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "أسفل الظهر والفقرات القطنية"
-    ],
+    "subMuscles": ["أسفل الظهر والفقرات القطنية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1260,17 +960,13 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1284,16 +980,12 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أسفل الظهر (الفقرات القطنية)"
-    ],
+    "primaryMuscles": ["أسفل الظهر (الفقرات القطنية)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1307,17 +999,13 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلة الظهر (لاتس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1331,15 +1019,9 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
+    "secondaryMuscles": ["عضلة الظهر (لاتس)"],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1353,16 +1035,12 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1376,16 +1054,9 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
-    "secondaryMuscles": [
-      "عضلة البايسبس",
-      "عضلة الظهر (لاتس)"
-    ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
+    "secondaryMuscles": ["عضلة البايسبس", "عضلة الظهر (لاتس)"],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1399,9 +1070,7 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات الفخذ الداخلية (الضامة)",
       "عضلات الساعد والقبضة",
@@ -1411,9 +1080,7 @@
       "العضلة الرباعية (الفخذ الأمامي)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1427,16 +1094,12 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1450,9 +1113,7 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "advanced",
-    "primaryMuscles": [
-      "أسفل الظهر (الفقرات القطنية)"
-    ],
+    "primaryMuscles": ["أسفل الظهر (الفقرات القطنية)"],
     "secondaryMuscles": [
       "عضلات الساعد والقبضة",
       "عضلات المؤخرة والألوية (الجلوتس)",
@@ -1461,9 +1122,7 @@
       "العضلة الرباعية (الفخذ الأمامي)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "أسفل الظهر والفقرات القطنية"
-    ],
+    "subMuscles": ["أسفل الظهر والفقرات القطنية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1477,18 +1136,14 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات الساعد والقبضة",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أسفل الظهر (الفقرات القطنية)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1502,16 +1157,12 @@
     "category": "legs",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1525,16 +1176,12 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أسفل الظهر (الفقرات القطنية)"
-    ],
+    "primaryMuscles": ["أسفل الظهر (الفقرات القطنية)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "أسفل الظهر والفقرات القطنية"
-    ],
+    "subMuscles": ["أسفل الظهر والفقرات القطنية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1548,15 +1195,9 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1570,15 +1211,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
-    "subMuscles": [
-      "الكتف الجانبي (Side Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلات الترابيس (Traps)"],
+    "subMuscles": ["الكتف الجانبي (Side Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1592,15 +1227,9 @@
     "category": "back",
     "equipment": "band",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "primaryMuscles": ["عضلات الترابيس (Traps)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1614,15 +1243,9 @@
     "category": "core",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "ثبات الجذع والكور العميق"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["ثبات الجذع والكور العميق"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1636,18 +1259,14 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1661,17 +1280,13 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "advanced",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1685,9 +1300,7 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات الفخذ الداخلية (الضامة)",
       "عضلات السمانة (الكاحل)",
@@ -1695,9 +1308,7 @@
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1711,18 +1322,14 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1736,18 +1343,14 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "عضلات الفخذ الداخلية (الضامة)"
-    ],
+    "subMuscles": ["عضلات الفخذ الداخلية (الضامة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1761,9 +1364,7 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "advanced",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات السمانة (الكاحل)",
@@ -1773,9 +1374,7 @@
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1789,17 +1388,13 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1813,17 +1408,13 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1837,17 +1428,13 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1861,17 +1448,13 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1885,18 +1468,14 @@
     "category": "legs",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1910,18 +1489,14 @@
     "category": "legs",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1935,17 +1510,13 @@
     "category": "legs",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1959,16 +1530,12 @@
     "category": "legs",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -1982,17 +1549,13 @@
     "category": "legs",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2006,16 +1569,12 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
+    "primaryMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
     "secondaryMuscles": [
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "العضلة الرباعية (الفخذ الأمامي)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2029,18 +1588,14 @@
     "category": "legs",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2054,17 +1609,13 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2078,13 +1629,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2098,13 +1645,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2118,13 +1661,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2138,13 +1677,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2158,17 +1693,13 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2182,16 +1713,12 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2205,16 +1732,12 @@
     "category": "legs",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2228,16 +1751,12 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
+    "primaryMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
+    "subMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2251,16 +1770,12 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
+    "primaryMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
+    "subMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2274,15 +1789,9 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
-    "secondaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
-    "subMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
+    "primaryMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
+    "secondaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
+    "subMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2296,16 +1805,12 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)"
     ],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2319,15 +1824,9 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
-    "secondaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
-    "subMuscles": [
-      "الفخذ الخلفي (الهمسترنج)"
-    ],
+    "primaryMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
+    "secondaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
+    "subMuscles": ["الفخذ الخلفي (الهمسترنج)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2341,15 +1840,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الفخذ الخارجية (المبعدة)"
-    ],
-    "secondaryMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
-    "subMuscles": [
-      "عضلات المؤخرة والألوية (الجلوتس)"
-    ],
+    "primaryMuscles": ["عضلات الفخذ الخارجية (المبعدة)"],
+    "secondaryMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
+    "subMuscles": ["عضلات المؤخرة والألوية (الجلوتس)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2363,16 +1856,12 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الفخذ الداخلية (الضامة)"
-    ],
+    "primaryMuscles": ["عضلات الفخذ الداخلية (الضامة)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "عضلات الفخذ الداخلية (الضامة)"
-    ],
+    "subMuscles": ["عضلات الفخذ الداخلية (الضامة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2386,13 +1875,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "primaryMuscles": ["عضلات السمانة (الكاحل)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "subMuscles": ["عضلات السمانة (الكاحل)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2406,13 +1891,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "primaryMuscles": ["عضلات السمانة (الكاحل)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "subMuscles": ["عضلات السمانة (الكاحل)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2426,13 +1907,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "primaryMuscles": ["عضلات السمانة (الكاحل)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "subMuscles": ["عضلات السمانة (الكاحل)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2446,13 +1923,9 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "primaryMuscles": ["عضلات السمانة (الكاحل)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "subMuscles": ["عضلات السمانة (الكاحل)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2466,13 +1939,9 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "primaryMuscles": ["عضلات السمانة (الكاحل)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "subMuscles": ["عضلات السمانة (الكاحل)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2486,13 +1955,9 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "primaryMuscles": ["عضلات السمانة (الكاحل)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات السمانة (الكاحل)"
-    ],
+    "subMuscles": ["عضلات السمانة (الكاحل)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2506,18 +1971,14 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2531,17 +1992,13 @@
     "category": "legs",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2555,16 +2012,12 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2578,17 +2031,13 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات السمانة (الكاحل)",
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2602,16 +2051,12 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات المؤخرة والألوية (الجلوتس)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2625,13 +2070,9 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الفخذ الداخلية (الضامة)"
-    ],
+    "primaryMuscles": ["عضلات الفخذ الداخلية (الضامة)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2645,9 +2086,7 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "advanced",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات السمانة (الكاحل)",
@@ -2656,9 +2095,7 @@
       "أسفل الظهر (الفقرات القطنية)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2672,13 +2109,9 @@
     "category": "legs",
     "equipment": "band",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الفخذ الداخلية (الضامة)"
-    ],
+    "primaryMuscles": ["عضلات الفخذ الداخلية (الضامة)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الفخذ الداخلية (الضامة)"
-    ],
+    "subMuscles": ["عضلات الفخذ الداخلية (الضامة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2692,9 +2125,7 @@
     "category": "legs",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات الفخذ الخارجية (المبعدة)",
       "عضلات الفخذ الداخلية (الضامة)",
@@ -2704,9 +2135,7 @@
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "أسفل الظهر (الفقرات القطنية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2720,13 +2149,9 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "primaryMuscles": ["عضلات الترابيس (Traps)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "subMuscles": ["عضلات الترابيس (Traps)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2740,9 +2165,7 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أوتار الركبة (الفخذ الخلفي / الهمسترنج)"
-    ],
+    "primaryMuscles": ["أوتار الركبة (الفخذ الخلفي / الهمسترنج)"],
     "secondaryMuscles": [
       "عضلات الفخذ الخارجية (المبعدة)",
       "عضلات الفخذ الداخلية (الضامة)",
@@ -2750,9 +2173,7 @@
       "عضلات المؤخرة والألوية (الجلوتس)",
       "العضلة الرباعية (الفخذ الأمامي)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2766,15 +2187,9 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2788,15 +2203,9 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2810,15 +2219,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2832,15 +2235,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2854,15 +2251,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2876,15 +2267,9 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2898,9 +2283,7 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات السمانة (الكاحل)",
@@ -2912,9 +2295,7 @@
       "عضلات الترابيس (Traps)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "الكتف والترابيس"
-    ],
+    "subMuscles": ["الكتف والترابيس"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2928,16 +2309,9 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "advanced",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)", "عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2951,13 +2325,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الجانبي (Side Delt)"
-    ],
+    "subMuscles": ["الكتف الجانبي (Side Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2971,13 +2341,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الجانبي (Side Delt)"
-    ],
+    "subMuscles": ["الكتف الجانبي (Side Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -2991,13 +2357,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الجانبي (Side Delt)"
-    ],
+    "subMuscles": ["الكتف الجانبي (Side Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3011,16 +2373,12 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "الكتف الجانبي (Side Delt)"
-    ],
+    "subMuscles": ["الكتف الجانبي (Side Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3034,13 +2392,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3054,13 +2408,9 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3074,13 +2424,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3094,13 +2440,9 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3114,13 +2456,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3134,13 +2472,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3154,13 +2488,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3174,13 +2504,9 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3194,17 +2520,13 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلة الظهر (لاتس)",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3218,16 +2540,12 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3241,15 +2559,9 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
-    "subMuscles": [
-      "الكتف والترابيس"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلات الترابيس (Traps)"],
+    "subMuscles": ["الكتف والترابيس"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3263,15 +2575,9 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "primaryMuscles": ["عضلات الترابيس (Traps)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3285,16 +2591,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة البايسبس",
-      "عضلات الترابيس (Traps)"
-    ],
-    "subMuscles": [
-      "الكتف والترابيس"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة البايسبس", "عضلات الترابيس (Traps)"],
+    "subMuscles": ["الكتف والترابيس"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3308,15 +2607,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلات الترابيس (Traps)"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3330,15 +2623,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة البايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3352,13 +2639,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3372,15 +2655,9 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3394,15 +2671,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
-    "subMuscles": [
-      "الكفة المدورة (Rotator Cuff)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلات الترابيس (Traps)"],
+    "subMuscles": ["الكفة المدورة (Rotator Cuff)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3416,9 +2687,7 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات المؤخرة والألوية (الجلوتس)",
@@ -3427,9 +2696,7 @@
       "العضلة الرباعية (الفخذ الأمامي)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3443,15 +2710,9 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3465,15 +2726,9 @@
     "category": "shoulders",
     "equipment": "bodyweight",
     "difficulty": "advanced",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3487,16 +2742,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)", "عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3510,13 +2758,9 @@
     "category": "shoulders",
     "equipment": "band",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكفة المدورة (Rotator Cuff)"
-    ],
+    "subMuscles": ["الكفة المدورة (Rotator Cuff)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3530,16 +2774,9 @@
     "category": "shoulders",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة",
-      "عضلة الظهر (لاتس)"
-    ],
-    "subMuscles": [
-      "الكتف الجانبي (Side Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة", "عضلة الظهر (لاتس)"],
+    "subMuscles": ["الكتف الجانبي (Side Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3553,15 +2790,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "بايسبس - الرأس الطويل"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["بايسبس - الرأس الطويل"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3575,13 +2806,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "بايسبس - الرأس الطويل"
-    ],
+    "subMuscles": ["بايسبس - الرأس الطويل"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3595,15 +2822,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3617,13 +2838,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3637,15 +2854,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "بايسبس - الرأس الطويل"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["بايسبس - الرأس الطويل"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3659,13 +2870,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "بايسبس - الرأس القصير (عضلة القمة)"
-    ],
+    "subMuscles": ["بايسبس - الرأس القصير (عضلة القمة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3679,13 +2886,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "بايسبس - الرأس القصير (عضلة القمة)"
-    ],
+    "subMuscles": ["بايسبس - الرأس القصير (عضلة القمة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3699,13 +2902,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3719,15 +2918,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "العضدية والساعد (البريكيالس)"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["العضدية والساعد (البريكيالس)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3741,13 +2934,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "بايسبس - الرأس القصير (عضلة القمة)"
-    ],
+    "subMuscles": ["بايسبس - الرأس القصير (عضلة القمة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3761,15 +2950,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "بايسبس - الرأس الطويل"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["بايسبس - الرأس الطويل"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3783,13 +2966,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "بايسبس - الرأس الطويل"
-    ],
+    "subMuscles": ["بايسبس - الرأس الطويل"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3803,15 +2982,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3825,13 +2998,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3845,15 +3014,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "بايسبس - الرأس القصير (عضلة القمة)"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["بايسبس - الرأس القصير (عضلة القمة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3867,13 +3030,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "العضدية والساعد (البريكيالس)"
-    ],
+    "subMuscles": ["العضدية والساعد (البريكيالس)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3887,13 +3046,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "بايسبس - الرأس الطويل"
-    ],
+    "subMuscles": ["بايسبس - الرأس الطويل"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3907,13 +3062,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "بايسبس - الرأس الطويل"
-    ],
+    "subMuscles": ["بايسبس - الرأس الطويل"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3927,15 +3078,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3949,15 +3094,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3971,16 +3110,12 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -3994,16 +3129,12 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4017,13 +3148,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الطويل (Long Head)"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الطويل (Long Head)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4037,13 +3164,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "العضدية والساعد (البريكيالس)"
-    ],
+    "subMuscles": ["العضدية والساعد (البريكيالس)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4057,15 +3180,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "بايسبس - الرأس القصير (عضلة القمة)"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["بايسبس - الرأس القصير (عضلة القمة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4079,16 +3196,12 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "ترايسبس - الرأس الطويل (Long Head)"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الطويل (Long Head)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4102,15 +3215,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "ترايسبس - الرأس الطويل (Long Head)"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["ترايسبس - الرأس الطويل (Long Head)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4124,13 +3231,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4144,13 +3247,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الطويل (Long Head)"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الطويل (Long Head)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4164,13 +3263,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4184,16 +3279,12 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4207,13 +3298,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4227,13 +3314,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4247,13 +3330,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4267,13 +3346,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4287,13 +3362,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4307,13 +3378,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4327,16 +3394,12 @@
     "category": "arms",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4350,16 +3413,12 @@
     "category": "arms",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4373,13 +3432,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
+    "primaryMuscles": ["عضلات الساعد والقبضة"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4393,13 +3448,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
+    "primaryMuscles": ["عضلات الساعد والقبضة"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4413,13 +3464,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
+    "primaryMuscles": ["عضلات الساعد والقبضة"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4433,9 +3480,7 @@
     "category": "arms",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
+    "primaryMuscles": ["عضلات الساعد والقبضة"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات المؤخرة والألوية (الجلوتس)",
@@ -4444,9 +3489,7 @@
       "العضلة الرباعية (الفخذ الأمامي)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4460,15 +3503,9 @@
     "category": "arms",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "primaryMuscles": ["عضلات الساعد والقبضة"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4482,13 +3519,9 @@
     "category": "arms",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
+    "primaryMuscles": ["عضلات الساعد والقبضة"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4502,13 +3535,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
+    "primaryMuscles": ["عضلات الساعد والقبضة"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4522,13 +3551,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ثبات الجذع والكور العميق"
-    ],
+    "subMuscles": ["ثبات الجذع والكور العميق"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4542,17 +3567,13 @@
     "category": "chest",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4566,13 +3587,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4586,13 +3603,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4606,13 +3619,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن السفلية"
-    ],
+    "subMuscles": ["عضلات البطن السفلية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4626,13 +3635,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الخواصر والجانبية (Obliques)"
-    ],
+    "subMuscles": ["عضلات الخواصر والجانبية (Obliques)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4646,13 +3651,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4666,13 +3667,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4686,13 +3683,9 @@
     "category": "core",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4706,13 +3699,9 @@
     "category": "arms",
     "equipment": "machine",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الجانبي والأوسط"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الجانبي والأوسط"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4726,13 +3715,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "advanced",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن السفلية"
-    ],
+    "subMuscles": ["عضلات البطن السفلية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4746,13 +3731,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن السفلية"
-    ],
+    "subMuscles": ["عضلات البطن السفلية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4766,13 +3747,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4786,13 +3763,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن السفلية"
-    ],
+    "subMuscles": ["عضلات البطن السفلية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4806,15 +3779,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "ثبات الجذع والكور العميق"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["ثبات الجذع والكور العميق"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4828,15 +3795,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
-    "secondaryMuscles": [
-      "أسفل الظهر (الفقرات القطنية)"
-    ],
-    "subMuscles": [
-      "عضلات الخواصر والجانبية (Obliques)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
+    "secondaryMuscles": ["أسفل الظهر (الفقرات القطنية)"],
+    "subMuscles": ["عضلات الخواصر والجانبية (Obliques)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4850,13 +3811,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الخواصر والجانبية (Obliques)"
-    ],
+    "subMuscles": ["عضلات الخواصر والجانبية (Obliques)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4870,17 +3827,13 @@
     "category": "legs",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "العضلة الرباعية (الفخذ الأمامي)"
-    ],
+    "primaryMuscles": ["العضلة الرباعية (الفخذ الأمامي)"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "أوتار الركبة (الفخذ الخلفي / الهمسترنج)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "الفخذ الأمامي (العضلة الرباعية)"
-    ],
+    "subMuscles": ["الفخذ الأمامي (العضلة الرباعية)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4894,13 +3847,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ثبات الجذع والكور العميق"
-    ],
+    "subMuscles": ["ثبات الجذع والكور العميق"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4914,15 +3863,9 @@
     "category": "core",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "عضلات الخواصر والجانبية (Obliques)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["عضلات الخواصر والجانبية (Obliques)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4936,17 +3879,13 @@
     "category": "core",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "ثبات الجذع والكور العميق"
-    ],
+    "subMuscles": ["ثبات الجذع والكور العميق"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4960,13 +3899,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الخواصر والجانبية (Obliques)"
-    ],
+    "subMuscles": ["عضلات الخواصر والجانبية (Obliques)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -4980,15 +3915,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "subMuscles": [
-      "عضلات الخواصر والجانبية (Obliques)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)"],
+    "subMuscles": ["عضلات الخواصر والجانبية (Obliques)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5002,13 +3931,9 @@
     "category": "core",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الخواصر والجانبية (Obliques)"
-    ],
+    "subMuscles": ["عضلات الخواصر والجانبية (Obliques)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5022,13 +3947,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5042,17 +3963,13 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5066,16 +3983,9 @@
     "category": "chest",
     "equipment": "band",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الكتف (الدالية)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
+    "secondaryMuscles": ["عضلات الكتف (الدالية)", "عضلة الترايسبس"],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5089,17 +3999,13 @@
     "category": "chest",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [
       "عضلة الظهر (لاتس)",
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5113,17 +4019,13 @@
     "category": "chest",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)"
-    ],
+    "primaryMuscles": ["عضلات الصدر (الصدرية الكبرى)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "صدر أوسط ومستوٍ"
-    ],
+    "subMuscles": ["صدر أوسط ومستوٍ"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5137,16 +4039,12 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "primaryMuscles": ["عضلات الترابيس (Traps)"],
     "secondaryMuscles": [
       "عضلات الساعد والقبضة",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "subMuscles": ["عضلات الترابيس (Traps)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5160,18 +4058,14 @@
     "category": "back",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "عضلة الظهر (لاتس)",
       "أسفل الظهر (الفقرات القطنية)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5185,16 +4079,9 @@
     "category": "back",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
-    "secondaryMuscles": [
-      "عضلة البايسبس",
-      "عضلة الظهر (لاتس)"
-    ],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "primaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
+    "secondaryMuscles": ["عضلة البايسبس", "عضلة الظهر (لاتس)"],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5208,13 +4095,9 @@
     "category": "back",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز)"
-    ],
+    "subMuscles": ["أعلى ومنتصف الظهر (الرومبويدز)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5228,17 +4111,13 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات الساعد والقبضة",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5252,17 +4131,13 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الظهر (لاتس)"
-    ],
+    "primaryMuscles": ["عضلة الظهر (لاتس)"],
     "secondaryMuscles": [
       "عضلة البايسبس",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5276,16 +4151,12 @@
     "category": "back",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الترابيس (Traps)"
-    ],
+    "primaryMuscles": ["عضلات الترابيس (Traps)"],
     "secondaryMuscles": [
       "عضلة الظهر (لاتس)",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
     ],
-    "subMuscles": [
-      "اللاتس والظهر العريض (Lats)"
-    ],
+    "subMuscles": ["اللاتس والظهر العريض (Lats)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5299,15 +4170,9 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5321,15 +4186,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5343,16 +4202,12 @@
     "category": "shoulders",
     "equipment": "band",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5366,16 +4221,9 @@
     "category": "shoulders",
     "equipment": "barbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "عضلات الصدر (الصدرية الكبرى)",
-      "عضلة الترايسبس"
-    ],
-    "subMuscles": [
-      "الكتف الأمامي (Front Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["عضلات الصدر (الصدرية الكبرى)", "عضلة الترايسبس"],
+    "subMuscles": ["الكتف الأمامي (Front Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5389,17 +4237,13 @@
     "category": "shoulders",
     "equipment": "machine",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [
       "أسفل الظهر (الفقرات القطنية)",
       "أعلى ومنتصف الظهر (الرومبويدز والترابيس)",
       "عضلات الترابيس (Traps)"
     ],
-    "subMuscles": [
-      "الكتف الجانبي (Side Delt)"
-    ],
+    "subMuscles": ["الكتف الجانبي (Side Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5413,15 +4257,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
-    "secondaryMuscles": [
-      "أعلى ومنتصف الظهر (الرومبويدز والترابيس)"
-    ],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
+    "secondaryMuscles": ["أعلى ومنتصف الظهر (الرومبويدز والترابيس)"],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5435,13 +4273,9 @@
     "category": "shoulders",
     "equipment": "dumbbell",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الخلفي (Rear Delt)"
-    ],
+    "subMuscles": ["الكتف الخلفي (Rear Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5455,13 +4289,9 @@
     "category": "shoulders",
     "equipment": "band",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الكتف (الدالية)"
-    ],
+    "primaryMuscles": ["عضلات الكتف (الدالية)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "الكتف الجانبي (Side Delt)"
-    ],
+    "subMuscles": ["الكتف الجانبي (Side Delt)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5475,15 +4305,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "العضدية والساعد (البريكيالس)"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["العضدية والساعد (البريكيالس)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5497,15 +4321,9 @@
     "category": "arms",
     "equipment": "dumbbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
-    "secondaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
-    "subMuscles": [
-      "بايسبس - الرأس القصير (عضلة القمة)"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
+    "secondaryMuscles": ["عضلات الساعد والقبضة"],
+    "subMuscles": ["بايسبس - الرأس القصير (عضلة القمة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5519,13 +4337,9 @@
     "category": "arms",
     "equipment": "band",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "ترايسبس - الرأس الطويل (Long Head)"
-    ],
+    "subMuscles": ["ترايسبس - الرأس الطويل (Long Head)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5539,13 +4353,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلة البايسبس"
-    ],
+    "primaryMuscles": ["عضلة البايسبس"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "بايسبس - الرأس القصير (عضلة القمة)"
-    ],
+    "subMuscles": ["بايسبس - الرأس القصير (عضلة القمة)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5559,13 +4369,9 @@
     "category": "arms",
     "equipment": "barbell",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات الساعد والقبضة"
-    ],
+    "primaryMuscles": ["عضلات الساعد والقبضة"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5579,17 +4385,13 @@
     "category": "arms",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلة الترايسبس"
-    ],
+    "primaryMuscles": ["عضلة الترايسبس"],
     "secondaryMuscles": [
       "عضلات البطن المستقيمة والجذع (الكور)",
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "عضلات الساعد والقبضة (Forearms)"
-    ],
+    "subMuscles": ["عضلات الساعد والقبضة (Forearms)"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5603,13 +4405,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5623,13 +4421,9 @@
     "category": "core",
     "equipment": "machine",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5643,13 +4437,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5663,16 +4453,12 @@
     "category": "core",
     "equipment": "barbell",
     "difficulty": "advanced",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [
       "أسفل الظهر (الفقرات القطنية)",
       "عضلات الكتف (الدالية)"
     ],
-    "subMuscles": [
-      "ثبات الجذع والكور العميق"
-    ],
+    "subMuscles": ["ثبات الجذع والكور العميق"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5686,13 +4472,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5706,16 +4488,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "intermediate",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
-    "secondaryMuscles": [
-      "عضلة البايسبس",
-      "عضلة الظهر (لاتس)"
-    ],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
+    "secondaryMuscles": ["عضلة البايسبس", "عضلة الظهر (لاتس)"],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5729,13 +4504,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن السفلية"
-    ],
+    "subMuscles": ["عضلات البطن السفلية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5749,13 +4520,9 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [],
-    "subMuscles": [
-      "عضلات البطن السفلية"
-    ],
+    "subMuscles": ["عضلات البطن السفلية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],
@@ -5769,17 +4536,13 @@
     "category": "core",
     "equipment": "bodyweight",
     "difficulty": "beginner",
-    "primaryMuscles": [
-      "عضلات البطن المستقيمة والجذع (الكور)"
-    ],
+    "primaryMuscles": ["عضلات البطن المستقيمة والجذع (الكور)"],
     "secondaryMuscles": [
       "عضلات الصدر (الصدرية الكبرى)",
       "عضلات الكتف (الدالية)",
       "عضلة الترايسبس"
     ],
-    "subMuscles": [
-      "عضلات البطن العلوية"
-    ],
+    "subMuscles": ["عضلات البطن العلوية"],
     "highRisk": false,
     "riskReasonAr": null,
     "saferAlternatives": [],

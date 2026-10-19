@@ -6,14 +6,22 @@ function walk(dir) {
   if (!fs.existsSync(dir)) return results
   const list = fs.readdirSync(dir, { withFileTypes: true })
   for (const item of list) {
-    if (['node_modules', '.git', '.cache', 'coverage'].includes(item.name)) continue
+    if (['node_modules', '.git', '.cache', 'coverage'].includes(item.name))
+      continue
     const full = path.join(dir, item.name)
     if (item.isDirectory()) {
       results = results.concat(walk(full))
     } else if (
-      ['.ts', '.tsx', '.js', '.jsx', '.json', '.html', '.css', '.webmanifest'].some((ext) =>
-        item.name.endsWith(ext),
-      )
+      [
+        '.ts',
+        '.tsx',
+        '.js',
+        '.jsx',
+        '.json',
+        '.html',
+        '.css',
+        '.webmanifest',
+      ].some((ext) => item.name.endsWith(ext))
     ) {
       results.push(full)
     }
@@ -34,7 +42,12 @@ function classifyOccurrence(filePath, lineText) {
   const t = lineText.trim()
 
   // 1. Comments
-  if (t.startsWith('//') || t.startsWith('/*') || t.startsWith('*') || t.startsWith('<!--')) {
+  if (
+    t.startsWith('//') ||
+    t.startsWith('/*') ||
+    t.startsWith('*') ||
+    t.startsWith('<!--')
+  ) {
     return 'comment'
   }
 
@@ -51,12 +64,20 @@ function classifyOccurrence(filePath, lineText) {
   }
 
   // 3. Mascot Name (د. مجانص / نصائح د. مجانص)
-  if (t.includes('د. مجانص') || t.includes('دكتور مجانص') || t.includes('mascot')) {
+  if (
+    t.includes('د. مجانص') ||
+    t.includes('دكتور مجانص') ||
+    t.includes('mascot')
+  ) {
     return 'mascot-name'
   }
 
   // 4. Search alias (search synonym dictionaries)
-  if (normPath.includes('muscleResolver') || normPath.includes('muscle-names') || t.includes('gym_ar_alt')) {
+  if (
+    normPath.includes('muscleResolver') ||
+    normPath.includes('muscle-names') ||
+    t.includes('gym_ar_alt')
+  ) {
     return 'search-alias'
   }
 
@@ -125,7 +146,9 @@ console.log(`comment:     ${counts.comment}`)
 console.log('----------------------------------------------------')
 
 if (counts['UI-brand'] > 0) {
-  console.error(`❌ FAILED: Found ${counts['UI-brand']} UI-brand occurrences of «مجانص»!`)
+  console.error(
+    `❌ FAILED: Found ${counts['UI-brand']} UI-brand occurrences of «مجانص»!`,
+  )
   process.exit(1)
 } else {
   console.log('✓ PASSED: UI-brand occurrences of «مجانص» is exactly 0.')

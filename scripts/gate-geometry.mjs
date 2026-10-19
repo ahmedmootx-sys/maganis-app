@@ -19,7 +19,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 
 async function runGate() {
-  console.log('🚀 Running Gate 5.5: Mobile Geometry & Touch Targets (Non-vacuous)...')
+  console.log(
+    '🚀 Running Gate 5.5: Mobile Geometry & Touch Targets (Non-vacuous)...',
+  )
 
   const server = await preview({
     root: rootDir,
@@ -50,7 +52,14 @@ async function runGate() {
       splitType: 'upper_lower',
       experienceLevel: 'intermediate',
       equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'bodyweight'],
-      body: { weightKg: 80, heightCm: 178, age: 28, sex: 'male', lifestyle: 2, activityLevel: 'moderate' },
+      body: {
+        weightKg: 80,
+        heightCm: 178,
+        age: 28,
+        sex: 'male',
+        lifestyle: 2,
+        activityLevel: 'moderate',
+      },
       medical: { hasIssues: true, injuryTags: ['الكتف'], notes: '' },
       createdAt: 1700000000000,
       updatedAt: 1700000000000,
@@ -68,8 +77,20 @@ async function runGate() {
           labelAr: 'اليوم 1: علوي (قوة وبناء)',
           focus: 'صدر، ظهر، كتف، ذراعين',
           exercises: [
-            { exerciseId: 'chest-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
-            { exerciseId: 'back-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
+            {
+              exerciseId: 'chest-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
+            {
+              exerciseId: 'back-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
           ],
         },
       ],
@@ -105,7 +126,9 @@ async function runGate() {
       // 1. TopBar Checks
       const topBar = document.querySelector('header.top-bar, .top-bar')
       if (topBar) {
-        const actionButtons = Array.from(topBar.querySelectorAll('button, a, .icon-btn'))
+        const actionButtons = Array.from(
+          topBar.querySelectorAll('button, a, .icon-btn'),
+        )
         examined += actionButtons.length
 
         for (let i = 0; i < actionButtons.length; i++) {
@@ -141,7 +164,9 @@ async function runGate() {
       const bottomNav = document.querySelector('nav.bottom-nav, .bottom-nav')
       if (bottomNav) {
         const navRect = bottomNav.getBoundingClientRect()
-        const navItems = Array.from(bottomNav.querySelectorAll('button, a, .bottom-nav__item, .nav-item'))
+        const navItems = Array.from(
+          bottomNav.querySelectorAll('button, a, .bottom-nav__item, .nav-item'),
+        )
         examined += navItems.length
 
         // Each tab touch target >= 44x44px
@@ -160,9 +185,12 @@ async function runGate() {
 
         // Check main container padding-bottom when bottom nav is an overlay
         const navStyle = window.getComputedStyle(bottomNav)
-        const isOverlay = navStyle.position === 'fixed' || navStyle.position === 'absolute'
+        const isOverlay =
+          navStyle.position === 'fixed' || navStyle.position === 'absolute'
         if (isOverlay) {
-          const scroller = document.querySelector('.app-main, main, .screen-container, .screen-content')
+          const scroller = document.querySelector(
+            '.app-main, main, .screen-container, .screen-content',
+          )
           if (scroller) {
             const scrollerStyle = window.getComputedStyle(scroller)
             const padBottom = parseFloat(scrollerStyle.paddingBottom) || 0
@@ -206,8 +234,12 @@ async function runGate() {
             target:
               ctrl.tagName +
               (ctrl.id ? `#${ctrl.id}` : '') +
-              (ctrl.className ? `.${ctrl.className.split(' ').join('.')}` : '') +
-              (ctrl.getAttribute('type') ? `[type="${ctrl.getAttribute('type')}"]` : ''),
+              (ctrl.className
+                ? `.${ctrl.className.split(' ').join('.')}`
+                : '') +
+              (ctrl.getAttribute('type')
+                ? `[type="${ctrl.getAttribute('type')}"]`
+                : ''),
             error: `Primary interactive control height is ${rect.height.toFixed(1)}px (minimum touch target: 44px). HTML: ${ctrl.outerHTML.slice(0, 100)}`,
           })
         }
@@ -227,19 +259,25 @@ async function runGate() {
 
   // Non-vacuous check: must examine >= 50 elements
   if (totalExamined < 50) {
-    console.error(`❌ Gate 5.5 FAILED: Only examined ${totalExamined} elements (minimum required: 50).`)
+    console.error(
+      `❌ Gate 5.5 FAILED: Only examined ${totalExamined} elements (minimum required: 50).`,
+    )
     process.exit(1)
   }
 
   if (violations.length > 0) {
-    console.error(`❌ Gate 5.5 FAILED: Found ${violations.length} geometry / touch target violations:`)
+    console.error(
+      `❌ Gate 5.5 FAILED: Found ${violations.length} geometry / touch target violations:`,
+    )
     for (const v of violations.slice(0, 10)) {
       console.error(`   - [${v.route}] ${v.target}: ${v.error}`)
     }
     process.exit(1)
   }
 
-  console.log(`✅ Gate 5.5 PASSED: ${totalExamined} interactive controls examined, 0 geometry violations.`)
+  console.log(
+    `✅ Gate 5.5 PASSED: ${totalExamined} interactive controls examined, 0 geometry violations.`,
+  )
   process.exit(0)
 }
 

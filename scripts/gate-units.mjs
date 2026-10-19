@@ -31,7 +31,9 @@ const SCAN_DIRS = [
 ]
 
 async function runGate() {
-  console.log('🚀 Running Gate: gate-units (Calorie & Measurement Unit Contract)...')
+  console.log(
+    '🚀 Running Gate: gate-units (Calorie & Measurement Unit Contract)...',
+  )
 
   const failures = []
   let checksPassed = 0
@@ -42,7 +44,8 @@ async function runGate() {
     if (!fs.existsSync(fullTarget)) continue
 
     const filesToScan = fs.statSync(fullTarget).isDirectory()
-      ? fs.readdirSync(fullTarget, { recursive: true })
+      ? fs
+          .readdirSync(fullTarget, { recursive: true })
           .filter((f) => /\.(tsx?|jsx?)$/.test(f))
           .map((f) => path.join(fullTarget, f))
       : [fullTarget]
@@ -53,7 +56,8 @@ async function runGate() {
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         // ignore comments
-        if (line.trim().startsWith('//') || line.trim().startsWith('*')) continue
+        if (line.trim().startsWith('//') || line.trim().startsWith('*'))
+          continue
 
         for (const word of FORBIDDEN_WORDS) {
           if (line.includes(word)) {
@@ -73,9 +77,13 @@ async function runGate() {
 
   if (failures.length === 0) {
     checksPassed++
-    console.log('✓ Zero occurrences of «كالوري» or «كالوِري» in user-facing UI code')
+    console.log(
+      '✓ Zero occurrences of «كالوري» or «كالوِري» in user-facing UI code',
+    )
   } else {
-    console.log(`❌ Found ${failures.length} forbidden calorie unit occurrences`)
+    console.log(
+      `❌ Found ${failures.length} forbidden calorie unit occurrences`,
+    )
   }
 
   // 2. Check existence of centralized units dictionary
@@ -88,7 +96,8 @@ async function runGate() {
     } else {
       failures.push({
         test: 'UNITS_DICT_INVALID',
-        error: 'src/utils/units.ts does not export UNITS dictionary with «سعرة»',
+        error:
+          'src/utils/units.ts does not export UNITS dictionary with «سعرة»',
       })
     }
   } else {
@@ -123,7 +132,9 @@ async function runGate() {
       plural(2000, 'سعرة') === '2000 سعرة'
     ) {
       checksPassed++
-      console.log('✓ Plural grammar verification passed (1 سعرة, 2 سعرتان, 5 سعرات, 2000 سعرة)')
+      console.log(
+        '✓ Plural grammar verification passed (1 سعرة, 2 سعرتان, 5 سعرات, 2000 سعرة)',
+      )
     } else {
       failures.push({
         test: 'PLURAL_CALORIE_GRAMMAR',
@@ -137,12 +148,18 @@ async function runGate() {
     })
   }
 
-  console.log(`\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`)
+  console.log(
+    `\n📊 Gate Summary: ${checksPassed} checks passed, ${failures.length} failures`,
+  )
   if (failures.length > 0) {
-    console.error(`\n❌ FAIL: ${failures.length} unit contract violations detected:`)
+    console.error(
+      `\n❌ FAIL: ${failures.length} unit contract violations detected:`,
+    )
     for (const f of failures) {
       if (f.snippet) {
-        console.error(`  [${f.test}] ${f.file}:${f.line} contains «${f.matched}»: ${f.snippet}`)
+        console.error(
+          `  [${f.test}] ${f.file}:${f.line} contains «${f.matched}»: ${f.snippet}`,
+        )
       } else {
         console.error(`  [${f.test}] ${f.error}`)
       }
@@ -150,7 +167,9 @@ async function runGate() {
     process.exit(1)
   }
 
-  console.log('\n✓ gate-units passed cleanly! All calorie units verified as «سعرة».')
+  console.log(
+    '\n✓ gate-units passed cleanly! All calorie units verified as «سعرة».',
+  )
   process.exit(0)
 }
 

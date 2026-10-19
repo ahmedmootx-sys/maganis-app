@@ -11,7 +11,11 @@ export interface WeekdaySlot {
   programDay?: ProgramDay | null
 }
 
-export const ALL_WEEKDAYS: Array<{ weekday: number; nameAr: string; shortAr: string }> = [
+export const ALL_WEEKDAYS: Array<{
+  weekday: number
+  nameAr: string
+  shortAr: string
+}> = [
   { weekday: 6, nameAr: 'السبت', shortAr: 'سبت' },
   { weekday: 0, nameAr: 'الأحد', shortAr: 'أحد' },
   { weekday: 1, nameAr: 'الإثنين', shortAr: 'إثنين' },
@@ -21,7 +25,9 @@ export const ALL_WEEKDAYS: Array<{ weekday: number; nameAr: string; shortAr: str
   { weekday: 5, nameAr: 'الجمعة', shortAr: 'جمعة' },
 ]
 
-export function getOrderedWeekdays(weekStartDay = 6): Array<{ weekday: number; nameAr: string; shortAr: string }> {
+export function getOrderedWeekdays(
+  weekStartDay = 6,
+): Array<{ weekday: number; nameAr: string; shortAr: string }> {
   const startIdx = ALL_WEEKDAYS.findIndex((w) => w.weekday === weekStartDay)
   if (startIdx === -1) return [...ALL_WEEKDAYS]
   return [...ALL_WEEKDAYS.slice(startIdx), ...ALL_WEEKDAYS.slice(0, startIdx)]
@@ -49,7 +55,8 @@ export function getOrDeriveSchedule(
   ordered.forEach((w, idx) => {
     if (idx < daysPerWeek) {
       if (idx < programDays.length) {
-        derived[w.weekday] = programDays[idx].id ?? String(programDays[idx].dayIndex)
+        derived[w.weekday] =
+          programDays[idx].id ?? String(programDays[idx].dayIndex)
       } else {
         // If program has fewer days than daysPerWeek, or owner real plan
         derived[w.weekday] = 'rest'
@@ -65,7 +72,9 @@ export function getOrDeriveSchedule(
   return derived
 }
 
-export function getScheduledSessionsCount(schedule: Record<number, ScheduleSlotType>): number {
+export function getScheduledSessionsCount(
+  schedule: Record<number, ScheduleSlotType>,
+): number {
   return Object.values(schedule).filter(
     (slot) => slot !== 'rest' && slot !== 'cardio',
   ).length
@@ -76,7 +85,12 @@ export function getNextSession(
   todayWeekday: number,
   program: WorkoutProgram | null | undefined,
   weekStartDay = 6,
-): { day: ProgramDay; weekday: number; isToday: boolean; nameAr: string } | null {
+): {
+  day: ProgramDay
+  weekday: number
+  isToday: boolean
+  nameAr: string
+} | null {
   if (!program?.days || program.days.length === 0) return null
 
   const ordered = getOrderedWeekdays(weekStartDay)
@@ -88,7 +102,9 @@ export function getNextSession(
     const w = ordered[(todayIdx + i) % 7]
     const slot = schedule[w.weekday]
     if (slot && slot !== 'rest' && slot !== 'cardio') {
-      const foundDay = program.days.find((d) => (d.id && d.id === slot) || String(d.dayIndex) === slot)
+      const foundDay = program.days.find(
+        (d) => (d.id && d.id === slot) || String(d.dayIndex) === slot,
+      )
       if (foundDay) {
         return {
           day: foundDay,

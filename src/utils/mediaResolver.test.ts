@@ -4,7 +4,9 @@ import { EXERCISES } from '../modules/workout/exercises.ts'
 
 describe('Exercise Media Resolver: resolveMedia', () => {
   it('resolves consistently for Leg Pull-In across contexts', () => {
-    const legPullIn = EXERCISES.find((e) => e.id === 'core-1' || e.nameAr.includes('ضم الساقين'))
+    const legPullIn = EXERCISES.find(
+      (e) => e.id === 'core-1' || e.nameAr.includes('ضم الساقين'),
+    )
     expect(legPullIn).toBeDefined()
     if (legPullIn) {
       const resObj = resolveMedia(legPullIn)
@@ -15,7 +17,9 @@ describe('Exercise Media Resolver: resolveMedia', () => {
   })
 
   it('resolves consistently for Leverage Chest Press across contexts', () => {
-    const levPress = EXERCISES.find((e) => e.id === 'chest-10' || e.name?.includes('Leverage Chest Press'))
+    const levPress = EXERCISES.find(
+      (e) => e.id === 'chest-10' || e.name?.includes('Leverage Chest Press'),
+    )
     expect(levPress).toBeDefined()
     if (levPress) {
       const resObj = resolveMedia(levPress)
@@ -37,7 +41,9 @@ describe('Exercise Media Resolver: resolveMedia', () => {
 
   it('audits exercises with null media', () => {
     const nullExercises = getNullMediaExercises()
-    console.log(`Total exercises with null media: ${nullExercises.length} / ${EXERCISES.length}`)
+    console.log(
+      `Total exercises with null media: ${nullExercises.length} / ${EXERCISES.length}`,
+    )
     // Must be array
     expect(Array.isArray(nullExercises)).toBe(true)
   })

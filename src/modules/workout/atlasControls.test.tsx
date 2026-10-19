@@ -41,7 +41,9 @@ describe('Part E: Atlas controls and states', () => {
         { id: 'pec_minor', role: 'secondary' as const },
       ],
     }
-    const { container } = render(<AnatomyMuscleMap exercise={exerciseWithDeep} />)
+    const { container } = render(
+      <AnatomyMuscleMap exercise={exerciseWithDeep} />,
+    )
 
     const deepToggle = container.querySelector('button[role="checkbox"]')
     if (deepToggle) {
@@ -50,10 +52,14 @@ describe('Part E: Atlas controls and states', () => {
 
       // Toggle deep layer
       fireEvent.click(deepToggle)
-      expect(deepToggle.getAttribute('aria-checked')).toBe(String(!initialChecked))
+      expect(deepToggle.getAttribute('aria-checked')).toBe(
+        String(!initialChecked),
+      )
 
       // Check that targeted active muscles NEVER get 'muscle-superficial-dimmed'
-      const targetedPaths = container.querySelectorAll('.muscle-primary, .muscle-secondary')
+      const targetedPaths = container.querySelectorAll(
+        '.muscle-primary, .muscle-secondary',
+      )
       targetedPaths.forEach((path) => {
         expect(path.classList.contains('muscle-superficial-dimmed')).toBe(false)
       })
@@ -82,14 +88,14 @@ describe('Part E: Atlas controls and states', () => {
       nameAr: 'تمرين تجريبي لعضلة غير مرسومة',
       category: 'core' as MuscleGroup,
       targetMuscles: ['transverse_abdominis'],
-      muscles: [
-        { id: 'transverse_abdominis', role: 'primary' as const },
-      ],
+      muscles: [{ id: 'transverse_abdominis', role: 'primary' as const }],
     }
 
     render(<AnatomyMuscleMap exercise={exerciseWithUnpainted} />)
 
-    const unpaintedBtn = screen.getByRole('button', { name: /غير مرسومة في الأطلس/ })
+    const unpaintedBtn = screen.getByRole('button', {
+      name: /غير مرسومة في الأطلس/,
+    })
     expect(unpaintedBtn).toBeDefined()
     fireEvent.click(unpaintedBtn)
     expect(screen.getByText(/عضلات غير مرسومة في الأطلس/)).toBeDefined()

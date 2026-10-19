@@ -5,9 +5,14 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.resolve(__dirname, '..')
 
-const mappingCsv = fs.readFileSync(path.join(rootDir, 'docs/program-import-mapping.csv'), 'utf8')
+const mappingCsv = fs.readFileSync(
+  path.join(rootDir, 'docs/program-import-mapping.csv'),
+  'utf8',
+)
 const lines = mappingCsv.split(/\r?\n/).filter(Boolean).slice(1)
-const diskFiles = new Set(fs.readdirSync(path.join(rootDir, 'public/exercises')))
+const diskFiles = new Set(
+  fs.readdirSync(path.join(rootDir, 'public/exercises')),
+)
 
 console.log('Auditing Owner 41 Exercises Coverage:')
 let mapped = 0

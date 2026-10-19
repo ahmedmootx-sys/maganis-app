@@ -24,7 +24,11 @@ export async function saveFile(
   // 1. showSaveFilePicker (Desktop Chromium)
   if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
     try {
-      const picker = (window as unknown as { showSaveFilePicker: (opts: unknown) => Promise<FileSystemFileHandle> }).showSaveFilePicker
+      const picker = (
+        window as unknown as {
+          showSaveFilePicker: (opts: unknown) => Promise<FileSystemFileHandle>
+        }
+      ).showSaveFilePicker
       const handle = await picker({
         suggestedName: filename,
         types: [
@@ -47,7 +51,10 @@ export async function saveFile(
   }
 
   // 2. navigator.share({ files }) (Chrome Android for permitted MIME types, e.g. text/csv, application/pdf)
-  if (typeof navigator !== 'undefined' && typeof navigator.canShare === 'function') {
+  if (
+    typeof navigator !== 'undefined' &&
+    typeof navigator.canShare === 'function'
+  ) {
     try {
       const file = new File([blob], filename, { type: mime })
       if (navigator.canShare({ files: [file] })) {

@@ -52,8 +52,16 @@ export function ComponentGallery() {
           gap: '12px',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>معرض المكونات (Component Gallery)</h2>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
+            معرض المكونات (Component Gallery)
+          </h2>
           <Button
             variant="ghost"
             size="small"
@@ -65,9 +73,19 @@ export function ComponentGallery() {
           </Button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '8px',
+          }}
+        >
           <div>
-            <div style={{ fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}>المظهر (Theme)</div>
+            <div
+              style={{ fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}
+            >
+              المظهر (Theme)
+            </div>
             <Segmented
               options={[
                 { value: 'dark', label: 'داكن' },
@@ -79,7 +97,11 @@ export function ComponentGallery() {
           </div>
 
           <div>
-            <div style={{ fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}>حجم الخط (Scale)</div>
+            <div
+              style={{ fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}
+            >
+              حجم الخط (Scale)
+            </div>
             <Segmented
               options={[
                 { value: '1', label: '1.0×' },
@@ -91,7 +113,11 @@ export function ComponentGallery() {
           </div>
 
           <div>
-            <div style={{ fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}>عرض الإطار (Width)</div>
+            <div
+              style={{ fontSize: '12px', fontWeight: 700, marginBottom: '4px' }}
+            >
+              عرض الإطار (Width)
+            </div>
             <Segmented
               options={[
                 { value: '360', label: '360px' },
@@ -112,7 +138,10 @@ export function ComponentGallery() {
           maxWidth: '680px',
           margin: '0 auto',
           fontSize: fontScale === '1.3' ? '130%' : '100%',
-          border: viewportWidth === '360' ? '2px dashed var(--brand, #e65100)' : 'none',
+          border:
+            viewportWidth === '360'
+              ? '2px dashed var(--brand, #e65100)'
+              : 'none',
           borderRadius: '16px',
           padding: '12px',
           boxSizing: 'border-box',
@@ -132,7 +161,9 @@ export function ComponentGallery() {
         {/* 1. Buttons & IconButtons */}
         <Section title="1. الأزرار وحالاتها">
           <Card padding="md">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+            >
               <Button variant="primary" size="large" fullWidth>
                 زر أساسي (Primary LG)
               </Button>
@@ -148,12 +179,26 @@ export function ComponentGallery() {
                 <Button variant="danger" size="normal" style={{ flex: 1 }}>
                   حرج (Danger)
                 </Button>
-                <Button variant="primary" size="normal" disabled style={{ flex: 1 }}>
+                <Button
+                  variant="primary"
+                  size="normal"
+                  disabled
+                  style={{ flex: 1 }}
+                >
                   معطل (Disabled)
                 </Button>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '6px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 600 }}>أزرار أيقونات (44×44px):</span>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  marginTop: '6px',
+                }}
+              >
+                <span style={{ fontSize: '13px', fontWeight: 600 }}>
+                  أزرار أيقونات (44×44px):
+                </span>
                 <IconButton name="plus" aria-label="إضافة" />
                 <IconButton name="trash-2" aria-label="حذف" variant="danger" />
                 <IconButton name="info" aria-label="معلومات" />
@@ -165,8 +210,12 @@ export function ComponentGallery() {
         {/* 2. Media / ExerciseThumb */}
         <Section title="2. صور ومصغرات التمارين (ExerciseThumb 56px)">
           <Card padding="md">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+            >
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+              >
                 <ExerciseThumb
                   exercise={{
                     id: 'barbell-bench-press',
@@ -177,13 +226,21 @@ export function ComponentGallery() {
                   size={56}
                 />
                 <div style={{ flex: 1 }}>
-                  <strong style={{ fontSize: '14px' }}>بنش برس بالبار المستوي</strong>
-                  <div style={{ fontSize: '12px', color: 'var(--muted)' }}>تمرين له صورة حقيقية مصغرة</div>
+                  <strong style={{ fontSize: '14px' }}>
+                    بنش برس بالبار المستوي
+                  </strong>
+                  <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                    تمرين له صورة حقيقية مصغرة
+                  </div>
                 </div>
-                <bdi dir="ltr" style={{ fontWeight: 700, fontSize: '14px' }}>3 × 8</bdi>
+                <bdi dir="ltr" style={{ fontWeight: 700, fontSize: '14px' }}>
+                  3 × 8
+                </bdi>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+              >
                 <ExerciseThumb
                   exercise={{
                     id: 'unknown-custom-exercise',
@@ -194,10 +251,16 @@ export function ComponentGallery() {
                   size={56}
                 />
                 <div style={{ flex: 1 }}>
-                  <strong style={{ fontSize: '14px' }}>تمرين مخصص بدون صورة</strong>
-                  <div style={{ fontSize: '12px', color: 'var(--muted)' }}>يستخدم SVG تشريحي افتراضي</div>
+                  <strong style={{ fontSize: '14px' }}>
+                    تمرين مخصص بدون صورة
+                  </strong>
+                  <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                    يستخدم SVG تشريحي افتراضي
+                  </div>
                 </div>
-                <bdi dir="ltr" style={{ fontWeight: 700, fontSize: '14px' }}>4 × 12</bdi>
+                <bdi dir="ltr" style={{ fontWeight: 700, fontSize: '14px' }}>
+                  4 × 12
+                </bdi>
               </div>
             </div>
           </Card>
@@ -206,7 +269,14 @@ export function ComponentGallery() {
         {/* 3. Text & Plural Rules (Part A5 Text Gate) */}
         <Section title="3. قواعد جمع الكلمات العربية والأرقام LTR">
           <Card padding="md">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                fontSize: '13.5px',
+              }}
+            >
               <div>
                 <strong>العدد 1: </strong>
                 <span>{plural(1, 'مجموعة')}</span>
@@ -217,18 +287,38 @@ export function ComponentGallery() {
               </div>
               <div>
                 <strong>العدد 3 إلى 10 (جمع تكسير): </strong>
-                <span>{plural(3, 'مجموعة')}، {plural(7, 'تكرار')}، {plural(4, 'تمرين')}</span>
+                <span>
+                  {plural(3, 'مجموعة')}، {plural(7, 'تكرار')}،{' '}
+                  {plural(4, 'تمرين')}
+                </span>
               </div>
               <div>
                 <strong>العدد 11 إلى 99 (مفرد منصوب): </strong>
-                <span>{plural(12, 'تكرار')}، {plural(15, 'تمرين')}</span>
+                <span>
+                  {plural(12, 'تكرار')}، {plural(15, 'تمرين')}
+                </span>
               </div>
-              <div style={{ borderTop: '1px solid var(--line)', paddingTop: '8px' }}>
+              <div
+                style={{
+                  borderTop: '1px solid var(--line)',
+                  paddingTop: '8px',
+                }}
+              >
                 <strong>عزل الأرقام LTR: </strong>
                 <span>ترتيب المجموعات والتكرارات: </span>
-                <bdi dir="ltr" style={{ fontWeight: 800, color: 'var(--brand)' }}>3 × 8</bdi>
+                <bdi
+                  dir="ltr"
+                  style={{ fontWeight: 800, color: 'var(--brand)' }}
+                >
+                  3 × 8
+                </bdi>
                 <span> ثم </span>
-                <bdi dir="ltr" style={{ fontWeight: 800, color: 'var(--brand)' }}>4 × 12-15</bdi>
+                <bdi
+                  dir="ltr"
+                  style={{ fontWeight: 800, color: 'var(--brand)' }}
+                >
+                  4 × 12-15
+                </bdi>
               </div>
             </div>
           </Card>
@@ -237,7 +327,9 @@ export function ComponentGallery() {
         {/* 4. Segmented & Chips */}
         <Section title="4. عناصر التبديل والشيبس (Segmented & Chips)">
           <Card padding="md">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+            >
               <Segmented
                 options={[
                   { value: 'sets', label: 'المجموعات' },
@@ -251,7 +343,9 @@ export function ComponentGallery() {
                 <Chip active>صدر</Chip>
                 <Chip>ترايسبس</Chip>
                 <Chip>كتف أمامي</Chip>
-                <ToggleChip checked={true} onChange={() => {}}>تمرين مركب</ToggleChip>
+                <ToggleChip checked={true} onChange={() => {}}>
+                  تمرين مركب
+                </ToggleChip>
               </ChipRow>
             </div>
           </Card>
@@ -260,14 +354,18 @@ export function ComponentGallery() {
         {/* 5. Inputs & Textareas */}
         <Section title="5. حقول الإدخال ومربعات النصوص">
           <Card padding="md">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+            >
               <Field
                 label="الوزن المستهدف"
                 unit="كجم"
                 placeholder="مثال: 85"
                 defaultValue="80"
               />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+              >
                 <label style={{ fontSize: '13px', fontWeight: 700 }}>
                   ملاحظات التمرين (3 أسطر على الأقل وبدون شريط تمرير)
                 </label>
@@ -297,8 +395,12 @@ export function ComponentGallery() {
 
         {/* 6. Callout & EmptyState */}
         <Section title="6. التنبيهات والحالات الفارغة">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <Callout tone="info">هذا تنبيه إرشادي للعضلات المساعدة في الحركة.</Callout>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+          >
+            <Callout tone="info">
+              هذا تنبيه إرشادي للعضلات المساعدة في الحركة.
+            </Callout>
             <Callout tone="warning">لديك تمرين لم تسجل وزنه في الجلسة.</Callout>
             <Callout tone="danger">يرجى تصحيح الوزن المدخل قبل الحفظ.</Callout>
 
@@ -316,20 +418,37 @@ export function ComponentGallery() {
         {/* 7. Stress Testing (Long titles at 360px) */}
         <Section title="7. اختبار النصوص الطويلة والمزدوجة">
           <Card padding="md">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+            >
               <div style={{ lineHeight: 1.6 }}>
                 <strong style={{ fontSize: '15px' }}>
-                  تمرين ضغط الصدر بالدمبل على بنش مائل بزاوية 30 درجة مع دوران المعصم للداخل في أعلى الحركة
+                  تمرين ضغط الصدر بالدمبل على بنش مائل بزاوية 30 درجة مع دوران
+                  المعصم للداخل في أعلى الحركة
                 </strong>
-                <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '4px' }}>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--muted)',
+                    marginTop: '4px',
+                  }}
+                >
                   Incline Dumbbell Bench Press with Pronation
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <Button variant="secondary" size="small" onClick={() => setIsSheetOpen(true)}>
+                <Button
+                  variant="secondary"
+                  size="small"
+                  onClick={() => setIsSheetOpen(true)}
+                >
                   تجربة النافذة السفلية (Sheet)
                 </Button>
-                <Button variant="danger" size="small" onClick={() => setIsConfirmOpen(true)}>
+                <Button
+                  variant="danger"
+                  size="small"
+                  onClick={() => setIsConfirmOpen(true)}
+                >
                   تأكيد الحذف (Confirm)
                 </Button>
               </div>
@@ -345,17 +464,26 @@ export function ComponentGallery() {
         title="نافذة سفلية تجريبية"
         footer={
           <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-            <Button variant="ghost" onClick={() => setIsSheetOpen(false)} style={{ flex: 1 }}>
+            <Button
+              variant="ghost"
+              onClick={() => setIsSheetOpen(false)}
+              style={{ flex: 1 }}
+            >
               إلغاء
             </Button>
-            <Button variant="primary" onClick={() => setIsSheetOpen(false)} style={{ flex: 2 }}>
+            <Button
+              variant="primary"
+              onClick={() => setIsSheetOpen(false)}
+              style={{ flex: 2 }}
+            >
               حفظ وتطبيق
             </Button>
           </div>
         }
       >
         <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6 }}>
-          هذه النافذة تعرض ارتفاع الشيت وعناصره مع الالتزام بقياسات الهاتف 360px وتجاوب الأزرار جنباً إلى جنب.
+          هذه النافذة تعرض ارتفاع الشيت وعناصره مع الالتزام بقياسات الهاتف 360px
+          وتجاوب الأزرار جنباً إلى جنب.
         </p>
       </Sheet>
 

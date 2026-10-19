@@ -26,7 +26,11 @@ function getLuminance(r, g, b) {
 function parseRgb(colorStr) {
   const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
   if (!match) return [255, 255, 255]
-  return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)]
+  return [
+    parseInt(match[1], 10),
+    parseInt(match[2], 10),
+    parseInt(match[3], 10),
+  ]
 }
 
 function getContrast(rgb1, rgb2) {
@@ -38,7 +42,9 @@ function getContrast(rgb1, rgb2) {
 }
 
 async function runGate() {
-  console.log('🚀 Running Gate 5.2: Choice Button Visual Contract (Non-vacuous)...')
+  console.log(
+    '🚀 Running Gate 5.2: Choice Button Visual Contract (Non-vacuous)...',
+  )
 
   const server = await preview({
     root: rootDir,
@@ -66,7 +72,14 @@ async function runGate() {
       splitType: 'upper_lower',
       experienceLevel: 'intermediate',
       equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'bodyweight'],
-      body: { weightKg: 80, heightCm: 178, age: 28, sex: 'male', lifestyle: 2, activityLevel: 'moderate' },
+      body: {
+        weightKg: 80,
+        heightCm: 178,
+        age: 28,
+        sex: 'male',
+        lifestyle: 2,
+        activityLevel: 'moderate',
+      },
       medical: { hasIssues: true, injuryTags: ['الكتف'], notes: '' },
       createdAt: 1700000000000,
       updatedAt: 1700000000000,
@@ -84,8 +97,20 @@ async function runGate() {
           labelAr: 'اليوم 1: علوي (قوة وبناء)',
           focus: 'صدر، ظهر، كتف، ذراعين',
           exercises: [
-            { exerciseId: 'chest-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
-            { exerciseId: 'back-1', sets: 4, reps: 8, restSeconds: 120, section: 'primary' },
+            {
+              exerciseId: 'chest-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
+            {
+              exerciseId: 'back-1',
+              sets: 4,
+              reps: 8,
+              restSeconds: 120,
+              section: 'primary',
+            },
           ],
         },
       ],
@@ -129,10 +154,18 @@ async function runGate() {
 
         const role = el.getAttribute('role')
         const ariaChecked = el.getAttribute('aria-checked')
-        const isSelected = ariaChecked === 'true' || el.classList.contains('segmented__item--active')
+        const isSelected =
+          ariaChecked === 'true' ||
+          el.classList.contains('segmented__item--active')
 
         // 1. Accessibility contract check
-        if (!role || (role !== 'radio' && role !== 'checkbox' && role !== 'tab' && role !== 'button')) {
+        if (
+          !role ||
+          (role !== 'radio' &&
+            role !== 'checkbox' &&
+            role !== 'tab' &&
+            role !== 'button')
+        ) {
           issues.push({
             route: r,
             text: el.textContent?.trim(),
@@ -155,7 +188,10 @@ async function runGate() {
           const borderWidth = parseFloat(style.borderWidth) || 0
           const bg = style.backgroundColor
           // Selected items must have a clear visual boundary or tint
-          if (borderWidth < 1 && (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent')) {
+          if (
+            borderWidth < 1 &&
+            (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent')
+          ) {
             issues.push({
               route: r,
               text: el.textContent?.trim(),
@@ -183,7 +219,10 @@ async function runGate() {
   for (let step = 1; step <= 5; step++) {
     await obPage.addInitScript((s) => {
       localStorage.clear()
-      localStorage.setItem('maganis:onboarding_draft', JSON.stringify({ step: s, form: {} }))
+      localStorage.setItem(
+        'maganis:onboarding_draft',
+        JSON.stringify({ step: s, form: {} }),
+      )
     }, step)
     await obPage.goto(baseUrl)
     await obPage.waitForTimeout(400)
@@ -207,7 +246,13 @@ async function runGate() {
           el.classList.contains('segmented__item--active') ||
           el.classList.contains('option-row--selected')
 
-        if (!role || (role !== 'radio' && role !== 'checkbox' && role !== 'tab' && role !== 'button')) {
+        if (
+          !role ||
+          (role !== 'radio' &&
+            role !== 'checkbox' &&
+            role !== 'tab' &&
+            role !== 'button')
+        ) {
           issues.push({
             route: `/onboarding-step-${s}`,
             text: el.textContent?.trim(),
@@ -239,19 +284,25 @@ async function runGate() {
   console.log(`📊 Gate 5.2 Examined Choice Elements: ${totalExamined}`)
 
   if (totalExamined < 50) {
-    console.error(`❌ Gate 5.2 FAILED: Only examined ${totalExamined} elements (minimum required: 50).`)
+    console.error(
+      `❌ Gate 5.2 FAILED: Only examined ${totalExamined} elements (minimum required: 50).`,
+    )
     process.exit(1)
   }
 
   if (violations.length > 0) {
-    console.error(`❌ Gate 5.2 FAILED: Found ${violations.length} choice contract violations:`)
+    console.error(
+      `❌ Gate 5.2 FAILED: Found ${violations.length} choice contract violations:`,
+    )
     for (const v of violations.slice(0, 10)) {
       console.error(`   - [${v.route}] "${v.text}": ${v.error}`)
     }
     process.exit(1)
   }
 
-  console.log(`✅ Gate 5.2 PASSED: ${totalExamined} choice elements examined, 0 contract violations.`)
+  console.log(
+    `✅ Gate 5.2 PASSED: ${totalExamined} choice elements examined, 0 contract violations.`,
+  )
   process.exit(0)
 }
 

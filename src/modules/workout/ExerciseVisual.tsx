@@ -38,13 +38,17 @@ export function ExerciseVisual({
 
   // Resolve media sources using unified resolveMedia
   const rawEx = exerciseId ? getExerciseById(exerciseId) : null
-  const resolved = resolveMedia(rawEx || { id: exerciseId || '', imageUrl: gifUrl || imageUrl })
+  const resolved = resolveMedia(
+    rawEx || { id: exerciseId || '', imageUrl: gifUrl || imageUrl },
+  )
 
   const frame0 = resolved.url || ''
   const frame1 = resolved.frame1Url || frame0
 
   const hasTwoFrames =
-    !frame1Failed && resolved.isKeyframed && Boolean(frame0 && frame1 && frame0 !== frame1)
+    !frame1Failed &&
+    resolved.isKeyframed &&
+    Boolean(frame0 && frame1 && frame0 !== frame1)
 
   const rawSrc = hasTwoFrames && frameIndex === 1 ? frame1 : frame0
   const currentSrc =
@@ -107,14 +111,24 @@ export function ExerciseVisual({
         }}
         title={exerciseName}
       >
-        <span style={{ fontSize: '13px', color: 'var(--color-text-2)', fontWeight: 500 }}>
+        <span
+          style={{
+            fontSize: '13px',
+            color: 'var(--color-text-2)',
+            fontWeight: 500,
+          }}
+        >
           لا يوجد شرح مرئي لهذا التمرين بعد
         </span>
         <button
           type="button"
           onClick={() => {
-            console.info(`[Report Missing Media] exerciseId: ${exerciseId || 'unknown'}`)
-            alert('تم استلام البلاغ! سنعمل على توفير الشرح المرئي في التحديث القادم.')
+            console.info(
+              `[Report Missing Media] exerciseId: ${exerciseId || 'unknown'}`,
+            )
+            alert(
+              'تم استلام البلاغ! سنعمل على توفير الشرح المرئي في التحديث القادم.',
+            )
           }}
           style={{
             background: 'var(--color-surface)',
@@ -134,7 +148,8 @@ export function ExerciseVisual({
   }
 
   const finalAttribution =
-    attribution || (size === 'large' ? 'Gym Visual / Free Exercise DB' : undefined)
+    attribution ||
+    (size === 'large' ? 'Gym Visual / Free Exercise DB' : undefined)
 
   return (
     <div className="exercise-media-box">

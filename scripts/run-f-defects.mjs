@@ -16,7 +16,9 @@ if (!fs.existsSync(evidenceDir)) {
 const isBefore = process.argv.includes('--before')
 const suffix = isBefore ? 'before' : 'after'
 
-console.log(`\n🔍 Running Task F Defect Tests [Mode: ${suffix.toUpperCase()}]...\n`)
+console.log(
+  `\n🔍 Running Task F Defect Tests [Mode: ${suffix.toUpperCase()}]...\n`,
+)
 
 async function run() {
   const server = await preview({
@@ -95,8 +97,14 @@ async function run() {
     }
 
     try {
-      localStorage.setItem('maganis:profile.active', JSON.stringify(mockProfile))
-      localStorage.setItem('maganis:workout.program', JSON.stringify(mockProgram))
+      localStorage.setItem(
+        'maganis:profile.active',
+        JSON.stringify(mockProfile),
+      )
+      localStorage.setItem(
+        'maganis:workout.program',
+        JSON.stringify(mockProgram),
+      )
     } catch (e) {
       console.error(e)
     }
@@ -117,30 +125,43 @@ async function run() {
     const count = await addBtn.count()
     if (count === 0) {
       results['1.1'] = { status: 'FAIL', reason: 'Button not found in TopBar' }
-      fs.writeFileSync(path.join(evidenceDir, `1.1-${suffix}.txt`), 'FAIL: Button not found in TopBar\n')
+      fs.writeFileSync(
+        path.join(evidenceDir, `1.1-${suffix}.txt`),
+        'FAIL: Button not found in TopBar\n',
+      )
     } else {
       const box = await addBtn.boundingBox()
       const centerX = box.x + box.width / 2
       const centerY = box.y + box.height / 2
 
       // Check elementFromPoint at center
-      const elementInfo = await page.evaluate(({ x, y }) => {
-        const el = document.elementFromPoint(x, y)
-        return {
-          tagName: el?.tagName,
-          className: el?.className,
-          textContent: el?.textContent?.trim()?.slice(0, 50),
-        }
-      }, { x: centerX, y: centerY })
+      const elementInfo = await page.evaluate(
+        ({ x, y }) => {
+          const el = document.elementFromPoint(x, y)
+          return {
+            tagName: el?.tagName,
+            className: el?.className,
+            textContent: el?.textContent?.trim()?.slice(0, 50),
+          }
+        },
+        { x: centerX, y: centerY },
+      )
 
       // Tap at the center
       await page.mouse.click(centerX, centerY)
       await page.waitForTimeout(600)
 
       // Check if CustomExerciseBuilder opened
-      const builderVisible = await page.locator('[data-testid="custom-exercise-form"], form:has-text("إضافة تمرين مخصص"), h1:has-text("إضافة تمرين مخصص")').count() > 0
+      const builderVisible =
+        (await page
+          .locator(
+            '[data-testid="custom-exercise-form"], form:has-text("إضافة تمرين مخصص"), h1:has-text("إضافة تمرين مخصص")',
+          )
+          .count()) > 0
 
-      await page.screenshot({ path: path.join(evidenceDir, `1.1-${suffix}.png`) })
+      await page.screenshot({
+        path: path.join(evidenceDir, `1.1-${suffix}.png`),
+      })
 
       const out = [
         `Defect 1.1 Test Result: ${builderVisible ? 'PASS' : 'FAIL'}`,
@@ -151,12 +172,18 @@ async function run() {
       ].join('\n')
 
       fs.writeFileSync(path.join(evidenceDir, `1.1-${suffix}.txt`), out + '\n')
-      results['1.1'] = { status: builderVisible ? 'PASS' : 'FAIL', details: out }
+      results['1.1'] = {
+        status: builderVisible ? 'PASS' : 'FAIL',
+        details: out,
+      }
     }
     await page.close()
   } catch (err) {
     results['1.1'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `1.1-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `1.1-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -184,7 +211,7 @@ async function run() {
     for (let i = 0; i < 20; i++) {
       const idx = Math.floor(Math.random() * tabSelectors.length)
       const sel = tabSelectors[idx]
-      if (await page.locator(sel).count() > 0) {
+      if ((await page.locator(sel).count()) > 0) {
         await page.locator(sel).click()
         await page.waitForTimeout(50)
       }
@@ -192,7 +219,11 @@ async function run() {
     await page.waitForTimeout(300)
 
     // Check DOM for toast
-    const domToast = await page.locator('.toast:has-text("اضغط مرة أخرى للخروج"), [role="alert"]:has-text("اضغط مرة أخرى للخروج")').count()
+    const domToast = await page
+      .locator(
+        '.toast:has-text("اضغط مرة أخرى للخروج"), [role="alert"]:has-text("اضغط مرة أخرى للخروج")',
+      )
+      .count()
 
     await page.screenshot({ path: path.join(evidenceDir, `1.2-${suffix}.png`) })
 
@@ -205,11 +236,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `1.2-${suffix}.txt`), out + '\n')
-    results['1.2'] = { status: totalToasts === 0 ? 'PASS' : 'FAIL', details: out }
+    results['1.2'] = {
+      status: totalToasts === 0 ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['1.2'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `1.2-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `1.2-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -222,7 +259,7 @@ async function run() {
 
     // Switch to muscles tab (العضلات)
     const musclesTab = page.locator('button:has-text("العضلات")')
-    if (await musclesTab.count() > 0) {
+    if ((await musclesTab.count()) > 0) {
       await musclesTab.click()
       await page.waitForTimeout(500)
     }
@@ -231,7 +268,9 @@ async function run() {
     const svgStatsBeforeZoom = await page.evaluate(() => {
       const svg = document.querySelector('.atlas-svg-container svg')
       if (!svg) return { error: 'No SVG element' }
-      const neutralPaths = Array.from(svg.querySelectorAll('.muscle-vis, .muscle-neutral'))
+      const neutralPaths = Array.from(
+        svg.querySelectorAll('.muscle-vis, .muscle-neutral'),
+      )
       const blackFills = []
       let totalPaths = neutralPaths.length
 
@@ -246,12 +285,20 @@ async function run() {
       const primaries = svg.querySelectorAll('.muscle-primary').length
       const secondaries = svg.querySelectorAll('.muscle-secondary').length
 
-      return { totalPaths, blackFillsCount: blackFills.length, blackFills: blackFills.slice(0, 5), primaries, secondaries }
+      return {
+        totalPaths,
+        blackFillsCount: blackFills.length,
+        blackFills: blackFills.slice(0, 5),
+        primaries,
+        secondaries,
+      }
     })
 
     // Click zoom in (+)
-    const zoomInBtn = page.locator('button.atlas-zoom-btn:has-text("+"), button[aria-label="تكبير"]')
-    if (await zoomInBtn.count() > 0) {
+    const zoomInBtn = page.locator(
+      'button.atlas-zoom-btn:has-text("+"), button[aria-label="تكبير"]',
+    )
+    if ((await zoomInBtn.count()) > 0) {
       await zoomInBtn.click()
       await page.waitForTimeout(300)
     }
@@ -268,7 +315,9 @@ async function run() {
     await page.screenshot({ path: path.join(evidenceDir, `1.3-${suffix}.png`) })
 
     const noBlackFills = svgStatsBeforeZoom.blackFillsCount === 0
-    const highlightsRetained = svgStatsBeforeZoom.primaries === svgStatsAfterZoom.primaries && svgStatsBeforeZoom.secondaries === svgStatsAfterZoom.secondaries
+    const highlightsRetained =
+      svgStatsBeforeZoom.primaries === svgStatsAfterZoom.primaries &&
+      svgStatsBeforeZoom.secondaries === svgStatsAfterZoom.secondaries
 
     const out = [
       `Defect 1.3 Test Result: ${noBlackFills && highlightsRetained ? 'PASS' : 'FAIL'}`,
@@ -279,11 +328,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `1.3-${suffix}.txt`), out + '\n')
-    results['1.3'] = { status: noBlackFills && highlightsRetained ? 'PASS' : 'FAIL', details: out }
+    results['1.3'] = {
+      status: noBlackFills && highlightsRetained ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['1.3'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `1.3-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `1.3-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -308,11 +363,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `1.5-${suffix}.txt`), out + '\n')
-    results['1.5'] = { status: isLatinMaganis && titleTag === 'Maganis' ? 'PASS' : 'FAIL', details: out }
+    results['1.5'] = {
+      status: isLatinMaganis && titleTag === 'Maganis' ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['1.5'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `1.5-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `1.5-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -334,14 +395,25 @@ async function run() {
     // Advance to step 4 (body metrics)
     // On today's build, defaults are prefilled: age=25, height=175, weight=75
     const bodyValues = await page.evaluate(() => {
-      const inputs = Array.from(document.querySelectorAll('input[type="number"], input[inputmode="numeric"], input[inputmode="decimal"]'))
-      return inputs.map(i => ({ id: i.id, name: i.name, value: i.value, placeholder: i.placeholder }))
+      const inputs = Array.from(
+        document.querySelectorAll(
+          'input[type="number"], input[inputmode="numeric"], input[inputmode="decimal"]',
+        ),
+      )
+      return inputs.map((i) => ({
+        id: i.id,
+        name: i.name,
+        value: i.value,
+        placeholder: i.placeholder,
+      }))
     })
 
     await page.screenshot({ path: path.join(evidenceDir, `2.1-${suffix}.png`) })
 
     // On fresh profile, all numeric inputs must open EMPTY
-    const hasPrefills = bodyValues.some(v => v.value !== '' && !isNaN(Number(v.value)))
+    const hasPrefills = bodyValues.some(
+      (v) => v.value !== '' && !isNaN(Number(v.value)),
+    )
 
     const out = [
       `Defect 2.1 Test Result: ${!hasPrefills ? 'PASS' : 'FAIL'}`,
@@ -354,7 +426,10 @@ async function run() {
     await freshContext.close()
   } catch (err) {
     results['2.1'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `2.1-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `2.1-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -366,9 +441,11 @@ async function run() {
     await page.waitForTimeout(500)
 
     // Open add meal or quick manual modal
-    const addFoodBtn = page.locator('button:has-text("إضافة وجبة"), button:has-text("إضافة طعام")').first()
+    const addFoodBtn = page
+      .locator('button:has-text("إضافة وجبة"), button:has-text("إضافة طعام")')
+      .first()
     let opened = false
-    if (await addFoodBtn.count() > 0) {
+    if ((await addFoodBtn.count()) > 0) {
       await addFoodBtn.click()
       await page.waitForTimeout(400)
       opened = true
@@ -385,7 +462,10 @@ async function run() {
     await page.close()
   } catch (err) {
     results['2.6'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `2.6-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `2.6-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -397,7 +477,10 @@ async function run() {
     await page.waitForTimeout(500)
 
     const trailingColonNodes = await page.evaluate(() => {
-      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+      )
       const found = []
       let node
       while ((node = walker.nextNode())) {
@@ -420,11 +503,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `3.8-${suffix}.txt`), out + '\n')
-    results['3.8'] = { status: trailingColonNodes.length === 0 ? 'PASS' : 'FAIL', details: out }
+    results['3.8'] = {
+      status: trailingColonNodes.length === 0 ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['3.8'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `3.8-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `3.8-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -437,18 +526,25 @@ async function run() {
 
     const tabs = await page.evaluate(() => {
       const btns = Array.from(document.querySelectorAll('button'))
-      return btns.map(b => b.textContent?.trim()).filter(t => ['الفهم', 'العضلات', 'الأداء', 'لك', 'السجل'].includes(t))
+      return btns
+        .map((b) => b.textContent?.trim())
+        .filter((t) =>
+          ['الفهم', 'العضلات', 'الأداء', 'لك', 'السجل'].includes(t),
+        )
     })
 
-    const hasAll5Tabs = ['الفهم', 'العضلات', 'الأداء', 'لك', 'السجل'].every(t => tabs.includes(t))
+    const hasAll5Tabs = ['الفهم', 'العضلات', 'الأداء', 'لك', 'السجل'].every(
+      (t) => tabs.includes(t),
+    )
 
     // Click on "السجل" tab
     const historyBtn = page.locator('button:has-text("السجل")')
     let emptyStateVisible = false
-    if (await historyBtn.count() > 0) {
+    if ((await historyBtn.count()) > 0) {
       await historyBtn.click()
       await page.waitForTimeout(400)
-      emptyStateVisible = await page.locator('text=لا يوجد سجل سابق لهذا التمرين').count() > 0
+      emptyStateVisible =
+        (await page.locator('text=لا يوجد سجل سابق لهذا التمرين').count()) > 0
     }
 
     await page.screenshot({ path: path.join(evidenceDir, `2.8-${suffix}.png`) })
@@ -461,11 +557,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `2.8-${suffix}.txt`), out + '\n')
-    results['2.8'] = { status: hasAll5Tabs && emptyStateVisible ? 'PASS' : 'FAIL', details: out }
+    results['2.8'] = {
+      status: hasAll5Tabs && emptyStateVisible ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['2.8'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `2.8-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `2.8-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -484,11 +586,21 @@ async function run() {
             {
               dayIndex: 0,
               labelAr: 'يوم الأكتاف',
-              exercises: [{ exerciseId: 'shoulder-2', sets: 3, reps: 10, restSeconds: 60 }]
-            }
-          ]
+              exercises: [
+                {
+                  exerciseId: 'shoulder-2',
+                  sets: 3,
+                  reps: 10,
+                  restSeconds: 60,
+                },
+              ],
+            },
+          ],
         }
-        localStorage.setItem('maganis:workout.program', JSON.stringify(dummyProg))
+        localStorage.setItem(
+          'maganis:workout.program',
+          JSON.stringify(dummyProg),
+        )
         // Trigger a reload to check store loader
         return true
       } catch (e) {
@@ -506,7 +618,10 @@ async function run() {
     await page.close()
   } catch (err) {
     results['2.9'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `2.9-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `2.9-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -517,10 +632,14 @@ async function run() {
     await page.goto(`${baseUrl}#/exercise/chest-19`)
     await page.waitForTimeout(600)
 
-    const hasHighRiskCallout = await page.locator('text=عالي الخطورة').count() > 0
-    const hasSaferAlts = await page.locator('text=بدائل أكثر أماناً').count() > 0
+    const hasHighRiskCallout =
+      (await page.locator('text=عالي الخطورة').count()) > 0
+    const hasSaferAlts =
+      (await page.locator('text=بدائل أكثر أماناً').count()) > 0
 
-    await page.screenshot({ path: path.join(evidenceDir, `2.11-${suffix}.png`) })
+    await page.screenshot({
+      path: path.join(evidenceDir, `2.11-${suffix}.png`),
+    })
 
     const out = [
       `Defect 2.11 Test Result: ${hasHighRiskCallout ? 'PASS' : 'FAIL'}`,
@@ -529,11 +648,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `2.11-${suffix}.txt`), out + '\n')
-    results['2.11'] = { status: hasHighRiskCallout ? 'PASS' : 'FAIL', details: out }
+    results['2.11'] = {
+      status: hasHighRiskCallout ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['2.11'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `2.11-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `2.11-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -544,10 +669,17 @@ async function run() {
     await page.goto(`${baseUrl}#/exercise/chest-1`)
     await page.waitForTimeout(600)
 
-    const attributionVisible = await page.locator('text=Gym Visual').count() > 0
-    const toggleButtonsCount = await page.locator('button:has-text("وضعية البداية"), button:has-text("قمة الانقباض")').count()
+    const attributionVisible =
+      (await page.locator('text=Gym Visual').count()) > 0
+    const toggleButtonsCount = await page
+      .locator(
+        'button:has-text("وضعية البداية"), button:has-text("قمة الانقباض")',
+      )
+      .count()
 
-    await page.screenshot({ path: path.join(evidenceDir, `2.12-${suffix}.png`) })
+    await page.screenshot({
+      path: path.join(evidenceDir, `2.12-${suffix}.png`),
+    })
 
     const out = [
       `Defect 2.12 Test Result: ${attributionVisible ? 'PASS' : 'FAIL'}`,
@@ -556,11 +688,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `2.12-${suffix}.txt`), out + '\n')
-    results['2.12'] = { status: attributionVisible ? 'PASS' : 'FAIL', details: out }
+    results['2.12'] = {
+      status: attributionVisible ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['2.12'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `2.12-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `2.12-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -571,16 +709,22 @@ async function run() {
     await page.goto(`${baseUrl}#/nutrition`)
     await page.waitForTimeout(600)
 
-    const detailsBtn = page.locator('[role="button"]:has-text("احتياجك اليومي العلمي"), .card:has-text("احتياجك اليومي العلمي")')
-    if (await detailsBtn.count() > 0) {
+    const detailsBtn = page.locator(
+      '[role="button"]:has-text("احتياجك اليومي العلمي"), .card:has-text("احتياجك اليومي العلمي")',
+    )
+    if ((await detailsBtn.count()) > 0) {
       await detailsBtn.first().click()
       await page.waitForTimeout(400)
     }
 
-    const hasExplanationCard = await page.locator('text=كيف تم حساب أهدافك؟').count() > 0
-    const hasMifflinCitation = await page.locator('text=Mifflin-St Jeor').count() > 0
+    const hasExplanationCard =
+      (await page.locator('text=كيف تم حساب أهدافك؟').count()) > 0
+    const hasMifflinCitation =
+      (await page.locator('text=Mifflin-St Jeor').count()) > 0
 
-    await page.screenshot({ path: path.join(evidenceDir, `2.14-${suffix}.png`) })
+    await page.screenshot({
+      path: path.join(evidenceDir, `2.14-${suffix}.png`),
+    })
 
     const out = [
       `Defect 2.14 Test Result: ${hasExplanationCard && hasMifflinCitation ? 'PASS' : 'FAIL'}`,
@@ -589,11 +733,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `2.14-${suffix}.txt`), out + '\n')
-    results['2.14'] = { status: hasExplanationCard && hasMifflinCitation ? 'PASS' : 'FAIL', details: out }
+    results['2.14'] = {
+      status: hasExplanationCard && hasMifflinCitation ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['2.14'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `2.14-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `2.14-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   // ----------------------------------------------------
@@ -605,13 +755,15 @@ async function run() {
     await page.waitForTimeout(600)
 
     const reportsTab = page.locator('button:has-text("التقارير")')
-    if (await reportsTab.count() > 0) {
+    if ((await reportsTab.count()) > 0) {
       await reportsTab.click()
       await page.waitForTimeout(400)
     }
 
-    const hasLiftedLoadMetric = await page.locator('text=الحمل المرفوع (كجم)').count() > 0
-    const hasWeeklySetsSection = await page.locator('text=المجموعات الأسبوعية لكل عضلة').count() > 0
+    const hasLiftedLoadMetric =
+      (await page.locator('text=الحمل المرفوع (كجم)').count()) > 0
+    const hasWeeklySetsSection =
+      (await page.locator('text=المجموعات الأسبوعية لكل عضلة').count()) > 0
 
     await page.screenshot({ path: path.join(evidenceDir, `4.5-${suffix}.png`) })
 
@@ -622,11 +774,17 @@ async function run() {
     ].join('\n')
 
     fs.writeFileSync(path.join(evidenceDir, `4.5-${suffix}.txt`), out + '\n')
-    results['4.5'] = { status: hasLiftedLoadMetric && hasWeeklySetsSection ? 'PASS' : 'FAIL', details: out }
+    results['4.5'] = {
+      status: hasLiftedLoadMetric && hasWeeklySetsSection ? 'PASS' : 'FAIL',
+      details: out,
+    }
     await page.close()
   } catch (err) {
     results['4.5'] = { status: 'FAIL', error: err.message }
-    fs.writeFileSync(path.join(evidenceDir, `4.5-${suffix}.txt`), `FAIL: ${err.message}\n`)
+    fs.writeFileSync(
+      path.join(evidenceDir, `4.5-${suffix}.txt`),
+      `FAIL: ${err.message}\n`,
+    )
   }
 
   await browser.close()
