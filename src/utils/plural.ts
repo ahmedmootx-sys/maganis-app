@@ -27,6 +27,7 @@ export type PluralNoun =
   | 'مكوّن'
   | 'عضلة'
   | 'نشاط'
+  | 'سعرة'
 
 export const PLURAL_NOUNS: Record<PluralNoun, PluralEntry> = {
   'مجموعة': {
@@ -100,6 +101,12 @@ export const PLURAL_NOUNS: Record<PluralNoun, PluralEntry> = {
     two: 'نشاطان',
     few: 'أنشطة',
     many: 'نشاط',
+  },
+  'سعرة': {
+    one: 'سعرة',
+    two: 'سعرتان',
+    few: 'سعرات',
+    many: 'سعرة',
   },
 }
 

@@ -18,6 +18,7 @@ import atlasMusclesData from '../../data/atlas_muscles.json'
 import atlasGroupsData from '../../data/atlas-groups.json'
 import atlasMetaData from '../../../public/atlas/atlas-meta.json'
 import { Segmented, Sheet, Callout, Button } from '../../ui/index.ts'
+import { IconPlus, IconMinus, IconRefreshCw } from '../../components/Icons.tsx'
 import { assetUrl } from '../../utils/assetUrl.ts'
 import {
   getMuscleInfo,
@@ -319,6 +320,18 @@ export function AnatomyMuscleMap({
 
     svgEl.setAttribute('aria-hidden', 'true')
 
+    // 1. Ensure secondary hatch pattern defs exists
+    if (!svgEl.querySelector('#secondary-hatch')) {
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs')
+      defs.innerHTML = `
+        <pattern id="secondary-hatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="var(--atlas-secondary, #fdd835)" />
+          <line x1="0" y1="0" x2="0" y2="8" stroke="var(--atlas-secondary-stroke, #f9a825)" stroke-width="2.5" />
+        </pattern>
+      `
+      svgEl.insertBefore(defs, svgEl.firstChild)
+    }
+
     // Find all muscle paths
     const visPaths = svgEl.querySelectorAll('.muscle-vis')
     const fullPaths = svgEl.querySelectorAll('.muscle-full')
@@ -327,6 +340,20 @@ export function AnatomyMuscleMap({
       const muscleId = path.getAttribute('data-muscle')
       if (!muscleId) return
       const role = roleMap.get(muscleId)
+      const meta = META_MUSCLES[muscleId]
+
+      // Filter: hide path if muscle does not belong to currently displayed view
+      const approx = APPROXIMATE_REGIONS[muscleId]
+      const visibleInView = approx
+        ? approx.view === view
+        : (meta?.best_view === view || (meta?.views?.[view]?.visible_pixels ?? 0) > 300)
+
+      if (!visibleInView) {
+        ;(path as SVGElement).style.display = 'none'
+        return
+      } else {
+        ;(path as SVGElement).style.display = ''
+      }
 
       path.classList.remove(
         'muscle-primary',
@@ -344,7 +371,7 @@ export function AnatomyMuscleMap({
         path.classList.add('muscle-neutral')
       }
 
-      if (showDeep && !role && META_MUSCLES[muscleId]?.best_layer === 'S') {
+      if (showDeep && !role && meta?.best_layer === 'S') {
         path.classList.add('muscle-superficial-dimmed')
       }
 
@@ -357,7 +384,13 @@ export function AnatomyMuscleMap({
       const muscleId = path.getAttribute('data-muscle')
       if (!muscleId) return
       const role = roleMap.get(muscleId)
-      const isDeep = META_MUSCLES[muscleId]?.best_layer === 'D'
+      const meta = META_MUSCLES[muscleId]
+      const isDeep = meta?.best_layer === 'D'
+
+      const approx = APPROXIMATE_REGIONS[muscleId]
+      const visibleInView = approx
+        ? approx.view === view
+        : (meta?.best_view === view || (meta?.views?.[view]?.visible_pixels ?? 0) > 300)
 
       path.classList.remove(
         'muscle-full-active',
@@ -366,7 +399,7 @@ export function AnatomyMuscleMap({
         'muscle-targeted-highlight',
       )
 
-      if (showDeep && role && isDeep) {
+      if (showDeep && role && isDeep && visibleInView) {
         path.classList.add('muscle-full-active')
         if (role === 'primary') path.classList.add('muscle-primary')
         else path.classList.add('muscle-secondary')
@@ -376,7 +409,7 @@ export function AnatomyMuscleMap({
         }
       }
     })
-  }, [roleMap, showDeep, selectedMuscleId])
+  }, [roleMap, showDeep, selectedMuscleId, view])
 
   // Apply highlights synchronously before paint on EVERY commit
   useLayoutEffect(() => {
@@ -691,9 +724,7 @@ export function AnatomyMuscleMap({
             aria-label="تكبير"
             title="تكبير"
           >
-            <span style={{ fontSize: '18px', lineHeight: 1, fontWeight: 700 }}>
-              +
-            </span>
+            <IconPlus size={18} />
           </button>
           <button
             type="button"
@@ -702,9 +733,7 @@ export function AnatomyMuscleMap({
             aria-label="تصغير"
             title="تصغير"
           >
-            <span style={{ fontSize: '18px', lineHeight: 1, fontWeight: 700 }}>
-              −
-            </span>
+            <IconMinus size={18} />
           </button>
           <button
             type="button"
@@ -713,7 +742,7 @@ export function AnatomyMuscleMap({
             aria-label="إعادة الضبط"
             title="إعادة الضبط"
           >
-            <span style={{ fontSize: '15px', lineHeight: 1 }}>↺</span>
+            <IconRefreshCw size={16} />
           </button>
         </div>
       </div>
@@ -830,6 +859,27 @@ export function AnatomyMuscleMap({
             <span>تقريبي</span>
           </div>
         </div>
+        {(((exercise as Record<string, unknown>)?.muscles_status &&
+          (exercise as Record<string, unknown>)?.muscles_status !== 'complete' &&
+          (exercise as Record<string, unknown>)?.muscles_status !== 'verified') ||
+          resolved.isProvisional) && (
+          <div style={{ width: '100%', marginTop: '6px', textAlign: 'center' }}>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 600,
+                color: 'var(--color-text-2)',
+                background: 'var(--color-surface-2)',
+                padding: '3px 8px',
+                borderRadius: 'var(--radius-full)',
+                border: '1px solid var(--color-divider)',
+                display: 'inline-block',
+              }}
+            >
+              التصنيف قيد المراجعة
+            </span>
+          </div>
+        )}
       </div>
 
       {/* 5. Grouped Accessible Muscle List */}

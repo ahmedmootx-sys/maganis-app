@@ -1,6 +1,6 @@
-import exerciseMusclesData from '../../data/exercise_muscles.json'
-import groupToHeadsData from '../../data/group-to-heads.json'
-import atlasMetaData from '../../../public/atlas/atlas-meta.json'
+import exerciseMusclesData from '../../data/exercise_muscles.json' with { type: 'json' }
+import groupToHeadsData from '../../data/group-to-heads.json' with { type: 'json' }
+import atlasMetaData from '../../../public/atlas/atlas-meta.json' with { type: 'json' }
 
 export type MuscleRole = 'primary' | 'secondary'
 
@@ -407,7 +407,9 @@ export function resolveMuscles(
 /**
  * Computes default best view ('A' anterior vs 'P' posterior)
  * Weight: primary = 2, secondary = 1.
- * Tie -> 'A' (أمامي)
+/**
+ * Computes default best view ('A' anterior vs 'P' posterior) per TASK G3 Part 4.2:
+ * "Initial view = the side holding the most primary muscles (tie: the side of the first primary)."
  */
 export function computeBestView(muscles: ExerciseMuscleTarget[]): 'A' | 'P' {
   const metaMuscles =
@@ -426,25 +428,31 @@ export function computeBestView(muscles: ExerciseMuscleTarget[]): 'A' | 'P' {
       }
     ).muscles || {}
 
-  let scoreA = 0
-  let scoreP = 0
-
-  for (const m of muscles) {
-    const weight = m.role === 'primary' ? 2 : 1
-    const meta = metaMuscles[m.id]
-    if (meta) {
-      const hasA =
-        (meta.views?.A?.visible_pixels ?? 0) > 0 || meta.best_view === 'A'
-      const hasP =
-        (meta.views?.P?.visible_pixels ?? 0) > 0 || meta.best_view === 'P'
-
-      if (hasA) scoreA += weight
-      if (hasP) scoreP += weight
-    } else {
-      // Fallback heuristics if ID not in meta
-      scoreA += weight
-    }
+  const primaries = muscles.filter((m) => m.role === 'primary')
+  if (primaries.length === 0) {
+    return 'A'
   }
 
-  return scoreP > scoreA ? 'P' : 'A'
+  let countA = 0
+  let countP = 0
+  let firstPrimaryView: 'A' | 'P' = 'A'
+
+  primaries.forEach((m, idx) => {
+    const meta = metaMuscles[m.id]
+    const view: 'A' | 'P' =
+      meta?.best_view ||
+      ((meta?.views?.P?.visible_pixels ?? 0) >
+      (meta?.views?.A?.visible_pixels ?? 0)
+        ? 'P'
+        : 'A')
+    if (idx === 0) {
+      firstPrimaryView = view
+    }
+    if (view === 'A') countA++
+    else countP++
+  })
+
+  if (countA > countP) return 'A'
+  if (countP > countA) return 'P'
+  return firstPrimaryView
 }

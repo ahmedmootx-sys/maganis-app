@@ -1,0 +1,57 @@
+Gate 1.4: Bottom Void and Docking Contract Failure (Before Fix)
+
+Examined 108 route states across matrix.
+❌ Found 84 state violations:
+ - [/home @ 360x720 f:1 th:light]:
+     * Gap between last content (callout callout--info) and barrier is 188.4px (allowed: 8-32px)
+ - [/training @ 360x720 f:1 th:light]:
+     * Gap between last content (screen-section) and barrier is 188.5px (allowed: 8-32px)
+ - [/nutrition @ 360x720 f:1 th:light]:
+     * Gap between last content (section-meals) and barrier is 128.0px (allowed: 8-32px)
+ - [/progress @ 360x720 f:1 th:light]:
+     * Gap between last content (DIV) and barrier is 136.0px (allowed: 8-32px)
+ - [/settings @ 360x720 f:1 th:light]:
+     * Gap between last content (section) and barrier is 104.3px (allowed: 8-32px)
+ - [/library @ 360x720 f:1 th:light]:
+     * Gap between last content (exercise-library-list) and barrier is -27489.0px (allowed: 8-32px)
+     * Blank block detected: element DIV.field height=48.0px has no content/media/bg/border
+ - [/exercise/barbell-bench-press @ 360x720 f:1 th:light]:
+     * Gap between last content (exercise-route-page) and barrier is 465.0px (allowed: 8-32px)
+ - [/home @ 360x720 f:1 th:dark]:
+     * Gap between last content (callout callout--info) and barrier is 188.4px (allowed: 8-32px)
+ - [/training @ 360x720 f:1 th:dark]:
+     * Gap between last content (screen-section) and barrier is 188.5px (allowed: 8-32px)
+ - [/nutrition @ 360x720 f:1 th:dark]:
+     * Gap between last content (section-meals) and barrier is 128.0px (allowed: 8-32px)
+ - [/progress @ 360x720 f:1 th:dark]:
+     * Gap between last content (DIV) and barrier is 136.0px (allowed: 8-32px)
+ - [/settings @ 360x720 f:1 th:dark]:
+     * Gap between last content (section) and barrier is 104.3px (allowed: 8-32px)
+ - [/library @ 360x720 f:1 th:dark]:
+     * Gap between last content (exercise-library-list) and barrier is -27489.0px (allowed: 8-32px)
+     * Blank block detected: element DIV.field height=48.0px has no content/media/bg/border
+ - [/exercise/barbell-bench-press @ 360x720 f:1 th:dark]:
+     * Gap between last content (exercise-route-page) and barrier is 465.0px (allowed: 8-32px)
+ - [/home @ 360x720 f:1.3 th:light]:
+     * Gap between last content (callout callout--info) and barrier is 188.4px (allowed: 8-32px)
+ - [/training @ 360x720 f:1.3 th:light]:
+     * Gap between last content (screen-section) and barrier is 188.5px (allowed: 8-32px)
+ - [/nutrition @ 360x720 f:1.3 th:light]:
+     * Gap between last content (section-meals) and barrier is 128.0px (allowed: 8-32px)
+ - [/progress @ 360x720 f:1.3 th:light]:
+     * Gap between last content (DIV) and barrier is 136.0px (allowed: 8-32px)
+ - [/settings @ 360x720 f:1.3 th:light]:
+     * Gap between last content (section) and barrier is 104.3px (allowed: 8-32px)
+ - [/library @ 360x720 f:1.3 th:light]:
+     * Gap between last content (exercise-library-list) and barrier is -27489.0px (allowed: 8-32px)
+     * Blank block detected: element DIV.field height=48.0px has no content/media/bg/border
+ - [/exercise/barbell-bench-press @ 360x720 f:1.3 th:light]:
+     * Gap between last content (exercise-route-page) and barrier is 465.0px (allowed: 8-32px)
+ - [/home @ 360x720 f:1.3 th:dark]:
+     * Gap between last content (callout callout--info) and barrier is 187.5px (allowed: 8-32px)
+ - [/training @ 360x720 f:1.3 th:dark]:
+     * Gap between last content (screen-section) and barrier is 188.5px (allowed: 8-32px)
+ - [/nutrition @ 360x720 f:1.3 th:dark]:
+     * Gap between last content (section-meals) and barrier is 128.0px (allowed: 8-32px)
+ - [/progress @ 360x720 f:1.3 th:dark]:
+     * Gap between last content (DIV) and barrier is 136.0px (allowed: 8-32px)

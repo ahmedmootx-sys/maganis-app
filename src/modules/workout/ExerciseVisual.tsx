@@ -40,17 +40,11 @@ export function ExerciseVisual({
   const rawEx = exerciseId ? getExerciseById(exerciseId) : null
   const resolved = resolveMedia(rawEx || { id: exerciseId || '', imageUrl: gifUrl || imageUrl })
 
-  let frame0 = resolved.url || gifUrl || imageUrl || ''
-  let frame1 = resolved.frame1Url || frame0
-
-  if (frame0 && frame0.includes('_0.jpg')) {
-    frame1 = frame0.replace('_0.jpg', '_1.jpg')
-  } else if (frame0.endsWith('/0.jpg')) {
-    frame1 = frame0.replace(/\/0\.jpg$/i, '/1.jpg')
-  }
+  const frame0 = resolved.url || ''
+  const frame1 = resolved.frame1Url || frame0
 
   const hasTwoFrames =
-    !frame1Failed && Boolean(frame0 && frame1 && frame0 !== frame1)
+    !frame1Failed && resolved.isKeyframed && Boolean(frame0 && frame1 && frame0 !== frame1)
 
   const rawSrc = hasTwoFrames && frameIndex === 1 ? frame1 : frame0
   const currentSrc =
@@ -64,9 +58,36 @@ export function ExerciseVisual({
         : ''
 
   if (imgError || !currentSrc) {
+    if (size === 'small') {
+      return (
+        <div
+          className="exercise-visual-tile"
+          data-testid="exercise-visual-fallback-tile"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'var(--color-surface-2)',
+            color: 'var(--color-text-2)',
+            borderRadius: 'var(--radius-control)',
+            width: '40px',
+            height: '40px',
+            minWidth: '40px',
+            minHeight: '40px',
+            border: '1px solid var(--color-border)',
+            boxSizing: 'border-box',
+            flexShrink: 0,
+          }}
+          title={exerciseName}
+        >
+          <IconImage size={20} />
+        </div>
+      )
+    }
+
     return (
       <div
-        className={`exercise-visual-circle white-theme size-${size}`}
+        className="exercise-visual-empty"
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -76,36 +97,38 @@ export function ExerciseVisual({
           color: 'var(--color-text-2)',
           borderRadius:
             size === 'large' ? 'var(--radius-card)' : 'var(--radius-control)',
-          width: size === 'small' ? '48px' : '100%',
-          height:
-            size === 'small'
-              ? '48px'
-              : size === 'medium'
-                ? '120px'
-                : '180px',
-          minWidth: size === 'small' ? '48px' : undefined,
-          minHeight: size === 'small' ? '48px' : undefined,
+          width: '100%',
+          minHeight: size === 'large' ? '180px' : '120px',
           border: '1px solid var(--color-border)',
           textAlign: 'center',
-          padding: '2px',
+          padding: '24px 16px',
           boxSizing: 'border-box',
-          gap: '2px',
+          gap: '12px',
         }}
         title={exerciseName}
       >
-        <IconImage
-          size={size === 'large' ? 32 : size === 'medium' ? 22 : 16}
-        />
-        <span
+        <span style={{ fontSize: '13px', color: 'var(--color-text-2)', fontWeight: 500 }}>
+          لا يوجد شرح مرئي لهذا التمرين بعد
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            console.info(`[Report Missing Media] exerciseId: ${exerciseId || 'unknown'}`)
+            alert('تم استلام البلاغ! سنعمل على توفير الشرح المرئي في التحديث القادم.')
+          }}
           style={{
-            fontSize: size === 'small' ? '8.5px' : '12px',
-            color: 'var(--color-text-2)',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-control)',
+            padding: '6px 14px',
+            fontSize: '12px',
+            color: 'var(--color-text)',
+            cursor: 'pointer',
             fontWeight: 600,
-            whiteSpace: 'nowrap',
           }}
         >
-          لا توجد صورة
-        </span>
+          أبلغ عن نقص
+        </button>
       </div>
     )
   }
@@ -116,11 +139,13 @@ export function ExerciseVisual({
   return (
     <div className="exercise-media-box">
       <div
-        className={`exercise-media-frame size-${size} ${isAnimated ? 'animated-showcase' : ''}`}
+        className={`exercise-media-frame size-${size} ${hasTwoFrames && isAnimated ? 'animated-showcase' : ''}`}
         title={exerciseName}
         style={{
-          minHeight: size === 'small' ? '48px' : '140px',
-          minWidth: size === 'small' ? '48px' : undefined,
+          minHeight: size === 'small' ? '40px' : '140px',
+          minWidth: size === 'small' ? '40px' : undefined,
+          width: size === 'small' ? '40px' : '100%',
+          height: size === 'small' ? '40px' : undefined,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -128,6 +153,7 @@ export function ExerciseVisual({
           borderRadius:
             size === 'large' ? 'var(--radius-card)' : 'var(--radius-control)',
           overflow: 'hidden',
+          flexShrink: 0,
         }}
       >
         <img

@@ -14,8 +14,8 @@ describe('Exercise Media Resolver: resolveMedia', () => {
     }
   })
 
-  it('resolves consistently for Leverage Incline Chest Press across contexts', () => {
-    const levPress = EXERCISES.find((e) => e.nameAr.includes('مائل على الجهاز') || e.name?.includes('Leverage Incline'))
+  it('resolves consistently for Leverage Chest Press across contexts', () => {
+    const levPress = EXERCISES.find((e) => e.id === 'chest-10' || e.name?.includes('Leverage Chest Press'))
     expect(levPress).toBeDefined()
     if (levPress) {
       const resObj = resolveMedia(levPress)

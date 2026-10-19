@@ -1,4 +1,4 @@
-import type { UserProfile, BodyGoal } from '../onboarding/types.ts'
+import type { UserProfile } from '../onboarding/types.ts'
 import {
   LIFESTYLE_FACTORS,
   MET_TABLE,
@@ -43,10 +43,12 @@ export interface EnergyPlanResult {
  * - banner = details = target - tdee
  */
 export type ComputableProfile = {
-  primaryGoal?: UserProfile['primaryGoal']
-  bodyGoal?: BodyGoal
+  primaryGoal?: string
+  bodyGoal?: string
   trainingDaysPerWeek?: number
-  body?: Partial<UserProfile['body']>
+  body?: Partial<UserProfile['body']> & {
+    proteinPerKgOverride?: number
+  }
 }
 
 export function computeEnergyPlan(
@@ -112,11 +114,12 @@ export function computeEnergyPlan(
   const tdee = Math.round(rawTdee)
 
   // 5. Goal adjustment percentage
+  const primaryGoal = profile?.primaryGoal
   const bodyGoal =
     profile?.bodyGoal ||
-    (profile?.primaryGoal === 'hypertrophy'
+    (primaryGoal === 'hypertrophy'
       ? 'gain'
-      : profile?.primaryGoal === 'cut'
+      : (primaryGoal === 'cut' || primaryGoal === 'fat_loss')
         ? 'cut'
         : 'maintain')
 
@@ -138,8 +141,17 @@ export function computeEnergyPlan(
   const target = Math.round(tdee + adjustmentKcal)
 
   // 6. Macros
-  // Protein: Morton et al. (2018) BJSM (default 1.8 g/kg)
-  const proteinPerKg = profile?.body?.proteinPerKgOverride ?? 1.8
+  // Protein: goal-based evidence multiplier (Morton et al. 2018: 1.8 baseline, 2.0 hypertrophy/recomp; Helms et al. 2014: 2.2 deficit)
+  const defaultProteinPerKg =
+    primaryGoal === 'fat_loss' || primaryGoal === 'cut'
+      ? 2.2
+      : (primaryGoal === 'hypertrophy' || primaryGoal === 'recomposition')
+        ? 2.0
+        : (primaryGoal === 'endurance' || primaryGoal === 'health')
+          ? 1.6
+          : 1.8
+
+  const proteinPerKg = profile?.body?.proteinPerKgOverride ?? defaultProteinPerKg
   const proteinGrams = Math.round(weightKg * proteinPerKg)
   const proteinKcal = proteinGrams * 4
 

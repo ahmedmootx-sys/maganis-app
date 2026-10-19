@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, IconButton, Icon } from '../../ui/index.ts'
-import mediaFramesData from '../../data/media-frames.json'
+import mediaFramesData from '../../data/media-frames.json' with { type: 'json' }
 import exerciseVisualData from '../../data/exercise-visual.json'
 import { assetUrl } from '../../utils/assetUrl.ts'
 
@@ -36,7 +36,7 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
   const [activeFrameIdx, setActiveFrameIdx] = useState(0)
   const [showRomOverlay, setShowRomOverlay] = useState(false)
 
-  // Load frames from media-frames.json or fallback to props.images
+  // Load frames from media-frames.json or verified local images
   const exerciseFramesInfo =
     (mediaFramesData as unknown as { exercises: Record<string, { frames: Array<{ index: number; url: string; label: string }> }> })
       .exercises?.[exerciseKey]
@@ -46,15 +46,12 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
       url: f.url.startsWith('/') ? f.url.slice(1) : f.url,
       label: f.label,
     })) ||
-    (images.length > 0
+    (images.length > 0 && !images[0]?.startsWith('http')
       ? images.map((img, idx) => ({
           url: img.startsWith('/') ? img.slice(1) : img,
           label: idx === 0 ? 'بداية' : idx === images.length - 1 ? 'نهاية' : `مرحلة ${idx + 1}`,
         }))
-      : [
-          { url: `exercises/${exerciseKey}_0.jpg`, label: 'بداية' },
-          { url: `exercises/${exerciseKey}_1.jpg`, label: 'نهاية' },
-        ])
+      : [])
 
   const totalFrames = frames.length
 
@@ -68,7 +65,7 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
     }
   }, [])
 
-  // Auto-play timer
+  // Auto-play timer: ONLY if >= 2 distinct frames exist
   useEffect(() => {
     if (!isPlaying || totalFrames <= 1) return
 
@@ -86,6 +83,65 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
       .entries?.[exerciseKey]
 
   const isReviewed = Boolean(authoredEntry?.reviewed)
+
+  // Zero frames contract: muted line + report missing button
+  if (totalFrames === 0) {
+    return (
+      <div
+        className="movement-explainer-section"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text)' }}>
+          الحركة وتفاصيل الأداء
+        </span>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '32px 16px',
+            background: 'var(--color-surface-2)',
+            borderRadius: 'var(--radius-card)',
+            border: '1px solid var(--color-divider)',
+            textAlign: 'center',
+            gap: '12px',
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
+          <span style={{ fontSize: '13.5px', color: 'var(--color-text-2)' }}>
+            لا يوجد شرح مرئي لهذا التمرين بعد
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              console.info(`[Report Missing Media] exerciseKey: ${exerciseKey}`)
+              alert('تم استلام البلاغ! سنعمل على توفير الشرح المرئي في التحديث القادم.')
+            }}
+            style={{
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-control)',
+              padding: '6px 16px',
+              fontSize: '12px',
+              color: 'var(--color-text)',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            أبلغ عن نقص
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   const currentFrame = frames[activeFrameIdx] || frames[0]
   const startFrame = frames[0]
@@ -112,16 +168,18 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
         <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text)' }}>
           الحركة وتفاصيل الأداء
         </span>
-        <button
-          type="button"
-          role="checkbox"
-          aria-checked={showRomOverlay}
-          onClick={() => setShowRomOverlay((prev) => !prev)}
-          className={`chip ${showRomOverlay ? 'chip--active' : ''}`}
-          style={{ fontSize: '12px', minHeight: '32px', padding: '4px 12px' }}
-        >
-          <span>إظهار المدى</span>
-        </button>
+        {totalFrames >= 2 && (
+          <button
+            type="button"
+            role="checkbox"
+            aria-checked={showRomOverlay}
+            onClick={() => setShowRomOverlay((prev) => !prev)}
+            className={`chip ${showRomOverlay ? 'chip--active' : ''}`}
+            style={{ fontSize: '12px', minHeight: '32px', padding: '4px 12px' }}
+          >
+            <span>إظهار المدى</span>
+          </button>
+        )}
       </div>
 
       {/* Main Visual Display / Overlay Area */}
@@ -218,117 +276,121 @@ export const MovementExplainer: React.FC<MovementExplainerProps> = ({
         )}
       </div>
 
-      {/* Phase Player Controls */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          background: 'var(--color-surface)',
-          padding: '8px 12px',
-          borderRadius: 'var(--radius-control)',
-          border: '1px solid var(--color-divider)',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <IconButton
-            name={isPlaying ? 'pause' : 'play'}
-            aria-label={isPlaying ? 'إيقاف مؤقت' : 'تشغيل الحركة'}
-            size={18}
-            onClick={() => setIsPlaying((p) => !p)}
-          />
-          <button
-            type="button"
-            onClick={() => setSpeed((s) => (s === 1 ? 0.5 : 1))}
+      {/* Phase Player Controls and Keyframe Horizontal Strip: Only for >= 2 frames */}
+      {totalFrames >= 2 && (
+        <>
+          <div
             style={{
-              background: 'var(--color-surface-2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              background: 'var(--color-surface)',
+              padding: '8px 12px',
+              borderRadius: 'var(--radius-control)',
               border: '1px solid var(--color-divider)',
-              borderRadius: '6px',
-              padding: '4px 8px',
-              fontSize: '11px',
-              fontWeight: 700,
-              color: 'var(--color-text)',
-              cursor: 'pointer',
             }}
           >
-            {speed}×
-          </button>
-        </div>
-
-        {/* Previous / Next Frame Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Button
-            variant="secondary"
-            size="small"
-            disabled={activeFrameIdx === 0}
-            onClick={() => setActiveFrameIdx((idx) => Math.max(0, idx - 1))}
-          >
-            السابق
-          </Button>
-          <Button
-            variant="secondary"
-            size="small"
-            disabled={activeFrameIdx === totalFrames - 1}
-            onClick={() => setActiveFrameIdx((idx) => Math.min(totalFrames - 1, idx + 1))}
-          >
-            التالي
-          </Button>
-        </div>
-      </div>
-
-      {/* Keyframe Horizontal Strip (Scroll-snap carousel) */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '8px',
-          overflowX: 'auto',
-          paddingBottom: '4px',
-          scrollSnapType: 'x mandatory',
-        }}
-      >
-        {frames.map((frame, idx) => {
-          const isSel = idx === activeFrameIdx
-          return (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => {
-                setActiveFrameIdx(idx)
-                setIsPlaying(false)
-              }}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px',
-                borderRadius: '8px',
-                border: isSel ? '2px solid var(--color-accent)' : '1px solid var(--color-divider)',
-                background: isSel ? 'var(--color-accent-tint)' : 'var(--color-surface)',
-                cursor: 'pointer',
-                flexShrink: 0,
-                width: '64px',
-                scrollSnapAlign: 'start',
-              }}
-            >
-              <img
-                src={assetUrl(frame.url)}
-                alt={frame.label}
-                style={{ width: '56px', height: '56px', objectFit: 'contain' }}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IconButton
+                name={isPlaying ? 'pause' : 'play'}
+                aria-label={isPlaying ? 'إيقاف مؤقت' : 'تشغيل الحركة'}
+                size={18}
+                onClick={() => setIsPlaying((p) => !p)}
               />
-              <span
+              <button
+                type="button"
+                onClick={() => setSpeed((s) => (s === 1 ? 0.5 : 1))}
                 style={{
-                  fontSize: '10px',
-                  fontWeight: isSel ? 700 : 500,
-                  color: isSel ? 'var(--color-text)' : 'var(--color-text-2)',
+                  background: 'var(--color-surface-2)',
+                  border: '1px solid var(--color-divider)',
+                  borderRadius: '6px',
+                  padding: '4px 8px',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: 'var(--color-text)',
+                  cursor: 'pointer',
                 }}
               >
-                {frame.label}
-              </span>
-            </button>
-          )
-        })}
-      </div>
+                {speed}×
+              </button>
+            </div>
+
+            {/* Previous / Next Frame Buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Button
+                variant="secondary"
+                size="small"
+                disabled={activeFrameIdx === 0}
+                onClick={() => setActiveFrameIdx((idx) => Math.max(0, idx - 1))}
+              >
+                السابق
+              </Button>
+              <Button
+                variant="secondary"
+                size="small"
+                disabled={activeFrameIdx === totalFrames - 1}
+                onClick={() => setActiveFrameIdx((idx) => Math.min(totalFrames - 1, idx + 1))}
+              >
+                التالي
+              </Button>
+            </div>
+          </div>
+
+          {/* Keyframe Horizontal Strip (Scroll-snap carousel) */}
+          <div
+            style={{
+              display: 'flex',
+              gap: '8px',
+              overflowX: 'auto',
+              paddingBottom: '4px',
+              scrollSnapType: 'x mandatory',
+            }}
+          >
+            {frames.map((frame, idx) => {
+              const isSel = idx === activeFrameIdx
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setActiveFrameIdx(idx)
+                    setIsPlaying(false)
+                  }}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px',
+                    borderRadius: '8px',
+                    border: isSel ? '2px solid var(--color-accent)' : '1px solid var(--color-divider)',
+                    background: isSel ? 'var(--color-accent-tint)' : 'var(--color-surface)',
+                    cursor: 'pointer',
+                    flexShrink: 0,
+                    width: '64px',
+                    scrollSnapAlign: 'start',
+                  }}
+                >
+                  <img
+                    src={assetUrl(frame.url)}
+                    alt={frame.label}
+                    style={{ width: '56px', height: '56px', objectFit: 'contain' }}
+                  />
+                  <span
+                    style={{
+                      fontSize: '10px',
+                      fontWeight: isSel ? 700 : 500,
+                      color: isSel ? 'var(--color-text)' : 'var(--color-text-2)',
+                    }}
+                  >
+                    {frame.label}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </>
+      )}
 
       {/* Authored Content or Uncompleted Notice */}
       {isReviewed && authoredEntry ? (

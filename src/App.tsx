@@ -41,6 +41,7 @@ import {
   IconUtensils,
   IconTrendingUp,
   IconSettings,
+  IconClose,
 } from './components/Icons.tsx'
 import { ExerciseDetailView } from './modules/workout/ExerciseDetailView.tsx'
 import { ConfirmSheet } from './ui/index.ts'
@@ -675,30 +676,21 @@ export function App({ config }: AppProps) {
   function renderContent() {
     if (route.path === '/exercise/:id' && route.params.id) {
       return (
-        <div className="exercise-route-page" dir="rtl">
-          <div
-            style={{
-              padding: '16px',
-              maxWidth: '640px',
-              margin: '0 auto',
-              width: '100%',
+        <div className="exercise-route-page screen-container" dir="rtl">
+          <ExerciseDetailView
+            exerciseId={route.params.id}
+            profile={profile}
+            program={program}
+            sessions={sessions}
+            onBack={() => {
+              if (window.history.length > 1) {
+                window.history.back()
+              } else {
+                navigate('/training')
+              }
             }}
-          >
-            <ExerciseDetailView
-              exerciseId={route.params.id}
-              profile={profile}
-              program={program}
-              sessions={sessions}
-              onBack={() => {
-                if (window.history.length > 1) {
-                  window.history.back()
-                } else {
-                  navigate('/training')
-                }
-              }}
-              onNavigateSettings={() => navigate('/settings')}
-            />
-          </div>
+            onNavigateSettings={() => navigate('/settings')}
+          />
         </div>
       )
     }
@@ -989,7 +981,7 @@ export function App({ config }: AppProps) {
 
       <div
         className="maganis-shell app app--shell"
-        style={{ display: isWorkoutSessionExpanded ? 'none' : 'flex' }}
+        style={{ display: isWorkoutSessionExpanded ? 'none' : 'grid' }}
       >
         <IconSprite />
         <header className="app-header" style={{ display: 'none' }}>
@@ -1069,8 +1061,9 @@ export function App({ config }: AppProps) {
                 type="button"
                 className="ghost-danger tiny"
                 onClick={() => setConfirmCancelActiveSessionOpen(true)}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
               >
-                ✕ إلغاء
+                <IconClose size={14} /> إلغاء
               </button>
             </div>
           </div>

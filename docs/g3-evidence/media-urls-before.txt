@@ -1,0 +1,160 @@
+﻿≡ƒÜÇ Running Gate: gate-media-urls (TASK G3 Part 2)...
+≡ƒôí Vite preview listening at http://localhost:5192/maganis-app (base: /maganis-app/)
+≡ƒôï Auditing media for all 261 catalog exercises...
+≡ƒæñ Owner's 41 exercises: 16 mapped in catalog, 16 with verified media
+
+≡ƒôè Gate Summary:
+- Total unique URLs tested: 522
+- Exercises with media: 261 (261 two-frame animated, 0 static single-frame)
+- Exercises with null media: 0
+- Total failures / violations: 355
+node : 
+At line:1 char:1
++ node scripts/gate-media-urls.mjs > docs/g3-evidence/media-urls-before ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Γ¥î FAIL: 355 media URL violations detected:
+  [ORPHANED_FRAME_KEY] Exercise: back-2 | URL: N/A
+    Γå│ Exercise key 'back-2' in media-frames.json does not exist in catalog EXERCISES
+  [ORPHANED_FRAME_KEY] Exercise: core-3 | URL: N/A
+    Γå│ Exercise key 'core-3' in media-frames.json does not exist in catalog EXERCISES
+  [ORPHANED_FRAME_KEY] Exercise: core-11 | URL: N/A
+    Γå│ Exercise key 'core-11' in media-frames.json does not exist in catalog EXERCISES
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: chest-4 | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg'. 
+Offline PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: chest-4 | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/1.jpg'. 
+Offline PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Barbell_Guillotine_Bench_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Guillotine_Bench_Press/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Guillotine_Bench_Press/0.jpg'. Offline 
+PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Barbell_Guillotine_Bench_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Guillotine_Bench_Press/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Guillotine_Bench_Press/1.jpg'. Offline 
+PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: chest-17 | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Flat_Bench_Dumbbell_Flye/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Flat_Bench_Dumbbell_Flye/0.jpg'. Offline 
+PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: chest-17 | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Flat_Bench_Dumbbell_Flye/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Flat_Bench_Dumbbell_Flye/1.jpg'. Offline 
+PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Hammer_Grip_Incline_DB_Bench_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Grip_Incline_DB_Bench_Press/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Grip_Incline_DB_Bench_Press/0.jpg'. 
+Offline PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Hammer_Grip_Incline_DB_Bench_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Grip_Incline_DB_Bench_Press/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Grip_Incline_DB_Bench_Press/1.jpg'. 
+Offline PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Cable_Iron_Cross | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Iron_Cross/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Iron_Cross/0.jpg'. Offline PWA contract 
+requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Cable_Iron_Cross | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Iron_Cross/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Iron_Cross/1.jpg'. Offline PWA contract 
+requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Single-Arm_Cable_Crossover | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single-Arm_Cable_Crossover/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single-Arm_Cable_Crossover/0.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Single-Arm_Cable_Crossover | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single-Arm_Cable_Crossover/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single-Arm_Cable_Crossover/1.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: chest-20 | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Butterfly/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Butterfly/0.jpg'. Offline PWA contract requires 
+local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: chest-20 | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Butterfly/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Butterfly/1.jpg'. Offline PWA contract requires 
+local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Leverage_Incline_Chest_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Incline_Chest_Press/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Incline_Chest_Press/0.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Leverage_Incline_Chest_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Incline_Chest_Press/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Incline_Chest_Press/1.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Leverage_Decline_Chest_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Decline_Chest_Press/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Decline_Chest_Press/0.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Leverage_Decline_Chest_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Decline_Chest_Press/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leverage_Decline_Chest_Press/1.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Smith_Machine_Bench_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Bench_Press/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Bench_Press/0.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Smith_Machine_Bench_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Bench_Press/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Bench_Press/1.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Smith_Machine_Incline_Bench_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Incline_Bench_Press/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Incline_Bench_Press/0.jpg'. Offline 
+PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Smith_Machine_Incline_Bench_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Incline_Bench_Press/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Incline_Bench_Press/1.jpg'. Offline 
+PWA contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Smith_Machine_Decline_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Decline_Press/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Decline_Press/0.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Smith_Machine_Decline_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Decline_Press/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Smith_Machine_Decline_Press/1.jpg'. Offline PWA 
+contract requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Decline_Push-Up | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Push-Up/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Push-Up/0.jpg'. Offline PWA contract 
+requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Decline_Push-Up | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Push-Up/1.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Push-Up/1.jpg'. Offline PWA contract 
+requires local assets or explicit null.
+  [EXTERNAL_URL_NON_OFFLINE] Exercise: Svend_Press | URL: 
+https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Svend_Press/0.jpg
+    Γå│ Exercise media points to external URL 
+'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Svend_Press/0.jpg'. Offline PWA contract requires 
+local assets or explicit null.
+  ... and 325 more failures.

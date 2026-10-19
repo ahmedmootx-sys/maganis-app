@@ -93,9 +93,9 @@ export function calculateCalorieMacroTargets(
 
     let goalLabelAr = 'المحافظة على الوزن'
     if (goal === 'gain') {
-      goalLabelAr = `بناء عضلات وتضخيم (فائض +${engineRes.adjustmentKcal} كالوِري)`
+      goalLabelAr = `بناء عضلات وتضخيم (فائض +${engineRes.adjustmentKcal} سعرة)`
     } else if (goal === 'lose') {
-      goalLabelAr = `تنشيف وحرق دهون (عجز ${engineRes.adjustmentKcal} كالوِري)`
+      goalLabelAr = `تنشيف وحرق دهون (عجز ${engineRes.adjustmentKcal} سعرة)`
     }
 
     return {

@@ -1,0 +1,22 @@
+﻿≡ƒÜÇ Running Gate: gate-days (TASK G3 Part 5 ΓÇö Day Management & Cardio)...
+Γ£ô Found per-day menu (Γï«) on day cards
+Γ£ô Strength session count strictly excludes cardio days (4 strength days)
+Γ£ô Cardio day leaves TDEE (2587 kcal) and target (2587 kcal) unchanged
+
+≡ƒôè Gate Summary: 3 checks passed, 7 failures
+node : 
+At line:1 char:1
++ node scripts/gate-days.mjs > docs/g3-evidence/days-before.txt 2>&1; p ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Γ¥î FAIL: 7 day management contract violations detected:
+  [ADD_DAY_BUTTON] WeeklyPlanView does not have an ┬½+ ╪Ñ╪╢╪º┘ü╪⌐ ┘è┘ê┘à┬╗ button or handler
+  [DAY_RENAME] WeeklyPlanView does not support renaming days
+  [CARDIO_DAY_SCREEN] WeeklyPlanView does not have a dedicated Cardio Day view handling activity and plannedMinutes
+  [CALLOUT_STRENGTH_ONLY] Training days Callout compares total program.days.length without excluding cardio days
+  [CALLOUT_TWO_ACTIONS] Training days Callout should have 2 action buttons, but found 1
+  [WEEK_STRIP_LEGEND] Home week strip in Dashboard.tsx is missing the legend line ┬½┘é┘ê╪⌐ ┬╖ ┘â╪º╪▒╪»┘è┘ê ┬╖ 
+╪▒╪º╪¡╪⌐┬╗
+  [WEEK_STRIP_KIND_ICONS] Home week strip renders dots instead of explicit kind icons for strength, cardio, and rest

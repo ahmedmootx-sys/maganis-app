@@ -1,0 +1,32 @@
+# تقرير تدقيق رسم الأطلس التشريحي — Atlas Render Audit
+
+**تاريخ التدقيق**: 18 أكتوبر 2026
+**الهدف**: تدقيق 12 تمريناً عبر الواجهتين (أمامي / خلفي) والوضعين (فاتح / داكن) لكشف ومطابقة عيوب الرندرة.
+
+## 1. جدول التدقيق للتمارين الـ 12
+
+| التمرين المطلوب | المعرّف المستخدم | العضلات الأساسية (بيانات) | العضلات المساعدة (بيانات) | العضلات المرسومة (أمامي) | العضلات المرسومة (خلفي) | الواجهة الابتدائية | التطابق |
+| :--- | :--- | :--- | :--- | :--- | :--- | :---: | :---: |
+| **Barbell Incline Bench Press** | `chest-4` | pec_clavicular | pec_sternal, delt_anterior, triceps_lateral, triceps_long | pec_clavicular, pec_sternal, delt_anterior, triceps_lateral, triceps_long | pec_clavicular, pec_sternal, delt_anterior, triceps_lateral, triceps_long | **A** | ✓ |
+| **Pull-Up** | `Wide-Grip_Rear_Pull-Up` | lats | biceps_long, biceps_short, brachialis, delt_anterior, delt_lateral, delt_posterior | lats, biceps_long, biceps_short, brachialis, delt_anterior, delt_lateral, delt_posterior | lats, biceps_long, biceps_short, brachialis, delt_anterior, delt_lateral, delt_posterior | **P** | ✓ |
+| **Barbell Back Squat** | `leg-1` | rectus_femoris, vastus_lateralis, vastus_medialis, glute_max | adductors, erector_spinae | rectus_femoris, vastus_lateralis, vastus_medialis, glute_max, adductors, erector_spinae | rectus_femoris, vastus_lateralis, vastus_medialis, glute_max, adductors, erector_spinae | **A** | ✓ |
+| **Romanian Deadlift** | `leg-6` | hamstring_bf_long, hamstring_semitendinosus, hamstring_semimembranosus, glute_max | erector_spinae, adductors | hamstring_bf_long, hamstring_semitendinosus, hamstring_semimembranosus, glute_max, erector_spinae, adductors | hamstring_bf_long, hamstring_semitendinosus, hamstring_semimembranosus, glute_max, erector_spinae, adductors | **P** | ✓ |
+| **Dumbbell Lateral Raise** | `shoulder-3` | delt_lateral | delt_anterior, trap_upper, supraspinatus | delt_lateral, delt_anterior, trap_upper, supraspinatus | delt_lateral, delt_anterior, trap_upper, supraspinatus | **A** | ✓ |
+| **Face Pull** | `shoulder-12` | delt_posterior, trap_middle | rhomboids, infraspinatus, teres_minor | delt_posterior, trap_middle, rhomboids, infraspinatus, teres_minor | delt_posterior, trap_middle, rhomboids, infraspinatus, teres_minor | **P** | ✓ |
+| **Barbell Hip Thrust** | `leg-20` | glute_max, glute_med | hamstring_bf_long, adductors | glute_max, glute_med, hamstring_bf_long, adductors | glute_max, glute_med, hamstring_bf_long, adductors | **P** | ✓ |
+| **Standing Calf Raise** | `leg-9` | gastrocnemius_medial, gastrocnemius_lateral | soleus | gastrocnemius_medial, gastrocnemius_lateral, soleus | gastrocnemius_medial, gastrocnemius_lateral, soleus | **P** | ✓ |
+| **Plank** | `core-1` | transversus_abdominis, rectus_abdominis_upper, rectus_abdominis_lower | obliques_external, erector_spinae | transversus_abdominis, rectus_abdominis_upper, rectus_abdominis_lower, obliques_external, erector_spinae | transversus_abdominis, rectus_abdominis_upper, rectus_abdominis_lower, obliques_external, erector_spinae | **A** | ✓ |
+| **Dumbbell Bicep Curl** | `arm-2` | biceps_long, biceps_short | brachialis, brachioradialis, forearm_flexors | biceps_long, biceps_short, brachialis, brachioradialis, forearm_flexors | biceps_long, biceps_short, brachialis, brachioradialis, forearm_flexors | **A** | ✓ |
+| **Parallel Bar Dips** | `chest-11` | pec_costal, triceps_lateral | delt_anterior, triceps_long | pec_costal, triceps_lateral, delt_anterior, triceps_long | pec_costal, triceps_lateral, delt_anterior, triceps_long | **A** | ✓ |
+| **Dumbbell Wrist Curl** | `Side_Wrist_Pull` | delt_anterior, delt_lateral, delt_posterior | forearm_flexors, forearm_extensors, brachioradialis, lats | delt_anterior, delt_lateral, delt_posterior, forearm_flexors, forearm_extensors, brachioradialis, lats | delt_anterior, delt_lateral, delt_posterior, forearm_flexors, forearm_extensors, brachioradialis, lats | **A** | ✓ |
+
+## 2. تحليل الخلل الجذري لمسألة «الرسم خلفي والتعليق أمامي» (Ledger 5)
+
+1. **مسارات الظهر داخل ملف anterior.svg**:
+   - يحتوي ملف `public/atlas/anterior.svg` على مسارات مرئية `muscle-vis` لعضلات الظهر والعمود الفقري:
+     `delt_posterior`, `forearm_extensors`, `trap_upper`, `trap_middle`, `trap_lower`, `rhomboids`, `levator_scapulae`, `lats`, `teres_major`, `teres_minor`, `infraspinatus`, `supraspinatus`, `triceps_long`, `triceps_lateral`, `triceps_medial`, `erector_spinae`, `quadratus_lumborum`, `glute_max`, `glute_med`, `glute_min`, `hamstring_bf_long`, `hamstring_bf_short`, `hamstring_semitendinosus`, `hamstring_semimembranosus`, `gastrocnemius_medial`, `gastrocnemius_lateral`, `soleus`.
+   - عندما ترسم العضلات الحيادية (Neutral muscles) بشفافية 0.35 ولون داكن، تُطبع خطوط العمود الفقري وعضلات الظهر السفلية والترابيس الوسطى مباشرة فوق الصدر والبطن، مما يجعل الشكل الأمامي يبدو كأنه ظهر مرسوم من الخلف تماماً!
+
+2. **توحيد ألوان العضلات (كل العضلات برتقالية)**:
+   - في `src/styles/components.css` (الأسطر 1379-1394)، كانت كل من `.muscle-primary` و `.muscle-secondary` تأخذ `fill: var(--color-accent) !important`، مما طمس التمييز بين الأساسي والمساعد.
+   - الحل: اعتماد توكنز الأطلس المعزولة `--color-muscle-primary: #e53935` و `--color-muscle-secondary: #fdd835` مع نقش تهشير SVG (`hatch pattern`) للعضلة المساعدة.

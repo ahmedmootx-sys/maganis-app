@@ -33,6 +33,7 @@ import {
   Select,
   DateField,
   Segmented,
+  Icon,
 } from '../../ui/index.ts'
 import { formatArabicDate } from '../../lib/dateUtils.ts'
 import {
@@ -480,7 +481,7 @@ export function NutritionModule({
     }
     onUpdateProfile(updated)
     setCalibrationFeedback(
-      `✓ تم تطبيق الهدف المعاير (${newTarget} كالوِري) بنجاح!`,
+      `✓ تم تطبيق الهدف المعاير (${newTarget} سعرة) بنجاح!`,
     )
     setIsCalibrationModalOpen(false)
   }
@@ -611,14 +612,9 @@ export function NutritionModule({
 
   return (
     <div
-      className="nutrition-module"
+      className="nutrition-module screen-container"
       data-testid="nutrition-module"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        paddingBottom: '24px',
-      }}
+      dir="rtl"
     >
       {/* TopBar with Plus Sheet & Day Switcher */}
       <TopBar
@@ -636,7 +632,7 @@ export function NutritionModule({
                 borderRadius: '8px',
                 border: 'none',
                 background: 'var(--brand)',
-                color: '#fff',
+                color: 'var(--on-accent, #000000)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -649,10 +645,22 @@ export function NutritionModule({
         }
       />
 
-      {/* Day Switcher */}
       <div
-        className="day-switcher-bar"
+        className="screen-content nutrition-module__content"
         style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          maxWidth: '640px',
+          margin: '0 auto',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Day Switcher */}
+        <div
+          className="day-switcher-bar"
+          style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -740,7 +748,7 @@ export function NutritionModule({
             <Callout
               variant="info"
               title="راجع نمط نشاطك اليومي"
-              message={`قمنا بتحديث نظام السعرات لفصل نمط النشاط اليومي خارج التمرين عن جلسات التمرين حتى لا تُحسب السعرات مرتين.\nالهدف السابق: ${legacyCalorieTarget} كالوِري -> الهدف الدقيق الجديد: ${proposedTargets.targetCalories} كالوِري (${proposedTargets.proteinGrams} جم بروتين).`}
+              message={`قمنا بتحديث نظام السعرات لفصل نمط النشاط اليومي خارج التمرين عن جلسات التمرين حتى لا تُحسب السعرات مرتين.\nالهدف السابق: ${legacyCalorieTarget} سعرة -> الهدف الدقيق الجديد: ${proposedTargets.targetCalories} سعرة (${proposedTargets.proteinGrams} جم بروتين).`}
               actionLabel="تطبيق"
               onAction={() => {
                 if (!profile || !onUpdateProfile) return
@@ -902,7 +910,7 @@ export function NutritionModule({
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: 'var(--accent)',
+                    color: 'var(--color-accent-text, var(--accent))',
                     cursor: 'pointer',
                     fontSize: '12px',
                     fontWeight: 700,
@@ -962,7 +970,7 @@ export function NutritionModule({
                       fontWeight: 500,
                     }}
                   >
-                    / {targets.targetCalories} كالوِري
+                    / {targets.targetCalories} سعرة
                   </span>
                 </div>
               </div>
@@ -1174,7 +1182,7 @@ export function NutritionModule({
               احتياجك اليومي العلمي
             </span>
             <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-              {targets.targetCalories} كالوِري ({targets.goalLabelAr}) · BMR{' '}
+              {targets.targetCalories} سعرة ({targets.goalLabelAr}) · BMR{' '}
               {targets.bmr} · TDEE {targets.tdee}
             </span>
           </div>
@@ -1218,7 +1226,7 @@ export function NutritionModule({
               style={{
                 fontSize: '13.5px',
                 fontWeight: 600,
-                color: 'var(--brand)',
+                color: 'var(--color-accent-text, var(--brand))',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
@@ -1233,8 +1241,8 @@ export function NutritionModule({
             className="chips-row"
             style={{
               display: 'flex',
+              flexWrap: 'wrap',
               gap: '8px',
-              overflowX: 'auto',
               paddingBottom: '4px',
             }}
           >
@@ -1250,15 +1258,15 @@ export function NutritionModule({
                 borderRadius: '999px',
                 fontSize: '13px',
                 fontWeight: 600,
-                border: '1px solid var(--color-divider)',
+                border: '1px solid var(--line)',
                 background:
                   selectedCategoryFilter === 'all'
-                    ? 'var(--color-primary)'
-                    : 'var(--color-surface-2)',
+                    ? 'var(--accent)'
+                    : 'var(--card-subtle)',
                 color:
                   selectedCategoryFilter === 'all'
-                    ? 'var(--color-primary-contrast, #ffffff)'
-                    : 'var(--color-text)',
+                    ? 'var(--on-accent, #000000)'
+                    : 'var(--ink)',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
               }}
@@ -1279,15 +1287,15 @@ export function NutritionModule({
                   borderRadius: '999px',
                   fontSize: '13px',
                   fontWeight: 600,
-                  border: '1px solid var(--color-divider)',
+                  border: '1px solid var(--line)',
                   background:
                     selectedCategoryFilter === cat
-                      ? 'var(--color-primary)'
-                      : 'var(--color-surface-2)',
+                      ? 'var(--accent)'
+                      : 'var(--card-subtle)',
                   color:
                     selectedCategoryFilter === cat
-                      ? 'var(--color-primary-contrast, #ffffff)'
-                      : 'var(--color-text)',
+                      ? 'var(--on-accent, #000000)'
+                      : 'var(--ink)',
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                 }}
@@ -1346,7 +1354,7 @@ export function NutritionModule({
                           fontVariantNumeric: 'tabular-nums',
                         }}
                       >
-                        {meal.calories} كالوِري · ب: {meal.proteinGrams}ج · ك:{' '}
+                        {meal.calories} سعرة · ب: {meal.proteinGrams}ج · ك:{' '}
                         {meal.carbsGrams}ج · د: {meal.fatsGrams}ج
                       </span>
                     </div>
@@ -1754,12 +1762,12 @@ export function NutritionModule({
             >
               <Stat
                 label="الحرق الأساسي"
-                value={`${targets.bmr} كالوِري`}
+                value={`${targets.bmr} سعرة`}
                 secondary={<span dir="ltr">BMR</span>}
               />
               <Stat
                 label="الحرق بالنشاط"
-                value={`${targets.tdee} كالوِري`}
+                value={`${targets.tdee} سعرة`}
                 secondary={<span dir="ltr">TDEE</span>}
               />
             </div>
@@ -1794,8 +1802,9 @@ export function NutritionModule({
                 <span>
                   كيف تم حساب أهدافك؟ (معادلة ميفلين–سانت جور · <bdi dir="ltr">Mifflin-St Jeor 1990</bdi>)
                 </span>
-                <span style={{ fontSize: '13px', color: 'var(--brand)' }}>
-                  {showExplanation ? 'إخفاء ▲' : 'عرض ▼'}
+                <span style={{ fontSize: '13px', color: 'var(--brand)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  {showExplanation ? 'إخفاء' : 'عرض'}
+                  <Icon name={showExplanation ? 'chevron-up' : 'chevron-down'} size={14} />
                 </span>
               </button>
 
@@ -2521,6 +2530,7 @@ export function NutritionModule({
           </form>
         </div>
       )}
+      </div>
 
       {/* Smart Calibration Sheet */}
       <Sheet
@@ -2681,11 +2691,11 @@ export function NutritionModule({
                 </li>
                 <li>
                   <strong>إجمالي الحرق المشاهد:</strong>{' '}
-                  {calibrationData.tdeeObserved} كالوِري
+                  {calibrationData.tdeeObserved} سعرة
                 </li>
                 <li>
                   <strong>الهدف المعاير المقترح:</strong>{' '}
-                  {calibrationData.newTargetCalories} كالوِري
+                  {calibrationData.newTargetCalories} سعرة
                 </li>
               </ul>
 
@@ -2709,7 +2719,7 @@ export function NutritionModule({
                 }}
               >
                 تطبيق الهدف المعاير ({calibrationData.newTargetCalories}{' '}
-                كالوِري)
+                سعرة)
               </button>
             </div>
           ) : (

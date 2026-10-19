@@ -6,6 +6,7 @@ import {
 } from './muscleAtlasData.ts'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
 import { Select } from '../../components/Select'
+import { Icon } from '../../ui/Icon.tsx'
 
 export function MuscleAtlasDebug({ onClose }: { onClose?: () => void }) {
   const muscleList = Object.values(MUSCLE_ATLAS)
@@ -54,8 +55,13 @@ export function MuscleAtlasDebug({ onClose }: { onClose?: () => void }) {
           </span>
         </div>
         {onClose && (
-          <button type="button" className="ghost tiny" onClick={onClose}>
-            ✕ إغلاق
+          <button
+            type="button"
+            className="ghost tiny"
+            onClick={onClose}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+          >
+            <Icon name="x" size={14} /> إغلاق
           </button>
         )}
       </div>

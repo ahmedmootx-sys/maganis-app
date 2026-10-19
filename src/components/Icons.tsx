@@ -45,6 +45,14 @@ export function IconPlus(props: IconProps) {
   )
 }
 
+export function IconMinus(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </IconBase>
+  )
+}
+
 export function IconMoreVertical(props: IconProps) {
   return (
     <IconBase {...props}>

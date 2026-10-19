@@ -3,17 +3,81 @@
  * Built purely on CSS Variables (tokens.css) & RTL Logical Properties
  */
 
-/* Content Wrapper & App Shell Layout */
-.maganis-shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+/* ==========================================================================
+   Shell Contract (G3 Part 1)
+   Page = grid rows [top bar auto][scroller 1fr][footer auto][bottom nav auto] on 100dvh
+   ========================================================================== */
+
+.maganis-shell,
+.app--shell {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-family-base);
   direction: rtl;
   text-align: start;
+  box-sizing: border-box;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.app-main {
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.workouts-tab {
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-container,
+.settings-screen,
+.nutrition-module,
+.progress-screen,
+.exercise-route-page,
+.custom-schedule-modal,
+.wizard-fullscreen-container,
+.fullscreen-route {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 !important;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Scroller: one token --page-end and nothing else */
+.screen-content,
+.scroller,
+.wizard-step-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  padding-top: var(--space-4, 16px);
+  padding-inline: var(--space-4, 16px);
+  padding-bottom: var(--page-end, 16px) !important;
   box-sizing: border-box;
 }
 
@@ -27,20 +91,37 @@
   box-sizing: border-box;
 }
 
-.maganis-shell__content--with-nav,
-.screen-container,
-.screen-content,
-.tab-content,
-.home-screen .screen-content,
-.day-screen .screen-content,
-.nutrition-module .screen-content,
-.reports-screen .screen-content,
-.settings-screen .screen-content,
-.app-main {
-  padding-bottom: calc(
-    var(--nav-h, 64px) + 20px + env(safe-area-inset-bottom, 0px)
-  ) !important;
+/* Docked Footers: Row 3 in grid, side-by-side, max 72px */
+.wizard-footer,
+.docked-footer,
+.modal-footer {
+  grid-row: 3;
+  width: 100%;
+  max-width: var(--content-max-width, 640px);
+  margin-inline: auto;
+  background-color: var(--color-surface);
+  border-top: var(--border-width, 1px) solid var(--color-divider);
+  padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 8px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.wizard-footer-buttons,
+.docked-footer-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+.wizard-footer-buttons button,
+.wizard-footer-buttons .button,
+.docked-footer-buttons button,
+.docked-footer-buttons .button {
+  height: 44px;
 }
 
 /* ==========================================================================
@@ -119,11 +200,11 @@
   box-sizing: border-box;
 }
 
-/* BottomNav */
+/* BottomNav: row 4 in shell grid */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  inset-inline: 0;
+  grid-row: 4;
+  position: static;
+  width: 100%;
   z-index: var(--z-index-sticky);
   background-color: var(--color-surface);
   border-top: var(--border-width) solid var(--color-divider);
@@ -133,6 +214,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .bottom-nav__inner {
@@ -1377,24 +1459,32 @@ body[data-sheet-open='true'] .bottom-nav {
 }
 
 .muscle-primary {
-  fill: var(--color-accent) !important;
-  stroke: var(--color-accent) !important;
-  stroke-width: 2px !important;
-  opacity: 0.9 !important;
+  fill: var(--atlas-primary, #e53935) !important;
+  stroke: var(--atlas-primary-stroke, #b71c1c) !important;
+  stroke-width: 1.5px !important;
+  opacity: 0.95 !important;
   cursor: pointer;
-  filter: drop-shadow(0 0 6px var(--color-accent));
+  filter: drop-shadow(0 0 4px rgba(229, 57, 53, 0.45));
 }
 
 .muscle-secondary {
-  fill: var(--color-accent) !important;
-  stroke: var(--color-accent) !important;
+  fill: url(#secondary-hatch), var(--atlas-secondary, #fdd835) !important;
+  stroke: var(--atlas-secondary-stroke, #f9a825) !important;
   stroke-width: 1.5px !important;
-  opacity: 0.45 !important;
+  opacity: 0.9 !important;
   cursor: pointer;
+}
+
+.muscle-approximate {
+  stroke: var(--atlas-approx-stroke, #b71c1c) !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 6 4 !important;
 }
 
 .atlas-focus-mode .muscle-vis:not(.muscle-targeted-highlight):not(.muscle-primary):not(.muscle-secondary),
 .atlas-focus-mode .muscle-neutral {
+  fill: var(--atlas-dimmed, rgba(140, 145, 155, 0.25)) !important;
+  stroke: transparent !important;
   opacity: 0.35 !important;
 }
 
@@ -1408,11 +1498,9 @@ body[data-sheet-open='true'] .bottom-nav {
 }
 
 .muscle-targeted-highlight {
-  fill: var(--color-accent) !important;
-  opacity: 1 !important;
-  stroke: var(--color-accent) !important;
-  stroke-width: 2px !important;
-  filter: drop-shadow(0 0 6px var(--color-accent)) !important;
+  stroke: var(--color-text, #ffffff) !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.6)) !important;
 }
 
 /* Atlas Zoom Controls */
@@ -1503,20 +1591,21 @@ body[data-sheet-open='true'] .bottom-nav {
 }
 
 .role-marker--primary {
-  background-color: #e53935;
-  border: 1px solid #b71c1c;
-  border-radius: 3px; /* Solid Square */
+  background-color: var(--atlas-primary, #e53935);
+  border: 1.5px solid var(--atlas-primary-stroke, #b71c1c);
+  border-radius: 3px;
 }
 
 .role-marker--secondary {
-  background-color: #fdd835;
-  border: 1.2px dashed #f9a825;
-  border-radius: 50%; /* Dashed Circle */
+  background-color: var(--atlas-secondary, #fdd835);
+  background-image: repeating-linear-gradient(45deg, var(--atlas-secondary-stroke, #f9a825), var(--atlas-secondary-stroke, #f9a825) 1.5px, transparent 1.5px, transparent 4px);
+  border: 1.5px solid var(--atlas-secondary-stroke, #f9a825);
+  border-radius: 50%;
 }
 
 .role-marker--approx {
   background-color: rgba(229, 57, 53, 0.25);
-  border: 1.5px dashed #b71c1c;
+  border: 1.5px dashed var(--atlas-approx-stroke, #b71c1c);
   border-radius: 3px;
 }
 

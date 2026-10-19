@@ -1,0 +1,11 @@
+🚀 Running Gate: gate-atlas (TASK G3 Part 4)...
+Anterior SVG: 53 vis, 53 full
+Posterior SVG: 53 vis, 53 full
+Back muscles with vis paths in anterior.svg: 27
+Front muscles with vis paths in posterior.svg: 26
+Examined 48 renders (minimum 48 required).
+
+❌ Gate Failed with 3 errors:
+  - FAIL: Both .muscle-primary and .muscle-secondary use var(--color-accent) (all orange)! ΔE76 is 0.
+  - FAIL: tokens.css missing --atlas-primary or --atlas-secondary tokens
+  - FAIL: No SVG hatch pattern found for secondary muscles

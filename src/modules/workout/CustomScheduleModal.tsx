@@ -106,17 +106,18 @@ export function CustomScheduleModal({
 
   return (
     <div
-      className="fullscreen-route designer-screen"
+      className="custom-schedule-modal modal-fullscreen"
       dir="rtl"
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 500,
         background: 'var(--bg)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflowY: 'auto',
-        WebkitOverflowScrolling: 'touch',
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr auto',
+        height: '100dvh',
+        maxHeight: '100dvh',
+        overflow: 'hidden',
       }}
     >
       {/* TopBar with Back */}
@@ -131,12 +132,15 @@ export function CustomScheduleModal({
       />
 
       <div
-        className="screen-content"
+        className="screen-content custom-schedule-content"
         style={{
+          overflowY: 'auto',
+          overflowX: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          padding: '16px 16px 100px',
+          padding: '16px',
+          paddingBottom: 'var(--page-end, 16px)',
           maxWidth: '720px',
           margin: '0 auto',
           width: '100%',
@@ -221,7 +225,7 @@ export function CustomScheduleModal({
               }}
             >
               <div className="field">
-                <label htmlFor="designer-name">اسم الجدول *</label>
+                <label htmlFor="designer-name">اسم الجدول (مطلوب)</label>
                 <input
                   id="designer-name"
                   type="text"
@@ -237,22 +241,6 @@ export function CustomScheduleModal({
                   autoFocus
                 />
               </div>
-
-              <button
-                type="button"
-                className="button-primary full-width"
-                style={{ height: '48px', fontSize: '15px', fontWeight: 700 }}
-                onClick={() => {
-                  if (!scheduleTitle.trim()) {
-                    setError('يرجى إدخال اسم الجدول')
-                    return
-                  }
-                  setError('')
-                  setCurrentStep(2)
-                }}
-              >
-                التالي: اختيار الأيام
-              </button>
             </div>
           </section>
         )}
@@ -317,38 +305,6 @@ export function CustomScheduleModal({
                   الشخصي محدد بـ {profileDays} أيام تدريب.
                 </div>
               )}
-
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                }}
-              >
-                <button
-                  type="button"
-                  className="button-primary full-width"
-                  style={{ height: '48px', fontSize: '15px', fontWeight: 700 }}
-                  disabled={selectedDayIndexes.length === 0}
-                  onClick={() => {
-                    if (selectedDayIndexes.length === 0) {
-                      setError('يرجى اختيار يوم واحد على الأقل')
-                      return
-                    }
-                    setError('')
-                    setCurrentStep(3)
-                  }}
-                >
-                  التالي: تحديد تركيز الأيام
-                </button>
-                <button
-                  type="button"
-                  className="ghost-secondary full-width"
-                  onClick={() => setCurrentStep(1)}
-                >
-                  رجوع للسابق
-                </button>
-              </div>
             </div>
           </section>
         )}
@@ -463,25 +419,86 @@ export function CustomScheduleModal({
               توليد آلي. يمكنك بعد ذلك إضافة وتعديل تمارين كل يوم بكل حرية.
             </Callout>
 
-            {/* Actions */}
-            <div className="sticky-bottom-bar">
-              <button
-                type="button"
-                className="button-primary full-width"
-                onClick={handleCreate}
-              >
-                إنشاء الجدول
-              </button>
-              <button
-                type="button"
-                className="ghost-secondary full-width"
-                onClick={() => setCurrentStep(2)}
-              >
-                رجوع للسابق
-              </button>
-            </div>
           </section>
         )}
+      </div>
+
+      {/* Docked Wizard Footer (<= 72px, grid row 3) */}
+      <div
+        className="wizard-footer"
+        data-testid="wizard-footer"
+        style={{
+          background: 'var(--color-surface)',
+          borderTop: '1px solid var(--color-divider)',
+          padding: '8px 16px calc(env(safe-area-inset-bottom, 0px) + 8px)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '6px',
+          maxWidth: '720px',
+          margin: '0 auto',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        {error && (
+          <div
+            style={{
+              fontSize: '12px',
+              color: 'var(--color-accent)',
+              textAlign: 'center',
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              lineHeight: '1.2',
+            }}
+          >
+            {error}
+          </div>
+        )}
+        <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
+          {currentStep > 1 && (
+            <button
+              type="button"
+              className="ghost-secondary"
+              onClick={() => setCurrentStep((prev) => (prev === 3 ? 2 : 1))}
+              style={{ flex: 1, height: '44px' }}
+            >
+              رجوع
+            </button>
+          )}
+          <button
+            type="button"
+            className="button-primary"
+            style={{ flex: currentStep > 1 ? 2 : 1, height: '44px' }}
+            disabled={currentStep === 2 && selectedDayIndexes.length === 0}
+            onClick={() => {
+              if (currentStep === 1) {
+                if (!scheduleTitle.trim()) {
+                  setError('يرجى إدخال اسم الجدول')
+                  return
+                }
+                setError('')
+                setCurrentStep(2)
+              } else if (currentStep === 2) {
+                if (selectedDayIndexes.length === 0) {
+                  setError('يرجى اختيار يوم واحد على الأقل')
+                  return
+                }
+                setError('')
+                setCurrentStep(3)
+              } else {
+                handleCreate()
+              }
+            }}
+          >
+            {currentStep === 1
+              ? 'التالي: اختيار الأيام'
+              : currentStep === 2
+                ? 'التالي: تركيز الأيام'
+                : 'إنشاء الجدول'}
+          </button>
+        </div>
       </div>
     </div>
   )

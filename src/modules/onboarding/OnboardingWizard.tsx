@@ -423,16 +423,17 @@ export function OnboardingWizard({
       data-testid="wizard"
       dir="rtl"
       style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        height: '100dvh',
+        maxHeight: '100dvh',
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr auto',
+        overflow: 'hidden',
         background: 'var(--color-bg)',
         color: 'var(--color-text)',
       }}
     >
       {/* Top: WizardProgress ONLY (No header, no theme toggle, no tagline) */}
-      <div style={{ padding: '16px 20px 8px' }}>
+      <div style={{ padding: '12px 16px 8px' }}>
         <WizardProgress currentStep={currentStep} totalSteps={6} />
       </div>
 
@@ -440,13 +441,15 @@ export function OnboardingWizard({
       <div
         className="wizard-step-body"
         style={{
-          flex: 1,
+          overflowY: 'auto',
+          overflowX: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          padding: '16px 20px 96px',
+          padding: '16px 16px var(--page-end, 16px)',
           maxWidth: '540px',
           margin: '0 auto',
           width: '100%',
+          boxSizing: 'border-box',
         }}
       >
         {/* Step 1: الهدف وأسلوب التمرين */}
@@ -768,6 +771,23 @@ export function OnboardingWizard({
                   })
                 }
               />
+              <div
+                style={{
+                  fontSize: '12.5px',
+                  color: 'var(--muted)',
+                  marginTop: '6px',
+                  lineHeight: 1.5,
+                }}
+              >
+                {form.experienceLevel === 'beginner' &&
+                  'أقل من سنة تدريب منتظم — التركيز على إتقان التكنيك والأداء السليم.'}
+                {form.experienceLevel === 'intermediate' &&
+                  'من سنة إلى 3 سنوات — معرفة أوزانك وتطبيق الزيادة التدريجية (Overload).'}
+                {form.experienceLevel === 'advanced' &&
+                  'أكثر من 3 سنوات — خبرة متقدمة في إدارة التعب وتعديل الحجم التدريبي.'}
+                {!form.experienceLevel &&
+                  'اختر خبرتك التدريبية لمعايرة حجم التمرين المناسب.'}
+              </div>
             </div>
 
             <div>
@@ -1522,70 +1542,75 @@ export function OnboardingWizard({
         )}
       </div>
 
-      {/* Sticky Bottom Bar with Primary and Tertiary Actions */}
+      {/* Docked Wizard Footer (<= 72px, grid row 3) */}
       <div
+        className="wizard-footer"
+        data-testid="wizard-footer"
         style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
           background: 'var(--color-surface)',
           borderTop: '1px solid var(--color-divider)',
-          padding: '12px 20px',
+          padding: '8px 16px calc(env(safe-area-inset-bottom, 0px) + 8px)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px',
+          gap: '6px',
           maxWidth: '540px',
           margin: '0 auto',
-          zIndex: 100,
+          width: '100%',
+          boxSizing: 'border-box',
         }}
       >
-        {!isCurrentStepValid && (
+        {!isCurrentStepValid && getMissingStepReason(currentStep, form) && (
           <div
             style={{
-              fontSize: '13px',
+              fontSize: '12px',
               color: 'var(--color-accent)',
               textAlign: 'center',
-              paddingBottom: '2px',
               fontWeight: 600,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              lineHeight: '1.2',
             }}
           >
             {getMissingStepReason(currentStep, form)}
           </div>
         )}
-        <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+        <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
           {currentStep > 1 && (
             <Button
               variant="subtle"
-              size="lg"
+              size="md"
               onClick={handleBack}
-              style={{ flex: '0 0 100px' }}
+              style={{ flex: 1, height: '44px' }}
             >
               رجوع
             </Button>
           )}
           <Button
             variant="primary"
-            size="lg"
-            fullWidth
+            size="md"
+            fullWidth={currentStep === 1}
             disabled={!isCurrentStepValid}
             onClick={handleNext}
+            style={{ flex: currentStep > 1 ? 2 : 1, height: '44px' }}
           >
             {currentStep === 6 ? 'حفظ والبدء' : 'التالي'}
           </Button>
         </div>
 
-        {/* Clean Arabic-only footer line with zero Latin words */}
-        <div
-          style={{
-            textAlign: 'center',
-            fontSize: '12px',
-            color: 'var(--color-text-2)',
-            paddingTop: '2px',
-          }}
-        >
-          يعمل بدون إنترنت، وبياناتك محفوظة على جهازك فقط.
-        </div>
+        {/* Clean Arabic-only offline note ONLY on Step 1 */}
+        {currentStep === 1 && (
+          <div
+            style={{
+              textAlign: 'center',
+              fontSize: '11px',
+              color: 'var(--color-text-2)',
+              lineHeight: '1.2',
+            }}
+          >
+            يعمل بدون إنترنت، وبياناتك محفوظة على جهازك فقط.
+          </div>
+        )}
       </div>
     </div>
   )

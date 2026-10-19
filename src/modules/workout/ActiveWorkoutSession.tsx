@@ -8,8 +8,9 @@ import type {
 import { getExerciseById } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
-import { formatTime } from './workoutUtils.ts'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
+import { formatPrescription, cleanDayName } from './sessionResolver.ts'
+import { formatTime } from './workoutUtils.ts'
 import { TopBar, ProgressBar, Sheet, ConfirmSheet } from '../../ui/index.ts'
 import { plural } from '../../utils/plural.ts'
 import exerciseFlagsData from '../../data/exercise-flags.json'
@@ -839,18 +840,43 @@ export function ActiveWorkoutSession({
                       {exerciseName}
                     </h3>
                     {exercise && (
-                      <span
-                        className="muscle-badge"
+                      <div
                         style={{
-                          fontSize: '12px',
-                          color: 'var(--muted)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
                           marginTop: '2px',
-                          display: 'inline-block',
                         }}
                       >
-                        {MUSCLE_GROUP_LABELS[exercise.category] ||
-                          exercise.category}
-                      </span>
+                        <span
+                          className="muscle-badge"
+                          style={{
+                            fontSize: '12px',
+                            color: 'var(--muted)',
+                          }}
+                        >
+                          {MUSCLE_GROUP_LABELS[exercise.category] ||
+                            exercise.category}
+                        </span>
+                        {(() => {
+                          const pe = programDay.exercises.find(
+                            (p) => p.exerciseId === exState.exerciseId,
+                          )
+                          if (!pe) return null
+                          return (
+                            <span
+                              style={{
+                                fontSize: '12px',
+                                fontWeight: 700,
+                                color: 'var(--ink)',
+                                fontVariantNumeric: 'tabular-nums',
+                              }}
+                            >
+                              · {formatPrescription(pe)}
+                            </span>
+                          )
+                        })()}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -1036,7 +1062,7 @@ export function ActiveWorkoutSession({
                                   title="حذف هذه المجموعة"
                                   aria-label="حذف المجموعة"
                                 >
-                                  ✕
+                                  <IconClose size={14} />
                                 </button>
                               )}
                             </td>
@@ -1256,7 +1282,7 @@ export function ActiveWorkoutSession({
                 onClick={() => setShowConfirmFinish(false)}
                 aria-label="إغلاق"
               >
-                ✕
+                <IconClose size={16} />
               </button>
             </div>
             <div className="modal-body">
@@ -1326,7 +1352,7 @@ export function ActiveWorkoutSession({
                 <li>
                   <span>اليوم التدريبي</span>
                   <strong>
-                    {programDay.labelAr} ({programDay.focus})
+                    {cleanDayName(programDay.name || programDay.labelAr)} ({programDay.focus})
                   </strong>
                 </li>
                 <li>

@@ -128,17 +128,43 @@ export interface ProgramExercise {
   sets: number
   reps: number
   restSeconds: number
+  repsMin?: number
+  repsMax?: number
+  unit?: 'reps' | 'seconds'
+  perSide?: boolean
+  amrap?: boolean
+  rpe?: number
   notes?: string
   section?: ExerciseSection
+  customName?: string
+  prescription?: string
+  [key: string]: unknown
+}
+
+export type DayKind = 'strength' | 'cardio' | 'mobility' | 'custom'
+
+export interface CardioConfig {
+  activity: string
+  plannedMinutes: number
+  effort: 'light' | 'moderate' | 'hard'
 }
 
 export interface ProgramDay {
   id?: string
+  name?: string
   dayIndex: number
   labelAr: string
+  kind?: DayKind
   focus: string
   exercises: ProgramExercise[]
   sections?: DaySectionConfig[]
+  cardio?: CardioConfig
+  cardioConfig?: CardioConfig
+  warmup?: ProgramExercise[]
+  pullPrep?: ProgramExercise[]
+  cooldown?: ProgramExercise[]
+  controlBlock?: ProgramExercise[]
+  [key: string]: unknown
 }
 
 export type WorkoutSplitType =
@@ -169,6 +195,10 @@ export interface WorkoutProgram {
   days: ProgramDay[]
   isCustom?: boolean
   isLocked?: boolean
+  title?: string
+  name?: string
+  description?: string
+  [key: string]: unknown
 }
 
 export interface SavedWorkoutProgram {

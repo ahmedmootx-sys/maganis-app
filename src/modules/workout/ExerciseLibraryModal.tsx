@@ -144,17 +144,18 @@ export function ExerciseLibraryModal({
 
   return (
     <div
-      className="fullscreen-route library-screen"
+      className="fullscreen-route library-screen modal-fullscreen"
       dir="rtl"
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 500,
         background: 'var(--bg)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflowY: 'auto',
-        WebkitOverflowScrolling: 'touch',
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr auto',
+        height: '100dvh',
+        maxHeight: '100dvh',
+        overflow: 'hidden',
       }}
     >
       {/* TopBar with Back and Add Exercise */}
@@ -186,12 +187,15 @@ export function ExerciseLibraryModal({
       />
 
       <div
-        className="screen-content"
+        className="screen-content exercise-library-content"
         style={{
+          overflowY: 'auto',
+          overflowX: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           gap: '12px',
           padding: '16px',
+          paddingBottom: 'var(--page-end, 16px)',
           maxWidth: '720px',
           margin: '0 auto',
           width: '100%',

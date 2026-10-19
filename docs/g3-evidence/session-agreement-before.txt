@@ -1,0 +1,3 @@
+🚀 Running Gate: gate-session-agreement (TASK G3 Part 6)...
+❌ FAIL: src/modules/workout/sessionResolver.ts does not exist!
+   Expected unified resolveSession(date, { profile, program }) function.

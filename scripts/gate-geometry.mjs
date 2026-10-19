@@ -158,17 +158,21 @@ async function runGate() {
           }
         }
 
-        // Check main container padding-bottom
-        const scroller = document.querySelector('.screen-content, .screen-container, main, .app-main')
-        if (scroller) {
-          const scrollerStyle = window.getComputedStyle(scroller)
-          const padBottom = parseFloat(scrollerStyle.paddingBottom) || 0
-          if (padBottom < navRect.height - 4) {
-            issues.push({
-              route: r,
-              target: 'BottomNav Container Padding',
-              error: `Main container padding-bottom (${padBottom}px) is less than nav height (${navRect.height}px)`,
-            })
+        // Check main container padding-bottom when bottom nav is an overlay
+        const navStyle = window.getComputedStyle(bottomNav)
+        const isOverlay = navStyle.position === 'fixed' || navStyle.position === 'absolute'
+        if (isOverlay) {
+          const scroller = document.querySelector('.app-main, main, .screen-container, .screen-content')
+          if (scroller) {
+            const scrollerStyle = window.getComputedStyle(scroller)
+            const padBottom = parseFloat(scrollerStyle.paddingBottom) || 0
+            if (padBottom < navRect.height - 4) {
+              issues.push({
+                route: r,
+                target: 'BottomNav Container Padding',
+                error: `Main container padding-bottom (${padBottom}px) is less than nav height (${navRect.height}px)`,
+              })
+            }
           }
         }
       }

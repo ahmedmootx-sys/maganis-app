@@ -1,0 +1,12 @@
+﻿≡ƒÜÇ Running Gate: gate-media-urls (TASK G3 Part 2)...
+≡ƒôí Vite preview listening at http://localhost:5192/maganis-app (base: /maganis-app/)
+≡ƒôï Auditing media for all 261 catalog exercises...
+≡ƒæñ Owner's 41 exercises: 16 mapped in catalog, 13 with verified media
+
+≡ƒôè Gate Summary:
+- Total unique URLs tested: 218
+- Exercises with media: 109 (109 two-frame animated, 0 static single-frame)
+- Exercises with null media: 152
+- Total failures / violations: 0
+
+Γ£ô gate-media-urls passed cleanly! All exercise media URLs verified under Vite preview.

@@ -216,7 +216,7 @@ export function QuickManualMealModal({
                 htmlFor="quick-meal-cal"
                 style={{ fontSize: '12.5px', fontWeight: 700 }}
               >
-                السعرات (كالوِري)
+                السعرات (سعرة)
               </label>
               <button
                 type="button"
@@ -400,7 +400,7 @@ export function QuickManualMealModal({
             }}
           >
             تنبيه: السعرات المدخلة يدوياً ({activeCalories}) تختلف بأكثر من 10%
-            عن المحسوبة من الماكروز ({derivedCalories} كالوِري).
+            عن المحسوبة من الماكروز ({derivedCalories} سعرة).
           </div>
         )}
 

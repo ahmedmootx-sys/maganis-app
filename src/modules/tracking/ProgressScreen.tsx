@@ -350,14 +350,9 @@ export function ProgressScreen({
 
   return (
     <div
-      className="progress-screen"
+      className="progress-screen screen-container"
       data-testid="progress-screen"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        paddingBottom: '32px',
-      }}
+      dir="rtl"
     >
       {/* TopBar with Export Action */}
       <TopBar
@@ -938,7 +933,7 @@ export function ProgressScreen({
                   style={{
                     fontSize: '13.5px',
                     fontWeight: 600,
-                    color: 'var(--brand)',
+                    color: 'var(--color-accent-text, var(--brand))',
                     background: 'transparent',
                     border: 'none',
                     cursor: 'pointer',

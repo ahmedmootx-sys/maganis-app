@@ -1,7 +1,7 @@
 import type { Exercise } from '../modules/shared/types.ts'
 import { EXERCISES, getExerciseById } from '../modules/workout/exercises.ts'
 import { assetUrl } from './assetUrl.ts'
-import mediaFramesData from '../data/media-frames.json'
+import mediaFramesData from '../data/media-frames.json' with { type: 'json' }
 
 export interface ResolvedMedia {
   url: string | null
@@ -78,7 +78,7 @@ export function resolveMedia(
     }
   }
 
-  // 2. Check exercise object media properties
+  // 2. Check local/custom exercise media properties (local assets or data URIs only)
   if (exercise) {
     const candidate =
       exercise.thumbnailUrl ||
@@ -88,38 +88,33 @@ export function resolveMedia(
 
     if (candidate && typeof candidate === 'string' && candidate.trim()) {
       const trimmed = candidate.trim()
-      let f1: string | null = null
 
-      if (trimmed.endsWith('/0.jpg')) {
-        f1 = trimmed.replace(/\/0\.jpg$/i, '/1.jpg')
-      } else if (trimmed.endsWith('_0.jpg')) {
-        f1 = trimmed.replace(/_0\.jpg$/i, '_1.jpg')
-      }
+      // Disallow external URLs (offline PWA contract requires local assets or explicit null)
+      if (
+        !trimmed.startsWith('http://') &&
+        !trimmed.startsWith('https://')
+      ) {
+        let f1: string | null = null
 
-      const finalUrl =
-        trimmed.startsWith('http://') ||
-        trimmed.startsWith('https://') ||
-        trimmed.startsWith('data:')
-          ? trimmed
-          : assetUrl(trimmed.startsWith('/') ? trimmed.slice(1) : trimmed)
+        if (trimmed.endsWith('/0.jpg')) {
+          f1 = trimmed.replace(/\/0\.jpg$/i, '/1.jpg')
+        } else if (trimmed.endsWith('_0.jpg')) {
+          f1 = trimmed.replace(/_0\.jpg$/i, '_1.jpg')
+        }
 
-      const finalF1 = f1
-        ? f1.startsWith('http://') ||
-          f1.startsWith('https://') ||
-          f1.startsWith('data:')
-          ? f1
-          : assetUrl(f1.startsWith('/') ? f1.slice(1) : f1)
-        : null
+        const cleanF0 = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed
+        const cleanF1 = f1 ? (f1.startsWith('/') ? f1.slice(1) : f1) : null
 
-      return {
-        url: finalUrl,
-        frame1Url: finalF1,
-        isKeyframed: Boolean(finalF1 && finalUrl !== finalF1),
+        return {
+          url: trimmed.startsWith('data:') ? trimmed : assetUrl(cleanF0),
+          frame1Url: cleanF1 ? assetUrl(cleanF1) : null,
+          isKeyframed: Boolean(cleanF1 && cleanF0 !== cleanF1),
+        }
       }
     }
   }
 
-  // 3. Fallback: null
+  // 3. Fallback: explicit null (no unverified or external media)
   return {
     url: null,
     frame1Url: null,

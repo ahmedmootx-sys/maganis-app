@@ -1,0 +1,23 @@
+🚀 Running Gate: gate-session-agreement (TASK G3 Part 6)...
+
+Testing Dataset: Owner Profile + Owner Real Program
+  Weekday 6 (السبت): السبت · علوي (أ) — قوة وبناء [ID: day-ahmed-a]
+  Weekday 0 (الأحد): الأحد · سفلي (أ) — أرجل وجذع [ID: day-ahmed-b]
+  Weekday 1 (الإثنين): الإثنين · علوي (ب) — حجم وتحمل [ID: day-ahmed-c]
+  Weekday 2 (الثلاثاء): الثلاثاء · سفلي (ب) — ضخامة واستقرار [ID: day-ahmed-d]
+  Weekday 3 (الأربعاء): يوم راحة [ID: REST]
+  Weekday 4 (الخميس): يوم راحة [ID: REST]
+  Weekday 5 (الجمعة): يوم راحة [ID: REST]
+
+Testing Dataset: Fixture Profile + Fixture Program
+  Weekday 6 (السبت): السبت · علوي (أ) [ID: fix-day-1]
+  Weekday 0 (الأحد): الأحد · سفلي (أ) [ID: fix-day-2]
+  Weekday 1 (الإثنين): يوم راحة [ID: REST]
+  Weekday 2 (الثلاثاء): يوم راحة [ID: REST]
+  Weekday 3 (الأربعاء): يوم راحة [ID: REST]
+  Weekday 4 (الخميس): يوم راحة [ID: REST]
+  Weekday 5 (الجمعة): يوم راحة [ID: REST]
+
+Validating Owner Draft Program structure...
+
+✓ gate-session-agreement passed with 62 assertions checked across all 7 weekdays & 2 datasets!

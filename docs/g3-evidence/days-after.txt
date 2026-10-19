@@ -1,0 +1,15 @@
+🚀 Running Gate: gate-days (TASK G3 Part 5 — Day Management & Cardio)...
+✓ Found «إضافة يوم» handler/button in WeeklyPlanView
+✓ Found per-day menu (⋮) on day cards
+✓ Found day rename capability in WeeklyPlanView
+✓ Found dedicated Cardio Day view in WeeklyPlanView
+✓ Callout correctly filters strength days only
+✓ Callout provides 2 actions
+✓ Home week strip includes legend line «قوة · كارديو · راحة»
+✓ Home week strip uses explicit kind icons (strength, cardio, rest)
+✓ Strength session count strictly excludes cardio days (4 strength days)
+✓ Cardio day leaves TDEE (2587 kcal) and target (2587 kcal) unchanged
+
+📊 Gate Summary: 10 checks passed, 0 failures
+
+✓ gate-days passed cleanly! Day management, rename, cardio contract, and week strip verified.

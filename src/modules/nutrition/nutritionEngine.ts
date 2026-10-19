@@ -656,19 +656,19 @@ export function calculateNutritionTargets(
 
   const explanationAr = {
     formula: formulaLabel,
-    bmrText: `${Math.round(bmr)} كالوِري (الحرق القاعدي في الراحة التامة)`,
+    bmrText: `${Math.round(bmr)} سعرة (الحرق القاعدي في الراحة التامة)`,
     lifestyleText: lifestyleLabels[lifestyle],
-    eatText: `${Math.round(eatDailyKcal)} كالوِري/يومياً كمتوسط حرق لجلساتك الرياضية`,
-    tdeeRangeText: `${tdeeRange.min} إلى ${tdeeRange.max} كالوِري (المتوسط: ${Math.round(tdee)})`,
+    eatText: `${Math.round(eatDailyKcal)} سعرة/يومياً كمتوسط حرق لجلساتك الرياضية`,
+    tdeeRangeText: `${tdeeRange.min} إلى ${tdeeRange.max} سعرة (المتوسط: ${Math.round(tdee)})`,
     rateText:
       goal === 'maintain'
         ? 'تثبيت الوزن'
         : `${ratePercentOfBW}% من وزن الجسم أسبوعياً (${pace === 'slow' ? 'هادئ' : pace === 'fast' ? 'سريع' : 'معتدل'})`,
     adjustmentText:
       goal === 'gain'
-        ? `+${Math.round(adjustmentKcal)} كالوِري (فائض لبناء الأنسجة)`
+        ? `+${Math.round(adjustmentKcal)} سعرة (فائض لبناء الأنسجة)`
         : goal === 'lose'
-          ? `${Math.round(adjustmentKcal)} كالوِري (عجز لحرق الدهون)`
+          ? `${Math.round(adjustmentKcal)} سعرة (عجز لحرق الدهون)`
           : '0 (سعرات المحافظة)',
     proteinBasisText:
       proteinBasis === 'lean_mass'
@@ -1221,24 +1221,24 @@ export function explainEnergy(
         sexConstant,
       },
       value: Number(bmrValue.toFixed(2)),
-      formattedText: `الحرق الأساسي (BMR) = 10 × ${weightKg} + 6.25 × ${heightCm} − 5 × ${age} ${sex === 'male' ? '+ 5' : '− 161'} = ${bmrValue.toFixed(2)} كالوِري/يوم`,
+      formattedText: `الحرق الأساسي (BMR) = 10 × ${weightKg} + 6.25 × ${heightCm} − 5 × ${age} ${sex === 'male' ? '+ 5' : '− 161'} = ${bmrValue.toFixed(2)} سعرة/يوم`,
     },
     baseline: {
       factor: lifestyleFactor,
       value: Number(baselineValue.toFixed(2)),
-      formattedText: `الحرق القاعدي بنشاط الحياة = ${bmrValue.toFixed(2)} × ${lifestyleFactor} = ${baselineValue.toFixed(2)} كالوِري/يوم`,
+      formattedText: `الحرق القاعدي بنشاط الحياة = ${bmrValue.toFixed(2)} × ${lifestyleFactor} = ${baselineValue.toFixed(2)} سعرة/يوم`,
     },
     workoutBlocks: blocks,
     eat: {
       dailyKcal: Number(totalDailyEAT.toFixed(2)),
       epocNote: 'افتراض EPOC بنسبة 10%',
-      formattedText: `إجمالي الحرق الرياضي اليومي (EAT) = ${totalDailyEAT.toFixed(2)} كالوِري/يوم (مع افتراض EPOC بنسبة 10%)`,
+      formattedText: `إجمالي الحرق الرياضي اليومي (EAT) = ${totalDailyEAT.toFixed(2)} سعرة/يوم (مع افتراض EPOC بنسبة 10%)`,
     },
     tdee: {
       value: Number(tdee.toFixed(2)),
       rangeMin: tdeeRange.min,
       rangeMax: tdeeRange.max,
-      formattedText: `إجمالي الحرق اليومي (TDEE) = ${tdee.toFixed(2)} كالوِري/يوم (النطاق: ${tdeeRange.min} إلى ${tdeeRange.max})`,
+      formattedText: `إجمالي الحرق اليومي (TDEE) = ${tdee.toFixed(2)} سعرة/يوم (النطاق: ${tdeeRange.min} إلى ${tdeeRange.max})`,
     },
     goalAdjustment: {
       goal: bodyGoal,

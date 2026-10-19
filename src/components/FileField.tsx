@@ -238,7 +238,7 @@ export const FileField: React.FC<FileFieldProps> = ({
               gap: '4px',
             }}
           >
-            ✕ إزالة
+            <Icon name="x" size={14} /> إزالة
           </button>
         </div>
       )}

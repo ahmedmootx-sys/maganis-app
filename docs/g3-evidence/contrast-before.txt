@@ -1,0 +1,20 @@
+🚀 Running Gate: gate-contrast (WCAG AA 4.5:1 Contrast Contract)...
+
+Checked 194 controls across routes and themes.
+❌ FAIL: Found 16 contrast issues below 4.5:1:
+  - [LIGHT] #/training <button> "إنشاء برنامج تدريبي" (button-primary full-width): ratio 3.29:1 (text rgb(255,255,255) on bg rgb(249,87,0))
+  - [LIGHT] #/training/day/0 <button> "إنشاء برنامج تدريبي" (button-primary full-width): ratio 3.29:1 (text rgb(255,255,255) on bg rgb(249,87,0))
+  - [LIGHT] #/nutrition <button> "إضافة وتتبع التغذية" (btn-icon): ratio 3.29:1 (text rgb(255,255,255) on bg rgb(249,87,0))
+  - [LIGHT] #/nutrition <button> "تعديل" (): ratio 2.88:1 (text rgb(249,87,0) on bg rgb(238,240,243))
+  - [LIGHT] #/nutrition <button> "+ تصميم وجبة" (btn-ghost): ratio 3.01:1 (text rgb(249,87,0) on bg rgb(244,245,247))
+  - [LIGHT] #/nutrition <button> "الكل (0)" (chip-btn selected): ratio 1.09:1 (text rgb(255,255,255) on bg rgb(244,245,247))
+  - [LIGHT] #/progress <button> "حفظ قياس الوزن" (btn btn--primary btn--large btn--full-width): ratio 3.29:1 (text rgb(255,255,255) on bg rgb(249,87,0))
+  - [LIGHT] #/progress <button> "+ إضافة ملاحظة" (btn-ghost): ratio 3.29:1 (text rgb(249,87,0) on bg rgb(255,255,255))
+  - [LIGHT] #/settings <button> "تلقائي" (segmented__item segmented__item--active): ratio 3.29:1 (text rgb(255,255,255) on bg rgb(249,87,0))
+  - [LIGHT] #/settings <button> "تفعيل" (btn btn--primary btn--small): ratio 3.29:1 (text rgb(255,255,255) on bg rgb(249,87,0))
+  - [DARK] #/training <button> "إنشاء برنامج تدريبي" (button-primary full-width): ratio 2.85:1 (text rgb(255,255,255) on bg rgb(255,107,26))
+  - [DARK] #/training/day/0 <button> "إنشاء برنامج تدريبي" (button-primary full-width): ratio 2.85:1 (text rgb(255,255,255) on bg rgb(255,107,26))
+  - [DARK] #/nutrition <button> "إضافة وتتبع التغذية" (btn-icon): ratio 2.85:1 (text rgb(255,255,255) on bg rgb(255,107,26))
+  - [DARK] #/progress <button> "حفظ قياس الوزن" (btn btn--primary btn--large btn--full-width): ratio 2.85:1 (text rgb(255,255,255) on bg rgb(255,107,26))
+  - [DARK] #/settings <button> "تلقائي" (segmented__item segmented__item--active): ratio 2.85:1 (text rgb(255,255,255) on bg rgb(255,107,26))
+  - [DARK] #/settings <button> "تفعيل" (btn btn--primary btn--small): ratio 2.85:1 (text rgb(255,255,255) on bg rgb(255,107,26))

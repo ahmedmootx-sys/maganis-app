@@ -1,0 +1,10 @@
+🚀 Running Gate: gate-surface (Surface Contract: Page, Card, Bar)...
+✓ .card CSS rule correctly references 16px tokens
+✓ .sticky-bottom-bar has full-bleed margin
+✓ All 1 rendered bars have computed border-radius = 0px
+
+📊 Gate Summary: 3 checks passed, 2 failures
+
+❌ FAIL: 2 surface contract violations detected:
+  [TOKEN_RADIUS_CARD] --radius-card is 12px, expected 16px
+  [RUNTIME_CARD_RADIUS] Found card with border-radius "12px", expected "16px" (card)

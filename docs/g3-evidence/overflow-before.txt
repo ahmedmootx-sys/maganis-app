@@ -1,0 +1,12 @@
+🚀 Running Gate: gate-overflow (Zero Horizontal Overflow on 360x640)...
+✓ #/home: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/training: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/training/day/0: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/progress: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/settings: No horizontal overflow (scrollWidth = 360px <= 360px)
+
+📊 Gate Summary: 5 checks passed, 1 failures
+
+❌ FAIL: 1 overflow violations detected:
+  [HORIZONTAL_OVERFLOW] #/nutrition: scrollWidth = 360px (window = 360px), 1 overflowing elements
+     <button class="chip-btn"> left:-120 right:1 width:121

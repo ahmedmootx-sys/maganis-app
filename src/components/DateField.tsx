@@ -204,21 +204,23 @@ export const DateField: React.FC<DateFieldProps> = ({
               }}
               style={{
                 color: 'var(--muted)',
-                fontSize: '14px',
                 padding: '4px',
                 cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
               }}
             >
-              ✕
+              <Icon name="x" size={14} />
             </span>
           ) : (
             <span
               style={{
                 color: 'var(--muted)',
-                fontSize: '12px',
+                display: 'inline-flex',
+                alignItems: 'center',
               }}
             >
-              ▼
+              <Icon name="chevron-down" size={14} />
             </span>
           )}
         </button>

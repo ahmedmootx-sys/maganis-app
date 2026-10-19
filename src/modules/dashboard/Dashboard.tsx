@@ -10,7 +10,6 @@ import type {
 import type { UserProfile } from '../onboarding/types'
 import { GOALS } from '../onboarding/types'
 import { getExerciseById } from '../workout/exercises'
-import { ExerciseVisual } from '../workout/ExerciseVisual'
 import {
   TopBar,
   Button,
@@ -25,6 +24,8 @@ import {
 } from '../../ui'
 import { Ratio } from '../../ui/Ratio'
 import { computeEnergyPlan } from '../nutrition/computeEnergyPlan'
+import { ExerciseThumb } from '../../components/ExerciseThumb'
+import { resolveSession, formatPrescription } from '../workout/sessionResolver'
 import {
   getOrDeriveSchedule,
   getScheduledSessionsCount,
@@ -148,17 +149,11 @@ export function Dashboard({
   )
 
   const todayDayIndex = new Date().getDay()
-  const todaySlot = schedule[todayDayIndex]
-  const todayProgramDay = useMemo(() => {
-    if (!program || !todaySlot || todaySlot === 'rest' || todaySlot === 'cardio') {
-      return null
-    }
-    return (
-      program.days.find(
-        (d) => (d.id && d.id === todaySlot) || String(d.dayIndex) === todaySlot,
-      ) ?? null
-    )
-  }, [program, todaySlot])
+  const todaySession = useMemo(
+    () => resolveSession(new Date(), { profile, program }),
+    [profile, program],
+  )
+  const todayProgramDay = todaySession.programDay
 
   const nextSessionInfo = useMemo(
     () => getNextSession(schedule, todayDayIndex, program, weekStartDay),
@@ -401,16 +396,17 @@ export function Dashboard({
                       color: 'var(--color-text)',
                     }}
                   >
-                    {todayProgramDay.labelAr} — {todayProgramDay.focus}
+                    {todaySession.dayTitle} — {todaySession.daySubtitle}
                   </div>
                   <div
                     style={{
                       fontSize: '13px',
                       color: 'var(--color-text-2)',
                       fontWeight: 600,
+                      whiteSpace: 'nowrap',
                     }}
                   >
-                    ~{todayProgramDay.exercises.length * 5} دقيقة
+                    ~{todaySession.estimatedMinutes} دقيقة
                   </div>
                 </div>
 
@@ -441,30 +437,16 @@ export function Dashboard({
                         string | undefined) ??
                       'تمرين مخصص'
                     const englishName = ex?.name ?? ''
-                    const repsDisplay = pe.reps ?? 10
-                    const setsReps = `${pe.sets} × ${repsDisplay} تكرار`
+                    const setsReps = formatPrescription(pe)
                     return (
                       <ListRow
                         key={`${pe.exerciseId}-${idx}`}
                         leading={
-                          <div
-                            style={{
-                              width: '48px',
-                              height: '48px',
-                              borderRadius: '8px',
-                              overflow: 'hidden',
-                              background: 'var(--color-surface-2)',
-                              border: '1px solid var(--color-divider)',
-                              flexShrink: 0,
-                            }}
-                          >
-                            <ExerciseVisual
-                              category={ex?.category ?? 'chest'}
-                              exerciseId={pe.exerciseId}
-                              exerciseName={arabicName}
-                              size="small"
-                            />
-                          </div>
+                          <ExerciseThumb
+                            exerciseId={pe.exerciseId}
+                            exerciseName={arabicName}
+                            size={40}
+                          />
                         }
                         title={arabicName}
                         subtitle={englishName}
@@ -639,37 +621,30 @@ export function Dashboard({
                     {isDone ? (
                       <Icon name="check" size={12} />
                     ) : isTrainingDay ? (
-                      <div
-                        style={{
-                          width: '6px',
-                          height: '6px',
-                          borderRadius: '50%',
-                          background: 'var(--color-accent)',
-                        }}
-                      />
+                      <Icon name="dumbbell" size={12} />
                     ) : isCardio ? (
-                      <div
-                        style={{
-                          width: '6px',
-                          height: '6px',
-                          borderRadius: '50%',
-                          border: '1.5px solid var(--color-accent)',
-                        }}
-                      />
+                      <Icon name="activity" size={12} />
                     ) : (
-                      <div
-                        style={{
-                          width: '4px',
-                          height: '4px',
-                          borderRadius: '50%',
-                          background: 'var(--color-divider)',
-                        }}
-                      />
+                      <Icon name="moon" size={12} />
                     )}
                   </div>
                 </div>
               )
             })}
+          </div>
+          <div
+            className="week-strip__legend"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              fontSize: '11px',
+              color: 'var(--color-text-2)',
+              marginTop: '8px',
+            }}
+          >
+            <span>قوة · كارديو · راحة</span>
           </div>
         </Section>
 

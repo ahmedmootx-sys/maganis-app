@@ -4,6 +4,7 @@ import type {
   SavedWorkoutProgram,
   WorkoutProgram,
 } from '../shared/types.ts'
+import { createOwnerDraftProgram } from './ownerProgramImporter.ts'
 
 export interface WorkoutStore {
   saveProgram(program: WorkoutProgram): void
@@ -117,7 +118,16 @@ export function createWorkoutStore(storage: Storage): WorkoutStore {
 
   function getSavedPrograms(): SavedWorkoutProgram[] {
     const list = storage.get<SavedWorkoutProgram[]>(SAVED_PROGRAMS_KEY, [])
-    return list.map((item) => ({
+    const hasOwnerDraft = list.some(
+      (p) => p.id === 'vault-prog-ahmed-upper-lower-5d' || p.title.includes('برنامج أحمد'),
+    )
+    let fullList = list
+    if (!hasOwnerDraft) {
+      const ownerDraft = createOwnerDraftProgram()
+      fullList = [...list, ownerDraft]
+    }
+
+    return fullList.map((item) => ({
       ...item,
       program: healProgram(item.program) || item.program,
     }))

@@ -429,9 +429,8 @@ export function ExerciseDetailView({
 
   return (
     <div
-      className="exercise-detail-page"
+      className="exercise-detail-page screen-container"
       dir="rtl"
-      style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
     >
       {/* 1. Header: Back button */}
       <TopBar
@@ -440,12 +439,13 @@ export function ExerciseDetailView({
       />
 
       <div
-        className="exercise-detail-container"
+        className="screen-content exercise-detail-container"
         style={{
-          paddingInline: '16px',
           display: 'flex',
           flexDirection: 'column',
           gap: '14px',
+          maxWidth: '640px',
+          margin: '0 auto',
           width: '100%',
           boxSizing: 'border-box',
         }}

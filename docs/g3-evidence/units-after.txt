@@ -1,0 +1,9 @@
+🚀 Running Gate: gate-units (Calorie & Measurement Unit Contract)...
+✓ Zero occurrences of «كالوري» or «كالوِري» in user-facing UI code
+✓ Centralized UNITS dictionary exists in src/utils/units.ts
+✓ Arabic plural rules for «سعرة» defined in plural.ts
+✓ Plural grammar verification passed (1 سعرة, 2 سعرتان, 5 سعرات, 2000 سعرة)
+
+📊 Gate Summary: 4 checks passed, 0 failures
+
+✓ gate-units passed cleanly! All calorie units verified as «سعرة».

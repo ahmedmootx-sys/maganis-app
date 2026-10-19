@@ -1,0 +1,11 @@
+🚀 Running Gate: gate-overflow (Zero Horizontal Overflow on 360x640)...
+✓ #/home: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/training: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/training/day/0: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/nutrition: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/progress: No horizontal overflow (scrollWidth = 360px <= 360px)
+✓ #/settings: No horizontal overflow (scrollWidth = 360px <= 360px)
+
+📊 Gate Summary: 6 checks passed, 0 failures
+
+✓ gate-overflow passed cleanly! Zero horizontal overflow on 360x640.

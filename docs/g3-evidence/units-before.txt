@@ -1,0 +1,32 @@
+🚀 Running Gate: gate-units (Calorie & Measurement Unit Contract)...
+❌ Found 23 forbidden calorie unit occurrences
+
+📊 Gate Summary: 0 checks passed, 26 failures
+
+❌ FAIL: 26 unit contract violations detected:
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\calorieCalculator.ts:96 contains «كالوِري»: goalLabelAr = `بناء عضلات وتضخيم (فائض +${engineRes.adjustmentKcal} كالوِري)`
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\calorieCalculator.ts:98 contains «كالوِري»: goalLabelAr = `تنشيف وحرق دهون (عجز ${engineRes.adjustmentKcal} كالوِري)`
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:659 contains «كالوِري»: bmrText: `${Math.round(bmr)} كالوِري (الحرق القاعدي في الراحة التامة)`,
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:661 contains «كالوِري»: eatText: `${Math.round(eatDailyKcal)} كالوِري/يومياً كمتوسط حرق لجلساتك الرياضية`,
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:662 contains «كالوِري»: tdeeRangeText: `${tdeeRange.min} إلى ${tdeeRange.max} كالوِري (المتوسط: ${Math.round(tdee)})`,
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:669 contains «كالوِري»: ? `+${Math.round(adjustmentKcal)} كالوِري (فائض لبناء الأنسجة)`
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:671 contains «كالوِري»: ? `${Math.round(adjustmentKcal)} كالوِري (عجز لحرق الدهون)`
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:1224 contains «كالوِري»: formattedText: `الحرق الأساسي (BMR) = 10 × ${weightKg} + 6.25 × ${heightCm} − 5 × ${age} ${sex === 'male' ? '+ 5' : '− 161'} = ${bmrValue.toFixed(2)} كالوِري/يوم`,
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:1229 contains «كالوِري»: formattedText: `الحرق القاعدي بنشاط الحياة = ${bmrValue.toFixed(2)} × ${lifestyleFactor} = ${baselineValue.toFixed(2)} كالوِري/يوم`,
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:1235 contains «كالوِري»: formattedText: `إجمالي الحرق الرياضي اليومي (EAT) = ${totalDailyEAT.toFixed(2)} كالوِري/يوم (مع افتراض EPOC بنسبة 10%)`,
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\nutritionEngine.ts:1241 contains «كالوِري»: formattedText: `إجمالي الحرق اليومي (TDEE) = ${tdee.toFixed(2)} كالوِري/يوم (النطاق: ${tdeeRange.min} إلى ${tdeeRange.max})`,
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:483 contains «كالوِري»: `✓ تم تطبيق الهدف المعاير (${newTarget} كالوِري) بنجاح!`,
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:750 contains «كالوِري»: message={`قمنا بتحديث نظام السعرات لفصل نمط النشاط اليومي خارج التمرين عن جلسات التمرين حتى لا تُحسب السعرات مرتين.\nالهدف السابق: ${legacyCalorieTarget} كالوِري -> الهدف الدقيق الجديد: ${proposedTargets.targetCalories} كالوِري (${proposedTargets.proteinGrams} جم بروتين).`}
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:972 contains «كالوِري»: / {targets.targetCalories} كالوِري
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:1184 contains «كالوِري»: {targets.targetCalories} كالوِري ({targets.goalLabelAr}) · BMR{' '}
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:1356 contains «كالوِري»: {meal.calories} كالوِري · ب: {meal.proteinGrams}ج · ك:{' '}
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:1764 contains «كالوِري»: value={`${targets.bmr} كالوِري`}
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:1769 contains «كالوِري»: value={`${targets.tdee} كالوِري`}
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:2692 contains «كالوِري»: {calibrationData.tdeeObserved} كالوِري
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:2696 contains «كالوِري»: {calibrationData.newTargetCalories} كالوِري
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\NutritionModule.tsx:2720 contains «كالوِري»: كالوِري)
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\QuickManualMealModal.tsx:219 contains «كالوِري»: السعرات (كالوِري)
+  [FORBIDDEN_CALORIE_WORD] src\modules\nutrition\QuickManualMealModal.tsx:403 contains «كالوِري»: عن المحسوبة من الماكروز ({derivedCalories} كالوِري).
+  [UNITS_DICT_MISSING] src/utils/units.ts does not exist
+  [PLURAL_CALORIE_MISSING] plural.ts is missing plural definition for «سعرة»
+  [PLURAL_CALORIE_GRAMMAR] Plural grammar incorrect: 1->1 سعرة, 2->2 سعرة, 5->5 سعرة, 2000->2000 سعرة

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useId, useRef } from 'react'
 import { navigationHistory } from '../utils/navigationHistory'
+import { Icon } from '../ui/Icon.tsx'
 
 export interface SelectOption {
   value: string
@@ -297,20 +298,19 @@ export const Select: React.FC<SelectProps> = ({
         </div>
 
         {/* Chevron Icon */}
-        <span
-          className="select-chevron"
-          aria-hidden="true"
-          style={{
-            color: 'var(--muted)',
-            fontSize: '12px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.2s ease',
-          }}
-        >
-          ▼
-        </span>
+          <span
+            className="select-chevron"
+            aria-hidden="true"
+            style={{
+              color: 'var(--muted)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease',
+            }}
+          >
+            <Icon name="chevron-down" size={14} />
+          </span>
       </button>
 
       {/* Bottom Sheet Modal */}
@@ -402,11 +402,9 @@ export const Select: React.FC<SelectProps> = ({
                   justifyContent: 'center',
                   cursor: 'pointer',
                   color: 'var(--ink)',
-                  fontSize: '16px',
-                  fontWeight: 600,
                 }}
               >
-                ✕
+                <Icon name="x" size={18} />
               </button>
             </div>
 
@@ -458,12 +456,13 @@ export const Select: React.FC<SelectProps> = ({
                         background: 'none',
                         border: 'none',
                         color: 'var(--muted)',
-                        fontSize: '16px',
                         cursor: 'pointer',
                         padding: '4px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
                       }}
                     >
-                      ✕
+                      <Icon name="x" size={16} />
                     </button>
                   )}
                 </div>

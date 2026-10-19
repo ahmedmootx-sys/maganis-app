@@ -1,0 +1,27 @@
+🚀 Running Gate: gate-icons (Icon Unification Contract)...
+❌ Found 21 bare text glyph icon occurrences
+
+📊 Gate Summary: 0 checks passed, 21 failures
+
+❌ FAIL: 21 icon unification violations detected:
+  [BARE_TEXT_GLYPH_ICON] src\App.tsx:1064 contains «✕»: ✕ إلغاء
+  [BARE_TEXT_GLYPH_ICON] src\components\DateField.tsx:212 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\components\DateField.tsx:221 contains «▼»: ▼
+  [BARE_TEXT_GLYPH_ICON] src\components\FileField.tsx:241 contains «✕»: ✕ إزالة
+  [BARE_TEXT_GLYPH_ICON] src\components\Select.tsx:312 contains «▼»: ▼
+  [BARE_TEXT_GLYPH_ICON] src\components\Select.tsx:409 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\components\Select.tsx:466 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\modules\nutrition\NutritionModule.tsx:1805 contains «▲»: {showExplanation ? 'إخفاء ▲' : 'عرض ▼'}
+  [BARE_TEXT_GLYPH_ICON] src\modules\nutrition\NutritionModule.tsx:1805 contains «▼»: {showExplanation ? 'إخفاء ▲' : 'عرض ▼'}
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\ActiveWorkoutSession.tsx:1065 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\ActiveWorkoutSession.tsx:1285 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\ExercisePickerModal.tsx:97 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\ExerciseSwapModal.tsx:80 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\MuscleAtlasDebug.tsx:58 contains «✕»: ✕ إغلاق
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\WeeklyPlanView.tsx:1297 contains «▲»: ▲
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\WeeklyPlanView.tsx:1315 contains «▼»: ▼
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\WeeklyPlanView.tsx:1329 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\WeeklyPlanView.tsx:1480 contains «▲»: ▲
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\WeeklyPlanView.tsx:1498 contains «▼»: ▼
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\WeeklyPlanView.tsx:1512 contains «✕»: ✕
+  [BARE_TEXT_GLYPH_ICON] src\modules\workout\WeeklyPlanView.tsx:1612 contains «✕»: ✕

@@ -631,17 +631,18 @@ button.ghost-danger:hover {
 /* ===== App Shell & Bottom Nav ===== */
 
 .app--shell {
-  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: 0 !important;
 }
 
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  inset-inline: 0;
+  position: static;
+  grid-row: 4;
+  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  min-height: 64px;
+  min-height: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px));
+  height: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
@@ -649,6 +650,8 @@ button.ghost-danger:hover {
   border-top: 1px solid var(--line);
   z-index: 100;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .bottom-nav__item {
@@ -2951,7 +2954,7 @@ button.ghost-danger:hover {
 [data-theme='dark'] .button-primary,
 [data-theme='dark'] button.primary {
   background: var(--accent) !important;
-  color: #ffffff !important;
+  color: var(--btn-primary-fg) !important;
   border-color: var(--accent) !important;
   box-shadow: 0 2px 10px rgba(255, 107, 26, 0.3);
 }

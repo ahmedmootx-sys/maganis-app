@@ -1,0 +1,13 @@
+🚀 Running Gate: gate-energy-agreement (Energy & Nutrition Target Agreement)...
+✓ Dashboard imports and uses computeEnergyPlan
+✓ NutritionModule imports and uses computeEnergyPlan
+✓ Owner profile energy plan computed: BMR=1778, TDEE=2601, Target=2861, Protein=144g
+✓ Owner hypertrophy target (2861 kcal) is in surplus above TDEE (2601 kcal)
+
+📊 Gate Summary: 4 checks passed, 4 failures
+
+❌ FAIL: 4 energy agreement violations detected:
+  [OWNER_PROTEIN_MISMATCH] Expected 160g protein for 80kg hypertrophy, got 144g
+  [RECOMP_PLAN_MISMATCH] Recomp plan mismatch: target=2475, tdee=2475, protein=135
+  [FAT_LOSS_PLAN_MISMATCH] Fat loss plan mismatch: target=2475, tdee=2475, protein=135
+  [BULK_PLAN_MISMATCH] Hypertrophy plan mismatch: target=2723, tdee=2475, protein=135

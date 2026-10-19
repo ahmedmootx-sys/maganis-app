@@ -6,6 +6,8 @@ import type {
   ProgramDay,
   WorkoutProgram,
   WorkoutSplitType,
+  DayKind,
+  CardioConfig,
 } from '../shared/types.ts'
 import { WORKOUT_SPLIT_LABELS, WORKOUT_SPLIT_EN, MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import { navigationHistory } from '../../utils/navigationHistory.ts'
@@ -30,13 +32,17 @@ import {
   Select,
   Button,
   Callout,
+  Field,
+  Icon,
 } from '../../ui/index.ts'
 import { getExerciseTags } from './limitations.ts'
 import {
   getOrDeriveSchedule,
   getOrderedWeekdays,
+  ALL_WEEKDAYS,
   type ScheduleSlotType,
 } from './scheduleManager.ts'
+import { resolveSession, formatPrescription, cleanDayName } from './sessionResolver.ts'
 import { saveFile } from '../../utils/saveFile.ts'
 import {
   IconSearch,
@@ -111,6 +117,365 @@ export function deriveDayMuscleSummary(exercises: Array<{ exerciseId: string }>)
     .join(' / ')
 }
 
+interface CardioDayScreenProps {
+  day: ProgramDay
+  onBack: () => void
+  onUpdateConfig: (newConfig: Partial<CardioConfig>) => void
+  onOpenOverflow: () => void
+  onCompleteSession?: () => void
+}
+
+export function CardioDayScreen({
+  day,
+  onBack,
+  onUpdateConfig,
+  onOpenOverflow,
+  onCompleteSession,
+}: CardioDayScreenProps) {
+  const config = day.cardioConfig || {
+    activity: 'جري',
+    plannedMinutes: 30,
+    effort: 'moderate',
+  }
+
+  const activities = [
+    { id: 'جري', label: 'جري خارجي / سير', icon: 'activity' },
+    { id: 'مشي سريع', label: 'مشي سريع / انحدار', icon: 'flame' },
+    { id: 'دراجة ثابتة', label: 'دراجة ثابتة', icon: 'activity' },
+    { id: 'سباحة', label: 'سباحة حرة', icon: 'heart' },
+    { id: 'نط حبل', label: 'نط الحبل', icon: 'zap' },
+    { id: 'جهاز تجديف', label: 'جهاز التجديف', icon: 'dumbbell' },
+  ]
+
+  const durations = [15, 20, 30, 45, 60]
+
+  const effortLevels = [
+    {
+      value: 'light' as const,
+      label: 'خفيف (Zone 2)',
+      desc: 'وتيرة يمكنك التحدث خلالها براحة — مثالي لحرق الدهون والاستشفاء العضلي',
+    },
+    {
+      value: 'moderate' as const,
+      label: 'متوسط (Zone 3)',
+      desc: 'وتيرة ثابتة مع سرعة تنفس متزايدة — لرفع اللياقة القلبية التنفسية',
+    },
+    {
+      value: 'hard' as const,
+      label: 'عالي (Zone 4-5 / HIIT)',
+      desc: 'فترات انفجارية عالية الشدة تليها فترات راحة — لاستهلاك طاقة مكثف',
+    },
+  ]
+
+  return (
+    <div className="screen-container day-screen" dir="rtl">
+      <TopBar
+        onBack={onBack}
+        title={day.labelAr}
+        subtitle="جلسة كارديو ولياقة"
+        actions={
+          <button
+            type="button"
+            className="topbar-icon-btn"
+            onClick={onOpenOverflow}
+            aria-label="خيارات اليوم"
+          >
+            <IconMoreVertical size={20} />
+          </button>
+        }
+      />
+
+      <div
+        className="screen-content"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '16px 16px 88px',
+        }}
+      >
+        {/* Summary Card */}
+        <div
+          className="card"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            padding: '16px',
+            borderRadius: '16px',
+            border: '1px solid var(--color-divider)',
+            background: 'var(--color-surface)',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '12px',
+                fontWeight: 700,
+                color: '#0288d1',
+                background: 'rgba(2, 136, 209, 0.12)',
+                padding: '3px 8px',
+                borderRadius: '6px',
+              }}
+            >
+              جلسة كارديو
+            </span>
+            <span
+              style={{
+                fontSize: '13px',
+                color: 'var(--muted)',
+                fontWeight: 600,
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              {config.plannedMinutes} دقيقة مخطط لها
+            </span>
+          </div>
+          <div
+            style={{
+              fontSize: '17px',
+              fontWeight: 800,
+              color: 'var(--ink)',
+            }}
+          >
+            {config.activity} · الشدة:{' '}
+            {config.effort === 'light'
+              ? 'خفيف'
+              : config.effort === 'hard'
+                ? 'عالي الشدة'
+                : 'متوسط'}
+          </div>
+          <div
+            style={{
+              fontSize: '12.5px',
+              color: 'var(--muted)',
+              lineHeight: 1.5,
+            }}
+          >
+            الكارديو المعتدل يدعم صحة القلب والدورة الدموية ويساعد على تسريع
+            الاستشفاء العضلي دون التأثير سلباً على مكاسب القوة.
+          </div>
+        </div>
+
+        {/* Activity Picker */}
+        <section className="screen-section">
+          <div className="section-title">
+            <span>نوع النشاط البدني</span>
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '8px',
+            }}
+          >
+            {activities.map((act) => {
+              const isSelected = config.activity === act.id
+              return (
+                <button
+                  key={act.id}
+                  type="button"
+                  onClick={() => onUpdateConfig({ activity: act.id })}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    border: isSelected
+                      ? '1.5px solid var(--color-accent)'
+                      : '1px solid var(--color-divider)',
+                    background: isSelected
+                      ? 'var(--color-surface-2)'
+                      : 'var(--color-surface)',
+                    color: isSelected
+                      ? 'var(--color-accent-text)'
+                      : 'var(--color-text)',
+                    fontWeight: isSelected ? 700 : 500,
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    textAlign: 'right',
+                  }}
+                >
+                  <Icon name={act.icon as any} size={16} />
+                  <span>{act.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Planned Duration Picker */}
+        <section className="screen-section">
+          <div className="section-title">
+            <span>مدة الجلسة (بالدقائق)</span>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {durations.map((m) => {
+              const isSelected = config.plannedMinutes === m
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => onUpdateConfig({ plannedMinutes: m })}
+                  style={{
+                    flex: '1 0 calc(20% - 8px)',
+                    minWidth: '56px',
+                    padding: '10px 4px',
+                    borderRadius: '10px',
+                    border: isSelected
+                      ? '1.5px solid var(--color-accent)'
+                      : '1px solid var(--color-divider)',
+                    background: isSelected
+                      ? 'var(--color-accent)'
+                      : 'var(--color-surface)',
+                    color: isSelected ? '#ffffff' : 'var(--color-text)',
+                    fontWeight: 700,
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {m} د
+                </button>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Effort Level Picker */}
+        <section className="screen-section">
+          <div className="section-title">
+            <span>مستوى الجهد والشدة</span>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+            }}
+          >
+            {effortLevels.map((eff) => {
+              const isSelected = config.effort === eff.value
+              return (
+                <button
+                  key={eff.value}
+                  type="button"
+                  onClick={() => onUpdateConfig({ effort: eff.value })}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    gap: '4px',
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    border: isSelected
+                      ? '1.5px solid var(--color-accent)'
+                      : '1px solid var(--color-divider)',
+                    background: isSelected
+                      ? 'var(--color-surface-2)'
+                      : 'var(--color-surface)',
+                    cursor: 'pointer',
+                    textAlign: 'right',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '13.5px',
+                        color: isSelected
+                          ? 'var(--color-accent-text)'
+                          : 'var(--color-text)',
+                      }}
+                    >
+                      {eff.label}
+                    </span>
+                    {isSelected && (
+                      <Icon
+                        name="check"
+                        size={16}
+                        style={{ color: 'var(--color-accent)' }}
+                      />
+                    )}
+                  </div>
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      color: 'var(--color-text-2)',
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {eff.desc}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Scientific Guidelines */}
+        <section className="screen-section">
+          <div className="section-title">
+            <span>إرشادات الكارديو للاعبي كمال الأجسام</span>
+          </div>
+          <div
+            className="card"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              fontSize: '12.5px',
+              color: 'var(--color-text-2)',
+              lineHeight: 1.5,
+              padding: '14px 16px',
+              borderRadius: '16px',
+              border: '1px solid var(--color-divider)',
+              background: 'var(--color-surface)',
+            }}
+          >
+            <div>
+              • <strong>المنطقة الثانية (Zone 2):</strong> سرعة يمكنك التحدث خلالها براحة لبناء قاعدة هوائية وحرق الدهون ودعم الاستشفاء.
+            </div>
+            <div>
+              • <strong>الترطيب:</strong> اشرب 250-500 مل ماء قبل وأثناء الجلسة لمنع الإجهاد الحراري.
+            </div>
+            <div>
+              • <strong>التوقيت:</strong> يفضل أداء الكارديو بعد تمارين المقاومة أو في أيام منفصلة لتجنب إجهاد العضلات الرئيسي.
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* Sticky Bottom Bar */}
+      <div className="sticky-bottom-bar">
+        <Button
+          variant="primary"
+          size="lg"
+          fullWidth
+          onClick={onCompleteSession}
+        >
+          إتمام وتسجيل جلسة الكارديو ({config.plannedMinutes} دقيقة)
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 export function WeeklyPlanView({
   program,
   profile,
@@ -173,6 +538,12 @@ export function WeeklyPlanView({
   const [isManageSheetOpen, setIsManageSheetOpen] = useState(false)
   const [isDayOverflowOpen, setIsDayOverflowOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
+
+  // Day Management States (Part 5)
+  const [isAddDaySheetOpen, setIsAddDaySheetOpen] = useState(false)
+  const [dayMenuTarget, setDayMenuTarget] = useState<ProgramDay | null>(null)
+  const [renamingDay, setRenamingDay] = useState<ProgramDay | null>(null)
+  const [renameInputValue, setRenameInputValue] = useState('')
 
   // Confirmations
   const [replaceConfirm, setReplaceConfirm] = useState<{
@@ -244,7 +615,10 @@ export function WeeklyPlanView({
     }
   }, [addingToDayIndex])
 
-  const todayDayIndex = useMemo(() => new Date().getDay(), [])
+  const todaySession = useMemo(
+    () => resolveSession(new Date(), { profile, program }),
+    [profile, program],
+  )
 
   const selectedDay = useMemo(() => {
     if (selectedDayIndex === null || !program) return null
@@ -253,6 +627,110 @@ export function WeeklyPlanView({
 
   function handleOpenDetail(exerciseId: string) {
     window.location.hash = `#/exercise/${exerciseId}`
+  }
+
+  function handleAddDay(kind: DayKind = 'strength') {
+    if (!program || !onUpdateProgram) return
+    const nextIndex =
+      program.days.length > 0
+        ? Math.max(...program.days.map((d) => d.dayIndex)) + 1
+        : 0
+    const dayNumber = program.days.length + 1
+    const isCardio = kind === 'cardio'
+    const newDay: ProgramDay = {
+      id: `day-${Date.now()}`,
+      dayIndex: nextIndex,
+      name: isCardio ? `يوم ${dayNumber} - كارديو` : `يوم ${dayNumber}`,
+      labelAr: isCardio ? `يوم ${dayNumber} - كارديو` : `يوم ${dayNumber}`,
+      kind,
+      focus: isCardio ? 'كارديو ولياقة' : 'تمارين مخصصة',
+      exercises: [],
+      cardioConfig: isCardio
+        ? { activity: 'جري', plannedMinutes: 30, effort: 'moderate' }
+        : undefined,
+    }
+    onUpdateProgram({
+      ...program,
+      days: [...program.days, newDay],
+    })
+    setIsAddDaySheetOpen(false)
+    showToast(isCardio ? 'تمت إضافة يوم كارديو جديد' : 'تمت إضافة يوم تدريبي جديد')
+  }
+
+  function handleRenameDay(dayIndex: number, newName: string) {
+    if (!program || !onUpdateProgram) return
+    const trimmed = newName.trim()
+    if (!trimmed) return
+    const newDays = program.days.map((d) => {
+      if (d.dayIndex !== dayIndex) return d
+      return {
+        ...d,
+        name: trimmed,
+        labelAr: trimmed,
+        customName: trimmed,
+      }
+    })
+    onUpdateProgram({ ...program, days: newDays })
+    setRenamingDay(null)
+    showToast('تم تعديل اسم اليوم بنجاح')
+  }
+
+  function handleToggleDayKind(dayIndex: number) {
+    if (!program || !onUpdateProgram) return
+    const newDays = program.days.map((d) => {
+      if (d.dayIndex !== dayIndex) return d
+      const newKind: DayKind = d.kind === 'cardio' ? 'strength' : 'cardio'
+      return {
+        ...d,
+        kind: newKind,
+        cardioConfig:
+          newKind === 'cardio'
+            ? d.cardioConfig || {
+                activity: 'جري',
+                plannedMinutes: 30,
+                effort: 'moderate',
+              }
+            : d.cardioConfig,
+      }
+    })
+    onUpdateProgram({ ...program, days: newDays })
+    setDayMenuTarget(null)
+    showToast('تم تغيير نوع اليوم بنجاح')
+  }
+
+  function handleDeleteDay(dayIndex: number) {
+    if (!program || !onUpdateProgram) return
+    if (program.days.length <= 1) {
+      showToast('لا يمكن حذف اليوم الوحيد المتبقي في الجدول')
+      return
+    }
+    const newDays = program.days.filter((d) => d.dayIndex !== dayIndex)
+    onUpdateProgram({ ...program, days: newDays })
+    setDayMenuTarget(null)
+    if (selectedDayIndex === dayIndex) {
+      setSelectedDayIndex(null)
+    }
+    showToast('تم حذف اليوم من البرنامج')
+  }
+
+  function handleUpdateCardioConfig(
+    dayIndex: number,
+    newConfig: Partial<CardioConfig>,
+  ) {
+    if (!program || !onUpdateProgram) return
+    const newDays = program.days.map((d) => {
+      if (d.dayIndex !== dayIndex) return d
+      const current = d.cardioConfig || {
+        activity: 'جري',
+        plannedMinutes: 30,
+        effort: 'moderate',
+      }
+      return {
+        ...d,
+        cardioConfig: { ...current, ...newConfig },
+      }
+    })
+    onUpdateProgram({ ...program, days: newDays })
   }
 
   function handleSwapExercise(newEx: Exercise) {
@@ -509,6 +987,138 @@ export function WeeklyPlanView({
 
   // --- Render Day Screen ---
   if (selectedDay) {
+    if (selectedDay.kind === 'cardio') {
+      return (
+        <>
+          <CardioDayScreen
+            day={selectedDay}
+            onBack={handleBackToOverview}
+            onUpdateConfig={(newConfig) =>
+              handleUpdateCardioConfig(selectedDay.dayIndex, newConfig)
+            }
+            onOpenOverflow={() => setIsDayOverflowOpen(true)}
+            onCompleteSession={() => {
+              if (onOpenSessionLogger) {
+                onOpenSessionLogger()
+              } else {
+                showToast('تم تسجيل جلسة الكارديو بنجاح.')
+              }
+            }}
+          />
+
+          {/* Day Overflow Sheet */}
+          <Sheet
+            isOpen={isDayOverflowOpen}
+            onClose={() => setIsDayOverflowOpen(false)}
+            title={`خيارات ${selectedDay.labelAr}`}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button
+                type="button"
+                className="ghost-secondary full-width"
+                style={{
+                  justifyContent: 'flex-start',
+                  height: '48px',
+                  gap: '10px',
+                }}
+                onClick={() => {
+                  setIsDayOverflowOpen(false)
+                  setRenamingDay(selectedDay)
+                  setRenameInputValue(selectedDay.name || selectedDay.labelAr)
+                }}
+              >
+                <Icon name="edit-2" size={16} />
+                <span>تعديل اسم اليوم</span>
+              </button>
+              <button
+                type="button"
+                className="ghost-secondary full-width"
+                style={{
+                  justifyContent: 'flex-start',
+                  height: '48px',
+                  gap: '10px',
+                }}
+                onClick={() => {
+                  setIsDayOverflowOpen(false)
+                  handleToggleDayKind(selectedDay.dayIndex)
+                }}
+              >
+                <Icon name="dumbbell" size={16} />
+                <span>تحويل إلى يوم مقاومة (قوة)</span>
+              </button>
+              <button
+                type="button"
+                className="ghost-danger full-width"
+                style={{
+                  justifyContent: 'flex-start',
+                  height: '48px',
+                  gap: '10px',
+                }}
+                onClick={() => {
+                  setIsDayOverflowOpen(false)
+                  handleDeleteDay(selectedDay.dayIndex)
+                }}
+              >
+                <IconTrash size={16} />
+                <span>حذف هذا اليوم</span>
+              </button>
+            </div>
+          </Sheet>
+
+          {/* Rename Day Sheet */}
+          {renamingDay && (
+            <Sheet
+              isOpen={Boolean(renamingDay)}
+              onClose={() => setRenamingDay(null)}
+              title="تعديل اسم اليوم"
+            >
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (renamingDay) {
+                    handleRenameDay(renamingDay.dayIndex, renameInputValue)
+                  }
+                }}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                }}
+              >
+                <Field
+                  label="اسم اليوم"
+                  value={renameInputValue}
+                  onChange={(e) => setRenameInputValue(e.target.value)}
+                  placeholder="مثال: كارديو خفيف، جري صباحي..."
+                  autoFocus
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '8px',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <Button
+                    type="button"
+                    variant="subtle"
+                    onClick={() => setRenamingDay(null)}
+                  >
+                    إلغاء
+                  </Button>
+                  <Button type="submit" variant="primary">
+                    حفظ الاسم
+                  </Button>
+                </div>
+              </form>
+            </Sheet>
+          )}
+
+          {toastMessage && <Toast message={toastMessage} />}
+        </>
+      )
+    }
+
     const warmupExercises = selectedDay.exercises.filter(
       (e) => e.section === 'warmup',
     )
@@ -639,7 +1249,7 @@ export function WeeklyPlanView({
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
                     ''
-                  const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى' : pe.reps}`
+                  const setsReps = formatPrescription(pe)
 
                   return (
                     <ListRow
@@ -682,7 +1292,7 @@ export function WeeklyPlanView({
                               disabled={globalIdx === 0}
                               aria-label="تحريك لأعلى"
                             >
-                              ▲
+                              <Icon name="chevron-up" size={14} />
                             </button>
                             <button
                               type="button"
@@ -700,7 +1310,7 @@ export function WeeklyPlanView({
                               }
                               aria-label="تحريك لأسفل"
                             >
-                              ▼
+                              <Icon name="chevron-down" size={14} />
                             </button>
                             <button
                               type="button"
@@ -714,7 +1324,7 @@ export function WeeklyPlanView({
                               }}
                               aria-label="حذف"
                             >
-                              ✕
+                              <Icon name="x" size={14} />
                             </button>
                           </div>
                         ) : (
@@ -822,7 +1432,7 @@ export function WeeklyPlanView({
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
                     ''
-                  const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى' : pe.reps}`
+                  const setsReps = formatPrescription(pe)
 
                   return (
                     <ListRow
@@ -865,7 +1475,7 @@ export function WeeklyPlanView({
                               disabled={globalIdx === 0}
                               aria-label="تحريك لأعلى"
                             >
-                              ▲
+                              <Icon name="chevron-up" size={14} />
                             </button>
                             <button
                               type="button"
@@ -883,7 +1493,7 @@ export function WeeklyPlanView({
                               }
                               aria-label="تحريك لأسفل"
                             >
-                              ▼
+                              <Icon name="chevron-down" size={14} />
                             </button>
                             <button
                               type="button"
@@ -897,7 +1507,7 @@ export function WeeklyPlanView({
                               }}
                               aria-label="حذف"
                             >
-                              ✕
+                              <Icon name="x" size={14} />
                             </button>
                           </div>
                         ) : (
@@ -964,7 +1574,7 @@ export function WeeklyPlanView({
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
                     ''
-                  const setsReps = `${pe.sets} × ${pe.reps === 0 ? 'أقصى' : pe.reps}`
+                  const setsReps = formatPrescription(pe)
 
                   return (
                     <ListRow
@@ -996,8 +1606,9 @@ export function WeeklyPlanView({
                                 globalIdx,
                               )
                             }}
+                            aria-label="حذف"
                           >
-                            ✕
+                            <Icon name="x" size={14} />
                           </button>
                         ) : (
                           <div
@@ -1093,6 +1704,55 @@ export function WeeklyPlanView({
             >
               تحويل التمارين لبدائل منزلية
             </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsDayOverflowOpen(false)
+                setRenamingDay(selectedDay)
+                setRenameInputValue(selectedDay.name || selectedDay.labelAr)
+              }}
+            >
+              <Icon name="edit-2" size={16} />
+              <span>تعديل اسم اليوم</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsDayOverflowOpen(false)
+                handleToggleDayKind(selectedDay.dayIndex)
+              }}
+            >
+              <Icon name="activity" size={16} />
+              <span>تحويل إلى يوم كارديو</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-danger full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsDayOverflowOpen(false)
+                handleDeleteDay(selectedDay.dayIndex)
+              }}
+            >
+              <IconTrash size={16} />
+              <span>حذف هذا اليوم</span>
+            </button>
           </div>
         </Sheet>
 
@@ -1135,6 +1795,55 @@ export function WeeklyPlanView({
             customExercises={customExercises}
             dayLabelAr={selectedDay.labelAr}
           />
+        )}
+
+        {/* Rename Day Sheet */}
+        {renamingDay && (
+          <Sheet
+            isOpen={Boolean(renamingDay)}
+            onClose={() => setRenamingDay(null)}
+            title="تعديل اسم اليوم"
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                if (renamingDay) {
+                  handleRenameDay(renamingDay.dayIndex, renameInputValue)
+                }
+              }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+              }}
+            >
+              <Field
+                label="اسم اليوم"
+                value={renameInputValue}
+                onChange={(e) => setRenameInputValue(e.target.value)}
+                placeholder="مثال: دفع علوي، سحب وظهر..."
+                autoFocus
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '8px',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <Button
+                  type="button"
+                  variant="subtle"
+                  onClick={() => setRenamingDay(null)}
+                >
+                  إلغاء
+                </Button>
+                <Button type="submit" variant="primary">
+                  حفظ الاسم
+                </Button>
+              </div>
+            </form>
+          </Sheet>
         )}
 
         {toastMessage && <Toast message={toastMessage} />}
@@ -1211,33 +1920,47 @@ export function WeeklyPlanView({
         )}
 
         {/* Training days mismatch Callout */}
-        {profile?.trainingDaysPerWeek &&
-          program.days.length !== profile.trainingDaysPerWeek && (
+        {(() => {
+          const strengthDaysCount = program.days.filter((d) => d.kind !== 'cardio').length
+          if (!profile?.trainingDaysPerWeek || strengthDaysCount === profile.trainingDaysPerWeek) {
+            return null
+          }
+          return (
             <Callout
               variant="warning"
               title="اختلاف في أيام التدريب"
               action={
-                <Button
-                  size="sm"
-                  variant="subtle"
-                  onClick={() => {
-                    if (profile && onUpdateProfile) {
-                      onUpdateProfile({
-                        ...profile,
-                        trainingDaysPerWeek: program.days.length,
-                      })
-                      showToast(`تم اعتماد ${program.days.length} أيام في الملف الشخصي`)
-                    }
-                  }}
-                >
-                  اعتمد {program.days.length} أيام
-                </Button>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <Button
+                    size="sm"
+                    variant="subtle"
+                    onClick={() => {
+                      if (profile && onUpdateProfile) {
+                        onUpdateProfile({
+                          ...profile,
+                          trainingDaysPerWeek: strengthDaysCount,
+                        })
+                        showToast(`تم اعتماد ${strengthDaysCount} أيام في الملف الشخصي`)
+                      }
+                    }}
+                  >
+                    اعتمد {strengthDaysCount} أيام
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={handleOpenScheduleEditor}
+                  >
+                    تعديل الجدول
+                  </Button>
+                </div>
               }
             >
-              برنامجك فيه {program.days.length} أيام لكن اخترت{' '}
+              برنامجك فيه {strengthDaysCount} أيام تمارين مقاومة (تم استثناء الكارديو)، بينما اخترت{' '}
               {profile.trainingDaysPerWeek} أيام في الملف الشخصي.
             </Callout>
-          )}
+          )
+        })()}
 
         {/* Program Header: Name + N أيام أسبوعياً + small "مقفل" status */}
         <div
@@ -1298,11 +2021,28 @@ export function WeeklyPlanView({
 
         {/* Week ListRows */}
         <section className="screen-section">
-          <div className="section-title">
-            <span>أيام الجدول التدريبي</span>
-            <span className="section-title-counter">
-              {program.days.length} أيام
-            </span>
+          <div
+            className="section-title"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '10px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>أيام الجدول التدريبي</span>
+              <span className="section-title-counter">
+                {program.days.length} أيام
+              </span>
+            </div>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setIsAddDaySheetOpen(true)}
+            >
+              + إضافة يوم
+            </Button>
           </div>
 
           <div
@@ -1313,8 +2053,22 @@ export function WeeklyPlanView({
             }}
           >
             {program.days.map((day, idx) => {
-              const isToday = day.dayIndex === todayDayIndex
+              const isToday = Boolean(
+                todaySession.programDay &&
+                  ((day.id && todaySession.programDay.id && day.id === todaySession.programDay.id) ||
+                    day.dayIndex === todaySession.programDay.dayIndex),
+              )
+              const isCardio = day.kind === 'cardio'
               const exerciseCount = day.exercises.length
+              const cleanName = cleanDayName(day.name || day.labelAr)
+              const schedule = getOrDeriveSchedule(profile, program)
+              const scheduledWeekday = Object.entries(schedule).find(
+                ([_wd, slot]) => slot === day.id || slot === String(day.dayIndex),
+              )?.[0]
+              const weekdayInfo = scheduledWeekday !== undefined
+                ? ALL_WEEKDAYS.find((w) => w.weekday === Number(scheduledWeekday))
+                : null
+              const displayTitle = weekdayInfo ? `${weekdayInfo.nameAr} · ${cleanName}` : cleanName
 
               return (
                 <ListRow
@@ -1329,8 +2083,14 @@ export function WeeklyPlanView({
                         borderRadius: '10px',
                         background: isToday
                           ? 'var(--color-accent)'
-                          : 'var(--color-surface-2)',
-                        color: isToday ? '#ffffff' : 'var(--ink)',
+                          : isCardio
+                            ? 'rgba(2, 136, 209, 0.15)'
+                            : 'var(--color-surface-2)',
+                        color: isToday
+                          ? '#ffffff'
+                          : isCardio
+                            ? '#0288d1'
+                            : 'var(--ink)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -1340,7 +2100,11 @@ export function WeeklyPlanView({
                         fontVariantNumeric: 'tabular-nums',
                       }}
                     >
-                      {idx + 1}
+                      {isCardio ? (
+                        <Icon name="activity" size={18} />
+                      ) : (
+                        idx + 1
+                      )}
                     </div>
                   }
                   title={
@@ -1351,7 +2115,21 @@ export function WeeklyPlanView({
                         gap: '6px',
                       }}
                     >
-                      <span>{day.labelAr}</span>
+                      <span>{displayTitle}</span>
+                      {isCardio && (
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            color: '#0288d1',
+                            background: 'rgba(2, 136, 209, 0.12)',
+                            padding: '2px 6px',
+                            borderRadius: '6px',
+                          }}
+                        >
+                          كارديو
+                        </span>
+                      )}
                       {isToday && (
                         <span
                           style={{
@@ -1368,7 +2146,13 @@ export function WeeklyPlanView({
                       )}
                     </div>
                   }
-                  secondary={deriveDayMuscleSummary(day.exercises)}
+                  secondary={
+                    isCardio
+                      ? day.cardioConfig
+                        ? `${day.cardioConfig.activity || 'كارديو'} · ${day.cardioConfig.plannedMinutes || 30} دقيقة`
+                        : 'جلسة كارديو ولياقة'
+                      : deriveDayMuscleSummary(day.exercises)
+                  }
                   trailing={
                     <div
                       style={{
@@ -1377,16 +2161,37 @@ export function WeeklyPlanView({
                         gap: '8px',
                       }}
                     >
-                      <span
+                      {!isCardio && (
+                        <span
+                          style={{
+                            fontSize: '12.5px',
+                            fontWeight: 600,
+                            color: 'var(--muted)',
+                            fontVariantNumeric: 'tabular-nums',
+                          }}
+                        >
+                          {exerciseCount} تمارين
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        className="ghost tiny day-menu-btn"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setDayMenuTarget(day)
+                        }}
+                        aria-label="خيارات اليوم"
                         style={{
-                          fontSize: '12.5px',
-                          fontWeight: 600,
-                          color: 'var(--muted)',
-                          fontVariantNumeric: 'tabular-nums',
+                          padding: '4px',
+                          borderRadius: '6px',
+                          color: 'var(--color-text-2)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}
                       >
-                        {exerciseCount} تمارين
-                      </span>
+                        <IconMoreVertical size={16} />
+                      </button>
                       <IconChevronLeft
                         size={16}
                         style={{ color: 'var(--muted)' }}
@@ -1438,6 +2243,22 @@ export function WeeklyPlanView({
         title="إضافة وتخصيص"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button
+            type="button"
+            className="ghost-secondary full-width"
+            style={{
+              justifyContent: 'flex-start',
+              height: '48px',
+              gap: '10px',
+            }}
+            onClick={() => {
+              setIsPlusSheetOpen(false)
+              setIsAddDaySheetOpen(true)
+            }}
+          >
+            <IconPlus size={18} />
+            <span>إضافة يوم للجدول</span>
+          </button>
           <button
             type="button"
             className="ghost-secondary full-width"
@@ -1929,6 +2750,172 @@ export function WeeklyPlanView({
           }
         }}
       />
+
+      {/* Sheet: Add Day */}
+      <Sheet
+        isOpen={isAddDaySheetOpen}
+        onClose={() => setIsAddDaySheetOpen(false)}
+        title="إضافة يوم جديد إلى الجدول"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <button
+            type="button"
+            className="ghost-secondary full-width"
+            style={{
+              justifyContent: 'flex-start',
+              height: '52px',
+              gap: '12px',
+              padding: '0 16px',
+            }}
+            onClick={() => handleAddDay('strength')}
+          >
+            <IconDumbbell size={20} />
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontWeight: 700, fontSize: '14px' }}>
+                يوم تمارين مقاومة (قوة)
+              </div>
+              <div style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
+                إضافة يوم لتمارين الحديد والأوزان
+              </div>
+            </div>
+          </button>
+          <button
+            type="button"
+            className="ghost-secondary full-width"
+            style={{
+              justifyContent: 'flex-start',
+              height: '52px',
+              gap: '12px',
+              padding: '0 16px',
+            }}
+            onClick={() => handleAddDay('cardio')}
+          >
+            <Icon name="activity" size={20} />
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontWeight: 700, fontSize: '14px' }}>
+                يوم كارديو ولياقة
+              </div>
+              <div style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
+                جري، مشي سريع، دراجة ثابتة، سباحة...
+              </div>
+            </div>
+          </button>
+        </div>
+      </Sheet>
+
+      {/* Sheet: Per-Day Menu */}
+      <Sheet
+        isOpen={Boolean(dayMenuTarget)}
+        onClose={() => setDayMenuTarget(null)}
+        title={
+          dayMenuTarget
+            ? `خيارات: ${dayMenuTarget.name || dayMenuTarget.labelAr}`
+            : 'خيارات اليوم'
+        }
+      >
+        {dayMenuTarget && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                const target = dayMenuTarget
+                setDayMenuTarget(null)
+                setRenamingDay(target)
+                setRenameInputValue(target.name || target.labelAr)
+              }}
+            >
+              <Icon name="edit-2" size={16} />
+              <span>تعديل اسم اليوم</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => handleToggleDayKind(dayMenuTarget.dayIndex)}
+            >
+              <Icon
+                name={
+                  dayMenuTarget.kind === 'cardio' ? 'dumbbell' : 'activity'
+                }
+                size={16}
+              />
+              <span>
+                {dayMenuTarget.kind === 'cardio'
+                  ? 'تحويل إلى يوم مقاومة (قوة)'
+                  : 'تحويل إلى يوم كارديو'}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="ghost-danger full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => handleDeleteDay(dayMenuTarget.dayIndex)}
+            >
+              <IconTrash size={16} />
+              <span>حذف هذا اليوم</span>
+            </button>
+          </div>
+        )}
+      </Sheet>
+
+      {/* Sheet / Modal: Rename Day */}
+      {renamingDay && (
+        <Sheet
+          isOpen={Boolean(renamingDay)}
+          onClose={() => setRenamingDay(null)}
+          title="تعديل اسم اليوم"
+        >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              if (renamingDay) {
+                handleRenameDay(renamingDay.dayIndex, renameInputValue)
+              }
+            }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+          >
+            <Field
+              label="اسم اليوم"
+              value={renameInputValue}
+              onChange={(e) => setRenameInputValue(e.target.value)}
+              placeholder="مثال: دفع علوي، كارديو صباحي..."
+              autoFocus
+            />
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <Button
+                type="button"
+                variant="subtle"
+                onClick={() => setRenamingDay(null)}
+              >
+                إلغاء
+              </Button>
+              <Button type="submit" variant="primary">
+                حفظ الاسم
+              </Button>
+            </div>
+          </form>
+        </Sheet>
+      )}
 
       {toastMessage && <Toast message={toastMessage} />}
     </div>

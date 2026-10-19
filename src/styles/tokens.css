@@ -108,7 +108,7 @@
   --inset: 12px 16px;
 
   /* Radii */
-  --radius-card: 12px;
+  --radius-card: 16px;
   --radius-control: 10px;
   --radius-full: 999px;
 
@@ -129,14 +129,25 @@
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
 
+  /* Layout Shell Contract Tokens (G3 Part 1) */
+  --page-end: 16px;
+  --footer-max-height: 72px;
+  --bottom-nav-height: 64px;
+
   /* Shadows: Borders over shadows; subtle elevation for bottom sheets */
   --shadow-sheet: 0 -4px 20px rgba(0, 0, 0, 0.25);
   --shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.15);
 
-  /* Reserved Muscle Map Colors (Strictly Isolated to Anatomy Visuals) */
-  --color-muscle-primary: #e53935;
-  --color-muscle-secondary: #fdd835;
-  --color-muscle-secondary-border: #f9a825;
+  /* Reserved Muscle Map Colors (Strictly Isolated to Anatomy Visuals, Delta E > 80) */
+  --atlas-primary: #e53935;
+  --atlas-primary-stroke: #b71c1c;
+  --atlas-secondary: #fdd835;
+  --atlas-secondary-stroke: #f9a825;
+  --atlas-approx-stroke: #b71c1c;
+  --atlas-dimmed: rgba(140, 145, 155, 0.25);
+  --color-muscle-primary: var(--atlas-primary);
+  --color-muscle-secondary: var(--atlas-secondary);
+  --color-muscle-secondary-border: var(--atlas-secondary-stroke);
 
   /* Default Light Theme Colors */
   --color-bg: #f4f5f7;
@@ -151,21 +162,21 @@
   --color-accent-hover: #ea580c;
   --color-accent-pressed: #d04300;
   --color-accent-disabled: #e2e5ea;
-  --color-accent-text: #c2410c; /* WCAG AA 4.75:1 on #F4F5F7 */
-  --color-accent-contrast: #ffffff;
+  --color-accent-text: #b83a00; /* WCAG AA >= 5:1 on light backgrounds */
+  --color-accent-contrast: #0b0c0e;
   --color-accent-tint: rgba(249, 87, 0, 0.14); /* 14% accent tint over surface for selected chips/cards */
   --color-focus-ring: rgba(249, 87, 0, 0.35);
 
-  --on-accent: #ffffff;
+  --on-accent: #0b0c0e;
   --on-accent-disabled: #6b7280;
 
   /* Primary Button Tokens (Light Mode: WCAG AA >= 4.5:1) */
   --btn-primary-bg: #f95700;
-  --btn-primary-fg: #ffffff;
+  --btn-primary-fg: #0b0c0e;
   --btn-primary-hover-bg: #ea580c;
-  --btn-primary-hover-fg: #ffffff;
+  --btn-primary-hover-fg: #0b0c0e;
   --btn-primary-active-bg: #d04300;
-  --btn-primary-active-fg: #ffffff;
+  --btn-primary-active-fg: #0b0c0e;
   --btn-primary-focus-ring: rgba(249, 87, 0, 0.4);
   --btn-primary-disabled-bg: #e2e5ea;
   --btn-primary-disabled-fg: #6b7280;
@@ -238,20 +249,20 @@
   --color-accent-pressed: #e04f00;
   --color-accent-disabled: #2d3139;
   --color-accent-text: #ff853f; /* WCAG AA > 8:1 on #0B0C0E */
-  --color-accent-contrast: #ffffff;
+  --color-accent-contrast: #0b0c0e;
   --color-accent-tint: rgba(255, 107, 26, 0.14);
   --color-focus-ring: rgba(255, 107, 26, 0.35);
 
-  --on-accent: #ffffff;
+  --on-accent: #0b0c0e;
   --on-accent-disabled: #9ca3af;
 
   /* Primary Button Tokens (Dark Mode: WCAG AA >= 4.5:1) */
   --btn-primary-bg: #ff6b1a;
-  --btn-primary-fg: #ffffff;
+  --btn-primary-fg: #0b0c0e;
   --btn-primary-hover-bg: #ff853f;
-  --btn-primary-hover-fg: #ffffff;
+  --btn-primary-hover-fg: #0b0c0e;
   --btn-primary-active-bg: #e04f00;
-  --btn-primary-active-fg: #ffffff;
+  --btn-primary-active-fg: #0b0c0e;
   --btn-primary-focus-ring: rgba(255, 107, 26, 0.4);
   --btn-primary-disabled-bg: #2d3139;
   --btn-primary-disabled-fg: #9ca3af;
@@ -259,6 +270,12 @@
   /* Anatomical Atlas Tokens (Dark Mode) */
   --atlas-muscle: #3a3f47;
   --atlas-line: #525862;
+  --atlas-primary: #ef5350;
+  --atlas-primary-stroke: #b71c1c;
+  --atlas-secondary: #ffee58;
+  --atlas-secondary-stroke: #fdd835;
+  --atlas-approx-stroke: #ef5350;
+  --atlas-dimmed: rgba(180, 185, 195, 0.2);
 
   --color-success: #22c55e;
   --color-success-bg: #052e16;

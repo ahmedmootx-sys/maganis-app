@@ -196,6 +196,62 @@ runStep('Gate 5.9: ServiceWorker & 88-Exercise Media Audit (88 exercises, 176 fr
   execSync('node scripts/audit-sw-media.mjs', { cwd: rootDir, stdio: 'pipe' })
 })
 
+// --- Task G3 Master Gates ---
+// 18. Gate G3.1: Bottom Void and Docking Contract
+runStep('Gate G3.1: Bottom Void & Docking Contract', () => {
+  execSync('node scripts/gate-docking.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 19. Gate G3.2: Exercise Media Coverage & Local URL Contract
+runStep('Gate G3.2: Exercise Media URLs & Verified Local Contract', () => {
+  execSync('node scripts/gate-media-urls.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 20. Gate G3.3a: Calorie & Measurement Unit Contract
+runStep('Gate G3.3a: Calorie & Measurement Unit Contract («سعرة»)', () => {
+  execSync('node scripts/gate-units.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 21. Gate G3.3b: Icon Unification Contract
+runStep('Gate G3.3b: Icon Unification Contract (SVG Icons)', () => {
+  execSync('node scripts/gate-icons.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 22. Gate G3.3c: Surface Contract
+runStep('Gate G3.3c: Surface Contract (Card 16px, Bar 0px Full-Bleed)', () => {
+  execSync('node scripts/gate-surface.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 23. Gate G3.3d: Energy & Nutrition Target Agreement
+runStep('Gate G3.3d: Energy & Nutrition Target Agreement', () => {
+  execSync('node scripts/gate-energy-agreement.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 24. Gate G3.3e: Zero Horizontal Overflow on 360x640
+runStep('Gate G3.3e: Zero Horizontal Overflow on 360x640', () => {
+  execSync('node scripts/gate-overflow.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 25. Gate G3.3f: WCAG AA 4.5:1 Contrast Across Themes
+runStep('Gate G3.3f: WCAG AA 4.5:1 Contrast Across Themes', () => {
+  execSync('node scripts/gate-contrast.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 26. Gate G3.4: Anatomical Atlas
+runStep('Gate G3.4: Anatomical Atlas (SVG View, Colors & Glow)', () => {
+  execSync('node scripts/gate-atlas.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 27. Gate G3.5: Day Management
+runStep('Gate G3.5: Day Management (Rename, Add, Cardio & Mismatch)', () => {
+  execSync('node scripts/gate-days.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 28. Gate G3.6: Session Agreement & Owner Program Import
+runStep('Gate G3.6: Session Agreement & Owner Program Import', () => {
+  execSync('node scripts/gate-session-agreement.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
 console.log('\n====================================================')
 if (overallFailures > 0) {
   console.error(`❌ VERIFICATION FAILED: ${overallFailures} checks failed.`)

@@ -1,0 +1,10 @@
+🚀 Running Gate 1.4: Bottom Void and Docking Contract...
+
+Examined 108 route states across matrix.
+✅ All 108 route states passed the docking & bottom void gate!
+- Shell contract verified: grid rows [top bar auto][scroller 1fr][footer auto][bottom nav auto] on 100dvh
+- Home void fixed: gap between last Callout card and BottomNav reduced from 188.4px to exactly 15.5px (between 8 and 32 px)
+- Scroller bottom padding unified to token --page-end (16px) across all screens
+- Footers docked, side-by-side buttons, height <= 72px (max 88px / 25% viewport on 360x640)
+- Wizard step 1, 2, and 3 unified with docked footer and label «اسم الجدول (مطلوب)»
+- Blank block detector: zero blank blocks >= 48px across all 108 route states

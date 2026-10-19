@@ -9,6 +9,7 @@ import {
   type MuscleGroup,
 } from '../shared/types.ts'
 import { Select } from '../../components/Select'
+import { Icon } from '../../ui/Icon.tsx'
 
 interface ExercisePickerModalProps {
   dayLabelAr: string
@@ -93,8 +94,8 @@ export function ExercisePickerModal({
       >
         <div className="modal-header">
           <h2>إضافة تمرين إلى {dayLabelAr}</h2>
-          <button type="button" className="close-btn" onClick={onClose}>
-            ✕
+          <button type="button" className="close-btn" onClick={onClose} aria-label="إغلاق">
+            <Icon name="x" size={18} />
           </button>
         </div>
 
