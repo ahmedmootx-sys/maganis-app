@@ -6,3 +6,6 @@ package-lock.json
 .cache/
 tools/
 public/atlas/
+public/version.json
+scratch/
+
