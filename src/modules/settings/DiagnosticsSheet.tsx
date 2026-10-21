@@ -122,7 +122,11 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
         dpr: String(window.devicePixelRatio),
         rootFontSize: rootFs,
         safeArea: safeAreaStr,
-        hasSaveFilePicker: 'showSaveFilePicker' in window ? 'true' : 'false',
+        hasSaveFilePicker:
+          typeof (window as unknown as { showSaveFilePicker?: unknown })
+            .showSaveFilePicker === 'function'
+            ? 'true'
+            : 'false',
         shareCsv: testShare('text/csv', 'table.csv') ? 'true' : 'false',
         sharePdf: testShare('application/pdf', 'doc.pdf') ? 'true' : 'false',
         shareText: testShare('text/plain', 'note.txt') ? 'true' : 'false',

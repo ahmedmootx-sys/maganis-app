@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import type {
   Exercise,
   MuscleGroup,
@@ -13,9 +13,13 @@ import {
   EQUIPMENT_LABELS,
   MUSCLE_GROUP_LABELS,
 } from '../shared/types.ts'
-import { getExerciseById, EXERCISES } from './exercises.ts'
+import {
+  getExerciseById,
+  getCatalogReplacements,
+  EXERCISES,
+} from './exercises.ts'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
-import { MovementExplainer } from './MovementExplainer.tsx'
+import { ExerciseMediaCard } from '../../components/ExerciseMediaCard.tsx'
 import {
   getExerciseDetailsWithLimitations,
   getRegionLabel,
@@ -31,6 +35,7 @@ import {
   Button,
   Segmented,
   ConfirmSheet,
+  Sheet,
 } from '../../ui/index.ts'
 import { fmtRange, fmtSets, fmtReps } from '../../utils/bidi.ts'
 
@@ -131,6 +136,7 @@ export function ExerciseDetailView({
     newExerciseId: string
     newExerciseName: string
   }>({ isOpen: false, newExerciseId: '', newExerciseName: '' })
+  const [showSwapModal, setShowSwapModal] = useState(false)
 
   // Find exercise in unified library or use passed object
   const exercise = useMemo(() => {
@@ -221,7 +227,7 @@ export function ExerciseDetailView({
     return { max1RM: max, bestSet }
   }, [exerciseHistory])
 
-  // Build Tab options (Sticky Tabs: 5 tabs always present)
+  // Build Tab options (Sticky Tabs: 5 tabs)
   const tabOptions = useMemo(() => {
     return [
       { value: 'understanding', label: 'الفهم' },
@@ -231,6 +237,15 @@ export function ExerciseDetailView({
       { value: 'history', label: 'السجل' },
     ] as Array<{ value: TabType; label: string }>
   }, [])
+
+  useEffect(() => {
+    if (
+      !tabOptions.some((t) => t.value === activeTab) &&
+      tabOptions.length > 0
+    ) {
+      setActiveTab(tabOptions[0].value)
+    }
+  }, [tabOptions, activeTab])
 
   // Prescription Rules & Personalisation computations
   interface PrescriptionRules {
@@ -536,6 +551,35 @@ export function ExerciseDetailView({
           {exercise.targetSubMuscleAr && (
             <span className="chip">{exercise.targetSubMuscleAr}</span>
           )}
+          {exercise.archived && (
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'rgba(245, 158, 11, 0.12)',
+                border: '1px solid var(--color-warning, #f59e0b)',
+                borderRadius: 'var(--radius-control)',
+                padding: '4px 10px',
+              }}
+            >
+              <span
+                style={{ fontSize: '12px', fontWeight: 700, color: '#f59e0b' }}
+              >
+                خارج القائمة المختصرة
+              </span>
+              {onSwapExercise && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setShowSwapModal(true)}
+                  style={{ height: '26px', padding: '0 8px', fontSize: '11px' }}
+                >
+                  استبدل
+                </Button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Risk Banner / Callout if flagged */}
@@ -621,36 +665,8 @@ export function ExerciseDetailView({
           </Callout>
         )}
 
-        {/* Section: الحركة — Visual Movement Explainer (G 3.5) */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-            width: '100%',
-          }}
-        >
-          <div
-            style={{
-              fontSize: '16px',
-              fontWeight: 800,
-              color: 'var(--color-text)',
-            }}
-          >
-            الحركة
-          </div>
-          <MovementExplainer
-            exerciseKey={exercise.id || exerciseId}
-            exerciseName={nameAr}
-            images={
-              exercise.imageUrl
-                ? ([exercise.imageUrl, exercise.gifUrl].filter(
-                    Boolean,
-                  ) as string[])
-                : []
-            }
-          />
-        </div>
+        {/* Visual Media Card (Part 1.4: 180x180 centered GIF or Start/Peak frames, or hidden if none) */}
+        <ExerciseMediaCard exercise={exercise} />
 
         {/* Sticky Tabs Header (44px height, container inherits border radius, no square dark backdrop) */}
         <div
@@ -1883,6 +1899,91 @@ export function ExerciseDetailView({
           })
         }}
       />
+
+      {showSwapModal && exercise && (
+        <Sheet
+          isOpen={showSwapModal}
+          onClose={() => setShowSwapModal(false)}
+          title="استبدال التمرين المؤرشف"
+        >
+          <div
+            style={{
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: '13.5px',
+                color: 'var(--color-text-2)',
+              }}
+            >
+              هذا التمرين خارج القائمة المختصرة المعتمدة. اختر تمريناً معتمداً
+              بديلاً بنفس الاستهداف العضلي:
+            </p>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                maxHeight: '360px',
+                overflowY: 'auto',
+              }}
+            >
+              {getCatalogReplacements(exercise).map((rep) => (
+                <button
+                  key={rep.id}
+                  type="button"
+                  onClick={() => {
+                    if (onSwapExercise && exercise.id) {
+                      onSwapExercise(exercise.id, rep.id)
+                      setShowSwapModal(false)
+                    }
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '10px 14px',
+                    background: 'var(--color-surface-2)',
+                    border: '1px solid var(--color-divider)',
+                    borderRadius: 'var(--radius-control)',
+                    cursor: 'pointer',
+                    textAlign: 'start',
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      {rep.nameAr}
+                    </div>
+                    <div
+                      style={{ fontSize: '12px', color: 'var(--color-text-2)' }}
+                      dir="ltr"
+                    >
+                      {rep.nameEn || rep.name}
+                    </div>
+                  </div>
+                  <span
+                    className="btn btn--secondary btn--small"
+                    style={{ pointerEvents: 'none' }}
+                  >
+                    اختيار
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </Sheet>
+      )}
     </div>
   )
 }

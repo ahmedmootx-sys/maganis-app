@@ -1,0 +1,7 @@
+=== G4 Defect 3: AI Program Designer Entry & Fixture Defects (Before Fix) ===
+AI Designer entry point in Training: ABSENT
+AI Designer entry point in Settings: ABSENT
+Placeholder exercises with meaningless targetSubMuscleAr "عضلة رئيسية": 72
+Exercises with [قيد المراجعة] baked into customName: 72
+Exercises with reps: 0 and amrap: true: 2
+Status: REPRODUCED DEFECT

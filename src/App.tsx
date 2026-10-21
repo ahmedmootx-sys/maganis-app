@@ -23,8 +23,10 @@ import type { UserProfile } from './modules/onboarding/types.ts'
 import { WeeklyPlanView } from './modules/workout/WeeklyPlanView.tsx'
 import { CustomExerciseBuilder } from './modules/workout/CustomExerciseBuilder.tsx'
 import { ExerciseLibraryModal } from './modules/workout/ExerciseLibraryModal.tsx'
+import { takePreUpdateSnapshot } from './modules/backup/preUpdateSnapshot.ts'
 import { CustomScheduleModal } from './modules/workout/CustomScheduleModal.tsx'
 import { ProgramVaultModal } from './modules/workout/ProgramVaultModal.tsx'
+import { AiDesignerModal } from './modules/workout/AiDesignerModal.tsx'
 import { ActiveWorkoutSession } from './modules/workout/ActiveWorkoutSession.tsx'
 import { formatTime } from './modules/workout/workoutUtils.ts'
 import { generateProgram } from './modules/workout/programGenerator.ts'
@@ -222,6 +224,7 @@ export function App({ config }: AppProps) {
   const [activeSessionSeconds, setActiveSessionSeconds] = useState(0)
   const [showCustomScheduleModal, setShowCustomScheduleModal] = useState(false)
   const [showProgramVaultModal, setShowProgramVaultModal] = useState(false)
+  const [showAiDesignerModal, setShowAiDesignerModal] = useState(false)
   const [showAtlasDebugModal, setShowAtlasDebugModal] = useState(false)
   const [savedProgramsList, setSavedProgramsList] = useState<
     SavedWorkoutProgram[]
@@ -252,9 +255,13 @@ export function App({ config }: AppProps) {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }, [])
 
-  // --- Mobile Back Gesture & Hardware Back Button Handling ---
   const [backToastMessage, setBackToastMessage] = useState<string | null>(null)
   const [hasAppUpdate, setHasAppUpdate] = useState(false)
+
+  const showToast = useCallback((msg: string) => {
+    setBackToastMessage(msg)
+    setTimeout(() => setBackToastMessage(null), 3000)
+  }, [])
 
   useEffect(() => {
     return updateManager.subscribe((avail) => {
@@ -594,6 +601,10 @@ export function App({ config }: AppProps) {
     liveSyncManager,
   ])
 
+  useEffect(() => {
+    takePreUpdateSnapshot(handleBackupData)
+  }, [handleBackupData])
+
   const handleImported = useCallback(() => {
     setProfile(profileStore.loadProfile())
     setProgram(workoutStore.loadProgram())
@@ -845,6 +856,29 @@ export function App({ config }: AppProps) {
               />
             )}
 
+            {showAiDesignerModal && (
+              <AiDesignerModal
+                isOpen={showAiDesignerModal}
+                onClose={() => setShowAiDesignerModal(false)}
+                profile={profile}
+                limitations={profile?.limitations}
+                onSaveDraft={(prog) => {
+                  workoutStore.saveProgramToVault(
+                    prog.title || 'مسودة برنامج',
+                    prog,
+                  )
+                  setSavedProgramsList(workoutStore.getSavedPrograms())
+                  showToast('تم حفظ البرنامج كمسودة في خزانة البرامج')
+                }}
+                onSaveAndActivate={(prog) => {
+                  workoutStore.saveProgram(prog)
+                  setProgram(prog)
+                  showToast('تم تفعيل البرنامج التدريبي بنجاح')
+                }}
+                showToast={showToast}
+              />
+            )}
+
             {showLogger && (
               <SessionLogger
                 programDay={todayProgramDay}
@@ -886,6 +920,7 @@ export function App({ config }: AppProps) {
               onOpenCustomBuilder={() => setShowCustomBuilder(true)}
               onOpenSessionLogger={() => setShowLogger(true)}
               onGenerateProgram={handleGenerateProgram}
+              onOpenAiDesigner={() => setShowAiDesignerModal(true)}
             />
           </div>
         )
@@ -941,6 +976,7 @@ export function App({ config }: AppProps) {
             onImported={handleImported}
             onRestore={handleRestoreBackup}
             onOpenAtlasDebug={() => setShowAtlasDebugModal(true)}
+            onOpenAiDesigner={() => setShowAiDesignerModal(true)}
             onFactoryReset={handleFactoryReset}
           />
         )

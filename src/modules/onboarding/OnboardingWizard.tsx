@@ -22,22 +22,19 @@ import {
   Button,
   OptionList,
   Field,
-  Segmented,
   Callout,
   KeyValueList,
-  Chips,
 } from '../../ui'
 import { fmtFactor } from '../../utils/bidi.ts'
 
 import {
-  REGIONS,
   STATUS_OPTIONS,
   getRegionLabel,
   type UserLimitation,
-  type LimitationStatus,
-  type LimitationRegion,
 } from '../workout/limitations.ts'
-import { Icon } from '../../ui/Icon.tsx'
+
+import { Choice } from '../../ui/Choice.tsx'
+import { LimitationsEditor } from '../workout/LimitationsEditor.tsx'
 
 export interface OnboardingWizardProps {
   store: ProfileStore
@@ -51,7 +48,7 @@ interface FormState {
   bodyGoal: BodyGoal | null
   trainingStyle: TrainingStyle[]
   trainingDaysPerWeek: number | null
-  sessionMinutes: number
+  sessionMinutes: number | null
   sessionIntensity: 'light' | 'moderate' | 'hard' | null
   experienceLevel: 'beginner' | 'intermediate' | 'advanced' | null
   trainingLocation: 'gym' | 'home' | 'both' | null
@@ -73,7 +70,7 @@ const DEFAULT_FORM: FormState = {
   bodyGoal: null,
   trainingStyle: [],
   trainingDaysPerWeek: null,
-  sessionMinutes: 60,
+  sessionMinutes: null,
   sessionIntensity: null,
   experienceLevel: null,
   trainingLocation: null,
@@ -195,38 +192,6 @@ export function OnboardingWizard({
     setForm((prev) => ({ ...prev, ...patch }))
   }
 
-  const toggleLimitationRegion = (regionId: LimitationRegion) => {
-    setForm((prev) => {
-      const exists = prev.limitations.some((l) => l.region === regionId)
-      if (exists) {
-        return {
-          ...prev,
-          limitations: prev.limitations.filter((l) => l.region !== regionId),
-        }
-      } else {
-        return {
-          ...prev,
-          limitations: [
-            ...prev.limitations,
-            { region: regionId, status: 'current_pain' },
-          ],
-        }
-      }
-    })
-  }
-
-  const updateLimitationStatus = (
-    regionId: LimitationRegion,
-    status: LimitationStatus,
-  ) => {
-    setForm((prev) => ({
-      ...prev,
-      limitations: prev.limitations.map((l) =>
-        l.region === regionId ? { ...l, status } : l,
-      ),
-    }))
-  }
-
   // --- Step Validations ---
   const isStep1Valid = form.bodyGoal !== null && form.trainingStyle.length > 0
 
@@ -234,6 +199,7 @@ export function OnboardingWizard({
     form.trainingDaysPerWeek !== null &&
     form.trainingDaysPerWeek >= 2 &&
     form.trainingDaysPerWeek <= 6 &&
+    form.sessionMinutes !== null &&
     form.sessionIntensity !== null &&
     form.experienceLevel !== null &&
     form.trainingLocation !== null
@@ -256,6 +222,9 @@ export function OnboardingWizard({
       case 2:
         if (f.trainingDaysPerWeek === null) {
           return 'حدد أيام التمرين في الأسبوع للمتابعة'
+        }
+        if (f.sessionMinutes === null) {
+          return 'حدد مدة الجلسة التدريبية للمتابعة'
         }
         if (f.sessionIntensity === null) {
           return 'حدد شدة الجلسة التدريبية للمتابعة'
@@ -387,13 +356,13 @@ export function OnboardingWizard({
           ? mapLifestyleToLegacyActivity(form.lifestyle)
           : 'moderate',
         lifestyle: form.lifestyle ?? 2,
-        sessionMinutes: form.sessionMinutes,
+        sessionMinutes: form.sessionMinutes ?? 60,
         sessionIntensity: form.sessionIntensity ?? 'moderate',
         workoutBlocks: [
           {
             type: 'resistance',
             sessionsPerWeek: form.trainingDaysPerWeek ?? 4,
-            minutesPerSession: form.sessionMinutes,
+            minutesPerSession: form.sessionMinutes ?? 60,
             intensity: form.sessionIntensity ?? 'moderate',
           },
         ],
@@ -546,70 +515,30 @@ export function OnboardingWizard({
               >
                 2. ما هو أسلوب تمرينك المفضل؟ (اختر واحدًا أو أكثر)
               </div>
-              <div
+              <Choice
+                variant="segmented"
+                multiSelect
+                options={TRAINING_STYLES.map((style) => ({
+                  value: style.value,
+                  label: style.labelAr,
+                }))}
+                value={form.trainingStyle}
+                onChange={(val) => {
+                  const styleVal = val as TrainingStyle
+                  const isSelected = form.trainingStyle.includes(styleVal)
+                  const next = isSelected
+                    ? form.trainingStyle.filter((s) => s !== styleVal)
+                    : [...form.trainingStyle, styleVal]
+                  updateForm({ trainingStyle: next })
+                }}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '10px',
+                  gridAutoFlow: 'row',
+                  gap: '8px',
                 }}
-              >
-                {TRAINING_STYLES.map((style) => {
-                  const isSelected = form.trainingStyle.includes(style.value)
-                  return (
-                    <button
-                      key={style.value}
-                      type="button"
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      className={`option-row ${isSelected ? 'option-row--selected' : ''}`}
-                      onClick={() => {
-                        const next = isSelected
-                          ? form.trainingStyle.filter((s) => s !== style.value)
-                          : [...form.trainingStyle, style.value]
-                        updateForm({ trainingStyle: next })
-                      }}
-                      style={{
-                        minHeight: '56px',
-                        borderRadius: '12px',
-                        padding: '12px 16px',
-                        boxSizing: 'border-box',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: '8px',
-                        cursor: 'pointer',
-                        textAlign: 'start',
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: '13.5px',
-                          fontWeight: isSelected ? 700 : 600,
-                          lineHeight: 1.35,
-                          color: isSelected
-                            ? 'var(--color-text)'
-                            : 'var(--color-text-2)',
-                          wordBreak: 'break-word',
-                          whiteSpace: 'normal',
-                          flex: 1,
-                        }}
-                      >
-                        {style.labelAr}
-                      </span>
-                      {isSelected && (
-                        <span
-                          style={{
-                            color: 'var(--color-accent)',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <Icon name="check" size={18} />
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
+                ariaLabel="أسلوب تمرينك المفضل"
+              />
             </div>
           </div>
         )}
@@ -647,35 +576,23 @@ export function OnboardingWizard({
                   marginBottom: '8px',
                 }}
               >
-                أيام التمرين في الأسبوع
+                أيام التمرين في الأسبوع (أيام)
               </div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(5, 1fr)',
-                  gap: '8px',
-                }}
-              >
-                {[2, 3, 4, 5, 6].map((days) => {
-                  const isSelected = form.trainingDaysPerWeek === days
-                  return (
-                    <Chips
-                      key={days}
-                      selected={isSelected}
-                      onClick={() => updateForm({ trainingDaysPerWeek: days })}
-                      style={{
-                        height: '44px',
-                        justifyContent: 'center',
-                        fontWeight: 700,
-                        fontSize: '15px',
-                        width: '100%',
-                      }}
-                    >
-                      {days} أيام
-                    </Chips>
-                  )
-                })}
-              </div>
+              <Choice
+                variant="segmented"
+                options={[
+                  { value: 2, label: '2' },
+                  { value: 3, label: '3' },
+                  { value: 4, label: '4' },
+                  { value: 5, label: '5' },
+                  { value: 6, label: '6' },
+                ]}
+                value={form.trainingDaysPerWeek}
+                onChange={(days) =>
+                  updateForm({ trainingDaysPerWeek: Number(days) })
+                }
+                ariaLabel="أيام التمرين في الأسبوع"
+              />
             </div>
 
             <div>
@@ -686,35 +603,22 @@ export function OnboardingWizard({
                   marginBottom: '8px',
                 }}
               >
-                مدة الجلسة التدريبية
+                مدة الجلسة التدريبية (دقيقة)
               </div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(4, 1fr)',
-                  gap: '8px',
-                }}
-              >
-                {[45, 60, 75, 90].map((mins) => {
-                  const isSelected = form.sessionMinutes === mins
-                  return (
-                    <Chips
-                      key={mins}
-                      selected={isSelected}
-                      onClick={() => updateForm({ sessionMinutes: mins })}
-                      style={{
-                        height: '44px',
-                        justifyContent: 'center',
-                        fontWeight: 700,
-                        fontSize: '14px',
-                        width: '100%',
-                      }}
-                    >
-                      {mins} دقيقة
-                    </Chips>
-                  )
-                })}
-              </div>
+              <Choice
+                variant="segmented"
+                options={[
+                  { value: 45, label: '45' },
+                  { value: 60, label: '60' },
+                  { value: 75, label: '75' },
+                  { value: 90, label: '90' },
+                ]}
+                value={form.sessionMinutes}
+                onChange={(mins) =>
+                  updateForm({ sessionMinutes: Number(mins) })
+                }
+                ariaLabel="مدة الجلسة التدريبية"
+              />
             </div>
 
             <div>
@@ -727,18 +631,20 @@ export function OnboardingWizard({
               >
                 شدة الجلسة التدريبية
               </div>
-              <Segmented
+              <Choice
+                variant="segmented"
                 options={[
                   { value: 'light', label: 'خفيف' },
                   { value: 'moderate', label: 'متوسط' },
                   { value: 'hard', label: 'شاق' },
                 ]}
-                value={form.sessionIntensity ?? ''}
+                value={form.sessionIntensity ?? undefined}
                 onChange={(val) =>
                   updateForm({
                     sessionIntensity: val as 'light' | 'moderate' | 'hard',
                   })
                 }
+                ariaLabel="شدة الجلسة التدريبية"
               />
             </div>
 
@@ -752,36 +658,36 @@ export function OnboardingWizard({
               >
                 خبرة التدريب
               </div>
-              <Segmented
+              <Choice
+                variant="segmented"
                 options={[
                   { value: 'beginner', label: 'مبتدئ' },
                   { value: 'intermediate', label: 'متوسط' },
                   { value: 'advanced', label: 'متقدم' },
                 ]}
-                value={form.experienceLevel ?? ''}
+                value={form.experienceLevel ?? undefined}
                 onChange={(val) =>
                   updateForm({
                     experienceLevel: val as
                       'beginner' | 'intermediate' | 'advanced',
                   })
                 }
+                ariaLabel="خبرة التدريب"
               />
               <div
                 style={{
-                  fontSize: '12.5px',
-                  color: 'var(--muted)',
+                  fontSize: '12px',
+                  color: 'var(--color-text-2)',
                   marginTop: '6px',
                   lineHeight: 1.5,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '3px',
                 }}
               >
-                {form.experienceLevel === 'beginner' &&
-                  'أقل من سنة تدريب منتظم — التركيز على إتقان التكنيك والأداء السليم.'}
-                {form.experienceLevel === 'intermediate' &&
-                  'من سنة إلى 3 سنوات — معرفة أوزانك وتطبيق الزيادة التدريجية (Overload).'}
-                {form.experienceLevel === 'advanced' &&
-                  'أكثر من 3 سنوات — خبرة متقدمة في إدارة التعب وتعديل الحجم التدريبي.'}
-                {!form.experienceLevel &&
-                  'اختر خبرتك التدريبية لمعايرة حجم التمرين المناسب.'}
+                <div>• مبتدئ: أقل من 6 شهور تدريب منتظم</div>
+                <div>• متوسط: من 6 شهور إلى سنتين</div>
+                <div>• متقدم: أكثر من سنتين</div>
               </div>
             </div>
 
@@ -795,18 +701,20 @@ export function OnboardingWizard({
               >
                 مكان التدريب
               </div>
-              <Segmented
+              <Choice
+                variant="segmented"
                 options={[
                   { value: 'gym', label: 'جيم' },
                   { value: 'home', label: 'منزل' },
                   { value: 'both', label: 'جيم ومنزل' },
                 ]}
-                value={form.trainingLocation ?? ''}
+                value={form.trainingLocation ?? undefined}
                 onChange={(val) =>
                   updateForm({
                     trainingLocation: val as 'gym' | 'home' | 'both',
                   })
                 }
+                ariaLabel="مكان التدريب"
               />
             </div>
           </div>
@@ -827,209 +735,24 @@ export function OnboardingWizard({
             >
               صحتك
             </h1>
-            <p
-              style={{
-                fontSize: '15px',
-                fontWeight: 600,
-                color: 'var(--color-text)',
-                margin: 0,
-              }}
-            >
-              هل لديك إصابة أو حالة صحية تؤثر على التمرين؟
-            </p>
 
-            <Segmented
-              options={[
-                { value: 'no', label: 'لا' },
-                { value: 'yes', label: 'نعم' },
-              ]}
-              value={
-                form.hasIssues === null ? '' : form.hasIssues ? 'yes' : 'no'
-              }
+            <LimitationsEditor
+              value={{
+                hasIssues: form.hasIssues,
+                limitations: form.limitations,
+                notes: form.injuryNotes,
+                redFlag: form.redFlag,
+              }}
               onChange={(val) => {
-                const isYes = val === 'yes'
                 updateForm({
-                  hasIssues: isYes,
-                  ...(isYes ? {} : { limitations: [], redFlag: false }),
+                  hasIssues: val.hasIssues,
+                  limitations: val.limitations,
+                  injuryNotes: val.notes || '',
+                  redFlag: val.redFlag ?? null,
                 })
               }}
+              showRedFlagQuestion={true}
             />
-
-            {form.hasIssues === true && (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      marginBottom: '8px',
-                      color: 'var(--color-text)',
-                    }}
-                  >
-                    اختر منطقة الإصابة أو الألم (واحدة أو أكثر)
-                  </div>
-                  <div
-                    role="group"
-                    aria-label="مناطق الإصابة"
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      gap: '10px',
-                    }}
-                  >
-                    {REGIONS.map((region) => {
-                      const isSelected = form.limitations.some(
-                        (l) => l.region === region.id,
-                      )
-                      return (
-                        <button
-                          key={region.id}
-                          type="button"
-                          role="checkbox"
-                          aria-checked={isSelected}
-                          onClick={() => toggleLimitationRegion(region.id)}
-                          style={{
-                            borderRadius: '12px',
-                            minHeight: '52px',
-                            padding: '12px 16px',
-                            border: isSelected
-                              ? '1.5px solid var(--color-accent)'
-                              : '1px solid var(--color-border)',
-                            background: isSelected
-                              ? 'var(--color-accent-tint, rgba(249, 87, 0, 0.14))'
-                              : 'var(--color-surface-2)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            gap: '8px',
-                            cursor: 'pointer',
-                            textAlign: 'start',
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: '13.5px',
-                              fontWeight: isSelected ? 700 : 600,
-                              color: isSelected
-                                ? 'var(--color-text)'
-                                : 'var(--color-text-2)',
-                            }}
-                          >
-                            {region.labelAr}
-                          </span>
-                          {isSelected && (
-                            <span
-                              style={{
-                                color: 'var(--color-accent)',
-                                flexShrink: 0,
-                              }}
-                            >
-                              <Icon name="check" size={18} />
-                            </span>
-                          )}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                {form.limitations.length > 0 && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '12px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: 600,
-                        color: 'var(--color-text)',
-                      }}
-                    >
-                      حالة كل منطقة
-                    </div>
-                    {form.limitations.map((lim) => (
-                      <div
-                        key={lim.region}
-                        style={{
-                          background: 'var(--color-surface-2)',
-                          padding: '12px 14px',
-                          borderRadius: '10px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '8px',
-                        }}
-                      >
-                        <div style={{ fontSize: '13px', fontWeight: 700 }}>
-                          {getRegionLabel(lim.region)}
-                        </div>
-                        <Segmented
-                          options={STATUS_OPTIONS.map((s) => ({
-                            value: s.id,
-                            label: s.labelAr,
-                          }))}
-                          value={lim.status}
-                          onChange={(val) =>
-                            updateLimitationStatus(
-                              lim.region,
-                              val as LimitationStatus,
-                            )
-                          }
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <Field
-                  label="تفاصيل أو ملاحظات إضافية (اختياري)"
-                  placeholder="أدخل أي ملاحظات ترغب في تسجيلها هنا..."
-                  value={form.injuryNotes}
-                  onChange={(e) => updateForm({ injuryNotes: e.target.value })}
-                />
-
-                <div
-                  style={{
-                    background: 'var(--color-surface-2)',
-                    padding: '14px 16px',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                    border: '1px solid var(--color-border)',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: 'var(--color-text)',
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    هل عندك تنميل أو ضعف مفاجئ أو ألم شديد بعد إصابة قوية؟
-                  </div>
-                  <Segmented
-                    options={[
-                      { value: 'no', label: 'لا' },
-                      { value: 'yes', label: 'نعم' },
-                    ]}
-                    value={
-                      form.redFlag === null ? '' : form.redFlag ? 'yes' : 'no'
-                    }
-                    onChange={(val) => updateForm({ redFlag: val === 'yes' })}
-                  />
-                </div>
-              </div>
-            )}
 
             <Callout variant="info" title="إخلاء مسؤولية طبية">
               هذا التطبيق أداة استرشادية ولا يغني عن استشارة الطبيب المختص أو
@@ -1073,13 +796,15 @@ export function OnboardingWizard({
               >
                 الجنس
               </div>
-              <Segmented
+              <Choice
+                variant="segmented"
                 options={[
                   { value: 'male', label: 'ذكر' },
                   { value: 'female', label: 'أنثى' },
                 ]}
-                value={form.sex ?? ''}
+                value={form.sex ?? undefined}
                 onChange={(val) => updateForm({ sex: val as Sex })}
+                ariaLabel="الجنس"
               />
             </div>
 
@@ -1167,13 +892,16 @@ export function OnboardingWizard({
               تكرار
             </p>
 
-            <OptionList
+            <Choice
+              variant="option-card"
               options={LIFESTYLE_OPTIONS.map((opt) => ({
                 value: String(opt.level),
-                title: opt.titleAr,
-                subtitle: `${opt.descriptionAr} (معامل ${fmtFactor(opt.factor)})`,
+                label: opt.titleAr,
+                description: `${opt.descriptionAr} (معامل ${fmtFactor(opt.factor)})`,
               }))}
-              value={form.lifestyle !== null ? String(form.lifestyle) : ''}
+              value={
+                form.lifestyle !== null ? String(form.lifestyle) : undefined
+              }
               onChange={(val) => {
                 const lvl = Number(val) as LifestyleLevel
                 updateForm({
@@ -1181,6 +909,7 @@ export function OnboardingWizard({
                   activityLevel: mapLifestyleToLegacyActivity(lvl),
                 })
               }}
+              ariaLabel="نمط النشاط اليومي"
             />
           </div>
         )}

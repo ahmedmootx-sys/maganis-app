@@ -1,0 +1,5 @@
+=== G4 Defect 4: Atlas Colors & Deep Muscle Highlights (Before Fix) ===
+Secondary muscles use patterned hatch/tint rather than pure solid color: true
+Approximate regions use translucent rgba fill instead of solid color: true
+Deep muscles toggle dims superficial layers rather than simply coloring deep muscles: true
+Status: REPRODUCED DEFECT

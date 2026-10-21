@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import type { Exercise } from '../modules/shared/types.ts'
 import { resolveMedia } from '../utils/mediaResolver.ts'
+import { SafeImage } from './SafeImage.tsx'
 import { IconImage } from './Icons.tsx'
 
 export interface ExerciseThumbProps {
@@ -24,29 +24,45 @@ export interface ExerciseThumbProps {
  * - Exercise page (ExerciseDetailView)
  *
  * Guarantees a stable, non-jumping box size regardless of loading or placeholder state.
+ * In lists: 40x40 icon-only tile.
+ * Never paints browser alt text on error (handled by SafeImage).
  */
 export function ExerciseThumb({
   exercise,
   exerciseId,
   exerciseName = '',
-  size = 56,
+  size = 40,
   customExercises = [],
   className = '',
   style = {},
 }: ExerciseThumbProps) {
-  const [loadError, setLoadError] = useState(false)
-
   const dimension =
     typeof size === 'number'
       ? `${size}px`
       : size === 'small'
-        ? '44px'
+        ? '40px'
         : size === 'medium'
           ? '56px'
           : '72px'
 
   const resolved = resolveMedia(exercise || exerciseId, customExercises)
   const name = exerciseName || exercise?.nameAr || exercise?.name || 'تمرين'
+
+  const fallbackIcon = (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'var(--muted, #9ca3af)',
+        background: 'var(--card-subtle, rgba(255, 255, 255, 0.04))',
+      }}
+    >
+      <IconImage size={typeof size === 'number' && size <= 44 ? 18 : 22} />
+    </div>
+  )
 
   return (
     <div
@@ -57,7 +73,7 @@ export function ExerciseThumb({
         height: dimension,
         minWidth: dimension,
         minHeight: dimension,
-        borderRadius: '10px',
+        borderRadius: '8px',
         overflow: 'hidden',
         background: 'var(--card-subtle, rgba(255, 255, 255, 0.04))',
         border: '1px solid var(--line, rgba(255, 255, 255, 0.1))',
@@ -70,13 +86,12 @@ export function ExerciseThumb({
       }}
       title={name}
     >
-      {resolved.url && !loadError ? (
-        <img
+      {resolved.url ? (
+        <SafeImage
           src={resolved.url}
-          alt={name}
+          fallback={fallbackIcon}
           loading="lazy"
           decoding="async"
-          onError={() => setLoadError(true)}
           style={{
             width: '100%',
             height: '100%',
@@ -85,19 +100,7 @@ export function ExerciseThumb({
           }}
         />
       ) : (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--muted, #9ca3af)',
-            background: 'var(--card-subtle, rgba(255, 255, 255, 0.04))',
-          }}
-        >
-          <IconImage size={typeof size === 'number' && size < 48 ? 18 : 24} />
-        </div>
+        fallbackIcon
       )}
     </div>
   )

@@ -26,6 +26,8 @@ import {
 import { BackupPanel } from '../backup/BackupPanel.tsx'
 import { fmtFactor } from '../../utils/bidi.ts'
 import { DiagnosticsSheet } from './DiagnosticsSheet.tsx'
+import { LimitationsEditor } from '../workout/LimitationsEditor.tsx'
+import { getRegionLabel, type UserLimitation } from '../workout/limitations.ts'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
 
@@ -41,6 +43,7 @@ export interface SettingsScreenProps {
   onImported?: () => void
   onRestore?: (data: BackupData) => void
   onOpenAtlasDebug: () => void
+  onOpenAiDesigner?: () => void
   onFactoryReset: () => void
 }
 
@@ -83,6 +86,7 @@ export function SettingsScreen({
   onImported,
   onRestore,
   onOpenAtlasDebug,
+  onOpenAiDesigner,
   onFactoryReset,
 }: SettingsScreenProps) {
   const [currentThemeMode, setCurrentThemeMode] = useState<ThemeMode>(() => {
@@ -176,6 +180,12 @@ export function SettingsScreen({
   const [editHasIssues, setEditHasIssues] = useState(
     profile?.medical?.hasIssues ?? false,
   )
+  const [editLimitations, setEditLimitations] = useState<UserLimitation[]>(
+    profile?.limitations ?? [],
+  )
+  const [editRedFlag, setEditRedFlag] = useState<boolean | null>(
+    profile?.redFlag ?? null,
+  )
   const [editRestrictions, setEditRestrictions] = useState(
     profile?.medical?.notes || (profile?.medical?.injuryTags ?? []).join('، '),
   )
@@ -196,6 +206,8 @@ export function SettingsScreen({
           mapLegacyActivityToLifestyle(profile.body?.activityLevel),
       )
       setEditHasIssues(profile.medical?.hasIssues ?? false)
+      setEditLimitations(profile.limitations ?? [])
+      setEditRedFlag(profile.redFlag ?? null)
       setEditRestrictions(
         profile.medical?.notes ||
           (profile.medical?.injuryTags ?? []).join('، '),
@@ -242,6 +254,8 @@ export function SettingsScreen({
             : [],
         notes: editRestrictions.trim(),
       },
+      limitations: editHasIssues ? editLimitations : [],
+      redFlag: Boolean(editHasIssues && editRedFlag),
       body: {
         ...profile.body,
         sex: editSex,
@@ -345,79 +359,81 @@ export function SettingsScreen({
             </Button>
           }
         >
-          <Card padding="md">
-            <KeyValueList
-              items={[
-                {
-                  key: 'الاسم',
-                  value: profile?.name || 'غير محدد',
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'الهدف الأساسي',
-                  value: goalObj?.labelAr || '—',
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'جلسات التمرين',
-                  value: `${profile?.trainingDaysPerWeek ?? 4} أيام أسبوعياً`,
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'الخبرة',
-                  value:
-                    profile?.experienceLevel === 'beginner'
-                      ? 'مبتدئ'
-                      : profile?.experienceLevel === 'intermediate'
-                        ? 'متوسط'
-                        : 'متقدم',
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'مكان التمرين',
-                  value:
-                    profile?.trainingLocation === 'gym'
-                      ? 'جيم'
-                      : profile?.trainingLocation === 'home'
-                        ? 'منزل'
-                        : 'جيم ومنزل',
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'الجنس',
-                  value: profile?.body?.sex === 'female' ? 'أنثى' : 'ذكر',
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'الوزن',
-                  value: `${profile?.body?.weightKg ?? '—'} كجم`,
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'الطول',
-                  value: `${profile?.body?.heightCm ?? '—'} سم`,
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'العمر',
-                  value: `${profile?.body?.age ?? '—'} سنة`,
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'نمط النشاط اليومي',
-                  value: `${lifestyleObj?.titleAr || '—'} (معامل ${fmtFactor(lifestyleObj?.factor ?? 1.35)})`,
-                  onClick: () => setShowEditModal(true),
-                },
-                {
-                  key: 'الصحة والإصابات',
-                  value: profile?.medical?.hasIssues
-                    ? profile.medical.notes || 'يوجد إصابة'
-                    : 'سليم ولا توجد إصابات',
-                  onClick: () => setShowEditModal(true),
-                },
-              ]}
-            />
-          </Card>
+          <KeyValueList
+            items={[
+              {
+                key: 'الاسم',
+                value: profile?.name || 'غير محدد',
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'الهدف الأساسي',
+                value: goalObj?.labelAr || '—',
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'جلسات التمرين',
+                value: `${profile?.trainingDaysPerWeek ?? 4} أيام أسبوعياً`,
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'الخبرة',
+                value:
+                  profile?.experienceLevel === 'beginner'
+                    ? 'مبتدئ'
+                    : profile?.experienceLevel === 'intermediate'
+                      ? 'متوسط'
+                      : 'متقدم',
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'مكان التمرين',
+                value:
+                  profile?.trainingLocation === 'gym'
+                    ? 'جيم'
+                    : profile?.trainingLocation === 'home'
+                      ? 'منزل'
+                      : 'جيم ومنزل',
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'الجنس',
+                value: profile?.body?.sex === 'female' ? 'أنثى' : 'ذكر',
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'الوزن',
+                value: `${profile?.body?.weightKg ?? '—'} كجم`,
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'الطول',
+                value: `${profile?.body?.heightCm ?? '—'} سم`,
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'العمر',
+                value: `${profile?.body?.age ?? '—'} سنة`,
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'نمط النشاط اليومي',
+                value: `${lifestyleObj?.titleAr || '—'} (معامل ${fmtFactor(lifestyleObj?.factor ?? 1.35)})`,
+                onClick: () => setShowEditModal(true),
+              },
+              {
+                key: 'الصحة والإصابات',
+                value: profile?.medical?.hasIssues
+                  ? profile?.limitations && profile.limitations.length > 0
+                    ? profile.limitations
+                        .map((l) => getRegionLabel(l.region))
+                        .join('، ')
+                    : profile.medical.notes || 'يوجد إصابة'
+                  : 'سليم ولا توجد إصابات',
+                onClick: () => setShowEditModal(true),
+              },
+            ]}
+          />
         </Section>
 
         {/* Section 2: التفضيلات */}
@@ -490,6 +506,30 @@ export function SettingsScreen({
           </Card>
         </Section>
 
+        {/* Section: البرنامج التدريبي */}
+        <Section title="البرنامج التدريبي">
+          <Card padding="md">
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+            >
+              <div
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-text-2)',
+                  lineHeight: 1.5,
+                }}
+              >
+                يمكنك تصميم برنامج تدريبي علمي مخصص لحالتك وإصاباتك بالاستعانة
+                بمرشد الذكاء الاصطناعي، أو استيراد جدول معد مسبقاً.
+              </div>
+              <Button variant="secondary" onClick={onOpenAiDesigner} fullWidth>
+                <Icon name="sparkles" size={16} />
+                <span>صمم لي جدولي الخاص (مرشد الذكاء الاصطناعي)</span>
+              </Button>
+            </div>
+          </Card>
+        </Section>
+
         {/* Section 4: البيانات والمزامنة */}
         <Section title="البيانات والمزامنة">
           <BackupPanel
@@ -531,7 +571,7 @@ export function SettingsScreen({
                 },
                 {
                   key: 'وسائط التمارين',
-                  value: 'مصدر وسائط التمارين: Gym Visual، الحقوق لأصحابها',
+                  value: '© Gym visual — https://gymvisual.com/',
                   stacked: true,
                 },
               ]}
@@ -754,40 +794,43 @@ export function SettingsScreen({
             onChange={(val) => setEditLifestyle(Number(val) as LifestyleLevel)}
             options={LIFESTYLE_OPTIONS.map((opt) => ({
               value: String(opt.level),
-              labelAr: `${opt.titleAr} (${opt.descriptionAr} - معامل ×${opt.factor})`,
+              labelAr: `${opt.titleAr} (×${opt.factor})`,
             }))}
           />
+          {(() => {
+            const selectedOpt = LIFESTYLE_OPTIONS.find(
+              (opt) => opt.level === editLifestyle,
+            )
+            return selectedOpt ? (
+              <div
+                style={{
+                  fontSize: '12.5px',
+                  color: 'var(--color-text-2)',
+                  marginTop: '-6px',
+                  marginBottom: '4px',
+                  lineHeight: 1.4,
+                }}
+              >
+                {selectedOpt.descriptionAr}
+              </div>
+            ) : null
+          })()}
 
-          <div>
-            <div
-              style={{
-                fontSize: '13.5px',
-                fontWeight: 600,
-                marginBottom: '6px',
-              }}
-            >
-              هل لديك إصابات سابقة؟
-            </div>
-            <Segmented
-              options={[
-                { value: 'false', label: 'لا' },
-                { value: 'true', label: 'نعم' },
-              ]}
-              value={String(editHasIssues)}
-              onChange={(val) => setEditHasIssues(val === 'true')}
-            />
-          </div>
-
-          {editHasIssues && (
-            <Field
-              label="تفاصيل الإصابة أو الملاحظات"
-              value={editRestrictions}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEditRestrictions(e.target.value)
-              }
-              placeholder="اكتب تفاصيل الإصابة..."
-            />
-          )}
+          <LimitationsEditor
+            value={{
+              hasIssues: editHasIssues,
+              limitations: editLimitations,
+              notes: editRestrictions,
+              redFlag: editRedFlag,
+            }}
+            onChange={(val) => {
+              setEditHasIssues(val.hasIssues ?? false)
+              setEditLimitations(val.limitations)
+              setEditRestrictions(val.notes || '')
+              setEditRedFlag(val.redFlag ?? null)
+            }}
+            showRedFlagQuestion={true}
+          />
 
           <div
             style={{

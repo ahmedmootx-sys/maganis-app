@@ -1,0 +1,617 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-10-20T12:55:39.403Z",
+  "catalogVersion": "1.0.0-batch1",
+  "totalFiles": 76,
+  "totalSizeBytes": 5559055,
+  "media": {
+    "bench/start.jpg": {
+      "exerciseKey": "bench",
+      "kind": "frame-start",
+      "path": "media/bench/start.jpg",
+      "sizeBytes": 72816,
+      "contentType": "image/jpeg",
+      "sha256": "44ba81b3ea124f625c555ae812b37263f82ae460749bbc9ebbeb55a6309f6663"
+    },
+    "bench/peak.jpg": {
+      "exerciseKey": "bench",
+      "kind": "frame-peak",
+      "path": "media/bench/peak.jpg",
+      "sizeBytes": 72202,
+      "contentType": "image/jpeg",
+      "sha256": "5056475ae5def865dbe52882d30d2730142de2b03231bda304f82fd0b088f608"
+    },
+    "bench/animation.gif": {
+      "exerciseKey": "bench",
+      "kind": "gif",
+      "path": "media/bench/animation.gif",
+      "sizeBytes": 124389,
+      "contentType": "image/gif",
+      "sha256": "2de66afbc9229d7c23b888b39b3c6a917ce950b429082050be29bd8f96c85d75"
+    },
+    "pullup/start.jpg": {
+      "exerciseKey": "pullup",
+      "kind": "frame-start",
+      "path": "media/pullup/start.jpg",
+      "sizeBytes": 42281,
+      "contentType": "image/jpeg",
+      "sha256": "e56c8c43a41cfe2489dcfffc2c8195fd9e8897ba25165dbc34a4154ed6df5c7a"
+    },
+    "pullup/peak.jpg": {
+      "exerciseKey": "pullup",
+      "kind": "frame-peak",
+      "path": "media/pullup/peak.jpg",
+      "sizeBytes": 40018,
+      "contentType": "image/jpeg",
+      "sha256": "40549a52b064e5084a85e2c36afb51438df6ac1097169379a05f21565f8b4f3f"
+    },
+    "pullup/animation.gif": {
+      "exerciseKey": "pullup",
+      "kind": "gif",
+      "path": "media/pullup/animation.gif",
+      "sizeBytes": 62671,
+      "contentType": "image/gif",
+      "sha256": "f03e96137aeb0e655c2028c211cc8b368c9e72e77b57c8cd1df65a27aa3b50c9"
+    },
+    "onearmrow/start.jpg": {
+      "exerciseKey": "onearmrow",
+      "kind": "frame-start",
+      "path": "media/onearmrow/start.jpg",
+      "sizeBytes": 70752,
+      "contentType": "image/jpeg",
+      "sha256": "04b2f49e6ba0c2fce5f566fe53d03571715fa58350a2b8558b3dfa9110093a53"
+    },
+    "onearmrow/peak.jpg": {
+      "exerciseKey": "onearmrow",
+      "kind": "frame-peak",
+      "path": "media/onearmrow/peak.jpg",
+      "sizeBytes": 71407,
+      "contentType": "image/jpeg",
+      "sha256": "83d5ceaa6d9ec6732f0afedaaa9a842c34cfdedce89e6fed75681c0bf971174a"
+    },
+    "onearmrow/animation.gif": {
+      "exerciseKey": "onearmrow",
+      "kind": "gif",
+      "path": "media/onearmrow/animation.gif",
+      "sizeBytes": 95696,
+      "contentType": "image/gif",
+      "sha256": "c53241038bc290424e72086a7fecf1c367ac53a42f4b5844a4b5314abe56dc44"
+    },
+    "ohp/start.jpg": {
+      "exerciseKey": "ohp",
+      "kind": "frame-start",
+      "path": "media/ohp/start.jpg",
+      "sizeBytes": 62474,
+      "contentType": "image/jpeg",
+      "sha256": "e0a775bfa0b32b63c84f19fba2b1a05db535bde849feb3e54a3479a943b3bed6"
+    },
+    "ohp/peak.jpg": {
+      "exerciseKey": "ohp",
+      "kind": "frame-peak",
+      "path": "media/ohp/peak.jpg",
+      "sizeBytes": 63882,
+      "contentType": "image/jpeg",
+      "sha256": "940d5aad6b85960e833f88e218de8ce4f806d84cf2764741f1cbff9cce365d84"
+    },
+    "ohp/animation.gif": {
+      "exerciseKey": "ohp",
+      "kind": "gif",
+      "path": "media/ohp/animation.gif",
+      "sizeBytes": 87613,
+      "contentType": "image/gif",
+      "sha256": "20663495e0c08f23a7c1440626b4ef2418b1d165a98e8cbd4e7547150edd9919"
+    },
+    "facepull/start.jpg": {
+      "exerciseKey": "facepull",
+      "kind": "frame-start",
+      "path": "media/facepull/start.jpg",
+      "sizeBytes": 40188,
+      "contentType": "image/jpeg",
+      "sha256": "a184e981e8cc261a5cc1856b92d897894691d83e27929aae7e89bc9d8aa1d444"
+    },
+    "facepull/peak.jpg": {
+      "exerciseKey": "facepull",
+      "kind": "frame-peak",
+      "path": "media/facepull/peak.jpg",
+      "sizeBytes": 46451,
+      "contentType": "image/jpeg",
+      "sha256": "1aeee744a027983d58328e68a258ee17ba2db85c1d16ba1bad00b4f2511dde2b"
+    },
+    "bicepcurl/start.jpg": {
+      "exerciseKey": "bicepcurl",
+      "kind": "frame-start",
+      "path": "media/bicepcurl/start.jpg",
+      "sizeBytes": 57223,
+      "contentType": "image/jpeg",
+      "sha256": "fad8458c2f70c39e1abb0a9554bba280da5abf9f8dc2d76f7c0be44ffdbfc99b"
+    },
+    "bicepcurl/peak.jpg": {
+      "exerciseKey": "bicepcurl",
+      "kind": "frame-peak",
+      "path": "media/bicepcurl/peak.jpg",
+      "sizeBytes": 58066,
+      "contentType": "image/jpeg",
+      "sha256": "ec2c3a539aa80ea911a85e00ca9fb74502407e8ef0d8a4526e3b076a5a52b30a"
+    },
+    "bicepcurl/animation.gif": {
+      "exerciseKey": "bicepcurl",
+      "kind": "gif",
+      "path": "media/bicepcurl/animation.gif",
+      "sizeBytes": 71565,
+      "contentType": "image/gif",
+      "sha256": "ec9acaaac38045ea355c51ba61a854d54d31b03744a922eba429935ac10ba90c"
+    },
+    "squat/start.jpg": {
+      "exerciseKey": "squat",
+      "kind": "frame-start",
+      "path": "media/squat/start.jpg",
+      "sizeBytes": 72823,
+      "contentType": "image/jpeg",
+      "sha256": "469a3c5a6eb35b88c45cda9fa7f9086032976fa3d45f5d844a0cc09a95574db5"
+    },
+    "squat/peak.jpg": {
+      "exerciseKey": "squat",
+      "kind": "frame-peak",
+      "path": "media/squat/peak.jpg",
+      "sizeBytes": 71334,
+      "contentType": "image/jpeg",
+      "sha256": "8663a34f2d0a0a33d3d39b505cf3cdd38e282c1c9020d39d5587976e8d8a3020"
+    },
+    "squat/animation.gif": {
+      "exerciseKey": "squat",
+      "kind": "gif",
+      "path": "media/squat/animation.gif",
+      "sizeBytes": 88019,
+      "contentType": "image/gif",
+      "sha256": "3c1e29f67ffaae89316c94d7af42fcbe2cbf379967c27c1d30fa0205b6f9ed30"
+    },
+    "rdl/start.jpg": {
+      "exerciseKey": "rdl",
+      "kind": "frame-start",
+      "path": "media/rdl/start.jpg",
+      "sizeBytes": 59859,
+      "contentType": "image/jpeg",
+      "sha256": "cd62a031d395afa1f63f660370e79d812ca0f9cf52718a33ee24d9fec2a9709f"
+    },
+    "rdl/peak.jpg": {
+      "exerciseKey": "rdl",
+      "kind": "frame-peak",
+      "path": "media/rdl/peak.jpg",
+      "sizeBytes": 57367,
+      "contentType": "image/jpeg",
+      "sha256": "156406c703e8d4a172034e413b317b93907be82deaad5ea2f3cc0a9f181c7b9b"
+    },
+    "rdl/animation.gif": {
+      "exerciseKey": "rdl",
+      "kind": "gif",
+      "path": "media/rdl/animation.gif",
+      "sizeBytes": 88713,
+      "contentType": "image/gif",
+      "sha256": "32d2f54834207624b965db5f4f5b875589d608990c3f85d3732062f30c3916b1"
+    },
+    "bss/animation.gif": {
+      "exerciseKey": "bss",
+      "kind": "gif",
+      "path": "media/bss/animation.gif",
+      "sizeBytes": 99446,
+      "contentType": "image/gif",
+      "sha256": "1682a1f9bab145a90e74a8539b75525ce18f5e835251ba43057df896e7655ba7"
+    },
+    "hipthrust/start.jpg": {
+      "exerciseKey": "hipthrust",
+      "kind": "frame-start",
+      "path": "media/hipthrust/start.jpg",
+      "sizeBytes": 53764,
+      "contentType": "image/jpeg",
+      "sha256": "b2c82d4647df0621e2b0568f383d14e9577f2baa458668233c86d2f738efd4c1"
+    },
+    "hipthrust/peak.jpg": {
+      "exerciseKey": "hipthrust",
+      "kind": "frame-peak",
+      "path": "media/hipthrust/peak.jpg",
+      "sizeBytes": 52252,
+      "contentType": "image/jpeg",
+      "sha256": "de1a6390ff4b2720750ed3380c3c9b0c4c1fb5ae811810291b62d8a1fd726ad6"
+    },
+    "calf/start.jpg": {
+      "exerciseKey": "calf",
+      "kind": "frame-start",
+      "path": "media/calf/start.jpg",
+      "sizeBytes": 60966,
+      "contentType": "image/jpeg",
+      "sha256": "44922f411d204bb00dc86015981413e0ca503f0b9ba2346af25f345a91cf4848"
+    },
+    "calf/peak.jpg": {
+      "exerciseKey": "calf",
+      "kind": "frame-peak",
+      "path": "media/calf/peak.jpg",
+      "sizeBytes": 59984,
+      "contentType": "image/jpeg",
+      "sha256": "f0990fed5d984fdf31c7b6a8420adb59ed6a3f286af6f228d53b68445caa1c51"
+    },
+    "calf/animation.gif": {
+      "exerciseKey": "calf",
+      "kind": "gif",
+      "path": "media/calf/animation.gif",
+      "sizeBytes": 108929,
+      "contentType": "image/gif",
+      "sha256": "a47fdc5174b3f2003ae89a82d1815951413a0fd7b6f49329637454dc11a72960"
+    },
+    "incline/start.jpg": {
+      "exerciseKey": "incline",
+      "kind": "frame-start",
+      "path": "media/incline/start.jpg",
+      "sizeBytes": 61978,
+      "contentType": "image/jpeg",
+      "sha256": "5128af58efedb66e5d3e2454c7a1e3c7f9353b573e97c8430e37cb638da8882e"
+    },
+    "incline/peak.jpg": {
+      "exerciseKey": "incline",
+      "kind": "frame-peak",
+      "path": "media/incline/peak.jpg",
+      "sizeBytes": 61629,
+      "contentType": "image/jpeg",
+      "sha256": "7e4cd389cd0c537911da937657333f33118102e69f050c36906a6d49ae3f921f"
+    },
+    "incline/animation.gif": {
+      "exerciseKey": "incline",
+      "kind": "gif",
+      "path": "media/incline/animation.gif",
+      "sizeBytes": 82733,
+      "contentType": "image/gif",
+      "sha256": "2bff2a58f8ccafc0d1140b1030827550e547e1fe60beaebe29ce9f0e14e81902"
+    },
+    "cablerow/start.jpg": {
+      "exerciseKey": "cablerow",
+      "kind": "frame-start",
+      "path": "media/cablerow/start.jpg",
+      "sizeBytes": 65319,
+      "contentType": "image/jpeg",
+      "sha256": "f5a4adf972f93a6c7b09e003f23005a1163653a7e36b71f1e374acab0243ddf7"
+    },
+    "cablerow/peak.jpg": {
+      "exerciseKey": "cablerow",
+      "kind": "frame-peak",
+      "path": "media/cablerow/peak.jpg",
+      "sizeBytes": 65659,
+      "contentType": "image/jpeg",
+      "sha256": "0b8e1a0b0fff86cafff45d851ea631a20d469713e9fd735031d3fffb0299fde6"
+    },
+    "cablerow/animation.gif": {
+      "exerciseKey": "cablerow",
+      "kind": "gif",
+      "path": "media/cablerow/animation.gif",
+      "sizeBytes": 103011,
+      "contentType": "image/gif",
+      "sha256": "cfefafdfee2141a4a57968924acc6b2e8060e88f741f899aabea08c57c8ca11c"
+    },
+    "pushupplus/animation.gif": {
+      "exerciseKey": "pushupplus",
+      "kind": "gif",
+      "path": "media/pushupplus/animation.gif",
+      "sizeBytes": 103927,
+      "contentType": "image/gif",
+      "sha256": "6f10e94d13611e132e3af15b6332fe59e89a8a60adc0a0a0cb36689e3e8fc39e"
+    },
+    "lateral/start.jpg": {
+      "exerciseKey": "lateral",
+      "kind": "frame-start",
+      "path": "media/lateral/start.jpg",
+      "sizeBytes": 57101,
+      "contentType": "image/jpeg",
+      "sha256": "aa1982c367ea9151ee7769ac1f9f8795209db94a6eb85f7d51a7033886fb7ebc"
+    },
+    "lateral/peak.jpg": {
+      "exerciseKey": "lateral",
+      "kind": "frame-peak",
+      "path": "media/lateral/peak.jpg",
+      "sizeBytes": 56355,
+      "contentType": "image/jpeg",
+      "sha256": "9210e0fb0202c306026d45a55703aaec89b3bef7aafeb7791aa1d06adcf58ab3"
+    },
+    "lateral/animation.gif": {
+      "exerciseKey": "lateral",
+      "kind": "gif",
+      "path": "media/lateral/animation.gif",
+      "sizeBytes": 87645,
+      "contentType": "image/gif",
+      "sha256": "68de0e7c7727fa08a203f73b0d2935181a5c6489470d44b9028de4a7d10a17f1"
+    },
+    "yraise/animation.gif": {
+      "exerciseKey": "yraise",
+      "kind": "gif",
+      "path": "media/yraise/animation.gif",
+      "sizeBytes": 93719,
+      "contentType": "image/gif",
+      "sha256": "fd44935a29041be79a5b4a076ca453d4e9bf53cd9899dca3bea25d9e24dfb717"
+    },
+    "legpress/start.jpg": {
+      "exerciseKey": "legpress",
+      "kind": "frame-start",
+      "path": "media/legpress/start.jpg",
+      "sizeBytes": 84753,
+      "contentType": "image/jpeg",
+      "sha256": "55079d514ae8d4dbc526731bb5120748e74a084ebcd546eaa890fa273427f0dc"
+    },
+    "legpress/peak.jpg": {
+      "exerciseKey": "legpress",
+      "kind": "frame-peak",
+      "path": "media/legpress/peak.jpg",
+      "sizeBytes": 83900,
+      "contentType": "image/jpeg",
+      "sha256": "f4e08d4ad4e6542f5dd923bbfabe9a28bf6c960bed02b1b9d65f6bafd6ceb051"
+    },
+    "legpress/animation.gif": {
+      "exerciseKey": "legpress",
+      "kind": "gif",
+      "path": "media/legpress/animation.gif",
+      "sizeBytes": 115136,
+      "contentType": "image/gif",
+      "sha256": "4e4afb16a87ff94ecebf835cd56358e3ac3bbdf66f5743f211651400137ddec3"
+    },
+    "frontsquat/start.jpg": {
+      "exerciseKey": "frontsquat",
+      "kind": "frame-start",
+      "path": "media/frontsquat/start.jpg",
+      "sizeBytes": 36571,
+      "contentType": "image/jpeg",
+      "sha256": "995a2c4f6618a56e0db30a1dc69a39e7b25484400221490ead8200a75bbe1d74"
+    },
+    "frontsquat/peak.jpg": {
+      "exerciseKey": "frontsquat",
+      "kind": "frame-peak",
+      "path": "media/frontsquat/peak.jpg",
+      "sizeBytes": 35308,
+      "contentType": "image/jpeg",
+      "sha256": "a9c7a229406192d03d0aebb5a44da993cdc2b2f24a88121da4d7396c8b4cd775"
+    },
+    "frontsquat/animation.gif": {
+      "exerciseKey": "frontsquat",
+      "kind": "gif",
+      "path": "media/frontsquat/animation.gif",
+      "sizeBytes": 85946,
+      "contentType": "image/gif",
+      "sha256": "970b67b761f0bcb2a3f20dde7f09d6e8fe4256ff1f6d8f036f698ff31d1d686c"
+    },
+    "legcurl/start.jpg": {
+      "exerciseKey": "legcurl",
+      "kind": "frame-start",
+      "path": "media/legcurl/start.jpg",
+      "sizeBytes": 77402,
+      "contentType": "image/jpeg",
+      "sha256": "0875bf50a6615d4dc33df63110d3c6ee55b41606ed79a9fe705e17fcb4626095"
+    },
+    "legcurl/peak.jpg": {
+      "exerciseKey": "legcurl",
+      "kind": "frame-peak",
+      "path": "media/legcurl/peak.jpg",
+      "sizeBytes": 87755,
+      "contentType": "image/jpeg",
+      "sha256": "4ccf6f4a26dc97dcf8241cc55e08e22579b5a02bdebafe56d74f951ceab2bd06"
+    },
+    "legcurl/animation.gif": {
+      "exerciseKey": "legcurl",
+      "kind": "gif",
+      "path": "media/legcurl/animation.gif",
+      "sizeBytes": 114778,
+      "contentType": "image/gif",
+      "sha256": "97b4df3fa35a3b87d1864ed29c2d773b08248e914e24a7765c10471ea232a45b"
+    },
+    "legext/start.jpg": {
+      "exerciseKey": "legext",
+      "kind": "frame-start",
+      "path": "media/legext/start.jpg",
+      "sizeBytes": 81219,
+      "contentType": "image/jpeg",
+      "sha256": "54fd46441d63459e3cdd26f26b826ad049e835fb7f1984b42398fdfbdefb5bfa"
+    },
+    "legext/peak.jpg": {
+      "exerciseKey": "legext",
+      "kind": "frame-peak",
+      "path": "media/legext/peak.jpg",
+      "sizeBytes": 82758,
+      "contentType": "image/jpeg",
+      "sha256": "9e04d0e306d8fee608305766b14a56df1d1312956d374152f58dcbf267d591a9"
+    },
+    "legext/animation.gif": {
+      "exerciseKey": "legext",
+      "kind": "gif",
+      "path": "media/legext/animation.gif",
+      "sizeBytes": 142827,
+      "contentType": "image/gif",
+      "sha256": "ad9602e9eb0584cd73ecc5cdf9f9e273ade4d14336d1554bc35b9242dfbb6f0d"
+    },
+    "farmer/start.jpg": {
+      "exerciseKey": "farmer",
+      "kind": "frame-start",
+      "path": "media/farmer/start.jpg",
+      "sizeBytes": 54501,
+      "contentType": "image/jpeg",
+      "sha256": "e07a10c235963ea155d9504b91736f4dc1e8865b5aa3b7c744765a56bf3e2b05"
+    },
+    "farmer/peak.jpg": {
+      "exerciseKey": "farmer",
+      "kind": "frame-peak",
+      "path": "media/farmer/peak.jpg",
+      "sizeBytes": 51227,
+      "contentType": "image/jpeg",
+      "sha256": "5a55e8adf33bea01078ad420e8b43d2b844bb64679a3029eab165b485096fd70"
+    },
+    "farmer/animation.gif": {
+      "exerciseKey": "farmer",
+      "kind": "gif",
+      "path": "media/farmer/animation.gif",
+      "sizeBytes": 136068,
+      "contentType": "image/gif",
+      "sha256": "5c6ab66c33ba6361df648f851c1083f3169ec89e750b3bea764de5ca46527298"
+    },
+    "sideplank/start.jpg": {
+      "exerciseKey": "sideplank",
+      "kind": "frame-start",
+      "path": "media/sideplank/start.jpg",
+      "sizeBytes": 69518,
+      "contentType": "image/jpeg",
+      "sha256": "fcbf157799efdce6c7d5a9aff22e7f73aec23e016d504abe5b4161a55844a48f"
+    },
+    "sideplank/peak.jpg": {
+      "exerciseKey": "sideplank",
+      "kind": "frame-peak",
+      "path": "media/sideplank/peak.jpg",
+      "sizeBytes": 63711,
+      "contentType": "image/jpeg",
+      "sha256": "ba9eb40f70d37af9830676643b36ddff7aeeb2ba88d76be272b4a0e697927f15"
+    },
+    "sideplank/animation.gif": {
+      "exerciseKey": "sideplank",
+      "kind": "gif",
+      "path": "media/sideplank/animation.gif",
+      "sizeBytes": 79069,
+      "contentType": "image/gif",
+      "sha256": "ae63977258a9b9825242ff2536fb9ecc8f14abdd8dc06b87f7d30f382b26e0f5"
+    },
+    "cgbench/start.jpg": {
+      "exerciseKey": "cgbench",
+      "kind": "frame-start",
+      "path": "media/cgbench/start.jpg",
+      "sizeBytes": 74240,
+      "contentType": "image/jpeg",
+      "sha256": "3a428440c0f95ee87234a260ca80cc1dfa205e3db8f8fa6098b7eeb2afb2cde8"
+    },
+    "cgbench/peak.jpg": {
+      "exerciseKey": "cgbench",
+      "kind": "frame-peak",
+      "path": "media/cgbench/peak.jpg",
+      "sizeBytes": 76127,
+      "contentType": "image/jpeg",
+      "sha256": "108a66dc2dcb09d184157eb81b7fafba5f898b00654c39cb2f0c7f8bdfec5ceb"
+    },
+    "cgbench/animation.gif": {
+      "exerciseKey": "cgbench",
+      "kind": "gif",
+      "path": "media/cgbench/animation.gif",
+      "sizeBytes": 126293,
+      "contentType": "image/gif",
+      "sha256": "e86e9de6778c660ca101763fbb307c42224e2eeedd28313d527c924d03aabee4"
+    },
+    "csrow/animation.gif": {
+      "exerciseKey": "csrow",
+      "kind": "gif",
+      "path": "media/csrow/animation.gif",
+      "sizeBytes": 109642,
+      "contentType": "image/gif",
+      "sha256": "086a832915dafd960893376e299a2bf852f89f7081a97b23dc20155a88f7c272"
+    },
+    "revpec/start.jpg": {
+      "exerciseKey": "revpec",
+      "kind": "frame-start",
+      "path": "media/revpec/start.jpg",
+      "sizeBytes": 77240,
+      "contentType": "image/jpeg",
+      "sha256": "732cac68ea0780bab823ac3593f4d5f5fda1eb7c14c01620b6a2a12c2f838161"
+    },
+    "revpec/peak.jpg": {
+      "exerciseKey": "revpec",
+      "kind": "frame-peak",
+      "path": "media/revpec/peak.jpg",
+      "sizeBytes": 77689,
+      "contentType": "image/jpeg",
+      "sha256": "c12b21e34fb7c46c14c0b61e29920637cd8c678474fd97a0c4ef61e86d4cf023"
+    },
+    "tricepsext/start.jpg": {
+      "exerciseKey": "tricepsext",
+      "kind": "frame-start",
+      "path": "media/tricepsext/start.jpg",
+      "sizeBytes": 56352,
+      "contentType": "image/jpeg",
+      "sha256": "f1689989803e4463fb92bcc955d96b422f6f5ef9ebd23d9a9e9547ab1242932f"
+    },
+    "tricepsext/peak.jpg": {
+      "exerciseKey": "tricepsext",
+      "kind": "frame-peak",
+      "path": "media/tricepsext/peak.jpg",
+      "sizeBytes": 56376,
+      "contentType": "image/jpeg",
+      "sha256": "9fd2a8098c9a042300789e542f651d599114adbb3f070dfe44a0c9e3d3bdcd0c"
+    },
+    "tricepsext/animation.gif": {
+      "exerciseKey": "tricepsext",
+      "kind": "gif",
+      "path": "media/tricepsext/animation.gif",
+      "sizeBytes": 74300,
+      "contentType": "image/gif",
+      "sha256": "a02fbadcf9651e198082fe3827892f9415c867330d1f153fa18645301a13eb9e"
+    },
+    "hipcircles/start.jpg": {
+      "exerciseKey": "hipcircles",
+      "kind": "frame-start",
+      "path": "media/hipcircles/start.jpg",
+      "sizeBytes": 42015,
+      "contentType": "image/jpeg",
+      "sha256": "57ced2e9cf5d45a1f09908b3d55cd05da9a5b41f5ca5fa54d7f45d19ecb110a7"
+    },
+    "hipcircles/peak.jpg": {
+      "exerciseKey": "hipcircles",
+      "kind": "frame-peak",
+      "path": "media/hipcircles/peak.jpg",
+      "sizeBytes": 42873,
+      "contentType": "image/jpeg",
+      "sha256": "b4aced722e4385ada1ff785503304267070c71aad69da9c3d70bfca8c5237e72"
+    },
+    "scappull/start.jpg": {
+      "exerciseKey": "scappull",
+      "kind": "frame-start",
+      "path": "media/scappull/start.jpg",
+      "sizeBytes": 73070,
+      "contentType": "image/jpeg",
+      "sha256": "1fdf8222fb7595f21a9c2be6073627e048e9d6e00b610240a4b4f58ab198b3e4"
+    },
+    "scappull/peak.jpg": {
+      "exerciseKey": "scappull",
+      "kind": "frame-peak",
+      "path": "media/scappull/peak.jpg",
+      "sizeBytes": 72929,
+      "contentType": "image/jpeg",
+      "sha256": "eec694838b147d03e52e2b507def487374eb95c814bfb897b41fc4ffc0eb2901"
+    },
+    "scappull/animation.gif": {
+      "exerciseKey": "scappull",
+      "kind": "gif",
+      "path": "media/scappull/animation.gif",
+      "sizeBytes": 71384,
+      "contentType": "image/gif",
+      "sha256": "c09f39d380d32d1f453b72ea01b4aea36cc21eb6749a87efc9d341b51758627e"
+    },
+    "crossst/start.jpg": {
+      "exerciseKey": "crossst",
+      "kind": "frame-start",
+      "path": "media/crossst/start.jpg",
+      "sizeBytes": 22947,
+      "contentType": "image/jpeg",
+      "sha256": "a5e6f3c70006a40f44c7dfdd5245f6ee939e8f12b6bfc104253389ccc1cea09a"
+    },
+    "crossst/peak.jpg": {
+      "exerciseKey": "crossst",
+      "kind": "frame-peak",
+      "path": "media/crossst/peak.jpg",
+      "sizeBytes": 21606,
+      "contentType": "image/jpeg",
+      "sha256": "e5c5f9504256cda1fe3aeb575a8687693801006d266c339eec0d772a74ed24a7"
+    },
+    "crossst/animation.gif": {
+      "exerciseKey": "crossst",
+      "kind": "gif",
+      "path": "media/crossst/animation.gif",
+      "sizeBytes": 71516,
+      "contentType": "image/gif",
+      "sha256": "2d42e9c20b91854dcec55c2e5532275ccb1433531cfce9ee652502479c9b7543"
+    },
+    "latst/animation.gif": {
+      "exerciseKey": "latst",
+      "kind": "gif",
+      "path": "media/latst/animation.gif",
+      "sizeBytes": 77783,
+      "contentType": "image/gif",
+      "sha256": "aafb01c423cfa3115df9a971430607a5f534046ea91510732af182e0a7109064"
+    }
+  }
+}

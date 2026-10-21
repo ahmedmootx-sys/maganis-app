@@ -123,7 +123,7 @@ async function runGate() {
       // Find content container elements (cards, sections, list rows, callouts, stats, etc.)
       const elements = Array.from(
         document.querySelectorAll(
-          '.screen-content > *, .card, .section, .callout, .stat, .list-row, .field, h1, h2, h3, h4, p, .btn, .chip, .choice-btn, label, input, .form-control, .segmented-item',
+          '.screen-content > *, .card, .section, .callout, .stat, .list-row, .field, h1, h2, h3, h4, p, .btn, .chip, .choice-btn, .choice-segmented, .choice-segmented__item, .choice-card, label, input, .form-control, .segmented-item, button',
         ),
       )
 
@@ -136,10 +136,15 @@ async function runGate() {
         const style = window.getComputedStyle(el)
         if (style.position === 'fixed' || style.display === 'none') continue
 
-        // Ignore horizontal carousel tracks or items designed to scroll off-screen
+        // Ignore horizontal carousel tracks, bottom-nav bar, or items designed to scroll off-screen
         if (
+          el.closest('.bottom-nav') ||
+          el.closest('nav') ||
+          el.closest('.top-bar') ||
           el.closest('.week-strip') ||
           el.closest('.day-strip') ||
+          el.closest('.chip-select-row') ||
+          el.closest('.chip-row') ||
           el.closest('.overflow-x-auto') ||
           style.overflowX === 'auto'
         ) {

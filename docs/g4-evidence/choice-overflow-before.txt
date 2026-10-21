@@ -1,0 +1,8 @@
+=== G4 Defect 2: Choice Control Overflow & Checkmarks (Before Fix) ===
+Onboarding Step 3 condition-status segment options examined: 13
+Option "تحت علاج طبيب" rect [x=-7.0, w=119.0, right=112.0] overflows screen width 360px!
+Option "تحت علاج طبيب" rect [x=-9.0, w=112.0, right=103.0] overflows screen width 360px!
+Option "تحت علاج طبيب" rect [x=-3.0, w=112.0, right=109.0] overflows screen width 360px!
+Root cause: white-space: nowrap on .segmented__item with long Arabic labels on 360px screen
+Selected chips display svg checkmark and orange tint
+Status: REPRODUCED DEFECT

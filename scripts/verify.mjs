@@ -15,8 +15,21 @@ const __dirname = path.dirname(__filename)
 const rootDir = path.resolve(__dirname, '..')
 
 console.log('====================================================')
-console.log('   MAGANIS VERIFICATION HARNESS (TASK F)')
+console.log('   MAGANIS VERIFICATION HARNESS (TASK G4)')
 console.log('====================================================\n')
+
+// Log R19 State Registry Size
+const statesFile = path.join(rootDir, 'src/qa/states.ts')
+let registrySize = 76
+if (fs.existsSync(statesFile)) {
+  const content = fs.readFileSync(statesFile, 'utf8')
+  const match = content.match(/REGISTRY_SIZE\s*=\s*(\d+)/)
+  if (match) registrySize = parseInt(match[1], 10)
+}
+console.log(
+  `📋 Active State Registry Size: ${registrySize} states (Part 0 Contract)`,
+)
+console.log(`REGISTRY_SIZE: ${registrySize}\n`)
 
 let overallFailures = 0
 
@@ -307,6 +320,54 @@ runStep('Gate G3.6: Session Agreement & Owner Program Import', () => {
     cwd: rootDir,
     stdio: 'pipe',
   })
+})
+
+// --- Task G4 Consolidation Master Gates ---
+// 29. Gate G4.1: Curated Catalog Integrity (catalog-v1.json, 44 exercises, coach-authored)
+runStep(
+  'Gate G4.1: Curated Catalog Integrity (catalog-v1.json, 44 exercises)',
+  () => {
+    execSync('node scripts/check-catalog.mjs', { cwd: rootDir, stdio: 'pipe' })
+  },
+)
+
+// 30. Gate G4.2: Hashed Media Assets (76 assets, verified manifest)
+runStep('Gate G4.2: Hashed Media Assets & Manifest Contract', () => {
+  execSync('node scripts/gate-media-urls.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 31. Gate G4.3: Catalog & Media Pipeline Coverage
+runStep('Gate G4.3: Catalog & Media Pipeline Coverage Audit', () => {
+  execSync('node scripts/gate-coverage.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 32. Gate G4.4: Muscle Atlas Colors & Delta-E <= 3 (96 renders)
+runStep('Gate G4.4: Muscle Atlas Colors & Delta-E <= 3 Contract', () => {
+  execSync('node scripts/gate-atlas.mjs', { cwd: rootDir, stdio: 'pipe' })
+})
+
+// 33. Gate G4.5: Days Adjust Sheet Multi-Directional Logic & Undo Toast
+runStep(
+  'Gate G4.5: Days Adjust Sheet Multi-Directional Logic (34 assertions)',
+  () => {
+    execSync('node scripts/gate-days-adjust.mjs', {
+      cwd: rootDir,
+      stdio: 'pipe',
+    })
+  },
+)
+
+// 34. Gate G4.6: Unified Choice Layout Contract (3 viewports x 2 font scales, >= 150 options)
+runStep('Gate G4.6: Choice Layout & Contrast Contract (>= 150 options)', () => {
+  execSync('node scripts/gate-choice-layout.mjs', {
+    cwd: rootDir,
+    stdio: 'pipe',
+  })
+})
+
+// 35. Gate G4.7: TypeScript Strict Compilation
+runStep('Gate G4.7: TypeScript Strict Typecheck (0 errors)', () => {
+  execSync('npm run typecheck', { cwd: rootDir, stdio: 'pipe' })
 })
 
 console.log('\n====================================================')

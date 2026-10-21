@@ -71,7 +71,7 @@ describe('Part D: Exercise Page Layout', () => {
     expect(tabsSegmented?.textContent).not.toContain('لك')
   })
 
-  it('D5: Page order is title & chips -> movement section -> tabs', () => {
+  it('D5: Page order is title & chips -> (media card when present) -> tabs', () => {
     const { container } = render(
       <ExerciseDetailView
         exerciseId="incline_chest_press"
@@ -94,14 +94,10 @@ describe('Part D: Exercise Page Layout', () => {
     const chipsIdx = children.findIndex((c) =>
       c.className.includes('exercise-detail-chips-row'),
     )
-    const movementIdx = children.findIndex((c) =>
-      c.textContent?.includes('الحركة'),
-    )
     const tabsIdx = children.findIndex((c) =>
       c.className.includes('exercise-detail-tabs-header'),
     )
 
-    expect(chipsIdx).toBeLessThan(movementIdx)
-    expect(movementIdx).toBeLessThan(tabsIdx)
+    expect(chipsIdx).toBeLessThan(tabsIdx)
   })
 })

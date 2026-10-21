@@ -646,6 +646,12 @@
   gap: var(--space-2);
 }
 
+.card .key-value-list {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
 .key-value-item {
   display: flex;
   justify-content: space-between;
@@ -859,14 +865,20 @@
 .chip--active,
 .chip[aria-pressed='true'],
 .chip[aria-checked='true'] {
-  background-color: var(--color-accent-tint) !important;
-  border: 1.5px solid var(--color-accent) !important;
-  color: var(--color-text) !important;
+  background-color: var(--color-accent, #ff6b00) !important;
+  border: 1px solid var(--color-accent, #ff6b00) !important;
+  color: #0b0c0e !important;
   font-weight: var(--font-weight-semibold);
 }
 
+.chip--active svg,
+.chip[aria-pressed='true'] svg,
+.chip[aria-checked='true'] svg {
+  display: none !important;
+}
+
 .chip--active:hover {
-  filter: brightness(0.98);
+  filter: brightness(0.95);
 }
 
 /* Toggle Switch */
@@ -1462,16 +1474,15 @@ body[data-sheet-open='true'] .bottom-nav {
   fill: var(--atlas-primary, #e53935) !important;
   stroke: var(--atlas-primary-stroke, #b71c1c) !important;
   stroke-width: 1.5px !important;
-  opacity: 0.95 !important;
+  opacity: 1 !important;
   cursor: pointer;
-  filter: drop-shadow(0 0 4px rgba(229, 57, 53, 0.45));
 }
 
 .muscle-secondary {
-  fill: url(#secondary-hatch), var(--atlas-secondary, #fdd835) !important;
+  fill: var(--atlas-secondary, #fdd835) !important;
   stroke: var(--atlas-secondary-stroke, #f9a825) !important;
   stroke-width: 1.5px !important;
-  opacity: 0.9 !important;
+  opacity: 1 !important;
   cursor: pointer;
 }
 
@@ -1817,6 +1828,12 @@ body[data-sheet-open='true'] .bottom-nav {
   height: 0;
   border-left: 4.5px solid transparent;
   border-right: 4.5px solid transparent;
-  border-bottom: 8px solid var(--macro-fats); /* Triangle */
   background-color: transparent;
+}
+
+/* Placeholder alignment & justification (Part 6.3) */
+textarea::placeholder,
+input::placeholder {
+  text-align: start !important;
+  text-justify: none !important;
 }

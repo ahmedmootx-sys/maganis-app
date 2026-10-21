@@ -1,0 +1,7 @@
+=== G4 Defect 5: Days Count Mismatch & «تعديل الجدول» Does Nothing (Before Fix) ===
+Callout «اختلاف في أيام التدريب» visible before click: true
+Button «تعديل الجدول» visible: true
+Sheet opened by «تعديل الجدول»: جدول الأسبوع (weekday assignment only)
+Callout «اختلاف في أيام التدريب» STILL visible after saving: true
+Root Cause: «تعديل الجدول» opens weekday slot assignment sheet (profile.schedule), but never modifies program.days, never adds the missing 5th day, and leaves the mismatch Callout permanently present.
+Status: REPRODUCED DEFECT

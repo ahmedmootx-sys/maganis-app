@@ -1,0 +1,1092 @@
+{
+  "id": "prog-ahmed-upper-lower-5d",
+  "createdAt": 1760778000000,
+  "primaryGoal": "hypertrophy",
+  "trainingDaysPerWeek": 5,
+  "title": "برنامج أحمد — علوي/سفلي (5 أيام)",
+  "splitType": "upper_lower",
+  "days": [
+    {
+      "dayIndex": 0,
+      "id": "day-ahmed-a",
+      "name": "علوي (أ) — قوة وبناء",
+      "labelAr": "علوي (أ) — قوة وبناء",
+      "focus": "صدر · ظهر · كتف · بايسبس",
+      "kind": "strength",
+      "warmup": [
+        {
+          "exerciseId": "placeholder-arm-circle",
+          "customName": "دوائر الذراعين للإحماء (Arm Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-leg-swing",
+          "customName": "مرجحة الساقين (Leg Swings) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-hip-circle",
+          "customName": "دوائر الحوض للإحماء (Hip Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-cat-cow",
+          "customName": "إطالة القطة والبقرة (Cat-Cow) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-spinal-rotation",
+          "customName": "دوران الجذع وقوفاً (Standing Spinal Rotation) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "pullPrep": [
+        {
+          "exerciseId": "placeholder-dead-hang",
+          "customName": "التعلق الميت بالبار (Dead Hang) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 20,
+          "repsMin": 20,
+          "repsMax": 30,
+          "unit": "seconds",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "Scapular_Pull-Up",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "repsMax": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "اللاتس والظهر العريض (Lats)"
+        }
+      ],
+      "exercises": [
+        {
+          "exerciseId": "chest-1",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "صدر أوسط ومستوٍ"
+        },
+        {
+          "exerciseId": "placeholder-pull-up",
+          "customName": "سحب العقلة بالوزن الحر (Pull-Up) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 3,
+          "repsMin": 3,
+          "repsMax": 5,
+          "unit": "reps",
+          "rpe": 7.5,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "نزول بطيء حتى اكتمال أول تكرار كامل"
+        },
+        {
+          "exerciseId": "back-4",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "أعلى ومنتصف الظهر (الرومبويدز)"
+        },
+        {
+          "exerciseId": "placeholder-overhead-pres",
+          "customName": "ضغط الكتف العسكري بالبار (Overhead Press) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "shoulder-12",
+          "sets": 3,
+          "reps": 15,
+          "repsMin": 15,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "الكتف الخلفي (Rear Delt)"
+        },
+        {
+          "exerciseId": "arm-2",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 12,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "بايسبس - الرأس الطويل"
+        }
+      ],
+      "controlBlock": [],
+      "cooldown": [
+        {
+          "exerciseId": "placeholder-doorway-chest-stretch",
+          "customName": "إطالة الصدر في مدخل الباب (Doorway Chest Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-split-stance-hip-flexor-stretch",
+          "customName": "إطالة عضلات الفخذ وقوفاً (Standing Split-Stance Hip Flexor Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-thoracic-extension",
+          "customName": "تمديد القفص الصدري وقوفاً (Standing Thoracic Extension) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 5,
+          "repsMin": 5,
+          "repsMax": 6,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-cross-body-shoulder-stretch",
+          "customName": "إطالة الكتف المعترضة للذراع (Cross-Body Shoulder Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-overhead-lat-stretch",
+          "customName": "إطالة المجانص العلوية وقوفاً (Standing Overhead Lat Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ]
+    },
+    {
+      "dayIndex": 1,
+      "id": "day-ahmed-b",
+      "name": "سفلي (أ) — أرجل وجذع",
+      "labelAr": "سفلي (أ) — أرجل وجذع",
+      "focus": "أرجل · حوض · سمانة · جذع",
+      "kind": "strength",
+      "warmup": [
+        {
+          "exerciseId": "placeholder-arm-circle",
+          "customName": "دوائر الذراعين للإحماء (Arm Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-leg-swing",
+          "customName": "مرجحة الساقين (Leg Swings) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-hip-circle",
+          "customName": "دوائر الحوض للإحماء (Hip Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-cat-cow",
+          "customName": "إطالة القطة والبقرة (Cat-Cow) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-spinal-rotation",
+          "customName": "دوران الجذع وقوفاً (Standing Spinal Rotation) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "exercises": [
+        {
+          "exerciseId": "placeholder-back-squat",
+          "customName": "سكوات خلفي بالبار (Barbell Back Squat) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "leg-6",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "الفخذ الخلفي (الهمسترنج)"
+        },
+        {
+          "exerciseId": "placeholder-bulgarian-split-squat",
+          "customName": "سكوات بلغاري منقسم بالدمبل (Bulgarian Split Squat) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "perSide": true,
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "leg-20",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلات المؤخرة والألوية (الجلوتس)"
+        },
+        {
+          "exerciseId": "leg-9",
+          "sets": 3,
+          "reps": 15,
+          "repsMin": 15,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلات السمانة (الكاحل)"
+        },
+        {
+          "exerciseId": "core-1",
+          "sets": 3,
+          "reps": 30,
+          "repsMin": 30,
+          "repsMax": 45,
+          "unit": "seconds",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "ثبات الجذع والكور العميق"
+        }
+      ],
+      "controlBlock": [
+        {
+          "exerciseId": "placeholder-single-leg-balance",
+          "customName": "توازن الساق المفردة (Single-Leg Balance) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 20,
+          "repsMin": 20,
+          "repsMax": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "عيون مفتوحة ثم مغلقة"
+        },
+        {
+          "exerciseId": "placeholder-isometric-wall-sit",
+          "customName": "جلسة الحائط الثابتة (Isometric Wall Sit) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 30,
+          "repsMin": 30,
+          "repsMax": 45,
+          "unit": "seconds",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-l-sit-progression",
+          "customName": "تدرج الـ L-sit (ضم الركبتين Tuck) (L-sit Progression) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "repsMax": 15,
+          "unit": "seconds",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "cooldown": [
+        {
+          "exerciseId": "placeholder-doorway-chest-stretch",
+          "customName": "إطالة الصدر في مدخل الباب (Doorway Chest Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-split-stance-hip-flexor-stretch",
+          "customName": "إطالة عضلات الفخذ وقوفاً (Standing Split-Stance Hip Flexor Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-thoracic-extension",
+          "customName": "تمديد القفص الصدري وقوفاً (Standing Thoracic Extension) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 5,
+          "repsMin": 5,
+          "repsMax": 6,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-cross-body-shoulder-stretch",
+          "customName": "إطالة الكتف المعترضة للذراع (Cross-Body Shoulder Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-overhead-lat-stretch",
+          "customName": "إطالة المجانص العلوية وقوفاً (Standing Overhead Lat Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ]
+    },
+    {
+      "dayIndex": 2,
+      "id": "day-ahmed-c",
+      "name": "علوي (ب) — حجم وتحمل",
+      "labelAr": "علوي (ب) — حجم وتحمل",
+      "focus": "صدر مائل · سحب كابل · ديبس · أكتاف",
+      "kind": "strength",
+      "warmup": [
+        {
+          "exerciseId": "placeholder-arm-circle",
+          "customName": "دوائر الذراعين للإحماء (Arm Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-leg-swing",
+          "customName": "مرجحة الساقين (Leg Swings) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-hip-circle",
+          "customName": "دوائر الحوض للإحماء (Hip Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-cat-cow",
+          "customName": "إطالة القطة والبقرة (Cat-Cow) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-spinal-rotation",
+          "customName": "دوران الجذع وقوفاً (Standing Spinal Rotation) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "pullPrep": [
+        {
+          "exerciseId": "placeholder-dead-hang",
+          "customName": "التعلق الميت بالبار (Dead Hang) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 20,
+          "repsMin": 20,
+          "repsMax": 30,
+          "unit": "seconds",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "Scapular_Pull-Up",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "repsMax": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "اللاتس والظهر العريض (Lats)"
+        }
+      ],
+      "exercises": [
+        {
+          "exerciseId": "chest-5",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "صدر علوي (ترقوي)"
+        },
+        {
+          "exerciseId": "placeholder-pull-up",
+          "customName": "سحب العقلة بالوزن الحر (Pull-Up) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 0,
+          "repsMin": 0,
+          "unit": "reps",
+          "amrap": true,
+          "rpe": 7.5,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "back-6",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "أعلى ومنتصف الظهر (الرومبويدز)"
+        },
+        {
+          "exerciseId": "placeholder-parallel-bar-dip",
+          "customName": "المتوازي بقبضة الصدر/الترايسبس (Parallel Bar Dips) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "repsMax": 10,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-lateral-raise",
+          "customName": "رفرفة جانبية بالدمبل (Dumbbell Lateral Raise) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 12,
+          "repsMax": 15,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-wrist-curl",
+          "customName": "ثني المعصم بالدمبل للساعدين (Dumbbell Wrist Curl) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 15,
+          "repsMin": 15,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "controlBlock": [],
+      "cooldown": [
+        {
+          "exerciseId": "placeholder-doorway-chest-stretch",
+          "customName": "إطالة الصدر في مدخل الباب (Doorway Chest Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-split-stance-hip-flexor-stretch",
+          "customName": "إطالة عضلات الفخذ وقوفاً (Standing Split-Stance Hip Flexor Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-thoracic-extension",
+          "customName": "تمديد القفص الصدري وقوفاً (Standing Thoracic Extension) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 5,
+          "repsMin": 5,
+          "repsMax": 6,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-cross-body-shoulder-stretch",
+          "customName": "إطالة الكتف المعترضة للذراع (Cross-Body Shoulder Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-overhead-lat-stretch",
+          "customName": "إطالة المجانص العلوية وقوفاً (Standing Overhead Lat Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ]
+    },
+    {
+      "dayIndex": 3,
+      "id": "day-ahmed-d",
+      "name": "سفلي (ب) — ضخامة واستقرار",
+      "labelAr": "سفلي (ب) — ضخامة واستقرار",
+      "focus": "أجهزة الأرجل · سمانة · ترابيس · جانب الجذع",
+      "kind": "strength",
+      "warmup": [
+        {
+          "exerciseId": "placeholder-arm-circle",
+          "customName": "دوائر الذراعين للإحماء (Arm Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-leg-swing",
+          "customName": "مرجحة الساقين (Leg Swings) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-hip-circle",
+          "customName": "دوائر الحوض للإحماء (Hip Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-cat-cow",
+          "customName": "إطالة القطة والبقرة (Cat-Cow) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-spinal-rotation",
+          "customName": "دوران الجذع وقوفاً (Standing Spinal Rotation) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "exercises": [
+        {
+          "exerciseId": "leg-4",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "الفخذ الأمامي (العضلة الرباعية)",
+          "notesAr": "أو Front Squat"
+        },
+        {
+          "exerciseId": "leg-5",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "repsMax": 12,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "الفخذ الخلفي (الهمسترنج)"
+        },
+        {
+          "exerciseId": "leg-18",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 12,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "الفخذ الأمامي (العضلة الرباعية)"
+        },
+        {
+          "exerciseId": "leg-9",
+          "sets": 3,
+          "reps": 15,
+          "repsMin": 15,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلات السمانة (الكاحل)"
+        },
+        {
+          "exerciseId": "Dumbbell_Shrug",
+          "sets": 3,
+          "reps": 15,
+          "repsMin": 15,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلات الترابيس (Traps)"
+        },
+        {
+          "exerciseId": "placeholder-side-plank",
+          "customName": "بلانك جانبي (Side Plank) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 20,
+          "repsMin": 20,
+          "repsMax": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "controlBlock": [
+        {
+          "exerciseId": "placeholder-single-leg-balance",
+          "customName": "توازن الساق المفردة (Single-Leg Balance) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 20,
+          "repsMin": 20,
+          "repsMax": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "عيون مفتوحة ثم مغلقة"
+        },
+        {
+          "exerciseId": "placeholder-isometric-wall-sit",
+          "customName": "جلسة الحائط الثابتة (Isometric Wall Sit) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 30,
+          "repsMin": 30,
+          "repsMax": 45,
+          "unit": "seconds",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-l-sit-progression",
+          "customName": "تدرج الـ L-sit (ضم الركبتين Tuck) (L-sit Progression) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "repsMax": 15,
+          "unit": "seconds",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "cooldown": [
+        {
+          "exerciseId": "placeholder-doorway-chest-stretch",
+          "customName": "إطالة الصدر في مدخل الباب (Doorway Chest Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-split-stance-hip-flexor-stretch",
+          "customName": "إطالة عضلات الفخذ وقوفاً (Standing Split-Stance Hip Flexor Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-thoracic-extension",
+          "customName": "تمديد القفص الصدري وقوفاً (Standing Thoracic Extension) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 5,
+          "repsMin": 5,
+          "repsMax": 6,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-cross-body-shoulder-stretch",
+          "customName": "إطالة الكتف المعترضة للذراع (Cross-Body Shoulder Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-overhead-lat-stretch",
+          "customName": "إطالة المجانص العلوية وقوفاً (Standing Overhead Lat Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ]
+    },
+    {
+      "dayIndex": 4,
+      "id": "day-ahmed-e",
+      "name": "علوي (ج) — ذراعين وكثافة",
+      "labelAr": "علوي (ج) — ذراعين وكثافة",
+      "focus": "بنش ضيق · عقلة أقصى مجهود · سحب مسنود · ذراعين",
+      "kind": "strength",
+      "warmup": [
+        {
+          "exerciseId": "placeholder-arm-circle",
+          "customName": "دوائر الذراعين للإحماء (Arm Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-leg-swing",
+          "customName": "مرجحة الساقين (Leg Swings) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-hip-circle",
+          "customName": "دوائر الحوض للإحماء (Hip Circles) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "10 في كل اتجاه"
+        },
+        {
+          "exerciseId": "placeholder-cat-cow",
+          "customName": "إطالة القطة والبقرة (Cat-Cow) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-spinal-rotation",
+          "customName": "دوران الجذع وقوفاً (Standing Spinal Rotation) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "pullPrep": [
+        {
+          "exerciseId": "placeholder-dead-hang",
+          "customName": "التعلق الميت بالبار (Dead Hang) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 20,
+          "repsMin": 20,
+          "repsMax": 30,
+          "unit": "seconds",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "Scapular_Pull-Up",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "repsMax": 10,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "اللاتس والظهر العريض (Lats)"
+        }
+      ],
+      "exercises": [
+        {
+          "exerciseId": "arm-11",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلات الساعد والقبضة (Forearms)"
+        },
+        {
+          "exerciseId": "placeholder-pull-up",
+          "customName": "سحب العقلة بالوزن الحر (Pull-Up) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 0,
+          "repsMin": 0,
+          "unit": "reps",
+          "amrap": true,
+          "rpe": 7.5,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلة رئيسية",
+          "notesAr": "اختبار أقصى مجهود (maximum-effort test)"
+        },
+        {
+          "exerciseId": "placeholder-chest-supported-row",
+          "customName": "سحب الظهر المسنود بالدمبل (Chest-Supported Row) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 90,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-reverse-pec-deck",
+          "customName": "رفرفة خلفية بجهاز الفراشة المعكوس (Reverse Pec Deck) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 15,
+          "repsMin": 15,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "arm-2",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 12,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "بايسبس - الرأس الطويل"
+        },
+        {
+          "exerciseId": "placeholder-triceps-extension",
+          "customName": "تمديد الترايسبس بالدمبل فوق الرأس (Dumbbell Triceps Extension) [قيد المراجعة]",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 12,
+          "unit": "reps",
+          "rpe": 6,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ],
+      "controlBlock": [],
+      "cooldown": [
+        {
+          "exerciseId": "placeholder-doorway-chest-stretch",
+          "customName": "إطالة الصدر في مدخل الباب (Doorway Chest Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-split-stance-hip-flexor-stretch",
+          "customName": "إطالة عضلات الفخذ وقوفاً (Standing Split-Stance Hip Flexor Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-thoracic-extension",
+          "customName": "تمديد القفص الصدري وقوفاً (Standing Thoracic Extension) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 5,
+          "repsMin": 5,
+          "repsMax": 6,
+          "unit": "reps",
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-cross-body-shoulder-stretch",
+          "customName": "إطالة الكتف المعترضة للذراع (Cross-Body Shoulder Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        },
+        {
+          "exerciseId": "placeholder-standing-overhead-lat-stretch",
+          "customName": "إطالة المجانص العلوية وقوفاً (Standing Overhead Lat Stretch) [قيد المراجعة]",
+          "sets": 1,
+          "reps": 30,
+          "repsMin": 30,
+          "unit": "seconds",
+          "perSide": true,
+          "restSeconds": 60,
+          "targetSubMuscleAr": "عضلة رئيسية"
+        }
+      ]
+    }
+  ],
+  "isCustom": true,
+  "notes": "الأسبوع 2 يبدأ بيوم سفلي لتحقيق توازن التردد بين العلوي والسفلي على مدار أسبوعين (ملاحظة تدريبية). الأيام: السبت إلى الأربعاء (A B C D E)، الخميس = كارديو خفيف (مشي سريع أو دراجة 20-25 د)، الجمعة = راحة."
+}

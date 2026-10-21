@@ -63,7 +63,38 @@ export function resolveMedia(
     exId = exercise.id || ''
   }
 
-  // 1. Check local keyframed exercises from media-frames.json
+  // 1. Check catalog-v1 verified media
+  if (exercise?.media) {
+    const key = exercise.key || exId
+    if (
+      exercise.media.gif?.display === true &&
+      exercise.media.gif?.match === 'exact'
+    ) {
+      return {
+        url: assetUrl(`media/${key}/animation.gif`),
+        frame1Url: assetUrl(`media/${key}/start.jpg`),
+        isKeyframed: false,
+      }
+    }
+    if (
+      exercise.media.frames?.display === true &&
+      exercise.media.frames?.match === 'exact'
+    ) {
+      return {
+        url: assetUrl(`media/${key}/start.jpg`),
+        frame1Url: assetUrl(`media/${key}/peak.jpg`),
+        isKeyframed: true,
+      }
+    }
+    // "nearest means a different movement: never shown"
+    return {
+      url: null,
+      frame1Url: null,
+      isKeyframed: false,
+    }
+  }
+
+  // 2. Check local keyframed exercises from media-frames.json
   if (exId && framesDb[exId] && Array.isArray(framesDb[exId].frames)) {
     const entry = framesDb[exId]
     const f0 = entry.frames[0]?.url
@@ -81,7 +112,7 @@ export function resolveMedia(
     }
   }
 
-  // 2. Check local/custom exercise media properties (local assets or data URIs only)
+  // 3. Check local/custom exercise media properties (local assets or data URIs only)
   if (exercise) {
     const candidate =
       exercise.thumbnailUrl ||
@@ -114,7 +145,7 @@ export function resolveMedia(
     }
   }
 
-  // 3. Fallback: explicit null (no unverified or external media)
+  // 4. Fallback: explicit null (no unverified or external media)
   return {
     url: null,
     frame1Url: null,

@@ -1,10 +1,15 @@
 import { Sheet } from '../../components/Sheet.tsx'
 import { Callout } from '../../components/Callout.tsx'
+import { Button } from '../../ui'
 
 export interface MacroGuideModalProps {
   onClose: () => void
 }
 
+/**
+ * MacroGuideModal (Part 6.1 — Appendix C Coach-Authored Calculation Guide)
+ * Contains accredited physiological sources and accurate Dietary Reference Intakes.
+ */
 export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
   return (
     <Sheet isOpen={true} onClose={onClose} title="دليل حساب السعرات والماكروز">
@@ -15,276 +20,249 @@ export function MacroGuideModal({ onClose }: MacroGuideModalProps) {
           gap: '16px',
           padding: '8px 0 24px',
         }}
+        dir="rtl"
       >
-        {/* Introduction Callout */}
         <Callout variant="tip">
-          <strong>الأسس الفسيولوجية لتوزيع المغذيات:</strong> المغذيات الكبرى هي
-          الوقود ومواد البناء لجسمك. السعرات تمثل كمية الطاقة الإجمالية، بينما
-          توزيع المغذيات يحدد نمو الكتلة العضلية والمحافظة عليها وخسارة الدهون.
+          <strong>الأسس المعتمدة لحساب الطاقة والماكروز:</strong>
+          <div
+            style={{ marginTop: '4px', fontSize: '13px', lineHeight: '1.6' }}
+          >
+            تعتمد الحسابات على مراجع التغذية الرياضية المعتمدة لتوزيع الطاقة
+            والمغذيات الكبرى بدقة علمية.
+          </div>
         </Callout>
 
-        {/* Section 1: TDEE */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <h3
-            style={{
-              fontSize: '15px',
-              fontWeight: 800,
-              margin: '0',
-              color: 'var(--ink)',
-            }}
-          >
-            1. قاعدة إجمالي الحرق اليومي
-          </h3>
-          <p
-            style={{
-              fontSize: '13px',
-              color: 'var(--muted)',
-              lineHeight: '1.6',
-              margin: 0,
-            }}
-          >
-            يتم احتساب إجمالي الحرق اليومي بمعادلة Mifflin-St Jeor أو
-            Katch-McArdle مع معامل النشاط الرياضي ومعدل الحرق الأساسي:
-          </p>
-          <ul
-            style={{
-              fontSize: '13px',
-              lineHeight: '1.7',
-              margin: '4px 0 0',
-              paddingInlineStart: '20px',
-              color: 'var(--ink)',
-            }}
-          >
-            <li>
-              <strong>التضخيم:</strong> فائض سعرات مدروس (+10% إلى +15% فوق
-              الثبات) لزيادة العضلات بأقل نسبة دهون.
-            </li>
-            <li>
-              <strong>التنشيف:</strong> عجز سعرات آمن (-15% إلى -20% تحت الثبات)
-              مع عدم النزول تحت معدل الحرق الأساسي لحماية الكتلة العضلية وصحة
-              الهرمونات.
-            </li>
-          </ul>
-        </div>
-
-        {/* Section 2: Macro Breakdown */}
+        {/* 1. Energy per gram */}
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
+            border: '1px solid var(--line)',
+            borderRadius: '12px',
+            padding: '12px 14px',
+            background: 'var(--card-subtle)',
           }}
         >
-          {/* Protein */}
           <div
             style={{
-              border: '1px solid var(--line)',
-              borderRadius: '12px',
-              padding: '12px 14px',
-              background: 'var(--card-subtle)',
+              fontWeight: 800,
+              fontSize: '14.5px',
+              marginBottom: '6px',
+              color: 'var(--color-text)',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '6px',
-              }}
-            >
-              <strong
-                style={{
-                  color: 'var(--ink)',
-                  fontSize: '14px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
-                <span
-                  className="macro-marker macro-marker--protein"
-                  aria-hidden="true"
-                />
-                أولاً: البروتين (حجر بناء العضلات)
-              </strong>
-              <span
-                dir="ltr"
-                style={{
-                  fontSize: '11.5px',
-                  background: 'var(--macro-protein-bg)',
-                  color: 'var(--macro-protein)',
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  fontWeight: 700,
-                }}
-              >
-                1 g = 4 kcal
-              </span>
-            </div>
-            <p
-              style={{
-                fontSize: '13px',
-                lineHeight: '1.6',
-                margin: 0,
-                color: 'var(--ink)',
-              }}
-            >
-              <strong>المعيار العلمي:</strong> من{' '}
-              <strong>1.8 إلى 2.2 جرام</strong> لكل كجم من وزن جسمك الكلي (أو من
-              الكتلة الخالية من الدهون).
-              <br />
-              <span style={{ color: 'var(--muted)', fontSize: '12px' }}>
-                مثال: لاعب وزنه 75 كجم يحتاج تقريباً 150 جم بروتين يومياً (تساوي
-                600 سعرة حرارية).
-              </span>
-            </p>
+            1. الطاقة في الجرام
           </div>
-
-          {/* Fats */}
-          <div
+          <p
             style={{
-              border: '1px solid var(--line)',
-              borderRadius: '12px',
-              padding: '12px 14px',
-              background: 'var(--card-subtle)',
+              margin: 0,
+              fontSize: '13.5px',
+              lineHeight: '1.6',
+              color: 'var(--color-text)',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '6px',
-              }}
-            >
-              <strong
-                style={{
-                  color: 'var(--ink)',
-                  fontSize: '14px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
-                <span
-                  className="macro-marker macro-marker--fats"
-                  aria-hidden="true"
-                />
-                ثانياً: الدهون الصحية (التوازن الهرموني)
-              </strong>
-              <span
-                dir="ltr"
-                style={{
-                  fontSize: '11.5px',
-                  background: 'var(--macro-fats-bg)',
-                  color: 'var(--macro-fats)',
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  fontWeight: 700,
-                }}
-              >
-                1 g = 9 kcal
-              </span>
-            </div>
-            <p
-              style={{
-                fontSize: '13px',
-                lineHeight: '1.6',
-                margin: 0,
-                color: 'var(--ink)',
-              }}
-            >
-              <strong>المعيار العلمي:</strong> تمثل من{' '}
-              <strong>20% إلى 25%</strong> من إجمالي سعراتك اليومية كحد فسيولوجي
-              أدنى لحماية إفراز الهرمونات وصحة المفاصل والأداء الذهني.
-            </p>
+            البروتين 4 سعرات، الكربوهيدرات 4 سعرات، الدهون 9 سعرات.
+          </p>
+          <div
+            style={{
+              marginTop: '6px',
+              fontSize: '12px',
+              color: 'var(--color-text-2)',
+            }}
+          >
+            المصدر: معاملات أتواتر العامة (
+            <bdi dir="ltr">Atwater general factors</bdi>)
           </div>
+        </div>
 
-          {/* Carbs */}
+        {/* 2. Protein */}
+        <div
+          style={{
+            border: '1px solid var(--line)',
+            borderRadius: '12px',
+            padding: '12px 14px',
+            background: 'var(--card-subtle)',
+          }}
+        >
           <div
             style={{
-              border: '1px solid var(--line)',
-              borderRadius: '12px',
-              padding: '12px 14px',
-              background: 'var(--card-subtle)',
+              fontWeight: 800,
+              fontSize: '14.5px',
+              marginBottom: '6px',
+              color: 'var(--color-text)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '6px',
-              }}
-            >
-              <strong
-                style={{
-                  color: 'var(--ink)',
-                  fontSize: '14px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
-                <span
-                  className="macro-marker macro-marker--carbs"
-                  aria-hidden="true"
-                />
-                ثالثاً: الكربوهيدرات (وقود التدريب والطاقة)
-              </strong>
-              <span
-                dir="ltr"
-                style={{
-                  fontSize: '11.5px',
-                  background: 'var(--macro-carbs-bg)',
-                  color: 'var(--macro-carbs)',
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  fontWeight: 700,
-                }}
-              >
-                1 g = 4 kcal
-              </span>
-            </div>
-            <p
-              style={{
-                fontSize: '13px',
-                lineHeight: '1.6',
-                margin: 0,
-                color: 'var(--ink)',
-              }}
-            >
-              <strong>المعيار العلمي:</strong> تخصص باقي السعرات المتبقية
-              بالكامل للكربوهيدرات لملء مخازن الجليكوجين العضلي وتوفير طاقة
-              الرفع في التدريب:
-              <br />
-              <code
-                dir="ltr"
-                style={{
-                  display: 'inline-block',
-                  margin: '4px 0',
-                  padding: '3px 8px',
-                  background: 'var(--card-bg)',
-                  borderRadius: '6px',
-                  fontSize: '12px',
-                }}
-              >
-                Carbs (g) = (Total Calories - (Protein cal + Fat cal)) / 4
-              </code>
-            </p>
+            <span
+              className="macro-marker macro-marker--protein"
+              aria-hidden="true"
+            />
+            2. البروتين
+          </div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '13.5px',
+              lineHeight: '1.6',
+              color: 'var(--color-text)',
+            }}
+          >
+            المدى الشائع لمن يتدرب بالأثقال حوالي 1.6 إلى 2.2 جم لكل كجم من وزن
+            الجسم يوميًا.
+          </p>
+          <div
+            style={{
+              margin: '6px 0 0',
+              fontSize: '12.5px',
+              color: 'var(--color-text)',
+            }}
+          >
+            مثال حسابي: 75 كجم × 1.6 = 120 جم بروتين = 480 سعرة.
+          </div>
+          <div
+            style={{
+              marginTop: '6px',
+              fontSize: '12px',
+              color: 'var(--color-text-2)',
+            }}
+          >
+            المصدر: Morton وآخرون، 2018،{' '}
+            <bdi dir="ltr">British Journal of Sports Medicine</bdi>.
+          </div>
+        </div>
+
+        {/* 3. Fats */}
+        <div
+          style={{
+            border: '1px solid var(--line)',
+            borderRadius: '12px',
+            padding: '12px 14px',
+            background: 'var(--card-subtle)',
+          }}
+        >
+          <div
+            style={{
+              fontWeight: 800,
+              fontSize: '14.5px',
+              marginBottom: '6px',
+              color: 'var(--color-text)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <span
+              className="macro-marker macro-marker--fats"
+              aria-hidden="true"
+            />
+            3. الدهون
+          </div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '13.5px',
+              lineHeight: '1.6',
+              color: 'var(--color-text)',
+            }}
+          >
+            المدى الغذائي المقبول للبالغين من 20% إلى 35% من إجمالي السعرات.
+          </p>
+          <div
+            style={{
+              margin: '6px 0 0',
+              fontSize: '12.5px',
+              color: 'var(--color-text-2)',
+            }}
+          >
+            نسبة الدهون التي يختارها التطبيق لا تُسمّى «حدًا أدنى»؛ تُعرض
+            كاختيار داخل المدى أعلاه.
+          </div>
+          <div
+            style={{
+              marginTop: '6px',
+              fontSize: '12px',
+              color: 'var(--color-text-2)',
+            }}
+          >
+            المصدر: <bdi dir="ltr">Institute of Medicine</bdi>، 2005،{' '}
+            <bdi dir="ltr">Dietary Reference Intakes</bdi>.
+          </div>
+        </div>
+
+        {/* 4. Carbs */}
+        <div
+          style={{
+            border: '1px solid var(--line)',
+            borderRadius: '12px',
+            padding: '12px 14px',
+            background: 'var(--card-subtle)',
+          }}
+        >
+          <div
+            style={{
+              fontWeight: 800,
+              fontSize: '14.5px',
+              marginBottom: '6px',
+              color: 'var(--color-text)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <span
+              className="macro-marker macro-marker--carbs"
+              aria-hidden="true"
+            />
+            4. الكربوهيدرات
+          </div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '13.5px',
+              lineHeight: '1.6',
+              color: 'var(--color-text)',
+            }}
+          >
+            ما يتبقى من السعرات بعد البروتين والدهون.
+          </p>
+          <div
+            style={{
+              margin: '8px 0',
+              padding: '8px 12px',
+              background: 'var(--color-surface)',
+              borderRadius: '8px',
+              border: '1px solid var(--line)',
+              fontSize: '13px',
+              fontWeight: 700,
+              color: 'var(--color-text)',
+            }}
+          >
+            الكارب بالجرام = (إجمالي السعرات − سعرات البروتين − سعرات الدهون) ÷
+            4
+          </div>
+          <div
+            style={{
+              marginTop: '6px',
+              fontSize: '12px',
+              color: 'var(--color-text-2)',
+            }}
+          >
+            المصدر: المبادئ التوجيهية للجمعية الدولية للتغذية الرياضية (
+            <bdi dir="ltr">ISSN</bdi>)
           </div>
         </div>
 
         {/* Action Button */}
         <div style={{ marginTop: '8px' }}>
-          <button
-            type="button"
-            className="btn-primary-action full-width"
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
             onClick={onClose}
             style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
           >
             فهمت الدليل العلمي
-          </button>
+          </Button>
         </div>
       </div>
     </Sheet>

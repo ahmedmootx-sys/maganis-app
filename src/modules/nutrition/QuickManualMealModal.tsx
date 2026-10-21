@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { CustomMeal, MealCategory } from './types.ts'
 import { Sheet } from '../../components/Sheet.tsx'
+import { Button, Checkbox } from '../../ui'
 
 export interface QuickManualMealModalProps {
   isOpen?: boolean
@@ -29,7 +30,7 @@ const CATEGORIES: { key: MealCategory; label: string }[] = [
   { key: 'breakfast', label: 'فطور' },
   { key: 'lunch', label: 'غداء' },
   { key: 'dinner', label: 'عشاء' },
-  { key: 'snack', label: 'وجبة خفيفة' },
+  { key: 'snack', label: 'سناك' },
 ]
 
 export function QuickManualMealModal({
@@ -406,27 +407,13 @@ export function QuickManualMealModal({
         )}
 
         {/* Save to Permanent Meals Checkbox */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            padding: '4px 0',
-          }}
-        >
-          <input
-            type="checkbox"
+        <div style={{ padding: '4px 0' }}>
+          <Checkbox
             id="savePermanentCheck"
             checked={saveAsPermanent}
-            onChange={(e) => setSaveAsPermanent(e.target.checked)}
-            style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+            onChange={(val) => setSaveAsPermanent(val)}
+            label="حفظ هذه الوجبة في قائمة وجباتي الدائمة للرجوع إليها لاحقاً"
           />
-          <label
-            htmlFor="savePermanentCheck"
-            style={{ fontSize: '13.5px', fontWeight: 600, cursor: 'pointer' }}
-          >
-            حفظ هذه الوجبة في قائمة وجباتي الدائمة للرجوع إليها لاحقاً
-          </label>
         </div>
 
         {/* Actions */}
@@ -438,21 +425,25 @@ export function QuickManualMealModal({
             marginTop: '8px',
           }}
         >
-          <button
+          <Button
             type="submit"
-            className="btn-primary-action full-width"
+            variant="primary"
+            size="lg"
+            fullWidth
             style={{ height: '48px', fontSize: '15px', fontWeight: 800 }}
           >
             تسجيل في متتبع اليوم
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="ghost-secondary full-width"
+            variant="ghost"
+            size="md"
+            fullWidth
             onClick={onClose}
             style={{ height: '44px', fontSize: '14px' }}
           >
             إلغاء
-          </button>
+          </Button>
         </div>
       </form>
     </Sheet>

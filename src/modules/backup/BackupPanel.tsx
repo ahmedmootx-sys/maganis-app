@@ -15,6 +15,11 @@ import {
   IconDatabase,
 } from '../../components/Icons.tsx'
 
+import {
+  getPreUpdateSnapshot,
+  type PreUpdateSnapshotMeta,
+} from './preUpdateSnapshot.ts'
+
 export interface BackupPanelProps {
   backupData: () => BackupData
   onImported?: () => void
@@ -31,6 +36,9 @@ export function BackupPanel({
   const store = createBackupStore()
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
+  const [preSnapshot, setPreSnapshot] = useState<PreUpdateSnapshotMeta | null>(
+    null,
+  )
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [liveSyncManager] = useState(() => createLiveFileSyncManager())
@@ -40,7 +48,32 @@ export function BackupPanel({
 
   useEffect(() => {
     liveSyncManager.init().then((st) => setSyncState(st))
+    getPreUpdateSnapshot().then((meta) => setPreSnapshot(meta))
   }, [liveSyncManager])
+
+  async function handleRestorePreSnapshot() {
+    if (!preSnapshot) return
+    if (
+      !window.confirm(
+        'هل تريد بالتأكيد استعادة نسخة البيانات المحفوظة قبل التحديث؟ سيتم استبدال البيانات الحالية بهذه النسخة.',
+      )
+    ) {
+      return
+    }
+    setError('')
+    setStatus('جاري استعادة نسخة ما قبل التحديث...')
+    try {
+      if (onRestore) {
+        onRestore(preSnapshot.data)
+      } else {
+        onImported?.()
+      }
+      setStatus('تمت استعادة نسخة ما قبل التحديث بنجاح')
+    } catch (err) {
+      setError('فشل في استعادة نسخة ما قبل التحديث: ' + String(err))
+      setStatus('')
+    }
+  }
 
   const showReminder = store.shouldShowReminder()
 
@@ -290,6 +323,16 @@ export function BackupPanel({
         secondary="استعادة كل البيانات والتمارين من ملف تم تنزيله سابقاً"
         onClick={triggerFileInput}
       />
+
+      {/* Pre-update restore */}
+      {preSnapshot && (
+        <ListRow
+          leading={<IconRefreshCw size={18} />}
+          title="استعادة نسخة ما قبل التحديث"
+          secondary={`نسخة احتياطية محفوظة تلقائياً (${new Date(preSnapshot.takenAt).toLocaleDateString('ar-EG-u-nu-latn')})`}
+          onClick={handleRestorePreSnapshot}
+        />
+      )}
 
       {/* Share */}
       <ListRow

@@ -52,6 +52,7 @@ import {
   formatPrescription,
   cleanDayName,
 } from './sessionResolver.ts'
+import { DaysAdjustSheet } from './DaysAdjustSheet.tsx'
 import { saveFile } from '../../utils/saveFile.ts'
 import {
   IconSearch,
@@ -83,6 +84,7 @@ export interface WeeklyPlanViewProps {
   onOpenCustomBuilder?: () => void
   onOpenSessionLogger?: () => void
   onGenerateProgram?: () => void
+  onOpenAiDesigner?: () => void
   initialSelectedDayIndex?: number | null
 }
 
@@ -505,6 +507,7 @@ export function WeeklyPlanView({
   onOpenCustomBuilder,
   onOpenSessionLogger,
   onGenerateProgram,
+  onOpenAiDesigner,
   initialSelectedDayIndex = null,
 }: WeeklyPlanViewProps) {
   // Navigation: null = Week overview; number = Day screen
@@ -514,6 +517,7 @@ export function WeeklyPlanView({
 
   // Week Schedule Editor State
   const [isScheduleEditorOpen, setIsScheduleEditorOpen] = useState(false)
+  const [isDaysAdjustSheetOpen, setIsDaysAdjustSheetOpen] = useState(false)
   const [draftSchedule, setDraftSchedule] = useState<
     Record<number, ScheduleSlotType>
   >({})
@@ -1014,13 +1018,29 @@ export function WeeklyPlanView({
             title="لا يوجد جدول تدريبي حالي"
             message="قم بإنشاء برنامج تدريبي علمي مخصص وفقاً لأيامك وهدفك الرياضي، أو اختر تصميماً يدوياً."
             action={
-              <button
-                type="button"
-                className="button-primary full-width"
-                onClick={onGenerateProgram}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  width: '100%',
+                }}
               >
-                إنشاء برنامج تدريبي
-              </button>
+                <button
+                  type="button"
+                  className="button-primary full-width"
+                  onClick={onGenerateProgram}
+                >
+                  إنشاء برنامج تدريبي
+                </button>
+                <button
+                  type="button"
+                  className="button-secondary full-width"
+                  onClick={onOpenAiDesigner}
+                >
+                  صمم لي جدولي الخاص (مرشد الذكاء الاصطناعي)
+                </button>
+              </div>
             }
           />
         </div>
@@ -2004,7 +2024,7 @@ export function WeeklyPlanView({
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={handleOpenScheduleEditor}
+                    onClick={() => setIsDaysAdjustSheetOpen(true)}
                   >
                     تعديل الجدول
                   </Button>
@@ -2415,7 +2435,6 @@ export function WeeklyPlanView({
             <IconClipboard size={18} />
             <span>حافظة الجداول</span>
           </button>
-
           <button
             type="button"
             className="ghost-secondary full-width"
@@ -2432,7 +2451,6 @@ export function WeeklyPlanView({
             <IconCalendar size={18} />
             <span>جدول الأسبوع</span>
           </button>
-
           <button
             type="button"
             className="ghost-secondary full-width"
@@ -2449,7 +2467,6 @@ export function WeeklyPlanView({
             <IconDownload size={18} />
             <span>تصدير البرنامج</span>
           </button>
-
           <button
             type="button"
             className="ghost-secondary full-width"
@@ -2472,8 +2489,23 @@ export function WeeklyPlanView({
               const file = e.target.files?.[0]
               if (file) handleImportFile(file)
             }}
-          />
-
+          />{' '}
+          <button
+            type="button"
+            className="ghost-secondary full-width"
+            style={{
+              justifyContent: 'flex-start',
+              height: '48px',
+              gap: '10px',
+            }}
+            onClick={() => {
+              setIsManageSheetOpen(false)
+              onOpenAiDesigner?.()
+            }}
+          >
+            <IconDownload size={18} />
+            <span>صمم لي جدولي الخاص (مرشد الذكاء الاصطناعي)</span>
+          </button>
           <button
             type="button"
             className="ghost-secondary full-width"
@@ -2499,7 +2531,6 @@ export function WeeklyPlanView({
               </>
             )}
           </button>
-
           {/* Change split as radio list with English secondary ltr line */}
           {!program.isCustom && (
             <div
@@ -2560,7 +2591,6 @@ export function WeeklyPlanView({
               </div>
             </div>
           )}
-
           {/* Destructive Delete Button Last */}
           {onDeleteProgram && (
             <div
@@ -2971,6 +3001,25 @@ export function WeeklyPlanView({
             </div>
           </form>
         </Sheet>
+      )}
+
+      {isDaysAdjustSheetOpen && profile && program && (
+        <DaysAdjustSheet
+          isOpen={isDaysAdjustSheetOpen}
+          onClose={() => setIsDaysAdjustSheetOpen(false)}
+          program={program}
+          profile={profile}
+          showToast={showToast}
+          onSave={(updatedProgram, updatedSchedule) => {
+            onUpdateProgram?.(updatedProgram)
+            if (onUpdateProfile) {
+              onUpdateProfile({
+                ...profile,
+                schedule: updatedSchedule,
+              })
+            }
+          }}
+        />
       )}
 
       {toastMessage && <Toast message={toastMessage} />}

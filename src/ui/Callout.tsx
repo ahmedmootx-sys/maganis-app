@@ -2,7 +2,7 @@ import React from 'react'
 import { Icon, type IconName } from './Icon.tsx'
 
 export type CalloutVariant =
-  'info' | 'warning' | 'danger' | 'success' | 'accent'
+  'info' | 'warning' | 'danger' | 'error' | 'success' | 'accent' | 'tip'
 
 export interface CalloutAction {
   label: string
@@ -28,7 +28,9 @@ const DEFAULT_VARIANT_ICONS: Record<string, IconName> = {
   accent: 'info',
   warning: 'alert-triangle',
   danger: 'alert-circle',
+  error: 'alert-circle',
   success: 'check-circle-2',
+  tip: 'info',
 }
 
 export const Callout: React.FC<CalloutProps> = ({
@@ -47,7 +49,11 @@ export const Callout: React.FC<CalloutProps> = ({
 }) => {
   const rawVariant = tone || variant || 'info'
   const resolvedVariant: 'info' | 'warning' | 'danger' | 'success' =
-    rawVariant === 'accent' ? 'info' : rawVariant
+    rawVariant === 'accent' || rawVariant === 'tip'
+      ? 'info'
+      : rawVariant === 'error'
+        ? 'danger'
+        : rawVariant
   const iconName = icon || DEFAULT_VARIANT_ICONS[rawVariant] || 'info'
   const effectiveAction =
     action ??

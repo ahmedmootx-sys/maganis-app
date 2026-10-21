@@ -1,0 +1,3568 @@
+{
+  "schema": "maganis.catalog/1",
+  "version": "1.0.0-batch1",
+  "generated": "2026-10-20",
+  "author": "coach",
+  "notes_ar": "الدفعة الأولى من الكتالوج المختصر: 44 تمرينًا من برنامج المتدرب. المحتوى كتبه المدرب ولم يُراجَع من جهة مستقلة. الوسائط تُعرض فقط عندما تكون المطابقة exact. الدفعة الثانية (39 تمرينًا) تصل لاحقًا.",
+  "display_rules": {
+    "gif_native_size_css_px": 180,
+    "gif_attribution": "© Gym visual — https://gymvisual.com/",
+    "show_media_only_if": "media.<kind>.display === true",
+    "nearest_matches": "never displayed: they are a different movement",
+    "empty_sections": "hidden"
+  },
+  "atlas_colors": {
+    "primary": "#E53935",
+    "secondary": "#FDD835"
+  },
+  "exercises": [
+    {
+      "key": "bench",
+      "name_en": "Barbell Bench Press",
+      "name_ar": "ضغط البنش بالبار",
+      "category": "chest",
+      "kind": "strength",
+      "equipment": {
+        "ar": "بار",
+        "db": "barbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الصدر (الصدرية الكبرى)",
+      "muscles": [
+        {
+          "id": "pec_sternal",
+          "role": "primary"
+        },
+        {
+          "id": "pec_clavicular",
+          "role": "secondary"
+        },
+        {
+          "id": "pec_costal",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_long",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Flat press: sternal head dominates; clavicular and costal heads assist.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يبني القوة والحجم في الصدر ومقدمة الكتف والترايسبس، وهو التمرين الأساسي لتطوير قوة الدفع الأفقي. استخدام الأوزان الحرة يحسّن كذلك التوافق العضلي العصبي والتحكم في الحركة.",
+      "mechanics_ar": "حركة دفع أفقية متعددة المفاصل تشمل الكتف والمرفق. يتحرك البار في مسار شبه عمودي فوق الصدر، مع تثبيت لوحي الكتف على الدكة لتوفير قاعدة ثابتة للدفع وحماية مفصل الكتف.",
+      "steps_ar": [
+        "استلقِ على الدكة بحيث تكون عيناك أسفل البار مباشرة، وثبّت القدمين بقوة على الأرض.",
+        "أمسك البار بقبضة أعرض قليلاً من الكتفين مع معصمين مستقيمين، واسحب لوحي الكتف للخلف وللأسفل وثبّتهما طوال المجموعة.",
+        "أنزل البار ببطء (2–3 ثوانٍ) إلى أسفل الصدر، مع إبقاء المرفقين بزاوية 45–70° عن الجسم وليس 90°.",
+        "ادفع البار للأعلى حتى استقامة الذراعين دون قفل عنيف للمرفق، واعمل دائماً بوجود حاجز أمان أو مساعد وبدون الوصول إلى الفشل."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 120,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press_-_Medium_Grip/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Barbell_Bench_Press_-_Medium_Grip",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0025-EIeI8Vf.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0025",
+          "source_name": "barbell bench press",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "pullup",
+      "name_en": "Pull-Up",
+      "name_ar": "العقلة",
+      "category": "back",
+      "kind": "strength",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الظهر العريضة (اللاتيسيموس)",
+      "muscles": [
+        {
+          "id": "lats",
+          "role": "primary"
+        },
+        {
+          "id": "teres_major",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_lower",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_long",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_short",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "من أهم تمارين السحب الرأسي لبناء عرض الظهر وقوة البايسبس، وتطوّر السيطرة على وزن الجسم وهي مهارة أساسية في الكاليستنكس.",
+      "mechanics_ar": "حركة سحب رأسية متعددة المفاصل: تبدأ بخفض لوحي الكتف ثم ثني المرفقين وإدخالهما نحو الأضلاع. يبقى المسار عمودياً والجذع ثابتاً دون تأرجح.",
+      "steps_ar": [
+        "تعلّق بالبار بقبضة علوية أعرض قليلاً من الكتفين، وابدأ من تعلّق كامل بذراعين مستقيمتين.",
+        "اخفض لوحي الكتف قليلاً بعيداً عن الأذنين قبل بدء السحب.",
+        "اسحب المرفقين للأسفل نحو الأضلاع حتى يتجاوز الذقن البار دون تأرجح بالجسم.",
+        "انزل ببطء 2–3 ثوانٍ حتى تمدّد الذراعين كاملاً. إن لم تستطع أداء عدّة كاملة فاعتمد النزول البطيء (Negative) حتى أول عدّة كاملة."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 120,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullups/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullups/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Pullups",
+          "match": "exact",
+          "display": true,
+          "note_ar": "الصورة تمثل العقلة الكاملة؛ النزول البطيء هو الجزء السفلي من نفس الحركة."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0652-lBDjFxJ.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0652",
+          "source_name": "pull-up",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "onearmrow",
+      "name_en": "One-Arm Dumbbell Row",
+      "name_ar": "تجديف بالدمبل بذراع واحدة",
+      "category": "back",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات منتصف الظهر (المعينية والترابيس الوسطى)",
+      "muscles": [
+        {
+          "id": "lats",
+          "role": "primary"
+        },
+        {
+          "id": "teres_major",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_long",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_short",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي منتصف الظهر واللاتس ولوحي الكتف، وهو سحب أفقي يوازن تمارين الدفع في البرنامج. الأداء بذراع واحدة يكشف الفروق بين الجانب الأيمن والأيسر ويساعد على تصحيحها.",
+      "mechanics_ar": "سحب أفقي أحادي الجانب: يبدأ بسحب لوح الكتف للخلف ثم يُسحب المرفق نحو الورك (وليس نحو الكتف). يبقى الظهر ثابتاً وشبه موازٍ للأرض.",
+      "steps_ar": [
+        "ضع يداً وركبة من الجانب نفسه على الدكة، والظهر مستقيم وشبه موازٍ للأرض.",
+        "أمسك الدمبل باليد الحرة والذراع ممدودة تحت الكتف.",
+        "ابدأ بسحب لوح الكتف للخلف ثم اسحب المرفق نحو الورك حتى مستوى الجذع، وثبّت ثانية.",
+        "أنزل ببطء 2–3 ثوانٍ لتمدّد كامل. ابدأ بالجانب الأضعف ثم أدِّ الجانب الآخر بالعدد نفسه تماماً."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 90,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Dumbbell_Row/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Dumbbell_Row/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "One-Arm_Dumbbell_Row",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0292-C0MA9bC.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0292",
+          "source_name": "dumbbell one arm bent-over row",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "الحركة نفسها بدمبل واحد مع إسناد اليد والركبة على الدكة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "ohp",
+      "name_en": "Seated Dumbbell Overhead Press",
+      "name_ar": "ضغط الكتف جالساً بالدمبل",
+      "category": "shoulders",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات الكتف (الدالية)",
+      "muscles": [
+        {
+          "id": "delt_anterior",
+          "role": "primary"
+        },
+        {
+          "id": "delt_lateral",
+          "role": "primary"
+        },
+        {
+          "id": "triceps_lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_long",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_upper",
+          "role": "secondary"
+        },
+        {
+          "id": "pec_clavicular",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus_anterior",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي مقدمة الكتف وجانبه والترايسبس، ويدرّب دوران لوح الكتف للأعلى أثناء رفع الذراع فوق الرأس، وهو أمر مهم لصحة الكتف.",
+      "mechanics_ar": "دفع عمودي فوق الرأس بذراعين مستقلتين. يتحرك الدمبلان في قوس خفيف إلى أن تتمدّد الذراعان فوق الكتف، مع ثبات الجذع وإسناد الظهر على الدكة.",
+      "steps_ar": [
+        "اضبط ظهر الدكة شبه عمودي والصق ظهرك ورأسك به.",
+        "ابدأ بالدمبلين عند مستوى الكتفين والمرفقان تحت المعصمين.",
+        "شدّ البطن وادفع الدمبلين للأعلى في قوس خفيف حتى تمدّد الذراعين فوق الكتفين.",
+        "أنزلهما ببطء 2–3 ثوانٍ إلى مستوى الأذن. إن اضطررت إلى تقويس أسفل الظهر لإكمال الدفع فاستبدله بتمرين Landmine Press."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 120,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shoulder_Press/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shoulder_Press/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Dumbbell_Shoulder_Press",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0405-znQUdHY.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0405",
+          "source_name": "dumbbell seated shoulder press",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "facepull",
+      "name_en": "Face Pull",
+      "name_ar": "سحب الحبل نحو الوجه",
+      "category": "shoulders",
+      "kind": "strength",
+      "equipment": {
+        "ar": "كابل",
+        "db": "cable"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات الكتف الخلفية (الدالية الخلفية) ومنتصف الظهر",
+      "muscles": [
+        {
+          "id": "delt_posterior",
+          "role": "primary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "infraspinatus",
+          "role": "secondary"
+        },
+        {
+          "id": "teres_minor",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_lower",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "External-rotation finish brings in infraspinatus and teres minor.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي الكتف الخلفي ومنتصف الترابيس والدوّارة الخارجية للكتف، فيوازن الدفع بالسحب ويدعم وضعية الكتفين وصحة المفصل.",
+      "mechanics_ar": "سحب أفقي نحو الوجه مع دوران خارجي للكتف في نهاية الحركة. يتحرك الحبل نحو الجبهة والمرفقان عاليان، مع ضمّ لوحي الكتف دون ميل الجذع للخلف.",
+      "steps_ar": [
+        "اضبط البكرة عند مستوى الوجه أو أعلى قليلاً وأمسك الحبل بقبضة علوية.",
+        "ارجع خطوة للخلف بذراعين ممدودتين ووزن خفيف.",
+        "اسحب الحبل نحو الوجه والمرفقان عاليان وبعيدان عن الجسم.",
+        "في نهاية الحركة أدر اليدين للأعلى (دوران خارجي) واضغط لوحي الكتف ثانية، ثم ارجع ببطء."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Face_Pull",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0203-wqNPGCg.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0203",
+          "source_name": "cable rear delt row (with rope)",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "سحب كابل بحبل نحو مستوى الوجه ومرفقان مرتفعان. اسمه في المصدر Cable Rear Delt Row، ولا يوجد Face Pull بهذا الاسم."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "bicepcurl",
+      "name_en": "Dumbbell Bicep Curl",
+      "name_ar": "ثني البايسبس بالدمبل",
+      "category": "arms",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلة البايسبس",
+      "muscles": [
+        {
+          "id": "biceps_long",
+          "role": "primary"
+        },
+        {
+          "id": "biceps_short",
+          "role": "primary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "brachioradialis",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm_flexors",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "تمرين عزل لبناء حجم وقوة البايسبس والعضلة العضدية، ويساهم في تقوية القبضة وتوازن الذراعين.",
+      "mechanics_ar": "ثني مرفق أحادي المفصل: يتحرك الساعد حول مرفق ثابت بجانب الجذع، وتكون المقاومة في أعلى مستوياتها في منتصف المدى.",
+      "steps_ar": [
+        "قف والدمبلان على الجانبين وراحة اليد للأمام.",
+        "ثبّت المرفقين بجانب الجسم واثنِ الذراع حتى مستوى الكتف.",
+        "اضغط العضلة ثانية في الأعلى.",
+        "أنزل الدمبل 2–3 ثوانٍ لتمدّد كامل. ابدأ بالجانب الأضعف وأدِّ الجانب الآخر بالعدد نفسه."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Dumbbell_Bicep_Curl",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0294-NbVPDMW.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0294",
+          "source_name": "dumbbell biceps curl",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "squat",
+      "name_en": "Barbell Back Squat",
+      "name_ar": "السكوات الخلفي بالبار",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "بار",
+        "db": "barbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الفخذ الأمامية (الرباعية)",
+      "muscles": [
+        {
+          "id": "rectus_femoris",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_lateralis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_medialis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_intermedius",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "primary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "erector_spinae",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Glute max share rises with depth.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "أقوى تمرين مركّب للجزء السفلي: يبني الفخذ الأمامي والألوية وعضلات الجذع المثبّتة، ويرفع القوة الكلية للجسم.",
+      "mechanics_ar": "حركة ثني ومدّ متزامنة للورك والركبة والكاحل. يتحرك الورك للخلف وللأسفل بينما تتبع الركبتان اتجاه أصابع القدمين، ويبقى الجذع مشدوداً بتثبيت داخلي للبطن.",
+      "steps_ar": [
+        "ضع البار على عضلات الترابيس العلوية (وليس على الرقبة) وأمسكه بقبضة أعرض من الكتفين، والقدمان بعرض الكتفين تقريباً والأصابع للخارج 15–30°.",
+        "خذ نفساً عميقاً إلى البطن وشدّ الجذع كله قبل النزول.",
+        "انزل بالجلوس للخلف وللأسفل بين الوركين والركبتان تتبعان اتجاه القدمين، حتى يوازي الفخذ الأرض أو أعمق قليلاً دون تقوّس أسفل الظهر.",
+        "ادفع الأرض بمنتصف القدم وارتفع بالصدر والورك معاً حتى الوقوف. اعمل داخل رف بدبابيس أمان."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 150,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Barbell_Squat",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0043-qXTaZnJ.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0043",
+          "source_name": "barbell full squat",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "rdl",
+      "name_en": "Romanian Deadlift",
+      "name_ar": "الرفعة الرومانية",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "بار",
+        "db": "barbell"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات الفخذ الخلفية",
+      "muscles": [
+        {
+          "id": "hamstring_bf_long",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_semitendinosus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_semimembranosus",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "primary"
+        },
+        {
+          "id": "erector_spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Biceps femoris SHORT head excluded: it crosses only the knee, not the hip.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي الفخذ الخلفي والألوية وعضلات أسفل الظهر المثبّتة، ويعلّم نمط الانثناء من الورك (Hip Hinge) الأساسي للحركة الآمنة تحت الحمل.",
+      "mechanics_ar": "حركة انثناء من الورك: يتحرك الورك للخلف مع ثني خفيف في الركبتين وبقاء الظهر محايداً، فتتمدّد عضلات الفخذ الخلفية تحت الحمل ثم تنقبض لدفع الورك للأمام.",
+      "steps_ar": [
+        "قف والقدمان بعرض الوركين والبار أمام الفخذين والركبتان مثنيتان قليلاً جداً.",
+        "اسحب لوحي الكتف للخلف وللأسفل وأبقِ الصدر مفتوحاً والظهر مستقيماً.",
+        "ادفع الورك للخلف والبار ينزلق على الفخذين حتى تشعر بشدّ واضح في الفخذ الخلفي (غالباً أسفل الركبة بقليل)، وقبل أن يتقوّس الظهر.",
+        "ارتفع بدفع الورك للأمام وشدّ الألوية وليس بسحب البار بالظهر. ابدأ بدمبلين إن كنت لا تزال تتعلّم الحركة."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 150,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Romanian_Deadlift",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0085-wQ2c4XD.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0085",
+          "source_name": "barbell romanian deadlift",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "bss",
+      "name_en": "Bulgarian Split Squat",
+      "name_ar": "السكوات البلغاري",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات الفخذ الأمامية (الرباعية)",
+      "muscles": [
+        {
+          "id": "rectus_femoris",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_lateralis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_medialis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_intermedius",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "primary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "glute_med",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Front leg works; rear leg's rectus femoris/iliopsoas get a stretch.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "تمرين أحادي الرجل يبني الفخذ الأمامي والألوية ويحسّن التوازن، ويكشف الفروق بين الرجل اليمنى واليسرى لمعالجتها.",
+      "mechanics_ar": "نزول عمودي على رجل أمامية بينما القدم الخلفية مرفوعة على دكة. الحمل الأكبر على الرجل الأمامية، والميل الخفيف للجذع للأمام يزيد مشاركة الألوية.",
+      "steps_ar": [
+        "ضع ظهر القدم الخلفية على دكة، والقدم الأمامية على بُعد خطوة كبيرة أمامها.",
+        "أمسك دمبلاً في كل يد على الجانبين والجذع مائل قليلاً للأمام.",
+        "انزل بالركبة الأمامية حتى يوازي الفخذ الأرض مع إبقاء الكعب مثبتاً على الأرض.",
+        "ادفع بمنتصف القدم الأمامية حتى تعود. ابدأ بالرجل الأضعف وكرّر الأخرى بالعدد نفسه، وجرّب الأداء بوزن الجسم أولاً."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 90,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Split_Squat_with_Dumbbells/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Split_Squat_with_Dumbbells/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Split_Squat_with_Dumbbells",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "أقرب صورة في القاعدة: سبليت سكوات بالدمبل والقدم الخلفية مرفوعة. شكل الحركة قريب جداً لكن اسمها في القاعدة مختلف."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0410-qx4fgX7.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0410",
+          "source_name": "dumbbell single leg split squat",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "اسمه في المصدر Dumbbell Single Leg Split Squat، والقدم الخلفية على الدكة، أي أنه السكوات البلغاري نفسه."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "hipthrust",
+      "name_en": "Barbell Hip Thrust",
+      "name_ar": "دفع الورك بالبار",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "بار",
+        "db": "barbell"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات الألوية (الجلوتس)",
+      "muscles": [
+        {
+          "id": "glute_max",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_bf_long",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstring_semitendinosus",
+          "role": "secondary"
+        },
+        {
+          "id": "hamstring_semimembranosus",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "glute_med",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "من أفضل التمارين لتحميل الألوية الكبرى بوزن ثقيل؛ يقوّي الألوية ويحسّن قوة مدّ الورك. والألوية هي أقل عضلة في البرنامج من حيث عدد المجموعات، فكل مجموعة هنا مهمة.",
+      "mechanics_ar": "مدّ للورك مع ثبات أعلى الظهر على الدكة: ترتفع الأرداف حتى يصبح الجذع والفخذ في خط واحد وتكون الساقان عموديتين في القمة، فتصل الألوية لأقصى انقباض.",
+      "steps_ar": [
+        "اجلس على الأرض وأسفل لوحي الكتف على حافة الدكة، والبار على طيّة الورك وتحته لبّادة أو فوطة.",
+        "القدمان بعرض الوركين والركبتان مثنيتان، والمطلوب أن تكون الساقان عموديتين في القمة.",
+        "ثبّت الذقن على الصدر وادفع الكعبين للأعلى حتى يصبح الجذع والفخذ خطاً واحداً، واضغط الألوية ثانية.",
+        "انزل ببطء دون أن تلمس الأرض بين التكرارات، وابقِ الحوض مائلاً للخلف قليلاً ولا تُقوّس أسفل الظهر في القمة."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 120,
+      "references": [
+        "Contreras et al. (2015), Journal of Applied Biomechanics — مقارنة نشاط الألوية في السكوات وHip Thrust • وNSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Hip_Thrust/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Hip_Thrust/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Barbell_Hip_Thrust",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/1409-qKBpF7I.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "1409",
+          "source_name": "barbell glute bridge",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "جسر الألوية بالبار من الأرض. الحركة قريبة، لكن ظهرك في تمرينك يكون على حافة الدكة، ولا يوجد Hip Thrust على الدكة في المصدر."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "calf",
+      "name_en": "Standing Calf Raise",
+      "name_ar": "رفع السمانة واقفاً",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "جهاز",
+        "db": "machine"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات السمانة",
+      "muscles": [
+        {
+          "id": "gastrocnemius_medial",
+          "role": "primary"
+        },
+        {
+          "id": "gastrocnemius_lateral",
+          "role": "primary"
+        },
+        {
+          "id": "soleus",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Straight knee: gastrocnemius dominates, soleus assists (seated version flips this).",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي عضلة السمانة التي تدعم ثبات الكاحل والمشي والجري والقفز، ويزيد حجم أسفل الساق.",
+      "mechanics_ar": "ثني أخمصي للكاحل: يتحرك الكعب للأعلى حول مقدمة القدم. تبقى الركبتان مفرودتين فتعمل السمانة الخارجية (الغاستروكنيميوس) بشكل أكبر.",
+      "steps_ar": [
+        "ضع مقدمة القدم على حافة درجة أو جهاز والكعبان متدليان.",
+        "الركبتان مفرودتان دون قفل عنيف والجسم مستقيم.",
+        "ارتفع على أصابع القدم إلى أعلى نقطة وثبّت ثانية.",
+        "انزل ببطء 2–3 ثوانٍ حتى تمدّد كامل وثبّت ثانية، وابقِ الوزن على الإبهام والإصبع المجاور له وليس على الحافة الخارجية للقدم."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Standing_Calf_Raises",
+          "match": "exact",
+          "display": true,
+          "note_ar": "الصورة لجهاز؛ يمكن أداء التمرين على درجة بالدمبل أو بوزن الجسم بنفس المبدأ."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0605-ykUOVze.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0605",
+          "source_name": "lever standing calf raise",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "جهاز Lever Standing Calf Raise."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "hkr",
+      "name_en": "Hanging Knee Raise",
+      "name_ar": "رفع الركبتين من التعلّق",
+      "category": "core",
+      "kind": "strength",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات البطن",
+      "muscles": [
+        {
+          "id": "rectus_abdominis_lower",
+          "role": "primary"
+        },
+        {
+          "id": "iliopsoas",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_abdominis_upper",
+          "role": "secondary"
+        },
+        {
+          "id": "obliques_external",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus_femoris",
+          "role": "secondary"
+        },
+        {
+          "id": "forearm_flexors",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي عضلات البطن المستقيمة وثنيات الورك، ويحسّن قوة القبضة وثبات الكتف أثناء التعلّق.",
+      "mechanics_ar": "ثني للجذع والورك: يلتف الحوض للأعلى (إمالة خلفية) ثم تُرفع الركبتان، فيعمل البطن وليس ثنيات الورك وحدها.",
+      "steps_ar": [
+        "تعلّق في البار بقبضة علوية والكتفان للأسفل وبعيدان عن الأذنين.",
+        "من غير تأرجح، لُفّ الحوض للأعلى (اسحب البطن) وارفع الركبتين حتى مستوى الورك أو أعلى.",
+        "ثبّت لحظة في الأعلى.",
+        "انزل ببطء من غير أن يتأرجح الجسم. إن لم تستطع التحكم فقلّل المدى أو أدِّ التمرين على كرسي مع دعم."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Hanging_Leg_Raise",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "أقرب صورة: رفع الرجلين من التعلّق. الحركة نفسها لكن بساقين ممدودتين، وفي برنامجك الركبتان مثنيتان."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0472-I3tsCnC.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0472",
+          "source_name": "hanging leg raise",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "اسمه في المصدر Hanging Leg Raise، وتنثني الركبتان أثناء الرفع في الـGIF، فهو قريب من رفع الركبتين المعلّق."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "incline",
+      "name_en": "Incline Dumbbell Press",
+      "name_ar": "ضغط الصدر المائل بالدمبل",
+      "category": "chest",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الصدر العلوية (الحزمة الترقوية من الصدرية الكبرى)",
+      "muscles": [
+        {
+          "id": "pec_clavicular",
+          "role": "primary"
+        },
+        {
+          "id": "pec_sternal",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_long",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يركّز على الجزء العلوي من الصدر ومقدمة الكتف والترايسبس. استخدام الدمبل يجعل كل ذراع تعمل باستقلالية فيكشف الفرق بين الجانبين ويسمح بمدى حركة أكبر.",
+      "mechanics_ar": "دفع مائل بزاوية دكة حوالي 30° يزيد مشاركة الجزء العلوي من الصدر. ارتفاع الزاوية فوق 45° ينقل الحمل تدريجياً إلى الكتف.",
+      "steps_ar": [
+        "اضبط الدكة على ميل حوالي 30° (وليس أكثر).",
+        "اجلس والدمبلان على فخذيك، وارفعهما للأعلى وأنت تتمدد، مع لوحي كتف مسحوبين للخلف وللأسفل وملتصقين بالدكة.",
+        "نزّل الدمبلين في 2–3 ثوانٍ حتى يصبحا بجانب الصدر والمرفقان بزاوية 45–70° عن الجسم.",
+        "ادفع للأعلى وللداخل قليلاً حتى تمدّد الذراعين دون أن يصطدم الدمبلان. إن أنهت ذراع المجموعة قبل الأخرى فاحسب العدّات بالذراع الأضعف."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 90,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Press/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Press/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Incline_Dumbbell_Press",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0314-ns0SIbU.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0314",
+          "source_name": "dumbbell incline bench press",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "cablerow",
+      "name_en": "Seated Cable Row",
+      "name_ar": "التجديف الجالس بالكابل",
+      "category": "back",
+      "kind": "strength",
+      "equipment": {
+        "ar": "كابل",
+        "db": "cable"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات منتصف الظهر (المعينية والترابيس الوسطى)",
+      "muscles": [
+        {
+          "id": "lats",
+          "role": "primary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "primary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "primary"
+        },
+        {
+          "id": "teres_major",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_lower",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_long",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_short",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "erector_spinae",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "سحب أفقي بمقاومة مستمرة طوال الحركة يقوّي منتصف الظهر واللاتس والكتف الخلفي، ويوازن تمارين الدفع ويدعم وضعية الكتفين.",
+      "mechanics_ar": "يبدأ السحب بتحريك لوحي الكتف للخلف وللأسفل ثم ثني المرفقين نحو الورك، بينما يبقى الجذع منتصباً وثابتاً دون أرجحة.",
+      "steps_ar": [
+        "اجلس والقدمان على المنصة والركبتان مثنيتان قليلاً والجذع منتصب.",
+        "أمسك المقبض بقبضة محايدة (كفّان متقابلان) وابدأ والذراعان ممدودتان.",
+        "ابدأ بسحب لوحي الكتف للخلف وللأسفل ثم اسحب المرفقين نحو الورك حتى يصل المقبض إلى أسفل البطن، واضغط ثانية.",
+        "ارجع ببطء 2–3 ثوانٍ واترك لوحي الكتف يتباعدان مع التمدّد، دون أن يتحرك الجذع."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 90,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Seated_Cable_Rows",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0861-fUBheHs.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0861",
+          "source_name": "cable seated row",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "pushupplus",
+      "name_en": "Push-Up Plus",
+      "name_ar": "الضغط مع الدفع الإضافي",
+      "category": "chest",
+      "kind": "strength",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "العضلة المسنّنة الأمامية (Serratus Anterior) وعضلات الصدر",
+      "muscles": [
+        {
+          "id": "serratus_anterior",
+          "role": "primary"
+        },
+        {
+          "id": "pec_sternal",
+          "role": "primary"
+        },
+        {
+          "id": "pec_clavicular",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_long",
+          "role": "secondary"
+        },
+        {
+          "id": "pec_minor",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "The 'plus' (scapular protraction at the top) is what targets serratus anterior.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي العضلة المسنّنة الأمامية (Serratus Anterior) التي تثبّت لوح الكتف على القفص الصدري، وهو من أهم التمارين لتحسين ثبات الكتف وتقليل تجنّح اللوح، إضافةً إلى تقوية الصدر والترايسبس.",
+      "mechanics_ar": "ضغط عادي يُتبع بدفع إضافي (Plus) في أعلى الحركة: يتباعد لوحا الكتف عن بعضهما ويتحدّب الجزء العلوي من الظهر قليلاً، فتشتغل المسنّنة الأمامية بأقصى انقباض.",
+      "steps_ar": [
+        "خذ وضع الضغط العادي: اليدان تحت الكتفين أو أعرض قليلاً والجسم خط مستقيم من الرأس للكعبين والبطن مشدود.",
+        "انزل بالصدر قرب الأرض والمرفقان بزاوية 45° تقريباً.",
+        "ادفع للأعلى حتى تمدّد الذراعين، ثم كمّل دفع الأرض بعيداً عنك حتى يتباعد لوحا الكتف ويتحدّب أعلى ظهرك قليلاً، وثبّت ثانية (هذا هو الـPlus).",
+        "ارجع وكرّر. إن لم تتمكن من 10 عدّات نظيفة فابدأ من الركبتين أو بيديك على دكة."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 75,
+      "references": [
+        "Ludewig et al. (2004), American Journal of Sports Medicine — توازن نشاط المسنّنة الأمامية والترابيس العليا في تمارين الضغط • وACSM's Guidelines for Exercise Testing and Prescription"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pushups/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pushups/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Pushups",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "الصورة لضغط عادي؛ الـPlus (الدفع الإضافي في القمة) غير ظاهر فيها."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/3145-pvBMLHA.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "3145",
+          "source_name": "push-up plus",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "lateral",
+      "name_en": "Dumbbell Lateral Raise",
+      "name_ar": "رفرفة الكتف الجانبية بالدمبل",
+      "category": "shoulders",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الكتف الجانبية (الدالية الوسطى)",
+      "muscles": [
+        {
+          "id": "delt_lateral",
+          "role": "primary"
+        },
+        {
+          "id": "delt_anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_upper",
+          "role": "secondary"
+        },
+        {
+          "id": "supraspinatus",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يعزل الجزء الجانبي من الكتف (الدالية الوسطى) وهو المسؤول عن اتساع الكتفين ومظهر الجسم العلوي.",
+      "mechanics_ar": "رفع الذراع جانباً في مستوى لوح الكتف (يميل قليلاً للأمام). يقود الكوع الحركة ويبقى الجذع ثابتاً دون أرجحة.",
+      "steps_ar": [
+        "قف والدمبلان بجانبك والمرفقان مثنيان قليلاً والجذع ثابت.",
+        "ارفع الذراعين للجانب مع ميل بسيط للأمام (في مستوى لوح الكتف) حتى مستوى الكتف.",
+        "اجعل المرفق يقود الحركة وليس المعصم، ولا ترفع اليد أعلى من مستوى المرفق.",
+        "أنزل ببطء 2–3 ثوانٍ. وزن خفيف بحركة نظيفة أفضل من وزن كبير بأرجحة."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Side_Lateral_Raise",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0334-DsgkuIt.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0334",
+          "source_name": "dumbbell lateral raise",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "yraise",
+      "name_en": "Prone Y-Raise",
+      "name_ar": "رفع الذراعين بشكل Y على البطن",
+      "category": "shoulders",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الترابيس السفلية (Lower Trapezius)",
+      "muscles": [
+        {
+          "id": "trap_lower",
+          "role": "primary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "primary"
+        },
+        {
+          "id": "delt_posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "infraspinatus",
+          "role": "secondary"
+        },
+        {
+          "id": "teres_minor",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي الترابيس السفلية وعضلات لوح الكتف التي تدوّر اللوح للأعلى وتثبّته، فيدعم وضعية الكتفين وثبات الكتف.",
+      "mechanics_ar": "رفع الذراعين للأمام وللأعلى على شكل حرف Y وأنت منبطح على دكة مائلة، مع ضغط لوحي الكتف للأسفل نحو الوركين.",
+      "steps_ar": [
+        "اضبط الدكة على ميل 30–45° وانبطح عليها بصدرك والقدمان على الأرض.",
+        "أمسك دمبلين خفيفين جداً (1–2 كجم أو من دون وزن في البداية) والذراعان متدليتان والإبهام للأعلى.",
+        "ارفع الذراعين للأمام وللأعلى على شكل Y حتى مستوى الأذن، وأنت تضغط لوحي الكتف للأسفل نحو الوركين.",
+        "ثبّت ثانية أو ثانيتين وأنزل ببطء. إن شعرت بشدّ في الرقبة فخفّض الوزن إلى الصفر."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "Cools et al. (2007), American Journal of Sports Medicine — تمارين توازن عضلات لوح الكتف • وACSM's Guidelines for Exercise Testing and Prescription"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة (لا يوجد Y-Raise فيها). اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/3541-PbzNu7c.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "3541",
+          "source_name": "dumbbell incline y-raise",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "الصدر مسنود على دكة مائلة ورفع الدمبل على شكل Y، كما في خطوات تمرينك."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "legpress",
+      "name_en": "Leg Press",
+      "name_ar": "ضغط الرجلين بالجهاز",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "جهاز",
+        "db": "machine"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الفخذ الأمامية (الرباعية)",
+      "muscles": [
+        {
+          "id": "rectus_femoris",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_lateralis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_medialis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_intermedius",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Foot position changes the glute/quad split.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يبني الفخذ الأمامي والألوية بحمل كبير دون تحميل أسفل الظهر أو الحاجة للتوازن، فيزيد حجم التدريب للرجل بأمان.",
+      "mechanics_ar": "دفع المنصة بمدّ الورك والركبة. وضع القدمين بعرض الكتفين في منتصف المنصة يوزّع الحمل بين الفخذ والألوية، ويبقى الحوض ملتصقاً بالمسند.",
+      "steps_ar": [
+        "اجلس وظهرك وحوضك ملتصقان بالمسند طوال الحركة.",
+        "ضع القدمين على المنصة بعرض الكتفين في منتصفها والأصابع للخارج قليلاً.",
+        "فكّ الأمان وانزل ببطء 2–3 ثوانٍ حتى تصبح الركبتان حوالي 90°، بشرط ألا يلتف الحوض للأسفل ويترك المسند.",
+        "ادفع بمنتصف القدم والكعب حتى تقترب من استقامة الركبتين دون قفل عنيف."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 120,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Leg_Press",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0739-10Z2DXU.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0739",
+          "source_name": "sled 45в° leg press",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "جهاز Sled 45° Leg Press."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "frontsquat",
+      "name_en": "Front Squat",
+      "name_ar": "السكوات الأمامي بالبار",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "بار",
+        "db": "barbell"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات الفخذ الأمامية (الرباعية)",
+      "muscles": [
+        {
+          "id": "rectus_femoris",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_lateralis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_medialis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_intermedius",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "erector_spinae",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "More upright torso than back squat: quads dominate.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يحمّل الفخذ الأمامي أكثر من السكوات الخلفي، ويقوّي أعلى الظهر والجذع لأن الوزن أمام الجسم. بديل لتمرين الـLeg Press لمن يملك مرونة كافية في الرسغ والكتف.",
+      "mechanics_ar": "ثني ومدّ للورك والركبة والجذع منتصب. يرتكز البار على مقدمة الكتف والترقوة والمرفقان عاليان، فيجبر الوضع أعلى الظهر على الثبات.",
+      "steps_ar": [
+        "ضع البار على مقدمة الكتفين وأمسكه بقبضة النظافة (Clean Grip) أو بتقاطع الذراعين، والمرفقان عاليان.",
+        "القدمان بعرض الكتفين والجذع منتصب والبطن مشدود.",
+        "انزل بالجلوس لأسفل بين الوركين حتى يوازي الفخذ الأرض والمرفقان عاليان طوال الحركة.",
+        "ادفع الأرض بمنتصف القدم وارتفع بالجذع منتصباً. إن ضاق الرسغ أو الكتف فابقَ على الـLeg Press."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 120,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Squat_Clean_Grip/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Squat_Clean_Grip/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Front_Squat_Clean_Grip",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0042-zG0zs85.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0042",
+          "source_name": "barbell front squat",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "legcurl",
+      "name_en": "Lying Leg Curl",
+      "name_ar": "ثني الرجل على الجهاز نائماً",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "جهاز",
+        "db": "machine"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الفخذ الخلفية",
+      "muscles": [
+        {
+          "id": "hamstring_bf_long",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_bf_short",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_semitendinosus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_semimembranosus",
+          "role": "primary"
+        },
+        {
+          "id": "gastrocnemius_medial",
+          "role": "secondary"
+        },
+        {
+          "id": "gastrocnemius_lateral",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "All four hamstring heads work, including the knee-only short head.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يعزل الفخذ الخلفي بثني الركبة، وهو الوحيد في برنامجك الذي يشغّل الرأس القصيرة من عضلة الفخذ ذات الرأسين، فيكمل الـRomanian Deadlift.",
+      "mechanics_ar": "ثني ركبة أحادي المفصل: يتحرك الساق نحو الألوية حول محور ثابت، ويبقى الحوض ملتصقاً بالدكة.",
+      "steps_ar": [
+        "انبطح على الجهاز والركبتان عند حافة الدكة والوسادة فوق الكعبين مباشرة.",
+        "أمسك المقابض وثبّت الحوض على الدكة طوال الحركة.",
+        "اثنِ الركبتين وقرّب الكعبين من الأرداف في ثانية أو اثنتين، وثبّت لحظة في القمة.",
+        "انزل في 3 ثوانٍ حتى تمدّد كامل."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 75,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Leg_Curls/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Leg_Curls/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Lying_Leg_Curls",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0586-17lJ1kr.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0586",
+          "source_name": "lever lying leg curl",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "legext",
+      "name_en": "Leg Extension",
+      "name_ar": "مدّ الركبة على الجهاز",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "جهاز",
+        "db": "machine"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الفخذ الأمامية (الرباعية)",
+      "muscles": [
+        {
+          "id": "rectus_femoris",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_lateralis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_medialis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_intermedius",
+          "role": "primary"
+        }
+      ],
+      "muscles_note_en": "Isolation: quadriceps only.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يعزل الفخذ الأمامي وبالأخص العضلة المستقيمة الفخذية التي تتأثر أقل في السكوات والـPress. وهو أول تمرين يُحذف عند ضيق الوقت لأن التداخل مع بقية تمارين الفخذ الأمامي كبير.",
+      "mechanics_ar": "مدّ ركبة أحادي المفصل: يتحرك الساق للأعلى حول محور الركبة مع مقاومة أعلى عند اقتراب الاستقامة.",
+      "steps_ar": [
+        "اضبط الجهاز بحيث يتطابق محور الركبة مع محور الجهاز والوسادة فوق الكاحل مباشرة.",
+        "ظهرك على المسند وأيديك على المقابض.",
+        "افرد الركبتين حتى قرب الاستقامة، وثبّت ثانية واضغط الفخذ.",
+        "انزل ببطء 2–3 ثوانٍ دون أن يرتطم الوزن ببقية الأثقال. إن شعرت بألم في الركبة نفسها فخفّض الوزن أو توقف."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Extensions/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Extensions/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Leg_Extensions",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0585-my33uHU.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0585",
+          "source_name": "lever leg extension",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "farmer",
+      "name_en": "Farmer's Carry",
+      "name_ar": "مشية الفلاح",
+      "category": "full_body",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات القبضة والساعد والترابيس والجذع",
+      "muscles": [
+        {
+          "id": "forearm_flexors",
+          "role": "primary"
+        },
+        {
+          "id": "trap_upper",
+          "role": "primary"
+        },
+        {
+          "id": "erector_spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "quadratus_lumborum",
+          "role": "secondary"
+        },
+        {
+          "id": "obliques_external",
+          "role": "secondary"
+        },
+        {
+          "id": "glute_med",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Grip + trunk stabilisation carry.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي القبضة والترابيس والجذع بالكامل وثبات لوحي الكتف أثناء الحمل، وهو تدريب عملي على الوقفة المستقيمة.",
+      "mechanics_ar": "حمل ثقيل أثناء المشي: يجبر الجذع على مقاومة الميل الجانبي والأمامي، ويبقى الكتفان للأسفل وللخلف طوال الحمل.",
+      "steps_ar": [
+        "أمسك دمبلين ثقيلين نسبياً على جانبيك، وقف مستقيماً والكتفان للأسفل وبعيدان عن الأذنين.",
+        "الضلوع فوق الحوض والذقن محايدة، ومن غير ترجيع الظهر.",
+        "امشِ بخطوات قصيرة متحكَّم فيها في خط مستقيم طوال المدة (30–40 ثانية).",
+        "ثبّت الدمبلين من غير أرجحة وضعهما على الأرض بتحكم في النهاية."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 90,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Farmers_Walk/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Farmers_Walk/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Farmers_Walk",
+          "match": "exact",
+          "display": true,
+          "note_ar": "الصورة بمقابض ثقيلة (Farmer's Walk)؛ في برنامجك تؤدّيها بدمبلين."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/2133-qPEzJjA.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "2133",
+          "source_name": "farmers walk",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "sideplank",
+      "name_en": "Side Plank",
+      "name_ar": "اللوح الجانبي",
+      "category": "core",
+      "kind": "isometric",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الجذع الجانبية (المائلة والمربعة القطنية)",
+      "muscles": [
+        {
+          "id": "obliques_external",
+          "role": "primary"
+        },
+        {
+          "id": "quadratus_lumborum",
+          "role": "primary"
+        },
+        {
+          "id": "glute_med",
+          "role": "secondary"
+        },
+        {
+          "id": "transversus_abdominis",
+          "role": "secondary"
+        },
+        {
+          "id": "erector_spinae",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Side bridge EMG: quadratus lumborum and obliques highest (McGill).",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي عضلات الجذع الجانبية (المائلة والمربعة القطنية) وعضلة الألوية الوسطى وثبات الكتف. أداؤه لكل جانب على حدة يكشف الفرق بين الجانبين.",
+      "mechanics_ar": "ثبات متساوي القياس ضد الميل الجانبي: يرتفع الحوض حتى يصبح الجسم خطاً مستقيماً، وتدفع الساعد الأرض بعيداً حتى لا ينزلق لوح الكتف.",
+      "steps_ar": [
+        "نم على جنبك والكوع تحت الكتف مباشرة والساعد على الأرض.",
+        "ضع القدمين فوق بعض (أو إحداهما أمام الأخرى لتوازن أسهل).",
+        "ارفع الحوض حتى يصبح الجسم خطاً مستقيماً من الرأس للكعبين، وادفع الأرض بالكوع كي لا ينزلق لوح الكتف.",
+        "اثبت المدة وأنت تتنفس بشكل طبيعي. ابدأ بالجانب الأضعف وكرّر الجانب الآخر بالزمن نفسه."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "McGill, S. — Low Back Disorders (Human Kinetics) — تمارين ثبات الجذع • وNSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Side_Bridge",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0705-RKjH6Lt.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0705",
+          "source_name": "side bridge v. 2",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "اسمه في المصدر Side Bridge v. 2، وهو البلانك الجانبي على الساعد."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "cgbench",
+      "name_en": "Close-Grip Bench Press",
+      "name_ar": "ضغط البنش بقبضة ضيقة",
+      "category": "arms",
+      "kind": "strength",
+      "equipment": {
+        "ar": "بار",
+        "db": "barbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلة الترايسبس",
+      "muscles": [
+        {
+          "id": "triceps_lateral",
+          "role": "primary"
+        },
+        {
+          "id": "triceps_long",
+          "role": "primary"
+        },
+        {
+          "id": "triceps_medial",
+          "role": "primary"
+        },
+        {
+          "id": "pec_sternal",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_anterior",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يشغّل الترايسبس بشكل أساسي مع الصدر ومقدمة الكتف بوزن أكبر من أي تمرين عزل للترايسبس.",
+      "mechanics_ar": "دفع أفقي بقبضة بعرض الكتفين تقريباً: يبقى المرفقان أقرب للجسم (حوالي 30–45°) فينتقل جزء أكبر من الحمل إلى الترايسبس.",
+      "steps_ar": [
+        "نفس وضع البنش في يوم A: لوحا الكتف مسحوبان للخلف وللأسفل والقدمان ثابتتان.",
+        "امسك البار بعرض الكتفين تقريباً (وليس ضيقاً جداً) والمعصمان مستقيمان فوق الساعدين.",
+        "أنزل البار ببطء إلى أسفل الصدر والمرفقان قريبان من الجسم.",
+        "ادفع للأعلى حتى استقامة الذراعين دون قفل عنيف، واعمل بحاجز أمان أو مساعد ومن دون فشل."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 120,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Close-Grip_Barbell_Bench_Press/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Close-Grip_Barbell_Bench_Press/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Close-Grip_Barbell_Bench_Press",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0030-J6Dx1Mu.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0030",
+          "source_name": "barbell close-grip bench press",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "csrow",
+      "name_en": "Chest-Supported Dumbbell Row",
+      "name_ar": "التجديف بالدمبل بإسناد الصدر",
+      "category": "back",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات منتصف الظهر (المعينية والترابيس الوسطى)",
+      "muscles": [
+        {
+          "id": "rhomboids",
+          "role": "primary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "primary"
+        },
+        {
+          "id": "lats",
+          "role": "primary"
+        },
+        {
+          "id": "delt_posterior",
+          "role": "secondary"
+        },
+        {
+          "id": "teres_major",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_lower",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_long",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_short",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Elbows wider = more rhomboids/mid-trap; narrower = more lats.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي منتصف الظهر واللاتس والكتف الخلفي والبايسبس. إسناد الصدر على الدكة يرفع الحمل عن أسفل الظهر ويمنع الغش بالزخم.",
+      "mechanics_ar": "سحب أفقي مع إسناد الصدر: يبدأ بسحب لوحي الكتف ثم المرفقين للخلف وللأعلى بجانب الجذع، فتتركّز الحركة في الظهر.",
+      "steps_ar": [
+        "اضبط الدكة على ميل 30–45° وانبطح عليها بصدرك والقدمان على الأرض.",
+        "أمسك دمبلين والذراعان ممدودتان لأسفل.",
+        "ابدأ بسحب لوحي الكتف للخلف ثم اسحب المرفقين للخلف وللأعلى بجانب الجذع، وثبّت ثانية.",
+        "أنزل في 2–3 ثوانٍ لتمدّد كامل. لا ترفع صدرك من الدكة ولا ترفع كتفيك للأذنين."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 90,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Bench_Pull/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Bench_Pull/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Incline_Bench_Pull",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "الصورة لنفس الحركة لكن بالبار بدل الدمبل."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0327-7vG5o25.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0327",
+          "source_name": "dumbbell incline row",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "الصدر مسنود على دكة مائلة، وهو تمرين الصدر المسنود نفسه."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "revpec",
+      "name_en": "Reverse Pec Deck",
+      "name_ar": "الفراشة العكسية على الجهاز",
+      "category": "shoulders",
+      "kind": "strength",
+      "equipment": {
+        "ar": "جهاز",
+        "db": "machine"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الكتف الخلفية (الدالية الخلفية) ومنتصف الظهر",
+      "muscles": [
+        {
+          "id": "delt_posterior",
+          "role": "primary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "infraspinatus",
+          "role": "secondary"
+        },
+        {
+          "id": "teres_minor",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يعزل الكتف الخلفي ومنتصف الترابيس والعضلات المعينية، فيوازن الدفع ويدعم وضعية الكتفين.",
+      "mechanics_ar": "فتح أفقي للذراعين للخلف في قوس واسع. تتحرك الذراعان حتى يصبحا في خط الجسم دون تجاوزه، ويبقى الصدر ملتصقاً بالوسادة.",
+      "steps_ar": [
+        "اضبط الكرسي بحيث تكون المقابض عند مستوى الكتفين وصدرك على الوسادة.",
+        "أمسك المقابض والمرفقان مثنيان قليلاً.",
+        "افتح الذراعين للخلف في قوس واسع حتى يصبحا في خط واحد مع الجذع، وثبّت ثانية.",
+        "ارجع ببطء 2–3 ثوانٍ. وزن خفيف فقط؛ إن اهتز جسمك أو ارتفعت كتفاك فهو ثقيل."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Machine_Flyes/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Machine_Flyes/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Reverse_Machine_Flyes",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0383-EAs3xL9.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0383",
+          "source_name": "dumbbell reverse fly",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "لا يوجد Reverse Pec Deck بالجهاز في المصدر. هذا Reverse Fly بالدمبل والصدر على دكة مائلة، ويستهدف الكتف الخلفي نفسه."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "tricepsext",
+      "name_en": "Dumbbell Triceps Extension (Overhead)",
+      "name_ar": "تمديد الترايسبس بالدمبل فوق الرأس",
+      "category": "arms",
+      "kind": "strength",
+      "equipment": {
+        "ar": "دمبل",
+        "db": "dumbbell"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلة الترايسبس",
+      "muscles": [
+        {
+          "id": "triceps_long",
+          "role": "primary"
+        },
+        {
+          "id": "triceps_lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_medial",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Overhead position stretches the long head (it crosses the shoulder), so it works hardest.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يعزل الترايسبس، والأداء فوق الرأس يمدّد الرأس الطويلة للعضلة (أكبر رؤوسها) فيعطي تحميلاً مختلفاً عن ضغط البنش بقبضة ضيقة.",
+      "mechanics_ar": "ثني ومدّ للمرفق أحادي المفصل فوق الرأس: يبقى العضد ثابتاً قرب الأذن ويتحرك الساعد فقط.",
+      "steps_ar": [
+        "اقعد أو قف وامسك دمبلاً واحداً بكلتا يديك فوق رأسك.",
+        "المرفقان للأمام وقريبان من رأسك والضلوع لأسفل دون تقويس.",
+        "أنزل الدمبل خلف رأسك ببطء حتى تشعر بتمدّد في الترايسبس.",
+        "ادفع للأعلى حتى تمدّد الذراعين. إن ضاق الكتف في الوضع فوق الرأس فأدِّ التمرين وأنت مستلقٍ بدمبل في كل يد."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Dumbbell_Triceps_Extension/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Dumbbell_Triceps_Extension/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Standing_Dumbbell_Triceps_Extension",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/2188-kont8Ut.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "2188",
+          "source_name": "dumbbell seated triceps extension",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "دمبل واحد فوق الرأس من وضع الجلوس."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "wallslide",
+      "name_en": "Wall Slides with Lift-Off",
+      "name_ar": "انزلاق الذراعين على الحائط مع الرفع",
+      "category": "mobility",
+      "kind": "mobility",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات لوح الكتف (الترابيس السفلية والمسنّنة الأمامية)",
+      "muscles": [
+        {
+          "id": "serratus_anterior",
+          "role": "primary"
+        },
+        {
+          "id": "trap_lower",
+          "role": "primary"
+        },
+        {
+          "id": "infraspinatus",
+          "role": "secondary"
+        },
+        {
+          "id": "teres_minor",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_lateral",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يحمّي المسنّنة الأمامية والترابيس السفلية ويحسّن مرونة رفع الذراع فوق الرأس، وهو أهم حركات الإحماء لتجنّح الكتف.",
+      "mechanics_ar": "رفع الذراعين على الحائط من وضع W إلى Y مع بقاء الساعدين ملامسين للحائط، ثم رفعهما سنتيمترات قليلة عنه (Lift-Off) لتنشيط لوحي الكتف.",
+      "steps_ar": [
+        "قف وظهرك وحوضك ورأسك ملتصقة بالحائط والضلوع لأسفل.",
+        "ضع الساعدين وظهر اليدين على الحائط بشكل حرف W عند مستوى الكتف.",
+        "اطلع بالذراعين على الحائط حتى شكل Y دون أن يفارقاه، ثم ارفعهما سنتيمترات عن الحائط وثبّت ثانية.",
+        "انزل ببطء. إن فارقت الذراعان الحائط في الصعود فقلّل المدى بدل أن تعوّض بتقويس الظهر."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين Wall Slide. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "legswing",
+      "name_en": "Leg Swings",
+      "name_ar": "أرجحة الرجل",
+      "category": "mobility",
+      "kind": "mobility",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الفخذ الخلفية",
+      "muscles": [
+        {
+          "id": "iliopsoas",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_bf_long",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_semitendinosus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_semimembranosus",
+          "role": "primary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        },
+        {
+          "id": "glute_med",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus_femoris",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Mobility: red = muscles being swung through range.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "تسخين ديناميكي للفخذ الخلفي وثنيات الورك والفخذ الداخلي قبل تمارين الرجل.",
+      "mechanics_ar": "أرجحة متحكَّم فيها للرجل من الورك للأمام والخلف ثم يميناً وشمالاً بمدى يزيد تدريجياً.",
+      "steps_ar": [
+        "أسند يدك على الحائط وقف على رجل واحدة.",
+        "أرجح الرجل الحرة للأمام وللخلف بحركة متحكَّم فيها ومدى يزيد تدريجياً.",
+        "كرّر بالأرجحة يميناً وشمالاً أمام جسمك.",
+        "بدّل الرجل. تجنّب الأرجحة العنيفة وميل الجذع."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين Leg Swings. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "hipcircles",
+      "name_en": "Standing Hip Circles",
+      "name_ar": "دوائر الورك واقفاً",
+      "category": "mobility",
+      "kind": "mobility",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الفخذ الخارجية (المبعِّدة)",
+      "muscles": [
+        {
+          "id": "glute_med",
+          "role": "primary"
+        },
+        {
+          "id": "tfl",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "secondary"
+        },
+        {
+          "id": "iliopsoas",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يحرّك مفصل الورك في كل اتجاهاته ويحضّر الألوية للسكوات والـHip Thrust.",
+      "mechanics_ar": "رسم دائرة كبيرة بالركبة المرفوعة لمستوى الورك من مفصل الورك، دون تحريك الحوض كله.",
+      "steps_ar": [
+        "قف على رجل واحدة وأمسك الحائط عند الحاجة.",
+        "ارفع الركبة الحرة لمستوى الورك.",
+        "ارسم بها دائرة كبيرة للخارج ببطء 10 مرات ثم اعكس الاتجاه.",
+        "بدّل الرجل. لا تُمِل الجذع ولا تحرّك الحوض كله."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Hip_Circles/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Hip_Circles/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Standing_Hip_Circles",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين Hip Circles واقفاً. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "catcow",
+      "name_en": "Cat-Cow",
+      "name_ar": "القط والبقرة",
+      "category": "mobility",
+      "kind": "mobility",
+      "equipment": {
+        "ar": "بدون أداة",
+        "db": "none"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات أسفل الظهر",
+      "muscles": [
+        {
+          "id": "erector_spinae",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_abdominis_upper",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_abdominis_lower",
+          "role": "primary"
+        },
+        {
+          "id": "transversus_abdominis",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يحسّن مرونة العمود الفقري وخصوصاً الصدري، والجزء المهم للتحدّب هو حركة البقرة (التقويس للأسفل مع رفع الصدر).",
+      "mechanics_ar": "حركة بين تقويس وتقعير العمود الفقري على أربع: يتحرك الصدر والظهر معاً، لا أسفل الظهر وحده.",
+      "steps_ar": [
+        "على اليدين والركبتين: اليدان تحت الكتفين والركبتان تحت الوركين.",
+        "مع الشهيق: نزّل البطن لأسفل وارفع الصدر وانظر قليلاً للأمام (Cow).",
+        "مع الزفير: قوّس ظهرك لأعلى وادفع الأرض بعيداً وقرّب الذقن من الصدر (Cat).",
+        "كرّر 10 مرات ببطء وحاول أن تتوزّع الحركة على الظهر كله."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cat_Stretch/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cat_Stretch/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Cat_Stretch",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "الصورة لوضع القط (Cat) فقط؛ وضع البقرة (Cow) غير ظاهر."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين Cat-Cow. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "spinalrot",
+      "name_en": "Standing Spinal Rotation",
+      "name_ar": "دوران العمود الفقري واقفاً",
+      "category": "mobility",
+      "kind": "mobility",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات البطن",
+      "muscles": [
+        {
+          "id": "obliques_external",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_abdominis_upper",
+          "role": "secondary"
+        },
+        {
+          "id": "erector_spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "quadratus_lumborum",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يحرّك العمود الصدري في الدوران ويسخّن عضلات الجذع الجانبية قبل التمرين.",
+      "mechanics_ar": "دوران الجزء العلوي من الجذع حول محور العمود الفقري بينما يبقى الحوض والركبتان ثابتتين للأمام.",
+      "steps_ar": [
+        "قف والقدمان بعرض الوركين وذراعاك متقاطعتان على صدرك.",
+        "لُفّ الجزء العلوي من الجسم ناحية اليمين مع بقاء الحوض والركبتين للأمام، ثم ارجع.",
+        "بدّل الجانب.",
+        "كرّر 10 مرات وتأكد أن الدوران من الصدر وليس من أسفل الظهر."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Torso_Rotation/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Torso_Rotation/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Torso_Rotation",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "الصورة لنفس الحركة لكن بكرة بين اليدين."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر دوران العمود الفقري واقفاً (الموجود Spine Twist جالساً، وهو مختلف). لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "deadhang",
+      "name_en": "Dead Hang",
+      "name_ar": "التعلّق الكامل",
+      "category": "back",
+      "kind": "isometric",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الظهر العريضة (اللاتيسيموس)",
+      "muscles": [
+        {
+          "id": "forearm_flexors",
+          "role": "primary"
+        },
+        {
+          "id": "lats",
+          "role": "primary"
+        },
+        {
+          "id": "teres_major",
+          "role": "secondary"
+        },
+        {
+          "id": "brachialis",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_short",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Grip work plus a passive lat stretch.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي القبضة ويمدّد اللاتس والكتفين ويهيّئ مفصل الكتف للسحب.",
+      "mechanics_ar": "تعلّق ثابت بذراعين مستقيمتين مع كتفين مسحوبين قليلاً للأسفل (تعلّق نشط).",
+      "steps_ar": [
+        "تعلّق بقبضة علوية بعرض الكتفين تقريباً وذراعين ممدودتين.",
+        "اخفض الكتفين قليلاً بعيداً عن الأذنين دون ثني المرفقين.",
+        "تنفّس بشكل طبيعي وثبّت المدة.",
+        "انزل عندما تهتز القبضة أو يتغيّر الشكل. إن انتهت القبضة قبل 20 ثانية فاقسم المدة إلى تعليقات أقصر."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين التعلّق الثابت Dead Hang. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "scappull",
+      "name_en": "Scapular Pull-Up",
+      "name_ar": "العقلة الكتفية",
+      "category": "shoulders",
+      "kind": "strength",
+      "equipment": {
+        "ar": "بدون أداة",
+        "db": "none"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الترابيس",
+      "muscles": [
+        {
+          "id": "trap_lower",
+          "role": "primary"
+        },
+        {
+          "id": "lats",
+          "role": "primary"
+        },
+        {
+          "id": "serratus_anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "teres_major",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Scapular depression with straight arms.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي الترابيس السفلية والمسنّنة واللاتس، وهو أول جزء في العقلة: خفض لوحي الكتف.",
+      "mechanics_ar": "حركة صغيرة من تعلّق كامل: يهبط لوحا الكتف دون ثني المرفقين فيرتفع الجسم سنتيمترات قليلة.",
+      "steps_ar": [
+        "ابدأ من تعلّق كامل بذراعين ممدودتين.",
+        "من غير ثني المرفقين اسحب لوحي الكتف للأسفل وللخلف فيرتفع جسمك بضعة سنتيمترات.",
+        "ثبّت ثانية.",
+        "ارجع ببطء إلى التعلّق الكامل. تجنّب ثني المرفقين أو الأرجحة."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Scapular_Pull-Up/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Scapular_Pull-Up/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Scapular_Pull-Up",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0688-uTBt1HV.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0688",
+          "source_name": "scapular pull-up",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "supporthold",
+      "name_en": "Support Hold (Parallel Bars)",
+      "name_ar": "الثبات على بار الديبس",
+      "category": "arms",
+      "kind": "isometric",
+      "equipment": {
+        "ar": "أخرى",
+        "db": "other"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلة الترايسبس",
+      "muscles": [
+        {
+          "id": "triceps_long",
+          "role": "primary"
+        },
+        {
+          "id": "triceps_lateral",
+          "role": "primary"
+        },
+        {
+          "id": "trap_lower",
+          "role": "primary"
+        },
+        {
+          "id": "lats",
+          "role": "primary"
+        },
+        {
+          "id": "pec_costal",
+          "role": "secondary"
+        },
+        {
+          "id": "serratus_anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "delt_anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus_abdominis_upper",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي الترايسبس ومقدمة الكتف والترابيس السفلية والمسنّنة والجذع، وهو أساس الديبس والـL-sit.",
+      "mechanics_ar": "ثبات متساوي القياس على ذراعين مستقيمتين: تدفع البار للأسفل فيبتعد الكتفان عن الأذنين مع صدر مفتوح قليلاً وجسم ثابت.",
+      "steps_ar": [
+        "اصعد على البار بذراعين ممدودتين ومرفقين غير مقفولين بعنف.",
+        "ادفع البار للأسفل بحيث يبعد الكتفان عن الأذنين (وليس مرفوعين للأعلى).",
+        "الصدر مفتوح قليلاً والجسم ثابت، وتنفّس بشكل طبيعي.",
+        "ثبّت المدة ثم انزل. إن تجنّح لوح الكتف أكثر في هذا الوضع فاقصّر المدة وأخبرني."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين الثبات على البارين Support Hold. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "hollow",
+      "name_en": "Hollow Body Hold",
+      "name_ar": "ثبات الجسم المجوّف",
+      "category": "core",
+      "kind": "isometric",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات البطن",
+      "muscles": [
+        {
+          "id": "rectus_abdominis_upper",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_abdominis_lower",
+          "role": "primary"
+        },
+        {
+          "id": "obliques_external",
+          "role": "secondary"
+        },
+        {
+          "id": "transversus_abdominis",
+          "role": "secondary"
+        },
+        {
+          "id": "iliopsoas",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus_femoris",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي عضلات البطن العميقة والمستقيمة وثنيات الورك، ويعلّمك تثبيت الضلوع والحوض وهو أساس الكاليستنكس.",
+      "mechanics_ar": "ثبات متساوي القياس مع حوض مائل للخلف وأسفل ظهر ملتصق بالأرض، فيصبح الجسم على شكل موزة خفيفة.",
+      "steps_ar": [
+        "نم على ظهرك والذراعان بجانبك (أسهل) أو فوق رأسك (أصعب).",
+        "الصق أسفل ظهرك بالأرض واسحب الضلوع لأسفل.",
+        "ارفع الكتفين والرجلين سنتيمترات عن الأرض والجسم على شكل موزة خفيفة.",
+        "ثبّت المدة وتنفّس. إن ارتفع أسفل ظهرك عن الأرض فثنّي الركبتين أو ارفع الرجلين أعلى."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين Hollow Body Hold. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "slrdl",
+      "name_en": "Single-Leg RDL (Bodyweight)",
+      "name_ar": "الرفعة الرومانية على رجل واحدة بوزن الجسم",
+      "category": "legs",
+      "kind": "strength",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات الفخذ الخلفية",
+      "muscles": [
+        {
+          "id": "hamstring_bf_long",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_semitendinosus",
+          "role": "primary"
+        },
+        {
+          "id": "hamstring_semimembranosus",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "primary"
+        },
+        {
+          "id": "glute_med",
+          "role": "secondary"
+        },
+        {
+          "id": "erector_spinae",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Gluteus medius stabilises the pelvis on the standing leg.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي الفخذ الخلفي والألوية وعضلات تثبيت الورك ويحسّن التوازن، ويكشف أي فرق بين الرجلين.",
+      "mechanics_ar": "انثناء من الورك على رجل واحدة: يميل الجذع للأمام وترتفع الرجل الحرة للخلف في خط واحد مع بقاء الحوض مربّعاً.",
+      "steps_ar": [
+        "قف على رجل واحدة وركبتها مثنية قليلاً.",
+        "انثنِ من الورك: الجذع للأمام والرجل الحرة للخلف في خط واحد، والظهر مستقيم والحوض باتجاه الأرض.",
+        "وصّل بيديك نحو الساق، ثم ارجع بعصر الألوية.",
+        "ابدأ بالرجل الأضعف وكرّر الأخرى بالعدد نفسه. إن كان التوازن صعباً فاسند يداً على حائط."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kettlebell_One-Legged_Deadlift/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kettlebell_One-Legged_Deadlift/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Kettlebell_One-Legged_Deadlift",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "الصورة لنفس الحركة لكن بكيتل بل؛ برنامجك بوزن الجسم."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/1757-gKozT8X.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "1757",
+          "source_name": "dumbbell single leg deadlift",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "الحركة نفسها لكن بدمبل. تمرينك بوزن الجسم، فاحتفظ بالشكل واترك الدمبل."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "wallsit",
+      "name_en": "Isometric Wall Sit",
+      "name_ar": "الجلوس على الحائط",
+      "category": "legs",
+      "kind": "isometric",
+      "equipment": {
+        "ar": "وزن الجسم",
+        "db": "body only"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الفخذ الأمامية (الرباعية)",
+      "muscles": [
+        {
+          "id": "vastus_lateralis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_medialis",
+          "role": "primary"
+        },
+        {
+          "id": "vastus_intermedius",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_femoris",
+          "role": "primary"
+        },
+        {
+          "id": "glute_max",
+          "role": "secondary"
+        },
+        {
+          "id": "adductors",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يبني تحمّل الفخذ الأمامي والألوية بالانقباض الثابت.",
+      "mechanics_ar": "ثبات متساوي القياس بركبتين 90° وظهر ملتصق بالحائط وحمل ثابت على الفخذين.",
+      "steps_ar": [
+        "ضع ظهرك على الحائط والقدمين بعرض الوركين على بعد خطوة من الحائط.",
+        "انزلق لأسفل حتى تصبح الركبتان 90° والفخذان موازيان للأرض والركبتان فوق الكاحلين.",
+        "الصق ظهرك بالحائط ووضع الذراعين بجانبك (وليس على الفخذين).",
+        "ثبّت المدة. تجنّب الجلوس أعلى من 90° أو الضغط بيديك على فخذيك."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين Wall Sit. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "lsit",
+      "name_en": "L-Sit (Tuck)",
+      "name_ar": "ثبات L مع ثني الركبتين",
+      "category": "core",
+      "kind": "isometric",
+      "equipment": {
+        "ar": "أخرى",
+        "db": "other"
+      },
+      "level": {
+        "ar": "متوسط",
+        "db": "intermediate"
+      },
+      "target_ar": "عضلات البطن",
+      "muscles": [
+        {
+          "id": "iliopsoas",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_abdominis_lower",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_femoris",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus_abdominis_upper",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_long",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_lateral",
+          "role": "secondary"
+        },
+        {
+          "id": "lats",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_lower",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يقوّي ثنيات الورك والبطن والترايسبس والترابيس السفلية، وهو مهارة كاليستنكس أساسية تبني التحكم بالجسم.",
+      "mechanics_ar": "ثبات على ذراعين مستقيمتين مع رفع الركبتين مثنيتين نحو الصدر وكتفين مدفوعين للأسفل.",
+      "steps_ar": [
+        "اجلس بين بارين أو على حاجتين ثابتتين واليدان بجانب الوركين.",
+        "ادفع للأسفل بحيث يرتفع جسمك عن الأرض والكتفان بعيدان عن الأذنين.",
+        "اسحب الركبتين نحو صدرك (Tuck) والقدمان فوق الأرض.",
+        "ثبّت المدة. إن لم تقدر على رفع الرجلين معاً فارفع رجلاً واحدة وبدّل."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 60,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/3419-UpWmA5E.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "3419",
+          "source_name": "l-sit on floor",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "L-Sit على الأرض. نسختك المطوية (Tuck) تثني الركبتين، وبعض فريمات الـGIF تظهرها مثنية."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "chestst",
+      "name_en": "Doorway Chest Stretch",
+      "name_ar": "تمدّد الصدر على إطار الباب",
+      "category": "stretch",
+      "kind": "stretch",
+      "equipment": {
+        "ar": "بدون أداة",
+        "db": "none"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الصدر (الصدرية الكبرى)",
+      "muscles": [
+        {
+          "id": "pec_sternal",
+          "role": "primary"
+        },
+        {
+          "id": "pec_clavicular",
+          "role": "primary"
+        },
+        {
+          "id": "delt_anterior",
+          "role": "secondary"
+        },
+        {
+          "id": "biceps_short",
+          "role": "secondary"
+        },
+        {
+          "id": "pec_minor",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Stretch: red = muscle being stretched.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يمدّد الصدر ومقدمة الكتف المشدودين بعد تمارين الدفع.",
+      "mechanics_ar": "تمدّد ثابت يتم بدوران الجسم بعيداً عن ذراع مسنودة على إطار الباب.",
+      "steps_ar": [
+        "ادعم الساعد على إطار الباب والمرفق عند مستوى الكتف.",
+        "اخطُ خطوة للأمام وأدِر جسمك ببطء بعيداً عن الذراع حتى تشعر بشدّ في الصدر.",
+        "ثبّت 30 ثانية وبدّل الجانب.",
+        "لا تضغط حتى يظهر وجع في مقدمة الكتف، ولا تقوّس أسفل ظهرك."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/1167-3uj0Ozg.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "1167",
+          "source_name": "dynamic chest stretch (male)",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "تمدد صدر ديناميكي بفتح الذراعين، وليس تمدد الباب الثابت."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "hipflexst",
+      "name_en": "Hip Flexor Stretch",
+      "name_ar": "تمدّد ثنيات الورك",
+      "category": "stretch",
+      "kind": "stretch",
+      "equipment": {
+        "ar": "بدون أداة",
+        "db": "none"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "ثنيات الورك ومقدمة الفخذ",
+      "muscles": [
+        {
+          "id": "iliopsoas",
+          "role": "primary"
+        },
+        {
+          "id": "rectus_femoris",
+          "role": "primary"
+        },
+        {
+          "id": "tfl",
+          "role": "secondary"
+        },
+        {
+          "id": "sartorius",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Stretch: red = muscle being stretched.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يمدّد ثنيات الورك ومقدمة الفخذ بعد تمارين الرجل.",
+      "mechanics_ar": "تمدّد ثابت من وضع الطعنة على ركبة واحدة مع إمالة الحوض للخلف.",
+      "steps_ar": [
+        "اجلس على ركبة واحدة والرجل الأخرى أمامك بزاوية 90°.",
+        "لُفّ الحوض لأسفل قليلاً (اسحب عظمة الذيل) واعصر ألوية الرجل الخلفية.",
+        "ادفع الحوض للأمام قليلاً حتى تشعر بشدّ في مقدمة الفخذ الخلفية، وثبّت 30 ثانية.",
+        "بدّل الجانب. لا تقوّس أسفل الظهر بدل لفّ الحوض."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/1604-DFGXwZr.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "1604",
+          "source_name": "world greatest stretch",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "nearest",
+          "display": false,
+          "note_ar": "World Greatest Stretch: يبدأ بوضع الاندفاع الذي يمد مثنيات الورك ثم يضيف دوراناً للصدر."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "crossst",
+      "name_en": "Cross-Body Shoulder Stretch",
+      "name_ar": "تمدّد الكتف عبر الصدر",
+      "category": "stretch",
+      "kind": "stretch",
+      "equipment": {
+        "ar": "بدون أداة",
+        "db": "none"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الكتف (الدالية)",
+      "muscles": [
+        {
+          "id": "delt_posterior",
+          "role": "primary"
+        },
+        {
+          "id": "infraspinatus",
+          "role": "secondary"
+        },
+        {
+          "id": "teres_minor",
+          "role": "secondary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Stretch: red = muscle being stretched.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يمدّد الكتف الخلفي ومحفظة المفصل بعد التمارين.",
+      "mechanics_ar": "تمدّد ثابت بسحب الذراع عبر الصدر بمستوى الكتف.",
+      "steps_ar": [
+        "اسحب ذراعاً عبر صدرك بمستوى الكتف.",
+        "أمسكها باليد الأخرى من فوق المرفق وقرّبها من صدرك.",
+        "ثبّت 30 ثانية وبدّل الجانب.",
+        "اترك الكتف للأسفل وتجنّب رفعه للأذن أو لفّ الجذع."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Shoulder_Stretch/0.jpg",
+          "peak": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Shoulder_Stretch/1.jpg",
+          "source": "free-exercise-db",
+          "source_id": "Shoulder_Stretch",
+          "match": "exact",
+          "display": true,
+          "note_ar": ""
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0669-xifhB5W.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0669",
+          "source_name": "rear deltoid stretch",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "اسمه في المصدر Rear Deltoid Stretch، وهو سحب الذراع عبر الصدر."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "latst",
+      "name_en": "Standing Overhead Lat Stretch",
+      "name_ar": "تمدّد اللاتس فوق الرأس واقفاً",
+      "category": "stretch",
+      "kind": "stretch",
+      "equipment": {
+        "ar": "بدون أداة",
+        "db": "none"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات الظهر العريضة (اللاتيسيموس)",
+      "muscles": [
+        {
+          "id": "lats",
+          "role": "primary"
+        },
+        {
+          "id": "teres_major",
+          "role": "secondary"
+        },
+        {
+          "id": "triceps_long",
+          "role": "secondary"
+        },
+        {
+          "id": "obliques_external",
+          "role": "secondary"
+        },
+        {
+          "id": "quadratus_lumborum",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "Stretch: red = muscle being stretched.",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يمدّد اللاتس والجانب الخلفي من الكتف والترايسبس بعد تمارين السحب.",
+      "mechanics_ar": "تمدّد ثابت بمسك الرسغ فوق الرأس وميل الجذع للجانب المعاكس.",
+      "steps_ar": [
+        "قف وامسك رسغ يد فوق رأسك بيدك الأخرى.",
+        "شدّ بلطف ومِل الجذع للجانب المعاكس والضلوع لأسفل.",
+        "ثبّت 30 ثانية وبدّل الجانب.",
+        "لا تقوّس أسفل الظهر ولا تفتح الضلوع للأمام."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": "https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/videos/0794-1jXLYEw.gif",
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": "0794",
+          "source_name": "standing lateral stretch",
+          "size": "180x180",
+          "attribution": "© Gym visual — https://gymvisual.com/",
+          "match": "exact",
+          "display": true,
+          "note_ar": "ذراع فوق الرأس مع الميل للجانب."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    },
+    {
+      "key": "thoracic",
+      "name_en": "Standing Thoracic Extension",
+      "name_ar": "تمديد العمود الصدري واقفاً",
+      "category": "mobility",
+      "kind": "mobility",
+      "equipment": {
+        "ar": "بدون أداة",
+        "db": "none"
+      },
+      "level": {
+        "ar": "مبتدئ",
+        "db": "beginner"
+      },
+      "target_ar": "عضلات منتصف الظهر (المعينية والترابيس الوسطى)",
+      "muscles": [
+        {
+          "id": "erector_spinae",
+          "role": "primary"
+        },
+        {
+          "id": "trap_middle",
+          "role": "secondary"
+        },
+        {
+          "id": "rhomboids",
+          "role": "secondary"
+        },
+        {
+          "id": "rectus_abdominis_upper",
+          "role": "secondary"
+        },
+        {
+          "id": "pec_sternal",
+          "role": "secondary"
+        }
+      ],
+      "muscles_note_en": "",
+      "muscles_status": "coach_curated",
+      "benefit_ar": "يحسّن مرونة العمود الصدري في اتجاه الفرد (عكس وضع التحدّب).",
+      "mechanics_ar": "تمديد موضعي للعمود الصدري بين لوحي الكتف دون تقويس أسفل الظهر.",
+      "steps_ar": [
+        "قف وضع يديك خلف رأسك أو على أعلى ظهرك.",
+        "ارفع صدرك وافرد أعلى ظهرك (بين لوحي الكتف) دون تقويس أسفل الظهر.",
+        "ثبّت ثانيتين وارجع.",
+        "كرّر 5–6 مرات. الضلوع لأسفل والحركة من الأعلى."
+      ],
+      "common_mistakes_ar": [],
+      "rest_seconds": 0,
+      "references": [
+        "ACSM's Guidelines for Exercise Testing and Prescription & NSCA's Essentials of Strength Training and Conditioning"
+      ],
+      "media": {
+        "frames": {
+          "start": null,
+          "peak": null,
+          "source": "free-exercise-db",
+          "source_id": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا توجد صورة مطابقة في قاعدة الصور المفتوحة. اترك خانة الصورة فارغة أو ارفع صورتك."
+        },
+        "gif": {
+          "url": null,
+          "source": "gym-visual (hasaneyldrm/exercises-dataset)",
+          "source_id": null,
+          "source_name": null,
+          "size": null,
+          "attribution": null,
+          "match": "none",
+          "display": false,
+          "note_ar": "لا يوجد في المصدر تمرين Thoracic Extension واقفاً. لا يوجد GIF مناسب لهذا التمرين في المصدر. اترك الخانة فارغة."
+        }
+      },
+      "content_status": "coach_authored",
+      "content_gaps": ["common_mistakes_ar"]
+    }
+  ]
+}

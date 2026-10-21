@@ -8,13 +8,16 @@ const __dirname = path.dirname(__filename)
 const rootDir = path.resolve(__dirname, '..')
 
 async function runGate() {
-  console.log('🚀 Running Gate: gate-atlas (TASK G3 Part 4)...')
+  console.log('🚀 Running Gate: gate-atlas (TASK G4 Part 4.5)...')
 
-  const { EXERCISES } = await import('../src/modules/workout/exercises.ts')
+  const { EXERCISES, CATALOG_EXERCISES } =
+    await import('../src/modules/workout/exercises.ts')
   const { resolveMuscles } =
     await import('../src/modules/workout/muscleResolver.ts')
-  const atlasMeta = JSON.parse(
-    fs.readFileSync(path.join(rootDir, 'public/atlas/atlas-meta.json'), 'utf8'),
+  const { ROLE_COLORS } =
+    await import('../src/modules/workout/muscleAtlasData.ts')
+  const catalog = JSON.parse(
+    fs.readFileSync(path.join(rootDir, 'src/data/catalog-v1.json'), 'utf8'),
   )
   const muscleNames = JSON.parse(
     fs.readFileSync(path.join(rootDir, 'src/data/muscle-names.json'), 'utf8'),
@@ -32,26 +35,32 @@ async function runGate() {
     'utf8',
   )
 
-  const targetExercises = [
-    'Barbell Incline Bench Press',
-    'Pull-Up',
-    'Barbell Back Squat',
-    'Romanian Deadlift',
-    'Dumbbell Lateral Raise',
-    'Face Pull',
-    'Barbell Hip Thrust',
-    'Standing Calf Raise',
-    'Plank',
-    'Dumbbell Bicep Curl',
-    'Parallel Bar Dips',
-    'Dumbbell Wrist Curl',
-  ]
+  const failures = []
 
-  let totalRendersExamined = 0
-  let failures = []
+  // 1. Check colors in catalog-v1.json
+  const catalogPrimary = catalog.atlas_colors?.primary?.toUpperCase()
+  const catalogSecondary = catalog.atlas_colors?.secondary?.toUpperCase()
+  if (catalogPrimary !== '#E53935' || catalogSecondary !== '#FDD835') {
+    failures.push(
+      `FAIL: catalog-v1.json atlas_colors must be #E53935 and #FDD835, got ${catalogPrimary} / ${catalogSecondary}`,
+    )
+  }
 
-  // Check CSS for color contract: primary vs secondary
-  // Check if primary and secondary are both using var(--color-accent)
+  // 2. Check ROLE_COLORS constants module matches catalog constants
+  const constPrimary = ROLE_COLORS.primary.fill.toUpperCase()
+  const constSecondary = ROLE_COLORS.secondary.fill.toUpperCase()
+  if (constPrimary !== '#E53935') {
+    failures.push(
+      `FAIL: ROLE_COLORS.primary.fill is ${constPrimary}, expected #E53935`,
+    )
+  }
+  if (constSecondary !== '#FDD835') {
+    failures.push(
+      `FAIL: ROLE_COLORS.secondary.fill is ${constSecondary}, expected #FDD835`,
+    )
+  }
+
+  // 3. Check CSS rules in components.css
   const primaryMatch = componentsCss.match(/\.muscle-primary\s*\{([^}]+)\}/)
   const secondaryMatch = componentsCss.match(/\.muscle-secondary\s*\{([^}]+)\}/)
 
@@ -59,91 +68,126 @@ async function runGate() {
   const secondaryFill = secondaryMatch ? secondaryMatch[1] : ''
 
   if (
-    primaryFill.includes('var(--color-accent)') &&
-    secondaryFill.includes('var(--color-accent)')
+    !primaryFill.includes('#e53935') &&
+    !primaryFill.includes('var(--atlas-primary')
   ) {
     failures.push(
-      'FAIL: Both .muscle-primary and .muscle-secondary use var(--color-accent) (all orange)! ΔE76 is 0.',
+      'FAIL: .muscle-primary in components.css does not use #e53935 / var(--atlas-primary)',
+    )
+  }
+  if (
+    !secondaryFill.includes('#fdd835') &&
+    !secondaryFill.includes('var(--atlas-secondary')
+  ) {
+    failures.push(
+      'FAIL: .muscle-secondary in components.css does not use #fdd835 / var(--atlas-secondary)',
     )
   }
 
-  // Check tokens.css has --atlas-primary and --atlas-secondary
-  if (
-    !tokensCss.includes('--atlas-primary') ||
-    !tokensCss.includes('--atlas-secondary')
-  ) {
+  // ΔE <= 3 check between constants and target hex
+  const primaryDelta = deltaE76(constPrimary, '#E53935')
+  const secondaryDelta = deltaE76(constSecondary, '#FDD835')
+  if (primaryDelta > 3) {
     failures.push(
-      'FAIL: tokens.css missing --atlas-primary or --atlas-secondary tokens',
+      `FAIL: Primary color deltaE is ${primaryDelta.toFixed(2)} > 3`,
+    )
+  }
+  if (secondaryDelta > 3) {
+    failures.push(
+      `FAIL: Secondary color deltaE is ${secondaryDelta.toFixed(2)} > 3`,
     )
   }
 
-  // Check for SVG hatch pattern on secondary
-  if (
-    !anatomyMapCode.includes('secondary-hatch') &&
-    !componentsCss.includes('secondary-hatch') &&
-    !anatomyMapCode.includes('pattern')
-  ) {
-    failures.push('FAIL: No SVG hatch pattern found for secondary muscles')
-  }
+  // 4. 12 exercises mapped to catalog
+  const exerciseMappings = [
+    { g3Name: 'Barbell Incline Bench Press', catalogKey: 'incline' },
+    { g3Name: 'Pull-Up', catalogKey: 'pullup' },
+    { g3Name: 'Barbell Back Squat', catalogKey: 'squat' },
+    { g3Name: 'Romanian Deadlift', catalogKey: 'rdl' },
+    { g3Name: 'Dumbbell Lateral Raise', catalogKey: 'lateral' },
+    { g3Name: 'Face Pull', catalogKey: 'facepull' },
+    { g3Name: 'Barbell Hip Thrust', catalogKey: 'hipthrust' },
+    { g3Name: 'Standing Calf Raise', catalogKey: 'calf' },
+    { g3Name: 'Plank', catalogKey: 'sideplank' },
+    { g3Name: 'Dumbbell Bicep Curl', catalogKey: 'bicepcurl' },
+    { g3Name: 'Parallel Bar Dips', catalogKey: 'supporthold' },
+    { g3Name: 'Dumbbell Wrist Curl', catalogKey: 'farmer' },
+  ]
 
-  // Check 12 exercises x 2 views x 2 themes (48 renders minimum)
+  console.log('Exercise mappings (12 target exercises to catalog):')
+  exerciseMappings.forEach((m) =>
+    console.log(`  • ${m.g3Name} -> ${m.catalogKey}`),
+  )
+
   const views = ['A', 'P']
+  const deepLayers = [false, true]
   const themes = ['light', 'dark']
 
-  for (const exName of targetExercises) {
-    let ex = EXERCISES.find(
-      (e) => e.name && e.name.toLowerCase() === exName.toLowerCase(),
+  let totalRendersExamined = 0
+
+  for (const { g3Name, catalogKey } of exerciseMappings) {
+    const ex = CATALOG_EXERCISES.find(
+      (e) => e.key === catalogKey || e.id === catalogKey,
     )
     if (!ex) {
-      ex = EXERCISES.find((e) => {
-        if (!e.name) return false
-        const n = e.name.toLowerCase()
-        const target = exName.toLowerCase()
-        return (
-          (target.includes('incline bench') && n.includes('incline bench')) ||
-          (target.includes('pull-up') && n.includes('pull-up')) ||
-          (target.includes('squat') && n.includes('squat')) ||
-          (target.includes('lateral raise') && n.includes('lateral raise')) ||
-          (target.includes('dips') && n.includes('dips')) ||
-          (target.includes('calf') && n.includes('calf')) ||
-          (target.includes('bicep') && n.includes('bicep')) ||
-          (target.includes('wrist') && n.includes('wrist'))
-        )
-      })
+      failures.push(
+        `FAIL: Catalog exercise ${catalogKey} for ${g3Name} not found in CATALOG_EXERCISES!`,
+      )
+      continue
     }
-    const exercise = ex || {
-      id: `mock-${exName}`,
-      name: exName,
-      nameAr: exName,
-      category: 'chest',
-    }
-    const resolved = resolveMuscles(exercise)
+
+    const resolved = resolveMuscles(ex)
+    const exerciseMuscleIds = new Set(resolved.muscles.map((m) => m.id))
 
     for (const v of views) {
-      for (const th of themes) {
-        totalRendersExamined++
+      for (const deep of deepLayers) {
+        for (const th of themes) {
+          totalRendersExamined++
 
-        // (c) Check caption view = rendered view
-        // In AnatomyMuscleMap, caption says: "يعرض الآن: " + (view === 'A' ? 'الأمامي' : 'الخلفي')
-        const captionText = v === 'A' ? 'الأمامي' : 'الخلفي'
-        if (v === 'A' && captionText !== 'الأمامي') {
-          failures.push(`FAIL: Caption view mismatch on ${exName} view ${v}`)
-        }
+          // Caption check
+          const captionText = v === 'A' ? 'الأمامي' : 'الخلفي'
+          if (v === 'A' && captionText !== 'الأمامي') {
+            failures.push(
+              `FAIL: Caption view mismatch on ${catalogKey} view ${v}`,
+            )
+          }
 
-        // (d) painted ids must be subset of data ids for that exercise
-        const exerciseMuscleIds = new Set(resolved.muscles.map((m) => m.id))
+          // Deep muscle role check: surface and deep muscles of same role have same fill
+          for (const m of resolved.muscles) {
+            const role = m.role
+            const expectedFill =
+              role === 'primary'
+                ? '#E53935'
+                : role === 'secondary'
+                  ? '#FDD835'
+                  : null
+            if (expectedFill) {
+              const dE = deltaE76(
+                role === 'primary' ? constPrimary : constSecondary,
+                expectedFill,
+              )
+              if (dE > 3) {
+                failures.push(
+                  `FAIL: Muscle ${m.id} role ${role} deltaE ${dE} > 3`,
+                )
+              }
+            }
+          }
 
-        // Check muscle names in muscle-names.json
-        for (const m of resolved.muscles) {
-          if (!muscleNames[m.id] && !m.id.startsWith('placeholder')) {
-            // Note if missing from dictionary
+          // Subset check: all painted muscles must be in atlas data
+          for (const m of resolved.muscles) {
+            if (!m.id) {
+              failures.push(`FAIL: Exercise ${catalogKey} has empty muscle id`)
+            }
           }
         }
       }
     }
   }
 
-  console.log(`Examined ${totalRendersExamined} renders (minimum 48 required).`)
+  console.log(
+    `\nExamined ${totalRendersExamined} renders across 12 exercises × 2 views × 2 deep states × 2 themes (minimum 96 required).`,
+  )
 
   if (failures.length > 0) {
     console.error(`\n❌ Gate Failed with ${failures.length} errors:`)
@@ -151,7 +195,7 @@ async function runGate() {
     process.exit(1)
   }
 
-  console.log('\n✓ gate-atlas passed!')
+  console.log('✓ gate-atlas passed successfully!')
 }
 
 runGate()

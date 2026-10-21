@@ -1,0 +1,7 @@
+=== G4 Defect 1: Curated Catalog & Media (Before Fix) ===
+Total legacy exercises in database: 261 (public dump)
+Exercises with confirmed local media: 109
+Exercises with null media ("لا توجد صورة"): 152
+Missing staple exercises from owner program: Pull-Up, Overhead Press, Back Squat, Parallel Bar Dips, Dumbbell Lateral Raise, Triceps Extension, Side Plank
+Close-Grip Bench Press incorrectly mapped to arm-11 (Forearms): false
+Status: REPRODUCED DEFECT

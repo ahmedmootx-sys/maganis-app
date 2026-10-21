@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>سجل الشاشات وحالات النظام — تطبيق مجانيس (76 حالة)</title>
+    <style>
+      :root {
+        --bg: #0b0c0e;
+        --surface: #141518;
+        --surface-2: #1c1d22;
+        --accent: #ff6b00;
+        --accent-glow: rgba(255, 107, 0, 0.25);
+        --text: #f0f2f5;
+        --text-muted: #8e95a2;
+        --border: rgba(255, 255, 255, 0.08);
+        --success: #10b981;
+        --radius: 12px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Cairo',
+          sans-serif;
+        padding: 32px 24px;
+        line-height: 1.5;
+      }
+      .header {
+        max-width: 1200px;
+        margin: 0 auto 32px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 24px;
+      }
+      .header h1 {
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        background: var(--accent);
+        color: #0b0c0e;
+      }
+      .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+      }
+      .stat-card .count {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--accent);
+      }
+      .stat-card .label {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .filters {
+        max-width: 1200px;
+        margin: 0 auto 24px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .filter-btn {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13.5px;
+        font-weight: 600;
+        transition: all 0.15s ease;
+      }
+      .filter-btn.active,
+      .filter-btn:hover {
+        background: var(--accent);
+        color: #0b0c0e;
+        border-color: var(--accent);
+      }
+      .grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition:
+          transform 0.15s ease,
+          border-color 0.15s ease;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent);
+      }
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .card-id {
+        font-family: monospace;
+        font-size: 12px;
+        color: var(--text-muted);
+        direction: ltr;
+        background: var(--surface-2);
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+      .card-kind {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+      }
+      .card-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .card-meta {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        direction: ltr;
+        text-align: left;
+        background: var(--surface-2);
+        padding: 8px 10px;
+        border-radius: 6px;
+      }
+      .card-footer {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+        font-size: 12px;
+      }
+      .status-ok {
+        color: var(--success);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 600;
+      }
+      .card a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .card a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>
+        سجل الشاشات وحالات النظام
+        <span class="badge">R19 State Registry: 76 حالة</span>
+      </h1>
+      <p style="color: var(--text-muted); font-size: 14.5px">
+        المصدر الحقيقي الواحد لكافة المسارات والنوافذ وخطوات المعالج والأزرار
+        المحددة في تطبيق مجانيس (TASK G4).
+      </p>
+
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="count">76</div>
+          <div class="label">إجمالي الحالات المسجلة والمفحوصة</div>
+        </div>
+        <div class="stat-card">
+          <div class="count">11</div>
+          <div class="label">المسارات الرئيسية (Routes)</div>
+        </div>
+        <div class="stat-card">
+          <div class="count">23</div>
+          <div class="label">النوافذ المنبثقة والقوائم (Sheets)</div>
+        </div>
+        <div class="stat-card">
+          <div class="count">6</div>
+          <div class="label">خطوات معالج الإعداد (Wizard)</div>
+        </div>
+        <div class="stat-card">
+          <div class="count">36</div>
+          <div class="label">حالات الاختيار المحددة (Choices)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterCategory('all')">
+        الكل (76)
+      </button>
+      <button class="filter-btn" onclick="filterCategory('routes')">
+        المسارات (11)
+      </button>
+      <button class="filter-btn" onclick="filterCategory('sheets')">
+        النوافذ المنبثقة (23)
+      </button>
+      <button class="filter-btn" onclick="filterCategory('wizard')">
+        معالج الإعداد (6)
+      </button>
+      <button class="filter-btn" onclick="filterCategory('choices')">
+        حالات الاختيار (36)
+      </button>
+    </div>
+
+    <div class="grid" id="states-grid">
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-home</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">الرئيسية (لوحة التحكم)</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /home</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/home" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-onboarding</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">معالج الإعداد الأولي</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /onboarding</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/onboarding" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-training</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">التدريب (الجدول الأسبوعي)</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /training</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/training" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-training-day</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">تفاصيل اليوم التدريبي</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /training/day/0</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/training/day/0" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-exercise-detail</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">صفحة تفاصيل التمرين والأطلس</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /exercise/bench</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/exercise/bench" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-library</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">مكتبة التمارين</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /library</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/library" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-nutrition</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">التغذية والسعرات</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /nutrition</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/nutrition" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-progress</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">التقدم وسجل التمارين</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /progress</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/progress" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-settings</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">الإعدادات والبيانات</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /settings</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/settings" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-styleguide</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">دليل الهوية والأنماط</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /styleguide</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/styleguide" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="routes">
+        <div class="card-top">
+          <span class="card-id">route-gallery</span>
+          <span class="card-kind">route</span>
+        </div>
+        <div class="card-title">معرض المكونات</div>
+        <div class="card-meta">
+          <div><strong>route:</strong> /gallery</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+          <a href="../#/gallery" target="_blank">فتح الشاشة ↗</a>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-edit-profile</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">تعديل الملف الشخصي</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> edit-profile</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-limitations-editor</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">محرر الإصابات والمحددات</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> limitations-editor</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-diagnostics</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">تشخيص النظام والبيئة</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> diagnostics</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-macro-guide</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">دليل حساب السعرات والماكروز</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> macro-guide</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-quick-meal</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">تسجيل وجبة سريعة</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> quick-meal</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-custom-meal</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">إضافة وجبة مخصصة</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> custom-meal</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-day-overflow</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">خيارات اليوم التدريبي</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> day-overflow</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-rename-day</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">تعديل اسم اليوم التدريبي</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> rename-day</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-manage-program</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">إدارة الجدول التدريبي</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> manage-program</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-export-program</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">تصدير البرنامج التدريبي</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> export-program</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-days-adjust</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">تعديل أيام الجدول التدريبي</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> days-adjust</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-add-day</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">إضافة يوم جديد</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> add-day</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-program-vault</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">حافظة البرامج المحفوظة</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> program-vault</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-ai-designer</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">صمم لي جدولي الخاص (مرشد الذكاء الاصطناعي)</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> ai-designer</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-import-preview</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">معاينة الجدول المستورد كمسودة</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> import-preview</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-custom-exercise</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">إضافة تمرين جديد للكتالوج</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> custom-exercise</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-replace-exercise</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">استبدال تمرين أرشيفي</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> replace-exercise</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-exercise-picker</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">منتقي التمارين لإضافتها لليوم</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> exercise-picker</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-session-finish</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">ملخص إنهاء جلسة التمرين</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> session-finish</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-body-log</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">تسجيل وزن وقياسات الجسم</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> body-log</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-day-note</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">تدوين ملاحظات اليوم</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> day-note</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-atlas-muscle-detail</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">بطاقة تفاصيل العضلة في الأطلس</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> atlas-muscle-detail</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="sheets">
+        <div class="card-top">
+          <span class="card-id">sheet-atlas-unpainted</span>
+          <span class="card-kind">sheet</span>
+        </div>
+        <div class="card-title">قائمة عضلات التمرين غير المرسومة</div>
+        <div class="card-meta">
+          <div><strong>sheetId:</strong> atlas-unpainted</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="wizard">
+        <div class="card-top">
+          <span class="card-id">wizard-step-1</span>
+          <span class="card-kind">wizard-step</span>
+        </div>
+        <div class="card-title">معالج الإعداد: الخطوة 1 (الهدف والأسلوب)</div>
+        <div class="card-meta">
+          <div><strong>stepIndex:</strong> 1</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="wizard">
+        <div class="card-top">
+          <span class="card-id">wizard-step-2</span>
+          <span class="card-kind">wizard-step</span>
+        </div>
+        <div class="card-title">معالج الإعداد: الخطوة 2 (التدريب والأيام)</div>
+        <div class="card-meta">
+          <div><strong>stepIndex:</strong> 2</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="wizard">
+        <div class="card-top">
+          <span class="card-id">wizard-step-3</span>
+          <span class="card-kind">wizard-step</span>
+        </div>
+        <div class="card-title">معالج الإعداد: الخطوة 3 (الصحة والمحددات)</div>
+        <div class="card-meta">
+          <div><strong>stepIndex:</strong> 3</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="wizard">
+        <div class="card-top">
+          <span class="card-id">wizard-step-4</span>
+          <span class="card-kind">wizard-step</span>
+        </div>
+        <div class="card-title">معالج الإعداد: الخطوة 4 (البيانات الجسدية)</div>
+        <div class="card-meta">
+          <div><strong>stepIndex:</strong> 4</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="wizard">
+        <div class="card-top">
+          <span class="card-id">wizard-step-5</span>
+          <span class="card-kind">wizard-step</span>
+        </div>
+        <div class="card-title">
+          معالج الإعداد: الخطوة 5 (النشاط ونمط الحياة)
+        </div>
+        <div class="card-meta">
+          <div><strong>stepIndex:</strong> 5</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="wizard">
+        <div class="card-top">
+          <span class="card-id">wizard-step-6</span>
+          <span class="card-kind">wizard-step</span>
+        </div>
+        <div class="card-title">معالج الإعداد: الخطوة 6 (ملخص الخطة)</div>
+        <div class="card-meta">
+          <div><strong>stepIndex:</strong> 6</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-days-2</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">أيام التمرين: 2 أيام</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingDays = 2</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-days-3</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">أيام التمرين: 3 أيام</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingDays = 3</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-days-4</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">أيام التمرين: 4 أيام</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingDays = 4</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-days-5</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">أيام التمرين: 5 أيام</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingDays = 5</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-days-6</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">أيام التمرين: 6 أيام</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingDays = 6</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-dur-45</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">مدة الجلسة: 45 دقيقة</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sessionDuration = 45</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-dur-60</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">مدة الجلسة: 60 دقيقة</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sessionDuration = 60</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-dur-75</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">مدة الجلسة: 75 دقيقة</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sessionDuration = 75</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-dur-90</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">مدة الجلسة: 90 دقيقة</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sessionDuration = 90</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-intensity-light</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">شدة التدريب: خفيف</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sessionIntensity = light</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-intensity-moderate</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">شدة التدريب: متوسط</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sessionIntensity = moderate</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-intensity-hard</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">شدة التدريب: شاق</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sessionIntensity = hard</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-exp-beginner</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">خبرة التدريب: مبتدئ</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> experienceLevel = beginner</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-exp-intermediate</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">خبرة التدريب: متوسط</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> experienceLevel = intermediate</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-exp-advanced</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">خبرة التدريب: متقدم</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> experienceLevel = advanced</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-loc-gym</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">مكان التدريب: جيم</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingLocation = gym</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-loc-home</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">مكان التدريب: منزل</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingLocation = home</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-loc-both</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">مكان التدريب: جيم ومنزل</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingLocation = both</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-sex-male</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">الجنس: ذكر</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sex = male</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-sex-female</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">الجنس: أنثى</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> sex = female</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-shoulder-current</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة الكتف: ألم حالي</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> status_shoulder = current_pain</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-shoulder-recovered</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة الكتف: إصابة قديمة وتعافيت</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> status_shoulder = old_recovered</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-shoulder-treatment</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة الكتف: تحت علاج طبيب</div>
+        <div class="card-meta">
+          <div>
+            <strong>choiceKey:</strong> status_shoulder = under_treatment
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-elbow-current</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة الكوع: ألم حالي</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> status_elbow = current_pain</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-elbow-recovered</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة الكوع: إصابة قديمة وتعافيت</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> status_elbow = old_recovered</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-elbow-treatment</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة الكوع: تحت علاج طبيب</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> status_elbow = under_treatment</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-lowerback-current</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة أسفل الظهر: ألم حالي</div>
+        <div class="card-meta">
+          <div>
+            <strong>choiceKey:</strong> status_lower_back = current_pain
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-lowerback-recovered</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة أسفل الظهر: إصابة قديمة وتعافيت</div>
+        <div class="card-meta">
+          <div>
+            <strong>choiceKey:</strong> status_lower_back = old_recovered
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-status-lowerback-treatment</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">حالة أسفل الظهر: تحت علاج طبيب</div>
+        <div class="card-meta">
+          <div>
+            <strong>choiceKey:</strong> status_lower_back = under_treatment
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-meal-breakfast</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">وجبة: إفطار</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> mealCategory = breakfast</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-meal-lunch</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">وجبة: غداء</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> mealCategory = lunch</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-meal-dinner</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">وجبة: عشاء</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> mealCategory = dinner</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-meal-snack</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">وجبة: سناك</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> mealCategory = snack</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-style-weights</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">أسلوب: أوزان وحديد</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingStyle = weights</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-style-calisthenics</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">أسلوب: وزن الجسم (كاليستنكس)</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingStyle = calisthenics</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+
+      <div class="card" data-category="choices">
+        <div class="card-top">
+          <span class="card-id">choice-style-cardio</span>
+          <span class="card-kind">choice-state</span>
+        </div>
+        <div class="card-title">أسلوب: كارديو ولياقة</div>
+        <div class="card-meta">
+          <div><strong>choiceKey:</strong> trainingStyle = cardio</div>
+        </div>
+        <div class="card-footer">
+          <span class="status-ok">✓ مفحوص ونشط</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function filterCategory(cat) {
+        document
+          .querySelectorAll('.filter-btn')
+          .forEach((b) => b.classList.remove('active'))
+        event.target.classList.add('active')
+
+        const cards = document.querySelectorAll('.card')
+        cards.forEach((card) => {
+          if (cat === 'all' || card.getAttribute('data-category') === cat) {
+            card.style.display = 'flex'
+          } else {
+            card.style.display = 'none'
+          }
+        })
+      }
+    </script>
+  </body>
+</html>

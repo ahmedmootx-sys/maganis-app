@@ -13,13 +13,34 @@ export type MeasurementType = 'reps' | 'duration' | 'bodyweight' | 'weight'
 
 export interface Exercise {
   id: string
+  key?: string
   name?: string
+  nameEn?: string
   nameAr: string
   descriptionAr: string
   category: MuscleGroup
   difficulty: Difficulty
   equipment: Equipment
+  equipmentDetail?: unknown
+  levelDetail?: unknown
+  kind?: string
+  target_ar?: string
   avoidForInjuries?: string[]
+  archived?: boolean
+  media?: {
+    gif?: {
+      display?: boolean
+      match?: string
+      url?: string | null
+      attribution?: string | null
+    }
+    frames?: {
+      display?: boolean
+      match?: string
+      start?: string | null
+      peak?: string | null
+    }
+  }
   /** نوع القياس */
   measurementType?: MeasurementType
   /** صورة أو GIF توضيحي للتمرين (رابط أو Data URL) */
@@ -60,8 +81,13 @@ export interface Exercise {
   mapNote?: string
   map_note?: string
   steps?: string[]
+  steps_ar?: string[]
+  references?: string[]
+  muscles_status?: string
+  content_status?: string
   commonMistakes?: string[]
   common_mistakes?: string[]
+  common_mistakes_ar?: string[]
   safetyCues?: string[]
   safety_cues?: string[]
   tempo?: string
@@ -137,6 +163,8 @@ export interface ProgramExercise {
   notes?: string
   section?: ExerciseSection
   customName?: string
+  nameEn?: string
+  needsReview?: boolean
   prescription?: string
   [key: string]: unknown
 }
@@ -148,6 +176,8 @@ export interface CardioConfig {
   plannedMinutes: number
   effort: 'light' | 'moderate' | 'hard'
 }
+
+export type ScheduleSlotType = 'rest' | 'cardio' | string
 
 export interface ProgramDay {
   id?: string

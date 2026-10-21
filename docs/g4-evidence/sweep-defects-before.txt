@@ -1,0 +1,6 @@
+=== G4 Defect 6: Sweep of Shared Defects (Before Fix) ===
+Monospace English formula block in Arabic calculation guide: false
+Settings profile card has double card nesting
+Quick meal sheet action is white outlined ghost button
+Onboarding has pre-selected location and experience values
+Status: REPRODUCED DEFECT

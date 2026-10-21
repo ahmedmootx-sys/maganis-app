@@ -3,29 +3,31 @@ import { resolveMedia, getNullMediaExercises } from './mediaResolver.ts'
 import { EXERCISES } from '../modules/workout/exercises.ts'
 
 describe('Exercise Media Resolver: resolveMedia', () => {
-  it('resolves consistently for Leg Pull-In across contexts', () => {
-    const legPullIn = EXERCISES.find(
-      (e) => e.id === 'core-1' || e.nameAr.includes('ضم الساقين'),
+  it('resolves consistently for Barbell Bench Press across contexts', () => {
+    const bench = EXERCISES.find(
+      (e) => e.id === 'bench' || e.nameAr.includes('البنش'),
     )
-    expect(legPullIn).toBeDefined()
-    if (legPullIn) {
-      const resObj = resolveMedia(legPullIn)
-      const resId = resolveMedia(legPullIn.id)
+    expect(bench).toBeDefined()
+    if (bench) {
+      const resObj = resolveMedia(bench)
+      const resId = resolveMedia(bench.id)
       expect(resObj.url).toBe(resId.url)
       expect(resObj.url).not.toBeNull()
+      expect(resObj.url).toContain('media/bench/animation.gif')
     }
   })
 
-  it('resolves consistently for Leverage Chest Press across contexts', () => {
-    const levPress = EXERCISES.find(
-      (e) => e.id === 'chest-10' || e.name?.includes('Leverage Chest Press'),
+  it('resolves consistently for Pull-Up across contexts', () => {
+    const pullup = EXERCISES.find(
+      (e) => e.id === 'pullup' || e.nameEn === 'Pull-Up',
     )
-    expect(levPress).toBeDefined()
-    if (levPress) {
-      const resObj = resolveMedia(levPress)
-      const resId = resolveMedia(levPress.id)
+    expect(pullup).toBeDefined()
+    if (pullup) {
+      const resObj = resolveMedia(pullup)
+      const resId = resolveMedia(pullup.id)
       expect(resObj.url).toBe(resId.url)
       expect(resObj.url).not.toBeNull()
+      expect(resObj.url).toContain('media/pullup/animation.gif')
     }
   })
 
