@@ -198,7 +198,7 @@ export interface ProgramDay {
 }
 
 export type WorkoutSplitType =
-  'ppl' | 'upper_lower' | 'arnold' | 'bro_split' | 'full_body'
+  'ppl' | 'upper_lower' | 'arnold' | 'bro_split' | 'full_body' | 'custom'
 
 export const WORKOUT_SPLIT_LABELS: Record<WorkoutSplitType, string> = {
   ppl: 'دفع / سحب / أرجل',
@@ -206,6 +206,7 @@ export const WORKOUT_SPLIT_LABELS: Record<WorkoutSplitType, string> = {
   arnold: 'أرنولد سبليت',
   bro_split: 'تقسيم عضلة باليوم',
   full_body: 'جسم كامل',
+  custom: 'جدول مخصص',
 }
 
 export const WORKOUT_SPLIT_EN: Record<WorkoutSplitType, string> = {
@@ -214,6 +215,7 @@ export const WORKOUT_SPLIT_EN: Record<WorkoutSplitType, string> = {
   arnold: 'Arnold Split',
   bro_split: 'Bro Split',
   full_body: 'Full Body',
+  custom: 'Custom Split',
 }
 
 export interface WorkoutProgram {

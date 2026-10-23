@@ -1,0 +1,4 @@
+=== B7. PROGRAM MANAGE MENU (BEFORE) ===
+- Menu items in WeeklyPlanView:
+Found program management sheet / overflow menu
+- Grouped under headings: Flat list of items

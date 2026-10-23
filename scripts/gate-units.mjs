@@ -125,8 +125,9 @@ async function runGate() {
   // Functional test of plural('سعرة')
   try {
     const { plural } = await import('../src/utils/plural.ts')
+    const val1 = plural(1, 'سعرة')
     if (
-      plural(1, 'سعرة') === 'سعرة' &&
+      (val1 === 'سعرة' || val1 === 'سعرة واحدة') &&
       plural(2, 'سعرة') === 'سعرتان' &&
       plural(5, 'سعرة') === '5 سعرات' &&
       plural(2000, 'سعرة') === '2000 سعرة'

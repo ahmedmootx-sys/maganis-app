@@ -1,0 +1,5 @@
+=== B4. CALCULATION GUIDE (BEFORE) ===
+- Tag wrapping: N/A
+- Monospace carbohydrate formula: N/A
+- Hardcoded numbers instead of interpolated constants: N/A
+- Backed by R23 Claims registry: NO (Uses inline JSX text)

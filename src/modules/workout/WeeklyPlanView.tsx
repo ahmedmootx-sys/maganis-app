@@ -39,7 +39,6 @@ import {
   Field,
   Icon,
 } from '../../ui/index.ts'
-import type { IconName } from '../../ui/Icon.tsx'
 import { getExerciseTags } from './limitations.ts'
 import {
   getOrDeriveSchedule,
@@ -53,6 +52,7 @@ import {
   cleanDayName,
 } from './sessionResolver.ts'
 import { DaysAdjustSheet } from './DaysAdjustSheet.tsx'
+import { Claim } from '../../content/Claim.tsx'
 import { saveFile } from '../../utils/saveFile.ts'
 import {
   IconSearch,
@@ -151,13 +151,13 @@ export function CardioDayScreen({
     effort: 'moderate',
   }
 
-  const activities: Array<{ id: string; label: string; icon: IconName }> = [
-    { id: 'جري', label: 'جري خارجي / سير', icon: 'activity' },
-    { id: 'مشي سريع', label: 'مشي سريع / انحدار', icon: 'flame' },
-    { id: 'دراجة ثابتة', label: 'دراجة ثابتة', icon: 'activity' },
-    { id: 'سباحة', label: 'سباحة حرة', icon: 'heart' },
-    { id: 'نط حبل', label: 'نط الحبل', icon: 'zap' },
-    { id: 'جهاز تجديف', label: 'جهاز التجديف', icon: 'dumbbell' },
+  const activities: Array<{ id: string; label: string }> = [
+    { id: 'جري', label: 'جري خارجي / سير' },
+    { id: 'مشي سريع', label: 'مشي سريع / انحدار' },
+    { id: 'دراجة ثابتة', label: 'دراجة ثابتة' },
+    { id: 'سباحة', label: 'سباحة حرة' },
+    { id: 'نط حبل', label: 'نط الحبل' },
+    { id: 'جهاز تجديف', label: 'جهاز التجديف' },
   ]
 
   const durations = [15, 20, 30, 45, 60]
@@ -264,16 +264,7 @@ export function CardioDayScreen({
                 ? 'عالي الشدة'
                 : 'متوسط'}
           </div>
-          <div
-            style={{
-              fontSize: '12.5px',
-              color: 'var(--muted)',
-              lineHeight: 1.5,
-            }}
-          >
-            الكارديو المعتدل يدعم صحة القلب والدورة الدموية ويساعد على تسريع
-            الاستشفاء العضلي دون التأثير سلباً على مكاسب القوة.
-          </div>
+          <Claim id="cardio_heart_health" />
         </div>
 
         {/* Activity Picker */}
@@ -298,6 +289,7 @@ export function CardioDayScreen({
                   style={{
                     display: 'flex',
                     alignItems: 'center',
+                    justifyContent: 'center',
                     gap: '8px',
                     padding: '12px',
                     borderRadius: '12px',
@@ -311,12 +303,11 @@ export function CardioDayScreen({
                       ? 'var(--color-accent-text)'
                       : 'var(--color-text)',
                     fontWeight: isSelected ? 700 : 500,
-                    fontSize: '13px',
+                    fontSize: '13.5px',
                     cursor: 'pointer',
-                    textAlign: 'right',
+                    textAlign: 'center',
                   }}
                 >
-                  <Icon name={act.icon} size={16} />
                   <span>{act.label}</span>
                 </button>
               )
@@ -348,7 +339,9 @@ export function CardioDayScreen({
                     background: isSelected
                       ? 'var(--color-accent)'
                       : 'var(--color-surface)',
-                    color: isSelected ? '#ffffff' : 'var(--color-text)',
+                    color: isSelected
+                      ? 'var(--btn-primary-fg, #0b0c0e)'
+                      : 'var(--color-text)',
                     fontWeight: 700,
                     fontSize: '14px',
                     cursor: 'pointer',
@@ -441,40 +434,10 @@ export function CardioDayScreen({
           </div>
         </section>
 
-        {/* Scientific Guidelines */}
-        <section className="screen-section">
-          <div className="section-title">
-            <span>إرشادات الكارديو للاعبي كمال الأجسام</span>
-          </div>
-          <div
-            className="card"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              fontSize: '12.5px',
-              color: 'var(--color-text-2)',
-              lineHeight: 1.5,
-              padding: '14px 16px',
-              borderRadius: '16px',
-              border: '1px solid var(--color-divider)',
-              background: 'var(--color-surface)',
-            }}
-          >
-            <div>
-              • <strong>المنطقة الثانية (Zone 2):</strong> سرعة يمكنك التحدث
-              خلالها براحة لبناء قاعدة هوائية وحرق الدهون ودعم الاستشفاء.
-            </div>
-            <div>
-              • <strong>الترطيب:</strong> اشرب 250-500 مل ماء قبل وأثناء الجلسة
-              لمنع الإجهاد الحراري.
-            </div>
-            <div>
-              • <strong>التوقيت:</strong> يفضل أداء الكارديو بعد تمارين المقاومة
-              أو في أيام منفصلة لتجنب إجهاد العضلات الرئيسي.
-            </div>
-          </div>
-        </section>
+        {/* Educational Claims (hidden until coach supplies sourced text) */}
+        <Claim id="cardio_zone2_fatloss" />
+        <Claim id="cardio_hydration_advice" />
+        <Claim id="cardio_timing_advice" />
       </div>
 
       {/* Sticky Bottom Bar */}

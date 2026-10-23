@@ -114,6 +114,7 @@
 
   /* Touch Targets & Dimensions */
   --touch-target-min: 44px;
+  --control-height: 44px;
   --top-bar-height: 56px;
   --nav-h: 64px;
   --bottom-nav-height: 64px;

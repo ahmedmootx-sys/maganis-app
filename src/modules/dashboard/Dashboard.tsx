@@ -43,6 +43,10 @@ export interface DashboardProps {
   onOpenNutrition?: () => void
   onSyncTrainingDays?: () => void
   onUpdateProfile?: (profile: UserProfile) => void
+  onGenerateProgram?: () => void
+  onOpenAiDesigner?: () => void
+  onImportProgram?: () => void
+  onCreateManualProgram?: () => void
 }
 
 function getGreeting(name?: string): string {
@@ -130,6 +134,10 @@ export function Dashboard({
   onOpenNutrition,
   onSyncTrainingDays,
   onUpdateProfile,
+  onGenerateProgram,
+  onOpenAiDesigner,
+  onImportProgram,
+  onCreateManualProgram,
 }: DashboardProps) {
   const weekStartDay = profile?.weekStartDay ?? 6
   const greeting = getGreeting(profile?.name)
@@ -365,9 +373,11 @@ export function Dashboard({
           </Callout>
         )}
 
-        {/* Card تمرين اليوم */}
+        {/* Card تمرين اليوم أو ابدأ برنامجك عند عدم وجود جدول */}
         <Section
-          title="تمرين اليوم"
+          title={
+            program && program.days.length > 0 ? 'تمرين اليوم' : 'ابدأ برنامجك'
+          }
           trailing={
             todayProgramDay
               ? `${todayProgramDay.exercises.length} تمارين`
@@ -375,7 +385,47 @@ export function Dashboard({
           }
         >
           <Card padding="md">
-            {todayProgramDay ? (
+            {!program || program.days.length === 0 ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  padding: '4px 0',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
+                    marginBottom: '4px',
+                  }}
+                >
+                  لا يوجد برنامج تدريبي نشط حاليًا
+                </div>
+                <Button variant="primary" fullWidth onClick={onGenerateProgram}>
+                  إنشاء برنامج تدريبي
+                </Button>
+                <Button
+                  variant="secondary"
+                  fullWidth
+                  onClick={onOpenAiDesigner}
+                >
+                  صمم لي جدولي الخاص
+                </Button>
+                <Button variant="secondary" fullWidth onClick={onImportProgram}>
+                  استيراد جدول
+                </Button>
+                <Button
+                  variant="secondary"
+                  fullWidth
+                  onClick={onCreateManualProgram}
+                >
+                  بناء جدول يدوي
+                </Button>
+              </div>
+            ) : todayProgramDay ? (
               <div
                 style={{
                   display: 'flex',
@@ -539,15 +589,23 @@ export function Dashboard({
         >
           <Stat
             label="الجلسات هذا الأسبوع"
-            value={`${sessionsThisWeek} من ${scheduledCount}`}
-            secondary={`${recentSessions.length} إجمالي`}
+            value={
+              program && program.days.length > 0
+                ? `${sessionsThisWeek} من ${scheduledCount}`
+                : '—'
+            }
+            secondary={
+              program && program.days.length > 0
+                ? `${recentSessions.length} إجمالي`
+                : undefined
+            }
           />
           <Stat
             label="الوزن الحالي"
             value={currentWeight.value}
             secondary={currentWeight.secondary}
           />
-          <Stat label="الهدف" value={goalLabel} />
+          <Stat label="الهدف" value={goalLabel} isText />
         </div>
 
         {/* 7-Day Week Strip */}
@@ -629,8 +687,19 @@ export function Dashboard({
                       <Icon name="dumbbell" size={12} />
                     ) : isCardio ? (
                       <Icon name="activity" size={12} />
-                    ) : (
+                    ) : slot === 'rest' ? (
                       <Icon name="moon" size={12} />
+                    ) : (
+                      <span
+                        style={{
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          color: 'var(--color-text-2)',
+                          lineHeight: 1,
+                        }}
+                      >
+                        —
+                      </span>
                     )}
                   </div>
                 </div>

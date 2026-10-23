@@ -3534,7 +3534,6 @@ input[type='url'],
   background: transparent;
   border: none !important;
   width: 100%;
-  max-height: 160px;
   box-sizing: border-box;
   gap: 8px;
 }

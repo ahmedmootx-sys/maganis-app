@@ -1,0 +1,26 @@
+=== B1. LIBRARY SCREEN (BEFORE) ===
+- Header Action:
+Found custom add exercise button
+- Segmented Control:
+<Segmented
+          options={[
+            { value: 'all', label: `الكل (${activeExercises.length})` },
+            { value: 'trash', label: `المحذوفة (${deletedExercises.length})` },
+          ]}
+          value={activeTab}
+- Shows "المحذوفة (0)" even when empty: true
+- Filter Row:
+className="chip-select-row"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              overflowX: 'auto',
+              paddingBottom: '4px',
+              maskImage:
+                'linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent)',
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent)',
+            }
+- Generic Picture Icon in rows:
+N/A

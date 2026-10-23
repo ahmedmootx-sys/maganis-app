@@ -1,0 +1,4 @@
+=== B6. TRAINING DAY LIST (BEFORE) ===
+- Generic words "يوم تدريبي" in row titles:
+1 occurrences found in WeeklyPlanView
+- Badge "اليوم" can wrap if container tight

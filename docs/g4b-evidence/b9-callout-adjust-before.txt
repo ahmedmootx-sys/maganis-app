@@ -1,0 +1,3 @@
+=== B9. DAYS ADJUST CALLOUT (BEFORE) ===
+- What does "تعديل الجدول" button open?
+Opens Schedule Modal instead of DaysAdjustSheet!

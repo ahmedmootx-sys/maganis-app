@@ -1,5 +1,1 @@
-Defect 1.1 Test Result: PASS
-Button BoundingBox: {"x":16,"y":16,"width":40,"height":40}
-Click Point: (36, 36)
-elementFromPoint: {"tagName":"SPAN","className":"btn__label","textContent":"+ إضافة تمرين"}
-CustomExerciseBuilder opened: true
+FAIL: Button not found in TopBar

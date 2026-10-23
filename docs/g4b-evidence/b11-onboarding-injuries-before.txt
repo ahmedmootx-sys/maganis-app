@@ -1,0 +1,4 @@
+=== B11. ONBOARDING INJURIES STEP (BEFORE) ===
+- Red flag question layout:
+Flat bordered box with buttons pushed to edges
+- Does selecting "نعم" block progress? Stores redFlag state

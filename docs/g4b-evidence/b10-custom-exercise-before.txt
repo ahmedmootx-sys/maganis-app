@@ -1,0 +1,7 @@
+=== B10. CUSTOM EXERCISE BUILDER (BEFORE) ===
+- Silent defaults:
+  category: Default chest
+  level: Default beginner
+  equipment: Default bodyweight
+- Measurement type options: includes bodyweight as a measurement
+- Textarea heights: single-line inputs without auto-grow

@@ -1,0 +1,14 @@
+=== B2. TRAINING EMPTY STATE (BEFORE) ===
+- Empty state container styles:
+Found EmptyState component in WeeklyPlanView
+- Buttons rendered when program is null:
+!program) return null
+    return program.days.find((d) => d.dayIndex === selectedDayIndex) ?? null
+  }, [program, selectedDayIndex])
+
+  function handleOpenDetail(exerciseId: string) {
+    window.location.hash = `#/exercise/${exerciseId}`
+  }
+
+  function handleAddDay(kind: DayKind = 'strength') {
+   

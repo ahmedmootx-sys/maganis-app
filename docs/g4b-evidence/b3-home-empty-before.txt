@@ -1,0 +1,18 @@
+=== B3. HOME EMPTY STATE (BEFORE) ===
+- Rest day text when no program:
+لا يوجد تمرين اليوم (يوم راحة)
+                </div>
+                {nextWorkoutDay ? (
+                  <div
+                    style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
+                  >
+                    الجلسة التالية — {nextWorkoutDay.labelAr} (
+                    {nextWorkoutDay.focus})
+                  </div>
+                ) : (
+                  <div
+                    style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
+                  >
+                    استمتع بالاستشفاء
+- Week strip rest moon on unassigned days: Week strip renders moon on unassigned days
+- Stats row display when program is null: N/A

@@ -22,7 +22,7 @@ import { EXERCISES, filterByInjuries } from './exercises.ts'
 // ============================================================
 
 export const SPLIT_CONFIGS: Record<
-  WorkoutSplitType,
+  Exclude<WorkoutSplitType, 'custom'>,
   {
     splits: MuscleGroup[][]
     dayLabels: string[]
@@ -116,7 +116,7 @@ function resolveSplit(
   groups: MuscleGroup[][]
   labels: string[]
 } {
-  if (splitType && SPLIT_CONFIGS[splitType]) {
+  if (splitType && splitType !== 'custom' && SPLIT_CONFIGS[splitType]) {
     const config = SPLIT_CONFIGS[splitType]
     const needed = Math.min(daysCount, config.splits.length)
     return {

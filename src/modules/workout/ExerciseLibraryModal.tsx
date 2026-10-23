@@ -21,8 +21,7 @@ import {
   Sheet,
   EmptyState,
   Select,
-  Segmented,
-  Button,
+  Choice,
 } from '../../ui/index.ts'
 import {
   IconPlus,
@@ -164,9 +163,21 @@ export function ExerciseLibraryModal({
         onBack={onClose}
         actions={
           onEditCustomExercise ? (
-            <Button
-              variant="subtle"
-              size="sm"
+            <button
+              type="button"
+              className="btn btn-subtle"
+              style={{
+                width: '44px',
+                height: '44px',
+                minWidth: '44px',
+                minHeight: '44px',
+                padding: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 'var(--radius-control, 10px)',
+              }}
+              aria-label="إضافة تمرين"
               onClick={() =>
                 onEditCustomExercise({
                   id: '',
@@ -180,8 +191,8 @@ export function ExerciseLibraryModal({
                 })
               }
             >
-              + إضافة تمرين
-            </Button>
+              <IconPlus size={20} />
+            </button>
           ) : undefined
         }
       />
@@ -215,34 +226,41 @@ export function ExerciseLibraryModal({
           />
         </div>
 
-        {/* Segmented Tabs: الكل (N) | المحذوفة (M) */}
-        <Segmented
-          options={[
-            { value: 'all', label: `الكل (${activeExercises.length})` },
-            { value: 'trash', label: `المحذوفة (${deletedExercises.length})` },
-          ]}
-          value={activeTab}
-          onChange={(val) => setActiveTab(val as 'all' | 'trash')}
-        />
+        {/* Segmented Tabs: الكل (N) | المحذوفة (M) using Choice with equal widths */}
+        {deletedExercises.length > 0 && (
+          <Choice<'all' | 'trash'>
+            variant="segmented"
+            options={[
+              { value: 'all', label: `الكل (${activeExercises.length})` },
+              {
+                value: 'trash',
+                label: `المحذوفة (${deletedExercises.length})`,
+              },
+            ]}
+            value={activeTab}
+            onChange={(val) => setActiveTab(val)}
+            ariaLabel="تصفية التمارين حسب الحالة"
+          />
+        )}
 
-        {/* ChipRow of Select-chips: العضلة، التفصيل، المعدات، المستوى */}
+        {/* 3-column Filter Grid at 360px without vertical clipping */}
         {activeTab === 'all' && (
           <div
             className="chip-select-row"
             style={{
-              display: 'flex',
-              alignItems: 'center',
+              display: 'grid',
+              gridTemplateColumns:
+                availableSubMuscles.length > 0
+                  ? 'repeat(2, 1fr)'
+                  : 'repeat(3, 1fr)',
               gap: '8px',
-              overflowX: 'auto',
-              paddingBottom: '4px',
-              maskImage:
-                'linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent)',
-              WebkitMaskImage:
-                'linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent)',
+              width: '100%',
+              minHeight: '44px',
+              boxSizing: 'border-box',
             }}
           >
             {/* Muscle Group Chip */}
-            <div style={{ flexShrink: 0, minWidth: '130px' }}>
+            <div style={{ minWidth: 0 }}>
               <Select
                 id="library-category"
                 value={categoryFilter}
@@ -263,7 +281,7 @@ export function ExerciseLibraryModal({
 
             {/* Sub-Muscle Detailed Chip */}
             {availableSubMuscles.length > 0 && (
-              <div style={{ flexShrink: 0, minWidth: '130px' }}>
+              <div style={{ minWidth: 0 }}>
                 <Select
                   id="library-submuscle"
                   value={subMuscleFilter}
@@ -281,7 +299,7 @@ export function ExerciseLibraryModal({
             )}
 
             {/* Equipment Chip */}
-            <div style={{ flexShrink: 0, minWidth: '130px' }}>
+            <div style={{ minWidth: 0 }}>
               <Select
                 id="library-equipment"
                 value={equipmentFilter}
@@ -298,7 +316,7 @@ export function ExerciseLibraryModal({
             </div>
 
             {/* Level Chip */}
-            <div style={{ flexShrink: 0, minWidth: '130px' }}>
+            <div style={{ minWidth: 0 }}>
               <Select
                 id="library-level"
                 value={levelFilter}

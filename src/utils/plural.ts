@@ -1,145 +1,191 @@
 /**
- * Arabic Plural Helper: plural(n, noun)
- * Implements strict Arabic grammatical plural rules:
- * - one (n = 1)
- * - two (n = 2)
- * - few (3 <= n <= 10)
- * - many (n = 0 and n >= 11)
+ * src/utils/plural.ts
+ * Unified Arabic Plural Helper based on Intl.PluralRules('ar')
+ * Implements Appendix B2 of TASK G4b.
  */
 
-export interface PluralEntry {
+export type PluralWordKey =
+  | 'exercise'
+  | 'program'
+  | 'day'
+  | 'session'
+  | 'minute'
+  | 'set'
+  | 'meal'
+  | 'calorie'
+  | 'تمرين'
+  | 'جدول'
+  | 'يوم'
+  | 'جلسة'
+  | 'دقيقة'
+  | 'مجموعة'
+  | 'وجبة'
+  | 'سعرة'
+  // Legacy aliases
+  | 'ثانية'
+  | 'تكرار'
+  | 'مكوّن'
+  | 'عضلة'
+  | 'نشاط'
+  | 'أسبوع'
+
+export interface PluralRuleForms {
+  zero: string
   one: string
   two: string
   few: string
   many: string
+  other: string
 }
 
-export type PluralNoun =
-  | 'مجموعة'
-  | 'تمرين'
-  | 'جلسة'
-  | 'يوم'
-  | 'أسبوع'
-  | 'دقيقة'
-  | 'ثانية'
-  | 'تكرار'
-  | 'وجبة'
-  | 'مكوّن'
-  | 'عضلة'
-  | 'نشاط'
-  | 'سعرة'
-
-export const PLURAL_NOUNS: Record<PluralNoun, PluralEntry> = {
-  مجموعة: {
-    one: 'مجموعة',
-    two: 'مجموعتان',
-    few: 'مجموعات',
-    many: 'مجموعة',
-  },
-  تمرين: {
-    one: 'تمرين',
+export const ARABIC_PLURAL_TABLE: Record<string, PluralRuleForms> = {
+  exercise: {
+    zero: 'لا توجد تمارين',
+    one: 'تمرين واحد',
     two: 'تمرينان',
-    few: 'تمارين',
-    many: 'تمرين',
+    few: '{n} تمارين',
+    many: '{n} تمرينًا',
+    other: '{n} تمرين',
   },
-  جلسة: {
-    one: 'جلسة',
-    two: 'جلستان',
-    few: 'جلسات',
-    many: 'جلسة',
+  program: {
+    zero: 'لا توجد جداول',
+    one: 'جدول واحد',
+    two: 'جدولان',
+    few: '{n} جداول',
+    many: '{n} جدولًا',
+    other: '{n} جدول',
   },
-  يوم: {
-    one: 'يوم',
+  day: {
+    zero: '0 أيام',
+    one: 'يوم واحد',
     two: 'يومان',
-    few: 'أيام',
-    many: 'يوم',
+    few: '{n} أيام',
+    many: '{n} يومًا',
+    other: '{n} يوم',
   },
-  أسبوع: {
-    one: 'أسبوع',
-    two: 'أسبوعان',
-    few: 'أسابيع',
-    many: 'أسبوع',
+  session: {
+    zero: '0 جلسات',
+    one: 'جلسة واحدة',
+    two: 'جلستان',
+    few: '{n} جلسات',
+    many: '{n} جلسة',
+    other: '{n} جلسة',
   },
-  دقيقة: {
-    one: 'دقيقة',
+  minute: {
+    zero: '0 دقائق',
+    one: 'دقيقة واحدة',
     two: 'دقيقتان',
-    few: 'دقائق',
-    many: 'دقيقة',
+    few: '{n} دقائق',
+    many: '{n} دقيقة',
+    other: '{n} دقيقة',
   },
-  ثانية: {
-    one: 'ثانية',
-    two: 'ثانيتان',
-    few: 'ثوانٍ',
-    many: 'ثانية',
+  set: {
+    zero: '0 مجموعات',
+    one: 'مجموعة واحدة',
+    two: 'مجموعتان',
+    few: '{n} مجموعات',
+    many: '{n} مجموعة',
+    other: '{n} مجموعة',
   },
-  تكرار: {
-    one: 'تكرار',
-    two: 'تكراران',
-    few: 'تكرارات',
-    many: 'تكرار',
-  },
-  وجبة: {
-    one: 'وجبة',
+  meal: {
+    zero: '0 وجبات',
+    one: 'وجبة واحدة',
     two: 'وجبتان',
-    few: 'وجبات',
-    many: 'وجبة',
+    few: '{n} وجبات',
+    many: '{n} وجبة',
+    other: '{n} وجبة',
   },
-  مكوّن: {
-    one: 'مكوّن',
-    two: 'مكوّنان',
-    few: 'مكوّنات',
-    many: 'مكوّن',
-  },
-  عضلة: {
-    one: 'عضلة',
-    two: 'عضلتان',
-    few: 'عضلات',
-    many: 'عضلة',
-  },
-  نشاط: {
-    one: 'نشاط',
-    two: 'نشاطان',
-    few: 'أنشطة',
-    many: 'نشاط',
-  },
-  سعرة: {
-    one: 'سعرة',
+  // Calorie unit dictionary keywords: 'سعرة' and 'سعرات'
+  calorie: {
+    zero: '0 سعرات',
+    one: 'سعرة واحدة',
     two: 'سعرتان',
-    few: 'سعرات',
-    many: 'سعرة',
+    few: '{n} سعرات',
+    many: '{n} سعرة',
+    other: '{n} سعرة',
+  },
+  // Legacy / Additional helpers
+  second: {
+    zero: '0 ثوانٍ',
+    one: 'ثانية واحدة',
+    two: 'ثانيتان',
+    few: '{n} ثوانٍ',
+    many: '{n} ثانية',
+    other: '{n} ثانية',
+  },
+  rep: {
+    zero: '0 تكرارات',
+    one: 'تكرار واحد',
+    two: 'تكراران',
+    few: '{n} تكرارات',
+    many: '{n} تكرارًا',
+    other: '{n} تكرار',
+  },
+  week: {
+    zero: '0 أسابيع',
+    one: 'أسبوع واحد',
+    two: 'أسبوعان',
+    few: '{n} أسابيع',
+    many: '{n} أسبوعًا',
+    other: '{n} أسبوع',
   },
 }
+
+// Map Arabic keys to canonical English keys
+const ALIASES: Record<string, string> = {
+  تمرين: 'exercise',
+  جدول: 'program',
+  يوم: 'day',
+  جلسة: 'session',
+  دقيقة: 'minute',
+  مجموعة: 'set',
+  وجبة: 'meal',
+  سعرة: 'calorie',
+  ثانية: 'second',
+  تكرار: 'rep',
+  أسبوع: 'week',
+}
+
+const arPluralRules = new Intl.PluralRules('ar')
 
 /**
- * Format a number and noun according to Arabic grammar rules.
+ * Universal Arabic Plural Helper (Appendix B2)
+ *
  * @param n the count
- * @param noun the base noun key from the dictionary
- * @param forceNumber if true, forces the number prefix even for 1 and 2 (e.g. "1 مجموعة" instead of "مجموعة")
+ * @param word the word key (English or Arabic)
+ * @param options optional { forceNumber?: boolean, zeroForm?: 'zero' | 'numeric' }
  */
 export function plural(
   n: number,
-  noun: PluralNoun,
-  forceNumber = false,
+  word: PluralWordKey,
+  options: { forceNumber?: boolean; zeroNumeric?: boolean } | boolean = {},
 ): string {
-  const entry = PLURAL_NOUNS[noun]
-  if (!entry) {
-    return `${n} ${noun}`
+  const opts = typeof options === 'boolean' ? { forceNumber: options } : options
+  const canonical = ALIASES[word] || word
+  const forms = ARABIC_PLURAL_TABLE[canonical]
+
+  if (!forms) {
+    return `${n} ${word}`
   }
 
   const rounded = Math.round(n)
 
-  if (rounded === 1) {
-    return forceNumber ? `1 ${entry.one}` : entry.one
+  if (opts.zeroNumeric && rounded === 0) {
+    return `0 ${canonical === 'calorie' || canonical === 'سعرة' ? 'سعرة' : forms.other.replace('{n} ', '')}`
   }
 
-  if (rounded === 2) {
-    return forceNumber ? `2 ${entry.two}` : entry.two
+  if (opts.forceNumber) {
+    if (rounded === 1) return `1 ${forms.other.replace('{n} ', '')}`
+    if (rounded === 2) return `2 ${forms.other.replace('{n} ', '')}`
   }
 
-  if (rounded >= 3 && rounded <= 10) {
-    return `${rounded} ${entry.few}`
-  }
+  // Use Intl.PluralRules category
+  const category = arPluralRules.select(rounded)
+  const template = forms[category] || forms.other
 
-  // 0 and 11+
-  return `${rounded} ${entry.many}`
+  return template.replace('{n}', String(rounded))
 }
+
+// Legacy alias compatibility
+export const PLURAL_NOUNS = ARABIC_PLURAL_TABLE
+export type PluralNoun = PluralWordKey

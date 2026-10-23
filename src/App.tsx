@@ -437,7 +437,12 @@ export function App({ config }: AppProps) {
   const doDeleteProgram = useCallback(() => {
     workoutStore.clearProgram()
     setProgram(null)
-  }, [workoutStore])
+    if (profile?.schedule) {
+      const updated = { ...profile, schedule: {} }
+      profileStore.saveProfile(updated)
+      setProfile(updated)
+    }
+  }, [workoutStore, profile, profileStore])
 
   const handleDeleteProgram = useCallback(() => {
     setConfirmDeleteProgramOpen(true)
@@ -777,6 +782,37 @@ export function App({ config }: AppProps) {
             onUpdateProfile={(updated) => {
               profileStore.saveProfile(updated)
               setProfile(updated)
+            }}
+            onGenerateProgram={handleGenerateProgram}
+            onOpenAiDesigner={() => setShowAiDesignerModal(true)}
+            onImportProgram={() => {
+              setActiveTab('workouts')
+            }}
+            onCreateManualProgram={() => {
+              const emptyProgram: WorkoutProgram = {
+                id: `prog_manual_${Date.now()}`,
+                name: 'جدول تدريبي يدوي',
+                splitType: 'custom',
+                trainingDaysPerWeek: 3,
+                primaryGoal: profile?.primaryGoal || 'hypertrophy',
+                days: [
+                  {
+                    id: `day_${Date.now()}_0`,
+                    dayIndex: 0,
+                    name: 'اليوم الأول',
+                    labelAr: 'اليوم الأول',
+                    focus: 'تخصيص يدوي',
+                    focusAr: 'تخصيص يدوي',
+                    kind: 'strength',
+                    exercises: [],
+                  },
+                ],
+                createdAt: Date.now(),
+                isCustom: true,
+              }
+              workoutStore.saveProgram(emptyProgram)
+              setProgram(emptyProgram)
+              setActiveTab('workouts')
             }}
           />
         )

@@ -1,0 +1,4 @@
+=== B5. CARDIO DAY SCREEN (BEFORE) ===
+- Activity icons: Pulse/fire used across activities
+- Unsourced statements: Inline cardio health claims present in ActiveWorkoutSession or WeeklyPlanView
+- Claims registry backed: NO

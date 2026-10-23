@@ -13,6 +13,7 @@ export interface StatProps extends React.HTMLAttributes<HTMLDivElement> {
     direction: 'up' | 'down' | 'neutral'
   }
   className?: string
+  isText?: boolean
 }
 
 export const Stat: React.FC<StatProps> = ({
@@ -23,9 +24,12 @@ export const Stat: React.FC<StatProps> = ({
   icon,
   trend,
   className = '',
+  isText,
   ...props
 }) => {
   const formattedVal = typeof value === 'number' ? fmtNumber(value) : value
+  const isTextValue =
+    isText ?? (typeof value === 'string' && !/^[0-9—]/.test(value))
 
   return (
     <div className={`stat-box ${className}`.trim()} {...props}>
@@ -34,7 +38,27 @@ export const Stat: React.FC<StatProps> = ({
         <span>{label}</span>
       </div>
       <div className="stat-box__value-row">
-        <bdi className="stat-box__value">{formattedVal}</bdi>
+        <bdi
+          className="stat-box__value"
+          style={
+            isTextValue
+              ? {
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  lineHeight: 1.25,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  textAlign: 'center',
+                  wordBreak: 'break-word',
+                }
+              : undefined
+          }
+        >
+          {formattedVal}
+        </bdi>
         {unit && <span className="stat-box__unit">{unit}</span>}
         {trend && (
           <span

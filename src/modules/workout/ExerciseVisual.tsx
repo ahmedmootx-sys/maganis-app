@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { MuscleGroup } from '../shared/types.ts'
-import { IconImage } from '../../components/Icons.tsx'
+import { Icon, type IconName } from '../../ui/Icon.tsx'
 import { resolveMedia } from '../../utils/mediaResolver.ts'
 import { getExerciseById } from './exercises.ts'
 import { SafeImage } from '../../components/SafeImage.tsx'
@@ -17,13 +17,36 @@ interface ExerciseVisualProps {
   showControls?: boolean
 }
 
+function getCategoryIcon(cat?: string): IconName {
+  switch (cat) {
+    case 'chest':
+      return 'dumbbell'
+    case 'back':
+      return 'layers'
+    case 'legs':
+      return 'zap'
+    case 'shoulders':
+      return 'target'
+    case 'arms':
+      return 'dumbbell'
+    case 'cardio':
+      return 'activity'
+    case 'core':
+    case 'abs':
+      return 'shield'
+    default:
+      return 'dumbbell'
+  }
+}
+
 /**
  * ExerciseVisual handles list thumbnails and media previews.
  * - In lists (small): 40x40 icon tile, no text, no empty message.
- * - When media is absent: renders fallback icon tile for small, or null.
+ * - When media is absent: renders category line icon (never picture icon).
  * - SafeImage used for all images.
  */
 export function ExerciseVisual({
+  category,
   exerciseId,
   exerciseName = '',
   imageUrl,
@@ -43,6 +66,8 @@ export function ExerciseVisual({
     resolved.isKeyframed && Boolean(frame0 && frame1 && frame0 !== frame1)
   const currentSrc = hasTwoFrames && frameIndex === 1 ? frame1 : frame0
 
+  const catIconName = getCategoryIcon(category || rawEx?.category)
+
   const iconFallback = (
     <div
       style={{
@@ -56,7 +81,7 @@ export function ExerciseVisual({
         borderRadius: 'var(--radius-control)',
       }}
     >
-      <IconImage size={18} />
+      <Icon name={catIconName} size={size === 'small' ? 20 : 32} />
     </div>
   )
 

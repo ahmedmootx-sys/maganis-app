@@ -1,0 +1,4 @@
+=== B8. PROGRAM VAULT & COUNTS (BEFORE) ===
+- Pluralization: Uses "`${programs.length} جداول محفوظة`" -> "1 جداول محفوظة" (Wrong Arabic grammar)
+- Fixed timestamp in drafts / exports: Fixed timestamp 1760778000000 (Oct 2025) found
+- Placeholder clipping in name input: Found clipped placeholder

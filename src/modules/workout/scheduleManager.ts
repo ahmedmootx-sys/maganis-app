@@ -41,6 +41,10 @@ export function getOrDeriveSchedule(
   profile: Partial<UserProfile> | null | undefined,
   program: WorkoutProgram | null | undefined,
 ): Record<number, ScheduleSlotType> {
+  if (!program || !program.days || program.days.length === 0) {
+    return {}
+  }
+
   if (profile?.schedule && Object.keys(profile.schedule).length === 7) {
     return profile.schedule
   }
