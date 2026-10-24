@@ -1,0 +1,31 @@
+﻿====================================================
+   GATE-CLIPPING: PIXEL-LEVEL CLIPPING & OCCLUSION
+====================================================
+
+≡ƒôè Total states evaluated: 132
+≡ƒôè Total elements examined: 4452
+≡ƒôè Total clipping violations: 26
+Sample violations:
+node : 
+At line:1 char:1
++ node scripts/gate-clipping.mjs *>&1 | Out-File -FilePath evidence/g5- ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Γ¥î Gate FAILED: found 26 clipping/occlusion violations!
+  1. [#/progress (360x720, light)] uncontained_overflow: {"state":"#/progress (360x720, light)","type":"uncontained_overflow","tag":"INPUT","className":"","text":"","xOver":3,"yOver":9}
+  2. [#/progress (360x720, light)] occluded_interactive: {"state":"#/progress (360x720, light)","type":"occluded_interactive","tag":"INPUT","text":"","hitTag":"BUTTON","hitClass":"field-input"}
+  3. [#/styleguide (360x720, light)] uncontained_overflow: {"state":"#/styleguide (360x720, light)","type":"uncontained_overflow","tag":"INPUT","className":"","text":"","xOver":3,"yOver":9}
+  4. [#/progress (360x720, dark)] uncontained_overflow: {"state":"#/progress (360x720, dark)","type":"uncontained_overflow","tag":"INPUT","className":"","text":"","xOver":3,"yOver":9}
+  5. [#/progress (360x720, dark)] occluded_interactive: {"state":"#/progress (360x720, dark)","type":"occluded_interactive","tag":"INPUT","text":"","hitTag":"BUTTON","hitClass":"field-input"}
+  6. [#/styleguide (360x720, dark)] uncontained_overflow: {"state":"#/styleguide (360x720, dark)","type":"uncontained_overflow","tag":"INPUT","className":"","text":"","xOver":3,"yOver":9}
+  7. [#/training (360x640, light)] occluded_interactive: {"state":"#/training (360x640, light)","type":"occluded_interactive","tag":"DIV","text":"2╪º┘ä╪ú╪¡╪» ┬╖ ╪│┘ü┘ä┘è (╪ú)╪ú╪▒╪¼┘ä1 ╪¬┘à╪º╪▒┘è┘å","hitTag":"BUTTON","hitClass":"bottom-nav__item bottom-nav__tab"}
+  8. [#/training?empty=true (360x640, light)] occluded_interactive: {"state":"#/training?empty=true (360x640, light)","type":"occluded_interactive","tag":"DIV","text":"2╪º┘ä╪ú╪¡╪» ┬╖ ╪│┘ü┘ä┘è (╪ú)╪ú╪▒╪¼┘ä1 ╪¬┘à╪º╪▒┘è┘å","hitTag":"BUTTON","hitClass":"bottom-nav__item bottom-nav__tab"}
+  9. [#/training/cardio-runner (360x640, light)] occluded_interactive: {"state":"#/training/cardio-runner (360x640, light)","type":"occluded_interactive","tag":"DIV","text":"2╪º┘ä╪ú╪¡╪» ┬╖ ╪│┘ü┘ä┘è (╪ú)╪ú╪▒╪¼┘ä1 ╪¬┘à╪º╪▒┘è┘å","hitTag":"BUTTON","hitClass":"bottom-nav__item bottom-nav__tab"}
+  10. [#/progress (360x640, light)] uncontained_overflow: {"state":"#/progress (360x640, light)","type":"uncontained_overflow","tag":"INPUT","className":"","text":"","xOver":3,"yOver":9}
+  11. [#/progress (360x640, light)] occluded_interactive: {"state":"#/progress (360x640, light)","type":"occluded_interactive","tag":"INPUT","text":"","hitTag":"BUTTON","hitClass":"field-input"}
+  12. [#/settings (360x640, light)] occluded_interactive: {"state":"#/settings (360x640, light)","type":"occluded_interactive","tag":"DIV","text":"╪º┘ä╪╣┘à╪▒28 ╪│┘å╪⌐","hitTag":"NAV","hitClass":"bottom-nav"}
+  13. [#/styleguide (360x640, light)] uncontained_overflow: {"state":"#/styleguide (360x640, light)","type":"uncontained_overflow","tag":"INPUT","className":"","text":"","xOver":3,"yOver":9}
+  14. [#/training (360x640, dark)] occluded_interactive: {"state":"#/training (360x640, dark)","type":"occluded_interactive","tag":"DIV","text":"2╪º┘ä╪ú╪¡╪» ┬╖ ╪│┘ü┘ä┘è (╪ú)╪ú╪▒╪¼┘ä1 ╪¬┘à╪º╪▒┘è┘å","hitTag":"BUTTON","hitClass":"bottom-nav__item bottom-nav__tab"}
+  15. [#/training?empty=true (360x640, dark)] occluded_interactive: {"state":"#/training?empty=true (360x640, dark)","type":"occluded_interactive","tag":"DIV","text":"2╪º┘ä╪ú╪¡╪» ┬╖ ╪│┘ü┘ä┘è (╪ú)╪ú╪▒╪¼┘ä1 ╪¬┘à╪º╪▒┘è┘å","hitTag":"BUTTON","hitClass":"bottom-nav__item bottom-nav__tab"}

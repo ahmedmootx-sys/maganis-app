@@ -73,6 +73,7 @@ export interface UserProfile {
   bodyGoal?: BodyGoal
   trainingStyle?: TrainingStyle[]
   trainingDaysPerWeek: number
+  equipmentAvailable?: string[]
   medical: MedicalAssessment
   body: BodyMetrics
   limitations?: UserLimitation[]

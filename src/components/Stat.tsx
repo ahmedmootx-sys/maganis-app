@@ -35,7 +35,7 @@ export function Stat({
                 display: '-webkit-box',
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
+                overflow: 'hidden' /* clip-ok: text ellipsis truncation */,
                 textOverflow: 'ellipsis',
                 textAlign: 'center',
                 wordBreak: 'break-word',

@@ -233,7 +233,7 @@ export function mapAppendixExercise(def: SectionExerciseDef): ProgramExercise {
 
 export function buildOwnerProgram(): WorkoutProgram {
   const days: ProgramDay[] = [
-    // Day A (Upper)
+    // Session 1 (Upper)
     {
       dayIndex: 0,
       id: 'day-ahmed-a',
@@ -288,7 +288,7 @@ export function buildOwnerProgram(): WorkoutProgram {
       controlBlock: [], // upper days control block is UNDECIDED: leave empty
       cooldown: COOLDOWN_EXERCISES.map(mapAppendixExercise),
     },
-    // Day B (Lower)
+    // Session 2 (Lower)
     {
       dayIndex: 1,
       id: 'day-ahmed-b',
@@ -342,7 +342,7 @@ export function buildOwnerProgram(): WorkoutProgram {
       controlBlock: CONTROL_BLOCK_LOWER.map(mapAppendixExercise),
       cooldown: COOLDOWN_EXERCISES.map(mapAppendixExercise),
     },
-    // Day C (Upper)
+    // Session 3 (Upper)
     {
       dayIndex: 2,
       id: 'day-ahmed-c',
@@ -400,7 +400,7 @@ export function buildOwnerProgram(): WorkoutProgram {
       controlBlock: [],
       cooldown: COOLDOWN_EXERCISES.map(mapAppendixExercise),
     },
-    // Day D (Lower)
+    // Session 4 (Lower)
     {
       dayIndex: 3,
       id: 'day-ahmed-d',
@@ -455,7 +455,7 @@ export function buildOwnerProgram(): WorkoutProgram {
       controlBlock: CONTROL_BLOCK_LOWER.map(mapAppendixExercise),
       cooldown: COOLDOWN_EXERCISES.map(mapAppendixExercise),
     },
-    // Day E (Upper)
+    // Session 5 (Upper)
     {
       dayIndex: 4,
       id: 'day-ahmed-e',
@@ -516,7 +516,7 @@ export function buildOwnerProgram(): WorkoutProgram {
 
   return {
     id: 'prog-ahmed-upper-lower-5d',
-    createdAt: 1760778000000,
+    createdAt: Date.now(),
     primaryGoal: 'hypertrophy',
     trainingDaysPerWeek: 5,
     title: 'برنامج أحمد — علوي/سفلي (5 أيام)',
@@ -533,7 +533,7 @@ export function createOwnerDraftProgram(): SavedWorkoutProgram {
   return {
     id: 'vault-prog-ahmed-upper-lower-5d',
     title: 'برنامج أحمد — علوي/سفلي (5 أيام)',
-    savedAt: 1760778000000,
+    savedAt: Date.now(),
     program,
   }
 }

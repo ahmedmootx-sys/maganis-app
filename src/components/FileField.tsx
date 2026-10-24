@@ -190,14 +190,14 @@ export const FileField: React.FC<FileFieldProps> = ({
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              overflow: 'hidden',
+              overflow: 'hidden' /* clip-ok: hidden native input overlay */,
               cursor: disabled ? 'default' : 'pointer',
             }}
           >
             <Icon name="file-text" size={18} />
             <span
               style={{
-                overflow: 'hidden',
+                overflow: 'hidden' /* clip-ok: text ellipsis truncation */,
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 fontWeight: 600,

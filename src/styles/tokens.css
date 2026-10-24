@@ -131,9 +131,9 @@
   --safe-right: env(safe-area-inset-right, 0px);
 
   /* Layout Shell Contract Tokens (G3 Part 1) */
-  --page-end: 16px;
-  --footer-max-height: 72px;
   --bottom-nav-height: 64px;
+  --page-end: calc(var(--bottom-nav-height, 64px) + var(--bottom-inset) + 16px);
+  --footer-max-height: 72px;
 
   /* Shadows: Borders over shadows; subtle elevation for bottom sheets */
   --shadow-sheet: 0 -4px 20px rgba(0, 0, 0, 0.25);
@@ -188,8 +188,15 @@
   --btn-primary-disabled-fg: #6b7280;
 
   /* Anatomical Atlas Tokens (Light Mode) */
-  --atlas-muscle: #c9ced6;
-  --atlas-line: #a0a5ad;
+  --atlas-muscle: #d8dde4;
+  --atlas-muscle-highlight: #e9ecf2;
+  --atlas-muscle-shadow: #bcc2cc;
+  --atlas-line: #7d8592;
+  --atlas-silhouette-fill: rgba(140, 145, 155, 0.08);
+  --atlas-silhouette-stroke: rgba(125, 133, 146, 0.45);
+  --atlas-ghost-fill: rgba(180, 185, 195, 0.15);
+  --atlas-ghost-stroke: rgba(140, 145, 155, 0.25);
+  --atlas-accent-outline: var(--color-accent, #f95700);
 
   /* Semantic State Tokens */
   --color-success: #15803d;
@@ -222,10 +229,41 @@
   --macro-fats-bg: #f5f3ff;
   --macro-fats-border: #ddd6fe;
 
-  /* Modals, Overlays & Stacking Contexts */
-  --color-overlay: rgba(20, 22, 26, 0.6);
-  --z-index-modal: 1000;
-  --z-index-bottom-nav: 100;
+  /* Toast Tokens (Light Mode: High-contrast floating pill) */
+  --color-toast-bg: #14161a;
+  --color-toast-text: #ffffff;
+  --color-toast-border: rgba(255, 255, 255, 0.15);
+
+  /* Chip State Tokens (Light Mode: WCAG AA Compliant) */
+  --chip-bg: var(--color-surface);
+  --chip-border: var(--color-divider);
+  --chip-text: var(--color-text);
+  --chip-selected-bg: var(--color-accent);
+  --chip-selected-border: var(--color-accent);
+  --chip-selected-text: var(--on-accent);
+  --chip-soft-bg: var(--color-accent-tint);
+  --chip-soft-text: var(--color-accent-text);
+
+  /* Layering Contract: Named z-index levels (A2.3) */
+  --z-content: 1;
+  --z-sticky: 10;
+  --z-nav: 50;
+  --z-sheet: 100;
+  --z-toast: 200;
+  --z-dialog: 300;
+
+  /* Aliases for backwards compatibility */
+  --z-index-sticky: var(--z-sticky);
+  --z-index-nav: var(--z-nav);
+  --z-index-bottom-nav: var(--z-nav);
+  --z-index-sheet: var(--z-sheet);
+  --z-index-toast: var(--z-toast);
+  --z-index-modal: var(--z-dialog);
+
+  /* Unified bottom-inset variable used by nav bar and every sheet footer */
+  --bottom-inset: env(safe-area-inset-bottom, 0px);
+  --safe-bottom: var(--bottom-inset);
+  --safe-area-bottom: var(--bottom-inset);
 
   /* Legacy Design System Aliases for Visual Continuity */
   --brand: var(--color-accent);
@@ -274,8 +312,15 @@
   --btn-primary-disabled-fg: #9ca3af;
 
   /* Anatomical Atlas Tokens (Dark Mode) */
-  --atlas-muscle: #3a3f47;
-  --atlas-line: #525862;
+  --atlas-muscle: #2d323a;
+  --atlas-muscle-highlight: #3a404c;
+  --atlas-muscle-shadow: #20242b;
+  --atlas-line: #5a6270;
+  --atlas-silhouette-fill: rgba(240, 243, 248, 0.008);
+  --atlas-silhouette-stroke: rgba(180, 185, 195, 0.35);
+  --atlas-ghost-fill: rgba(100, 105, 115, 0.15);
+  --atlas-ghost-stroke: rgba(120, 125, 135, 0.25);
+  --atlas-accent-outline: var(--color-accent, #ff6b1a);
   --atlas-primary: #ef5350;
   --atlas-primary-stroke: #b71c1c;
   --atlas-secondary: #ffee58;
@@ -291,13 +336,13 @@
   --color-warning-bg: #451a03;
   --color-warning-border: #78350f;
 
-  --color-danger: #ef4444;
+  --color-danger: #f87171;
   --color-danger-bg: #450a0a;
   --color-danger-border: #7f1d1d;
   --color-danger-contrast: #ffffff;
   --color-overlay: rgba(0, 0, 0, 0.75);
 
-  --color-info: #3b82f6;
+  --color-info: #60a5fa;
   --color-info-bg: #172554;
   --color-info-border: #1e3a8a;
 
@@ -312,6 +357,21 @@
   --macro-fats: #a78bfa;
   --macro-fats-bg: rgba(124, 58, 237, 0.18);
   --macro-fats-border: rgba(167, 139, 250, 0.35);
+
+  /* Toast Tokens (Dark Mode: High-contrast floating pill) */
+  --color-toast-bg: #212429;
+  --color-toast-text: #ffffff;
+  --color-toast-border: #3a3f47;
+
+  /* Chip State Tokens (Dark Mode: WCAG AA Compliant) */
+  --chip-bg: var(--color-surface-2);
+  --chip-border: var(--color-divider);
+  --chip-text: var(--color-text);
+  --chip-selected-bg: var(--color-accent);
+  --chip-selected-border: var(--color-accent);
+  --chip-selected-text: var(--on-accent);
+  --chip-soft-bg: var(--color-accent-tint);
+  --chip-soft-text: var(--color-accent-text);
 
   --shadow-sheet: 0 -4px 24px rgba(0, 0, 0, 0.6);
   --shadow-dropdown: 0 4px 20px rgba(0, 0, 0, 0.5);
@@ -345,8 +405,15 @@
     --btn-primary-disabled-bg: #212429;
     --btn-primary-disabled-fg: #9ca3af;
 
-    --atlas-muscle: #3a3f47;
-    --atlas-line: #525862;
+    --atlas-muscle: #2d323a;
+    --atlas-muscle-highlight: #3a404c;
+    --atlas-muscle-shadow: #20242b;
+    --atlas-line: #5a6270;
+    --atlas-silhouette-fill: rgba(240, 243, 248, 0.008);
+    --atlas-silhouette-stroke: rgba(180, 185, 195, 0.35);
+    --atlas-ghost-fill: rgba(100, 105, 115, 0.15);
+    --atlas-ghost-stroke: rgba(120, 125, 135, 0.25);
+    --atlas-accent-outline: var(--color-accent, #ff6b1a);
 
     --color-success: #22c55e;
     --color-success-bg: #052e16;
@@ -356,11 +423,11 @@
     --color-warning-bg: #451a03;
     --color-warning-border: #78350f;
 
-    --color-danger: #ef4444;
+    --color-danger: #f87171;
     --color-danger-bg: #450a0a;
     --color-danger-border: #7f1d1d;
 
-    --color-info: #3b82f6;
+    --color-info: #60a5fa;
     --color-info-bg: #172554;
     --color-info-border: #1e3a8a;
 

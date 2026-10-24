@@ -62,6 +62,15 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  // Task G5-B3: Never cache video responses in the service worker
+  if (
+    request.destination === 'video' ||
+    /\.(mp4|webm|m4v)$/i.test(url.pathname)
+  ) {
+    event.respondWith(fetch(request))
+    return
+  }
+
   // Skip caching for development requests or live reloads
   if (
     url.pathname.includes('/@vite') ||

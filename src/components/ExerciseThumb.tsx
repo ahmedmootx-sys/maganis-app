@@ -74,7 +74,7 @@ export function ExerciseThumb({
         minWidth: dimension,
         minHeight: dimension,
         borderRadius: '8px',
-        overflow: 'hidden',
+        overflow: 'hidden' /* clip-ok: visual element boundary */,
         background: 'var(--card-subtle, rgba(255, 255, 255, 0.04))',
         border: '1px solid var(--line, rgba(255, 255, 255, 0.1))',
         display: 'flex',

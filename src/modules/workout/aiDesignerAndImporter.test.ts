@@ -79,7 +79,7 @@ describe('Part 3 — AI Program Designer and Program Importer', () => {
 
       expect(res.prompt).not.toContain('Weight: 82 kg')
       expect(res.prompt).not.toContain('الكتف الأيمن')
-      expect(res.prompt).toContain('None provided by the app')
+      expect(res.prompt).toContain('(not provided)')
     })
   })
 
@@ -143,7 +143,7 @@ describe('Part 3 — AI Program Designer and Program Importer', () => {
       const result = importProgramFromJson(PROMPT_EXAMPLE_JSON)
       expect(result.success).toBe(true)
       expect(result.errors).toEqual([])
-      expect(result.program?.days.length).toBe(2)
+      expect(result.program?.days.length).toBe(3)
     })
 
     it('flags limitation conflicts on exercises with high/unreviewed load', () => {

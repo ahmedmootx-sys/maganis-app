@@ -1,0 +1,14 @@
+====================================================
+             GATE: ATLAS DEEP MODE AUDIT            
+====================================================
+[Light Theme] Page bg luminance: 1.000, Silhouette interior luminance: 0.009 (Diff: 99.1%)
+[Dark Theme] Page bg luminance: 0.0080, Silhouette interior luminance: 0.0093 (Diff: 14.4%)
+Surface muscle ghost opacity in deep mode: 0.25
+Primary deep muscle contrast against ghost: 3.80:1 (required >= 3:1)
+Secondary deep muscle contrast against dark ghost: 11.57:1 (required >= 3:1)
+
+Total checks performed: 7
+Errors found: 3
+ ❌ anterior.svg contains hardcoded dark fill="#18181b" on #body-silhouette causing black body appearance
+ ❌ [Light Theme] Silhouette interior luminance deviates by 99.1% from page background (allowed <= 15%)
+ ❌ Shade WebP layer is not hidden in deep mode (.atlas-deep-mode .atlas-shade-layer { display: none }), risking multiply shade darkness

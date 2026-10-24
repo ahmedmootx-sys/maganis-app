@@ -1,0 +1,5 @@
+﻿≡ƒÜÇ Running Gate: gate-clip-sources...
+≡ƒôè Declarations examined: 76
+≡ƒôè Declarations with explicit clip-ok reason: 76
+≡ƒôè Unannotated clipping declarations (violations): 0
+Γ£à Gate PASSED: All clipping sources properly documented with clip-ok reason.

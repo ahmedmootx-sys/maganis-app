@@ -1,0 +1,95 @@
+{
+  "schema": "maganis.cardio-met/1",
+  "version": "1.0.0",
+  "generated": "2026-10-23",
+  "author": "coach (Claude)",
+  "status": "sourced_pending_reverification",
+  "status_note": "Values were read from the 2011 Compendium of Physical Activities PDF (Ainsworth et al.). Before shipping, the implementer must re-open the PDF at the source URL, confirm every code/MET pair below against the table rows, and record the result in docs/STATE.md. Any row that does not match must be corrected from the PDF, not from this file. Also check whether the chosen rows are the 'estimated' (italic) kind in the Compendium; if a row is italic, mark it estimated and keep the UI caveat.",
+  "source": {
+    "id": "compendium_2011",
+    "citation": "Ainsworth BE, Haskell WL, Herrmann SD, et al. 2011 Compendium of Physical Activities: a second update of codes and MET values. Med Sci Sports Exerc. 2011;43(8):1575-1581.",
+    "pdf_url": "https://sites.google.com/site/compendiumofphysicalactivities/ (official site) ; copy used for reading: fitmum.ku.dk Compendium PDF",
+    "licence_note": "MET values are published numbers; cite the source in the UI. No text of the Compendium is copied."
+  },
+  "formulas": {
+    "gross_kcal_per_min": "MET * 3.5 * weight_kg / 200",
+    "net_kcal_per_min": "(MET - 1) * 3.5 * weight_kg / 200",
+    "session_kcal": "kcal_per_min * duration_min",
+    "live_counter": "kcal_so_far = kcal_per_min * (elapsed_ms_from_timestamps / 60000). Use timestamps (Date.now / performance.now deltas), never a setInterval tick counter.",
+    "rounding": "Display whole kcal. Keep full precision internally.",
+    "gross_vs_net": "Gross includes the resting energy the body spends anyway. Net is the extra energy caused by the exercise. Show gross as 'الإجمالي' and net as 'الزيادة بسبب التمرين'. Any energy-balance integration (daily target, EAT) must use NET to avoid double counting resting energy. Report in docs/STATE.md how the existing engine consumes cardio kcal; do not change the engine formulas (R4).",
+    "fat_grams": "NOT computed. The share of fat burned in a session depends on intensity, fitness and diet and cannot be derived honestly from MET alone. The UI shows kcal only. Do not convert kcal to grams of fat anywhere.",
+    "weight_source": "Use the weight logged in the user's profile. If missing, ask for it before showing an estimate."
+  },
+  "ui_caveat_ar": "ده تقدير تقريبي بيعتمد على جدول MET العلمي. الرقم الحقيقي بيختلف من شخص لشخص حسب الوزن واللياقة وطريقة الأداء.",
+  "intensity_levels": ["light", "moderate", "high"],
+  "activities": [
+    {
+      "id": "run",
+      "name_ar": "جري خارجي",
+      "levels": {
+        "light":    {"compendium_code": "12029", "met": 6.0, "basis_en": "Jogging, about 4 mph (6.4 km/h)", "ui_hint_ar": "جري خفيف، تقدر تتكلم وانت بتجري (حوالي 6.4 كم/س)"},
+        "moderate": {"compendium_code": "12030", "met": 8.3, "basis_en": "Running, about 5 mph (8 km/h)", "ui_hint_ar": "جري متوسط، الكلام بيبقى بالعافية (حوالي 8 كم/س)"},
+        "high":     {"compendium_code": "12050", "met": 9.8, "basis_en": "Running, about 6 mph (9.7 km/h)", "ui_hint_ar": "جري سريع، صعب تتكلم (حوالي 9.7 كم/س)"}
+      }
+    },
+    {
+      "id": "walk",
+      "name_ar": "مشي سريع / مشي بميل",
+      "levels": {
+        "light":    {"compendium_code": "17200", "met": 4.3, "basis_en": "Walking, level surface, brisk, about 3.5 mph (5.6 km/h)", "ui_hint_ar": "مشي سريع على أرض مستوية (حوالي 5.6 كم/س)"},
+        "moderate": {"compendium_code": "17210", "met": 5.3, "basis_en": "Walking uphill, 1-5% grade", "ui_hint_ar": "مشي بميل خفيف (من 1 لـ 5%)"},
+        "high":     {"compendium_code": "17211", "met": 8.0, "basis_en": "Walking uphill, 6-15% grade", "ui_hint_ar": "مشي بميل عالي (من 6 لـ 15%)"}
+      }
+    },
+    {
+      "id": "bike",
+      "name_ar": "دراجة ثابتة",
+      "levels": {
+        "light":    {"compendium_code": "02017", "met": 4.8, "basis_en": "Stationary cycling, 51-89 W", "ui_hint_ar": "مقاومة خفيفة، من غير ما تتعب (حوالي 51 لـ 89 وات)"},
+        "moderate": {"compendium_code": "02012", "met": 6.8, "basis_en": "Stationary cycling, 90-100 W", "ui_hint_ar": "مقاومة متوسطة (حوالي 90 لـ 100 وات)"},
+        "high":     {"compendium_code": "02013", "met": 8.8, "basis_en": "Stationary cycling, 101-160 W", "ui_hint_ar": "مقاومة عالية (حوالي 101 لـ 160 وات)"}
+      },
+      "note_ar": "لو الدراجة بتعرض الوات، اختار المستوى على حسبه. لو مش بتعرضه، اختار بالإحساس."
+    },
+    {
+      "id": "swim",
+      "name_ar": "سباحة حرة",
+      "levels": {
+        "light":    {"compendium_code": "18240", "met": 5.8, "basis_en": "Swimming, freestyle, light or moderate effort", "ui_hint_ar": "سباحة هادية بسرعة خفيفة"},
+        "moderate": {"compendium_code": "18290", "met": 8.3, "basis_en": "Swimming, freestyle, about 50 yd/min (about 46 m/min), moderate to vigorous", "ui_hint_ar": "سباحة بسرعة متوسطة (حوالي 46 متر في الدقيقة)"},
+        "high":     {"compendium_code": "18230", "met": 9.8, "basis_en": "Swimming, freestyle, vigorous effort", "ui_hint_ar": "سباحة سريعة ومجهدة"}
+      }
+    },
+    {
+      "id": "jumprope",
+      "name_ar": "نط الحبل",
+      "levels": {
+        "light":    {"compendium_code": "15552", "met": 8.8, "basis_en": "Rope jumping, slow, fewer than 100 skips/min", "ui_hint_ar": "نط بطيء، أقل من 100 نطة في الدقيقة"},
+        "moderate": {"compendium_code": "15551", "met": 11.8, "basis_en": "Rope jumping, moderate, 100-120 skips/min", "ui_hint_ar": "نط متوسط، من 100 لـ 120 نطة في الدقيقة"},
+        "high":     {"compendium_code": "15550", "met": 12.3, "basis_en": "Rope jumping, fast, 120-160 skips/min", "ui_hint_ar": "نط سريع، من 120 لـ 160 نطة في الدقيقة"}
+      }
+    },
+    {
+      "id": "rowing",
+      "name_ar": "جهاز التجديف",
+      "levels": {
+        "light":    {"compendium_code": "02071", "met": 4.8, "basis_en": "Rowing, stationary ergometer, light effort", "ui_hint_ar": "تجديف خفيف"},
+        "moderate": {"compendium_code": "02072", "met": 7.0, "basis_en": "Rowing, stationary ergometer, about 100 W", "ui_hint_ar": "تجديف متوسط (حوالي 100 وات)"},
+        "high":     {"compendium_code": "02073", "met": 8.5, "basis_en": "Rowing, stationary ergometer, about 150 W", "ui_hint_ar": "تجديف قوي (حوالي 150 وات)"}
+      }
+    }
+  ],
+  "worked_examples_70kg": [
+    {"activity": "run", "level": "light", "met": 6.0, "minutes": 30, "gross_kcal": 220.5, "net_kcal": 183.75, "calc": "6.0*3.5*70/200 = 7.35 kcal/min; *30 = 220.5. Net: 5.0*3.5*70/200 = 6.125; *30 = 183.75"},
+    {"activity": "bike", "level": "moderate", "met": 6.8, "minutes": 20, "gross_kcal": 166.6, "net_kcal": 142.1, "calc": "6.8*1.225 = 8.33 kcal/min; *20 = 166.6. Net: 5.8*1.225 = 7.105; *20 = 142.1"},
+    {"activity": "walk", "level": "moderate", "met": 5.3, "minutes": 45, "gross_kcal": 292.16, "net_kcal": 237.04, "calc": "5.3*1.225 = 6.4925 kcal/min; *45 = 292.16. Net: 4.3*1.225 = 5.2675; *45 = 237.04"},
+    {"activity": "jumprope", "level": "high", "met": 12.3, "minutes": 10, "gross_kcal": 150.68, "net_kcal": 138.43, "calc": "12.3*1.225 = 15.0675 kcal/min; *10 = 150.68. Net: 11.3*1.225 = 13.8425; *10 = 138.43"}
+  ],
+  "required_tests": [
+    "Each worked example above must be reproduced by the production function to within 0.01 kcal.",
+    "Every activity has exactly three levels and every level has a code, a MET and an Arabic hint.",
+    "kcal is monotonic in weight, in minutes and in level (light < moderate < high) for all activities except where the table itself is non-monotonic; if the table is non-monotonic, list it in docs/STATE.md instead of altering a value.",
+    "No UI string or test output mentions grams of fat."
+  ]
+}

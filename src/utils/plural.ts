@@ -13,6 +13,10 @@ export type PluralWordKey =
   | 'set'
   | 'meal'
   | 'calorie'
+  | 'resistance'
+  | 'cardio'
+  | 'step'
+  | 'mistake'
   | 'تمرين'
   | 'جدول'
   | 'يوم'
@@ -21,6 +25,10 @@ export type PluralWordKey =
   | 'مجموعة'
   | 'وجبة'
   | 'سعرة'
+  | 'مقاومة'
+  | 'كارديو'
+  | 'خطوة'
+  | 'خطأ'
   // Legacy aliases
   | 'ثانية'
   | 'تكرار'
@@ -129,6 +137,38 @@ export const ARABIC_PLURAL_TABLE: Record<string, PluralRuleForms> = {
     many: '{n} أسبوعًا',
     other: '{n} أسبوع',
   },
+  resistance: {
+    zero: '0 مقاومة',
+    one: '1 مقاومة',
+    two: '2 مقاومة',
+    few: '{n} مقاومة',
+    many: '{n} مقاومة',
+    other: '{n} مقاومة',
+  },
+  cardio: {
+    zero: '0 كارديو',
+    one: '1 كارديو',
+    two: '2 كارديو',
+    few: '{n} كارديو',
+    many: '{n} كارديو',
+    other: '{n} كارديو',
+  },
+  step: {
+    zero: 'لا توجد خطوات',
+    one: 'خطوة واحدة',
+    two: 'خطوتان',
+    few: '{n} خطوات',
+    many: '{n} خطوة',
+    other: '{n} خطوة',
+  },
+  mistake: {
+    zero: 'لا توجد أخطاء',
+    one: 'خطأ واحد',
+    two: 'خطآن',
+    few: '{n} أخطاء',
+    many: '{n} خطأ',
+    other: '{n} خطأ',
+  },
 }
 
 // Map Arabic keys to canonical English keys
@@ -144,6 +184,10 @@ const ALIASES: Record<string, string> = {
   ثانية: 'second',
   تكرار: 'rep',
   أسبوع: 'week',
+  مقاومة: 'resistance',
+  كارديو: 'cardio',
+  خطوة: 'step',
+  خطأ: 'mistake',
 }
 
 const arPluralRules = new Intl.PluralRules('ar')

@@ -1,0 +1,23 @@
+=== A1 PROPERTY TEST (RED FIRST - PRE-FIX CODE) ===
+Date: 2026-10-24
+Command: node scripts/test-a1-property.mjs
+
+🚀 Running A1 Property Test: 500 seeded random operations...
+
+Evaluating dataset: Owner's Real Data (5-day split + cardio)
+
+Evaluating dataset: Fixture Data (4-day split)
+
+📊 Total operations tested: 1000
+📊 Violations detected: 1272
+❌ Property test FAILED with 1272 violations:
+  1. [Op 0 in Owner's Real Data (5-day split + cardio)] COUNT_DISAGREEMENT: Home: {"resistance":5,"cardio":0,"total":5}, Training: {"resistance":4,"cardio":1,"total":5}
+  2. [Op 0 in Owner's Real Data (5-day split + cardio)] CALLOUT_MISMATCH: Home callout: false, Training callout: true (profile: 5, totalDays: 5)
+  3. [Op 1 in Owner's Real Data (5-day split + cardio)] COUNT_DISAGREEMENT: Home: {"resistance":4,"cardio":0,"total":4}, Training: {"resistance":3,"cardio":1,"total":4}
+  4. [Op 2 in Owner's Real Data (5-day split + cardio)] COUNT_DISAGREEMENT: Home: {"resistance":4,"cardio":0,"total":4}, Training: {"resistance":3,"cardio":1,"total":4}
+  5. [Op 2 in Owner's Real Data (5-day split + cardio)] CALLOUT_MISMATCH: Home callout: false, Training callout: true (profile: 4, totalDays: 4)
+  6. [Op 3 in Owner's Real Data (5-day split + cardio)] COUNT_DISAGREEMENT: Home: {"resistance":4,"cardio":0,"total":4}, Training: {"resistance":3,"cardio":1,"total":4}
+  7. [Op 3 in Owner's Real Data (5-day split + cardio)] CALLOUT_MISMATCH: Home callout: false, Training callout: true (profile: 4, totalDays: 4)
+  8. [Op 4 in Owner's Real Data (5-day split + cardio)] COUNT_DISAGREEMENT: Home: {"resistance":5,"cardio":0,"total":5}, Training: {"resistance":3,"cardio":2,"total":5}
+  9. [Op 5 in Owner's Real Data (5-day split + cardio)] COUNT_DISAGREEMENT: Home: {"resistance":4,"cardio":0,"total":4}, Training: {"resistance":3,"cardio":1,"total":4}
+  10. [Op 5 in Owner's Real Data (5-day split + cardio)] CALLOUT_MISMATCH: Home callout: false, Training callout: true (profile: 4, totalDays: 4)

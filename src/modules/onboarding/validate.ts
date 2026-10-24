@@ -45,7 +45,7 @@ export function validateGoals(goals: unknown, primaryGoal: unknown): string[] {
   ) {
     errors.push('حدد هدفك الأساسي')
   } else if (!goals.includes(primaryGoal)) {
-    errors.push('الهدف الأساسي يجب أن يكون من ضمن الأهداف المختارة')
+    errors.push('الهدف الأساسي لازم يكون من ضمن الأهداف المختارة')
   }
   return errors
 }
@@ -53,7 +53,7 @@ export function validateGoals(goals: unknown, primaryGoal: unknown): string[] {
 export function validateDays(days: unknown): string[] {
   const n = toInt(days)
   if (n === null || n < 2 || n > 6) {
-    return ['عدد أيام التمرين يجب أن يكون بين 2 و6 أيام في الأسبوع']
+    return ['عدد أيام التمرين لازم يكون بين 2 و6 أيام في الأسبوع']
   }
   return []
 }
@@ -74,7 +74,7 @@ export function validateMedical(medical: unknown): string[] {
     errors.push('وسوم الإصابات غير صالحة')
   }
   if (typeof notes !== 'string') {
-    errors.push('الملاحظات يجب أن تكون نصاً')
+    errors.push('الملاحظات لازم تكون نص')
   }
   if (
     hasIssues === true &&
@@ -106,15 +106,15 @@ export function validateBody(body: unknown): string[] {
   }
   const ageN = toInt(age)
   if (ageN === null || ageN < 10 || ageN > 90) {
-    errors.push('العمر يجب أن يكون بين 10 و90 سنة')
+    errors.push('العمر لازم يكون بين 10 و90 سنة')
   }
   const heightN = toNum(heightCm)
   if (heightN === null || heightN < 100 || heightN > 250) {
-    errors.push('الطول يجب أن يكون بين 100 و250 سم')
+    errors.push('الطول لازم يكون بين 100 و250 سم')
   }
   const weightN = toNum(weightKg)
   if (weightN === null || weightN < 30 || weightN > 300) {
-    errors.push('الوزن يجب أن يكون بين 30 و300 كجم')
+    errors.push('الوزن لازم يكون بين 30 و300 كجم')
   }
   if (
     typeof activityLevel !== 'string' ||

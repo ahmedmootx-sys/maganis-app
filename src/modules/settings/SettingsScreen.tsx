@@ -519,8 +519,8 @@ export function SettingsScreen({
                   lineHeight: 1.5,
                 }}
               >
-                يمكنك تصميم برنامج تدريبي علمي مخصص لحالتك وإصاباتك بالاستعانة
-                بمرشد الذكاء الاصطناعي، أو استيراد جدول معد مسبقاً.
+                تقدر تصمم برنامج تمرين علمي مخصص لحالتك وإصاباتك بمساعدة
+                مرشد الذكاء الاصطناعي، أو تنزل جدول جاهز.
               </div>
               <Button variant="secondary" onClick={onOpenAiDesigner} fullWidth>
                 <Icon name="sparkles" size={16} />

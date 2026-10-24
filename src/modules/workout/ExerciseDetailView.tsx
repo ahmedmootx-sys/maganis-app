@@ -38,6 +38,11 @@ import {
   Sheet,
 } from '../../ui/index.ts'
 import { fmtRange, fmtSets, fmtReps } from '../../utils/bidi.ts'
+import { selectEffectiveExercise } from './exerciseOverrides.ts'
+import { ExerciseEditSheet } from './ExerciseEditSheet.tsx'
+import { CopyExerciseNameButton } from './CopyExerciseNameButton.tsx'
+import { VideoPlayer } from './VideoPlayer.tsx'
+import { Toast } from '../../components/Toast.tsx'
 
 interface AuthoredExerciseContent {
   whyThisExerciseAr?: string
@@ -130,7 +135,15 @@ export function ExerciseDetailView({
   onSwapExercise,
   onNavigateSettings,
 }: ExerciseDetailViewProps) {
-  const [activeTab, setActiveTab] = useState<TabType>('understanding')
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    if (typeof window !== 'undefined') {
+      const match = window.location.hash.match(/[?&]tab=([^&]+)/)
+      if (match && match[1]) {
+        return match[1] as TabType
+      }
+    }
+    return 'understanding'
+  })
   const [swapModalConfirm, setSwapModalConfirm] = useState<{
     isOpen: boolean
     newExerciseId: string
@@ -139,9 +152,18 @@ export function ExerciseDetailView({
   const [showSwapModal, setShowSwapModal] = useState(false)
 
   // Find exercise in unified library or use passed object
-  const exercise = useMemo(() => {
+  const rawExercise = useMemo(() => {
     return passedExercise || getExerciseById(exerciseId) || null
   }, [passedExercise, exerciseId])
+
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [showEditSheet, setShowEditSheet] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
+
+  const exercise = useMemo(() => {
+    if (!rawExercise) return null
+    return selectEffectiveExercise(rawExercise as Exercise)
+  }, [rawExercise, refreshKey])
 
   const limitationDetails = useMemo(() => {
     return getExerciseDetailsWithLimitations(exercise?.id || exerciseId)
@@ -495,22 +517,77 @@ export function ExerciseDetailView({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '4px',
+            gap: '8px',
             width: '100%',
           }}
         >
-          <h1
+          <div
             style={{
-              margin: 0,
-              fontSize: '22px',
-              fontWeight: 800,
-              lineHeight: 1.5,
-              textWrap: 'balance',
-              color: 'var(--color-text)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '8px',
+              flexWrap: 'wrap',
             }}
           >
-            {nameAr}
-          </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: '22px',
+                  fontWeight: 800,
+                  lineHeight: 1.5,
+                  textWrap: 'balance',
+                  color: 'var(--color-text)',
+                }}
+              >
+                {nameAr}
+              </h1>
+              {exercise.isModified && (
+                <span
+                  data-testid="badge-modified"
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius-control)',
+                    backgroundColor: 'var(--color-accent-tint)',
+                    color: 'var(--color-accent-text)',
+                    border: '1px solid var(--color-accent)',
+                  }}
+                >
+                  معدّل
+                </span>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CopyExerciseNameButton
+                nameAr={nameAr}
+                nameEn={nameEn}
+                onToast={(msg) => setToastMsg(msg)}
+              />
+              <button
+                type="button"
+                data-testid="edit-exercise-btn"
+                onClick={() => setShowEditSheet(true)}
+                style={{
+                  minHeight: 'var(--touch-target-min)',
+                  padding: 'var(--space-2) var(--space-3)',
+                  borderRadius: 'var(--radius-control)',
+                  border: '1px solid var(--color-divider)',
+                  backgroundColor: 'var(--color-surface)',
+                  color: 'var(--color-text)',
+                  fontSize: 'var(--font-size-sm)',
+                  fontWeight: 'var(--font-weight-semibold)',
+                  cursor: 'pointer',
+                }}
+              >
+                تعديل التمرين
+              </button>
+            </div>
+          </div>
+
           {nameEn && (
             <div style={{ fontSize: '13px', color: 'var(--color-text-2)' }}>
               <bdi dir="ltr">{nameEn}</bdi>
@@ -550,6 +627,19 @@ export function ExerciseDetailView({
           </span>
           {exercise.targetSubMuscleAr && (
             <span className="chip">{exercise.targetSubMuscleAr}</span>
+          )}
+          {('isCustom' in exercise && Boolean((exercise as { isCustom?: boolean }).isCustom)) && (
+            <span
+              className="chip chip--custom"
+              style={{
+                fontWeight: 700,
+                background: 'var(--color-surface-2)',
+                color: 'var(--color-text)',
+                border: '1px solid var(--color-divider)',
+              }}
+            >
+              أضفته أنت
+            </span>
           )}
           {exercise.archived && (
             <div
@@ -665,8 +755,57 @@ export function ExerciseDetailView({
           </Callout>
         )}
 
-        {/* Visual Media Card (Part 1.4: 180x180 centered GIF or Start/Peak frames, or hidden if none) */}
-        <ExerciseMediaCard exercise={exercise} />
+        {/* Visual Media Card & No Image Placeholder (Task G5-B4) */}
+        <ExerciseMediaCard
+          exercise={exercise}
+          showPlaceholderIfEmpty
+          onToast={(msg) => setToastMsg(msg)}
+          onAddImage={() => setShowEditSheet(true)}
+          onAddVideo={() => setShowEditSheet(true)}
+        />
+
+        {/* Video Player Section (Task G5-B3) */}
+        <VideoPlayer
+          videoUrl={exercise.videoUrl}
+          exerciseName={nameAr}
+          onAddVideo={() => setShowEditSheet(true)}
+        />
+
+        {/* Personal Note Card if present */}
+        {exercise.personalNote && (
+          <div
+            data-testid="exercise-personal-note-card"
+            style={{
+              padding: 'var(--space-3)',
+              borderRadius: 'var(--radius-card)',
+              backgroundColor: 'var(--color-surface)',
+              border: '1px solid var(--color-divider)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-1)',
+            }}
+          >
+            <span
+              style={{
+                fontSize: 'var(--font-size-xs)',
+                fontWeight: 'bold',
+                color: 'var(--color-accent-text)',
+              }}
+            >
+              ملاحظتك الشخصية:
+            </span>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 'var(--font-size-sm)',
+                color: 'var(--color-text)',
+                whiteSpace: 'pre-wrap',
+              }}
+            >
+              {exercise.personalNote}
+            </p>
+          </div>
+        )}
 
         {/* Sticky Tabs Header (44px height, container inherits border radius, no square dark backdrop) */}
         <div
@@ -985,9 +1124,9 @@ export function ExerciseDetailView({
                       lineHeight: 1.6,
                     }}
                   >
-                    نعمل على توثيق التحليل الحركي والبيوميكانيكي لهذا التمرين
-                    بدقة علمية معتمدة. يمكنك الاطلاع على خطوات التنفيذ الفنية
-                    وإرشادات السلامة في تبويب «الأداء».
+                    شغالين على توثيق التحليل الحركي للتمرين ده بدقة علمية.
+                    تقدر تشوف خطوات الأداء الفنية وإرشادات الأمان في تبويب
+                    «الأداء».
                   </p>
                 </div>
               </Card>
@@ -1983,6 +2122,20 @@ export function ExerciseDetailView({
             </div>
           </div>
         </Sheet>
+      )}
+
+      {showEditSheet && (
+        <ExerciseEditSheet
+          isOpen={showEditSheet}
+          onClose={() => setShowEditSheet(false)}
+          exercise={exercise}
+          onSaved={() => setRefreshKey((k) => k + 1)}
+          onResetOriginal={() => setRefreshKey((k) => k + 1)}
+        />
+      )}
+
+      {toastMsg && (
+        <Toast message={toastMsg} onDismiss={() => setToastMsg('')} />
       )}
     </div>
   )

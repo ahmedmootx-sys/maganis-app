@@ -11,7 +11,7 @@ export const IconSprite: React.FC = () => {
         position: 'absolute',
         width: 0,
         height: 0,
-        overflow: 'hidden',
+        overflow: 'hidden' /* clip-ok: visual element boundary */,
       }}
       aria-hidden="true"
     >

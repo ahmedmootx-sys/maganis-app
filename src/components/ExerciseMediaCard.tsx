@@ -2,21 +2,32 @@ import { useState, useEffect } from 'react'
 import type { Exercise } from '../modules/shared/types.ts'
 import { SafeImage } from './SafeImage.tsx'
 import { assetUrl } from '../utils/assetUrl.ts'
+import { NoImageExercisePlaceholder } from '../modules/workout/NoImageExercisePlaceholder.tsx'
 
 export interface ExerciseMediaCardProps {
   exercise: Exercise | Partial<Exercise>
+  showPlaceholderIfEmpty?: boolean
+  onToast?: (message: string) => void
+  onAddImage?: () => void
+  onAddVideo?: () => void
 }
 
 /**
- * ExerciseMediaCard (Part 1.4 Consolidation)
+ * ExerciseMediaCard (Part 1.4 Consolidation & Task G5-B4)
  * - GIF (Gym Visual): 180 CSS px square native size, centered in a card. Never stretched.
  * - Exact attribution: «© Gym visual — https://gymvisual.com/» under every GIF.
  * - Tap toggles GIF and still thumbnail; prefers-reduced-motion starts as still.
  * - No GIF and frames.display: simple «بداية / نهاية» toggle.
- * - No GIF and no frames: NO media block at all (no empty box, no text).
+ * - No GIF, frames or custom media: renders NoImageExercisePlaceholder if showPlaceholderIfEmpty is true.
  * - SafeImage used for all image tags.
  */
-export function ExerciseMediaCard({ exercise }: ExerciseMediaCardProps) {
+export function ExerciseMediaCard({
+  exercise,
+  showPlaceholderIfEmpty = false,
+  onToast,
+  onAddImage,
+  onAddVideo,
+}: ExerciseMediaCardProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [frameStep, setFrameStep] = useState<'start' | 'peak'>('start')
 
@@ -54,8 +65,19 @@ export function ExerciseMediaCard({ exercise }: ExerciseMediaCardProps) {
       customMediaUrl.startsWith('media/')),
   )
 
-  // If no GIF, no frames, and no custom media -> render NOTHING per Part 1.4
+  // If no GIF, no frames, and no custom media -> render placeholder if requested, or null
   if (!hasExactGif && !hasExactFrames && !hasCustomMedia) {
+    if (showPlaceholderIfEmpty) {
+      return (
+        <NoImageExercisePlaceholder
+          nameAr={exercise.nameAr}
+          nameEn={exercise.nameEn || exercise.name}
+          onToast={onToast}
+          onAddImage={onAddImage}
+          onAddVideo={onAddVideo}
+        />
+      )
+    }
     return null
   }
 
@@ -104,8 +126,8 @@ export function ExerciseMediaCard({ exercise }: ExerciseMediaCardProps) {
               maxWidth: '180px',
               maxHeight: '180px',
               borderRadius: '12px',
-              overflow: 'hidden',
-              background: '#0b0c0e',
+              overflow: 'hidden' /* clip-ok: visual element boundary */,
+              background: 'var(--color-surface-2)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -141,7 +163,6 @@ export function ExerciseMediaCard({ exercise }: ExerciseMediaCardProps) {
             color: 'var(--color-text-2)',
             marginTop: '8px',
             textAlign: 'center',
-            opacity: 0.85,
           }}
         >
           © Gym visual — https://gymvisual.com/
@@ -181,7 +202,7 @@ export function ExerciseMediaCard({ exercise }: ExerciseMediaCardProps) {
             maxWidth: '180px',
             maxHeight: '180px',
             borderRadius: '12px',
-            overflow: 'hidden',
+            overflow: 'hidden' /* clip-ok: visual element boundary */,
             background: '#0b0c0e',
             display: 'flex',
             alignItems: 'center',
@@ -273,8 +294,8 @@ export function ExerciseMediaCard({ exercise }: ExerciseMediaCardProps) {
             width: '180px',
             height: '180px',
             borderRadius: '12px',
-            overflow: 'hidden',
-            background: '#0b0c0e',
+            overflow: 'hidden' /* clip-ok: visual element boundary */,
+            background: 'var(--color-surface-2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

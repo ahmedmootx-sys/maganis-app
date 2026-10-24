@@ -1,0 +1,39 @@
+====================================================
+            GATE: BANNED PATTERNS AUDIT            
+====================================================
+Total Arabic UI/Catalog strings examined: 13999
+Banned pattern violations found: 551
+
+Violations detail:
+ - [Formal muscle name: الصدرية الكبرى] in src/data/atlas_muscles.json: "الصدرية الكبرى – الرأس الترقوي (الصدر العلوي)"
+ - [Formal muscle name: الصدرية الكبرى] in src/data/atlas_muscles.json: "الصدرية الكبرى، الجزء القصي"
+ - [Formal muscle name: الدالية] in src/data/atlas_muscles.json: "الدالية الأمامية"
+ - [Formal muscle name: الدالية] in src/data/atlas_muscles.json: "الدالية الجانبية"
+ - [Formal muscle name: الدالية] in src/data/atlas_muscles.json: "الدالية الخلفية"
+ - [Formal muscle name: المستقيمة الفخذية] in src/data/atlas_muscles.json: "المستقيمة الفخذية"
+ - [Formal muscle name: الدالية] in src/data/exercise-content.json: "التركيز الأساسي على الحزمة القصية الضلعية (Sternal-costal head) للصدرية الكبرى، مع عمل الد..."
+ - [Formal muscle name: الدالية] in src/data/exercise-content.json: "الحزمة الترقوية (Clavicular head) للصدرية الكبرى والدالية الأمامية."
+ - [Formal muscle name: الدالية] in src/data/exercise-content.json: "الدالية الأمامية (Anterior Deltoid)، الدالية الجانبية، والترايسبس، وأعلى الترابيس."
+ - [Formal muscle name: الرباعية] in src/data/fixtures/maganis-program-prog-ahmed-upper-lower-5d.json: "الفخذ الأمامي (العضلة الرباعية)"
+ - [Formal muscle name: الرباعية] in src/data/fixtures/maganis-program-prog-ahmed-upper-lower-5d.json: "الفخذ الأمامي (العضلة الرباعية)"
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "تمرين ضغط صدري بالبار يستهدف عضلات الصدر (الصدرية الكبرى) بمدى حركي كامل وتحكم لتحفيز البن..."
+ - [Formal muscle name: الدالية] in src/data/legacy-exercises.json: "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدا..."
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدا..."
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "عضلات الصدر (الصدرية الكبرى)"
+ - [Formal muscle name: الدالية] in src/data/legacy-exercises.json: "عضلات الكتف (الدالية)"
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "تمرين ضغط صدري مائل بالبار (بنش عالي) يستهدف عضلات الصدر (الصدرية الكبرى) بمدى حركي كامل و..."
+ - [Formal muscle name: الدالية] in src/data/legacy-exercises.json: "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدا..."
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدا..."
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "عضلات الصدر (الصدرية الكبرى)"
+ - [Formal muscle name: الدالية] in src/data/legacy-exercises.json: "عضلات الكتف (الدالية)"
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "تمرين ضغط صدري مقلوب بالبار (بنش سفلي) يستهدف عضلات الصدر (الصدرية الكبرى) بمدى حركي كامل ..."
+ - [Formal muscle name: الدالية] in src/data/legacy-exercises.json: "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدا..."
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدا..."
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "عضلات الصدر (الصدرية الكبرى)"
+ - [Formal muscle name: الدالية] in src/data/legacy-exercises.json: "عضلات الكتف (الدالية)"
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "تمرين ضغط صدري بالبار قبضة واسعة يستهدف عضلات الصدر (الصدرية الكبرى) بمدى حركي كامل وتحكم ..."
+ - [Formal muscle name: الدالية] in src/data/legacy-exercises.json: "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدا..."
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "تطوير القوة العضلية والتحمل العضلي لعضلات عضلات الصدر (الصدرية الكبرى) و عضلات الكتف (الدا..."
+ - [Formal muscle name: الصدرية الكبرى] in src/data/legacy-exercises.json: "عضلات الصدر (الصدرية الكبرى)"
+ ... and 521 more.
+====================================================

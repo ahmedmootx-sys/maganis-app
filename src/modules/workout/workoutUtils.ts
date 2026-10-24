@@ -186,8 +186,8 @@ export async function shareRoutineFile(
       ) {
         await navigator.share({
           files: [file],
-          title: `جدول تمارين Maganis: ${title}`,
-          text: `إليك جدول تمارين (${title}) من تطبيق Maganis — يمكنك استيراده في التطبيق مباشرة!`,
+          title: `جدول تمرين مجانس: ${title}`,
+          text: `جدول تمرين (${title}) من تطبيق مجانس — تقدر تفتحه في التطبيق علطول!`,
         })
         return { shared: true, method: 'native' }
       }

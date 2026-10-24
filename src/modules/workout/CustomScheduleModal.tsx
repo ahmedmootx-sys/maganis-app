@@ -118,7 +118,7 @@ export function CustomScheduleModal({
         gridTemplateRows: 'auto 1fr auto',
         height: '100dvh',
         maxHeight: '100dvh',
-        overflow: 'hidden',
+        overflow: 'hidden' /* clip-ok: modal sheet scroller boundary */,
       }}
     >
       {/* TopBar with Back */}
@@ -136,7 +136,7 @@ export function CustomScheduleModal({
         className="screen-content custom-schedule-content"
         style={{
           overflowY: 'auto',
-          overflowX: 'hidden',
+          overflowX: 'hidden' /* clip-ok: modal sheet scroller boundary */,
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
@@ -414,10 +414,9 @@ export function CustomScheduleModal({
                 ))}
             </div>
 
-            {/* Callout explaining lock */}
             <Callout variant="info" title="قفل وحماية الجدول">
-              سيتم قفل الجدول التدريبي تلقائياً لحمايته من أي استبدال عشوائي أو
-              توليد آلي. يمكنك بعد ذلك إضافة وتعديل تمارين كل يوم بكل حرية.
+              الجدول هيتقفل تلقائي عشان نحميه من أي تبديل عشوائي أو توليد
+              آلي. وتقدر بعد كده تضيف وتعدّل تمارين كل يوم براحتك خالص.
             </Callout>
           </section>
         )}
@@ -448,7 +447,7 @@ export function CustomScheduleModal({
               textAlign: 'center',
               fontWeight: 600,
               whiteSpace: 'nowrap',
-              overflow: 'hidden',
+              overflow: 'hidden' /* clip-ok: text ellipsis truncation */,
               textOverflow: 'ellipsis',
               lineHeight: '1.2',
             }}

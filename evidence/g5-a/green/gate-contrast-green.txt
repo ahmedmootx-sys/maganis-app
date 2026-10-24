@@ -1,0 +1,4 @@
+﻿≡ƒÜÇ Running Gate: gate-contrast (WCAG AA 4.5:1 Contrast Contract)...
+
+Checked 208 controls across routes and themes.
+Γ£ô gate-contrast passed cleanly! All controls pass WCAG AA contrast >= 4.5:1.

@@ -15,7 +15,14 @@ import {
 import { sanitizeInput } from '../../lib/sanitizer.ts'
 import { MUSCLE_ATLAS } from './muscleAtlasData.ts'
 import { resolveExerciseMuscles } from './legacyMuscleMapper.ts'
-import { TopBar, Select, FileField, Button, Segmented } from '../../ui/index.ts'
+import {
+  TopBar,
+  Select,
+  FileField,
+  Button,
+  Segmented,
+  ConfirmSheet,
+} from '../../ui/index.ts'
 import { IconClose } from '../../components/Icons.tsx'
 import muscleNamesData from '../../data/muscle-names.json'
 import {
@@ -23,6 +30,8 @@ import {
   getMuscleGroup,
   type MuscleNameEntry,
 } from './muscleNames.ts'
+import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
+import { plural } from '../../utils/plural.ts'
 
 const MUSCLE_SELECT_OPTIONS = (
   muscleNamesData.muscles as MuscleNameEntry[]
@@ -58,24 +67,19 @@ const EQUIPMENT_OPTIONS = Object.entries(EQUIPMENT_LABELS) as [
 ][]
 
 const MEASUREMENT_SEGMENTED_OPTIONS: {
-  value: MeasurementType
+  value: 'reps' | 'duration'
   labelAr: string
   helperAr: string
 }[] = [
   {
     value: 'reps',
-    labelAr: 'بالعدّات والتكرار',
+    labelAr: 'تكرارات',
     helperAr: 'حساب التمرين بعدد المجموعات والتكرارات لكل مجموعة',
   },
   {
     value: 'duration',
-    labelAr: 'بالوقت',
+    labelAr: 'وقت',
     helperAr: 'حساب التمرين بمدة الثبات بالثواني أو الدقائق (مثل البلانك)',
-  },
-  {
-    value: 'bodyweight',
-    labelAr: 'بوزن الجسم',
-    helperAr: 'تمرين يعتمد كلياً على ثقل الجسم ومقاومة الجاذبية',
   },
 ]
 
@@ -93,7 +97,7 @@ function AutoGrowTextarea({
   value,
   onChange,
   placeholder,
-  minRows = 3,
+  minRows = 4,
   'aria-label': ariaLabel,
 }: {
   id?: string
@@ -109,7 +113,7 @@ function AutoGrowTextarea({
     const el = textareaRef.current
     if (!el) return
     el.style.height = 'auto'
-    el.style.height = `${Math.max(el.scrollHeight, minRows * 24)}px`
+    el.style.height = `${Math.max(el.scrollHeight, minRows * 26)}px`
   }, [minRows])
 
   useEffect(() => {
@@ -131,13 +135,15 @@ function AutoGrowTextarea({
       className="auto-grow-textarea field-input"
       style={{
         width: '100%',
-        minHeight: `${minRows * 28}px`,
+        minHeight: `${minRows * 26}px`,
         resize: 'none',
-        overflow: 'hidden',
+        overflow: 'hidden' /* clip-ok: auto-growing textarea */,
         lineHeight: '1.5',
         boxSizing: 'border-box',
         padding: '10px 12px',
         textAlign: 'start',
+        whiteSpace: 'pre-wrap',
+        overflowWrap: 'break-word',
       }}
     />
   )
@@ -153,19 +159,19 @@ export function CustomExerciseBuilder({
   const [descriptionAr, setDescriptionAr] = useState(
     initialExercise?.descriptionAr ?? '',
   )
-  const [category, setCategory] = useState<MuscleGroup>(
-    initialExercise?.category ?? 'chest',
+  const [category, setCategory] = useState<MuscleGroup | ''>(
+    initialExercise?.category ?? '',
   )
-  const [difficulty, setDifficulty] = useState<Difficulty>(
-    initialExercise?.difficulty ?? 'beginner',
+  const [difficulty, setDifficulty] = useState<Difficulty | ''>(
+    initialExercise?.difficulty ?? '',
   )
-  const [equipment, setEquipment] = useState<Equipment>(
-    initialExercise?.equipment ?? 'bodyweight',
+  const [equipment, setEquipment] = useState<Equipment | ''>(
+    initialExercise?.equipment ?? '',
   )
-  const [measurementType, setMeasurementType] = useState<MeasurementType>(
+  const [measurementType, setMeasurementType] = useState<'reps' | 'duration'>(
     () => {
       const mt = initialExercise?.measurementType
-      return mt === 'duration' || mt === 'bodyweight' ? mt : 'reps'
+      return mt === 'duration' ? 'duration' : 'reps'
     },
   )
   const [imageUrl, setImageUrl] = useState(initialExercise?.imageUrl ?? '')
@@ -179,10 +185,9 @@ export function CustomExerciseBuilder({
   }, [initialExercise])
 
   const [primaryMuscleIds, setPrimaryMuscleIds] = useState<string[]>(() => {
-    const p = initialResolved.muscles
+    return initialResolved.muscles
       .filter((m) => m.role === 'primary')
       .map((m) => m.id)
-    return p.length > 0 ? p : ['pec_clavicular']
   })
 
   const [secondaryMuscleIds, setSecondaryMuscleIds] = useState<string[]>(() => {
@@ -200,13 +205,66 @@ export function CustomExerciseBuilder({
   )
   const [breathing, setBreathing] = useState(initialExercise?.breathing ?? '')
   const [error, setError] = useState('')
+  const [mediaError, setMediaError] = useState('')
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false)
+
+  // Dirty detection for cancel confirmation
+  const isDirty = useMemo(() => {
+    if (initialExercise) {
+      return (
+        nameAr !== (initialExercise.nameAr ?? '') ||
+        nameEn !== (initialExercise.name ?? '') ||
+        category !== (initialExercise.category ?? '') ||
+        difficulty !== (initialExercise.difficulty ?? '') ||
+        equipment !== (initialExercise.equipment ?? '') ||
+        imageUrl !== (initialExercise.imageUrl ?? '')
+      )
+    }
+    return Boolean(
+      nameAr ||
+        nameEn ||
+        descriptionAr ||
+        category ||
+        difficulty ||
+        equipment ||
+        primaryMuscleIds.length > 0 ||
+        secondaryMuscleIds.length > 0 ||
+        imageUrl ||
+        mechanicsAr ||
+        benefitAr ||
+        howToStepsRaw ||
+        commonMistakesRaw ||
+        breathing,
+    )
+  }, [
+    initialExercise,
+    nameAr,
+    nameEn,
+    descriptionAr,
+    category,
+    difficulty,
+    equipment,
+    primaryMuscleIds,
+    secondaryMuscleIds,
+    imageUrl,
+    mechanicsAr,
+    benefitAr,
+    howToStepsRaw,
+    commonMistakesRaw,
+    breathing,
+  ])
+
+  function handleCancelClick() {
+    if (isDirty) {
+      setShowCancelConfirm(true)
+    } else {
+      onCancel?.()
+    }
+  }
 
   function handleTogglePrimary(id: string) {
     if (primaryMuscleIds.includes(id)) {
-      if (primaryMuscleIds.length === 1) {
-        setError('يجب تحديد عضلة رئيسية واحدة على الأقل')
-        return
-      }
       setPrimaryMuscleIds((prev) => prev.filter((m) => m !== id))
     } else {
       setError('')
@@ -232,12 +290,99 @@ export function CustomExerciseBuilder({
     ]
   }, [primaryMuscleIds, secondaryMuscleIds])
 
+  // Count items for steps and mistakes
+  const stepsList = useMemo(() => {
+    return howToStepsRaw
+      .split('\n')
+      .map((s) => sanitizeInput(s))
+      .filter((s) => s.length > 0)
+  }, [howToStepsRaw])
+
+  const mistakesList = useMemo(() => {
+    return commonMistakesRaw
+      .split('\n')
+      .map((s) => sanitizeInput(s))
+      .filter((s) => s.length > 0)
+  }, [commonMistakesRaw])
+
+  const trimmedName = sanitizeInput(nameAr)
+  const canSave = Boolean(trimmedName && category && primaryMuscleIds.length > 0)
+
+  const saveDisabledReason = useMemo(() => {
+    if (!trimmedName) return 'أدخل اسم التمرين للحفظ'
+    if (!category) return 'اختر المجموعة العضلية للحفظ'
+    if (primaryMuscleIds.length === 0)
+      return 'اختر عضلة رئيسية واحدة على الأقل للحفظ'
+    return ''
+  }, [trimmedName, category, primaryMuscleIds])
+
+  async function handleSaveCopyLocally() {
+    if (!imageUrl.startsWith('https://')) return
+    setIsDownloading(true)
+    setMediaError('')
+    try {
+      const res = await fetch(imageUrl)
+      if (!res.ok) throw new Error('Fetch failed')
+      const blob = await res.blob()
+      if (blob.size > 3 * 1024 * 1024) {
+        setMediaError('حجم الصورة/GIF يجب ألا يتجاوز 3 ميجابايت')
+        setIsDownloading(false)
+        return
+      }
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImageUrl(reader.result as string)
+        setIsDownloading(false)
+      }
+      reader.onerror = () => {
+        setMediaError('تعذر قراءة الصورة بعد التحميل')
+        setIsDownloading(false)
+      }
+      reader.readAsDataURL(blob)
+    } catch {
+      setMediaError('تعذر حفظ نسخة محلية بسبب قيود الموقع الخارجي (CORS)')
+      setIsDownloading(false)
+    }
+  }
+
+  function proceedSave() {
+    const targetNames = currentMuscles.map(
+      (m) => MUSCLE_ATLAS[m.id]?.nameAr || m.id,
+    )
+
+    const exercise: CustomExercise = {
+      id: initialExercise?.id || uniqueId(),
+      name: sanitizeInput(nameEn) || undefined,
+      nameAr: trimmedName,
+      descriptionAr: sanitizeInput(descriptionAr),
+      category: category as MuscleGroup,
+      difficulty: (difficulty as Difficulty) || 'beginner',
+      equipment: (equipment as Equipment) || 'bodyweight',
+      measurementType: measurementType as MeasurementType,
+      imageUrl: sanitizeInput(imageUrl) || undefined,
+      mechanicsAr: sanitizeInput(mechanicsAr) || undefined,
+      muscles: currentMuscles,
+      targetMusclesAr: targetNames,
+      benefitAr: sanitizeInput(benefitAr) || undefined,
+      howToStepsAr: stepsList.length > 0 ? stepsList : undefined,
+      commonMistakes: mistakesList.length > 0 ? mistakesList : undefined,
+      breathing: sanitizeInput(breathing) || undefined,
+      isCustom: true,
+    }
+
+    onSave(exercise)
+  }
+
   function handleSubmit(e?: React.FormEvent) {
     e?.preventDefault()
 
-    const trimmed = sanitizeInput(nameAr)
-    if (!trimmed) {
+    if (!trimmedName) {
       setError('اسم التمرين مطلوب')
+      return
+    }
+
+    if (!category) {
+      setError('يرجى اختيار المجموعة العضلية')
       return
     }
 
@@ -246,46 +391,33 @@ export function CustomExerciseBuilder({
       return
     }
 
-    const steps = howToStepsRaw
-      .split('\n')
-      .map((s) => sanitizeInput(s))
-      .filter((s) => s.length > 0)
-
-    const mistakes = commonMistakesRaw
-      .split('\n')
-      .map((s) => sanitizeInput(s))
-      .filter((s) => s.length > 0)
-
-    const targetNames = currentMuscles.map(
-      (m) => MUSCLE_ATLAS[m.id]?.nameAr || m.id,
-    )
-
-    const exercise: CustomExercise = {
-      id: initialExercise?.id || uniqueId(),
-      name: sanitizeInput(nameEn) || undefined,
-      nameAr: trimmed,
-      descriptionAr: sanitizeInput(descriptionAr),
-      category,
-      difficulty,
-      equipment,
-      measurementType,
-      imageUrl: sanitizeInput(imageUrl) || undefined,
-      mechanicsAr: sanitizeInput(mechanicsAr) || undefined,
-      muscles: currentMuscles,
-      targetMusclesAr: targetNames,
-      benefitAr: sanitizeInput(benefitAr) || undefined,
-      howToStepsAr: steps.length > 0 ? steps : undefined,
-      commonMistakes: mistakes.length > 0 ? mistakes : undefined,
-      breathing: sanitizeInput(breathing) || undefined,
-      isCustom: true,
+    // Media link validation
+    if (imageUrl && !imageUrl.startsWith('data:')) {
+      if (!imageUrl.startsWith('https://')) {
+        setError('لازم رابط الصورة يبدأ بـ https:// عشان يفتح بأمان')
+        return
+      }
+      // Test that image loads before saving
+      const img = new Image()
+      img.onload = () => {
+        proceedSave()
+      }
+      img.onerror = () => {
+        setError('تعذر تحميل الصورة من الرابط المحدد. يرجى التحقق من الرابط.')
+      }
+      img.src = imageUrl
+      return
     }
 
-    onSave(exercise)
+    proceedSave()
   }
 
   const selectedMeasurement = MEASUREMENT_SEGMENTED_OPTIONS.find(
     (m) => m.value === measurementType,
   )
+
+  const isRemoteUrl =
+    imageUrl.startsWith('http://') || imageUrl.startsWith('https://')
 
   return (
     <div
@@ -307,7 +439,7 @@ export function CustomExerciseBuilder({
         title={
           initialExercise ? 'تعديل التمرين المخصص' : 'إضافة تمرين مخصص جديد'
         }
-        onBack={onCancel}
+        onBack={handleCancelClick}
       />
 
       <form
@@ -318,7 +450,7 @@ export function CustomExerciseBuilder({
           display: 'flex',
           flexDirection: 'column',
           gap: '20px',
-          padding: '16px 16px 100px',
+          padding: '16px 16px 120px',
           maxWidth: '720px',
           margin: '0 auto',
           width: '100%',
@@ -392,7 +524,7 @@ export function CustomExerciseBuilder({
                 placeholder="شرح مختصر للتمرين ووظيفته الحركية..."
                 value={descriptionAr}
                 onChange={(e) => setDescriptionAr(e.target.value)}
-                minRows={2}
+                minRows={4}
               />
             </div>
           </div>
@@ -418,7 +550,7 @@ export function CustomExerciseBuilder({
                 label: opt.labelAr,
               }))}
               value={measurementType}
-              onChange={(val) => setMeasurementType(val as MeasurementType)}
+              onChange={(val) => setMeasurementType(val as 'reps' | 'duration')}
             />
 
             {selectedMeasurement && (
@@ -436,7 +568,7 @@ export function CustomExerciseBuilder({
           </div>
         </section>
 
-        {/* Section 3: التصنيف */}
+        {/* Section 3: التصنيف والمعدات */}
         <section className="screen-section">
           <div className="section-title">
             <span>التصنيف والمعدات</span>
@@ -453,9 +585,13 @@ export function CustomExerciseBuilder({
             <div className="field">
               <Select
                 id="ce-category"
-                label="المجموعة العضلية"
+                label="المجموعة العضلية *"
+                placeholder="اختر"
                 value={category}
-                onChange={(val) => setCategory(val as MuscleGroup)}
+                onChange={(val) => {
+                  setCategory(val as MuscleGroup)
+                  setError('')
+                }}
                 options={MUSCLE_OPTIONS.map(([value, label]) => ({
                   value,
                   labelAr: label,
@@ -468,6 +604,7 @@ export function CustomExerciseBuilder({
               <Select
                 id="ce-difficulty"
                 label="المستوى"
+                placeholder="اختر"
                 value={difficulty}
                 onChange={(val) => setDifficulty(val as Difficulty)}
                 options={DIFFICULTY_OPTIONS.map(([value, label]) => ({
@@ -482,6 +619,7 @@ export function CustomExerciseBuilder({
               <Select
                 id="ce-equipment"
                 label="المعدّات"
+                placeholder="اختر"
                 value={equipment}
                 onChange={(val) => setEquipment(val as Equipment)}
                 options={EQUIPMENT_OPTIONS.map(([value, label]) => ({
@@ -511,19 +649,20 @@ export function CustomExerciseBuilder({
             <div className="field">
               <FileField
                 id="ce-file-input"
-                label="رفع ملف صورة أو GIF"
+                label="رفع ملف صورة أو GIF (بحد أقصى 3 ميجابايت)"
                 accept="image/*,.gif"
                 buttonText="اختر ملف من جهازك"
                 readAs="dataURL"
                 onFileLoaded={(dataUrl: string) => {
                   setImageUrl(dataUrl)
+                  setMediaError('')
                   setError('')
                 }}
                 onChange={(file) => {
                   if (!file && imageUrl.startsWith('data:')) {
                     setImageUrl('')
-                  } else if (file && file.size > 4 * 1024 * 1024) {
-                    setError('حجم الصورة/GIF يجب ألا يتجاوز 4 ميجابايت')
+                  } else if (file && file.size > 3 * 1024 * 1024) {
+                    setMediaError('حجم الصورة/GIF يجب ألا يتجاوز 3 ميجابايت')
                   }
                 }}
               />
@@ -536,11 +675,66 @@ export function CustomExerciseBuilder({
                 type="url"
                 placeholder="https://example.com/exercise.gif"
                 value={imageUrl.startsWith('data:') ? '' : imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value
+                  setImageUrl(val)
+                  setMediaError('')
+                  if (val.startsWith('http://')) {
+                    setMediaError('لازم الرابط يبدأ بـ https:// عشان يفتح بأمان')
+                  }
+                }}
                 className="field-input"
                 dir="ltr"
               />
+              {isRemoteUrl && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: '6px',
+                    gap: '8px',
+                  }}
+                >
+                  <span
+                    className="chip chip--accent"
+                    style={{
+                      fontSize: '11px',
+                      padding: '2px 8px',
+                      borderRadius: '6px',
+                      fontWeight: 700,
+                    }}
+                  >
+                    يحتاج إنترنت
+                  </span>
+                  {imageUrl.startsWith('https://') && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={handleSaveCopyLocally}
+                      disabled={isDownloading}
+                      style={{ fontSize: '11px', height: '28px', padding: '0 8px' }}
+                    >
+                      {isDownloading ? 'جارٍ الحفظ...' : 'حفظ نسخة على الجهاز'}
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
+
+            {mediaError && (
+              <div
+                style={{
+                  fontSize: '12px',
+                  color: 'var(--danger)',
+                  fontWeight: 600,
+                  marginTop: '2px',
+                }}
+              >
+                {mediaError}
+              </div>
+            )}
 
             {imageUrl && (
               <div
@@ -567,7 +761,10 @@ export function CustomExerciseBuilder({
                 <button
                   type="button"
                   className="ghost-danger tiny full-width"
-                  onClick={() => setImageUrl('')}
+                  onClick={() => {
+                    setImageUrl('')
+                    setMediaError('')
+                  }}
                 >
                   حذف الصورة
                 </button>
@@ -576,10 +773,10 @@ export function CustomExerciseBuilder({
           </div>
         </section>
 
-        {/* Section 5: التقنية */}
+        {/* Section 5: التقنية والأداء */}
         <section className="screen-section">
           <div className="section-title">
-            <span>التقنية والأداء العلمي</span>
+            <span>التقنية والأداء</span>
           </div>
           <div
             className="card"
@@ -597,58 +794,68 @@ export function CustomExerciseBuilder({
                 placeholder="مثال: وصف طريقة حركة المفاصل واتجاه الدفع أو السحب"
                 value={mechanicsAr}
                 onChange={(e) => setMechanicsAr(e.target.value)}
-                minRows={3}
+                minRows={4}
               />
             </div>
 
             <div className="field">
-              <label htmlFor="ce-benefit">الفوائد العلمية للتمرين</label>
+              <label htmlFor="ce-benefit">الفوائد</label>
               <AutoGrowTextarea
                 id="ce-benefit"
                 placeholder="مثال: زيادة القوة وبناء الكتلة العضلية للمجموعة المستهدفة"
                 value={benefitAr}
                 onChange={(e) => setBenefitAr(e.target.value)}
-                minRows={3}
+                minRows={4}
               />
             </div>
 
             <div className="field">
-              <label htmlFor="ce-steps">خطوات الأداء الصحيحة</label>
-              <span
+              <div
                 style={{
-                  fontSize: '11.5px',
-                  color: 'var(--muted)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
                   marginBottom: '4px',
                 }}
               >
-                خطوة في كل سطر
-              </span>
+                <label htmlFor="ce-steps" style={{ margin: 0 }}>
+                  خطوات الأداء الصحيحة
+                </label>
+                <span style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
+                  {plural(stepsList.length, 'خطوة')}
+                </span>
+              </div>
               <AutoGrowTextarea
                 id="ce-steps"
-                placeholder="مثال: اكتب كل خطوة في سطر"
+                placeholder="اكتب كل خطوة في سطر منفصل..."
                 value={howToStepsRaw}
                 onChange={(e) => setHowToStepsRaw(e.target.value)}
-                minRows={3}
+                minRows={4}
               />
             </div>
 
             <div className="field">
-              <label htmlFor="ce-mistakes">الأخطاء الشائعة</label>
-              <span
+              <div
                 style={{
-                  fontSize: '11.5px',
-                  color: 'var(--muted)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
                   marginBottom: '4px',
                 }}
               >
-                خطأ في كل سطر
-              </span>
+                <label htmlFor="ce-mistakes" style={{ margin: 0 }}>
+                  الأخطاء الشائعة
+                </label>
+                <span style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
+                  {plural(mistakesList.length, 'خطأ')}
+                </span>
+              </div>
               <AutoGrowTextarea
                 id="ce-mistakes"
-                placeholder="مثال: اكتب كل خطأ في سطر"
+                placeholder="اكتب كل خطأ في سطر منفصل..."
                 value={commonMistakesRaw}
                 onChange={(e) => setCommonMistakesRaw(e.target.value)}
-                minRows={3}
+                minRows={4}
               />
             </div>
 
@@ -667,7 +874,7 @@ export function CustomExerciseBuilder({
           </div>
         </section>
 
-        {/* Section 6: العضلات المستهدفة (Pickers using muscle-names.json) */}
+        {/* Section 6: العضلات المستهدفة */}
         <section className="screen-section">
           <div className="section-title">
             <span>العضلات المستهدفة</span>
@@ -694,45 +901,51 @@ export function CustomExerciseBuilder({
                   marginBottom: '4px',
                 }}
               >
-                {primaryMuscleIds.map((id) => (
-                  <span
-                    key={id}
-                    style={{
-                      background: '#E53935',
-                      color: '#fff',
-                      padding: '4px 8px',
-                      borderRadius: '8px',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                    }}
-                  >
-                    <span>{getMuscleGymName(id)}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleTogglePrimary(id)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#fff',
-                        cursor: 'pointer',
-                        padding: 0,
-                        display: 'inline-flex',
-                      }}
-                      aria-label="إزالة العضلة"
-                    >
-                      <IconClose size={14} />
-                    </button>
+                {primaryMuscleIds.length === 0 ? (
+                  <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                    لم يتم تحديد عضلة أساسية بعد
                   </span>
-                ))}
+                ) : (
+                  primaryMuscleIds.map((id) => (
+                    <span
+                      key={id}
+                      style={{
+                        background: '#E53935',
+                        color: '#fff',
+                        padding: '4px 8px',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      <span>{getMuscleGymName(id)}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleTogglePrimary(id)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#fff',
+                          cursor: 'pointer',
+                          padding: 0,
+                          display: 'inline-flex',
+                        }}
+                        aria-label="إزالة العضلة"
+                      >
+                        <IconClose size={14} />
+                      </button>
+                    </span>
+                  ))
+                )}
               </div>
 
               <Select
                 id="ce-primary-muscle-picker"
                 value=""
-                placeholder="+ إضافة عضلة أساسية..."
+                placeholder="اختر عضلة أساسية..."
                 onChange={(val) => {
                   if (val) handleTogglePrimary(val)
                 }}
@@ -802,7 +1015,7 @@ export function CustomExerciseBuilder({
               <Select
                 id="ce-secondary-muscle-picker"
                 value=""
-                placeholder="+ إضافة عضلة مساعدة..."
+                placeholder="اختر عضلات مساعدة..."
                 onChange={(val) => {
                   if (val) handleToggleSecondary(val)
                 }}
@@ -813,37 +1026,88 @@ export function CustomExerciseBuilder({
                 sheetTitle="اختر العضلات المساعدة"
               />
             </div>
+
+            {/* Atlas Preview */}
+            <div style={{ marginTop: '12px' }}>
+              <div
+                style={{
+                  fontSize: '12.5px',
+                  fontWeight: 600,
+                  marginBottom: '6px',
+                  color: 'var(--muted)',
+                }}
+              >
+                معاينة الأطلس العضلي
+              </div>
+              <AnatomyMuscleMap muscles={currentMuscles} isFullView={false} />
+            </div>
           </div>
         </section>
 
         {/* Sticky bar: primary "حفظ التمرين", outlined secondary "إلغاء" side by side */}
         <div
-          className="sticky-bottom-bar sticky-bottom-bar--row"
-          style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}
+          className="sticky-bottom-bar"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            padding: '12px 16px',
+            background: 'var(--surface-1)',
+            borderTop: '1px solid var(--line)',
+          }}
         >
-          <Button
-            type="submit"
-            variant="primary"
-            fullWidth
-            size="large"
-            style={{ flex: 1 }}
-          >
-            حفظ التمرين
-          </Button>
-          {onCancel && (
+          {saveDisabledReason && (
+            <div
+              style={{
+                fontSize: '12px',
+                color: 'var(--muted)',
+                textAlign: 'center',
+              }}
+            >
+              {saveDisabledReason}
+            </div>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
             <Button
-              type="button"
-              variant="secondary"
+              type="submit"
+              variant="primary"
               fullWidth
               size="large"
-              onClick={onCancel}
+              disabled={!canSave}
               style={{ flex: 1 }}
             >
-              إلغاء
+              حفظ التمرين
             </Button>
-          )}
+            {onCancel && (
+              <Button
+                type="button"
+                variant="secondary"
+                fullWidth
+                size="large"
+                onClick={handleCancelClick}
+                style={{ flex: 1 }}
+              >
+                إلغاء
+              </Button>
+            )}
+          </div>
         </div>
       </form>
+
+      {/* Cancel Confirmation Sheet */}
+      <ConfirmSheet
+        isOpen={showCancelConfirm}
+        onClose={() => setShowCancelConfirm(false)}
+        onConfirm={() => {
+          setShowCancelConfirm(false)
+          onCancel?.()
+        }}
+        title="تجاهل التغييرات؟"
+        message="هل تريد إلغاء التعديل؟ سيتم فقد أي بيانات أو تغييرات غير محفوظة."
+        confirmLabel="تجاهل والخروج"
+        cancelLabel="متابعة التعديل"
+        isDestructive={true}
+      />
     </div>
   )
 }

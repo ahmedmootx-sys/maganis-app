@@ -43,9 +43,10 @@ function traceMask(mask, width, height, params = {}) {
     bm.data[i] = mask[i] === 1 ? 0 : 255
   }
 
+  // Increased path precision: turdSize 3, optTolerance 0.25 (C1.4)
   const potrace = new potracePkg.Potrace({
-    turdSize: 4,
-    optTolerance: 0.4,
+    turdSize: 3,
+    optTolerance: 0.25,
     ...params
   })
   potrace._luminanceData = bm
@@ -63,6 +64,7 @@ function traceMask(mask, width, height, params = {}) {
     })
     .join(' ')
 }
+
 
 function findLabelAnchor(mask, width, height) {
   let minX = Infinity
@@ -245,9 +247,9 @@ async function processRenderResults(payload) {
   const svgPathsA = []
   const svgPathsP = []
 
-  // Add silhouette paths first
-  svgPathsA.push(`  <path id="body-silhouette" class="atlas-silhouette" d="${silPathA}" fill="#18181b" opacity="0.15" />`)
-  svgPathsP.push(`  <path id="body-silhouette" class="atlas-silhouette" d="${silPathP}" fill="#18181b" opacity="0.15" />`)
+  // Add silhouette paths first with non-scaling stroke and token fills
+  svgPathsA.push(`  <path id="body-silhouette" class="atlas-silhouette" d="${silPathA}" fill="var(--atlas-silhouette-fill)" stroke="var(--atlas-silhouette-stroke)" stroke-width="1.5" vector-effect="non-scaling-stroke" />`)
+  svgPathsP.push(`  <path id="body-silhouette" class="atlas-silhouette" d="${silPathP}" fill="var(--atlas-silhouette-fill)" stroke="var(--atlas-silhouette-stroke)" stroke-width="1.5" vector-effect="non-scaling-stroke" />`)
 
   console.log('Vectorizing individual muscle masks and computing metadata...')
   const geometryMeta = JSON.parse(fs.readFileSync(path.join(projectRoot, 'tools', 'atlas', 'geometry_meta.json'), 'utf8'))
@@ -257,6 +259,9 @@ async function processRenderResults(payload) {
   // Orientation sanity values
   let rightPecCentroidX = null
   let leftPecCentroidX = null
+
+  const hitTargetsA = []
+  const hitTargetsP = []
 
   for (const def of atlasMusclesData.muscles) {
     const id = def.id
@@ -296,7 +301,7 @@ async function processRenderResults(payload) {
     const maskVisP = decodeRLE(rendered.rleVisP, N_PIXELS)
     const maskFullP = decodeRLE(rendered.rleFullP, N_PIXELS)
 
-    // Vectorize paths
+    // Vectorize paths with higher precision
     const dVisA = traceMask(maskVisA, width, height)
     const dFullA = traceMask(maskFullA, width, height)
     const dVisP = traceMask(maskVisP, width, height)
@@ -311,6 +316,14 @@ async function processRenderResults(payload) {
     }
     if (!def.expected_views.includes('P') || rendered.visCountP === 0) {
       anchorP = null
+    }
+
+    // Hit targets for small muscles (< 2500 px area in 1024x2048)
+    if (anchorA && rendered.visCountA > 0 && rendered.visCountA < 3500) {
+      hitTargetsA.push({ id, anchor: anchorA, area: rendered.visCountA })
+    }
+    if (anchorP && rendered.visCountP > 0 && rendered.visCountP < 3500) {
+      hitTargetsP.push({ id, anchor: anchorP, area: rendered.visCountP })
     }
 
     // Orientation check check on pec_clavicular
@@ -397,6 +410,16 @@ async function processRenderResults(payload) {
     svgPathsP.push(`  <path id="m-${id}-vis" class="muscle-vis" data-muscle="${id}" d="${dVisP}" />`)
   }
 
+  // Hit target circles: larger first, smaller last so smaller/specific muscle wins on overlap
+  hitTargetsA.sort((a, b) => b.area - a.area)
+  for (const h of hitTargetsA) {
+    svgPathsA.push(`  <circle id="hit-${h.id}-A" class="muscle-hit-target" data-muscle="${h.id}" cx="${h.anchor[0]}" cy="${h.anchor[1]}" r="35" />`)
+  }
+  hitTargetsP.sort((a, b) => b.area - a.area)
+  for (const h of hitTargetsP) {
+    svgPathsP.push(`  <circle id="hit-${h.id}-P" class="muscle-hit-target" data-muscle="${h.id}" cx="${h.anchor[0]}" cy="${h.anchor[1]}" r="35" />`)
+  }
+
   // 5. Assemble SVG Files
   console.log('Writing SVG files...')
   const svgHeader = (title) => `<?xml version="1.0" encoding="UTF-8"?>
@@ -404,16 +427,32 @@ async function processRenderResults(payload) {
   <title>${title}</title>
   <defs>
     <style>
-      .atlas-silhouette { fill: #22252a; opacity: 0.15; }
-      .muscle-full { fill: none; stroke: none; display: none; }
-      .muscle-vis { fill: currentColor; stroke: none; }
+      .atlas-silhouette { fill: var(--atlas-silhouette-fill); stroke: var(--atlas-silhouette-stroke); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+      .muscle-full { fill: none; stroke: none; display: none; vector-effect: non-scaling-stroke; }
+      .muscle-vis { fill: currentColor; stroke: var(--atlas-line); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+      .muscle-hit-target { fill: transparent; stroke: transparent; pointer-events: all; cursor: pointer; }
     </style>
+    <!-- Static subtle depth cue linear gradients (C1.1) -->
+    <linearGradient id="grad-muscle-depth" x1="0%" y1="0%" x2="25%" y2="100%">
+      <stop offset="0%" stop-color="var(--atlas-muscle-highlight)" />
+      <stop offset="45%" stop-color="var(--atlas-muscle)" />
+      <stop offset="100%" stop-color="var(--atlas-muscle-shadow)" />
+    </linearGradient>
+    <linearGradient id="grad-primary-depth" x1="0%" y1="0%" x2="25%" y2="100%">
+      <stop offset="0%" stop-color="#ef5350" />
+      <stop offset="100%" stop-color="#c62828" />
+    </linearGradient>
+    <linearGradient id="grad-secondary-depth" x1="0%" y1="0%" x2="25%" y2="100%">
+      <stop offset="0%" stop-color="#ffee58" />
+      <stop offset="100%" stop-color="#fbc02d" />
+    </linearGradient>
   </defs>
 `
   const svgFooter = `</svg>\n`
 
   const anteriorSvg = svgHeader('Maganis Muscle Atlas - Anterior View') + svgPathsA.join('\n') + '\n' + svgFooter
   const posteriorSvg = svgHeader('Maganis Muscle Atlas - Posterior View') + svgPathsP.join('\n') + '\n' + svgFooter
+
 
   const antSvgPath = path.join(atlasDir, 'anterior.svg')
   const postSvgPath = path.join(atlasDir, 'posterior.svg')

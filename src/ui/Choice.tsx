@@ -136,6 +136,20 @@ export function Choice<T extends string | number = string>({
               className={`choice-segmented__item ${selected ? 'choice-segmented__item--selected' : ''}`.trim()}
               onClick={() => onChange(opt.value)}
             >
+              {opt.icon && (
+                <span
+                  className="choice-segmented__icon"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '4px',
+                  }}
+                  aria-hidden="true"
+                >
+                  {opt.icon}
+                </span>
+              )}
               <span className="choice-segmented__label">{opt.label}</span>
               {opt.sublabel && (
                 <span className="choice-segmented__sublabel">

@@ -147,6 +147,15 @@ export function resolveMuscles(
     }
   }
 
+  // 0. Explicit / Overridden muscles (Tier 2 user-defined or custom targeting takes precedence)
+  if (exercise.muscles && exercise.muscles.length > 0) {
+    return {
+      tier: 2,
+      muscles: exercise.muscles,
+      defaultView: computeBestView(exercise.muscles),
+    }
+  }
+
   // -------------------------------------------------------------
   // TIER 1: Curated match from exercise_muscles.json
   // Strict matching order: key -> db_id -> normalised db_name -> name_en

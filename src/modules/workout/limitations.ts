@@ -1,4 +1,4 @@
-import regionLoadData from '../../data/exercise-region-load.json'
+import regionLoadData from '../../data/exercise-region-load.json' with { type: 'json' }
 
 export type LimitationRegion =
   | 'lower_back'

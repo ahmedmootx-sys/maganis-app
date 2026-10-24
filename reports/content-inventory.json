@@ -1,0 +1,570 @@
+[
+  {
+    "id": "guide_energy_density",
+    "file": "src/content/claims.ts",
+    "text_ar": "الطاقة في الجرام: البروتين 4 سعرات، الكربوهيدرات 4 سعرات، الدهون 9 سعرات.",
+    "status": "sourced",
+    "source_id": "atwater_factors",
+    "source_text": "معاملات أتواتر العامة (Atwater general factors)"
+  },
+  {
+    "id": "guide_bmr_formula",
+    "file": "src/content/claims.ts",
+    "text_ar": "معدل الحرق الأساسي يُحسب بمعادلة Mifflin–St Jeor من العمر والجنس والطول والوزن.",
+    "status": "sourced",
+    "source_id": "mifflin_1990",
+    "source_text": "Mifflin وآخرون، 1990، American Journal of Clinical Nutrition"
+  },
+  {
+    "id": "guide_tdee_calculation",
+    "file": "src/content/claims.ts",
+    "text_ar": "احتياجك اليومي = معدل الحرق الأساسي × معامل النشاط، ثم تُضاف سعرات التمرين المسجّلة. معامل نشاطك: {activity_factor}.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "guide_daily_target",
+    "file": "src/content/claims.ts",
+    "text_ar": "هدفك اليومي = احتياجك اليومي {adjustment_sign} {percent}% لهدف «{goal}». هذه النسبة اختيار التطبيق وليست رقمًا طبيًا ثابتًا.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "guide_protein_intake",
+    "file": "src/content/claims.ts",
+    "text_ar": "البروتين: المدى الشائع لمن يتدرب بالأثقال حوالي 1.6 إلى 2.2 جم لكل كجم من وزن الجسم الكلي يوميًا. التطبيق يستخدم {protein_factor} جم/كجم لوزنك {weight} كجم = {protein_g} جم بروتين = {protein_kcal} سعرة.",
+    "status": "sourced",
+    "source_id": "morton_2018",
+    "source_text": "Morton وآخرون، 2018، British Journal of Sports Medicine"
+  },
+  {
+    "id": "guide_fat_intake",
+    "file": "src/content/claims.ts",
+    "text_ar": "الدهون: المدى الغذائي المقبول للبالغين من 20% إلى 35% من إجمالي السعرات. التطبيق يستخدم {fat_percent}% = {fat_g} جم.",
+    "status": "sourced",
+    "source_id": "iom_2005",
+    "source_text": "Institute of Medicine، 2005، Dietary Reference Intakes"
+  },
+  {
+    "id": "guide_carb_intake",
+    "file": "src/content/claims.ts",
+    "text_ar": "الكربوهيدرات: ما يتبقى من السعرات بعد البروتين والدهون، مقسومًا على 4. أي: (هدفك اليومي − سعرات البروتين − سعرات الدهون) ÷ 4 = {carb_g} جم.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "guide_fat_not_minimum",
+    "file": "src/content/claims.ts",
+    "text_ar": "لا تُسمّى نسبة الدهون التي يختارها التطبيق «حدًا أدنى»؛ هي اختيار داخل المدى المذكور.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "cardio_heart_health",
+    "file": "src/content/claims.ts",
+    "text_ar": "الكارديو المعتدل يدعم صحة القلب ويساعد على تسريع الاستشفاء العضلي دون التأثير سلبًا على مكاسب القوة.",
+    "status": "unverified",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "cardio_zone2_fatloss",
+    "file": "src/content/claims.ts",
+    "text_ar": "تمارين المنطقة 2 تهدف لبناء قاعدة هوائية وحرق الدهون بكفاءة.",
+    "status": "unverified",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "cardio_hydration_advice",
+    "file": "src/content/claims.ts",
+    "text_ar": "اشرب 250-500 مل ماء قبل وأثناء جلسة الكارديو للحفاظ على توازن السوائل.",
+    "status": "unverified",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "cardio_timing_advice",
+    "file": "src/content/claims.ts",
+    "text_ar": "يفضل أداء الكارديو بعد تمارين المقاومة أو في أوقات منفصلة لتجنب إجهاد العضلات.",
+    "status": "unverified",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "injury_referral_redflag",
+    "file": "src/content/claims.ts",
+    "text_ar": "إذا كان عندك تنميل أو ضعف مفاجئ أو ألم شديد بعد إصابة قوية، استشر طبيبًا قبل أي تمرين. يمكنك المتابعة، لكن لا تبدأ أي تمرين يحمّل هذه المنطقة قبل الفحص.",
+    "status": "coach_authored",
+    "source_id": "coach_appendix_b1",
+    "source_text": "توجيهات المدرب المعتمدة (الملحق B1)"
+  },
+  {
+    "id": "cardio_met_caveat",
+    "file": "src/content/claims.ts",
+    "text_ar": "ده تقدير تقريبي بيعتمد على جدول MET العلمي. الرقم الحقيقي بيختلف من شخص لشخص حسب الوزن واللياقة وطريقة الأداء.",
+    "status": "sourced",
+    "source_id": "compendium_2011",
+    "source_text": "Ainsworth et al., Med Sci Sports Exerc 2011;43(8):1575-1581 (Compendium of Physical Activities)"
+  },
+  {
+    "id": "cardio_gross_vs_net",
+    "file": "src/content/claims.ts",
+    "text_ar": "الإجمالي يشمل الحرق الطبيعي للجسم أثناء الراحة، والزيادة تمثل ما أحرقه التمرين فعلياً دون احتساب الحرق الأساسي.",
+    "status": "unverified",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "sugg.first_time_weight",
+    "file": "src/content/claims.ts",
+    "text_ar": "اختار وزن تقدر تعمل بيه العدد المطلوب من التكرارات، وتحس إنك كنت تقدر تعمل 2 أو 3 تكرارات كمان. لو مش متأكد، ابدأ بوزن أخف.",
+    "status": "sourced",
+    "source_id": "helms_2016",
+    "source_text": "Helms ER, Cronin J, Storey A, Zourdos MC. Application of the Repetitions in Reserve-Based Rating of Perceived Exertion Scale for Resistance Training. Strength Cond J. 2016;38(4):42-49."
+  },
+  {
+    "id": "sugg.progress",
+    "file": "src/content/claims.ts",
+    "text_ar": "عملت أكتر من المطلوب بتكرار أو اتنين في آخر جلستين، فالمقترح تزوّد الوزن شوية (من 2% لـ 10%).",
+    "status": "sourced",
+    "source_id": "acsm_2009",
+    "source_text": "American College of Sports Medicine. Progression models in resistance training for healthy adults. Med Sci Sports Exerc. 2009;41(3):687-708."
+  },
+  {
+    "id": "sugg.below_range",
+    "file": "src/content/claims.ts",
+    "text_ar": "لو التكرارات خلصت قبل المدى المطلوب، خفّف الوزن شوية في المجموعة الجاية.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": null
+  },
+  {
+    "id": "muscle_does.pec_clavicular",
+    "file": "src/content/claims.ts",
+    "text_ar": "بترفع الدراع لقدّام ولفوق وبتقرّبه من صدرك. هي اللي بتشتغل أكتر في الضغط المايل.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.pec_sternal",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتقرّب الدراع من جسمك وبتدفعه لقدّام. هي الجزء الأكبر في الضغط المستوي على الدكة.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.pec_costal",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتنزّل الدراع من فوق لتحت ناحية نص جسمك. بتشتغل أكتر في الديبس والضغط المنحدر.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.pec_minor",
+    "file": "src/content/claims.ts",
+    "text_ar": "عضلة صغيرة وعميقة تحت الصدر الكبيرة، بتشدّ لوح الكتف لقدّام ولتحت وبتثبّته على القفص الصدري.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.serratus_anterior",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتحرّك لوح الكتف لقدّام وبتلزقه على القفص الصدري، وبتساعد لما ترفع دراعك فوق راسك.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.delt_anterior",
+    "file": "src/content/claims.ts",
+    "text_ar": "بترفع الدراع لقدّام. بتشارك في كل أنواع الضغط.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.delt_lateral",
+    "file": "src/content/claims.ts",
+    "text_ar": "بترفع الدراع للجنب. هي اللي بتدّي الكتف عرضه.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.delt_posterior",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتشدّ الدراع لورا وبتفتحه للجنب وانت مايل لقدّام. بتشتغل في السحب والرفرفة الخلفية.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.teres_minor",
+    "file": "src/content/claims.ts",
+    "text_ar": "من عضلات كفة الكتف الصغيرة، بتلفّ الدراع لبرّه وبتثبّت مفصل الكتف.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.infraspinatus",
+    "file": "src/content/claims.ts",
+    "text_ar": "العضلة الأساسية في كفة الكتف لفّ الدراع لبرّه، وبتثبّت راس عظمة العضد في مكانه.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.supraspinatus",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتبدأ رفع الدراع للجنب في أول الحركة وبتثبّت مفصل الكتف. عميقة فوق لوح الكتف.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.trap_upper",
+    "file": "src/content/claims.ts",
+    "text_ar": "بترفع لوح الكتف لفوق (زي هزّ الكتف) وبتساعد في ميل الرقبة وشدّها لورا.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.levator_scapulae",
+    "file": "src/content/claims.ts",
+    "text_ar": "بترفع لوح الكتف لفوق من ناحية الرقبة. عضلة عميقة جنب الرقبة.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.trap_middle",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتضم لوحين الكتف ناحية بعض، وبتشتغل في أي سحب أفقي زي التجديف.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.trap_lower",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتنزّل لوح الكتف لتحت وبتساعد لما ترفع الدراع فوق راسك.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.rhomboids",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتضم لوح الكتف ناحية العمود الفقري وبتثبّته. عميقة تحت الترابيس.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.teres_major",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتجيب الدراع لتحت ولورا وبتلفّه لجوه، وبتساعد اللاتس في السحب.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.lats",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتسحب الدراع لتحت ولورا ناحية جسمك. بتشتغل في العقلة والتجديف وهي اللي بتدّي الضهر عرضه.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.erector_spinae",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد العمود الفقري وبتفضّله منتصب. بتشتغل في الرفعة الرومانية والسكوات.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.quadratus_lumborum",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثبّت أسفل الضهر وبتميّل الجذع للجنب. بتشتغل في البلانك الجانبي. عميقة جنب أسفل العمود الفقري.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.biceps_long",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الكوع وبتلفّ الساعد بحيث كفّك يبقى لفوق، وبتساعد في رفع الدراع لقدّام.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.biceps_short",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الكوع وبتلفّ الساعد بحيث كفّك يبقى لفوق، وبتقرّب الدراع من جسمك.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.brachialis",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الكوع في أي وضع للإيد، حتى لو كفّك لتحت. عميقة تحت البايسبس.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.triceps_long",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الكوع وبتشدّ الدراع لورا. هي أكبر راس في الترايسبس وبتتمدد أكتر لما الدراع فوق راسك.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.triceps_lateral",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الكوع. هي الجزء اللي بتشوفه في جنب الدراع من برّه.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.triceps_medial",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الكوع في كل الأوضاع. عميقة تحت باقي الترايسبس.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.brachioradialis",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الكوع، وبتشتغل أكتر لما كفّك يبقى لجنب (زي مسكة المطرقة). بتبان في أعلى الساعد.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.forearm_flexors",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الرسغ والصوابع. هي اللي بتديك قوة القبضة.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.forearm_extensors",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الرسغ والصوابع وبتوازن القبضة. بتبقى في ضهر الساعد.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.rectus_abdominis_upper",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الجذع وبتقرّب ضلوعك من حوضك. بتشتغل في الكرانش.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.rectus_abdominis_lower",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتلفّ الحوض لفوق وبتشتغل في رفع الركبتين والرجلين من التعليق.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.obliques_external",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتلفّ الجذع وبتميّله للجنب وبتمنع الجسم من الدوران. على جنب البطن.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.transversus_abdominis",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتشدّ البطن لجوه زي الحزام وبتثبّت العمود الفقري. أعمق عضلة في البطن.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.iliopsoas",
+    "file": "src/content/claims.ts",
+    "text_ar": "بترفع الفخذ لقدّام (ثني الورك). أقوى عضلة لثني الورك، وعميقة جوه الحوض.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.tfl",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثبّت الورك وبتبعد الرجل للجنب وبتساعد في ثني الورك. على جنب الورك من قدّام.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.sartorius",
+    "file": "src/content/claims.ts",
+    "text_ar": "أطول عضلة في الجسم. بتثني الورك والركبة وبتلفّ الفخذ لبرّه (زي قعدة التربيعة).",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.rectus_femoris",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الركبة وبتثني الورك. هي العضلة الوحيدة في الفخذ الأمامي اللي بتعدّي مفصلين (الورك والركبة).",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.vastus_lateralis",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الركبة. هي الجزء الخارجي الكبير في الفخذ الأمامي.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.vastus_medialis",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الركبة وبتساعد في ثبات الرضفة (عظمة الركبة). هي الجزء الداخلي فوق الركبة.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.vastus_intermedius",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الركبة. عميقة تحت عضلة الفخذ الأمامية الكبيرة (Rectus Femoris).",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.hamstring_bf_long",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الركبة وبتفرد الورك. الجزء الخارجي من الفخذ الخلفي.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.hamstring_bf_short",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الركبة بس، ومابتعدّيش مفصل الورك. عشان كده بتشتغل أكتر في تمارين ثني الركبة زي Leg Curl.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.hamstring_semitendinosus",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الركبة وبتفرد الورك. الجزء الداخلي من الفخذ الخلفي.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.hamstring_semimembranosus",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الركبة وبتفرد الورك. عميقة شوية تحت الجزء الداخلي من الفخذ الخلفي.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.glute_max",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتفرد الورك وبتلفّ الفخذ لبرّه. أكبر عضلة في الجسم، وبتشتغل في السكوات والـHip Thrust.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.glute_med",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتبعد الرجل للجنب وبتثبّت الحوض لما تقف على رجل واحدة.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.glute_min",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتساعد الألوية الوسطى في تبعيد الرجل وتثبيت الورك. عميقة تحتها.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.adductors",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتقرّب الفخذ ناحية نص الجسم وبتثبّت الورك. بتشتغل أكتر في السكوات العميق.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.tibialis_anterior",
+    "file": "src/content/claims.ts",
+    "text_ar": "بترفع مقدّمة القدم لفوق وبتتحكم في نزولها على الأرض وانت ماشي. على قدّام الساق.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.gastrocnemius_medial",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الكاحل (ترفع الكعب) وبتساعد في ثني الركبة. بتشتغل أكتر والركبة مفرودة.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.gastrocnemius_lateral",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتثني الكاحل (ترفع الكعب) وبتساعد في ثني الركبة. بتشتغل أكتر والركبة مفرودة.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.soleus",
+    "file": "src/content/claims.ts",
+    "text_ar": "بترفع الكعب، وبتشتغل أكتر لما الركبة تكون مثنية. عميقة تحت عضلة السمانة الكبيرة.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  },
+  {
+    "id": "muscle_does.neck_scm",
+    "file": "src/content/claims.ts",
+    "text_ar": "بتلفّ الراس وبتميّلها لجنب، ولما الاتنين يشتغلوا مع بعض بيثنوا الرقبة لقدّام.",
+    "status": "coach_authored",
+    "source_id": null,
+    "source_text": "Gray’s Anatomy / Kendall (Coach authored)"
+  }
+]

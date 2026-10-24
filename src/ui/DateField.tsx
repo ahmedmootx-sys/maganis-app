@@ -152,7 +152,7 @@ export const DateField: React.FC<DateFieldProps> = ({
               color: formattedValue
                 ? 'var(--color-text)'
                 : 'var(--color-text-2)',
-              overflow: 'hidden',
+              overflow: 'hidden' /* clip-ok: text ellipsis truncation */,
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}

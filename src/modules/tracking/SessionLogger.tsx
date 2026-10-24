@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react'
 import type {
   ProgramDay,
   TrackingSession,
-  SessionExercise,
   Exercise,
 } from '../shared/types.ts'
 import { getExerciseById, EXERCISES } from '../workout/exercises.ts'
@@ -10,6 +9,17 @@ import { ExerciseDetailModal } from '../workout/ExerciseDetailModal.tsx'
 import { ExerciseVisual } from '../workout/ExerciseVisual.tsx'
 import { TopBar, DateField, EmptyState, Sheet } from '../../ui/index.ts'
 import { IconPlus, IconTrash, IconInfo } from '../../components/Icons.tsx'
+import {
+  propagateField,
+  undoPropagation,
+  computeExerciseSuggestions,
+  type TrackedSetItem,
+  type SetFieldType,
+  type HistoricalSessionSpec,
+} from './setPropagation.ts'
+import { Claim } from '../../content/Claim.tsx'
+import { Toast } from '../../components/Toast.tsx'
+import { selectEffectiveExercise } from '../workout/exerciseOverrides.ts'
 
 export interface SessionLoggerProps {
   programDay: ProgramDay | null
@@ -40,16 +50,69 @@ export function SessionLogger({
   customExercises = [],
 }: SessionLoggerProps) {
   const [date, setDate] = useState(() => todayStr())
-  const [exercises, setExercises] = useState<SessionExercise[]>(() =>
-    (programDay?.exercises ?? []).map((pe) => ({
-      exerciseId: pe.exerciseId,
-      sets: Array.from({ length: pe.sets }, () => ({
-        reps: pe.reps || 8,
-        weightKg: 0,
-      })),
-      completed: false,
-    })),
-  )
+
+  // Load past sessions for suggestions
+  const pastSessions = useMemo<TrackingSession[]>(() => {
+    try {
+      if (typeof localStorage === 'undefined') return []
+      const raw = localStorage.getItem('maganis:tracking.sessions')
+      return raw ? JSON.parse(raw) : []
+    } catch {
+      return []
+    }
+  }, [])
+
+  const initialExercises = useMemo(() => {
+    return (programDay?.exercises ?? []).map((pe) => {
+      const exHistory = pastSessions
+        .map((s) => {
+          const match = s.exercises?.find((e) => e.exerciseId === pe.exerciseId)
+          if (!match) return null
+          return {
+            date: s.date,
+            sets: (match.sets || []).map((st) => ({
+              reps: st.reps,
+              weightKg: st.weightKg,
+            })),
+          }
+        })
+        .filter(Boolean) as HistoricalSessionSpec[]
+
+      const sugg = computeExerciseSuggestions(
+        {
+          reps: pe.reps,
+          repsMin: pe.repsMin ?? pe.reps,
+          repsMax: pe.repsMax ?? pe.reps,
+        },
+        exHistory,
+      )
+
+      const numSets = pe.sets || 3
+      const sets: TrackedSetItem[] = Array.from({ length: numSets }, () => ({
+        weight: {
+          value: sugg.suggestedWeight ?? 0,
+          state: sugg.suggestedWeight ? 'suggested' : 'empty',
+        },
+        reps: {
+          value: sugg.suggestedReps ?? pe.reps ?? 8,
+          state: 'suggested',
+        },
+        completed: false,
+      }))
+
+      return {
+        exerciseId: pe.exerciseId,
+        sets,
+        hintClaimId: sugg.hintClaimId,
+      }
+    })
+  }, [programDay, pastSessions])
+
+  const [exercises, setExercises] = useState(initialExercises)
+  const [toastInfo, setToastInfo] = useState<{
+    message: string
+    action?: { label: string; onClick: () => void }
+  } | null>(null)
   const [notes, setNotes] = useState('')
   const [error, setError] = useState('')
   const [selectedExerciseForDetail, setSelectedExerciseForDetail] =
@@ -59,7 +122,8 @@ export function SessionLogger({
 
   // Find exercise details
   const findExercise = (id: string): Exercise | undefined => {
-    return customExercises.find((e) => e.id === id) || getExerciseById(id)
+    const raw = customExercises.find((e) => e.id === id) || getExerciseById(id)
+    return raw ? selectEffectiveExercise(raw) : undefined
   }
 
   // Filtered exercises for add sheet
@@ -79,19 +143,57 @@ export function SessionLogger({
   function updateSet(
     exerciseIdx: number,
     setIdx: number,
-    field: 'reps' | 'weightKg',
+    field: SetFieldType,
     value: number,
   ) {
+    const currentEx = exercises[exerciseIdx]
+    if (!currentEx) return
+
+    const { nextSets, propagatedCount, previousSnapshot } = propagateField(
+      currentEx.sets,
+      setIdx,
+      field,
+      value,
+    )
+
+    let updatedHint = currentEx.hintClaimId
+    if (setIdx === 0 && field === 'reps') {
+      const pe = programDay?.exercises.find((e) => e.exerciseId === currentEx.exerciseId)
+      const minReps = pe?.repsMin ?? pe?.reps ?? 8
+      if (value > 0 && value < minReps) {
+        updatedHint = 'sugg.below_range'
+      }
+    }
+
     setExercises((prev) => {
       const next = [...prev]
       next[exerciseIdx] = {
         ...next[exerciseIdx],
-        sets: next[exerciseIdx].sets.map((s, i) =>
-          i === setIdx ? { ...s, [field]: value } : s,
-        ),
+        sets: nextSets,
+        hintClaimId: updatedHint,
       }
       return next
     })
+
+    if (propagatedCount > 0) {
+      setToastInfo({
+        message: 'اتنقلت لباقي المجموعات',
+        action: {
+          label: 'تراجع',
+          onClick: () => {
+            setExercises((prev) => {
+              const next = [...prev]
+              next[exerciseIdx] = {
+                ...next[exerciseIdx],
+                sets: undoPropagation(previousSnapshot),
+              }
+              return next
+            })
+            setToastInfo(null)
+          },
+        },
+      })
+    }
   }
 
   function addSetRow(exerciseIdx: number) {
@@ -104,8 +206,15 @@ export function SessionLogger({
         sets: [
           ...ex.sets,
           {
-            reps: lastSet?.reps ?? 8,
-            weightKg: lastSet?.weightKg ?? 0,
+            weight: {
+              value: lastSet?.weight.value ?? 0,
+              state: 'empty',
+            },
+            reps: {
+              value: lastSet?.reps.value ?? 8,
+              state: 'suggested',
+            },
+            completed: false,
           },
         ],
       }
@@ -136,11 +245,11 @@ export function SessionLogger({
       {
         exerciseId: exercise.id,
         sets: [
-          { reps: 10, weightKg: 0 },
-          { reps: 10, weightKg: 0 },
-          { reps: 10, weightKg: 0 },
+          { weight: { value: 0, state: 'empty' }, reps: { value: 10, state: 'suggested' }, completed: false },
+          { weight: { value: 0, state: 'empty' }, reps: { value: 10, state: 'suggested' }, completed: false },
+          { weight: { value: 0, state: 'empty' }, reps: { value: 10, state: 'suggested' }, completed: false },
         ],
-        completed: false,
+        hintClaimId: 'sugg.first_time_weight',
       },
     ])
     setShowAddExerciseSheet(false)
@@ -159,8 +268,12 @@ export function SessionLogger({
       date,
       programDayIndex: dayIndex,
       exercises: exercises.map((e) => ({
-        ...e,
-        completed: e.sets.some((s) => s.reps > 0),
+        exerciseId: e.exerciseId,
+        sets: e.sets.map((s) => ({
+          reps: s.reps.value,
+          weightKg: s.weight.value,
+        })),
+        completed: e.sets.some((s) => s.reps.value > 0),
       })),
       notes,
       createdAt: Date.now(),
@@ -301,7 +414,7 @@ export function SessionLogger({
                             width: '52px',
                             height: '52px',
                             borderRadius: '10px',
-                            overflow: 'hidden',
+                            overflow: 'hidden' /* clip-ok: visual element boundary */,
                             flexShrink: 0,
                             background: 'var(--card-subtle)',
                             display: 'flex',
@@ -453,23 +566,34 @@ export function SessionLogger({
                             min="0"
                             max="1000"
                             step="0.5"
-                            value={set.weightKg === 0 ? '' : set.weightKg}
-                            placeholder="0"
+                            value={set.weight.value === 0 ? '' : set.weight.value}
+                            placeholder={set.weight.state === 'suggested' && set.weight.value > 0 ? String(set.weight.value) : '0'}
                             onChange={(e) =>
                               updateSet(
                                 ei,
                                 si,
-                                'weightKg',
+                                'weight',
                                 Number(e.target.value) || 0,
                               )
                             }
                             className="field-input"
+                            data-testid={`set-weight-${ei}-${si}`}
+                            data-cell-state={set.weight.state}
                             style={{
                               height: '48px',
                               textAlign: 'center',
                               fontVariantNumeric: 'tabular-nums',
                               fontSize: '16px',
                               borderRadius: '10px',
+                              border:
+                                set.weight.state === 'auto' || set.weight.state === 'suggested'
+                                  ? '1px dashed var(--color-accent)'
+                                  : '1px solid var(--color-divider)',
+                              color:
+                                set.weight.state === 'auto' || set.weight.state === 'suggested'
+                                  ? 'var(--color-text-2)'
+                                  : 'var(--color-text)',
+                              backgroundColor: 'var(--color-surface)',
                             }}
                             aria-label={`وزن المجموعة ${si + 1}`}
                           />
@@ -477,7 +601,7 @@ export function SessionLogger({
                             type="number"
                             min="0"
                             max="200"
-                            value={set.reps === 0 ? '' : set.reps}
+                            value={set.reps.value === 0 ? '' : set.reps.value}
                             placeholder="0"
                             onChange={(e) =>
                               updateSet(
@@ -488,12 +612,23 @@ export function SessionLogger({
                               )
                             }
                             className="field-input"
+                            data-testid={`set-reps-${ei}-${si}`}
+                            data-cell-state={set.reps.state}
                             style={{
                               height: '48px',
                               textAlign: 'center',
                               fontVariantNumeric: 'tabular-nums',
                               fontSize: '16px',
                               borderRadius: '10px',
+                              border:
+                                set.reps.state === 'auto' || set.reps.state === 'suggested'
+                                  ? '1px dashed var(--color-accent)'
+                                  : '1px solid var(--color-divider)',
+                              color:
+                                set.reps.state === 'auto' || set.reps.state === 'suggested'
+                                  ? 'var(--color-text-2)'
+                                  : 'var(--color-text)',
+                              backgroundColor: 'var(--color-surface)',
                             }}
                             aria-label={`تكرار المجموعة ${si + 1}`}
                           />
@@ -551,6 +686,22 @@ export function SessionLogger({
                       <IconPlus size={16} />
                       <span>إضافة مجموعة</span>
                     </button>
+
+                    {/* Science suggestion hint (Task G5-B2) */}
+                    {se.hintClaimId && (
+                      <div
+                        data-testid="exercise-suggestion-hint"
+                        style={{
+                          padding: 'var(--space-2) var(--space-3)',
+                          borderRadius: 'var(--radius-control)',
+                          backgroundColor: 'var(--color-surface-2)',
+                          fontSize: 'var(--font-size-xs)',
+                          marginTop: 'var(--space-2)',
+                        }}
+                      >
+                        <Claim id={se.hintClaimId} />
+                      </div>
+                    )}
                   </div>
                 )
               })}
@@ -607,7 +758,7 @@ export function SessionLogger({
               style={{
                 minHeight: '84px',
                 resize: 'none',
-                overflow: 'hidden',
+                overflow: 'hidden' /* clip-ok: visual element boundary */,
                 textAlign: 'start',
                 padding: '12px',
                 borderRadius: '10px',
@@ -777,6 +928,14 @@ export function SessionLogger({
         <ExerciseDetailModal
           exercise={selectedExerciseForDetail}
           onClose={() => setSelectedExerciseForDetail(null)}
+        />
+      )}
+
+      {toastInfo && (
+        <Toast
+          message={toastInfo.message}
+          action={toastInfo.action}
+          onDismiss={() => setToastInfo(null)}
         />
       )}
     </div>

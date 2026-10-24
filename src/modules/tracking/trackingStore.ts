@@ -1,4 +1,4 @@
-import type { Storage } from '../../lib/storage.ts'
+import { createStorage, type Storage } from '../../lib/storage.ts'
 import type { TrackingSession, BodyLogEntry, DayNote } from '../shared/types.ts'
 
 export interface TrackingStore {
@@ -76,3 +76,20 @@ export function createTrackingStore(storage: Storage): TrackingStore {
     addDayNote,
   }
 }
+
+export const trackingStore: TrackingStore = (function () {
+  try {
+    return createTrackingStore(createStorage('maganis'))
+  } catch {
+    return {
+      saveSession: () => {},
+      loadSessions: () => [],
+      saveBodyLog: () => {},
+      loadBodyLog: () => [],
+      addBodyLogEntry: () => {},
+      saveDayNotes: () => {},
+      loadDayNotes: () => [],
+      addDayNote: () => {},
+    }
+  }
+})()

@@ -426,7 +426,7 @@ export const Styleguide: React.FC = () => {
 
               <Field
                 label="حقل يحتوي على خطأ"
-                error="الوزن يجب أن يكون قيمة رقمية موجبة"
+                error="الوزن لازم يكون رقم موجب"
               >
                 <input
                   type="text"
@@ -634,8 +634,8 @@ export const Styleguide: React.FC = () => {
             <Card>
               <EmptyState
                 icon="book-open"
-                title="لا توجد تمارين مخصصة بعد"
-                description="يمكنك إنشاء أول تمرين مخصص لجدولك بسهولة."
+                title="مفيش تمارين مخصصة لسه"
+                description="تقدر تعمل أول تمرين مخصص لجدولك بسهولة."
                 action={{
                   label: 'إضافة تمرين جديد',
                   onClick: () => {},

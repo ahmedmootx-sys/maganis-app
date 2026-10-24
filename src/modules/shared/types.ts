@@ -174,7 +174,7 @@ export type DayKind = 'strength' | 'cardio' | 'mobility' | 'custom'
 export interface CardioConfig {
   activity: string
   plannedMinutes: number
-  effort: 'light' | 'moderate' | 'hard'
+  effort: 'light' | 'moderate' | 'hard' | 'high'
 }
 
 export type ScheduleSlotType = 'rest' | 'cardio' | string
@@ -247,6 +247,15 @@ export interface SessionExercise {
   completed: boolean
 }
 
+export interface CardioSessionDetails {
+  activityId: string
+  activityNameAr: string
+  level: string
+  durationMinutes: number
+  grossKcal: number
+  netKcal: number
+}
+
 export interface TrackingSession {
   id: string
   date: string
@@ -254,6 +263,7 @@ export interface TrackingSession {
   exercises: SessionExercise[]
   notes: string
   createdAt: number
+  cardioDetails?: CardioSessionDetails
 }
 
 export interface BodyLogEntry {
@@ -275,6 +285,7 @@ export interface BackupData {
   trackingSessions: TrackingSession[]
   bodyLog: BodyLogEntry[]
   dayNotes: DayNote[]
+  exerciseOverrides?: Record<string, unknown>
 }
 
 export const DAY_NAMES_AR: string[] = [

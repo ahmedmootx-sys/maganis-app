@@ -306,8 +306,7 @@ export function LimitationsEditor({
                   lineHeight: 1.45,
                 }}
               >
-                هل تشعر بألم حاد في الصدر، دوخة شديدة أثناء المجهود، أو تنميل
-                متزايد؟
+                هل عندك تنميل أو ضعف مفاجئ أو ألم شديد بعد إصابة قوية؟
               </label>
               <Choice
                 variant="segmented"
@@ -324,9 +323,8 @@ export function LimitationsEditor({
 
               {redFlag === true && (
                 <div style={{ marginTop: '6px' }}>
-                  <Callout variant="danger">
-                    سلامتك تأتي أولاً! الأعراض المذكورة تتطلب مراجعة طبيب مختص
-                    قبل ممارسة أي تمارين رياضية لتحديد الأنشطة المناسبة لحالتك.
+                  <Callout variant="warning">
+                    لو عندك تنميل أو ضعف مفاجئ أو وجع شديد بعد إصابة قوية، استشير دكتور قبل أي تمرين. تقدر تكمّل، بس متبدأش أي تمرين بيحمّل على المنطقة دي قبل ما تكشف.
                   </Callout>
                 </div>
               )}

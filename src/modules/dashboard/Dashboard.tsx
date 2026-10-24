@@ -28,10 +28,11 @@ import { ExerciseThumb } from '../../components/ExerciseThumb'
 import { resolveSession, formatPrescription } from '../workout/sessionResolver'
 import {
   getOrDeriveSchedule,
-  getScheduledSessionsCount,
   getNextSession,
   getOrderedWeekdays,
 } from '../workout/scheduleManager'
+import { selectWeekLoad } from '../workout/weekLoadSelector'
+import { ScheduleMismatchCallout } from '../workout/ScheduleMismatchCallout'
 
 export interface DashboardProps {
   profile: UserProfile | null
@@ -151,9 +152,9 @@ export function Dashboard({
     () => getOrDeriveSchedule(profile, program),
     [profile, program],
   )
-  const scheduledCount = useMemo(
-    () => getScheduledSessionsCount(schedule),
-    [schedule],
+  const weekLoad = useMemo(
+    () => selectWeekLoad(profile, program),
+    [profile, program],
   )
 
   const todayDayIndex = new Date().getDay()
@@ -238,17 +239,7 @@ export function Dashboard({
     )
   }, [recentSessions, weekStartDay])
 
-  // Check for training days mismatch between program and profile
-  const trainingDaysMismatch = useMemo(() => {
-    if (!program || !profile?.trainingDaysPerWeek) return null
-    if (program.days.length !== profile.trainingDaysPerWeek) {
-      return {
-        programDays: program.days.length,
-        goalDays: profile.trainingDaysPerWeek,
-      }
-    }
-    return null
-  }, [program, profile])
+
 
   return (
     <div className="screen-container home-screen" dir="rtl">
@@ -320,58 +311,18 @@ export function Dashboard({
           </Callout>
         )}
 
-        {/* Training days mismatch Callout with 3 distinct actions */}
-        {trainingDaysMismatch && (
-          <Callout variant="warning" title="اختلاف في أيام التدريب">
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-            >
-              <div>
-                جدولك الحالي {trainingDaysMismatch.programDays} أيام بينما هدف
-                ملفك الشخصي {trainingDaysMismatch.goalDays} أيام أسبوعياً.
-              </div>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                <Button
-                  size="sm"
-                  variant="subtle"
-                  onClick={() => {
-                    if (profile && onUpdateProfile && program) {
-                      onUpdateProfile({
-                        ...profile,
-                        trainingDaysPerWeek: program.days.length,
-                      })
-                    } else if (onSyncTrainingDays) {
-                      onSyncTrainingDays()
-                    }
-                  }}
-                >
-                  اعتمد {trainingDaysMismatch.programDays} أيام
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    if (program && program.days.length > 0) {
-                      onViewDay?.(program.days[0])
-                    }
-                  }}
-                >
-                  أضف يومًا
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    setSelectedGoalDays(profile?.trainingDaysPerWeek ?? 4)
-                    setShowMismatchEditModal(true)
-                  }}
-                >
-                  عدّل عدد الأيام
-                </Button>
-              </div>
-            </div>
-          </Callout>
-        )}
+        {/* Shared Schedule Mismatch Callout */}
+        <ScheduleMismatchCallout
+          profile={profile}
+          program={program}
+          onUpdateProfile={onUpdateProfile}
+          onOpenDaysAdjust={() => {
+            if (program && program.days.length > 0) {
+              onViewDay?.(program.days[0])
+            }
+          }}
+          showToast={onSyncTrainingDays ? () => onSyncTrainingDays() : undefined}
+        />
 
         {/* Card تمرين اليوم أو ابدأ برنامجك عند عدم وجود جدول */}
         <Section
@@ -591,12 +542,12 @@ export function Dashboard({
             label="الجلسات هذا الأسبوع"
             value={
               program && program.days.length > 0
-                ? `${sessionsThisWeek} من ${scheduledCount}`
+                ? `${sessionsThisWeek} من ${weekLoad.totalScheduledSessions}`
                 : '—'
             }
             secondary={
               program && program.days.length > 0
-                ? `${recentSessions.length} إجمالي`
+                ? weekLoad.breakdownAr
                 : undefined
             }
           />
@@ -627,10 +578,20 @@ export function Dashboard({
               const isToday = w.weekday === todayDayIndex
               const isDone = sessionDatesThisWeek.has(w.weekday)
               const slot = schedule[w.weekday]
-              const isTrainingDay = Boolean(
-                slot && slot !== 'rest' && slot !== 'cardio',
+              const day = program?.days?.find(
+                (d) => d.id === slot || String(d.dayIndex) === slot,
               )
-              const isCardio = slot === 'cardio'
+              const kind = day
+                ? day.kind || 'strength'
+                : slot === 'cardio'
+                  ? 'cardio'
+                  : slot === 'rest'
+                    ? 'rest'
+                    : null
+              const isTrainingDay = kind === 'strength'
+              const isCardio = kind === 'cardio'
+              const isMobility = kind === 'mobility'
+              const isRest = kind === 'rest'
               return (
                 <div
                   key={w.weekday}
@@ -687,7 +648,9 @@ export function Dashboard({
                       <Icon name="dumbbell" size={12} />
                     ) : isCardio ? (
                       <Icon name="activity" size={12} />
-                    ) : slot === 'rest' ? (
+                    ) : isMobility ? (
+                      <Icon name="heart" size={12} />
+                    ) : isRest ? (
                       <Icon name="moon" size={12} />
                     ) : (
                       <span

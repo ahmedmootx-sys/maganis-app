@@ -23,7 +23,7 @@ export interface Prescription {
  * to guarantee day.name never contains an auto-generated weekday word.
  */
 export function cleanDayName(name: string | undefined): string {
-  if (!name) return 'يوم تدريبي'
+  if (!name) return ''
   // Remove weekday prefix like "الإثنين — ", "الأحد: ", etc.
   let cleaned = name
     .replace(
@@ -31,8 +31,8 @@ export function cleanDayName(name: string | undefined): string {
       '',
     )
     .trim()
-  if (!cleaned) {
-    cleaned = 'يوم تدريبي'
+  if (cleaned === 'يوم تدريبي') {
+    cleaned = ''
   }
   return cleaned
 }

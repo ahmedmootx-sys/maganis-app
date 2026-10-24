@@ -161,7 +161,7 @@ export const DateField: React.FC<DateFieldProps> = ({
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              overflow: 'hidden',
+              overflow: 'hidden' /* clip-ok: text ellipsis truncation */,
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}
@@ -241,9 +241,13 @@ export const DateField: React.FC<DateFieldProps> = ({
           className="date-field__native-input"
           style={{
             position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden' /* clip-ok: visual element boundary */,
+            clip: 'rect(0, 0, 0, 0)',
+            border: 0,
             opacity: 0,
             pointerEvents: 'none',
             zIndex: -1,

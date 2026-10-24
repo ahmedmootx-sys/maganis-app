@@ -38,7 +38,17 @@ import {
   Callout,
   Field,
   Icon,
+  Choice,
 } from '../../ui/index.ts'
+import { CardioRunner } from './CardioRunner.tsx'
+import {
+  calculateCardioEnergy,
+  getCardioActivity,
+  type CardioActivityId,
+  type CardioEffortLevel,
+} from './cardioEngine.ts'
+import { trackingStore } from '../tracking/trackingStore.ts'
+import type { TrackingSession } from '../shared/types.ts'
 import { getExerciseTags } from './limitations.ts'
 import {
   getOrDeriveSchedule,
@@ -53,6 +63,9 @@ import {
 } from './sessionResolver.ts'
 import { DaysAdjustSheet } from './DaysAdjustSheet.tsx'
 import { Claim } from '../../content/Claim.tsx'
+import { selectWeekLoad } from './weekLoadSelector.ts'
+import { ScheduleMismatchCallout } from './ScheduleMismatchCallout.tsx'
+import { plural } from '../../utils/plural.ts'
 import { saveFile } from '../../utils/saveFile.ts'
 import {
   IconSearch,
@@ -132,53 +145,269 @@ export function deriveDayMuscleSummary(
 
 interface CardioDayScreenProps {
   day: ProgramDay
+  profile?: UserProfile | null
+  onUpdateProfile?: (updatedProfile: UserProfile) => void
   onBack: () => void
   onUpdateConfig: (newConfig: Partial<CardioConfig>) => void
   onOpenOverflow: () => void
   onCompleteSession?: () => void
+  onSaveSession?: (session: TrackingSession) => void
+}
+
+function normalizeCardioActivityId(val?: string): CardioActivityId {
+  if (!val) return 'run'
+  if (
+    val === 'run' ||
+    val === 'walk' ||
+    val === 'bike' ||
+    val === 'swim' ||
+    val === 'jumprope' ||
+    val === 'rowing'
+  ) {
+    return val
+  }
+  if (val.includes('جري')) return 'run'
+  if (val.includes('مشي')) return 'walk'
+  if (val.includes('دراج')) return 'bike'
+  if (val.includes('سباح')) return 'swim'
+  if (val.includes('حبل')) return 'jumprope'
+  if (val.includes('تجديف')) return 'rowing'
+  return 'run'
+}
+
+function normalizeCardioEffort(val?: string): CardioEffortLevel {
+  if (val === 'light' || val === 'moderate' || val === 'high') return val
+  if (val === 'hard') return 'high'
+  return 'moderate'
 }
 
 export function CardioDayScreen({
   day,
+  profile,
+  onUpdateProfile,
   onBack,
   onUpdateConfig,
   onOpenOverflow,
   onCompleteSession,
+  onSaveSession,
 }: CardioDayScreenProps) {
-  const config = day.cardioConfig || {
-    activity: 'جري',
-    plannedMinutes: 30,
-    effort: 'moderate',
+  const currentConfig = day.cardio || day.cardioConfig
+
+  const [activityId, setActivityId] = useState<CardioActivityId>(() =>
+    normalizeCardioActivityId(currentConfig?.activity),
+  )
+  const [plannedMinutes, setPlannedMinutes] = useState<number>(() => {
+    const min = currentConfig?.plannedMinutes
+    return typeof min === 'number' && min >= 5 && min <= 180 ? min : 30
+  })
+  const [effort, setEffort] = useState<CardioEffortLevel>(() =>
+    normalizeCardioEffort(currentConfig?.effort),
+  )
+
+  const [customWeight, setCustomWeight] = useState<string>('')
+  const [weightInputError, setWeightInputError] = useState<string>('')
+  const [showInfoSheet, setShowInfoSheet] = useState(false)
+  const [toastMsg, setToastMsg] = useState<string | null>(null)
+
+  // Check for active in-progress session to resume
+  const [isRunnerActive, setIsRunnerActive] = useState<boolean>(() => {
+    try {
+      return !!localStorage.getItem('maganis:cardio_active_session')
+    } catch {
+      return false
+    }
+  })
+
+  // Body weight resolution
+  const profileWeight = profile?.body?.weightKg
+  const effectiveWeight = useMemo(() => {
+    if (typeof profileWeight === 'number' && profileWeight > 0) {
+      return profileWeight
+    }
+    const parsed = parseFloat(customWeight)
+    return !isNaN(parsed) && parsed > 0 ? parsed : 0
+  }, [profileWeight, customWeight])
+
+  // Energy estimate calculation (Empty or invalid input returns null; NEVER 0 or NaN)
+  const estimate = useMemo(() => {
+    if (
+      !activityId ||
+      !effort ||
+      plannedMinutes < 5 ||
+      plannedMinutes > 180 ||
+      effectiveWeight <= 0
+    ) {
+      return null
+    }
+    return calculateCardioEnergy(
+      activityId,
+      effort,
+      plannedMinutes,
+      effectiveWeight,
+    )
+  }, [activityId, effort, plannedMinutes, effectiveWeight])
+
+  const selectedActivityDef = useMemo(
+    () => getCardioActivity(activityId),
+    [activityId],
+  )
+
+  function handleActivityChange(val: CardioActivityId) {
+    setActivityId(val)
+    onUpdateConfig({ activity: val })
   }
 
-  const activities: Array<{ id: string; label: string }> = [
-    { id: 'جري', label: 'جري خارجي / سير' },
-    { id: 'مشي سريع', label: 'مشي سريع / انحدار' },
-    { id: 'دراجة ثابتة', label: 'دراجة ثابتة' },
-    { id: 'سباحة', label: 'سباحة حرة' },
-    { id: 'نط حبل', label: 'نط الحبل' },
-    { id: 'جهاز تجديف', label: 'جهاز التجديف' },
-  ]
+  function handleDurationChange(mins: number) {
+    const clamped = Math.max(5, Math.min(180, mins))
+    setPlannedMinutes(clamped)
+    onUpdateConfig({ plannedMinutes: clamped })
+  }
+
+  function handleEffortChange(eff: CardioEffortLevel) {
+    setEffort(eff)
+    onUpdateConfig({ effort: eff })
+  }
+
+  function handleSaveCustomWeight() {
+    const w = parseFloat(customWeight)
+    if (isNaN(w) || w < 25 || w > 350) {
+      setWeightInputError('الوزن لازم يكون بين 25 و 350 كجم')
+      return
+    }
+    setWeightInputError('')
+    if (profile && onUpdateProfile) {
+      const updated: UserProfile = {
+        ...profile,
+        body: {
+          ...profile.body,
+          weightKg: w,
+        },
+        updatedAt: Date.now(),
+      }
+      onUpdateProfile(updated)
+    }
+    setToastMsg(`تم حفظ الوزن (${w} كجم)`)
+    setTimeout(() => setToastMsg(null), 3000)
+  }
+
+  // Activity Choice options with icons and Arabic names
+  const ACTIVITY_OPTIONS = useMemo(
+    () => [
+      {
+        value: 'run' as const,
+        label: 'جري خارجي',
+        icon: <Icon name="activity" size={20} />,
+      },
+      {
+        value: 'walk' as const,
+        label: 'مشي سريع / بميل',
+        icon: <Icon name="trending-up" size={20} />,
+      },
+      {
+        value: 'bike' as const,
+        label: 'دراجة ثابتة',
+        icon: <Icon name="refresh-cw" size={20} />,
+      },
+      {
+        value: 'swim' as const,
+        label: 'سباحة حرة',
+        icon: <Icon name="heart" size={20} />,
+      },
+      {
+        value: 'jumprope' as const,
+        label: 'نط الحبل',
+        icon: <Icon name="zap" size={20} />,
+      },
+      {
+        value: 'rowing' as const,
+        label: 'جهاز التجديف',
+        icon: <Icon name="sliders-horizontal" size={20} />,
+      },
+    ],
+    [],
+  )
+
+  // Effort options with ui_hint_ar as description
+  const EFFORT_OPTIONS = useMemo(() => {
+    return [
+      {
+        value: 'light' as const,
+        label: 'خفيف',
+        description:
+          selectedActivityDef?.levels.light.ui_hint_ar ||
+          'وتيرة خفيفة ومريحة',
+      },
+      {
+        value: 'moderate' as const,
+        label: 'متوسط',
+        description:
+          selectedActivityDef?.levels.moderate.ui_hint_ar ||
+          'وتيرة متوسطة مع جهد ملحوظ',
+      },
+      {
+        value: 'high' as const,
+        label: 'عالي',
+        description:
+          selectedActivityDef?.levels.high.ui_hint_ar ||
+          'وتيرة سريعة وجهد مكثف',
+      },
+    ]
+  }, [selectedActivityDef])
 
   const durations = [15, 20, 30, 45, 60]
 
-  const effortLevels = [
-    {
-      value: 'light' as const,
-      label: 'خفيف (Zone 2)',
-      desc: 'وتيرة يمكنك التحدث خلالها براحة — مثالي لحرق الدهون والاستشفاء العضلي',
-    },
-    {
-      value: 'moderate' as const,
-      label: 'متوسط (Zone 3)',
-      desc: 'وتيرة ثابتة مع سرعة تنفس متزايدة — لرفع اللياقة القلبية التنفسية',
-    },
-    {
-      value: 'hard' as const,
-      label: 'عالي (Zone 4-5 / HIIT)',
-      desc: 'فترات انفجارية عالية الشدة تليها فترات راحة — لاستهلاك طاقة مكثف',
-    },
-  ]
+  // Disabled reason line
+  const disabledReason = useMemo(() => {
+    if (effectiveWeight <= 0) {
+      return 'سجّل وزن جسمك أولاً لحساب السعرات وبدء الجلسة'
+    }
+    if (plannedMinutes < 5 || plannedMinutes > 180) {
+      return 'مدة التمرين لازم تكون بين 5 و 180 دقيقة'
+    }
+    if (!activityId || !effort) {
+      return 'اختر نوع النشاط ومستوى الجهد للبدء'
+    }
+    return null
+  }, [effectiveWeight, plannedMinutes, activityId, effort])
+
+  const isStartDisabled = disabledReason !== null
+
+  // Active Runner screen
+  if (isRunnerActive) {
+    return (
+      <CardioRunner
+        activityId={activityId}
+        level={effort}
+        durationMinutes={plannedMinutes}
+        weightKg={effectiveWeight > 0 ? effectiveWeight : 70}
+        onCancel={() => setIsRunnerActive(false)}
+        onFinish={(sessionData) => {
+          setIsRunnerActive(false)
+          const nowStr = new Date().toISOString().slice(0, 10)
+          const session: TrackingSession = {
+            id: `cardio-${Date.now()}`,
+            date: nowStr,
+            programDayIndex: day.dayIndex,
+            exercises: [],
+            notes: `جلسة كارديو: ${sessionData.activityNameAr} (${sessionData.durationMinutes} دقيقة) · الإجمالي: ${sessionData.grossKcal} سعرة`,
+            createdAt: Date.now(),
+            cardioDetails: sessionData,
+          }
+          trackingStore.saveSession(session)
+          if (onSaveSession) {
+            onSaveSession(session)
+          }
+          if (onCompleteSession) {
+            onCompleteSession()
+          }
+          setToastMsg(
+            `تم حفظ جلسة الكارديو: ${plural(sessionData.durationMinutes, 'minute')} (${plural(sessionData.grossKcal, 'calorie')})`,
+          )
+          setTimeout(() => setToastMsg(null), 3500)
+        }}
+      />
+    )
+  }
 
   return (
     <div className="screen-container day-screen" dir="rtl">
@@ -207,13 +436,74 @@ export function CardioDayScreen({
           padding: '16px 16px 88px',
         }}
       >
-        {/* Summary Card */}
+        {/* Weight input prompt if missing */}
+        {effectiveWeight <= 0 && (
+          <div
+            className="card"
+            style={{
+              padding: '14px 16px',
+              borderRadius: '12px',
+              background: 'var(--color-surface-2)',
+              border: '1px dashed var(--color-accent)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '13.5px',
+                fontWeight: 700,
+                color: 'var(--color-text)',
+              }}
+            >
+              الوزن الحالي مطلوب لحساب السعرات
+            </span>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="number"
+                placeholder="وزنك بالكجم (مثلاً 75)"
+                value={customWeight}
+                onChange={(e) => setCustomWeight(e.target.value)}
+                style={{
+                  flex: 1,
+                  height: '40px',
+                  padding: '0 12px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--color-divider)',
+                  background: 'var(--color-surface)',
+                  color: 'var(--color-text)',
+                  fontSize: '14px',
+                }}
+              />
+              <Button
+                variant="subtle"
+                size="sm"
+                onClick={handleSaveCustomWeight}
+              >
+                حفظ الوزن
+              </Button>
+            </div>
+            {weightInputError && (
+              <span
+                style={{
+                  fontSize: '12px',
+                  color: 'var(--color-danger)',
+                }}
+              >
+                {weightInputError}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Live Energy Estimate Card */}
         <div
           className="card"
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '8px',
+            gap: '10px',
             padding: '16px',
             borderRadius: '16px',
             border: '1px solid var(--color-divider)',
@@ -231,108 +521,274 @@ export function CardioDayScreen({
               style={{
                 fontSize: '12px',
                 fontWeight: 700,
-                color: '#0288d1',
-                background: 'rgba(2, 136, 209, 0.12)',
+                color: 'var(--color-info)',
+                background:
+                  'var(--color-info-surface, rgba(96, 165, 250, 0.12))',
                 padding: '3px 8px',
                 borderRadius: '6px',
               }}
             >
-              جلسة كارديو
+              تقدير حرق الطاقة
             </span>
-            <span
+            <button
+              type="button"
+              onClick={() => setShowInfoSheet(true)}
+              aria-label="الفرق بين الإجمالي والصافي"
               style={{
-                fontSize: '13px',
-                color: 'var(--muted)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--color-accent-text, var(--color-accent))',
+                fontSize: '12px',
                 fontWeight: 600,
-                fontVariantNumeric: 'tabular-nums',
+                cursor: 'pointer',
+                padding: '2px 4px',
               }}
             >
-              {config.plannedMinutes} دقيقة مخطط لها
-            </span>
+              <Icon name="info" size={14} />
+              <span>الفرق بين الإجمالي والصافي</span>
+            </button>
           </div>
-          <div
-            style={{
-              fontSize: '17px',
-              fontWeight: 800,
-              color: 'var(--ink)',
-            }}
-          >
-            {config.activity} · الشدة:{' '}
-            {config.effort === 'light'
-              ? 'خفيف'
-              : config.effort === 'hard'
-                ? 'عالي الشدة'
-                : 'متوسط'}
+
+          {estimate ? (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+              }}
+            >
+              {/* Gross Energy (Headline) */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  gap: '8px',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    color: 'var(--color-text-2)',
+                  }}
+                >
+                  الإجمالي:
+                </span>
+                <span
+                  style={{
+                    fontSize: '26px',
+                    fontWeight: 900,
+                    color: 'var(--color-accent)',
+                    fontVariantNumeric: 'tabular-nums',
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {Math.round(estimate.grossSessionKcal)}
+                </span>
+                <span
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
+                  }}
+                >
+                  سعرة
+                </span>
+              </div>
+
+              {/* Net Energy (Second line) */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  gap: '6px',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '12.5px',
+                    fontWeight: 600,
+                    color: 'var(--color-text-2)',
+                  }}
+                >
+                  الزيادة بسبب التمرين (الصافي):
+                </span>
+                <span
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: 800,
+                    color: 'var(--color-text)',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {Math.round(estimate.netSessionKcal)}
+                </span>
+                <span
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--color-text-2)',
+                  }}
+                >
+                  سعرة
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div
+              style={{
+                fontSize: '13.5px',
+                color: 'var(--color-text-2)',
+                padding: '8px 0',
+                textAlign: 'center',
+              }}
+            >
+              {effectiveWeight <= 0
+                ? 'سجّل وزن جسمك لعرض حرق الطاقة التقديري'
+                : 'حدد خيارات التمرين لحساب السعرات'}
+            </div>
+          )}
+
+          {/* Scientific Caveat via Claim */}
+          <div style={{ marginTop: '2px' }}>
+            <Claim id="cardio_met_caveat" />
           </div>
-          <Claim id="cardio_heart_health" />
         </div>
 
-        {/* Activity Picker */}
+        {/* 1. Activity Choice (6 options with icons & Arabic names) */}
         <section className="screen-section">
           <div className="section-title">
             <span>نوع النشاط البدني</span>
           </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '8px',
-            }}
-          >
-            {activities.map((act) => {
-              const isSelected = config.activity === act.id
-              return (
-                <button
-                  key={act.id}
-                  type="button"
-                  onClick={() => onUpdateConfig({ activity: act.id })}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    padding: '12px',
-                    borderRadius: '12px',
-                    border: isSelected
-                      ? '1.5px solid var(--color-accent)'
-                      : '1px solid var(--color-divider)',
-                    background: isSelected
-                      ? 'var(--color-surface-2)'
-                      : 'var(--color-surface)',
-                    color: isSelected
-                      ? 'var(--color-accent-text)'
-                      : 'var(--color-text)',
-                    fontWeight: isSelected ? 700 : 500,
-                    fontSize: '13.5px',
-                    cursor: 'pointer',
-                    textAlign: 'center',
-                  }}
-                >
-                  <span>{act.label}</span>
-                </button>
-              )
-            })}
-          </div>
+          <Choice
+            variant="segmented"
+            options={ACTIVITY_OPTIONS}
+            value={activityId}
+            onChange={(val) => handleActivityChange(val as CardioActivityId)}
+            ariaLabel="نوع النشاط البدني"
+          />
         </section>
 
-        {/* Planned Duration Picker */}
+        {/* 2. Duration Stepper + Direct Input */}
         <section className="screen-section">
           <div className="section-title">
             <span>مدة الجلسة (بالدقائق)</span>
           </div>
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              marginBottom: '10px',
+            }}
+          >
+            <button
+              type="button"
+              aria-label="إنقاص المدة 5 دقائق"
+              disabled={plannedMinutes <= 5}
+              onClick={() => handleDurationChange(plannedMinutes - 5)}
+              style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: 'var(--radius-control)',
+                border: '1px solid var(--color-divider)',
+                background: 'var(--color-surface-2)',
+                color: 'var(--color-text)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: plannedMinutes <= 5 ? 'not-allowed' : 'pointer',
+                opacity: plannedMinutes <= 5 ? 0.4 : 1,
+              }}
+            >
+              <Icon name="minus" size={18} />
+            </button>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                flex: 1,
+              }}
+            >
+              <input
+                type="number"
+                min={5}
+                max={180}
+                value={plannedMinutes}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10)
+                  if (!isNaN(val)) {
+                    handleDurationChange(val)
+                  }
+                }}
+                aria-label="مدة الجلسة بالدقائق"
+                style={{
+                  width: '84px',
+                  height: '44px',
+                  textAlign: 'center',
+                  fontSize: '18px',
+                  fontWeight: 800,
+                  borderRadius: 'var(--radius-control)',
+                  border: '1px solid var(--color-divider)',
+                  background: 'var(--color-surface)',
+                  color: 'var(--color-text)',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: 'var(--color-text-2)',
+                }}
+              >
+                دقيقة
+              </span>
+            </div>
+
+            <button
+              type="button"
+              aria-label="زيادة المدة 5 دقائق"
+              disabled={plannedMinutes >= 180}
+              onClick={() => handleDurationChange(plannedMinutes + 5)}
+              style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: 'var(--radius-control)',
+                border: '1px solid var(--color-divider)',
+                background: 'var(--color-surface-2)',
+                color: 'var(--color-text)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: plannedMinutes >= 180 ? 'not-allowed' : 'pointer',
+                opacity: plannedMinutes >= 180 ? 0.4 : 1,
+              }}
+            >
+              <Icon name="plus" size={18} />
+            </button>
+          </div>
+
+          {/* Quick preset chips */}
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {durations.map((m) => {
-              const isSelected = config.plannedMinutes === m
+              const isSelected = plannedMinutes === m
               return (
                 <button
                   key={m}
                   type="button"
-                  onClick={() => onUpdateConfig({ plannedMinutes: m })}
+                  onClick={() => handleDurationChange(m)}
                   style={{
                     flex: '1 0 calc(20% - 8px)',
-                    minWidth: '56px',
-                    padding: '10px 4px',
-                    borderRadius: '10px',
+                    minWidth: '52px',
+                    padding: '8px 4px',
+                    borderRadius: '8px',
                     border: isSelected
                       ? '1.5px solid var(--color-accent)'
                       : '1px solid var(--color-divider)',
@@ -340,10 +796,10 @@ export function CardioDayScreen({
                       ? 'var(--color-accent)'
                       : 'var(--color-surface)',
                     color: isSelected
-                      ? 'var(--btn-primary-fg, #0b0c0e)'
+                      ? 'var(--color-accent-on)'
                       : 'var(--color-text)',
                     fontWeight: 700,
-                    fontSize: '14px',
+                    fontSize: '13.5px',
                     cursor: 'pointer',
                     textAlign: 'center',
                     fontVariantNumeric: 'tabular-nums',
@@ -356,101 +812,86 @@ export function CardioDayScreen({
           </div>
         </section>
 
-        {/* Effort Level Picker */}
+        {/* 3. Effort Level (with ui_hint_ar under each option) */}
         <section className="screen-section">
           <div className="section-title">
-            <span>مستوى الجهد والشدة</span>
+            <span>مستوى الشدة والجهد</span>
           </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-            }}
-          >
-            {effortLevels.map((eff) => {
-              const isSelected = config.effort === eff.value
-              return (
-                <button
-                  key={eff.value}
-                  type="button"
-                  onClick={() => onUpdateConfig({ effort: eff.value })}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    gap: '4px',
-                    padding: '12px 14px',
-                    borderRadius: '12px',
-                    border: isSelected
-                      ? '1.5px solid var(--color-accent)'
-                      : '1px solid var(--color-divider)',
-                    background: isSelected
-                      ? 'var(--color-surface-2)'
-                      : 'var(--color-surface)',
-                    cursor: 'pointer',
-                    textAlign: 'right',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontWeight: 700,
-                        fontSize: '13.5px',
-                        color: isSelected
-                          ? 'var(--color-accent-text)'
-                          : 'var(--color-text)',
-                      }}
-                    >
-                      {eff.label}
-                    </span>
-                    {isSelected && (
-                      <Icon
-                        name="check"
-                        size={16}
-                        style={{ color: 'var(--color-accent)' }}
-                      />
-                    )}
-                  </div>
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      color: 'var(--color-text-2)',
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {eff.desc}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
+          <Choice
+            variant="option-card"
+            options={EFFORT_OPTIONS}
+            value={effort}
+            onChange={(val) => handleEffortChange(val as CardioEffortLevel)}
+            ariaLabel="مستوى الشدة والجهد"
+          />
         </section>
-
-        {/* Educational Claims (hidden until coach supplies sourced text) */}
-        <Claim id="cardio_zone2_fatloss" />
-        <Claim id="cardio_hydration_advice" />
-        <Claim id="cardio_timing_advice" />
       </div>
 
       {/* Sticky Bottom Bar */}
       <div className="sticky-bottom-bar">
+        {disabledReason && (
+          <div
+            style={{
+              fontSize: '12px',
+              color: 'var(--color-text-2)',
+              textAlign: 'center',
+              marginBottom: '6px',
+            }}
+          >
+            {disabledReason}
+          </div>
+        )}
         <Button
           variant="primary"
           size="lg"
           fullWidth
-          onClick={onCompleteSession}
+          disabled={isStartDisabled}
+          onClick={() => setIsRunnerActive(true)}
         >
-          إتمام وتسجيل جلسة الكارديو ({config.plannedMinutes} دقيقة)
+          ابدأ جلسة الكارديو
         </Button>
       </div>
+
+      {/* Gross vs Net Info Sheet */}
+      <Sheet
+        isOpen={showInfoSheet}
+        onClose={() => setShowInfoSheet(false)}
+        title="الفرق بين الإجمالي والصافي"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            padding: '16px',
+          }}
+        >
+          <Claim id="cardio_gross_vs_net" />
+          <div
+            style={{
+              fontSize: '13.5px',
+              color: 'var(--color-text-2)',
+              lineHeight: 1.5,
+            }}
+          >
+            <strong>الإجمالي:</strong> يشمل إجمالي الطاقة المصروفة أثناء
+            التمرين متضمنة حرق الراحة الطبيعي.
+          </div>
+          <div
+            style={{
+              fontSize: '13.5px',
+              color: 'var(--color-text-2)',
+              lineHeight: 1.5,
+            }}
+          >
+            <strong>الزيادة بسبب التمرين:</strong> الطاقة الإضافية المحروقة
+            حصرياً بفعل الجهد البدني.
+          </div>
+        </div>
+      </Sheet>
+
+      {/* Local Toast notification */}
+      {toastMsg && <Toast message={toastMsg} />}
     </div>
   )
 }
@@ -476,6 +917,11 @@ export function WeeklyPlanView({
   // Navigation: null = Week overview; number = Day screen
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(
     initialSelectedDayIndex,
+  )
+
+  const weekLoad = useMemo(
+    () => selectWeekLoad(profile, program),
+    [profile, program],
   )
 
   // Week Schedule Editor State
@@ -978,8 +1424,8 @@ export function WeeklyPlanView({
         <div className="screen-content" style={{ padding: '24px 16px' }}>
           <EmptyState
             icon={<IconDumbbell size={48} />}
-            title="لا يوجد جدول تدريبي حالي"
-            message="قم بإنشاء برنامج تدريبي علمي مخصص وفقاً لأيامك وهدفك الرياضي، أو اختر تصميماً يدوياً."
+            title="مفيش جدول تمرين دلوقتي"
+            message="صمم برنامج تمرين علمي مخصص لأيامك وهدفك، أو اختار تصميم يدوي."
             action={
               <div
                 style={{
@@ -1018,17 +1464,15 @@ export function WeeklyPlanView({
         <>
           <CardioDayScreen
             day={selectedDay}
+            profile={profile}
+            onUpdateProfile={onUpdateProfile}
             onBack={handleBackToOverview}
             onUpdateConfig={(newConfig) =>
               handleUpdateCardioConfig(selectedDay.dayIndex, newConfig)
             }
             onOpenOverflow={() => setIsDayOverflowOpen(true)}
             onCompleteSession={() => {
-              if (onOpenSessionLogger) {
-                onOpenSessionLogger()
-              } else {
-                showToast('تم تسجيل جلسة الكارديو بنجاح.')
-              }
+              showToast('تم إتمام وتسجيل جلسة الكارديو بنجاح')
             }}
           />
 
@@ -1951,55 +2395,13 @@ export function WeeklyPlanView({
         )}
 
         {/* Training days mismatch Callout */}
-        {(() => {
-          const strengthDaysCount = program.days.filter(
-            (d) => d.kind !== 'cardio',
-          ).length
-          if (
-            !profile?.trainingDaysPerWeek ||
-            strengthDaysCount === profile.trainingDaysPerWeek
-          ) {
-            return null
-          }
-          return (
-            <Callout
-              variant="warning"
-              title="اختلاف في أيام التدريب"
-              action={
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  <Button
-                    size="sm"
-                    variant="subtle"
-                    onClick={() => {
-                      if (profile && onUpdateProfile) {
-                        onUpdateProfile({
-                          ...profile,
-                          trainingDaysPerWeek: strengthDaysCount,
-                        })
-                        showToast(
-                          `تم اعتماد ${strengthDaysCount} أيام في الملف الشخصي`,
-                        )
-                      }
-                    }}
-                  >
-                    اعتمد {strengthDaysCount} أيام
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setIsDaysAdjustSheetOpen(true)}
-                  >
-                    تعديل الجدول
-                  </Button>
-                </div>
-              }
-            >
-              برنامجك فيه {strengthDaysCount} أيام تمارين مقاومة (تم استثناء
-              الكارديو)، بينما اخترت {profile.trainingDaysPerWeek} أيام في الملف
-              الشخصي.
-            </Callout>
-          )
-        })()}
+        <ScheduleMismatchCallout
+          profile={profile}
+          program={program}
+          onUpdateProfile={onUpdateProfile}
+          onOpenDaysAdjust={() => setIsDaysAdjustSheetOpen(true)}
+          showToast={showToast}
+        />
 
         {/* Program Header: Name + N أيام أسبوعياً + small "مقفل" status */}
         <div
@@ -2041,7 +2443,7 @@ export function WeeklyPlanView({
               color: 'var(--muted)',
             }}
           >
-            <span>{program.days.length} أيام أسبوعياً</span>
+            <span>{plural(weekLoad.totalScheduledSessions, 'يوم')} أسبوعياً</span>
             {program.isLocked && (
               <span
                 style={{
@@ -2113,9 +2515,15 @@ export function WeeklyPlanView({
                       (w) => w.weekday === Number(scheduledWeekday),
                     )
                   : null
+
+              // B6.b: Row title = custom name if set, else «weekday · focus» (e.g. «السبت · صدر / بطن»); no generic word
+              let titlePart = cleanName
+              if (!titlePart || titlePart === 'يوم تدريبي') {
+                titlePart = day.focus || (isCardio ? 'كارديو' : deriveDayMuscleSummary(day.exercises))
+              }
               const displayTitle = weekdayInfo
-                ? `${weekdayInfo.nameAr} · ${cleanName}`
-                : cleanName
+                ? `${weekdayInfo.nameAr} · ${titlePart}`
+                : titlePart
 
               return (
                 <ListRow
@@ -2131,19 +2539,19 @@ export function WeeklyPlanView({
                         background: isToday
                           ? 'var(--color-accent)'
                           : isCardio
-                            ? 'rgba(2, 136, 209, 0.15)'
+                            ? 'var(--color-info-surface, rgba(96, 165, 250, 0.15))'
                             : 'var(--color-surface-2)',
                         color: isToday
-                          ? '#ffffff'
+                          ? 'var(--color-accent-on)'
                           : isCardio
-                            ? '#0288d1'
-                            : 'var(--ink)',
+                            ? 'var(--color-info)'
+                            : 'var(--color-text)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontWeight: 800,
                         fontSize: '16px',
-                        border: '1px solid var(--line)',
+                        border: '1px solid var(--color-divider)',
                         fontVariantNumeric: 'tabular-nums',
                       }}
                     >
@@ -2155,38 +2563,59 @@ export function WeeklyPlanView({
                       style={{
                         display: 'flex',
                         alignItems: 'center',
+                        justifyContent: 'space-between',
                         gap: '6px',
+                        flexWrap: 'wrap',
+                        minWidth: 0,
+                        width: '100%',
                       }}
                     >
-                      <span>{displayTitle}</span>
-                      {isCardio && (
-                        <span
-                          style={{
-                            fontSize: '11px',
-                            fontWeight: 700,
-                            color: '#0288d1',
-                            background: 'rgba(2, 136, 209, 0.12)',
-                            padding: '2px 6px',
-                            borderRadius: '6px',
-                          }}
-                        >
-                          كارديو
-                        </span>
-                      )}
-                      {isToday && (
-                        <span
-                          style={{
-                            fontSize: '11px',
-                            fontWeight: 700,
-                            color: 'var(--accent)',
-                            background: 'var(--accent-soft)',
-                            padding: '2px 6px',
-                            borderRadius: '6px',
-                          }}
-                        >
-                          اليوم
-                        </span>
-                      )}
+                      <span
+                        style={{
+                          minWidth: 0,
+                          overflow: 'hidden' /* clip-ok: text-ellipsis */,
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {displayTitle}
+                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                        {isCardio && (
+                          <span
+                            className="badge"
+                            style={{
+                              fontSize: '11px',
+                              fontWeight: 700,
+                              color: 'var(--color-info)',
+                              background: 'var(--color-info-surface, rgba(96, 165, 250, 0.12))',
+                              padding: '2px 6px',
+                              borderRadius: '6px',
+                              whiteSpace: 'nowrap',
+                              flex: 'none',
+                            }}
+                          >
+                            كارديو
+                          </span>
+                        )}
+                        {isToday && (
+                          <span
+                            className="badge"
+                            style={{
+                              fontSize: '11px',
+                              fontWeight: 700,
+                              color: 'var(--color-accent-text)',
+                              background: 'var(--color-accent-soft, rgba(235, 94, 40, 0.15))',
+                              padding: '2px 6px',
+                              borderRadius: '6px',
+                              whiteSpace: 'nowrap',
+                              flex: 'none',
+                            }}
+                          >
+                            اليوم
+                          </span>
+                        )}
+                      </div>
                     </div>
                   }
                   secondary={
@@ -2381,68 +2810,157 @@ export function WeeklyPlanView({
         onClose={() => setIsManageSheetOpen(false)}
         title="إدارة البرنامج"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            style={{
-              justifyContent: 'flex-start',
-              height: '48px',
-              gap: '10px',
-            }}
-            onClick={() => {
-              setIsManageSheetOpen(false)
-              onOpenVaultModal?.()
-            }}
-          >
-            <IconClipboard size={18} />
-            <span>حافظة الجداول</span>
-          </button>
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            style={{
-              justifyContent: 'flex-start',
-              height: '48px',
-              gap: '10px',
-            }}
-            onClick={() => {
-              setIsManageSheetOpen(false)
-              handleOpenScheduleEditor()
-            }}
-          >
-            <IconCalendar size={18} />
-            <span>جدول الأسبوع</span>
-          </button>
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            style={{
-              justifyContent: 'flex-start',
-              height: '48px',
-              gap: '10px',
-            }}
-            onClick={() => {
-              setIsManageSheetOpen(false)
-              setIsExportSheetOpen(true)
-            }}
-          >
-            <IconDownload size={18} />
-            <span>تصدير البرنامج</span>
-          </button>
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            style={{
-              justifyContent: 'flex-start',
-              height: '48px',
-              gap: '10px',
-            }}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <IconUpload size={18} />
-            <span>استيراد جدول</span>
-          </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Group 1: البرنامج */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 700,
+                color: 'var(--color-text-2)',
+                paddingInline: '4px',
+              }}
+            >
+              البرنامج
+            </div>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                setIsDaysAdjustSheetOpen(true)
+              }}
+            >
+              <IconCalendar size={18} />
+              <span>تعديل أيام الجدول</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                handleOpenScheduleEditor()
+              }}
+            >
+              <IconCalendar size={18} />
+              <span>جدول الأسبوع</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
+                gap: '10px',
+                alignItems: 'flex-start',
+                textAlign: 'right',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                handleToggleLock()
+              }}
+            >
+              <div style={{ marginTop: '2px' }}>
+                {program.isLocked ? <IconUnlock size={18} /> : <IconLock size={18} />}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <span style={{ fontWeight: 700 }}>
+                  {program.isLocked ? 'إلغاء قفل الجدول' : 'قفل الجدول'}
+                </span>
+                <span style={{ fontSize: '11.5px', color: 'var(--color-text-2)', fontWeight: 400 }}>
+                  يمنع تعديل أو إعادة توليد الجدول الحالي لتجنب تغيير التمارين بالخطأ
+                </span>
+              </div>
+            </button>
+          </div>
+
+          {/* Group 2: البيانات */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div
+              style={{
+                fontSize: '12px',
+                fontWeight: 700,
+                color: 'var(--color-text-2)',
+                paddingInline: '4px',
+              }}
+            >
+              البيانات
+            </div>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                onOpenVaultModal?.()
+              }}
+            >
+              <IconClipboard size={18} />
+              <span>حافظة الجداول</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                setIsExportSheetOpen(true)
+              }}
+            >
+              <IconDownload size={18} />
+              <span>تصدير البرنامج</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <IconUpload size={18} />
+              <span>استيراد جدول</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                onOpenAiDesigner?.()
+              }}
+            >
+              <IconDownload size={18} />
+              <span>صمم لي جدولي الخاص</span>
+            </button>
+          </div>
+
           <input
             ref={fileInputRef}
             type="file"
@@ -2452,63 +2970,24 @@ export function WeeklyPlanView({
               const file = e.target.files?.[0]
               if (file) handleImportFile(file)
             }}
-          />{' '}
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            style={{
-              justifyContent: 'flex-start',
-              height: '48px',
-              gap: '10px',
-            }}
-            onClick={() => {
-              setIsManageSheetOpen(false)
-              onOpenAiDesigner?.()
-            }}
-          >
-            <IconDownload size={18} />
-            <span>صمم لي جدولي الخاص (مرشد الذكاء الاصطناعي)</span>
-          </button>
-          <button
-            type="button"
-            className="ghost-secondary full-width"
-            style={{
-              justifyContent: 'flex-start',
-              height: '48px',
-              gap: '10px',
-            }}
-            onClick={() => {
-              setIsManageSheetOpen(false)
-              handleToggleLock()
-            }}
-          >
-            {program.isLocked ? (
-              <>
-                <IconUnlock size={18} />
-                <span>إلغاء قفل الجدول</span>
-              </>
-            ) : (
-              <>
-                <IconLock size={18} />
-                <span>قفل الجدول</span>
-              </>
-            )}
-          </button>
-          {/* Change split as radio list with English secondary ltr line */}
+          />
+
+          {/* Change split as radio list if not custom */}
           {!program.isCustom && (
             <div
               style={{
-                marginTop: '8px',
-                borderTop: '1px solid var(--line)',
+                marginTop: '4px',
+                borderTop: '1px solid var(--color-divider)',
                 paddingTop: '10px',
               }}
             >
               <div
                 style={{
-                  fontSize: '13px',
+                  fontSize: '12px',
                   fontWeight: 700,
-                  color: 'var(--ink)',
+                  color: 'var(--color-text-2)',
                   marginBottom: '8px',
+                  paddingInline: '4px',
                 }}
               >
                 تغيير النظام التلقائي
@@ -2554,12 +3033,13 @@ export function WeeklyPlanView({
               </div>
             </div>
           )}
-          {/* Destructive Delete Button Last */}
+
+          {/* Destructive Delete Button Separated Last */}
           {onDeleteProgram && (
             <div
               style={{
-                marginTop: '12px',
-                borderTop: '1px solid var(--line)',
+                marginTop: '8px',
+                borderTop: '1px solid var(--color-divider)',
                 paddingTop: '10px',
               }}
             >
@@ -2604,7 +3084,7 @@ export function WeeklyPlanView({
         title="حذف الجدول التدريبي"
         consequences={[
           'هل أنت متأكد من حذف الجدول التدريبي بالكامل؟',
-          'يمكنك استرجاعه من حافظة الجداول أو إنشاء جدول جديد في أي وقت.',
+          'تقدر ترجّعه من حافظة الجداول أو تعمل جدول جديد في أي وقت.',
         ]}
         confirmLabel="حذف الجدول"
         cancelLabel="إلغاء"

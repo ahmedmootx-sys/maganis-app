@@ -1,0 +1,49 @@
+﻿====================================================
+   WCAG AA TOKEN PAIR CONTRAST AUDIT (A3.2)
+====================================================
+
+
+--- Theme: LIGHT ---
+| Token Pair | Foreground | Background | Ratio | Min | Status |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| Primary Text on Surface | `#14161a` | `#ffffff` | **18.11:1** | 4.5:1 | Γ£à PASS |
+| Primary Text on Surface-2 | `#14161a` | `#eef0f3` | **15.86:1** | 4.5:1 | Γ£à PASS |
+| Primary Text on BG | `#14161a` | `#f4f5f7` | **16.60:1** | 4.5:1 | Γ£à PASS |
+| Secondary Text on Surface | `#5b616b` | `#ffffff` | **6.24:1** | 4.5:1 | Γ£à PASS |
+| Secondary Text on Surface-2 | `#5b616b` | `#eef0f3` | **5.46:1** | 4.5:1 | Γ£à PASS |
+| Secondary Text on BG | `#5b616b` | `#f4f5f7` | **5.72:1** | 4.5:1 | Γ£à PASS |
+| On-Accent Text on Accent Fill | `#0b0c0e` | `#f95700` | **5.96:1** | 4.5:1 | Γ£à PASS |
+| Accent Text on Surface | `#b83a00` | `#ffffff` | **5.76:1** | 4.5:1 | Γ£à PASS |
+| Accent Text on BG | `#b83a00` | `#f4f5f7` | **5.28:1** | 4.5:1 | Γ£à PASS |
+| Chip Text on Chip BG | `#14161a` | `#ffffff` | **18.11:1** | 4.5:1 | Γ£à PASS |
+| Selected Chip Text on Accent Fill | `#0b0c0e` | `#f95700` | **5.96:1** | 4.5:1 | Γ£à PASS |
+| Toast Text on Toast BG | `#ffffff` | `#14161a` | **18.11:1** | 4.5:1 | Γ£à PASS |
+| Danger Text on Danger BG | `#b91c1c` | `#fef2f2` | **5.91:1** | 4.5:1 | Γ£à PASS |
+| Warning Text on Warning BG | `#b45309` | `#fffbeb` | **4.84:1** | 4.5:1 | Γ£à PASS |
+| Success Text on Success BG | `#15803d` | `#f0fdf4` | **4.79:1** | 4.5:1 | Γ£à PASS |
+| Info Text on Info BG | `#1d4ed8` | `#eff6ff` | **6.16:1** | 4.5:1 | Γ£à PASS |
+
+--- Theme: DARK ---
+| Token Pair | Foreground | Background | Ratio | Min | Status |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| Primary Text on Surface | `#f2f3f5` | `#16181b` | **16.02:1** | 4.5:1 | Γ£à PASS |
+| Primary Text on Surface-2 | `#f2f3f5` | `#212429` | **14.02:1** | 4.5:1 | Γ£à PASS |
+| Primary Text on BG | `#f2f3f5` | `#0b0c0e` | **17.62:1** | 4.5:1 | Γ£à PASS |
+| Secondary Text on Surface | `#a3a8b1` | `#16181b` | **7.45:1** | 4.5:1 | Γ£à PASS |
+| Secondary Text on Surface-2 | `#a3a8b1` | `#212429` | **6.52:1** | 4.5:1 | Γ£à PASS |
+| Secondary Text on BG | `#a3a8b1` | `#0b0c0e` | **8.19:1** | 4.5:1 | Γ£à PASS |
+| On-Accent Text on Accent Fill | `#0b0c0e` | `#ff6b1a` | **6.87:1** | 4.5:1 | Γ£à PASS |
+| Accent Text on Surface | `#ff853f` | `#16181b` | **7.35:1** | 4.5:1 | Γ£à PASS |
+| Accent Text on BG | `#ff853f` | `#0b0c0e` | **8.09:1** | 4.5:1 | Γ£à PASS |
+| Chip Text on Chip BG | `#f2f3f5` | `#212429` | **14.02:1** | 4.5:1 | Γ£à PASS |
+| Selected Chip Text on Accent Fill | `#0b0c0e` | `#ff6b1a` | **6.87:1** | 4.5:1 | Γ£à PASS |
+| Toast Text on Toast BG | `#ffffff` | `#212429` | **15.57:1** | 4.5:1 | Γ£à PASS |
+| Danger Text on Danger BG | `#f87171` | `#450a0a` | **5.84:1** | 4.5:1 | Γ£à PASS |
+| Warning Text on Warning BG | `#f59e0b` | `#451a03` | **6.97:1** | 4.5:1 | Γ£à PASS |
+| Success Text on Success BG | `#22c55e` | `#052e16` | **6.54:1** | 4.5:1 | Γ£à PASS |
+| Info Text on Info BG | `#60a5fa` | `#172554` | **5.78:1** | 4.5:1 | Γ£à PASS |
+
+Total token pairs evaluated: 32
+Failures: 0
+
+Γ£à All token pairs meet or exceed WCAG AA contrast thresholds (100% compliant)!

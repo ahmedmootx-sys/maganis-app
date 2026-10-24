@@ -1,0 +1,8 @@
+====================================================
+            GATE: FORMAL MARKERS AUDIT             
+====================================================
+Total Arabic UI/Catalog strings examined: 4995
+Allowlist entries loaded: 0
+Formal marker violations found: 0
+✓ All examined strings are free of banned formal markers!
+====================================================

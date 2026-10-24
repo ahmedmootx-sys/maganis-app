@@ -197,6 +197,28 @@ export function createBackupStore(): BackupStore {
         }
       }
 
+      // Task G5-B4: Validate exerciseOverrides on import
+      if (raw.exerciseOverrides !== undefined && raw.exerciseOverrides !== null) {
+        if (
+          typeof raw.exerciseOverrides !== 'object' ||
+          Array.isArray(raw.exerciseOverrides)
+        ) {
+          return {
+            ok: false,
+            error: 'بيانات تعديلات التمارين في النسخة الاحتياطية غير صالحة',
+          }
+        }
+        const overridesMap = raw.exerciseOverrides as Record<string, unknown>
+        for (const [id, overrideObj] of Object.entries(overridesMap)) {
+          if (!overrideObj || typeof overrideObj !== 'object') {
+            return {
+              ok: false,
+              error: `تعديل التمرين "${id}" غير صالح`,
+            }
+          }
+        }
+      }
+
       return { ok: true, data: parsed as BackupData }
     } catch {
       return { ok: false, error: 'فشل في قراءة أو تحليل ملف النسخة الاحتياطية' }

@@ -226,7 +226,7 @@ export function BackupPanel({
                 color: 'var(--color-text-2)',
                 marginTop: '2px',
                 whiteSpace: 'nowrap',
-                overflow: 'hidden',
+                overflow: 'hidden' /* clip-ok: text ellipsis truncation */,
                 textOverflow: 'ellipsis',
               }}
             >

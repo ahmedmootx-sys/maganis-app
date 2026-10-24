@@ -106,7 +106,7 @@ export function ExerciseVisual({
         justifyContent: 'center',
         background: 'var(--color-surface-2)',
         borderRadius: 'var(--radius-control)',
-        overflow: 'hidden',
+        overflow: 'hidden' /* clip-ok: visual element boundary */,
         flexShrink: 0,
       }}
     >

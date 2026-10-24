@@ -1,0 +1,49 @@
+====================================================
+            GATE: FORMAL MARKERS AUDIT             
+====================================================
+Total Arabic UI/Catalog strings examined: 4956
+Allowlist entries loaded: 0
+Formal marker violations found: 46
+
+Violations detail:
+ - [يمكنك] in src/modules/nutrition/CustomMealModal.tsx: "لم نجد طعاماً بهذا الاسم. يمكنك الضغط على "مكوّن غذائي
+                        خاص جديد" أ..."
+ - [يجب أن] in src/modules/nutrition/nutritionEngine.ts: "العمر غير منطقي (يجب أن يكون بين 1 و 120 سنة)."
+ - [يجب أن] in src/modules/nutrition/nutritionEngine.ts: "الوزن يجب أن يكون بين 30 و 350 كجم."
+ - [يجب أن] in src/modules/nutrition/nutritionEngine.ts: "الطول يجب أن يكون بين 100 و 250 سم."
+ - [يجب أن] in src/modules/nutrition/nutritionEngine.ts: "نسبة الدهون يجب أن تكون بين 3% و 70%."
+ - [يجب أن] in src/modules/nutrition/nutritionEngine.ts: "معامل البروتين المخصص يجب أن يكون بين 1.4 و 2.4 جم/كجم."
+ - [يجب أن] in src/modules/nutrition/nutritionEngine.ts: "يجب أن تمتد تسجيلات الوزن على مدى 14 يوماً على الأقل لضمان الدقة الرياضية (المدى الحالي: $..."
+ - [يجب أن] in src/modules/onboarding/OnboardingWizard.tsx: "العمر يجب أن يكون بين 14 و80 سنة"
+ - [يجب أن] in src/modules/onboarding/OnboardingWizard.tsx: "الطول يجب أن يكون بين 120 و230 سم"
+ - [يجب أن] in src/modules/onboarding/OnboardingWizard.tsx: "الوزن يجب أن يكون بين 30 و250 كجم"
+ - [يجب أن] in src/modules/onboarding/validate.ts: "الهدف الأساسي يجب أن يكون من ضمن الأهداف المختارة"
+ - [يجب أن] in src/modules/onboarding/validate.ts: "عدد أيام التمرين يجب أن يكون بين 2 و6 أيام في الأسبوع"
+ - [يجب أن] in src/modules/onboarding/validate.ts: "الملاحظات يجب أن تكون نصاً"
+ - [يجب أن] in src/modules/onboarding/validate.ts: "العمر يجب أن يكون بين 10 و90 سنة"
+ - [يجب أن] in src/modules/onboarding/validate.ts: "الطول يجب أن يكون بين 100 و250 سم"
+ - [يجب أن] in src/modules/onboarding/validate.ts: "الوزن يجب أن يكون بين 30 و300 كجم"
+ - [يمكنك] in src/modules/reports/Reports.tsx: "لم يتم تسجيل وجبات في هذا النطاق الزمني بعد. يمكنك تسجيل وجباتك من
+              قسم "التغ..."
+ - [يمكنك] in src/modules/settings/SettingsScreen.tsx: "يمكنك تصميم برنامج تدريبي علمي مخصص لحالتك وإصاباتك بالاستعانة
+                بمرشد الذكا..."
+ - [يجب أن] in src/modules/tracking/BodyWeightTracker.tsx: "الوزن يجب أن يكون بين 20 و500 كجم"
+ - [يجب أن] in src/modules/tracking/ProgressScreen.tsx: "الوزن يجب أن يكون بين 25 و 350 كجم"
+ - [يمكنك] in src/modules/workout/AiDesignerModal.tsx: "تعذر النسخ التلقائي، يمكنك نسخ النص من المربع أدناه"
+ - [يمكنك] in src/modules/workout/AiDesignerModal.tsx: "معاينة البيانات المضمنة (يمكنك تعديلها قبل النسخ):"
+ - [يجب أن] in src/modules/workout/CustomExerciseBuilder.tsx: "يجب أن يبدأ رابط الصورة بـ https:// للتحميل الآمن"
+ - [يجب أن] in src/modules/workout/CustomExerciseBuilder.tsx: "يجب أن يبدأ الرابط بـ https:// للتحميل الآمن"
+ - [يمكنك] in src/modules/workout/CustomScheduleModal.tsx: "سيتم قفل الجدول التدريبي تلقائياً لحمايته من أي استبدال عشوائي أو
+              توليد آلي...."
+ - [يمكنك] in src/modules/workout/ExerciseDetailView.tsx: ",
+                      lineHeight: 1.6,
+                    }}
+                  >
+      ..."
+ - [يمكنك] in src/modules/workout/ExerciseDetailView.tsx: "نعمل على توثيق التحليل الحركي والبيوميكانيكي لهذا التمرين
+                    بدقة علمية م..."
+ - [قم بـ] in src/modules/workout/ExerciseLibraryModal.tsx: "جرب البحث بكلمات مختلفة أو قم بإزالة بعض الفلاتر لعرض مزيد من التمارين."
+ - [يجب أن] in src/modules/workout/exerciseOverrides.ts: "الاسم العربي يجب أن يكون نصاً"
+ - [يجب أن] in src/modules/workout/exerciseOverrides.ts: "الاسم الإنجليزي يجب أن يكون نصاً"
+ ... and 16 more.
+====================================================

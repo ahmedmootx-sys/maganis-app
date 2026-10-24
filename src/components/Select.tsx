@@ -286,7 +286,7 @@ export const Select: React.FC<SelectProps> = ({
         <div
           style={{
             flex: 1,
-            overflow: 'hidden',
+            overflow: 'hidden' /* clip-ok: visual element boundary */,
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',

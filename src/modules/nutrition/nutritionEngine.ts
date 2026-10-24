@@ -258,19 +258,19 @@ export function validateNutritionInput(input: Partial<NutritionEngineInput>): {
   if (typeof input.age !== 'number' || isNaN(input.age)) {
     errorsAr.age = 'يرجى إدخال العمر.'
   } else if (input.age <= 0 || input.age > 120) {
-    errorsAr.age = 'العمر غير منطقي (يجب أن يكون بين 1 و 120 سنة).'
+    errorsAr.age = 'العمر مش منطقي (لازم يكون بين 1 و 120 سنة).'
   }
 
   if (typeof input.weightKg !== 'number' || isNaN(input.weightKg)) {
     errorsAr.weightKg = 'يرجى إدخال الوزن بالكيلوجرام.'
   } else if (input.weightKg < 30 || input.weightKg > 350) {
-    errorsAr.weightKg = 'الوزن يجب أن يكون بين 30 و 350 كجم.'
+    errorsAr.weightKg = 'الوزن لازم يكون بين 30 و 350 كجم.'
   }
 
   if (typeof input.heightCm !== 'number' || isNaN(input.heightCm)) {
     errorsAr.heightCm = 'يرجى إدخال الطول بالسنتيمتر.'
   } else if (input.heightCm < 100 || input.heightCm > 250) {
-    errorsAr.heightCm = 'الطول يجب أن يكون بين 100 و 250 سم.'
+    errorsAr.heightCm = 'الطول لازم يكون بين 100 و 250 سم.'
   }
 
   if (
@@ -278,7 +278,7 @@ export function validateNutritionInput(input: Partial<NutritionEngineInput>): {
     !isNaN(input.bodyFatPercent)
   ) {
     if (input.bodyFatPercent < 3 || input.bodyFatPercent > 70) {
-      errorsAr.bodyFatPercent = 'نسبة الدهون يجب أن تكون بين 3% و 70%.'
+      errorsAr.bodyFatPercent = 'نسبة الدهون لازم تكون بين 3% و 70%.'
     }
   }
 
@@ -315,7 +315,7 @@ export function validateNutritionInput(input: Partial<NutritionEngineInput>): {
   ) {
     if (input.proteinPerKgOverride < 1.4 || input.proteinPerKgOverride > 2.4) {
       errorsAr.proteinPerKgOverride =
-        'معامل البروتين المخصص يجب أن يكون بين 1.4 و 2.4 جم/كجم.'
+        'معامل البروتين المخصص لازم يكون بين 1.4 و 2.4 جم/كجم.'
     }
   }
 
@@ -749,7 +749,7 @@ export function calibrateTDEE(params: {
   if (daysSpan < 14) {
     return {
       canCalibrate: false,
-      reasonAr: `يجب أن تمتد تسجيلات الوزن على مدى 14 يوماً على الأقل لضمان الدقة الرياضية (المدى الحالي: ${daysSpan} يوماً).`,
+      reasonAr: `لازم تسجيلات الوزن تغطي 14 يوم على الأقل لضمان الدقة الرياضية (المدى الحالي: ${daysSpan} يوم).`,
       daysSpan,
       logsCount: sortedWeights.length,
     }

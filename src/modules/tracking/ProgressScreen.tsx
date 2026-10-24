@@ -27,6 +27,7 @@ import {
   IconDownload,
   IconCheck,
 } from '../../components/Icons.tsx'
+import { plural } from '../../utils/plural.ts'
 
 export interface ProgressScreenProps {
   sessions: TrackingSession[]
@@ -133,7 +134,7 @@ export function ProgressScreen({
     e.preventDefault()
     const w = parseFloat(weightInput)
     if (isNaN(w) || w < 25 || w > 350) {
-      setWeightError('الوزن يجب أن يكون بين 25 و 350 كجم')
+      setWeightError('الوزن لازم يكون بين 25 و 350 كجم')
       return
     }
     onAddBodyWeight({ date: weightDate, weightKg: w })
@@ -219,6 +220,11 @@ export function ProgressScreen({
     () => [...dayNotes].sort((a, b) => b.date.localeCompare(a.date)),
     [dayNotes],
   )
+
+  const selectedDateSessions = useMemo(() => {
+    if (!selectedCalendarDate) return []
+    return sessions.filter((s) => s.date === selectedCalendarDate)
+  }, [sessions, selectedCalendarDate])
 
   // --- Reports Filtering & Metrics ---
   const cutoff = useMemo(() => {
@@ -895,6 +901,196 @@ export function ProgressScreen({
                 </div>
               </div>
             </div>
+
+            {/* Selected Date Session History List */}
+            {selectedCalendarDate && (
+              <div
+                className="card section-selected-sessions"
+                style={{
+                  padding: '16px',
+                  borderRadius: '16px',
+                  background: 'var(--card-bg)',
+                  border: '1px solid var(--line)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontSize: '15.5px',
+                      fontWeight: 700,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    جلسات {formatArabicDate(selectedCalendarDate)}
+                  </h3>
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      color: 'var(--color-text-2)',
+                    }}
+                  >
+                    {plural(selectedDateSessions.length, 'session')}
+                  </span>
+                </div>
+
+                {selectedDateSessions.length === 0 ? (
+                  <div
+                    style={{
+                      fontSize: '13px',
+                      color: 'var(--color-text-2)',
+                      textAlign: 'center',
+                      padding: '12px',
+                    }}
+                  >
+                    لا توجد جلسات مسجلة في هذا اليوم
+                  </div>
+                ) : (
+                  selectedDateSessions.map((s) => {
+                    if (s.cardioDetails) {
+                      const cd = s.cardioDetails
+                      const lvlLabel =
+                        cd.level === 'light'
+                          ? 'خفيف'
+                          : cd.level === 'moderate'
+                            ? 'متوسط'
+                            : 'عالي'
+                      return (
+                        <div
+                          key={s.id}
+                          style={{
+                            padding: '12px',
+                            borderRadius: '10px',
+                            background: 'var(--color-surface-2)',
+                            border: '1px solid var(--color-divider)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '6px',
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: '14px',
+                                fontWeight: 700,
+                                color: 'var(--color-accent)',
+                              }}
+                            >
+                              جلسة كارديو: {cd.activityNameAr}
+                            </span>
+                            <span
+                              style={{
+                                fontSize: '12px',
+                                color: 'var(--color-text-2)',
+                              }}
+                            >
+                              الشدة: {lvlLabel}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              display: 'flex',
+                              gap: '12px',
+                              fontSize: '13px',
+                              color: 'var(--color-text)',
+                              flexWrap: 'wrap',
+                            }}
+                          >
+                            <span>
+                              المدة: {plural(cd.durationMinutes, 'minute')}
+                            </span>
+                            <span>
+                              الإجمالي: {plural(cd.grossKcal, 'calorie')}
+                            </span>
+                            <span>
+                              الصافي: {plural(cd.netKcal, 'calorie')}
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    const totalSets = s.exercises.reduce(
+                      (acc, ex) => acc + ex.sets.length,
+                      0,
+                    )
+                    return (
+                      <div
+                        key={s.id}
+                        style={{
+                          padding: '12px',
+                          borderRadius: '10px',
+                          background: 'var(--color-surface-2)',
+                          border: '1px solid var(--color-divider)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '6px',
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: '14px',
+                              fontWeight: 700,
+                              color: 'var(--color-text)',
+                            }}
+                          >
+                            جلسة تدريب قوة
+                          </span>
+                          <span
+                            style={{
+                              fontSize: '12px',
+                              color: 'var(--color-text-2)',
+                            }}
+                          >
+                            {plural(s.exercises.length, 'exercise')}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '13px',
+                            color: 'var(--color-text-2)',
+                          }}
+                        >
+                          إجمالي المجموعات: {plural(totalSets, 'set')}
+                        </div>
+                        {s.notes && (
+                          <div
+                            style={{
+                              fontSize: '12px',
+                              color: 'var(--color-text-2)',
+                            }}
+                          >
+                            {s.notes}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+            )}
 
             {/* Section 3: Daily Notes */}
             <div

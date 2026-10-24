@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { SavedWorkoutProgram, WorkoutProgram } from '../shared/types.ts'
 import { formatArabicDate } from '../../lib/dateUtils.ts'
 import { Sheet, ConfirmSheet, ListRow, EmptyState } from '../../ui/index.ts'
+import { plural } from '../../utils/plural.ts'
 import {
   IconMoreVertical,
   IconClipboard,
@@ -63,7 +64,15 @@ export function ProgramVaultModal({
         isOpen={true}
         onClose={onClose}
         title="حافظة الجداول"
-        subtitle={`${savedPrograms.length} جداول محفوظة`}
+        subtitle={
+          savedPrograms.length === 0
+            ? 'لا توجد جداول محفوظة'
+            : savedPrograms.length === 1
+              ? 'جدول واحد محفوظ'
+              : savedPrograms.length === 2
+                ? 'جدولان محفوظان'
+                : `${plural(savedPrograms.length, 'جدول')} محفوظة`
+        }
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Save Current Program Section */}
@@ -89,9 +98,19 @@ export function ProgramVaultModal({
                   className="field-input"
                   value={newTitleToSave}
                   onChange={(e) => setNewTitleToSave(e.target.value)}
-                  placeholder="اسم مخصص للجدول (مثال: جدول 4 أيام تضخيم)..."
+                  placeholder="اسم الجدول"
                   dir="rtl"
                 />
+                <span
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--color-text-2)',
+                    marginTop: '4px',
+                    display: 'block',
+                  }}
+                >
+                  مثال: جدول 4 أيام تضخيم
+                </span>
               </div>
 
               {/* On its OWN row a full-width primary button */}
@@ -132,7 +151,7 @@ export function ProgramVaultModal({
                   const isCurrentlyActive =
                     activeProgram && activeProgram.id === item.program.id
                   const dateStr = formatArabicDate(item.savedAt)
-                  const daysStr = `${item.program.days.length} أيام أسبوعياً`
+                  const daysStr = `${plural(item.program.days.length, 'يوم')} أسبوعياً`
 
                   return (
                     <ListRow

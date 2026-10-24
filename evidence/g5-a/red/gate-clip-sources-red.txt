@@ -1,0 +1,24 @@
+=== GATE-CLIP-SOURCES (RED FIRST - PRE-FIX) ===
+Date: 2026-10-24
+Command: node scripts/gate-clip-sources.mjs
+
+🚀 Running Gate: gate-clip-sources...
+📊 Declarations examined: 151
+📊 Declarations with explicit clip-ok reason: 0
+📊 Unannotated clipping declarations (violations): 151
+❌ Gate FAILED: found 151 unapproved clipping sources:
+  1. src\styles\app.css:61 -> overflow-x: hidden;
+  2. src\styles\app.css:72 -> overflow-x: hidden;
+  3. src\styles\app.css:83 -> min-height: 100vh;
+  4. src\styles\app.css:84 -> min-height: 100dvh;
+  5. src\styles\app.css:314 -> height: 6px;
+  6. src\styles\app.css:668 -> min-height: 48px;
+  7. src\styles\app.css:951 -> height: 6px;
+  8. src\styles\app.css:1028 -> height: 150px;
+  9. src\styles\app.css:1050 -> min-height: 2px;
+  10. src\styles\app.css:1188 -> height: 100vh;
+  11. src\styles\app.css:1204 -> max-height: 88vh;
+  12. src\styles\app.css:1207 -> overflow-x: hidden;
+  13. src\styles\app.css:1261 -> max-height: 240px;
+  14. src\styles\app.css:1262 -> overflow: hidden;
+  15. src\styles\app.css:1430 -> height: 8px;

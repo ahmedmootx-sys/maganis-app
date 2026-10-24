@@ -149,7 +149,7 @@ export function Select<T = string>({
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
+            overflow: 'hidden' /* clip-ok: text ellipsis truncation */,
             textOverflow: 'ellipsis',
             whiteSpace: 'normal',
             lineHeight: 1.35,

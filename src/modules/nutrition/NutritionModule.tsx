@@ -2873,7 +2873,11 @@ export function NutritionModule({
       )}
 
       {showMacroGuide && (
-        <MacroGuideModal onClose={() => setShowMacroGuide(false)} />
+        <MacroGuideModal
+          profile={profile}
+          bodyLog={bodyLog}
+          onClose={() => setShowMacroGuide(false)}
+        />
       )}
     </div>
   )

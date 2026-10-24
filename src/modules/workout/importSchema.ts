@@ -68,7 +68,7 @@ export type ImportedProgram = z.infer<typeof ProgramImportSchema>
  * Clean compact schema description for prompt insertion
  */
 export const PROMPT_SCHEMA_TEXT = `{
-  "title": "string (Arabic program title, e.g. برنامج أحمد — علوي/سفلي)",
+  "title": "string (Arabic program title, e.g. برنامج القوة — علوي/سفلي)",
   "primaryGoal": "string (e.g. hypertrophy | strength | cut | fitness)",
   "trainingDaysPerWeek": "number (integer 1-7)",
   "splitType": "string (e.g. upper_lower | psh_pull_legs | full_body)",
@@ -129,15 +129,15 @@ export const PROMPT_SCHEMA_TEXT = `{
  * Valid small example program for prompt template
  */
 export const PROMPT_EXAMPLE_JSON = `{
-  "title": "برنامج علوي/سفلي للمبتدئين",
+  "title": "برنامج شامل للمبتدئين (3 أيام)",
   "primaryGoal": "hypertrophy",
-  "trainingDaysPerWeek": 2,
-  "splitType": "upper_lower",
-  "notes": "التقدم التدريبي بمبدأ الزيادة المزدوجة (Double Progression)، وأسبوع استشفاء (Deload) كل 5 أسابيع.",
+  "trainingDaysPerWeek": 3,
+  "splitType": "full_body",
+  "notes": "التقدم التدريبي بمبدأ الزيادة المزدوجة، وأسبوع استشفاء كل 5 أسابيع.",
   "days": [
     {
-      "name": "علوي (أ)",
-      "labelAr": "علوي (أ)",
+      "name": "تمرين 1 — علوي",
+      "labelAr": "تمرين 1 — علوي",
       "focus": "صدر · ظهر · أكتاف",
       "kind": "strength",
       "warmup": [
@@ -160,7 +160,7 @@ export const PROMPT_EXAMPLE_JSON = `{
           "unit": "reps",
           "rpe": 7,
           "restSeconds": 120,
-          "notesAr": "تثبيت لوحي الكتف على الدكة، النزول ببطء 2-3 ثوانٍ"
+          "notesAr": "تثبيت لوحي الكتف على الدكة، النزول ببطء"
         },
         {
           "exerciseId": "pullup",
@@ -180,14 +180,13 @@ export const PROMPT_EXAMPLE_JSON = `{
           "sets": 1,
           "reps": 30,
           "unit": "seconds",
-          "restSeconds": 0,
-          "notesAr": "تمدد الصدر على إطار الباب"
+          "restSeconds": 0
         }
       ]
     },
     {
-      "name": "سفلي (أ)",
-      "labelAr": "سفلي (أ)",
+      "name": "تمرين 2 — سفلي",
+      "labelAr": "تمرين 2 — سفلي",
       "focus": "أرجل · جذع",
       "kind": "strength",
       "warmup": [
@@ -227,6 +226,55 @@ export const PROMPT_EXAMPLE_JSON = `{
       "cooldown": [
         {
           "exerciseId": "hipflexst",
+          "sets": 1,
+          "reps": 30,
+          "unit": "seconds",
+          "restSeconds": 0
+        }
+      ]
+    },
+    {
+      "name": "تمرين 3 — شامل",
+      "labelAr": "تمرين 3 — شامل",
+      "focus": "أكتاف · ظهر · أرجل",
+      "kind": "strength",
+      "warmup": [
+        {
+          "exerciseId": "catcow",
+          "sets": 1,
+          "reps": 10,
+          "unit": "reps",
+          "restSeconds": 30
+        }
+      ],
+      "exercises": [
+        {
+          "exerciseId": "ohp",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 8,
+          "repsMax": 10,
+          "unit": "reps",
+          "rpe": 7,
+          "restSeconds": 120,
+          "notesAr": "ضغط بالبار وقوفاً مع ثبات الجذع"
+        },
+        {
+          "exerciseId": "onearmrow",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 10,
+          "repsMax": 12,
+          "unit": "reps",
+          "perSide": true,
+          "rpe": 7,
+          "restSeconds": 90,
+          "notesAr": "سحب بالدمبل مع تثبيت الجذع"
+        }
+      ],
+      "cooldown": [
+        {
+          "exerciseId": "crossst",
           "sets": 1,
           "reps": 30,
           "unit": "seconds",

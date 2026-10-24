@@ -1,12 +1,13 @@
-import React, { useState, useId } from 'react'
+import { useState, useId, useMemo } from 'react'
 import type { UserProfile } from '../onboarding/types.ts'
 import type { WorkoutProgram } from '../shared/types.ts'
-import { Sheet, Button, Toggle, Callout, Icon, Card } from '../../ui'
+import { Sheet, Button, Toggle, Icon, Card, Field } from '../../ui'
+import { Select } from '../../components/Select'
 import { buildAiDesignerPrompt } from './aiPromptBuilder.ts'
 import { importProgramFromJson, type ImportResult } from './programImporter.ts'
 import { ImportPreviewSheet } from './ImportPreviewSheet.tsx'
-import { saveFile } from '../../utils/saveFile.ts'
 import type { UserLimitation } from './limitations.ts'
+import { GOALS } from '../onboarding/types.ts'
 
 export interface AiDesignerModalProps {
   isOpen: boolean
@@ -15,6 +16,7 @@ export interface AiDesignerModalProps {
   limitations?: UserLimitation[] | null
   onSaveDraft: (program: WorkoutProgram) => void
   onSaveAndActivate: (program: WorkoutProgram) => void
+  onOpenImport?: () => void
   showToast: (msg: string) => void
 }
 
@@ -25,57 +27,140 @@ export function AiDesignerModal({
   limitations,
   onSaveDraft,
   onSaveAndActivate,
+  onOpenImport,
   showToast,
 }: AiDesignerModalProps) {
   const [includeProfileData, setIncludeProfileData] = useState(true)
-  const [includeInjuryData, setIncludeInjuryData] = useState(true)
-  const [showPromptPreview, setShowPromptPreview] = useState(false)
+  const [copyFailed, setCopyFailed] = useState(false)
+  const [showImportSection, setShowImportSection] = useState(false)
   const [importText, setImportText] = useState('')
   const [importError, setImportError] = useState<string | null>(null)
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
+  // Editable preview profile state
+  const [editAge, setEditAge] = useState<string>(
+    profile?.body?.age ? String(profile.body.age) : '25',
+  )
+  const [editSex, setEditSex] = useState<'male' | 'female'>(
+    profile?.body?.sex || 'male',
+  )
+  const [editHeight, setEditHeight] = useState<string>(
+    profile?.body?.heightCm ? String(profile.body.heightCm) : '175',
+  )
+  const [editWeight, setEditWeight] = useState<string>(
+    profile?.body?.weightKg ? String(profile.body.weightKg) : '75',
+  )
+  const [editGoal, setEditGoal] = useState<string>(
+    profile?.primaryGoal || 'hypertrophy',
+  )
+  const [editDays, setEditDays] = useState<number>(
+    profile?.trainingDaysPerWeek || 4,
+  )
+  const [editEquipment, setEditEquipment] = useState<string>(
+    profile?.equipmentAvailable && profile.equipmentAvailable.length > 0
+      ? profile.equipmentAvailable.join(', ')
+      : 'barbell, dumbbell, machine, bodyweight',
+  )
+
   const promptTextareaId = useId()
   const importTextareaId = useId()
-  const fileInputId = useId()
+
+  // Construct effective profile from editable preview
+  const effectiveProfile = useMemo<UserProfile | null>(() => {
+    if (!profile) return null
+    return {
+      ...profile,
+      primaryGoal: editGoal as any,
+      trainingDaysPerWeek: editDays,
+      equipmentAvailable: editEquipment
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
+      body: {
+        ...profile.body,
+        age: parseInt(editAge, 10) || profile.body?.age || 25,
+        sex: editSex,
+        heightCm: parseFloat(editHeight) || profile.body?.heightCm || 175,
+        weightKg: parseFloat(editWeight) || profile.body?.weightKg || 75,
+      },
+    }
+  }, [
+    profile,
+    editAge,
+    editSex,
+    editHeight,
+    editWeight,
+    editGoal,
+    editDays,
+    editEquipment,
+  ])
+
+  const promptInfo = useMemo(() => {
+    return buildAiDesignerPrompt({
+      profile: effectiveProfile,
+      includeProfileData,
+      includeInjuryData: false, // Never auto-included per Privacy Rule
+    })
+  }, [effectiveProfile, includeProfileData])
 
   if (!isOpen) return null
 
-  const promptInfo = buildAiDesignerPrompt({
-    profile,
-    includeProfileData,
-    includeInjuryData,
-  })
-
   async function handleCopyPrompt() {
+    let copied = false
     try {
-      await navigator.clipboard.writeText(promptInfo.prompt)
-      showToast('تم نسخ البرومبت إلى الحافظة بنجاح')
+      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(promptInfo.prompt)
+        copied = true
+      }
     } catch {
-      showToast('تعذر النسخ التلقائي، يمكنك نسخ النص من المعاينة أدناه')
+      copied = false
+    }
+
+    if (!copied && typeof document !== 'undefined') {
+      try {
+        const textarea = document.createElement('textarea')
+        textarea.value = promptInfo.prompt
+        textarea.style.position = 'fixed'
+        textarea.style.left = '-9999px'
+        textarea.style.top = '0'
+        document.body.appendChild(textarea)
+        textarea.focus()
+        textarea.select()
+        copied = document.execCommand('copy')
+        document.body.removeChild(textarea)
+      } catch {
+        copied = false
+      }
+    }
+
+    if (copied) {
+      showToast('تم نسخ البرومبت بنجاح!')
+      setCopyFailed(false)
+    } else {
+      showToast('النسخ التلقائي منفعش، تقدر تنسخ النص من المربع اللي تحت')
+      setCopyFailed(true)
     }
   }
 
-  async function handleDownloadPrompt() {
-    try {
-      const blob = new Blob([promptInfo.prompt], {
-        type: 'text/plain;charset=utf-8',
-      })
-      const res = await saveFile(blob, 'maganis-ai-prompt.txt', 'text/plain')
-      if (res.downloadNoticeNeeded) {
-        showToast('تم حفظ ملف البرومبت في التنزيلات')
-      } else {
-        showToast('تم حفظ ملف البرومبت بنجاح')
+  async function handleSharePrompt() {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: 'برومبت تصميم جدول مجانس',
+          text: promptInfo.prompt,
+        })
+        showToast('تمت مشاركة البرومبت بنجاح')
+      } catch {
+        // User cancelled or share failed
       }
-    } catch {
-      showToast('تعذر حفظ ملف البرومبت')
     }
   }
 
   function handleProcessImport() {
     setImportError(null)
     if (!importText.trim()) {
-      setImportError('يرجى لصق كود JSON الخاص بالجدول أو رفع ملف البرنامج.')
+      setImportError('يرجى لصق كود JSON الخاص بالجدول.')
       return
     }
 
@@ -90,438 +175,351 @@ export function AiDesignerModal({
     }
   }
 
-  function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      const content = event.target?.result as string
-      if (content) {
-        setImportText(content)
-        const res = importProgramFromJson(content, { limitations })
-        if (res.success && res.program) {
-          setImportResult(res)
-          setIsPreviewOpen(true)
-        } else {
-          setImportError(res.errors[0] || 'تعذر استيراد الجدول من الملف.')
-        }
-      }
-    }
-    reader.readAsText(file)
-  }
+  const canShare =
+    typeof navigator !== 'undefined' && typeof navigator.share === 'function'
 
   return (
     <>
       <Sheet
         isOpen={isOpen}
         onClose={onClose}
-        title="صمم لي جدولي الخاص (مرشد الذكاء الاصطناعي)"
+        title="صمم لي جدولي الخاص"
       >
         <div
           className="ai-designer-modal"
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '20px',
-            paddingBottom: '32px',
+            gap: '16px',
+            paddingBottom: '24px',
           }}
         >
-          {/* Header intro */}
-          <div>
-            <p
-              style={{
-                margin: 0,
-                fontSize: '14px',
-                color: 'var(--text-secondary)',
-                lineHeight: 1.6,
-              }}
-            >
-              أنشئ برنامجاً تدريبياً علمياً مصمماً خصيصاً لك عبر محادثة تفاعلية
-              مع مدرب رياضي معتمد مبني بالذكاء الاصطناعي (مثل Claude أو ChatGPT
-              أو Gemini).
-            </p>
+          {/* Two Short Egyptian-Arabic Lines */}
+          <div
+            style={{
+              fontSize: '13.5px',
+              color: 'var(--color-text-2)',
+              lineHeight: 1.6,
+              background: 'var(--color-surface-2)',
+              padding: '12px 14px',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--color-divider)',
+            }}
+          >
+            <div>هنجهزلك برومبت علمي مفصل تاخده لأي ذكاء اصطناعي (زي ChatGPT أو Claude) يصمملك جدول تدريبي دقيق على مقاسك.</div>
+            <div style={{ marginTop: '4px' }}>المدرب الذكي هيعمل معاك مقابلة كاملة ويسألك عن كل أهدافك ومستواك وإصاباتك خطوة بخطوة.</div>
           </div>
 
-          {/* 4 Process Steps */}
-          <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-          >
-            {/* Step 1 */}
-            <Card
-              padding="md"
-              style={{ border: '1px solid var(--border-color, #2a2e37)' }}
+          {/* Privacy Switch */}
+          <Card padding="md">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <Toggle
+                label="ضمّن بياناتي من التطبيق"
+                checked={includeProfileData}
+                onChange={(val) => setIncludeProfileData(val)}
+              />
+
+              {includeProfileData && (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                    marginTop: '4px',
+                    paddingTop: '12px',
+                    borderTop: '1px solid var(--color-divider)',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    معاينة البيانات (تقدر تعدّلها قبل النسخ):
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: '8px',
+                    }}
+                  >
+                    <Field label="السن">
+                      <input
+                        type="number"
+                        className="input"
+                        value={editAge}
+                        onChange={(e) => setEditAge(e.target.value)}
+                      />
+                    </Field>
+                    <Field label="النوع">
+                      <Select
+                        id="ai-designer-sex"
+                        value={editSex}
+                        onChange={(val) => setEditSex(val as any)}
+                        options={[
+                          { value: 'male', labelAr: 'ذكر' },
+                          { value: 'female', labelAr: 'أنثى' },
+                        ]}
+                      />
+                    </Field>
+                    <Field label="الطول (سم)">
+                      <input
+                        type="number"
+                        className="input"
+                        value={editHeight}
+                        onChange={(e) => setEditHeight(e.target.value)}
+                      />
+                    </Field>
+                    <Field label="الوزن (كجم)">
+                      <input
+                        type="number"
+                        className="input"
+                        value={editWeight}
+                        onChange={(e) => setEditWeight(e.target.value)}
+                      />
+                    </Field>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <Field label="الهدف الأساسي">
+                      <Select
+                        id="ai-designer-goal"
+                        value={editGoal}
+                        onChange={(val) => setEditGoal(val)}
+                        options={GOALS.map((g) => ({
+                          value: g.value,
+                          labelAr: g.labelAr,
+                        }))}
+                      />
+                    </Field>
+
+                    <Field label="أيام التدريب في الأسبوع">
+                      <Select
+                        id="ai-designer-days"
+                        value={String(editDays)}
+                        onChange={(val) => setEditDays(Number(val))}
+                        options={[2, 3, 4, 5, 6].map((d) => ({
+                          value: String(d),
+                          labelAr: `${d} أيام`,
+                        }))}
+                      />
+                    </Field>
+
+                    <Field label="الأدوات المتاحة">
+                      <input
+                        type="text"
+                        className="input"
+                        value={editEquipment}
+                        onChange={(e) => setEditEquipment(e.target.value)}
+                        placeholder="barbell, dumbbell, machine, bodyweight"
+                      />
+                    </Field>
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: '11px',
+                      color: 'var(--color-text-2)',
+                      lineHeight: 1.4,
+                      background: 'var(--color-surface)',
+                      padding: '6px 8px',
+                      borderRadius: 'var(--radius-control)',
+                    }}
+                  >
+                    🛡️ الخصوصية: لا يتم تضمين بيانات الإصابات أو الصحة تلقائياً، حيث يجمعها المدرب مباشرة أثناء المقابلة.
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Action Buttons: Copy & Share */}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <Button
+              variant="primary"
+              fullWidth={!canShare}
+              style={{ flex: canShare ? '1 1 auto' : undefined }}
+              onClick={handleCopyPrompt}
+            >
+              <Icon name="copy" size={16} />
+              <span>انسخ البرومبت</span>
+            </Button>
+
+            {canShare && (
+              <Button
+                variant="secondary"
+                style={{ flex: '0 0 auto', minWidth: '80px' }}
+                onClick={handleSharePrompt}
+              >
+                <Icon name="share-2" size={16} />
+                <span>شارك</span>
+              </Button>
+            )}
+          </div>
+
+          {/* Selectable Fallback Textarea on Copy Failure */}
+          {copyFailed && (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+                marginTop: '4px',
+              }}
+            >
+              <label
+                htmlFor={promptTextareaId}
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: 'var(--color-warning)',
+                }}
+              >
+                اضغط هنا لتحديد النص كاملاً ونسخه:
+              </label>
+              <textarea
+                id={promptTextareaId}
+                readOnly
+                value={promptInfo.prompt}
+                onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+                style={{
+                  width: '100%',
+                  height: '140px',
+                  fontSize: '11px',
+                  fontFamily: 'monospace',
+                  direction: 'ltr',
+                  padding: '8px',
+                  borderRadius: 'var(--radius-control)',
+                  border: '1.5px solid var(--color-warning)',
+                  background: 'var(--color-surface)',
+                  color: 'var(--color-text)',
+                }}
+              />
+            </div>
+          )}
+
+          {/* Next Step Callout & Button */}
+          <Card padding="md">
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+              }}
             >
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  marginBottom: '8px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
-                    background: 'var(--accent-primary, #ff5722)',
-                    color: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 800,
-                    fontSize: '13px',
-                  }}
-                >
-                  1
-                </div>
-                <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>
-                  تجهيز ونسخ برومبت المدرب
-                </h4>
-              </div>
-              <p
-                style={{
                   fontSize: '13px',
-                  color: 'var(--text-secondary)',
-                  margin: '0 0 12px',
-                  lineHeight: 1.5,
+                  fontWeight: 700,
+                  color: 'var(--color-text)',
                 }}
               >
-                اختر البيانات التي ترغب في إدراجها لمساعدة المدرب الذكي في فهم
-                مستواك وحالتك البدنية بدقة:
-              </p>
+                بعد ما المدرب يديك الجدول، الصقه في «استيراد الجدول»
+              </div>
+              <Button
+                variant="secondary"
+                fullWidth
+                onClick={() => {
+                  if (onOpenImport) {
+                    onOpenImport()
+                  } else {
+                    setShowImportSection(true)
+                  }
+                }}
+              >
+                <Icon name="upload" size={16} />
+                <span>استيراد الجدول</span>
+              </Button>
+            </div>
+          </Card>
 
-              {/* Toggles */}
+          {/* Inline Import Section (when activated) */}
+          {showImportSection && (
+            <Card padding="md">
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '10px',
-                  marginBottom: '12px',
-                }}
-              >
-                <Toggle
-                  label="تضمين بيانات ملفك الرياضي (الوزن، الطول، الهدف، أيام التدريب)"
-                  checked={includeProfileData}
-                  onChange={(val) => setIncludeProfileData(val)}
-                />
-                <Toggle
-                  label="تضمين سجل الإصابات والقيود الحركية"
-                  checked={includeInjuryData}
-                  onChange={(val) => setIncludeInjuryData(val)}
-                />
-              </div>
-
-              {(includeProfileData || includeInjuryData) && (
-                <div style={{ marginBottom: '12px' }}>
-                  <Callout variant="warning">
-                    <span style={{ fontSize: '12px' }}>
-                      تنبيه خصوصية: سيتم تضمين البيانات المحددة في نص البرومبت
-                      وإرسالها إلى نموذج الذكاء الاصطناعي الخارجي الذي تختاره
-                      أنت.
-                    </span>
-                  </Callout>
-                </div>
-              )}
-
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                <Button variant="primary" onClick={handleCopyPrompt}>
-                  <Icon name="copy" size={16} />
-                  <span>نسخ البرومبت بالكامل</span>
-                </Button>
-                <Button variant="secondary" onClick={handleDownloadPrompt}>
-                  <Icon name="download" size={16} />
-                  <span>حفظ كملف نصي (.txt)</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => setShowPromptPreview(!showPromptPreview)}
-                >
-                  <span>
-                    {showPromptPreview
-                      ? 'إخفاء معاينة النص'
-                      : 'معاينة نص البرومبت'}
-                  </span>
-                </Button>
-              </div>
-
-              {/* Prompt Preview Block */}
-              {showPromptPreview && (
-                <div style={{ marginTop: '12px' }}>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      color: 'var(--text-muted)',
-                      marginBottom: '4px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <span>
-                      حجم البرومبت:{' '}
-                      {promptInfo.characterCount.toLocaleString('ar-EG')} حرف
-                      (أقل من 30,000)
-                    </span>
-                    <span>{promptInfo.catalogCount} تمرين بالكتالوج</span>
-                  </div>
-                  <label htmlFor={promptTextareaId} className="sr-only">
-                    معاينة نص البرومبت
-                  </label>
-                  <textarea
-                    id={promptTextareaId}
-                    readOnly
-                    value={promptInfo.prompt}
-                    style={{
-                      width: '100%',
-                      height: '180px',
-                      direction: 'ltr',
-                      fontFamily: 'monospace',
-                      fontSize: '11px',
-                      background: 'var(--bg-secondary, #12151b)',
-                      color: 'var(--text-secondary, #cbd5e1)',
-                      border: '1px solid var(--border-color, #2a2e37)',
-                      borderRadius: '6px',
-                      padding: '8px',
-                      resize: 'vertical',
-                    }}
-                  />
-                </div>
-              )}
-            </Card>
-
-            {/* Step 2 */}
-            <Card
-              padding="md"
-              style={{ border: '1px solid var(--border-color, #2a2e37)' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  marginBottom: '8px',
                 }}
               >
                 <div
                   style={{
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
-                    background: 'var(--bg-secondary, #2a2e37)',
-                    color: 'var(--text-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 800,
                     fontSize: '13px',
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
                   }}
                 >
-                  2
+                  الصق كود JSON المستلم من المدرب:
                 </div>
-                <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>
-                  المحادثة مع الذكاء الاصطناعي
-                </h4>
-              </div>
-              <p
-                style={{
-                  fontSize: '13px',
-                  color: 'var(--text-secondary)',
-                  margin: 0,
-                  lineHeight: 1.5,
-                }}
-              >
-                افتح مساعد الذكاء الاصطناعي المفضل لديك (مثل Claude 3.5 Sonnet
-                أو ChatGPT-4o أو Gemini Pro)، والصق البرومبت في رسالة جديدة.
-                سيبدأ المدرب بمقابلتك خطوة بخطوة ويطرح عليك أسئلة تدريبية.
-              </p>
-            </Card>
-
-            {/* Step 3 */}
-            <Card
-              padding="md"
-              style={{ border: '1px solid var(--border-color, #2a2e37)' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  marginBottom: '8px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
-                    background: 'var(--bg-secondary, #2a2e37)',
-                    color: 'var(--text-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 800,
-                    fontSize: '13px',
-                  }}
-                >
-                  3
-                </div>
-                <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>
-                  استلام كود البرنامج (JSON)
-                </h4>
-              </div>
-              <p
-                style={{
-                  fontSize: '13px',
-                  color: 'var(--text-secondary)',
-                  margin: 0,
-                  lineHeight: 1.5,
-                }}
-              >
-                في نهاية المحادثة وبعد تأكيدك لتفاصيل البرنامج، سيُخرج المدرب
-                كود JSON محدد ومضبوط تماماً ليناسب تطبيق مجانيس وقواعد أطلس
-                العضلات.
-              </p>
-            </Card>
-
-            {/* Step 4 */}
-            <Card
-              padding="md"
-              style={{ border: '1px solid var(--border-color, #2a2e37)' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  marginBottom: '8px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
-                    background: 'var(--accent-primary, #ff5722)',
-                    color: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 800,
-                    fontSize: '13px',
-                  }}
-                >
-                  4
-                </div>
-                <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>
-                  استيراد الجدول إلى التطبيق
-                </h4>
-              </div>
-              <p
-                style={{
-                  fontSize: '13px',
-                  color: 'var(--text-secondary)',
-                  margin: '0 0 10px',
-                  lineHeight: 1.5,
-                }}
-              >
-                انسخ كود JSON كاملاً والصقه في المربع أدناه، أو ارفع ملف .json
-                إذا حفظته:
-              </p>
-
-              {importError && (
-                <div style={{ marginBottom: '10px' }}>
-                  <Callout variant="error">
-                    <span style={{ fontSize: '12px' }}>{importError}</span>
-                  </Callout>
-                </div>
-              )}
-
-              <div
-                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-              >
-                <label htmlFor={importTextareaId} className="sr-only">
-                  لصق كود JSON للبرنامج
-                </label>
                 <textarea
                   id={importTextareaId}
                   value={importText}
-                  onChange={(e) => setImportText(e.target.value)}
-                  placeholder="الصق كود JSON هنا (سواء داخل ```json أو ككائن مباشر)..."
+                  onChange={(e) => {
+                    setImportText(e.target.value)
+                    setImportError(null)
+                  }}
+                  placeholder='{"title": "برنامجي", "days": [...] }'
+                  rows={6}
                   style={{
                     width: '100%',
-                    height: '110px',
-                    direction: 'ltr',
                     fontFamily: 'monospace',
-                    fontSize: '12px',
-                    background: 'var(--bg-secondary, #12151b)',
-                    color: 'var(--text-primary)',
-                    border: '1px solid var(--border-color, #2a2e37)',
-                    borderRadius: '6px',
+                    fontSize: '11px',
+                    direction: 'ltr',
                     padding: '8px',
-                    resize: 'vertical',
+                    borderRadius: 'var(--radius-control)',
+                    border: importError
+                      ? '1px solid var(--color-danger)'
+                      : '1px solid var(--color-divider)',
+                    background: 'var(--color-surface)',
+                    color: 'var(--color-text)',
                   }}
                 />
-
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '8px',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Button variant="primary" onClick={handleProcessImport}>
-                    <Icon name="check" size={16} />
-                    <span>معاينة واستيراد الجدول</span>
-                  </Button>
-
-                  <label
-                    htmlFor={fileInputId}
+                {importError && (
+                  <div
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      padding: '8px 14px',
-                      borderRadius: '6px',
-                      background: 'var(--bg-secondary, #2a2e37)',
-                      color: 'var(--text-primary)',
-                      cursor: 'pointer',
-                      fontSize: '13px',
-                      fontWeight: 600,
+                      fontSize: '12px',
+                      color: 'var(--color-danger)',
                     }}
                   >
-                    <Icon name="upload" size={16} />
-                    <span>رفع ملف .json</span>
-                  </label>
-                  <input
-                    id={fileInputId}
-                    type="file"
-                    accept=".json,.txt"
-                    onChange={handleFileUpload}
-                    style={{ display: 'none' }}
-                  />
-                </div>
+                    {importError}
+                  </div>
+                )}
+                <Button
+                  variant="primary"
+                  fullWidth
+                  onClick={handleProcessImport}
+                >
+                  معاينة واعتماد الجدول
+                </Button>
               </div>
             </Card>
-          </div>
+          )}
         </div>
       </Sheet>
 
-      {/* Preview Sheet */}
-      <ImportPreviewSheet
-        isOpen={isPreviewOpen}
-        onClose={() => setIsPreviewOpen(false)}
-        importResult={importResult}
-        onSaveDraft={(prog) => {
-          onSaveDraft(prog)
-          onClose()
-        }}
-        onSaveAndActivate={(prog) => {
-          onSaveAndActivate(prog)
-          onClose()
-        }}
-      />
+      {/* Import Preview Sheet */}
+      {importResult && (
+        <ImportPreviewSheet
+          isOpen={isPreviewOpen}
+          importResult={importResult}
+          onClose={() => setIsPreviewOpen(false)}
+          onSaveAndActivate={(prog: WorkoutProgram) => {
+            setIsPreviewOpen(false)
+            onSaveAndActivate(prog)
+            onClose()
+          }}
+          onSaveDraft={(prog: WorkoutProgram) => {
+            setIsPreviewOpen(false)
+            onSaveDraft(prog)
+            onClose()
+          }}
+        />
+      )}
     </>
   )
 }

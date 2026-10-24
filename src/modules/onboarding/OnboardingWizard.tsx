@@ -237,10 +237,10 @@ export function OnboardingWizard({
         if (f.hasIssues === null) {
           return 'حدد ما إذا كانت لديك إصابة أو حالة صحية للمتابعة'
         }
-        if (f.limitations.length === 0) {
+        if (f.hasIssues && f.limitations.length === 0) {
           return 'اختر منطقة الإصابة أو الألم للمتابعة'
         }
-        if (f.redFlag === null) {
+        if (f.hasIssues && f.redFlag === null) {
           return 'أجب عن سؤال الفحص الصحي للمتابعة'
         }
         return 'أكمل البيانات الصحية للمتابعة'
@@ -391,7 +391,7 @@ export function OnboardingWizard({
         maxHeight: '100dvh',
         display: 'grid',
         gridTemplateRows: 'auto 1fr auto',
-        overflow: 'hidden',
+        overflow: 'hidden' /* clip-ok: visual element boundary */,
         background: 'var(--color-bg)',
         color: 'var(--color-text)',
       }}
@@ -406,7 +406,7 @@ export function OnboardingWizard({
         className="wizard-step-body"
         style={{
           overflowY: 'auto',
-          overflowX: 'hidden',
+          overflowX: 'hidden' /* clip-ok: visual element boundary */,
           display: 'flex',
           flexDirection: 'column',
           padding: '16px 16px var(--page-end, 16px)',
@@ -812,13 +812,13 @@ export function OnboardingWizard({
               label="العمر"
               unit="سنة"
               inputMode="numeric"
-              placeholder="أدخل عمرك بالسنوات"
+              placeholder="اكتب عمرك بالسنوات"
               value={form.age}
               onChange={(e) => updateForm({ age: e.target.value })}
               error={
                 form.age !== '' &&
                 (!Number.isInteger(ageNum) || ageNum < 14 || ageNum > 80)
-                  ? 'العمر يجب أن يكون بين 14 و80 سنة'
+                  ? 'العمر لازم يكون بين 14 و80 سنة'
                   : undefined
               }
             />
@@ -834,7 +834,7 @@ export function OnboardingWizard({
               label="الطول"
               unit="سم"
               inputMode="numeric"
-              placeholder="أدخل طولك بالسنتيمتر"
+              placeholder="اكتب طولك بالسنتيمتر"
               value={form.heightCm}
               onChange={(e) => updateForm({ heightCm: e.target.value })}
               error={
@@ -842,7 +842,7 @@ export function OnboardingWizard({
                 (!Number.isFinite(heightNum) ||
                   heightNum < 120 ||
                   heightNum > 230)
-                  ? 'الطول يجب أن يكون بين 120 و230 سم'
+                  ? 'الطول لازم يكون بين 120 و230 سم'
                   : undefined
               }
             />
@@ -851,7 +851,7 @@ export function OnboardingWizard({
               label="الوزن"
               unit="كجم"
               inputMode="decimal"
-              placeholder="أدخل وزنك بالكيلوجرام"
+              placeholder="اكتب وزنك بالكيلوجرام"
               value={form.weightKg}
               onChange={(e) => updateForm({ weightKg: e.target.value })}
               error={
@@ -859,7 +859,7 @@ export function OnboardingWizard({
                 (!Number.isFinite(weightNum) ||
                   weightNum < 30 ||
                   weightNum > 250)
-                  ? 'الوزن يجب أن يكون بين 30 و250 كجم'
+                  ? 'الوزن لازم يكون بين 30 و250 كجم'
                   : undefined
               }
             />
@@ -1292,7 +1292,7 @@ export function OnboardingWizard({
               textAlign: 'center',
               fontWeight: 600,
               whiteSpace: 'nowrap',
-              overflow: 'hidden',
+              overflow: 'hidden' /* clip-ok: text ellipsis truncation */,
               textOverflow: 'ellipsis',
               lineHeight: '1.2',
             }}

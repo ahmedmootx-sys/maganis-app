@@ -30,6 +30,10 @@ import {
   IconEdit,
   IconSearch,
 } from '../../components/Icons.tsx'
+import { selectEffectiveExercise } from './exerciseOverrides.ts'
+import { ExerciseEditSheet } from './ExerciseEditSheet.tsx'
+import { CopyExerciseNameButton } from './CopyExerciseNameButton.tsx'
+import { Toast } from '../../components/Toast.tsx'
 
 export interface ExerciseLibraryModalProps {
   customExercises?: Exercise[]
@@ -67,9 +71,16 @@ export function ExerciseLibraryModal({
     null,
   )
 
+  const [editSheetExercise, setEditSheetExercise] = useState<Exercise | null>(null)
+  const [toastMsg, setToastMsg] = useState('')
+  const [overridesVersion, setOverridesVersion] = useState(0)
+
   const allExercises = useMemo(
-    () => [...EXERCISES, ...customExercises],
-    [customExercises],
+    () =>
+      [...EXERCISES, ...customExercises].map((ex) =>
+        selectEffectiveExercise(ex),
+      ),
+    [customExercises, overridesVersion],
   )
 
   const activeExercises = useMemo(() => {
@@ -154,7 +165,7 @@ export function ExerciseLibraryModal({
         gridTemplateRows: 'auto 1fr auto',
         height: '100dvh',
         maxHeight: '100dvh',
-        overflow: 'hidden',
+        overflow: 'hidden' /* clip-ok: modal sheet scroller boundary */,
       }}
     >
       {/* TopBar with Back and Add Exercise */}
@@ -201,7 +212,7 @@ export function ExerciseLibraryModal({
         className="screen-content exercise-library-content"
         style={{
           overflowY: 'auto',
-          overflowX: 'hidden',
+          overflowX: 'hidden' /* clip-ok: modal sheet scroller boundary */,
           display: 'flex',
           flexDirection: 'column',
           gap: '12px',
@@ -435,8 +446,8 @@ export function ExerciseLibraryModal({
         {filteredExercises.length === 0 ? (
           <EmptyState
             icon={<IconSearch size={36} />}
-            title="لم يتم العثور على نتائج"
-            message="جرب البحث بكلمات مختلفة أو قم بإزالة بعض الفلاتر لعرض مزيد من التمارين."
+            title="ملقيناش نتايج"
+            message="جرّب تبحث بكلمات تانية أو شيل شوية فلاتر عشان تشوف تمارين أكتر."
             action={
               <button
                 type="button"
@@ -488,7 +499,7 @@ export function ExerciseLibraryModal({
                         width: '56px',
                         height: '56px',
                         borderRadius: '10px',
-                        overflow: 'hidden',
+                        overflow: 'hidden' /* clip-ok: modal sheet scroller boundary */,
                         background: 'var(--color-surface)',
                         border: '1px solid var(--line)',
                         flexShrink: 0,
@@ -506,7 +517,27 @@ export function ExerciseLibraryModal({
                       />
                     </div>
                   }
-                  title={ex.nameAr}
+                  title={
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <span>{ex.nameAr}</span>
+                      {('isModified' in ex && Boolean((ex as { isModified?: boolean }).isModified)) && (
+                        <span
+                          data-testid="badge-modified"
+                          style={{
+                            fontSize: '10px',
+                            fontWeight: 700,
+                            padding: '1px 6px',
+                            borderRadius: 'var(--radius-control)',
+                            backgroundColor: 'var(--color-accent-tint)',
+                            color: 'var(--color-accent-text)',
+                            border: '1px solid var(--color-accent)',
+                          }}
+                        >
+                          معدّل
+                        </span>
+                      )}
+                    </span>
+                  }
                   secondary={
                     ex.name && ex.name !== ex.nameAr ? ex.name : undefined
                   }
@@ -573,6 +604,36 @@ export function ExerciseLibraryModal({
               }}
             >
               <span>عرض تفاصيل التمرين وتشريح العضلات</span>
+            </button>
+
+            {/* Action: Copy Name (Task G5-B4.1) */}
+            <div style={{ padding: '4px 0' }}>
+              <CopyExerciseNameButton
+                nameAr={actionExercise.nameAr}
+                nameEn={actionExercise.nameEn || actionExercise.name}
+                onToast={(msg) => setToastMsg(msg)}
+                style={{ width: '100%' }}
+              />
+            </div>
+
+            {/* Action: Edit Exercise (Task G5-B4) */}
+            <button
+              type="button"
+              data-testid="library-edit-exercise-btn"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                const ex = actionExercise
+                setActionExercise(null)
+                setEditSheetExercise(ex)
+              }}
+            >
+              <IconEdit size={18} />
+              <span>تعديل بيانات التمرين</span>
             </button>
 
             {Boolean(
@@ -681,6 +742,20 @@ export function ExerciseLibraryModal({
           </div>
         )}
       </Sheet>
+
+      {editSheetExercise && (
+        <ExerciseEditSheet
+          isOpen={Boolean(editSheetExercise)}
+          onClose={() => setEditSheetExercise(null)}
+          exercise={editSheetExercise}
+          onSaved={() => setOverridesVersion((v) => v + 1)}
+          onResetOriginal={() => setOverridesVersion((v) => v + 1)}
+        />
+      )}
+
+      {toastMsg && (
+        <Toast message={toastMsg} onDismiss={() => setToastMsg('')} />
+      )}
     </div>
   )
 }

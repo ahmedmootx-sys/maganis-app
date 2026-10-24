@@ -1,0 +1,16 @@
+====================================================
+                GATE: ATLAS INTEGRITY               
+====================================================
+Checking 53 muscle definitions...
+Checking for orphan SVG paths...
+Checking minimum hit target bounding boxes (24x24 CSS px at 360px viewport)...
+Small muscles requiring expanded hit areas: 7
+Checking bottom sheet occlusion avoidance contract...
+Muscles located in lower half of screen (occluded if viewBox not shifted): 12
+✓ Verified need for dynamic viewBox shift on 12 lower muscles
+Checking precomputed label boxes for overlap and viewport boundary...
+✓ Verified 17 anterior and 17 posterior label boxes without any collision or clipping
+
+Total checks performed: 348
+Errors found: 0
+✓ All atlas integrity checks passed!

@@ -36,7 +36,7 @@ describe('validateGoals', () => {
 
   it('rejects a primary goal outside the selection', () => {
     expect(validateGoals(['cut'], 'hypertrophy')).toContain(
-      'الهدف الأساسي يجب أن يكون من ضمن الأهداف المختارة',
+      'الهدف الأساسي لازم يكون من ضمن الأهداف المختارة',
     )
   })
 
@@ -56,7 +56,7 @@ describe('validateDays', () => {
 
   it.each([1, 7, 2.5, null, '', 'abc'])('rejects %p', (value) => {
     expect(validateDays(value)).toContain(
-      'عدد أيام التمرين يجب أن يكون بين 2 و6 أيام في الأسبوع',
+      'عدد أيام التمرين لازم يكون بين 2 و6 أيام في الأسبوع',
     )
   })
 })
@@ -114,17 +114,17 @@ describe('validateBody', () => {
 
   it.each([9, 91])('rejects age %p outside 10..90', (value) => {
     const body = { ...validProfile.body, age: value }
-    expect(validateBody(body)).toContain('العمر يجب أن يكون بين 10 و90 سنة')
+    expect(validateBody(body)).toContain('العمر لازم يكون بين 10 و90 سنة')
   })
 
   it.each([99, 251])('rejects height %p outside 100..250', (value) => {
     const body = { ...validProfile.body, heightCm: value }
-    expect(validateBody(body)).toContain('الطول يجب أن يكون بين 100 و250 سم')
+    expect(validateBody(body)).toContain('الطول لازم يكون بين 100 و250 سم')
   })
 
   it.each([29, 301])('rejects weight %p outside 30..300', (value) => {
     const body = { ...validProfile.body, weightKg: value }
-    expect(validateBody(body)).toContain('الوزن يجب أن يكون بين 30 و300 كجم')
+    expect(validateBody(body)).toContain('الوزن لازم يكون بين 30 و300 كجم')
   })
 
   it('requires sex and activity level', () => {
@@ -158,9 +158,9 @@ describe('validateProfile', () => {
     expect(result.ok).toBe(false)
     if (!result.ok) {
       expect(result.errors).toContain(
-        'عدد أيام التمرين يجب أن يكون بين 2 و6 أيام في الأسبوع',
+        'عدد أيام التمرين لازم يكون بين 2 و6 أيام في الأسبوع',
       )
-      expect(result.errors).toContain('العمر يجب أن يكون بين 10 و90 سنة')
+      expect(result.errors).toContain('العمر لازم يكون بين 10 و90 سنة')
     }
   })
 

@@ -46,6 +46,11 @@ import {
   IconClose,
 } from './components/Icons.tsx'
 import { ExerciseDetailView } from './modules/workout/ExerciseDetailView.tsx'
+import {
+  getAllExerciseOverrides,
+  saveExerciseOverride,
+  type ExerciseOverride,
+} from './modules/workout/exerciseOverrides.ts'
 import { ConfirmSheet } from './ui/index.ts'
 import { IconSprite } from './ui/IconSprite.tsx'
 import { Styleguide } from './shell/Styleguide.tsx'
@@ -583,6 +588,7 @@ export function App({ config }: AppProps) {
       trackingSessions: sessions,
       bodyLog,
       dayNotes,
+      exerciseOverrides: getAllExerciseOverrides(),
     }
   }, [profile, program, sessions, bodyLog, dayNotes, workoutStore])
 
@@ -637,6 +643,13 @@ export function App({ config }: AppProps) {
       }
       if (Array.isArray(data.dayNotes)) {
         storage.set('tracking.notes', data.dayNotes)
+      }
+      if (data.exerciseOverrides && typeof data.exerciseOverrides === 'object') {
+        for (const ov of Object.values(data.exerciseOverrides)) {
+          if (ov && typeof ov === 'object') {
+            saveExerciseOverride(ov as ExerciseOverride).catch(() => {})
+          }
+        }
       }
       handleImported()
     },
@@ -799,8 +812,8 @@ export function App({ config }: AppProps) {
                   {
                     id: `day_${Date.now()}_0`,
                     dayIndex: 0,
-                    name: 'اليوم الأول',
-                    labelAr: 'اليوم الأول',
+                    name: 'تمرين 1',
+                    labelAr: 'تمرين 1',
                     focus: 'تخصيص يدوي',
                     focusAr: 'تخصيص يدوي',
                     kind: 'strength',
@@ -892,28 +905,7 @@ export function App({ config }: AppProps) {
               />
             )}
 
-            {showAiDesignerModal && (
-              <AiDesignerModal
-                isOpen={showAiDesignerModal}
-                onClose={() => setShowAiDesignerModal(false)}
-                profile={profile}
-                limitations={profile?.limitations}
-                onSaveDraft={(prog) => {
-                  workoutStore.saveProgramToVault(
-                    prog.title || 'مسودة برنامج',
-                    prog,
-                  )
-                  setSavedProgramsList(workoutStore.getSavedPrograms())
-                  showToast('تم حفظ البرنامج كمسودة في خزانة البرامج')
-                }}
-                onSaveAndActivate={(prog) => {
-                  workoutStore.saveProgram(prog)
-                  setProgram(prog)
-                  showToast('تم تفعيل البرنامج التدريبي بنجاح')
-                }}
-                showToast={showToast}
-              />
-            )}
+
 
             {showLogger && (
               <SessionLogger
@@ -1223,7 +1215,7 @@ export function App({ config }: AppProps) {
           title="حذف الجدول التدريبي"
           consequences={[
             'سيتم حذف الجدول التدريبي بالكامل من التطبيق.',
-            'يمكنك دائماً إنشاء جدول جديد أو استرجاع جدول سابق من الحافظة.',
+            'تقدر دايمًا تعمل جدول جديد أو ترجّع جدول قديم من الحافظة.',
           ]}
           confirmLabel="تأكيد الحذف"
           cancelLabel="تراجع"
@@ -1251,6 +1243,33 @@ export function App({ config }: AppProps) {
           cancelLabel="متابعة التمرين"
           isDestructive={true}
         />
+
+        {showAiDesignerModal && (
+          <AiDesignerModal
+            isOpen={showAiDesignerModal}
+            onClose={() => setShowAiDesignerModal(false)}
+            profile={profile}
+            limitations={profile?.limitations}
+            onSaveDraft={(prog) => {
+              workoutStore.saveProgramToVault(
+                prog.title || 'مسودة برنامج',
+                prog,
+              )
+              setSavedProgramsList(workoutStore.getSavedPrograms())
+              showToast('تم حفظ البرنامج كمسودة في خزانة البرامج')
+            }}
+            onSaveAndActivate={(prog) => {
+              workoutStore.saveProgram(prog)
+              setProgram(prog)
+              showToast('تم تفعيل البرنامج التدريبي بنجاح')
+            }}
+            onOpenImport={() => {
+              setShowAiDesignerModal(false)
+              setActiveTab('workouts')
+            }}
+            showToast={showToast}
+          />
+        )}
 
         <Toast
           message={backToastMessage}

@@ -115,4 +115,63 @@ export const CLAIMS: Record<string, ClaimDef> = {
     source_text: 'توجيهات المدرب المعتمدة (الملحق B1)',
     status: 'coach_authored',
   },
+
+  // Task G5-B1 Cardio MET Claims
+  cardio_met_caveat: {
+    id: 'cardio_met_caveat',
+    text_ar:
+      'ده تقدير تقريبي بيعتمد على جدول MET العلمي. الرقم الحقيقي بيختلف من شخص لشخص حسب الوزن واللياقة وطريقة الأداء.',
+    source_id: 'compendium_2011',
+    source_text:
+      'Ainsworth et al., Med Sci Sports Exerc 2011;43(8):1575-1581 (Compendium of Physical Activities)',
+    status: 'sourced',
+  },
+  cardio_gross_vs_net: {
+    id: 'cardio_gross_vs_net',
+    text_ar:
+      'الإجمالي يشمل الحرق الطبيعي للجسم أثناء الراحة، والزيادة تمثل ما أحرقه التمرين فعلياً دون احتساب الحرق الأساسي.',
+    source_id: null,
+    status: 'unverified',
+  },
+
+  // Task G5-B2 Suggestions Claims
+  'sugg.first_time_weight': {
+    id: 'sugg.first_time_weight',
+    text_ar:
+      'اختار وزن تقدر تعمل بيه العدد المطلوب من التكرارات، وتحس إنك كنت تقدر تعمل 2 أو 3 تكرارات كمان. لو مش متأكد، ابدأ بوزن أخف.',
+    source_id: 'helms_2016',
+    source_text:
+      'Helms ER, Cronin J, Storey A, Zourdos MC. Application of the Repetitions in Reserve-Based Rating of Perceived Exertion Scale for Resistance Training. Strength Cond J. 2016;38(4):42-49.',
+    status: 'sourced',
+  },
+  'sugg.progress': {
+    id: 'sugg.progress',
+    text_ar:
+      'عملت أكتر من المطلوب بتكرار أو اتنين في آخر جلستين، فالمقترح تزوّد الوزن شوية (من 2% لـ 10%).',
+    source_id: 'acsm_2009',
+    source_text:
+      'American College of Sports Medicine. Progression models in resistance training for healthy adults. Med Sci Sports Exerc. 2009;41(3):687-708.',
+    status: 'sourced',
+  },
+  'sugg.below_range': {
+    id: 'sugg.below_range',
+    text_ar:
+      'لو التكرارات خلصت قبل المدى المطلوب، خفّف الوزن شوية في المجموعة الجاية.',
+    source_id: null,
+    status: 'coach_authored',
+  },
 }
+
+// C1.2 / C2: Muscle explanations from muscle-info-v1.json (53 muscles, coach_authored)
+import muscleInfoData from './muscle-info-v1.json' with { type: 'json' }
+for (const [muscleId, info] of Object.entries(muscleInfoData.muscles)) {
+  const claimId = `muscle_does.${muscleId}`
+  CLAIMS[claimId] = {
+    id: claimId,
+    text_ar: info.does_ar,
+    source_id: null,
+    source_text: 'Gray’s Anatomy / Kendall (Coach authored)',
+    status: 'coach_authored',
+  }
+}
+

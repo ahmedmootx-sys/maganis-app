@@ -21,7 +21,7 @@ export function BodyWeightTracker({ bodyLog, onAdd }: BodyWeightTrackerProps) {
     e.preventDefault()
     const w = Number(weight)
     if (!Number.isFinite(w) || w < 20 || w > 500) {
-      setError('الوزن يجب أن يكون بين 20 و500 كجم')
+      setError('الوزن لازم يكون بين 20 و500 كجم')
       return
     }
     onAdd({ date, weightKg: w })

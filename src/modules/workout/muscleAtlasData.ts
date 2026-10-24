@@ -68,7 +68,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   // ==================== CHEST (A) ====================
   pec_clavicular: {
     id: 'pec_clavicular',
-    nameAr: 'الصدرية الكبرى – الرأس الترقوي (الصدر العلوي)',
+    nameAr: 'صدر علوي',
     nameEn: 'Pectoralis major, clavicular head',
     view: 'A',
     layer: 'S',
@@ -81,7 +81,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   pec_sternal: {
     id: 'pec_sternal',
-    nameAr: 'الصدرية الكبرى، الجزء القصي',
+    nameAr: 'صدر أوسط',
     nameEn: 'Pectoralis major, sternal head',
     view: 'A',
     layer: 'S',
@@ -94,7 +94,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   pec_costal: {
     id: 'pec_costal',
-    nameAr: 'الجزء الضلعي (تقسيم تقريبي)',
+    nameAr: 'صدر سفلي',
     nameEn: 'Pectoralis major, costal head',
     view: 'A',
     layer: 'S',
@@ -120,7 +120,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   serratus_anterior: {
     id: 'serratus_anterior',
-    nameAr: 'المنشارية الأمامية',
+    nameAr: 'سيراتس',
     nameEn: 'Serratus anterior',
     view: 'A',
     layer: 'S',
@@ -139,7 +139,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   // ==================== SHOULDERS (A + P) ====================
   delt_anterior: {
     id: 'delt_anterior',
-    nameAr: 'الدالية الأمامية',
+    nameAr: 'كتف أمامي',
     nameEn: 'Anterior deltoid',
     view: 'A',
     layer: 'S',
@@ -151,7 +151,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   delt_lateral: {
     id: 'delt_lateral',
-    nameAr: 'الدالية الجانبية',
+    nameAr: 'كتف جانبي',
     nameEn: 'Lateral deltoid',
     view: 'A+P',
     layer: 'S',
@@ -167,7 +167,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   delt_posterior: {
     id: 'delt_posterior',
-    nameAr: 'الدالية الخلفية',
+    nameAr: 'كتف خلفي',
     nameEn: 'Posterior deltoid',
     view: 'P',
     layer: 'S',
@@ -181,7 +181,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   // ==================== ARMS (A + P) ====================
   biceps_long: {
     id: 'biceps_long',
-    nameAr: 'ذات الرأسين العضدية – الرأس الطويل',
+    nameAr: 'باي – الرأس الطويل',
     nameEn: 'Biceps brachii, long head',
     view: 'A',
     layer: 'S',
@@ -194,7 +194,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   biceps_short: {
     id: 'biceps_short',
-    nameAr: 'ذات الرأسين العضدية – الرأس القصير',
+    nameAr: 'باي – الرأس القصير',
     nameEn: 'Biceps brachii, short head',
     view: 'A',
     layer: 'S',
@@ -207,7 +207,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   brachialis: {
     id: 'brachialis',
-    nameAr: 'العضدية',
+    nameAr: 'براكيالس',
     nameEn: 'Brachialis',
     view: 'A',
     layer: 'S',
@@ -220,7 +220,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   brachioradialis: {
     id: 'brachioradialis',
-    nameAr: 'العضدية الكعبرية',
+    nameAr: 'براكيورادياليس',
     nameEn: 'Brachioradialis',
     view: 'A+P',
     layer: 'S',
@@ -236,7 +236,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   forearm_flexors: {
     id: 'forearm_flexors',
-    nameAr: 'عضلات الساعد القابضة',
+    nameAr: 'ساعد داخلي',
     nameEn: 'Forearm flexors',
     view: 'A',
     layer: 'S',
@@ -248,7 +248,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   forearm_extensors: {
     id: 'forearm_extensors',
-    nameAr: 'عضلات الساعد الباسطة',
+    nameAr: 'ساعد خارجي',
     nameEn: 'Forearm extensors',
     view: 'P',
     layer: 'S',
@@ -260,7 +260,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   triceps_long: {
     id: 'triceps_long',
-    nameAr: 'ثلاثية الرؤوس – الرأس الطويل',
+    nameAr: 'تراي – الرأس الطويل',
     nameEn: 'Triceps, long head',
     view: 'P',
     layer: 'S',
@@ -273,7 +273,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   triceps_lateral: {
     id: 'triceps_lateral',
-    nameAr: 'ثلاثية الرؤوس – الرأس الوحشي',
+    nameAr: 'تراي – الرأس الجانبي',
     nameEn: 'Triceps, lateral head',
     view: 'P',
     layer: 'S',
@@ -286,7 +286,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   triceps_medial: {
     id: 'triceps_medial',
-    nameAr: 'ثلاثية الرؤوس – الرأس الإنسي',
+    nameAr: 'تراي – الرأس الأوسط',
     nameEn: 'Triceps, medial head',
     view: 'P',
     layer: 'D',
@@ -301,7 +301,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   // ==================== CORE (A) ====================
   rectus_abdominis_upper: {
     id: 'rectus_abdominis_upper',
-    nameAr: 'المستقيمة البطنية – العلوية',
+    nameAr: 'بطن علوي',
     nameEn: 'Rectus abdominis, upper',
     view: 'A',
     layer: 'S',
@@ -315,7 +315,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   rectus_abdominis_lower: {
     id: 'rectus_abdominis_lower',
-    nameAr: 'المستقيمة البطنية – السفلية',
+    nameAr: 'بطن سفلي',
     nameEn: 'Rectus abdominis, lower',
     view: 'A',
     layer: 'S',
@@ -329,7 +329,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   obliques_external: {
     id: 'obliques_external',
-    nameAr: 'المائلة الخارجية',
+    nameAr: 'أوبليك',
     nameEn: 'External obliques',
     view: 'A',
     layer: 'S',
@@ -341,7 +341,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   transversus_abdominis: {
     id: 'transversus_abdominis',
-    nameAr: 'البطنية المستعرضة',
+    nameAr: 'بطن عميقة',
     nameEn: 'Transversus abdominis',
     view: 'A',
     layer: 'D',
@@ -353,7 +353,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   iliopsoas: {
     id: 'iliopsoas',
-    nameAr: 'الحرقفية القطنية',
+    nameAr: 'إليوبسواس',
     nameEn: 'Iliopsoas',
     view: 'A',
     layer: 'D',
@@ -365,7 +365,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   neck_scm: {
     id: 'neck_scm',
-    nameAr: 'القصية الترقوية الخشائية',
+    nameAr: 'رقبة جانبية',
     nameEn: 'Sternocleidomastoid',
     view: 'A',
     layer: 'S',
@@ -379,7 +379,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   // ==================== BACK (P + A) ====================
   trap_upper: {
     id: 'trap_upper',
-    nameAr: 'شبه المنحرفة – العلوية',
+    nameAr: 'ترابس علوي',
     nameEn: 'Upper trapezius',
     view: 'A+P',
     layer: 'S',
@@ -395,7 +395,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   trap_middle: {
     id: 'trap_middle',
-    nameAr: 'شبه المنحرفة – الوسطى',
+    nameAr: 'ترابس أوسط',
     nameEn: 'Middle trapezius',
     view: 'P',
     layer: 'S',
@@ -405,7 +405,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   trap_lower: {
     id: 'trap_lower',
-    nameAr: 'شبه المنحرفة – السفلية',
+    nameAr: 'ترابس سفلي',
     nameEn: 'Lower trapezius',
     view: 'P',
     layer: 'S',
@@ -415,7 +415,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   rhomboids: {
     id: 'rhomboids',
-    nameAr: 'المعينية',
+    nameAr: 'رومبويد',
     nameEn: 'Rhomboids',
     view: 'P',
     layer: 'D',
@@ -439,7 +439,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   lats: {
     id: 'lats',
-    nameAr: 'الظهرية العريضة',
+    nameAr: 'لاتس',
     nameEn: 'Latissimus dorsi',
     view: 'P',
     layer: 'S',
@@ -451,7 +451,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   teres_major: {
     id: 'teres_major',
-    nameAr: 'المدورة الكبيرة',
+    nameAr: 'تيرس ميجر',
     nameEn: 'Teres major',
     view: 'P',
     layer: 'S',
@@ -463,7 +463,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   teres_minor: {
     id: 'teres_minor',
-    nameAr: 'المدورة الصغيرة',
+    nameAr: 'تيرس مينور',
     nameEn: 'Teres minor',
     view: 'P',
     layer: 'S',
@@ -475,7 +475,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   infraspinatus: {
     id: 'infraspinatus',
-    nameAr: 'تحت الشوكة',
+    nameAr: 'إنفراسبيناتس',
     nameEn: 'Infraspinatus',
     view: 'P',
     layer: 'S',
@@ -487,7 +487,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   supraspinatus: {
     id: 'supraspinatus',
-    nameAr: 'فوق الشوكة',
+    nameAr: 'سوبراسبيناتس',
     nameEn: 'Supraspinatus',
     view: 'P',
     layer: 'D',
@@ -499,7 +499,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   erector_spinae: {
     id: 'erector_spinae',
-    nameAr: 'الناصبة للفقار (أسفل الظهر)',
+    nameAr: 'إريكتور (أسفل الظهر)',
     nameEn: 'Erector spinae',
     view: 'P',
     layer: 'S',
@@ -511,7 +511,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   quadratus_lumborum: {
     id: 'quadratus_lumborum',
-    nameAr: 'المربعة القطنية',
+    nameAr: 'جانب أسفل الظهر',
     nameEn: 'Quadratus lumborum',
     view: 'P',
     layer: 'D',
@@ -525,7 +525,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   // ==================== GLUTES (P) ====================
   glute_max: {
     id: 'glute_max',
-    nameAr: 'الألوية الكبرى',
+    nameAr: 'جلوتس كبير',
     nameEn: 'Gluteus maximus',
     view: 'P',
     layer: 'S',
@@ -537,7 +537,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   glute_med: {
     id: 'glute_med',
-    nameAr: 'الألوية الوسطى',
+    nameAr: 'جلوتس وسطي',
     nameEn: 'Gluteus medius',
     view: 'P',
     layer: 'S',
@@ -549,7 +549,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   glute_min: {
     id: 'glute_min',
-    nameAr: 'الألوية الصغرى',
+    nameAr: 'جلوتس صغير',
     nameEn: 'Gluteus minimus',
     view: 'P',
     layer: 'D',
@@ -563,7 +563,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   // ==================== LEGS (A + P) ====================
   tfl: {
     id: 'tfl',
-    nameAr: 'الموترة للفافة العريضة',
+    nameAr: 'جانب الورك الأمامي',
     nameEn: 'Tensor fasciae latae',
     view: 'A',
     layer: 'S',
@@ -588,7 +588,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   rectus_femoris: {
     id: 'rectus_femoris',
-    nameAr: 'المستقيمة الفخذية',
+    nameAr: 'فخذ أمامي – منتصف',
     nameEn: 'Rectus femoris',
     view: 'A',
     layer: 'S',
@@ -600,7 +600,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   vastus_lateralis: {
     id: 'vastus_lateralis',
-    nameAr: 'المتسعة الوحشية',
+    nameAr: 'فخذ أمامي – خارجي',
     nameEn: 'Vastus lateralis',
     view: 'A',
     layer: 'S',
@@ -612,7 +612,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   vastus_medialis: {
     id: 'vastus_medialis',
-    nameAr: 'المتسعة الإنسية',
+    nameAr: 'فخذ أمامي – داخلي',
     nameEn: 'Vastus medialis',
     view: 'A',
     layer: 'S',
@@ -625,7 +625,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   vastus_intermedius: {
     id: 'vastus_intermedius',
-    nameAr: 'المتسعة المتوسطة',
+    nameAr: 'فخذ أمامي – عميق',
     nameEn: 'Vastus intermedius',
     view: 'A',
     layer: 'D',
@@ -637,7 +637,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   adductors: {
     id: 'adductors',
-    nameAr: 'العضلات المقرّبة',
+    nameAr: 'فخذ داخلي',
     nameEn: 'Adductors',
     view: 'A+P',
     layer: 'S',
@@ -653,7 +653,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   tibialis_anterior: {
     id: 'tibialis_anterior',
-    nameAr: 'الظنبوبية الأمامية',
+    nameAr: 'مقدمة الساق',
     nameEn: 'Tibialis anterior',
     view: 'A',
     layer: 'S',
@@ -667,7 +667,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   // ==================== HAMSTRINGS & CALVES (P) ====================
   hamstring_bf_long: {
     id: 'hamstring_bf_long',
-    nameAr: 'الفخذية ذات الرأسين – الرأس الطويل',
+    nameAr: 'فخذ خلفي – خارجي (طويل)',
     nameEn: 'Biceps femoris, long head',
     view: 'P',
     layer: 'S',
@@ -679,7 +679,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   hamstring_bf_short: {
     id: 'hamstring_bf_short',
-    nameAr: 'الفخذية ذات الرأسين – الرأس القصير',
+    nameAr: 'فخذ خلفي – خارجي (قصير)',
     nameEn: 'Biceps femoris, short head',
     view: 'P',
     layer: 'D',
@@ -691,7 +691,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   hamstring_semitendinosus: {
     id: 'hamstring_semitendinosus',
-    nameAr: 'نصف الوترية',
+    nameAr: 'فخذ خلفي – داخلي (سطحي)',
     nameEn: 'Semitendinosus',
     view: 'P',
     layer: 'S',
@@ -703,7 +703,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   hamstring_semimembranosus: {
     id: 'hamstring_semimembranosus',
-    nameAr: 'نصف الغشائية',
+    nameAr: 'فخذ خلفي – داخلي (عميق)',
     nameEn: 'Semimembranosus',
     view: 'P',
     layer: 'S',
@@ -715,7 +715,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   gastrocnemius_medial: {
     id: 'gastrocnemius_medial',
-    nameAr: 'التوأمية – الرأس الإنسي',
+    nameAr: 'سمانة – داخلي',
     nameEn: 'Gastrocnemius, medial head',
     view: 'P',
     layer: 'S',
@@ -727,7 +727,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   gastrocnemius_lateral: {
     id: 'gastrocnemius_lateral',
-    nameAr: 'التوأمية – الرأس الوحشي',
+    nameAr: 'سمانة – خارجي',
     nameEn: 'Gastrocnemius, lateral head',
     view: 'P',
     layer: 'S',
@@ -739,7 +739,7 @@ export const MUSCLE_ATLAS: Record<string, MuscleDefinition> = {
   },
   soleus: {
     id: 'soleus',
-    nameAr: 'النعلية',
+    nameAr: 'سمانة عميقة (سولس)',
     nameEn: 'Soleus',
     view: 'P',
     layer: 'S',
