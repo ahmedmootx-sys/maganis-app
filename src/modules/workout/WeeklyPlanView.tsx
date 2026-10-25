@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type {
   CustomExercise,
   Exercise,
+  ProgramExercise,
   ExerciseSection,
   ProgramDay,
   WorkoutProgram,
@@ -67,6 +68,8 @@ import { selectWeekLoad } from './weekLoadSelector.ts'
 import { ScheduleMismatchCallout } from './ScheduleMismatchCallout.tsx'
 import { plural } from '../../utils/plural.ts'
 import { saveFile } from '../../utils/saveFile.ts'
+import { deriveConstraints, isExerciseAllowed } from './constraints.ts'
+import { EXERCISES } from './exercises.ts'
 import {
   IconSearch,
   IconPlus,
@@ -977,6 +980,93 @@ export function WeeklyPlanView({
   const [renamingDay, setRenamingDay] = useState<ProgramDay | null>(null)
   const [renameInputValue, setRenameInputValue] = useState('')
 
+  // B2 Duplicate Day States
+  const [isDuplicatePickerOpen, setIsDuplicatePickerOpen] = useState(false)
+  const [isDuplicateConfirmOpen, setIsDuplicateConfirmOpen] = useState(false)
+  const [duplicateSourceDay, setDuplicateSourceDay] = useState<ProgramDay | null>(null)
+  const [duplicateNewName, setDuplicateNewName] = useState('')
+  const [duplicateTargetWeekday, setDuplicateTargetWeekday] = useState<number>(0)
+
+  // B1.3 Disallowed Exercises Mismatch States
+  const [dismissedDisallowedMismatch, setDismissedDisallowedMismatch] = useState(false)
+  const [replacementPreviewOpen, setReplacementPreviewOpen] = useState(false)
+
+  // B3.2 Cardio Finisher States
+  const [isFinisherModalOpen, setIsFinisherModalOpen] = useState(false)
+  const [finisherTargetDay, setFinisherTargetDay] = useState<ProgramDay | null>(null)
+  const [finisherActivity, setFinisherActivity] = useState<string>('جري خفيف')
+  const [finisherMinutes, setFinisherMinutes] = useState<number>(20)
+  const [finisherLevel, setFinisherLevel] = useState<'خفيف' | 'متوسط' | 'عالي'>('متوسط')
+  const [applyFinisherToAll, setApplyFinisherToAll] = useState(false)
+
+  // Constraints & Schedule Derivations
+  const constraints = useMemo(() => deriveConstraints(profile), [profile])
+
+  const schedule = useMemo(
+    () => getOrDeriveSchedule(profile, program),
+    [profile, program],
+  )
+  const orderedWeekdays = useMemo(
+    () => getOrderedWeekdays(profile?.weekStartDay ?? 6),
+    [profile?.weekStartDay],
+  )
+
+  const freeWeekdays = useMemo(() => {
+    return orderedWeekdays.filter((w) => {
+      const slot = schedule[w.weekday]
+      return !slot || slot === 'rest'
+    })
+  }, [orderedWeekdays, schedule])
+
+  const allWeekdaysTaken = useMemo(() => {
+    return (
+      freeWeekdays.length === 0 ||
+      (program?.days.length !== undefined && program.days.length >= 7)
+    )
+  }, [freeWeekdays, program?.days.length])
+
+  // Disallowed Exercises in Current Program (B1.3)
+  const disallowedExercisesInfo = useMemo(() => {
+    if (!program || dismissedDisallowedMismatch) return []
+    const list: Array<{
+      dayIndex: number
+      dayName: string
+      exerciseIndex: number
+      currentExercise: ProgramExercise
+      catalogExercise: Exercise
+      suggestedReplacement: Exercise | null
+    }> = []
+
+    for (const d of program.days) {
+      if (d.kind === 'cardio') continue
+      for (let idx = 0; idx < d.exercises.length; idx++) {
+        const pe = d.exercises[idx]
+        const catEx =
+          customExercises.find((c) => c.id === pe.exerciseId) ||
+          EXERCISES.find((e) => e.id === pe.exerciseId)
+        if (catEx && !isExerciseAllowed(catEx, constraints)) {
+          const replacement =
+            EXERCISES.find(
+              (cand) =>
+                cand.category === catEx.category &&
+                cand.id !== catEx.id &&
+                isExerciseAllowed(cand, constraints),
+            ) || null
+
+          list.push({
+            dayIndex: d.dayIndex,
+            dayName: d.name || d.labelAr,
+            exerciseIndex: idx,
+            currentExercise: pe,
+            catalogExercise: catEx,
+            suggestedReplacement: replacement,
+          })
+        }
+      }
+    }
+    return list
+  }, [program, constraints, customExercises, dismissedDisallowedMismatch])
+
   // Confirmations
   const [replaceConfirm, setReplaceConfirm] = useState<{
     isOpen: boolean
@@ -1167,6 +1257,253 @@ export function WeeklyPlanView({
     onUpdateProgram({ ...program, days: newDays })
   }
 
+  function handleConfirmDuplicateDay() {
+    if (!program || !onUpdateProgram || !duplicateSourceDay) return
+    const nextIndex =
+      program.days.length > 0
+        ? Math.max(...program.days.map((d) => d.dayIndex)) + 1
+        : 0
+    const newDayId = `day-${Date.now()}`
+    const clonedExercises = (duplicateSourceDay.exercises || []).map((pe) => ({
+      ...pe,
+    }))
+    const nameToUse = duplicateNewName.trim() || `${duplicateSourceDay.name || duplicateSourceDay.labelAr} (نسخة)`
+    const clonedDay: ProgramDay = {
+      ...duplicateSourceDay,
+      id: newDayId,
+      dayIndex: nextIndex,
+      name: nameToUse,
+      labelAr: nameToUse,
+      customName: nameToUse,
+      exercises: clonedExercises,
+      cardioConfig: duplicateSourceDay.cardioConfig ? { ...duplicateSourceDay.cardioConfig } : undefined,
+      finisher: duplicateSourceDay.finisher ? { ...duplicateSourceDay.finisher } : undefined,
+    }
+
+    if (profile && onUpdateProfile && duplicateTargetWeekday !== undefined) {
+      const currentSchedule = getOrDeriveSchedule(profile, program)
+      const updatedSchedule = {
+        ...currentSchedule,
+        [duplicateTargetWeekday]: newDayId,
+      }
+      onUpdateProfile({
+        ...profile,
+        schedule: updatedSchedule,
+      })
+    }
+
+    onUpdateProgram({
+      ...program,
+      days: [...program.days, clonedDay],
+    })
+
+    setIsDuplicateConfirmOpen(false)
+    setDuplicateSourceDay(null)
+    showToast('تم تكرار اليوم بنجاح')
+    handleSelectDay(clonedDay.dayIndex)
+  }
+
+  function handleConfirmReplaceDisallowed() {
+    if (!program || !onUpdateProgram || disallowedExercisesInfo.length === 0) return
+    const replacementMap = new Map<string, string>()
+    for (const item of disallowedExercisesInfo) {
+      if (item.suggestedReplacement) {
+        replacementMap.set(item.catalogExercise.id, item.suggestedReplacement.id)
+      }
+    }
+
+    const newDays = program.days.map((day) => {
+      const newExercises = day.exercises.map((pe) => {
+        const repId = replacementMap.get(pe.exerciseId)
+        if (repId) {
+          return { ...pe, exerciseId: repId }
+        }
+        return pe
+      })
+      return { ...day, exercises: newExercises }
+    })
+
+    onUpdateProgram({ ...program, days: newDays })
+    setReplacementPreviewOpen(false)
+    setDismissedDisallowedMismatch(true)
+    showToast('تم استبدال التمارين غير المتوافقة بنجاح')
+  }
+
+  function handleSaveFinisher() {
+    if (!program || !onUpdateProgram) return
+    const finisherConfig = {
+      activity: finisherActivity,
+      minutes: finisherMinutes,
+      level: finisherLevel,
+    }
+
+    const newDays = program.days.map((d) => {
+      if (applyFinisherToAll) {
+        if (d.kind !== 'cardio') {
+          return { ...d, finisher: finisherConfig }
+        }
+        return d
+      }
+      if (finisherTargetDay && d.dayIndex === finisherTargetDay.dayIndex) {
+        return { ...d, finisher: finisherConfig }
+      }
+      return d
+    })
+
+    onUpdateProgram({ ...program, days: newDays })
+    setIsFinisherModalOpen(false)
+    setFinisherTargetDay(null)
+    showToast(applyFinisherToAll ? 'تم تطبيق الكارديو على كل أيام المقاومة' : 'تم حفظ تمرين الكارديو بعد التمرين')
+  }
+
+  function handleRemoveFinisher(removeAll: boolean = false) {
+    if (!program || !onUpdateProgram) return
+    const newDays = program.days.map((d) => {
+      if (removeAll || (finisherTargetDay && d.dayIndex === finisherTargetDay.dayIndex)) {
+        return { ...d, finisher: null }
+      }
+      return d
+    })
+
+    onUpdateProgram({ ...program, days: newDays })
+    setIsFinisherModalOpen(false)
+    setFinisherTargetDay(null)
+    showToast(removeAll ? 'تم حذف الكارديو من كل الأيام' : 'تم حذف تمرين الكارديو')
+  }
+
+  const renderFinisherSheet = () => (
+    <Sheet
+      isOpen={isFinisherModalOpen}
+      onClose={() => setIsFinisherModalOpen(false)}
+      title="كارديو بعد التمرين (Finisher)"
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '16px' }}>
+        <div>
+          <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+            النشاط
+          </div>
+          <Select
+            options={[
+              { value: 'جري خفيف', label: 'جري خفيف (خارجي أو سير)' },
+              { value: 'مشي سريع', label: 'مشي سريع / ميلان' },
+              { value: 'دراجة ثابتة', label: 'دراجة ثابتة' },
+              { value: 'نط حبل', label: 'نط حبل' },
+              { value: 'تجديف', label: 'تجديف (Rowing)' },
+            ]}
+            value={finisherActivity}
+            onChange={(val) => setFinisherActivity(val)}
+          />
+        </div>
+
+        <div>
+          <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+            المدة المخططة ({finisherMinutes} دقيقة)
+          </div>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {[10, 15, 20, 25, 30, 45].map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setFinisherMinutes(m)}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid',
+                  borderColor: finisherMinutes === m ? 'var(--color-accent)' : 'var(--color-divider)',
+                  background: finisherMinutes === m ? 'var(--color-accent)' : 'var(--color-surface-2)',
+                  color: finisherMinutes === m ? 'var(--color-accent-on)' : 'var(--color-text)',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                {m} د
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+            مستوى الشدة
+          </div>
+          <Choice
+            variant="option-card"
+            options={[
+              { value: 'خفيف', label: 'خفيف', description: 'مجهود بسيط وسرعة استشفاء' },
+              { value: 'متوسط', label: 'متوسط', description: 'تنفس سريع مع إمكانية الحديث' },
+              { value: 'عالي', label: 'عالي', description: 'جهد مكثف وحرق عالٍ' },
+            ]}
+            value={finisherLevel}
+            onChange={(val) => setFinisherLevel(val as 'خفيف' | 'متوسط' | 'عالي')}
+            ariaLabel="مستوى شدة الكارديو"
+          />
+        </div>
+
+        {/* Energy calculation caveat claim */}
+        <div style={{ padding: '8px 12px', borderRadius: '8px', background: 'var(--color-surface-2)', border: '1px solid var(--color-divider)' }}>
+          <Claim id="cardio_energy_formula" />
+        </div>
+
+        {/* Apply to all resistance days switch */}
+        <label
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            background: 'var(--color-surface-2)',
+            cursor: 'pointer',
+          }}
+        >
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 700 }}>
+              طبّقه على كل أيام المقاومة
+            </div>
+            <div style={{ fontSize: '11.5px', color: 'var(--color-text-2)' }}>
+              إضافة نفس النشاط والمدة لجميع أيام الحديد
+            </div>
+          </div>
+          <input
+            type="checkbox"
+            checked={applyFinisherToAll}
+            onChange={(e) => setApplyFinisherToAll(e.target.checked)}
+            style={{ width: '18px', height: '18px', accentColor: 'var(--color-accent)' }}
+          />
+        </label>
+
+        {applyFinisherToAll && program && (
+          <div style={{ fontSize: '12px', color: 'var(--color-accent)', padding: '4px 8px' }}>
+            سيتم تطبيقه على {program.days.filter((d) => d.kind !== 'cardio').length} أيام مقاومة: (
+            {program.days
+              .filter((d) => d.kind !== 'cardio')
+              .map((d) => d.name || d.labelAr)
+              .join('، ')}
+            )
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+          <Button
+            variant="subtle"
+            fullWidth
+            onClick={() => setIsFinisherModalOpen(false)}
+          >
+            إلغاء
+          </Button>
+          <Button
+            variant="primary"
+            fullWidth
+            onClick={handleSaveFinisher}
+          >
+            حفظ الكارديو
+          </Button>
+        </div>
+      </div>
+    </Sheet>
+  )
+
+
   function handleSwapExercise(newEx: Exercise) {
     if (!swapTarget || !onUpdateProgram || !program) return
     const newDays = program.days.map((day) => {
@@ -1255,6 +1592,7 @@ export function WeeklyPlanView({
         splitType: newSplit,
         injuries: userInjuries,
         customExercises,
+        profile: profile || undefined,
       })
       onUpdateProgram(newProg)
       setIsManageSheetOpen(false)
@@ -2113,6 +2451,142 @@ export function WeeklyPlanView({
               </div>
             </section>
           )}
+
+          {/* B3.2 Cardio Finisher Card under the exercise list */}
+          <section className="screen-section" style={{ marginTop: '12px' }}>
+              <div
+                className="section-title"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '8px',
+                }}
+              >
+                <span>كارديو بعد التمرين (Finisher)</span>
+                {selectedDay.finisher && (
+                  <button
+                    type="button"
+                    className="ghost tiny"
+                    style={{
+                      fontSize: '12px',
+                      color: 'var(--color-accent)',
+                      padding: '2px 8px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      setFinisherTargetDay(selectedDay)
+                      setFinisherActivity(selectedDay.finisher?.activity || 'جري خفيف')
+                      setFinisherMinutes(selectedDay.finisher?.minutes || 20)
+                      setFinisherLevel(selectedDay.finisher?.level || 'متوسط')
+                      setApplyFinisherToAll(false)
+                      setIsFinisherModalOpen(true)
+                    }}
+                  >
+                    تعديل
+                  </button>
+                )}
+              </div>
+              {selectedDay.finisher ? (
+                <div
+                  className="card"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    border: '1px solid var(--color-divider)',
+                    background: 'var(--color-surface-2)',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '10px',
+                        background: 'var(--color-info-surface, rgba(96, 165, 250, 0.15))',
+                        color: 'var(--color-info)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Icon name="activity" size={20} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '13.5px', color: 'var(--color-text)' }}>
+                        {selectedDay.finisher.activity}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
+                        {selectedDay.finisher.minutes} دقيقة · شدة {selectedDay.finisher.level}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="ghost tiny"
+                    style={{ color: 'var(--color-danger)', padding: '6px' }}
+                    onClick={() => {
+                      setFinisherTargetDay(selectedDay)
+                      handleRemoveFinisher(false)
+                    }}
+                    aria-label="حذف الكارديو"
+                  >
+                    <IconTrash size={16} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="card"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '14px 16px',
+                    borderRadius: '12px',
+                    border: '1px dashed var(--color-divider)',
+                    background: 'var(--color-surface)',
+                    width: '100%',
+                    textAlign: 'right',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    setFinisherTargetDay(selectedDay)
+                    setFinisherActivity('جري خفيف')
+                    setFinisherMinutes(20)
+                    setFinisherLevel('متوسط')
+                    setApplyFinisherToAll(false)
+                    setIsFinisherModalOpen(true)
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      background: 'var(--color-surface-2)',
+                      color: 'var(--color-text-2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <IconPlus size={18} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '13.5px', color: 'var(--color-text)' }}>
+                      + إضافة كارديو بعد التمرين
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
+                      جلسة هوائية خفيفة لزيادة حرق السعرات بعد رفع الأثقال
+                    </div>
+                  </div>
+                </button>
+              )}
+            </section>
         </div>
 
         {/* Sticky Bottom Primary "ابدأ التمرين" */}
@@ -2211,6 +2685,37 @@ export function WeeklyPlanView({
             >
               <Icon name="activity" size={16} />
               <span>تحويل إلى يوم كارديو</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsDayOverflowOpen(false)
+                setFinisherTargetDay(selectedDay)
+                if (selectedDay.finisher) {
+                  setFinisherActivity(selectedDay.finisher.activity)
+                  setFinisherMinutes(selectedDay.finisher.minutes)
+                  setFinisherLevel(selectedDay.finisher.level)
+                } else {
+                  setFinisherActivity('جري خفيف')
+                  setFinisherMinutes(20)
+                  setFinisherLevel('متوسط')
+                }
+                setApplyFinisherToAll(false)
+                setIsFinisherModalOpen(true)
+              }}
+            >
+              <Icon name="activity" size={16} />
+              <span>
+                {selectedDay.finisher
+                  ? 'تعديل كارديو بعد التمرين'
+                  : 'إضافة كارديو بعد التمرين'}
+              </span>
             </button>
             <button
               type="button"
@@ -2321,6 +2826,8 @@ export function WeeklyPlanView({
           </Sheet>
         )}
 
+        {renderFinisherSheet()}
+
         {toastMessage && <Toast message={toastMessage} />}
       </div>
     )
@@ -2394,6 +2901,34 @@ export function WeeklyPlanView({
           </Callout>
         )}
 
+        {/* B1.3 Disallowed Exercises Mismatch Callout */}
+        {disallowedExercisesInfo.length > 0 && !dismissedDisallowedMismatch && (
+          <Callout
+            variant="warning"
+            title="تمارين لا تناسب إمكانياتك الحالية"
+            action={
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <Button
+                  size="sm"
+                  variant="primary"
+                  onClick={() => setReplacementPreviewOpen(true)}
+                >
+                  استبدلهم بتمارين مناسبة
+                </Button>
+                <Button
+                  size="sm"
+                  variant="subtle"
+                  onClick={() => setDismissedDisallowedMismatch(true)}
+                >
+                  سيبهم
+                </Button>
+              </div>
+            }
+          >
+            يحتوي جدولك على {disallowedExercisesInfo.length} تمارين تتطلب معدات غير متوفرة لديك بناءً على إعدادات ملفك الشخصي.
+          </Callout>
+        )}
+
         {/* Training days mismatch Callout */}
         <ScheduleMismatchCallout
           profile={profile}
@@ -2424,14 +2959,13 @@ export function WeeklyPlanView({
           </div>
           {program.splitType && (
             <div
-              dir="ltr"
               style={{
                 fontSize: '12px',
                 color: 'var(--muted)',
                 fontWeight: 600,
               }}
             >
-              {WORKOUT_SPLIT_EN[program.splitType]}
+              <bdi dir="ltr">{WORKOUT_SPLIT_EN[program.splitType]}</bdi>
             </div>
           )}
           <div
@@ -2573,9 +3107,15 @@ export function WeeklyPlanView({
                       <span
                         style={{
                           minWidth: 0,
-                          overflow: 'hidden' /* clip-ok: text-ellipsis */,
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
+                          flex: '1 1 auto',
+                          lineHeight: 1.4,
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: displayTitle.length >= 60 ? 'hidden' : 'visible',
+                          textOverflow: displayTitle.length >= 60 ? 'ellipsis' : 'clip',
+                          whiteSpace: 'normal',
+                          wordBreak: 'break-word',
                         }}
                       >
                         {displayTitle}
@@ -3289,14 +3829,32 @@ export function WeeklyPlanView({
         title="إضافة يوم جديد إلى الجدول"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {allWeekdaysTaken && (
+            <div
+              style={{
+                padding: '10px 14px',
+                borderRadius: '8px',
+                background: 'var(--color-surface-2)',
+                color: 'var(--color-text-2)',
+                fontSize: '13px',
+                textAlign: 'center',
+                fontWeight: 600,
+              }}
+            >
+              كل أيام الأسبوع مشغولة
+            </div>
+          )}
           <button
             type="button"
             className="ghost-secondary full-width"
+            disabled={allWeekdaysTaken}
             style={{
               justifyContent: 'flex-start',
               height: '52px',
               gap: '12px',
               padding: '0 16px',
+              opacity: allWeekdaysTaken ? 0.5 : 1,
+              cursor: allWeekdaysTaken ? 'not-allowed' : 'pointer',
             }}
             onClick={() => handleAddDay('strength')}
           >
@@ -3313,11 +3871,14 @@ export function WeeklyPlanView({
           <button
             type="button"
             className="ghost-secondary full-width"
+            disabled={allWeekdaysTaken}
             style={{
               justifyContent: 'flex-start',
               height: '52px',
               gap: '12px',
               padding: '0 16px',
+              opacity: allWeekdaysTaken ? 0.5 : 1,
+              cursor: allWeekdaysTaken ? 'not-allowed' : 'pointer',
             }}
             onClick={() => handleAddDay('cardio')}
           >
@@ -3328,6 +3889,33 @@ export function WeeklyPlanView({
               </div>
               <div style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
                 جري، مشي سريع، دراجة ثابتة، سباحة...
+              </div>
+            </div>
+          </button>
+          <button
+            type="button"
+            className="ghost-secondary full-width"
+            disabled={allWeekdaysTaken || !program || program.days.length === 0}
+            style={{
+              justifyContent: 'flex-start',
+              height: '52px',
+              gap: '12px',
+              padding: '0 16px',
+              opacity: allWeekdaysTaken || !program || program.days.length === 0 ? 0.5 : 1,
+              cursor: allWeekdaysTaken || !program || program.days.length === 0 ? 'not-allowed' : 'pointer',
+            }}
+            onClick={() => {
+              setIsAddDaySheetOpen(false)
+              setIsDuplicatePickerOpen(true)
+            }}
+          >
+            <IconClipboard size={20} />
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontWeight: 700, fontSize: '14px' }}>
+                تكرار يوم موجود
+              </div>
+              <div style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
+                نسخ تمارين وأهداف يوم موجود إلى يوم جديد
               </div>
             </div>
           </button>
@@ -3367,6 +3955,29 @@ export function WeeklyPlanView({
             <button
               type="button"
               className="ghost-secondary full-width"
+              disabled={allWeekdaysTaken}
+              style={{
+                justifyContent: 'flex-start',
+                height: '48px',
+                gap: '10px',
+                opacity: allWeekdaysTaken ? 0.5 : 1,
+                cursor: allWeekdaysTaken ? 'not-allowed' : 'pointer',
+              }}
+              onClick={() => {
+                const target = dayMenuTarget
+                setDayMenuTarget(null)
+                setDuplicateSourceDay(target)
+                setDuplicateNewName(`${target.name || target.labelAr} (نسخة)`)
+                setDuplicateTargetWeekday(freeWeekdays[0]?.weekday ?? 0)
+                setIsDuplicateConfirmOpen(true)
+              }}
+            >
+              <IconClipboard size={16} />
+              <span>تكرار اليوم</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
                 height: '48px',
@@ -3384,6 +3995,40 @@ export function WeeklyPlanView({
                   : 'تحويل إلى يوم كارديو'}
               </span>
             </button>
+            {dayMenuTarget.kind !== 'cardio' && (
+              <button
+                type="button"
+                className="ghost-secondary full-width"
+                style={{
+                  justifyContent: 'flex-start',
+                  height: '48px',
+                  gap: '10px',
+                }}
+                onClick={() => {
+                  const target = dayMenuTarget
+                  setDayMenuTarget(null)
+                  setFinisherTargetDay(target)
+                  if (target.finisher) {
+                    setFinisherActivity(target.finisher.activity)
+                    setFinisherMinutes(target.finisher.minutes)
+                    setFinisherLevel(target.finisher.level)
+                  } else {
+                    setFinisherActivity('جري خفيف')
+                    setFinisherMinutes(20)
+                    setFinisherLevel('متوسط')
+                  }
+                  setApplyFinisherToAll(false)
+                  setIsFinisherModalOpen(true)
+                }}
+              >
+                <Icon name="activity" size={16} />
+                <span>
+                  {dayMenuTarget.finisher
+                    ? 'تعديل كارديو بعد التمرين'
+                    : 'إضافة كارديو بعد التمرين'}
+                </span>
+              </button>
+            )}
             <button
               type="button"
               className="ghost-danger full-width"
@@ -3400,6 +4045,172 @@ export function WeeklyPlanView({
           </div>
         )}
       </Sheet>
+
+      {/* Sheet: Duplicate Day Picker */}
+      <Sheet
+        isOpen={isDuplicatePickerOpen}
+        onClose={() => setIsDuplicatePickerOpen(false)}
+        title="اختر اليوم المراد تكراره"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {program?.days.map((d) => {
+            const sched = getOrDeriveSchedule(profile, program)
+            const scheduledWd = Object.entries(sched).find(
+              ([_wd, slot]) => slot === d.id || slot === String(d.dayIndex)
+            )?.[0]
+            const wdInfo = scheduledWd !== undefined ? ALL_WEEKDAYS.find(w => w.weekday === Number(scheduledWd)) : null
+            const isCardio = d.kind === 'cardio'
+
+            return (
+              <ListRow
+                key={d.dayIndex}
+                onClick={() => {
+                  setDuplicateSourceDay(d)
+                  setDuplicateNewName(`${d.name || d.labelAr} (نسخة)`)
+                  setDuplicateTargetWeekday(freeWeekdays[0]?.weekday ?? 0)
+                  setIsDuplicatePickerOpen(false)
+                  setIsDuplicateConfirmOpen(true)
+                }}
+                leading={
+                  <div
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      background: 'var(--color-surface-2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {isCardio ? <Icon name="activity" size={16} /> : <IconDumbbell size={16} />}
+                  </div>
+                }
+                title={wdInfo ? `${wdInfo.nameAr} · ${d.name || d.labelAr}` : d.name || d.labelAr}
+                secondary={isCardio ? 'كارديو ولياقة' : `${d.exercises.length} تمارين · ${d.focus}`}
+                trailing={<IconChevronLeft size={16} style={{ color: 'var(--muted)' }} />}
+              />
+            )
+          })}
+        </div>
+      </Sheet>
+
+      {/* Sheet: Duplicate Day Confirm */}
+      <Sheet
+        isOpen={isDuplicateConfirmOpen}
+        onClose={() => setIsDuplicateConfirmOpen(false)}
+        title="تكرار اليوم"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: '16px' }}>
+          <Field
+            label="اسم اليوم الجديد"
+            value={duplicateNewName}
+            onChange={(e) => setDuplicateNewName(e.target.value)}
+            placeholder="مثال: علوي (ب)..."
+          />
+
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+              اليوم في الأسبوع
+            </div>
+            {freeWeekdays.length > 0 ? (
+              <Select
+                options={freeWeekdays.map((w) => ({
+                  value: String(w.weekday),
+                  label: w.nameAr,
+                }))}
+                value={String(duplicateTargetWeekday)}
+                onChange={(val) => setDuplicateTargetWeekday(Number(val))}
+              />
+            ) : (
+              <div style={{ fontSize: '12px', color: 'var(--color-danger)' }}>
+                كل أيام الأسبوع مشغولة في جدولك الحالي
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+            <Button
+              variant="subtle"
+              fullWidth
+              onClick={() => setIsDuplicateConfirmOpen(false)}
+            >
+              إلغاء
+            </Button>
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={handleConfirmDuplicateDay}
+            >
+              تأكيد التكرار
+            </Button>
+          </div>
+        </div>
+      </Sheet>
+
+      {/* Sheet: Replacement Preview Modal */}
+      <Sheet
+        isOpen={replacementPreviewOpen}
+        onClose={() => setReplacementPreviewOpen(false)}
+        title="استبدال التمارين غير المتوافقة"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '16px' }}>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-2)', margin: 0 }}>
+            سيتم استبدال كل تمرين غير متوافق مع إعدادات معداتك الحالية ببديل مناسب من نفس المجموعة العضلية:
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto' }}>
+            {disallowedExercisesInfo.map((item, idx) => (
+              <div
+                key={idx}
+                style={{
+                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  background: 'var(--color-surface-2)',
+                  border: '1px solid var(--color-divider)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                }}
+              >
+                <div style={{ fontSize: '11px', color: 'var(--color-text-2)' }}>
+                  {item.dayName}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                  <span style={{ fontWeight: 600, color: 'var(--color-danger)', fontSize: '13px' }}>
+                    {item.catalogExercise.nameAr}
+                  </span>
+                  <span style={{ color: 'var(--muted)' }}>←</span>
+                  <span style={{ fontWeight: 600, color: 'var(--color-success)', fontSize: '13px' }}>
+                    {item.suggestedReplacement ? item.suggestedReplacement.nameAr : 'لا يوجد بديل متاح'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+            <Button
+              variant="subtle"
+              fullWidth
+              onClick={() => setReplacementPreviewOpen(false)}
+            >
+              إلغاء
+            </Button>
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={handleConfirmReplaceDisallowed}
+            >
+              تأكيد الاستبدال
+            </Button>
+          </div>
+        </div>
+      </Sheet>
+
+      {/* Sheet: Cardio Finisher Modal */}
+      {renderFinisherSheet()}
 
       {/* Sheet / Modal: Rename Day */}
       {renamingDay && (

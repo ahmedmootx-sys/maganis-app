@@ -17,6 +17,96 @@ export interface VideoPlayerProps {
   forcedOnline?: boolean
 }
 
+interface VideoErrorBoundaryProps {
+  fallbackUrl: string
+  onClose: () => void
+  children: React.ReactNode
+}
+
+interface VideoErrorBoundaryState {
+  hasError: boolean
+}
+
+export class VideoErrorBoundary extends React.Component<
+  VideoErrorBoundaryProps,
+  VideoErrorBoundaryState
+> {
+  constructor(props: VideoErrorBoundaryProps) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(): VideoErrorBoundaryState {
+    return { hasError: true }
+  }
+
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.warn('[VideoErrorBoundary] caught error in video embed:', error, errorInfo)
+  }
+
+  override render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          data-testid="video-error-fallback"
+          style={{
+            borderRadius: 'var(--radius-card)',
+            border: '1px solid var(--color-divider)',
+            padding: 'var(--space-4)',
+            backgroundColor: 'var(--color-surface-2)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 'var(--space-3)',
+            textAlign: 'center',
+          }}
+        >
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text)' }}>
+            الفيديو مش بيشتغل جوه التطبيق دلوقتي
+          </div>
+          <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+            <a
+              href={this.props.fallbackUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 'var(--space-2) var(--space-4)',
+                borderRadius: 'var(--radius-control)',
+                backgroundColor: 'var(--color-accent)',
+                color: 'var(--on-accent, #ffffff)',
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-bold)',
+                textDecoration: 'none',
+              }}
+            >
+              افتح في يوتيوب ↗
+            </a>
+            <button
+              type="button"
+              onClick={this.props.onClose}
+              style={{
+                padding: 'var(--space-2) var(--space-4)',
+                borderRadius: 'var(--radius-control)',
+                border: '1px solid var(--color-divider)',
+                backgroundColor: 'var(--color-surface)',
+                color: 'var(--color-text)',
+                cursor: 'pointer',
+                fontSize: 'var(--font-size-sm)',
+              }}
+            >
+              إغلاق
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoUrl,
   exerciseName,
@@ -331,107 +421,55 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       ? 'افتح في يوتيوب ↗'
       : 'افتح في فيميو ↗'
 
-  return (
-    <div
-      data-testid="video-iframe-player"
-      style={{
-        borderRadius: 'var(--radius-card)',
-        overflow: 'hidden', /* clip-ok: rounded iframe container */
-        border: '1px solid var(--color-divider)',
-        backgroundColor: 'var(--color-surface)',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+  if (loadTimedOut && !isLoaded) {
+    return (
       <div
+        data-testid="video-timeout-hint"
         style={{
-          position: 'relative',
-          width: '100%',
-          paddingBottom: '56.25%', // 16:9 aspect ratio
-          backgroundColor: '#000000',
-        }}
-      >
-        <iframe
-          data-testid="video-iframe-el"
-          src={parsed.embedUrl}
-          sandbox="allow-scripts allow-same-origin allow-presentation"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowFullScreen
-          referrerPolicy="strict-origin-when-cross-origin"
-          title={`فيديو شرح تمرين ${exerciseName}`}
-          onLoad={() => setIsLoaded(true)}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            border: 'none',
-          }}
-        />
-      </div>
-
-      {loadTimedOut && !isLoaded && (
-        <div
-          data-testid="video-timeout-hint"
-          style={{
-            padding: 'var(--space-3)',
-            backgroundColor: 'var(--color-surface-2)',
-            borderTop: '1px solid var(--color-divider)',
-            fontSize: 'var(--font-size-xs)',
-            color: 'var(--color-text-2)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--space-2)',
-            alignItems: 'center',
-            textAlign: 'center',
-          }}
-        >
-          <span>لو الفيديو مش بيشتغل، صاحب الفيديو ممكن يكون قافل التضمين</span>
-          <a
-            href={parsed.rawUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-testid="timeout-fallback-link"
-            style={{
-              color: 'var(--color-accent-text)',
-              fontWeight: 'var(--font-weight-semibold)',
-              textDecoration: 'none',
-            }}
-          >
-            {fallbackLabel}
-          </a>
-        </div>
-      )}
-
-      <div
-        style={{
-          padding: 'var(--space-2) var(--space-4)',
+          borderRadius: 'var(--radius-card)',
+          border: '1px solid var(--color-divider)',
+          backgroundColor: 'var(--color-surface)',
+          padding: 'var(--space-4)',
+          textAlign: 'center',
           display: 'flex',
-          justifyContent: 'space-between',
+          flexDirection: 'column',
           alignItems: 'center',
-          backgroundColor: 'var(--color-surface-2)',
+          gap: 'var(--space-3)',
         }}
       >
-        <span
+        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text)', fontWeight: 600 }}>
+          الفيديو مش بيشتغل جوه التطبيق دلوقتي
+        </span>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-2)' }}>
+          لو الفيديو مش بيشتغل، صاحب الفيديو ممكن يكون قافل التضمين
+        </span>
+        <a
+          href={parsed.rawUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-testid="timeout-fallback-link"
           style={{
-            fontSize: 'var(--font-size-sm)',
+            color: 'var(--color-accent-text)',
             fontWeight: 'var(--font-weight-semibold)',
-            color: 'var(--color-text)',
+            textDecoration: 'underline',
+            fontSize: 'var(--font-size-sm)',
           }}
         >
-          {exerciseName}
-        </span>
+          {fallbackLabel}
+        </a>
         <button
           type="button"
           data-testid="close-video-btn"
-          onClick={() => setIsMounted(false)}
+          onClick={() => {
+            setIsMounted(false)
+            setLoadTimedOut(false)
+          }}
           style={{
             minHeight: 'var(--touch-target-min)',
-            padding: 'var(--space-1) var(--space-3)',
+            padding: 'var(--space-2) var(--space-4)',
             borderRadius: 'var(--radius-control)',
             border: '1px solid var(--color-divider)',
-            backgroundColor: 'var(--color-surface)',
+            backgroundColor: 'var(--color-surface-2)',
             color: 'var(--color-text)',
             cursor: 'pointer',
             fontSize: 'var(--font-size-sm)',
@@ -440,6 +478,122 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           إغلاق
         </button>
       </div>
-    </div>
+    )
+  }
+
+  return (
+    <VideoErrorBoundary fallbackUrl={parsed.rawUrl} onClose={() => setIsMounted(false)}>
+      <div
+        data-testid="video-iframe-player"
+        style={{
+          borderRadius: 'var(--radius-card)',
+          overflow: 'hidden' /* clip-ok: rounded iframe container */,
+          border: '1px solid var(--color-divider)',
+          backgroundColor: 'var(--color-surface)',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            aspectRatio: '16 / 9',
+            minHeight: '200px',
+            backgroundColor: '#000000',
+          }}
+        >
+          {!isLoaded && (
+            <div
+              data-testid="video-loading-spinner"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                color: '#ffffff',
+                gap: '8px',
+                zIndex: 2,
+              }}
+            >
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  border: '3px solid rgba(255, 255, 255, 0.3)',
+                  borderTopColor: 'var(--color-accent, #eb5e28)',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                }}
+              />
+              <span style={{ fontSize: '12px', fontWeight: 600 }}>جاري تشغيل الفيديو...</span>
+            </div>
+          )}
+
+          <iframe
+            data-testid="video-iframe-el"
+            src={parsed.embedUrl}
+            sandbox="allow-scripts allow-same-origin allow-presentation"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+            title={`فيديو شرح تمرين ${exerciseName}`}
+            onLoad={() => setIsLoaded(true)}
+            onError={() => setLoadTimedOut(true)}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              opacity: isLoaded ? 1 : 0,
+              transition: 'opacity 0.2s ease',
+            }}
+          />
+        </div>
+
+        <div
+          style={{
+            padding: 'var(--space-2) var(--space-4)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: 'var(--color-surface-2)',
+          }}
+        >
+          <span
+            style={{
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-semibold)',
+              color: 'var(--color-text)',
+            }}
+          >
+            {exerciseName}
+          </span>
+          <button
+            type="button"
+            data-testid="close-video-btn"
+            onClick={() => setIsMounted(false)}
+            style={{
+              minHeight: 'var(--touch-target-min)',
+              padding: 'var(--space-1) var(--space-3)',
+              borderRadius: 'var(--radius-control)',
+              border: '1px solid var(--color-divider)',
+              backgroundColor: 'var(--color-surface)',
+              color: 'var(--color-text)',
+              cursor: 'pointer',
+              fontSize: 'var(--font-size-sm)',
+            }}
+          >
+            إغلاق
+          </button>
+        </div>
+      </div>
+    </VideoErrorBoundary>
   )
 }

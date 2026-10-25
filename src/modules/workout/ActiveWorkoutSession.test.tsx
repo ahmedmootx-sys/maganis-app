@@ -190,4 +190,53 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
       screen.getByText(/تم الحذف — تراجع|تم حذف المجموعة/),
     ).toBeInTheDocument()
   })
+
+  it('A9: bodyweight exercises render no weight column and tick cleanly with reps only', () => {
+    const bodyweightDay: ProgramDay = {
+      dayIndex: 0,
+      labelAr: 'كاليستينكس',
+      focus: 'صدر بوزن الجسم',
+      exercises: [
+        { exerciseId: 'pushup-1', sets: 2, reps: 15, restSeconds: 60 },
+      ],
+    }
+
+    const mockCustomExercises = [
+      {
+        id: 'pushup-1',
+        nameAr: 'تمرين الضغط',
+        nameEn: 'Push up',
+        category: 'chest' as const,
+        difficulty: 'beginner' as const,
+        equipment: 'bodyweight' as const,
+        equipmentDetail: { db: 'body only', ar: 'وزن الجسم' },
+      },
+    ]
+
+    render(
+      <ActiveWorkoutSession
+        programDay={bodyweightDay}
+        customExercises={mockCustomExercises as any}
+        onFinish={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    )
+
+    // No weight header column
+    expect(screen.queryByRole('columnheader', { name: 'الوزن' })).toBeNull()
+
+    // Has reps column
+    expect(screen.getByRole('columnheader', { name: 'التكرارات' })).toBeInTheDocument()
+
+    // Enter reps for set 1
+    const repsInputs = screen.getAllByPlaceholderText('تكرار')
+    fireEvent.change(repsInputs[0], { target: { value: '15' } })
+
+    // Check button should now be ready and tick cleanly
+    const checkBtns = screen.getAllByRole('button', { name: /تأكيد إنهاء المجموعة/ })
+    fireEvent.click(checkBtns[0])
+
+    // Set 1 is completed (no validation error)
+    expect(checkBtns[0].getAttribute('aria-pressed')).toBe('true')
+  })
 })

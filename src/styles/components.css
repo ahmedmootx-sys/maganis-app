@@ -159,7 +159,15 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-width: 40px;
+  min-width: 0;
+  flex: 1;
+}
+
+.top-bar__title-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
 .top-bar__title {
@@ -171,13 +179,23 @@
   white-space: nowrap;
   overflow: hidden /* clip-ok: text ellipsis truncation */;
   text-overflow: ellipsis;
-  flex: 1;
+  min-width: 0;
+}
+
+.top-bar__subtitle {
+  font-size: var(--font-size-xs, 12px);
+  color: var(--color-text-2, var(--muted));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .top-bar__actions {
   display: flex;
   align-items: center;
   gap: var(--space-1);
+  flex-shrink: 0;
 }
 
 .top-bar .icon-btn,
@@ -1506,9 +1524,20 @@ body[data-sheet-open='true'] .bottom-nav {
 .muscle-approximate {
   stroke: var(--atlas-approx-stroke, #b71c1c) !important;
   stroke-width: 1.5px !important;
-  stroke-dasharray: 6 4 !important;
   vector-effect: non-scaling-stroke !important;
 }
+
+/* C3.4 Locator Pin for No-Mesh Muscles */
+.atlas-locator-pin {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.atlas-label-group {
+  cursor: pointer;
+  pointer-events: all;
+}
+
 
 /* Tap Interaction: selected muscle gets 2px accent outline, others drop to 45% */
 .muscle-targeted-highlight {
@@ -1910,9 +1939,12 @@ body[data-sheet-open='true'] .bottom-nav {
   background-color: transparent;
 }
 
-/* Placeholder alignment & justification (Part 6.3) */
+/* Placeholder alignment, justification & contrast (Part 6.3 & Task G6-A D7) */
 textarea::placeholder,
 input::placeholder {
   text-align: start !important;
   text-justify: none !important;
+  color: var(--color-placeholder, #52525b) !important;
+  opacity: 1 !important;
 }
+

@@ -28,6 +28,8 @@ import { CustomScheduleModal } from './modules/workout/CustomScheduleModal.tsx'
 import { ProgramVaultModal } from './modules/workout/ProgramVaultModal.tsx'
 import { AiDesignerModal } from './modules/workout/AiDesignerModal.tsx'
 import { ActiveWorkoutSession } from './modules/workout/ActiveWorkoutSession.tsx'
+import { CardioMiniBar } from './modules/workout/CardioMiniBar.tsx'
+import { CardioRunner } from './modules/workout/CardioRunner.tsx'
 import { formatTime } from './modules/workout/workoutUtils.ts'
 import { generateProgram } from './modules/workout/programGenerator.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
@@ -235,6 +237,56 @@ export function App({ config }: AppProps) {
     SavedWorkoutProgram[]
   >(() => workoutStore.getSavedPrograms())
 
+  const [activeCardioSession, setActiveCardioSession] = useState<{
+    activityId: any
+    level: any
+    startTime: number
+    durationMinutes: number
+    weightKg: number
+    pausedTotalMs: number
+    isPaused: boolean
+    pausedAt: number | null
+    minimized?: boolean
+  } | null>(() => {
+    try {
+      const raw = localStorage.getItem('maganis:cardio_active_session')
+      return raw ? JSON.parse(raw) : null
+    } catch {
+      return null
+    }
+  })
+  const [isCardioRunnerOpen, setIsCardioRunnerOpen] = useState(false)
+
+  useEffect(() => {
+    const syncCardioSession = () => {
+      try {
+        const raw = localStorage.getItem('maganis:cardio_active_session')
+        const parsed = raw ? JSON.parse(raw) : null
+        setActiveCardioSession(parsed)
+      } catch {
+        setActiveCardioSession(null)
+      }
+    }
+
+    window.addEventListener('storage', syncCardioSession)
+    window.addEventListener('cardio-session-sync', syncCardioSession)
+    const interval = setInterval(syncCardioSession, 1000)
+
+    return () => {
+      window.removeEventListener('storage', syncCardioSession)
+      window.removeEventListener('cardio-session-sync', syncCardioSession)
+      clearInterval(interval)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (activeCardioSession && activeCardioSession.minimized && !isCardioRunnerOpen) {
+      document.body.classList.add('with-cardio-mini-bar')
+    } else {
+      document.body.classList.remove('with-cardio-mini-bar')
+    }
+  }, [activeCardioSession, isCardioRunnerOpen])
+
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     try {
       const stored = localStorage.getItem('maganis:theme')
@@ -416,6 +468,7 @@ export function App({ config }: AppProps) {
       injuries: profile.medical.hasIssues ? profile.medical.injuryTags : [],
       customExercises: workoutStore.getCustomExercises(),
       excludedExerciseIds: workoutStore.getDeletedExerciseIds(),
+      profile,
     })
     workoutStore.saveProgram(p)
     setProgram(p)
@@ -740,6 +793,7 @@ export function App({ config }: AppProps) {
       return (
         <ExerciseLibraryModal
           program={program}
+          profile={profile}
           customExercises={customExercisesList}
           deletedExerciseIds={deletedExerciseIds}
           onDeleteExercise={handleDeleteExercise}
@@ -836,6 +890,7 @@ export function App({ config }: AppProps) {
             {showExerciseLibrary && (
               <ExerciseLibraryModal
                 program={program}
+                profile={profile}
                 customExercises={customExercisesList}
                 deletedExerciseIds={deletedExerciseIds}
                 onDeleteExercise={handleDeleteExercise}
@@ -1101,7 +1156,7 @@ export function App({ config }: AppProps) {
                   className="banner-tag"
                   style={{
                     fontSize: '11.5px',
-                    color: 'var(--brand)',
+                    color: 'var(--color-accent-text, #b83a00)',
                     fontWeight: 700,
                     display: 'block',
                   }}
@@ -1147,7 +1202,95 @@ export function App({ config }: AppProps) {
 
         <main className="app-main">{renderContent()}</main>
 
-        <nav className="bottom-nav" data-testid="bottom-nav">
+        {activeCardioSession && activeCardioSession.minimized && !isCardioRunnerOpen && (
+          <CardioMiniBar
+            activityId={activeCardioSession.activityId}
+            level={activeCardioSession.level}
+            startTime={activeCardioSession.startTime}
+            durationMinutes={activeCardioSession.durationMinutes}
+            weightKg={activeCardioSession.weightKg}
+            pausedTotalMs={activeCardioSession.pausedTotalMs || 0}
+            isPaused={Boolean(activeCardioSession.isPaused)}
+            pausedAt={activeCardioSession.pausedAt || null}
+            onOpenRunner={() => setIsCardioRunnerOpen(true)}
+            onTogglePause={() => {
+              const now = Date.now()
+              const wasPaused = Boolean(activeCardioSession.isPaused)
+              let updated
+              if (wasPaused) {
+                const addedPauseMs = activeCardioSession.pausedAt
+                  ? now - activeCardioSession.pausedAt
+                  : 0
+                updated = {
+                  ...activeCardioSession,
+                  isPaused: false,
+                  pausedAt: null,
+                  pausedTotalMs: (activeCardioSession.pausedTotalMs || 0) + addedPauseMs,
+                }
+              } else {
+                updated = {
+                  ...activeCardioSession,
+                  isPaused: true,
+                  pausedAt: now,
+                }
+              }
+              localStorage.setItem('maganis:cardio_active_session', JSON.stringify(updated))
+              setActiveCardioSession(updated)
+            }}
+          />
+        )}
+
+        {isCardioRunnerOpen && activeCardioSession && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 'var(--z-modal, 200)',
+              background: 'var(--color-bg, #09090b)',
+            }}
+          >
+            <CardioRunner
+              activityId={activeCardioSession.activityId}
+              level={activeCardioSession.level}
+              durationMinutes={activeCardioSession.durationMinutes}
+              weightKg={activeCardioSession.weightKg}
+              onCancel={() => {
+                setIsCardioRunnerOpen(false)
+                localStorage.removeItem('maganis:cardio_active_session')
+                setActiveCardioSession(null)
+                window.dispatchEvent(new Event('cardio-session-sync'))
+              }}
+              onMinimize={() => {
+                setIsCardioRunnerOpen(false)
+                try {
+                  const raw = localStorage.getItem('maganis:cardio_active_session')
+                  setActiveCardioSession(raw ? JSON.parse(raw) : null)
+                } catch {
+                  // ignore
+                }
+              }}
+              onFinish={(sessionData) => {
+                setIsCardioRunnerOpen(false)
+                localStorage.removeItem('maganis:cardio_active_session')
+                setActiveCardioSession(null)
+                window.dispatchEvent(new Event('cardio-session-sync'))
+                const nowStr = new Date().toISOString().slice(0, 10)
+                const session: TrackingSession = {
+                  id: `cardio-${Date.now()}`,
+                  date: nowStr,
+                  programDayIndex: null,
+                  exercises: [],
+                  notes: `جلسة كارديو: ${sessionData.activityNameAr} (${sessionData.durationMinutes} دقيقة) · الإجمالي: ${sessionData.grossKcal} سعرة`,
+                  createdAt: Date.now(),
+                  cardioDetails: sessionData,
+                }
+                trackingStore.saveSession(session)
+              }}
+            />
+          </div>
+        )}
+
+        <nav className="bottom-nav" data-testid="bottom-nav" data-overlay="true">
           {TABS.map((tab) => (
             <button
               key={tab.id}

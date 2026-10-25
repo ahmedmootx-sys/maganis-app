@@ -1,16 +1,8 @@
 import { useMemo, useState } from 'react'
 import type {
   CustomExercise,
-  Difficulty,
-  Equipment,
   Exercise,
-  MuscleGroup,
   WorkoutProgram,
-} from '../shared/types.ts'
-import {
-  DIFFICULTY_LABELS,
-  EQUIPMENT_LABELS,
-  MUSCLE_GROUP_LABELS,
 } from '../shared/types.ts'
 import { EXERCISES } from './exercises.ts'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
@@ -22,6 +14,8 @@ import {
   EmptyState,
   Select,
   Choice,
+  Button,
+  Icon,
 } from '../../ui/index.ts'
 import {
   IconPlus,
@@ -34,11 +28,28 @@ import { selectEffectiveExercise } from './exerciseOverrides.ts'
 import { ExerciseEditSheet } from './ExerciseEditSheet.tsx'
 import { CopyExerciseNameButton } from './CopyExerciseNameButton.tsx'
 import { Toast } from '../../components/Toast.tsx'
+import {
+  getEquipmentLabel,
+  getDifficultyLabel,
+  getMuscleGroupLabel,
+  formatBdiText,
+  MUSCLE_GROUP_MAP,
+  DIFFICULTY_MAP,
+} from '../../utils/labels.ts'
+import type { UserProfile } from '../onboarding/types.ts'
+import {
+  deriveConstraints,
+  isExerciseAllowed,
+  FULL_GYM_ALLOWED_EQUIPMENT,
+  type UserWorkoutConstraints,
+} from './constraints.ts'
 
 export interface ExerciseLibraryModalProps {
   customExercises?: Exercise[]
   deletedExerciseIds?: string[]
   program?: WorkoutProgram | null
+  profile?: UserProfile | null
+  constraints?: UserWorkoutConstraints
   onClose: () => void
   onDeleteExercise?: (id: string) => void
   onRestoreExercise?: (id: string) => void
@@ -50,18 +61,40 @@ export function ExerciseLibraryModal({
   customExercises = [],
   deletedExerciseIds = [],
   program,
+  profile,
+  constraints: customConstraints,
   onClose,
   onDeleteExercise,
   onRestoreExercise,
   onEditCustomExercise,
   onAddExerciseToDay,
 }: ExerciseLibraryModalProps) {
+  const effectiveConstraints = useMemo(
+    () => customConstraints || deriveConstraints(profile),
+    [customConstraints, profile],
+  )
+
+  const hasConstraints = useMemo(() => {
+    return (
+      effectiveConstraints.isCalisthenicsOnly ||
+      effectiveConstraints.isHomeDumbbellsOnly ||
+      effectiveConstraints.excludedExerciseKeys.size > 0 ||
+      !effectiveConstraints.allowsLoadedExercises ||
+      effectiveConstraints.allowedEquipment.size < FULL_GYM_ALLOWED_EQUIPMENT.size
+    )
+  }, [effectiveConstraints])
+
+  const [filterSuitableOnly, setFilterSuitableOnly] = useState<boolean>(() =>
+    Boolean(hasConstraints),
+  )
+
   const [activeTab, setActiveTab] = useState<'all' | 'trash'>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [subMuscleFilter, setSubMuscleFilter] = useState<string>('all')
   const [equipmentFilter, setEquipmentFilter] = useState<string>('all')
   const [levelFilter, setLevelFilter] = useState<string>('all')
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false)
 
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null,
@@ -104,6 +137,24 @@ export function ExerciseLibraryModal({
     return Array.from(set).sort()
   }, [activeExercises, categoryFilter])
 
+  // Active filters list
+  const activeFilters = useMemo(() => {
+    const list: Array<{ id: 'category' | 'sub' | 'equip' | 'level'; label: string }> = []
+    if (categoryFilter !== 'all') {
+      list.push({ id: 'category', label: MUSCLE_GROUP_MAP[categoryFilter] || categoryFilter })
+    }
+    if (subMuscleFilter !== 'all') {
+      list.push({ id: 'sub', label: subMuscleFilter })
+    }
+    if (equipmentFilter !== 'all') {
+      list.push({ id: 'equip', label: getEquipmentLabel(equipmentFilter) })
+    }
+    if (levelFilter !== 'all') {
+      list.push({ id: 'level', label: getDifficultyLabel(levelFilter) })
+    }
+    return list
+  }, [categoryFilter, subMuscleFilter, equipmentFilter, levelFilter])
+
   // Filtered exercises
   const currentPool = activeTab === 'all' ? activeExercises : deletedExercises
   const filteredExercises = useMemo(() => {
@@ -115,6 +166,9 @@ export function ExerciseLibraryModal({
       if (equipmentFilter !== 'all' && e.equipment !== equipmentFilter)
         return false
       if (levelFilter !== 'all' && e.difficulty !== levelFilter) return false
+      if (filterSuitableOnly && hasConstraints) {
+        if (!isExerciseAllowed(e, effectiveConstraints)) return false
+      }
       if (searchTerm.trim()) {
         const query = searchTerm.toLowerCase()
         const matchName = e.name ? e.name.toLowerCase().includes(query) : false
@@ -134,6 +188,9 @@ export function ExerciseLibraryModal({
     subMuscleFilter,
     equipmentFilter,
     levelFilter,
+    filterSuitableOnly,
+    hasConstraints,
+    effectiveConstraints,
     searchTerm,
   ])
 
@@ -254,192 +311,143 @@ export function ExerciseLibraryModal({
           />
         )}
 
-        {/* 3-column Filter Grid at 360px without vertical clipping */}
+        {/* Compact Filters Row */}
         {activeTab === 'all' && (
           <div
-            className="chip-select-row"
-            style={{
-              display: 'grid',
-              gridTemplateColumns:
-                availableSubMuscles.length > 0
-                  ? 'repeat(2, 1fr)'
-                  : 'repeat(3, 1fr)',
-              gap: '8px',
-              width: '100%',
-              minHeight: '44px',
-              boxSizing: 'border-box',
-            }}
-          >
-            {/* Muscle Group Chip */}
-            <div style={{ minWidth: 0 }}>
-              <Select
-                id="library-category"
-                value={categoryFilter}
-                onChange={(val) => {
-                  setCategoryFilter(val)
-                  setSubMuscleFilter('all')
-                }}
-                options={[
-                  { value: 'all', labelAr: 'العضلة: الكل' },
-                  ...Object.entries(MUSCLE_GROUP_LABELS).map(([k, v]) => ({
-                    value: k,
-                    labelAr: v,
-                  })),
-                ]}
-                sheetTitle="اختر المجموعة العضلية"
-              />
-            </div>
-
-            {/* Sub-Muscle Detailed Chip */}
-            {availableSubMuscles.length > 0 && (
-              <div style={{ minWidth: 0 }}>
-                <Select
-                  id="library-submuscle"
-                  value={subMuscleFilter}
-                  onChange={(val) => setSubMuscleFilter(val)}
-                  options={[
-                    { value: 'all', labelAr: 'التفصيل: الكل' },
-                    ...availableSubMuscles.map((sub) => ({
-                      value: sub,
-                      labelAr: sub,
-                    })),
-                  ]}
-                  sheetTitle="اختر الرأس العضلي التفصيلي"
-                />
-              </div>
-            )}
-
-            {/* Equipment Chip */}
-            <div style={{ minWidth: 0 }}>
-              <Select
-                id="library-equipment"
-                value={equipmentFilter}
-                onChange={(val) => setEquipmentFilter(val)}
-                options={[
-                  { value: 'all', labelAr: 'المعدات: الكل' },
-                  ...Object.entries(EQUIPMENT_LABELS).map(([k, v]) => ({
-                    value: k,
-                    labelAr: v,
-                  })),
-                ]}
-                sheetTitle="اختر نوع المعدات"
-              />
-            </div>
-
-            {/* Level Chip */}
-            <div style={{ minWidth: 0 }}>
-              <Select
-                id="library-level"
-                value={levelFilter}
-                onChange={(val) => setLevelFilter(val)}
-                options={[
-                  { value: 'all', labelAr: 'المستوى: الكل' },
-                  ...Object.entries(DIFFICULTY_LABELS).map(([k, v]) => ({
-                    value: k,
-                    labelAr: v,
-                  })),
-                ]}
-                sheetTitle="اختر مستوى الصعوبة"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Active Filter Clear Tags */}
-        {(categoryFilter !== 'all' ||
-          subMuscleFilter !== 'all' ||
-          equipmentFilter !== 'all' ||
-          levelFilter !== 'all') && (
-          <div
+            className="library-filters-bar"
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '8px',
               flexWrap: 'wrap',
+              width: '100%',
+              margin: '2px 0 4px',
             }}
           >
-            {categoryFilter !== 'all' && (
-              <button
-                type="button"
-                className="chip-btn selected"
-                onClick={() => handleResetFilter('category')}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize: '11.5px',
-                  height: '32px',
-                }}
-              >
-                <span>
-                  {MUSCLE_GROUP_LABELS[categoryFilter as MuscleGroup]}
+            <button
+              type="button"
+              className={`chip-btn ${activeFilters.length > 0 ? 'selected' : ''}`}
+              data-testid="library-filters-btn"
+              onClick={() => setIsFilterSheetOpen(true)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                minHeight: '36px',
+                padding: '0 12px',
+                borderRadius: 'var(--radius-control, 8px)',
+                border:
+                  activeFilters.length > 0
+                    ? '1px solid var(--color-accent)'
+                    : '1px solid var(--line)',
+                background:
+                  activeFilters.length > 0
+                    ? 'var(--color-accent-subtle, rgba(235,94,40,0.12))'
+                    : 'var(--card-subtle)',
+                color:
+                  activeFilters.length > 0
+                    ? 'var(--color-accent-text, #eb5e28)'
+                    : 'var(--ink)',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+            >
+              <Icon name="filter" size={15} />
+              <span>فلاتر</span>
+              {activeFilters.length > 0 && (
+                <span
+                  style={{
+                    background: 'var(--color-accent, #eb5e28)',
+                    color: 'var(--color-accent-on, #ffffff)',
+                    borderRadius: '10px',
+                    padding: '1px 6px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                  }}
+                >
+                  {activeFilters.length}
                 </span>
-                <IconClose size={14} />
-              </button>
-            )}
-            {subMuscleFilter !== 'all' && (
+              )}
+            </button>
+
+            {/* Suitable for equipment toggle button */}
+            {hasConstraints && (
               <button
                 type="button"
+                data-testid="suitable-equipment-filter-btn"
+                className={`chip-btn ${filterSuitableOnly ? 'selected' : ''}`}
+                onClick={() => setFilterSuitableOnly((prev) => !prev)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  minHeight: '34px',
+                  padding: '0 12px',
+                  borderRadius: '17px',
+                  border: filterSuitableOnly
+                    ? '1px solid var(--color-accent)'
+                    : '1px solid var(--line)',
+                  background: filterSuitableOnly
+                    ? 'var(--color-accent-subtle, rgba(235,94,40,0.12))'
+                    : 'var(--card-subtle)',
+                  color: filterSuitableOnly
+                    ? 'var(--color-accent-text, #eb5e28)'
+                    : 'var(--ink)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                }}
+              >
+                <span>{filterSuitableOnly ? 'مناسب لمعداتي' : 'عرض الكل'}</span>
+              </button>
+            )}
+
+            {/* Active Removable Chips */}
+            {activeFilters.map((f) => (
+              <button
+                key={f.id}
+                type="button"
                 className="chip-btn selected"
-                onClick={() => handleResetFilter('sub')}
+                onClick={() => handleResetFilter(f.id)}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '4px',
-                  fontSize: '11.5px',
-                  height: '32px',
+                  minHeight: '34px',
+                  padding: '0 10px',
+                  borderRadius: '17px',
+                  border: '1px solid var(--color-accent)',
+                  background: 'var(--color-accent-subtle, rgba(235,94,40,0.08))',
+                  color: 'var(--color-accent-text, #eb5e28)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
                 }}
               >
-                <span>{subMuscleFilter}</span>
+                <span>{f.label}</span>
                 <IconClose size={14} />
               </button>
-            )}
-            {equipmentFilter !== 'all' && (
-              <button
-                type="button"
-                className="chip-btn selected"
-                onClick={() => handleResetFilter('equip')}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize: '11.5px',
-                  height: '32px',
-                }}
-              >
-                <span>{EQUIPMENT_LABELS[equipmentFilter as Equipment]}</span>
-                <IconClose size={14} />
-              </button>
-            )}
-            {levelFilter !== 'all' && (
-              <button
-                type="button"
-                className="chip-btn selected"
-                onClick={() => handleResetFilter('level')}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize: '11.5px',
-                  height: '32px',
-                }}
-              >
-                <span>{DIFFICULTY_LABELS[levelFilter as Difficulty]}</span>
-                <IconClose size={14} />
-              </button>
-            )}
+            ))}
           </div>
         )}
 
         {/* Count Line */}
         <div
+          data-testid="library-count-line"
           style={{
-            fontSize: '12.5px',
+            fontSize: '13px',
             color: 'var(--muted)',
             fontWeight: 600,
+            margin: '2px 0 6px 0',
           }}
         >
           تم العثور على {filteredExercises.length} تمرين
+          {hasConstraints && (
+            <span> ({filterSuitableOnly ? 'مناسب لمعداتي' : 'عرض الكل'})</span>
+          )}
         </div>
 
         {/* Results List as ListRows with content-visibility windowing */}
@@ -474,12 +482,9 @@ export function ExerciseLibraryModal({
             }}
           >
             {filteredExercises.map((ex) => {
-              const muscleLabel =
-                MUSCLE_GROUP_LABELS[ex.category as MuscleGroup] || ex.category
-              const equipLabel =
-                EQUIPMENT_LABELS[ex.equipment as Equipment] || ex.equipment
-              const diffLabel =
-                DIFFICULTY_LABELS[ex.difficulty as Difficulty] || ex.difficulty
+              const muscleLabel = getMuscleGroupLabel(ex.category)
+              const equipLabel = getEquipmentLabel(ex.equipment)
+              const diffLabel = getDifficultyLabel(ex.difficulty)
               const tertiaryInfo = `${muscleLabel} · ${equipLabel} · ${diffLabel}`
 
               return (
@@ -519,7 +524,7 @@ export function ExerciseLibraryModal({
                   }
                   title={
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                      <span>{ex.nameAr}</span>
+                      <span>{formatBdiText(ex.nameAr)}</span>
                       {('isModified' in ex && Boolean((ex as { isModified?: boolean }).isModified)) && (
                         <span
                           data-testid="badge-modified"
@@ -539,7 +544,9 @@ export function ExerciseLibraryModal({
                     </span>
                   }
                   secondary={
-                    ex.name && ex.name !== ex.nameAr ? ex.name : undefined
+                    ex.name && ex.name !== ex.nameAr ? (
+                      <bdi dir="ltr">{ex.name}</bdi>
+                    ) : undefined
                   }
                   secondaryIsLtr={true}
                   tertiary={tertiaryInfo}
@@ -742,6 +749,176 @@ export function ExerciseLibraryModal({
           </div>
         )}
       </Sheet>
+
+      {/* Library Filter Sheet */}
+      {isFilterSheetOpen && (
+        <Sheet
+          isOpen={isFilterSheetOpen}
+          onClose={() => setIsFilterSheetOpen(false)}
+          title="فلاتر التمارين"
+          footer={
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                width: '100%',
+                paddingBottom: 'env(safe-area-inset-bottom, 12px)',
+              }}
+            >
+              <Button
+                variant="primary"
+                fullWidth
+                onClick={() => setIsFilterSheetOpen(false)}
+              >
+                تطبيق
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setCategoryFilter('all')
+                  setSubMuscleFilter('all')
+                  setEquipmentFilter('all')
+                  setLevelFilter('all')
+                }}
+              >
+                مسح الفلاتر
+              </Button>
+            </div>
+          }
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              padding: '8px 0 16px 0',
+            }}
+          >
+            {/* Muscle Group */}
+            <div>
+              <label
+                htmlFor="library-sheet-category"
+                style={{
+                  display: 'block',
+                  marginBottom: '6px',
+                  fontWeight: 700,
+                  fontSize: '13.5px',
+                  color: 'var(--ink)',
+                }}
+              >
+                المجموعة العضلية
+              </label>
+              <Select
+                id="library-sheet-category"
+                value={categoryFilter}
+                onChange={(val) => {
+                  setCategoryFilter(val)
+                  setSubMuscleFilter('all')
+                }}
+                options={[
+                  { value: 'all', label: 'الكل' },
+                  ...Object.entries(MUSCLE_GROUP_MAP).map(([k, v]) => ({
+                    value: k,
+                    label: v,
+                  })),
+                ]}
+                sheetTitle="اختر المجموعة العضلية"
+              />
+            </div>
+
+            {/* Sub-Muscle Head (التفصيل) */}
+            {availableSubMuscles.length > 0 && (
+              <div>
+                <label
+                  htmlFor="library-sheet-submuscle"
+                  style={{
+                    display: 'block',
+                    marginBottom: '6px',
+                    fontWeight: 700,
+                    fontSize: '13.5px',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  الاستهداف التفصيلي (الرأس العضلي)
+                </label>
+                <Select
+                  id="library-sheet-submuscle"
+                  value={subMuscleFilter}
+                  onChange={(val) => setSubMuscleFilter(val)}
+                  options={[
+                    { value: 'all', labelAr: 'الكل' },
+                    ...availableSubMuscles.map((sub) => ({
+                      value: sub,
+                      labelAr: sub,
+                    })),
+                  ]}
+                  sheetTitle="اختر الرأس العضلي التفصيلي"
+                />
+              </div>
+            )}
+
+            {/* Equipment */}
+            <div>
+              <label
+                htmlFor="library-sheet-equipment"
+                style={{
+                  display: 'block',
+                  marginBottom: '6px',
+                  fontWeight: 700,
+                  fontSize: '13.5px',
+                  color: 'var(--ink)',
+                }}
+              >
+                نوع المعدات
+              </label>
+              <Select
+                id="library-sheet-equipment"
+                value={equipmentFilter}
+                onChange={(val) => setEquipmentFilter(val)}
+                options={[
+                  { value: 'all', labelAr: 'الكل' },
+                  { value: 'barbell', labelAr: 'بار' },
+                  { value: 'dumbbell', labelAr: 'دامبل' },
+                  { value: 'cable', labelAr: 'كابل' },
+                  { value: 'machine', labelAr: 'جهاز' },
+                  { value: 'bodyweight', labelAr: 'وزن الجسم' },
+                  { value: 'band', labelAr: 'حبل مقاومة' },
+                ]}
+                sheetTitle="اختر نوع المعدات"
+              />
+            </div>
+
+            {/* Difficulty Level */}
+            <div>
+              <label
+                htmlFor="library-sheet-level"
+                style={{
+                  display: 'block',
+                  marginBottom: '6px',
+                  fontWeight: 700,
+                  fontSize: '13.5px',
+                  color: 'var(--ink)',
+                }}
+              >
+                مستوى الصعوبة
+              </label>
+              <Select
+                id="library-sheet-level"
+                value={levelFilter}
+                onChange={(val) => setLevelFilter(val)}
+                options={[
+                  { value: 'all', label: 'الكل' },
+                  ...Object.entries(DIFFICULTY_MAP).map(([k, v]) => ({
+                    value: k,
+                    label: v,
+                  })),
+                ]}
+                sheetTitle="اختر مستوى الصعوبة"
+              />
+            </div>
+          </div>
+        </Sheet>
+      )}
 
       {editSheetExercise && (
         <ExerciseEditSheet

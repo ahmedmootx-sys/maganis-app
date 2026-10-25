@@ -4,13 +4,15 @@ import path from 'node:path'
 const projectRoot = process.cwd()
 
 const muscleNamesPath = path.join(projectRoot, 'src', 'data', 'muscle-names.json')
-const muscleInfoPath = path.join(projectRoot, 'src', 'content', 'muscle-info-v1.json')
+const muscleInfoPath = path.join(projectRoot, 'src', 'content', 'muscle-info-v1.1.json')
+const atlasAnchorsPath = path.join(projectRoot, 'src', 'data', 'atlas-anchors.json')
 const anteriorSvgPath = path.join(projectRoot, 'public', 'atlas', 'anterior.svg')
 const posteriorSvgPath = path.join(projectRoot, 'public', 'atlas', 'posterior.svg')
 const atlasMetaPath = path.join(projectRoot, 'public', 'atlas', 'atlas-meta.json')
 
 const muscleNamesData = JSON.parse(fs.readFileSync(muscleNamesPath, 'utf8'))
 const muscleInfoData = JSON.parse(fs.readFileSync(muscleInfoPath, 'utf8'))
+const atlasAnchorsData = JSON.parse(fs.readFileSync(atlasAnchorsPath, 'utf8'))
 const anteriorSvg = fs.readFileSync(anteriorSvgPath, 'utf8')
 const posteriorSvg = fs.readFileSync(posteriorSvgPath, 'utf8')
 const atlasMeta = JSON.parse(fs.readFileSync(atlasMetaPath, 'utf8'))
@@ -22,7 +24,7 @@ console.log('====================================================')
 console.log('                GATE: ATLAS INTEGRITY               ')
 console.log('====================================================')
 
-// 1. Every id in muscle-names.json has a name entry and muscle-info entry
+// 1. Every id in muscle-names.json has a name entry, all 3 claim texts, and path or anchor
 console.log('Checking 53 muscle definitions...')
 for (const m of muscleNamesData.muscles) {
   checksCount++
@@ -30,23 +32,49 @@ for (const m of muscleNamesData.muscles) {
     errors.push(`Muscle ${m.id} missing name fields in muscle-names.json`)
   }
 
-  // Check muscle-info entry
+  // Check where_ar
+  checksCount++
+  if (!m.where_ar) {
+    errors.push(`Muscle ${m.id} missing where_ar in muscle-names.json`)
+  }
+
+  // Check muscle-info entries (does_ar and attaches_ar)
   checksCount++
   const info = muscleInfoData.muscles[m.id]
   if (!info || !info.does_ar) {
-    errors.push(`Muscle ${m.id} missing does_ar entry in muscle-info-v1.json`)
+    errors.push(`Muscle ${m.id} missing does_ar entry in muscle-info-v1.1.json`)
+  }
+  checksCount++
+  if (!info || !info.attaches_ar) {
+    errors.push(`Muscle ${m.id} missing attaches_ar entry in muscle-info-v1.1.json`)
   }
 
-  // Check path existence unless no_mesh
+  // Check path existence or anchor existence
   checksCount++
+  const inAnt = anteriorSvg.includes(`data-muscle="${m.id}"`)
+  const inPost = posteriorSvg.includes(`data-muscle="${m.id}"`)
+  const hasAnchor = !!atlasAnchorsData.anchors[m.id]
+
   if (m.atlas !== 'no_mesh') {
-    const inAnt = anteriorSvg.includes(`data-muscle="${m.id}"`)
-    const inPost = posteriorSvg.includes(`data-muscle="${m.id}"`)
     if (!inAnt && !inPost) {
       errors.push(`Muscle ${m.id} has atlas=${m.atlas} but no SVG path in anterior or posterior view`)
     }
+  } else {
+    // If no_mesh, MUST have an anchor locator in atlas-anchors.json
+    if (!hasAnchor) {
+      errors.push(`Muscle ${m.id} is no_mesh but missing locator in atlas-anchors.json`)
+    }
+  }
+
+  // Check derived rule: only pec_sternal and pec_costal may be derived
+  if (m.atlas === 'derived_approx') {
+    checksCount++
+    if (m.id !== 'pec_sternal' && m.id !== 'pec_costal') {
+      errors.push(`Unexpected derived muscle ${m.id}: only pec_sternal and pec_costal may be derived`)
+    }
   }
 }
+
 
 // 2. Check for orphan paths in SVGs
 console.log('Checking for orphan SVG paths...')

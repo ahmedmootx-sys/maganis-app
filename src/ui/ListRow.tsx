@@ -41,16 +41,17 @@ export const ListRow: React.FC<ListRowProps> = ({
     (secondary || tertiary ? (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {secondary && (
-          <span
+          <bdi
             dir={secondaryIsLtr ? 'ltr' : undefined}
             style={{
-              textAlign: secondaryIsLtr ? 'right' : undefined,
+              display: 'block',
+              textAlign: secondaryIsLtr ? 'start' : undefined,
               fontSize: '12.5px',
               color: 'var(--muted)',
             }}
           >
             {secondary}
-          </span>
+          </bdi>
         )}
         {tertiary && (
           <span

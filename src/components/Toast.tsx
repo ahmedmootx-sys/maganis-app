@@ -42,7 +42,8 @@ export const Toast: React.FC<ToastProps> = ({
 
   return (
     <div
-      className="maganis-toast-portal"
+      className="maganis-toast-portal toast"
+      data-overlay="true"
       data-testid="maganis-toast"
       role="status"
       aria-live="polite"

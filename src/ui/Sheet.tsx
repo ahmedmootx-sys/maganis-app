@@ -7,6 +7,7 @@ export interface SheetProps {
   onClose: () => void
   title?: string
   subtitle?: React.ReactNode
+  headerAction?: React.ReactNode
   children: React.ReactNode
   footer?: React.ReactNode
   className?: string
@@ -17,6 +18,7 @@ export const Sheet: React.FC<SheetProps> = ({
   onClose,
   title,
   subtitle,
+  headerAction,
   children,
   footer,
   className = '',
@@ -71,6 +73,7 @@ export const Sheet: React.FC<SheetProps> = ({
       className="sheet-backdrop"
       onClick={onClose}
       data-testid="sheet-backdrop"
+      data-overlay="true"
       dir="rtl"
     >
       <div
@@ -79,12 +82,13 @@ export const Sheet: React.FC<SheetProps> = ({
         role="dialog"
         aria-modal="true"
         aria-label={title}
+        data-overlay="true"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sheet__handle" aria-hidden="true" />
-        {(title || subtitle) && (
+        {(title || subtitle || headerAction) && (
           <div className="sheet__header">
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
               {title && <h3 className="sheet__title">{title}</h3>}
               {subtitle && (
                 <span
@@ -95,6 +99,11 @@ export const Sheet: React.FC<SheetProps> = ({
                 </span>
               )}
             </div>
+            {headerAction && (
+              <div style={{ marginInlineEnd: 'var(--space-2)' }}>
+                {headerAction}
+              </div>
+            )}
             <IconButton
               name="x"
               size={20}
@@ -104,7 +113,11 @@ export const Sheet: React.FC<SheetProps> = ({
           </div>
         )}
         <div className="sheet__body">{children}</div>
-        {footer && <div className="sheet__footer">{footer}</div>}
+        {footer && (
+          <div className="sheet__footer" data-overlay="true">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   )

@@ -47,6 +47,7 @@ export function Claim({
 
   return (
     <Tag
+      data-claim-id={id}
       className={`claim-block claim--${claim.status} ${className}`.trim()}
       style={style}
     >
@@ -61,7 +62,7 @@ export function Claim({
             fontWeight: 500,
           }}
         >
-          المصدر: {claim.source_text}
+          المصدر: <bdi dir="ltr">{claim.source_text}</bdi>
         </div>
       )}
     </Tag>

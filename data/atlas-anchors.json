@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "status": "unreviewed",
+  "note": "Locator pin anchors for muscles without BodyParts3D 4.0 polygon geometry. Defined relative to host mesh bounding box. Marked unreviewed for coach confirmation.",
+  "anchors": {
+    "lats": {
+      "id": "lats",
+      "view": "P",
+      "host_mesh": "erector_spinae",
+      "fraction_x": 0.5,
+      "fraction_y": 0.7,
+      "status": "unreviewed",
+      "note_ar": "الظهرية العريضة (لاتس) في منتصف وأسفل الظهر"
+    },
+    "quadratus_lumborum": {
+      "id": "quadratus_lumborum",
+      "view": "P",
+      "host_mesh": "erector_spinae",
+      "fraction_x": 0.5,
+      "fraction_y": 0.88,
+      "status": "unreviewed",
+      "note_ar": "المربعة القطنية في جانب أسفل الظهر"
+    },
+    "rectus_abdominis_upper": {
+      "id": "rectus_abdominis_upper",
+      "view": "A",
+      "host_mesh": "obliques_external",
+      "fraction_x": 0.5,
+      "fraction_y": 0.25,
+      "status": "unreviewed",
+      "note_ar": "المستقيمة البطنية العلوية"
+    },
+    "rectus_abdominis_lower": {
+      "id": "rectus_abdominis_lower",
+      "view": "A",
+      "host_mesh": "obliques_external",
+      "fraction_x": 0.5,
+      "fraction_y": 0.65,
+      "status": "unreviewed",
+      "note_ar": "المستقيمة البطنية السفلية"
+    },
+    "transversus_abdominis": {
+      "id": "transversus_abdominis",
+      "view": "A",
+      "host_mesh": "obliques_external",
+      "fraction_x": 0.5,
+      "fraction_y": 0.5,
+      "status": "unreviewed",
+      "note_ar": "المستعرضة البطنية"
+    }
+  }
+}

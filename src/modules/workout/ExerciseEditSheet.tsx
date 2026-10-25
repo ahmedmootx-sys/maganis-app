@@ -1,13 +1,19 @@
 /**
  * src/modules/workout/ExerciseEditSheet.tsx
  *
- * Implements Task G5-B4:
+ * Implements Task G5-B4 & Task G6-A D6:
  * Full exercise editor sheet for overrides and custom exercises.
  * - Editable: Arabic name, English name, image mode (original, none, custom file with 640px canvas resize),
  *   how to perform (benefits, mechanics, reorderable steps list), muscle targeting (primary/secondary with gym name and <bdi> English),
  *   personal note (max 500 chars), and video URL (B3).
- * - "اعرض الأصلي" toggle and "رجّع الأصلي" action with confirmation.
+ * - "اعرض الأصلي" toggle and "إعادة الضبط" action in sheet header with explicit confirmation.
+ * - Auto-growing textareas (min 4 lines, max 40vh, text-align: start, no internal scroll until max).
+ * - Muscle targeting: no nested scroll, organized by groups from muscle-names.json, summary at top,
+ *   3-option segmented control (أساسية / مساعدة / مش مستهدفة), AA contrast role badges (no brackets).
+ * - Personal note counter: <bdi dir="ltr">{personalNote.length} / 500</bdi>.
+ * - Step controls: 44x44px chevron buttons + delete + step numbers.
  * - Follows the sheet contract (scrollable content, fixed footer with bottom inset).
+ * - Dirty-state guard prevents losing unsaved edits.
  */
 
 import React, { useState, useMemo } from 'react'
@@ -22,8 +28,10 @@ import {
 import { Sheet } from '../../ui/Sheet.tsx'
 import { Button } from '../../ui/Button.tsx'
 import { ConfirmSheet } from '../../ui/ConfirmSheet.tsx'
+import { Icon } from '../../ui/Icon.tsx'
+import { useToast } from '../../ui/Toast.tsx'
+import { getMuscleInfo } from '../../utils/labels.ts'
 import muscleNamesData from '../../data/muscle-names.json'
-import type { MuscleNameEntry } from './muscleNames.ts'
 
 export interface ExerciseEditSheetProps {
   isOpen: boolean
@@ -40,6 +48,14 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   onSaved,
   onResetOriginal,
 }) => {
+  let showToast: ReturnType<typeof useToast>['showToast'] | undefined
+  try {
+    const toastCtx = useToast()
+    showToast = toastCtx.showToast
+  } catch {
+    // outside ToastProvider in isolated test environments
+  }
+
   const existingOverride = useMemo(
     () => getExerciseOverride(exercise.id),
     [exercise.id, isOpen],
@@ -47,6 +63,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
 
   const [showOriginal, setShowOriginal] = useState(false)
   const [showConfirmReset, setShowConfirmReset] = useState(false)
+  const [showConfirmClose, setShowConfirmClose] = useState(false)
+  const [activeMusclePickerId, setActiveMusclePickerId] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
 
   // Form State
@@ -62,11 +80,79 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   const [personalNote, setPersonalNote] = useState('')
   const [videoUrl, setVideoUrl] = useState('')
 
+  const isDirty = useMemo(() => {
+    const ov = existingOverride
+    const origNameAr = ov?.nameAr ?? exercise.nameAr ?? ''
+    const origNameEn = ov?.nameEn ?? exercise.nameEn ?? exercise.name ?? ''
+    const origImageMode = ov?.imageMode ?? 'original'
+    const origCustomImageBlob = ov?.customImageBlob ?? ''
+    const origBenefitAr = ov?.benefitAr ?? exercise.benefitAr ?? exercise.benefit ?? ''
+    const origMechanicsAr = ov?.mechanicsAr ?? exercise.mechanicsAr ?? exercise.mechanics ?? ''
+    const origSteps =
+      ov?.howToStepsAr ??
+      exercise.howToStepsAr ??
+      exercise.steps ??
+      exercise.steps_ar ??
+      []
+    const origMuscles = ov?.muscles ?? exercise.muscles ?? []
+    const origPersonalNote = ov?.personalNote ?? ''
+    const origVideoUrl = ov?.videoUrl ?? ''
+
+    if (nameAr !== origNameAr) return true
+    if (nameEn !== origNameEn) return true
+    if (imageMode !== origImageMode) return true
+    if (customImageBlob !== origCustomImageBlob) return true
+    if (benefitAr !== origBenefitAr) return true
+    if (mechanicsAr !== origMechanicsAr) return true
+    if (personalNote !== origPersonalNote) return true
+    if (videoUrl !== origVideoUrl) return true
+    if (JSON.stringify(steps) !== JSON.stringify(origSteps)) return true
+    if (JSON.stringify(muscles) !== JSON.stringify(origMuscles)) return true
+
+    return false
+  }, [
+    nameAr,
+    nameEn,
+    imageMode,
+    customImageBlob,
+    benefitAr,
+    mechanicsAr,
+    steps,
+    muscles,
+    personalNote,
+    videoUrl,
+    existingOverride,
+    exercise,
+  ])
+
+  const handleAttemptClose = () => {
+    if (isDirty) {
+      setShowConfirmClose(true)
+    } else {
+      onClose()
+    }
+  }
+
+  const primarySummary = useMemo(() => {
+    return muscles
+      .filter((m) => m.role === 'primary')
+      .map((m) => getMuscleInfo(m.id)?.gymAr || m.id)
+      .join('، ')
+  }, [muscles])
+
+  const secondarySummary = useMemo(() => {
+    return muscles
+      .filter((m) => m.role === 'secondary')
+      .map((m) => getMuscleInfo(m.id)?.gymAr || m.id)
+      .join('، ')
+  }, [muscles])
+
   // Sync state when opened
   React.useEffect(() => {
     if (isOpen) {
       setErrorMsg('')
       setShowOriginal(false)
+      setActiveMusclePickerId(null)
       const ov = existingOverride
 
       setNameAr(ov?.nameAr ?? exercise.nameAr ?? '')
@@ -93,11 +179,6 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
     }
   }, [isOpen, exercise, existingOverride])
 
-  const allMuscles = useMemo(
-    () => muscleNamesData.muscles as MuscleNameEntry[],
-    [],
-  )
-
   // Step operations
   const handleAddStep = () => {
     if (!newStepText.trim()) return
@@ -117,22 +198,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
     setSteps(updated)
   }
 
-  // Muscle Targeting
-  const handleMuscleToggle = (muscleId: string) => {
-    const existing = muscles.find((m) => m.id === muscleId)
-    if (!existing) {
-      // Unselected -> Primary
-      setMuscles([...muscles, { id: muscleId, role: 'primary' }])
-    } else if (existing.role === 'primary') {
-      // Primary -> Secondary
-      setMuscles(
-        muscles.map((m) =>
-          m.id === muscleId ? { ...m, role: 'secondary' } : m,
-        ),
-      )
-    } else {
-      // Secondary -> Remove
+  // Muscle Targeting explicit role setter
+  const handleSetMuscleRole = (muscleId: string, role: 'primary' | 'secondary' | 'none') => {
+    if (role === 'none') {
       setMuscles(muscles.filter((m) => m.id !== muscleId))
+    } else {
+      const exists = muscles.some((m) => m.id === muscleId)
+      if (exists) {
+        setMuscles(
+          muscles.map((m) => (m.id === muscleId ? { ...m, role } : m)),
+        )
+      } else {
+        setMuscles([...muscles, { id: muscleId, role }])
+      }
     }
   }
 
@@ -185,21 +263,101 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
 
   const handleReset = async () => {
     try {
+      const prevOverride = existingOverride
       await deleteExerciseOverride(exercise.id)
+
+      if (showToast) {
+        showToast({
+          message: 'رجّعنا التمرين زي ما كان',
+          duration: 8000,
+          undoLabel: 'تراجع',
+          onUndo: async () => {
+            if (prevOverride) {
+              await saveExerciseOverride(prevOverride)
+              onSaved?.({
+                ...exercise,
+                nameAr: prevOverride.nameAr || exercise.nameAr,
+                nameEn: prevOverride.nameEn || exercise.nameEn,
+                benefitAr: prevOverride.benefitAr || exercise.benefitAr,
+                mechanicsAr: prevOverride.mechanicsAr || exercise.mechanicsAr,
+                howToStepsAr: prevOverride.howToStepsAr || exercise.howToStepsAr,
+                muscles: prevOverride.muscles || exercise.muscles,
+              })
+            }
+          },
+        })
+      }
+
       onResetOriginal?.()
+      setShowConfirmReset(false)
       onClose()
     } catch (err: unknown) {
       setErrorMsg((err as Error).message || 'فشل في استعادة البيانات الأصلية')
     }
   }
 
+  const handleAutoGrow = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    const el = e.currentTarget
+    el.style.height = 'auto'
+    const maxHeight = typeof window !== 'undefined' ? window.innerHeight * 0.4 : 320
+    el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
+  }
+
   return (
     <>
       <Sheet
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleAttemptClose}
         title="تعديل بيانات التمرين"
         subtitle={exercise.nameAr}
+        headerAction={
+          existingOverride ? (
+            <button
+              type="button"
+              data-testid="header-btn-reset"
+              onClick={() => setShowConfirmReset(true)}
+              style={{
+                background: 'none',
+                border: '1px solid var(--color-danger-border, #fca5a5)',
+                color: 'var(--color-danger, #ef4444)',
+                padding: '4px 10px',
+                borderRadius: 'var(--radius-control, 8px)',
+                fontSize: 'var(--font-size-xs, 12px)',
+                fontWeight: 'var(--font-weight-bold, 700)',
+                cursor: 'pointer',
+                minHeight: '36px',
+              }}
+            >
+              إعادة الضبط
+            </button>
+          ) : undefined
+        }
+        footer={
+          <div
+            style={{
+              display: 'flex',
+              gap: 'var(--space-3)',
+              width: '100%',
+            }}
+          >
+            <Button
+              variant="secondary"
+              data-testid="btn-cancel-edit"
+              onClick={handleAttemptClose}
+              style={{ flex: 1 }}
+            >
+              إلغاء
+            </Button>
+            <Button
+              variant="primary"
+              data-testid="btn-save-edit"
+              onClick={handleSave}
+              style={{ flex: 2 }}
+            >
+              حفظ التعديلات
+            </Button>
+          </div>
+        }
       >
         <div
           data-testid="exercise-edit-sheet-content"
@@ -207,7 +365,7 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
             display: 'flex',
             flexDirection: 'column',
             gap: 'var(--space-4)',
-            paddingBottom: 'calc(var(--footer-max-height, 72px) + 24px)',
+            paddingBottom: 'var(--space-4)',
           }}
         >
           {errorMsg && (
@@ -442,7 +600,7 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                 )}
               </div>
 
-              {/* How to Perform: Benefit & Mechanics */}
+              {/* How to Perform: Benefit & Mechanics (Auto-grow, start-aligned, min 4 lines, max 40vh) */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
                 <label
                   htmlFor="edit-benefit"
@@ -453,16 +611,23 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                 <textarea
                   id="edit-benefit"
                   data-testid="input-benefit"
-                  rows={2}
+                  rows={4}
                   value={benefitAr}
                   onChange={(e) => setBenefitAr(e.target.value)}
+                  onInput={handleAutoGrow}
                   style={{
-                    padding: 'var(--space-2)',
+                    minHeight: '100px',
+                    maxHeight: '40vh',
+                    overflowY: 'auto',
+                    textAlign: 'start',
+                    lineHeight: '1.6',
+                    padding: 'var(--space-3)',
                     borderRadius: 'var(--radius-control)',
                     border: '1px solid var(--color-divider)',
                     backgroundColor: 'var(--color-surface)',
                     color: 'var(--color-text)',
                     fontSize: 'var(--font-size-sm)',
+                    resize: 'none',
                   }}
                 />
               </div>
@@ -477,21 +642,28 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                 <textarea
                   id="edit-mechanics"
                   data-testid="input-mechanics"
-                  rows={2}
+                  rows={4}
                   value={mechanicsAr}
                   onChange={(e) => setMechanicsAr(e.target.value)}
+                  onInput={handleAutoGrow}
                   style={{
-                    padding: 'var(--space-2)',
+                    minHeight: '100px',
+                    maxHeight: '40vh',
+                    overflowY: 'auto',
+                    textAlign: 'start',
+                    lineHeight: '1.6',
+                    padding: 'var(--space-3)',
                     borderRadius: 'var(--radius-control)',
                     border: '1px solid var(--color-divider)',
                     backgroundColor: 'var(--color-surface)',
                     color: 'var(--color-text)',
                     fontSize: 'var(--font-size-sm)',
+                    resize: 'none',
                   }}
                 />
               </div>
 
-              {/* Steps List (Add, Remove, Reorder) */}
+              {/* Steps List (Add, Remove, Reorder with 44x44px chevron buttons and step numbers) */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}>
                   خطوات الأداء ({steps.length})
@@ -509,35 +681,76 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                       borderRadius: 'var(--radius-control)',
                     }}
                   >
-                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'bold' }}>
+                    <span
+                      style={{
+                        fontSize: 'var(--font-size-xs)',
+                        fontWeight: 'bold',
+                        color: 'var(--color-text-2)',
+                        minWidth: '24px',
+                      }}
+                    >
                       {idx + 1}.
                     </span>
-                    <span style={{ flex: 1, fontSize: 'var(--font-size-sm)' }}>{st}</span>
+                    <span style={{ flex: 1, fontSize: 'var(--font-size-sm)', lineHeight: '1.5' }}>
+                      {st}
+                    </span>
                     <button
                       type="button"
                       onClick={() => handleMoveStep(idx, idx - 1)}
                       disabled={idx === 0}
                       aria-label="تحريك لأعلى"
-                      style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+                      style={{
+                        minWidth: '44px',
+                        minHeight: '44px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: 'none',
+                        background: 'none',
+                        cursor: idx === 0 ? 'default' : 'pointer',
+                        opacity: idx === 0 ? 0.3 : 1,
+                        color: 'var(--color-text)',
+                      }}
                     >
-                      ▲
+                      <Icon name="chevron-up" size={20} />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleMoveStep(idx, idx + 1)}
                       disabled={idx === steps.length - 1}
                       aria-label="تحريك لأسفل"
-                      style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+                      style={{
+                        minWidth: '44px',
+                        minHeight: '44px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: 'none',
+                        background: 'none',
+                        cursor: idx === steps.length - 1 ? 'default' : 'pointer',
+                        opacity: idx === steps.length - 1 ? 0.3 : 1,
+                        color: 'var(--color-text)',
+                      }}
                     >
-                      ▼
+                      <Icon name="chevron-down" size={20} />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleRemoveStep(idx)}
                       aria-label="حذف الخطوة"
-                      style={{ border: 'none', background: 'none', color: 'var(--color-danger)', cursor: 'pointer' }}
+                      style={{
+                        minWidth: '44px',
+                        minHeight: '44px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: 'none',
+                        background: 'none',
+                        color: 'var(--color-danger)',
+                        cursor: 'pointer',
+                      }}
                     >
-                      ✕
+                      <Icon name="trash-2" size={18} />
                     </button>
                   </div>
                 ))}
@@ -566,75 +779,229 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                 </div>
               </div>
 
-              {/* Muscle Targeting (Primary / Secondary / None) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              {/* Muscle Targeting (NO nested scroll, organized by groups, summary line, 3-option segmented control, AA badges) */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}>
-                  العضلات المستهدفة (اضغط للتبديل: رئيسية / مساعدة / إزالة)
+                  العضلات المستهدفة
                 </span>
+
+                {/* Summary Box */}
                 <div
                   style={{
                     display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 'var(--space-2)',
-                    maxHeight: '220px',
-                    overflowY: 'auto',
-                    padding: 'var(--space-2)',
+                    flexDirection: 'column',
+                    gap: 'var(--space-1)',
+                    padding: 'var(--space-3)',
+                    backgroundColor: 'var(--color-surface-2)',
                     borderRadius: 'var(--radius-control)',
                     border: '1px solid var(--color-divider)',
-                    backgroundColor: 'var(--color-surface)',
                   }}
                 >
-                  {allMuscles.map((m) => {
-                    const match = muscles.find((target) => target.id === m.id)
-                    const role = match?.role
+                  <div style={{ fontSize: 'var(--font-size-xs)' }}>
+                    <strong style={{ color: 'var(--color-text)' }}>العضلات الأساسية: </strong>
+                    <span style={{ color: primarySummary ? 'var(--color-danger)' : 'var(--color-text-2)', fontWeight: '600' }}>
+                      {primarySummary || 'لم تحدد'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 'var(--font-size-xs)' }}>
+                    <strong style={{ color: 'var(--color-text)' }}>العضلات المساعدة: </strong>
+                    <span style={{ color: secondarySummary ? 'var(--color-warning-text, #d97706)' : 'var(--color-text-2)', fontWeight: '600' }}>
+                      {secondarySummary || 'لم تحدد'}
+                    </span>
+                  </div>
+                </div>
 
-                    let border = '1px solid var(--color-divider)'
-                    let bg = 'var(--color-surface-2)'
-                    let color = 'var(--color-text)'
-
-                    if (role === 'primary') {
-                      border = '1px solid var(--atlas-primary-stroke)'
-                      bg = 'var(--atlas-primary)'
-                      color = '#ffffff'
-                    } else if (role === 'secondary') {
-                      border = '1px solid var(--atlas-secondary-stroke)'
-                      bg = 'var(--atlas-secondary)'
-                      color = '#0b0c0e'
-                    }
-
-                    return (
-                      <button
-                        key={m.id}
-                        type="button"
-                        data-testid={`muscle-chip-${m.id}`}
-                        onClick={() => handleMuscleToggle(m.id)}
+                {/* Groups from muscle-names.json */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                  {muscleNamesData.groups.map((grp) => (
+                    <div
+                      key={grp.id}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 'var(--space-2)',
+                        padding: 'var(--space-2) var(--space-3)',
+                        borderRadius: 'var(--radius-control)',
+                        backgroundColor: 'var(--color-surface-2)',
+                      }}
+                    >
+                      <div
                         style={{
-                          padding: 'var(--space-1) var(--space-2)',
-                          borderRadius: 'var(--radius-control)',
-                          border,
-                          backgroundColor: bg,
-                          color,
                           fontSize: 'var(--font-size-xs)',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
+                          fontWeight: 'bold',
+                          color: 'var(--color-text-2)',
+                          display: 'flex',
                           alignItems: 'center',
                           gap: 'var(--space-1)',
                         }}
                       >
-                        <span>{m.gym_ar}</span>
-                        <bdi dir="ltr" style={{ opacity: 0.85 }}>({m.sci_en})</bdi>
-                        {role && (
-                          <span style={{ fontWeight: 'bold' }}>
-                            [{role === 'primary' ? 'رئيسية' : 'مساعدة'}]
-                          </span>
-                        )}
-                      </button>
-                    )
-                  })}
+                        <span>{grp.gym_ar}</span>
+                        <bdi dir="ltr" style={{ opacity: 0.8 }}>({grp.sci_en})</bdi>
+                      </div>
+
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                        {grp.members.map((mId) => {
+                          const mInfo = getMuscleInfo(mId)
+                          const targetMatch = muscles.find((t) => t.id === mId)
+                          const currentRole = targetMatch?.role
+                          const isPickerOpen = activeMusclePickerId === mId
+
+                          let border = '1px solid var(--color-divider)'
+                          let bg = 'var(--color-surface)'
+                          let color = 'var(--color-text)'
+
+                          if (currentRole === 'primary') {
+                            border = '1px solid var(--atlas-primary-stroke, #b91c1c)'
+                            bg = 'var(--atlas-primary, #ef4444)'
+                            color = '#ffffff'
+                          } else if (currentRole === 'secondary') {
+                            border = '1px solid var(--atlas-secondary-stroke, #d97706)'
+                            bg = 'var(--atlas-secondary, #f59e0b)'
+                            color = '#0b0c0e'
+                          }
+
+                          return (
+                            <div
+                              key={mId}
+                              style={{
+                                display: 'inline-flex',
+                                flexDirection: 'column',
+                                gap: 'var(--space-1)',
+                              }}
+                            >
+                              <button
+                                type="button"
+                                data-testid={`muscle-chip-${mId}`}
+                                onClick={() =>
+                                  setActiveMusclePickerId(isPickerOpen ? null : mId)
+                                }
+                                style={{
+                                  padding: 'var(--space-1) var(--space-2)',
+                                  borderRadius: 'var(--radius-control)',
+                                  border,
+                                  backgroundColor: bg,
+                                  color,
+                                  fontSize: 'var(--font-size-xs)',
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 'var(--space-1)',
+                                  minHeight: '36px',
+                                }}
+                              >
+                                <span>{mInfo?.gymAr || mId}</span>
+                                {mInfo?.sciEn && (
+                                  <bdi dir="ltr" style={{ opacity: 0.85, fontSize: '10px' }}>
+                                    ({mInfo.sciEn})
+                                  </bdi>
+                                )}
+                                {currentRole === 'primary' && (
+                                  <span style={{ fontWeight: 'bold', marginInlineStart: '4px' }}>
+                                    أساسية
+                                  </span>
+                                )}
+                                {currentRole === 'secondary' && (
+                                  <span style={{ fontWeight: 'bold', marginInlineStart: '4px' }}>
+                                    مساعدة
+                                  </span>
+                                )}
+                              </button>
+
+                              {/* 3-option Segmented Control when chip tapped */}
+                              {isPickerOpen && (
+                                <div
+                                  data-testid={`role-picker-${mId}`}
+                                  style={{
+                                    display: 'flex',
+                                    borderRadius: 'var(--radius-control)',
+                                    border: '1px solid var(--color-divider)',
+                                    overflow: 'hidden',
+                                    backgroundColor: 'var(--color-surface)',
+                                  }}
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      handleSetMuscleRole(mId, 'primary')
+                                      setActiveMusclePickerId(null)
+                                    }}
+                                    style={{
+                                      flex: 1,
+                                      padding: '4px 6px',
+                                      fontSize: '11px',
+                                      fontWeight: '600',
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                      backgroundColor:
+                                        currentRole === 'primary'
+                                          ? 'var(--atlas-primary, #ef4444)'
+                                          : 'transparent',
+                                      color:
+                                        currentRole === 'primary'
+                                          ? '#ffffff'
+                                          : 'var(--color-danger, #ef4444)',
+                                    }}
+                                  >
+                                    أساسية
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      handleSetMuscleRole(mId, 'secondary')
+                                      setActiveMusclePickerId(null)
+                                    }}
+                                    style={{
+                                      flex: 1,
+                                      padding: '4px 6px',
+                                      fontSize: '11px',
+                                      fontWeight: '600',
+                                      border: 'none',
+                                      borderInline: '1px solid var(--color-divider)',
+                                      cursor: 'pointer',
+                                      backgroundColor:
+                                        currentRole === 'secondary'
+                                          ? 'var(--atlas-secondary, #f59e0b)'
+                                          : 'transparent',
+                                      color:
+                                        currentRole === 'secondary'
+                                          ? '#0b0c0e'
+                                          : 'var(--color-warning-text, #d97706)',
+                                    }}
+                                  >
+                                    مساعدة
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      handleSetMuscleRole(mId, 'none')
+                                      setActiveMusclePickerId(null)
+                                    }}
+                                    style={{
+                                      flex: 1,
+                                      padding: '4px 6px',
+                                      fontSize: '11px',
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                      backgroundColor: !currentRole
+                                        ? 'var(--color-surface-2)'
+                                        : 'transparent',
+                                      color: 'var(--color-text-2)',
+                                    }}
+                                  >
+                                    مش مستهدفة
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Personal Note (Max 500 chars) */}
+              {/* Personal Note (Max 500 chars with correct counter order <bdi dir="ltr">{personalNote.length} / 500</bdi>) */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <label
@@ -649,7 +1016,7 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                       color: personalNote.length > 500 ? 'var(--color-danger)' : 'var(--color-text-2)',
                     }}
                   >
-                    {personalNote.length} / 500
+                    <bdi dir="ltr">{personalNote.length} / 500</bdi>
                   </span>
                 </div>
                 <textarea
@@ -667,6 +1034,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                     backgroundColor: 'var(--color-surface)',
                     color: 'var(--color-text)',
                     fontSize: 'var(--font-size-sm)',
+                    textAlign: 'start',
+                    resize: 'none',
                   }}
                 />
               </div>
@@ -698,56 +1067,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                   }}
                 />
               </div>
-
-              {/* Reset to Original Button (if previously modified) */}
-              {existingOverride && (
-                <div style={{ marginTop: 'var(--space-3)' }}>
-                  <Button
-                    variant="danger"
-                    data-testid="btn-reset-original"
-                    onClick={() => setShowConfirmReset(true)}
-                    fullWidth
-                  >
-                    رجّع الأصلي
-                  </Button>
-                </div>
-              )}
             </>
           )}
-        </div>
-
-        {/* Fixed Sheet Footer */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: 'var(--space-3) var(--space-4)',
-            paddingBottom: 'calc(var(--space-3) + var(--safe-area-bottom, 0px))',
-            backgroundColor: 'var(--color-surface)',
-            borderTop: '1px solid var(--color-divider)',
-            display: 'flex',
-            gap: 'var(--space-3)',
-            zIndex: 20,
-          }}
-        >
-          <Button
-            variant="secondary"
-            data-testid="btn-cancel-edit"
-            onClick={onClose}
-            style={{ flex: 1 }}
-          >
-            إلغاء
-          </Button>
-          <Button
-            variant="primary"
-            data-testid="btn-save-edit"
-            onClick={handleSave}
-            style={{ flex: 2 }}
-          >
-            حفظ التعديلات
-          </Button>
         </div>
       </Sheet>
 
@@ -757,9 +1078,24 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
         onCancel={() => setShowConfirmReset(false)}
         onConfirm={handleReset}
         title="تأكيد استعادة التمرين الأصلي"
-        message="هل أنت متأكد من حذف كافة التعديلات واستعادة البيانات الأصلية للتمرين من الكتالوج؟"
+        message="سيتم حذف كافة التعديلات واستعادة البيانات الأصلية للتمرين، بما في ذلك: الاسم، صورة التمرين، خطوات الأداء، استهداف العضلات، الملاحظة الشخصية، ورابط الفيديو."
         confirmLabel="نعم، رجّع الأصلي"
         cancelLabel="إلغاء"
+        isDestructive
+      />
+
+      {/* Confirmation for closing with unsaved changes */}
+      <ConfirmSheet
+        isOpen={showConfirmClose}
+        onCancel={() => setShowConfirmClose(false)}
+        onConfirm={() => {
+          setShowConfirmClose(false)
+          onClose()
+        }}
+        title="تغييرات غير محفوظة"
+        message="عندك تعديلات لم يتم حفظها. هل تريد الخروج وتجاهل هذه التعديلات؟"
+        confirmLabel="نعم، تجاهل التعديلات"
+        cancelLabel="الرجوع للتعديل"
         isDestructive
       />
     </>

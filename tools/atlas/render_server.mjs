@@ -469,7 +469,7 @@ async function processRenderResults(payload) {
     version: 1,
     generated_at: new Date().toISOString(),
     source: 'BodyParts3D Release 4.0',
-    license: 'Creative Commons Attribution-ShareAlike 2.1 Japan (CC BY-SA 2.1 JP) / CC BY 4.0',
+    license: 'BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International',
     viewBox: `0 0 ${width} ${height}`,
     width,
     height,

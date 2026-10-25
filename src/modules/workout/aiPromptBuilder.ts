@@ -4,6 +4,8 @@ import type { UserProfile } from '../onboarding/types.ts'
 import type { CustomExercise } from '../shared/types.ts'
 import { PROMPT_SCHEMA_TEXT, PROMPT_EXAMPLE_JSON } from './importSchema.ts'
 
+import { deriveConstraints, isExerciseAllowed } from './constraints.ts'
+
 export interface PromptBuildOptions {
   profile?: UserProfile | null
   includeProfileData?: boolean
@@ -29,7 +31,9 @@ export function buildAiDesignerPrompt(options: PromptBuildOptions = {}): {
     customExercises = [],
   } = options
 
-  // 1. Build catalog lines
+  const constraints = deriveConstraints(profile)
+
+  // 1. Build catalog lines (filtered by user constraints)
   const catalogLines: string[] = []
   const exercises =
     (
@@ -45,17 +49,21 @@ export function buildAiDesignerPrompt(options: PromptBuildOptions = {}): {
     ).exercises || []
 
   for (const ex of exercises) {
-    catalogLines.push(
-      `${ex.key} | ${ex.name_en} | ${ex.name_ar} | ${ex.category} | ${ex.equipment?.ar || ex.equipment?.db || ''}`,
-    )
+    if (isExerciseAllowed({ id: ex.key, key: ex.key, equipment: ex.equipment }, constraints)) {
+      catalogLines.push(
+        `${ex.key} | ${ex.name_en} | ${ex.name_ar} | ${ex.category} | ${ex.equipment?.ar || ex.equipment?.db || ''}`,
+      )
+    }
   }
 
   if (includeCustomExercises && customExercises.length > 0) {
     for (const cust of customExercises) {
-      const id = cust.id || cust.key || 'custom'
-      catalogLines.push(
-        `${id} | ${cust.name || cust.nameEn || cust.nameAr} | ${cust.nameAr} | ${cust.category} | ${cust.equipment} [تمرين مخصص]`,
-      )
+      if (isExerciseAllowed(cust, constraints)) {
+        const id = cust.id || cust.key || 'custom'
+        catalogLines.push(
+          `${id} | ${cust.name || cust.nameEn || cust.nameAr} | ${cust.nameAr} | ${cust.category} | ${cust.equipment} [تمرين مخصص]`,
+        )
+      }
     }
   }
 
@@ -74,8 +82,18 @@ export function buildAiDesignerPrompt(options: PromptBuildOptions = {}): {
     if (profile.primaryGoal) parts.push(`- Main goal: ${profile.primaryGoal}`)
     if (profile.trainingDaysPerWeek)
       parts.push(`- Training days per week: ${profile.trainingDaysPerWeek} days`)
+    if (profile.trainingStyle && profile.trainingStyle.length > 0) {
+      parts.push(`- Training style: ${profile.trainingStyle.join(', ')}`)
+    }
+    if (profile.trainingLocation) {
+      parts.push(`- Training location: ${profile.trainingLocation}`)
+    }
     if (profile.equipmentAvailable && profile.equipmentAvailable.length > 0) {
       parts.push(`- Available equipment: ${profile.equipmentAvailable.join(', ')}`)
+    } else if (constraints.isCalisthenicsOnly) {
+      parts.push(`- Available equipment: Bodyweight only (calisthenics)`)
+    } else if (constraints.isHomeDumbbellsOnly) {
+      parts.push(`- Available equipment: Dumbbells and bodyweight (home)`)
     }
 
     profileText = parts.length > 0 ? parts.join('\n') : '(not provided)'

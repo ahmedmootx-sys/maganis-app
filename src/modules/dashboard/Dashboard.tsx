@@ -33,6 +33,7 @@ import {
 } from '../workout/scheduleManager'
 import { selectWeekLoad } from '../workout/weekLoadSelector'
 import { ScheduleMismatchCallout } from '../workout/ScheduleMismatchCallout'
+import { plural } from '../../utils/plural'
 
 export interface DashboardProps {
   profile: UserProfile | null
@@ -547,7 +548,7 @@ export function Dashboard({
             }
             secondary={
               program && program.days.length > 0
-                ? weekLoad.breakdownAr
+                ? `${weekLoad.breakdownAr}${weekLoad.plannedCardioMinutes > 0 ? ` (+ ${plural(weekLoad.plannedCardioMinutes, 'دقيقة')} كارديو)` : ''}`
                 : undefined
             }
           />

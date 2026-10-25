@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "generated_at": "2026-10-24T05:00:54.158Z",
+  "generated_at": "2026-10-25T08:07:38.168Z",
   "source": "BodyParts3D Release 4.0",
-  "license": "Creative Commons Attribution-ShareAlike 2.1 Japan (CC BY-SA 2.1 JP) / CC BY 4.0",
+  "license": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
   "viewBox": "0 0 1024 2048",
   "width": 1024,
   "height": 2048,
@@ -60,7 +60,7 @@
       "best_view": "A",
       "best_layer": "S",
       "visible_ratio": 0.941,
-      "area_px": 34154,
+      "area_px": 34336,
       "derived": true,
       "parts_used": [
         "FJ1464",
@@ -69,25 +69,25 @@
       "missing": false,
       "anchors": {
         "A": [
-          584,
-          502
+          585,
+          501
         ],
         "P": null
       },
       "views": {
         "A": {
-          "visible_pixels": 34154,
-          "full_pixels": 36292,
+          "visible_pixels": 34336,
+          "full_pixels": 36474,
           "visible_ratio": 0.941,
           "layer": "S",
           "anchor": [
-            584,
-            502
+            585,
+            501
           ]
         },
         "P": {
           "visible_pixels": 0,
-          "full_pixels": 36334,
+          "full_pixels": 36474,
           "visible_ratio": 0,
           "layer": "D",
           "anchor": null
@@ -101,8 +101,8 @@
       "expected_views": "A",
       "best_view": "A",
       "best_layer": "S",
-      "visible_ratio": 0.846,
-      "area_px": 8618,
+      "visible_ratio": 0.845,
+      "area_px": 8436,
       "derived": true,
       "parts_used": [
         "FJ1464",
@@ -111,25 +111,25 @@
       "missing": false,
       "anchors": {
         "A": [
-          574,
-          585
+          603,
+          587
         ],
         "P": null
       },
       "views": {
         "A": {
-          "visible_pixels": 8618,
-          "full_pixels": 10186,
-          "visible_ratio": 0.846,
+          "visible_pixels": 8436,
+          "full_pixels": 9978,
+          "visible_ratio": 0.845,
           "layer": "S",
           "anchor": [
-            574,
-            585
+            603,
+            587
           ]
         },
         "P": {
           "visible_pixels": 250,
-          "full_pixels": 10138,
+          "full_pixels": 9978,
           "visible_ratio": 0.025,
           "layer": "D",
           "anchor": null

@@ -560,18 +560,21 @@ export function SettingsScreen({
                 },
                 {
                   key: 'النموذج التشريحي',
-                  value:
-                    'BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International',
+                  value: (
+                    <bdi dir="ltr">
+                      BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International
+                    </bdi>
+                  ),
                   stacked: true,
                 },
                 {
                   key: 'الأيقونات',
-                  value: 'Lucide Icons (ISC)',
+                  value: <bdi dir="ltr">Lucide Icons (ISC)</bdi>,
                   stacked: true,
                 },
                 {
                   key: 'وسائط التمارين',
-                  value: '© Gym visual — https://gymvisual.com/',
+                  value: <bdi dir="ltr">© Gym visual — https://gymvisual.com/</bdi>,
                   stacked: true,
                 },
               ]}

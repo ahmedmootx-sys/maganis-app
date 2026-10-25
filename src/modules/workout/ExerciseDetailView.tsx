@@ -1,18 +1,10 @@
 import { useState, useMemo, useEffect } from 'react'
 import type {
   Exercise,
-  MuscleGroup,
-  Difficulty,
-  Equipment,
   WorkoutProgram,
   TrackingSession,
 } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
-import {
-  DIFFICULTY_LABELS,
-  EQUIPMENT_LABELS,
-  MUSCLE_GROUP_LABELS,
-} from '../shared/types.ts'
 import {
   getExerciseById,
   getCatalogReplacements,
@@ -38,7 +30,19 @@ import {
   Sheet,
 } from '../../ui/index.ts'
 import { fmtRange, fmtSets, fmtReps } from '../../utils/bidi.ts'
-import { selectEffectiveExercise } from './exerciseOverrides.ts'
+import {
+  selectEffectiveExercise,
+  getExerciseOverride,
+  saveExerciseOverride,
+  deleteExerciseOverride,
+  type ExerciseOverride,
+} from './exerciseOverrides.ts'
+import {
+  getEquipmentLabel,
+  getDifficultyLabel,
+  getMuscleGroupLabel,
+  formatMuscleLabel,
+} from '../../utils/labels.ts'
 import { ExerciseEditSheet } from './ExerciseEditSheet.tsx'
 import { CopyExerciseNameButton } from './CopyExerciseNameButton.tsx'
 import { VideoPlayer } from './VideoPlayer.tsx'
@@ -159,6 +163,38 @@ export function ExerciseDetailView({
   const [refreshKey, setRefreshKey] = useState(0)
   const [showEditSheet, setShowEditSheet] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
+  const [showConfirmReset, setShowConfirmReset] = useState(false)
+  const [undoOverrideSnapshot, setUndoOverrideSnapshot] = useState<{
+    override: ExerciseOverride
+    timer: number
+  } | null>(null)
+
+  const handleResetToCatalog = async () => {
+    if (!exercise) return
+    const existing = getExerciseOverride(exercise.id)
+    if (!existing) return
+    await deleteExerciseOverride(exercise.id)
+    setShowConfirmReset(false)
+    setRefreshKey((k) => k + 1)
+    setToastMsg('رجّعنا التمرين زي ما كان')
+
+    if (undoOverrideSnapshot?.timer) {
+      window.clearTimeout(undoOverrideSnapshot.timer)
+    }
+    const timer = window.setTimeout(() => {
+      setUndoOverrideSnapshot(null)
+    }, 8000)
+    setUndoOverrideSnapshot({ override: existing, timer })
+  }
+
+  const handleUndoReset = async () => {
+    if (!undoOverrideSnapshot) return
+    window.clearTimeout(undoOverrideSnapshot.timer)
+    await saveExerciseOverride(undoOverrideSnapshot.override)
+    setUndoOverrideSnapshot(null)
+    setRefreshKey((k) => k + 1)
+    setToastMsg('تمت استعادة تعديلاتك')
+  }
 
   const exercise = useMemo(() => {
     if (!rawExercise) return null
@@ -493,10 +529,46 @@ export function ExerciseDetailView({
 
   return (
     <div className="exercise-detail-page screen-container" dir="rtl">
-      {/* 1. Header: Back button */}
+      {/* 1. Header: Back button with title and reset action (D9, D3) */}
       <TopBar
+        title={
+          <span
+            className="top-bar__title"
+            style={{
+              fontSize: '15px',
+              fontWeight: 700,
+              maxWidth: '220px',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {nameAr}
+          </span>
+        }
         onBack={onBack ? onBack : () => window.history.back()}
         backAriaLabel="رجوع"
+        actions={
+          exercise.isModified ? (
+            <button
+              type="button"
+              data-testid="detail-reset-btn"
+              onClick={() => setShowConfirmReset(true)}
+              style={{
+                border: '1px solid var(--color-danger-border, #fca5a5)',
+                background: 'var(--color-danger-bg, rgba(239, 68, 68, 0.1))',
+                color: 'var(--color-danger, #ef4444)',
+                borderRadius: '8px',
+                padding: '4px 10px',
+                fontSize: '12px',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              إعادة الضبط
+            </button>
+          ) : undefined
+        }
       />
 
       <div
@@ -509,6 +581,8 @@ export function ExerciseDetailView({
           margin: '0 auto',
           width: '100%',
           boxSizing: 'border-box',
+          paddingBottom:
+            'calc(var(--nav-height, 64px) + var(--safe-area-bottom, 16px) + 32px)',
         }}
       >
         {/* Title and English subtitle block (wraps naturally, line-height >= 1.5, text-wrap: balance) */}
@@ -614,19 +688,18 @@ export function ExerciseDetailView({
               border: '1px solid var(--color-accent, #ff6b00)',
             }}
           >
-            {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] ||
-              exercise.category}
+            {getMuscleGroupLabel(exercise.category)}
           </span>
           <span className="chip">
-            {EQUIPMENT_LABELS[exercise.equipment as Equipment] ||
-              exercise.equipment}
+            {getEquipmentLabel(exercise.equipment)}
           </span>
           <span className="chip">
-            {DIFFICULTY_LABELS[exercise.difficulty as Difficulty] ||
-              exercise.difficulty}
+            {getDifficultyLabel(exercise.difficulty)}
           </span>
           {exercise.targetSubMuscleAr && (
-            <span className="chip">{exercise.targetSubMuscleAr}</span>
+            <span className="chip">
+              {formatMuscleLabel(exercise.targetSubMuscleAr)}
+            </span>
           )}
           {('isCustom' in exercise && Boolean((exercise as { isCustom?: boolean }).isCustom)) && (
             <span
@@ -1074,7 +1147,7 @@ export function ExerciseDetailView({
                                   color: 'var(--color-text)',
                                 }}
                               >
-                                {m}
+                                {formatMuscleLabel(m)}
                               </span>
                             ),
                           )}
@@ -1096,9 +1169,9 @@ export function ExerciseDetailView({
                     }}
                   >
                     <span>المصدر العلمي</span>
-                    <span dir="ltr">
+                    <bdi dir="ltr">
                       {exercise.medicalSource || exercise.reference}
-                    </span>
+                    </bdi>
                   </div>
                 )}
               </>
@@ -1604,8 +1677,7 @@ export function ExerciseDetailView({
                   }}
                 >
                   الحجم التدريبي الأسبوعي لعضلة (
-                  {MUSCLE_GROUP_LABELS[exercise.category as MuscleGroup] ||
-                    exercise.category}
+                  {getMuscleGroupLabel(exercise.category)}
                   )
                 </h3>
                 <div
@@ -1709,7 +1781,7 @@ export function ExerciseDetailView({
                             color: 'var(--color-text-2)',
                           }}
                         >
-                          {EQUIPMENT_LABELS[alt.equipment]}
+                          {getEquipmentLabel(alt.equipment)}
                         </span>
                       </div>
                       {onSwapExercise && (
@@ -2132,6 +2204,47 @@ export function ExerciseDetailView({
           onSaved={() => setRefreshKey((k) => k + 1)}
           onResetOriginal={() => setRefreshKey((k) => k + 1)}
         />
+      )}
+
+      {/* Reset to Catalog Confirmation Sheet (D3) */}
+      <ConfirmSheet
+        isOpen={showConfirmReset}
+        onClose={() => setShowConfirmReset(false)}
+        onConfirm={handleResetToCatalog}
+        title="استعادة بيانات التمرين الأصلية؟"
+        message="هل أنت متأكد من رغبتك في حذف جميع تعديلاتك والرجوع إلى بيانات الكتالوج الأصلية؟ سيتم فقدان: الاسم، الصورة، خطوات الأداء، العضلات المستهدفة، الملاحظة الشخصية، ورابط الفيديو."
+        confirmLabel="نعم، رجّع الأصلي"
+        cancelLabel="إلغاء"
+      />
+
+      {/* 8-second Undo Toast for Reset (D3) */}
+      {undoOverrideSnapshot && (
+        <div
+          data-testid="undo-reset-toast"
+          style={{
+            position: 'fixed',
+            bottom: 'calc(var(--nav-height, 64px) + 20px)',
+            left: '16px',
+            right: '16px',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'var(--color-surface, #1e2024)',
+            color: 'var(--color-text, #fff)',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+            border: '1px solid var(--color-divider)',
+          }}
+        >
+          <span style={{ fontSize: '13.5px', fontWeight: 600 }}>
+            رجّعنا التمرين زي ما كان
+          </span>
+          <Button variant="secondary" size="sm" onClick={handleUndoReset}>
+            تراجع
+          </Button>
+        </div>
       )}
 
       {toastMsg && (

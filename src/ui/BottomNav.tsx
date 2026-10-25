@@ -62,6 +62,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
       className={`bottom-nav ${className}`.trim()}
       aria-label="التنقل الرئيسي"
       data-testid="bottom-nav"
+      data-overlay="true"
     >
       <div className="bottom-nav__inner">
         {BOTTOM_NAV_TABS.map((tab) => {

@@ -43,6 +43,106 @@ function getOBJ(fileId) {
   return parsed
 }
 
+function clipTrianglesPlane(raw, splitZ, part) {
+  const resultTriangles = []
+
+  function interpolate(pa, pb, da, db) {
+    const t = da / (da - db)
+    return [
+      pa[0] + t * (pb[0] - pa[0]),
+      pa[1] + t * (pb[1] - pa[1]),
+      splitZ
+    ]
+  }
+
+  for (let i = 0; i < raw.indices.length; i += 3) {
+    const i0 = raw.indices[i]
+    const i1 = raw.indices[i + 1]
+    const i2 = raw.indices[i + 2]
+
+    const p0 = [raw.positions[i0 * 3], raw.positions[i0 * 3 + 1], raw.positions[i0 * 3 + 2]]
+    const p1 = [raw.positions[i1 * 3], raw.positions[i1 * 3 + 1], raw.positions[i1 * 3 + 2]]
+    const p2 = [raw.positions[i2 * 3], raw.positions[i2 * 3 + 1], raw.positions[i2 * 3 + 2]]
+
+    const d0 = p0[2] - splitZ
+    const d1 = p1[2] - splitZ
+    const d2 = p2[2] - splitZ
+
+    const eps = 1e-5
+    const s0 = d0 >= -eps
+    const s1 = d1 >= -eps
+    const s2 = d2 >= -eps
+
+    if (s0 && s1 && s2) {
+      if (part === 'upper') resultTriangles.push([p0, p1, p2])
+    } else if (!s0 && !s1 && !s2) {
+      if (part === 'lower') resultTriangles.push([p0, p1, p2])
+    } else if (s0 && !s1 && !s2) {
+      const i01 = interpolate(p0, p1, d0, d1)
+      const i02 = interpolate(p0, p2, d0, d2)
+      if (part === 'upper') resultTriangles.push([p0, i01, i02])
+      else {
+        resultTriangles.push([p1, p2, i01])
+        resultTriangles.push([p2, i02, i01])
+      }
+    } else if (s1 && !s0 && !s2) {
+      const i10 = interpolate(p1, p0, d1, d0)
+      const i12 = interpolate(p1, p2, d1, d2)
+      if (part === 'upper') resultTriangles.push([p1, i12, i10])
+      else {
+        resultTriangles.push([p0, i10, p2])
+        resultTriangles.push([p2, i10, i12])
+      }
+    } else if (s2 && !s0 && !s1) {
+      const i20 = interpolate(p2, p0, d2, d0)
+      const i21 = interpolate(p2, p1, d2, d1)
+      if (part === 'upper') resultTriangles.push([p2, i20, i21])
+      else {
+        resultTriangles.push([p0, p1, i20])
+        resultTriangles.push([p1, i21, i20])
+      }
+    } else if (!s0 && s1 && s2) {
+      const i01 = interpolate(p0, p1, d0, d1)
+      const i02 = interpolate(p0, p2, d0, d2)
+      if (part === 'upper') {
+        resultTriangles.push([p1, p2, i01])
+        resultTriangles.push([p2, i02, i01])
+      } else {
+        resultTriangles.push([p0, i01, i02])
+      }
+    } else if (!s1 && s0 && s2) {
+      const i10 = interpolate(p1, p0, d1, d0)
+      const i12 = interpolate(p1, p2, d1, d2)
+      if (part === 'upper') {
+        resultTriangles.push([p0, i10, p2])
+        resultTriangles.push([p2, i10, i12])
+      } else {
+        resultTriangles.push([p1, i12, i10])
+      }
+    } else if (!s2 && s0 && s1) {
+      const i20 = interpolate(p2, p0, d2, d0)
+      const i21 = interpolate(p2, p1, d2, d1)
+      if (part === 'upper') {
+        resultTriangles.push([p0, p1, i20])
+        resultTriangles.push([p1, i21, i20])
+      } else {
+        resultTriangles.push([p2, i20, i21])
+      }
+    }
+  }
+
+  const positions = []
+  const indices = []
+  for (const tri of resultTriangles) {
+    const idx = positions.length / 3
+    for (const p of tri) {
+      positions.push(p[0], p[1], p[2])
+    }
+    indices.push(idx, idx + 1, idx + 2)
+  }
+  return { positions, indices }
+}
+
 function getSplitPec(part) {
   const mergedPos = []
   const mergedIdx = []
@@ -56,22 +156,14 @@ function getSplitPec(part) {
       if (z > maxZ) maxZ = z
     }
     const splitZ = minZ + 0.35 * (maxZ - minZ)
+    const clipped = clipTrianglesPlane(raw, splitZ, part)
     const offset = mergedPos.length / 3
-    for (let i = 0; i < raw.positions.length; i++) mergedPos.push(raw.positions[i])
-    for (let i = 0; i < raw.indices.length; i += 3) {
-      const v0 = raw.indices[i]
-      const v1 = raw.indices[i + 1]
-      const v2 = raw.indices[i + 2]
-      const z = (raw.positions[v0 * 3 + 2] + raw.positions[v1 * 3 + 2] + raw.positions[v2 * 3 + 2]) / 3
-      if (part === 'upper' && z >= splitZ) {
-        mergedIdx.push(v0 + offset, v1 + offset, v2 + offset)
-      } else if (part === 'lower' && z < splitZ) {
-        mergedIdx.push(v0 + offset, v1 + offset, v2 + offset)
-      }
-    }
+    for (let i = 0; i < clipped.positions.length; i++) mergedPos.push(clipped.positions[i])
+    for (let i = 0; i < clipped.indices.length; i++) mergedIdx.push(clipped.indices[i] + offset)
   }
   return { positions: new Float32Array(mergedPos), indices: new Uint32Array(mergedIdx) }
 }
+
 
 console.log('Building geometry for muscles...')
 const muscleGeometries = []

@@ -274,6 +274,7 @@
   --muted: var(--color-text-2);
   --card-subtle: var(--color-surface-2);
   --card-bg: var(--color-surface);
+  --color-placeholder: #52525b;
 }
 
 /* --------------------------------------------------------------------------
@@ -328,7 +329,7 @@
   --atlas-approx-stroke: #ef5350;
   --atlas-dimmed: rgba(180, 185, 195, 0.2);
 
-  --color-success: #22c55e;
+  --color-success: #15803d;
   --color-success-bg: #052e16;
   --color-success-border: #14532d;
 
@@ -375,6 +376,7 @@
 
   --shadow-sheet: 0 -4px 24px rgba(0, 0, 0, 0.6);
   --shadow-dropdown: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --color-placeholder: #a3a8b1;
 }
 
 /* --------------------------------------------------------------------------
@@ -415,7 +417,7 @@
     --atlas-ghost-stroke: rgba(120, 125, 135, 0.25);
     --atlas-accent-outline: var(--color-accent, #ff6b1a);
 
-    --color-success: #22c55e;
+    --color-success: #15803d;
     --color-success-bg: #052e16;
     --color-success-border: #14532d;
 

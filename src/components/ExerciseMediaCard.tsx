@@ -165,7 +165,7 @@ export function ExerciseMediaCard({
             textAlign: 'center',
           }}
         >
-          © Gym visual — https://gymvisual.com/
+          <bdi dir="ltr">© Gym visual — https://gymvisual.com/</bdi>
         </div>
       </div>
     )

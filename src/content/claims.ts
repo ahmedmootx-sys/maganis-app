@@ -162,16 +162,45 @@ export const CLAIMS: Record<string, ClaimDef> = {
   },
 }
 
-// C1.2 / C2: Muscle explanations from muscle-info-v1.json (53 muscles, coach_authored)
-import muscleInfoData from './muscle-info-v1.json' with { type: 'json' }
-for (const [muscleId, info] of Object.entries(muscleInfoData.muscles)) {
-  const claimId = `muscle_does.${muscleId}`
-  CLAIMS[claimId] = {
-    id: claimId,
-    text_ar: info.does_ar,
-    source_id: null,
-    source_text: 'Gray’s Anatomy / Kendall (Coach authored)',
-    status: 'coach_authored',
+// C1.2 / C2: Muscle claims from muscle-info-v1.1.json and muscle-names.json (53 muscles, coach_authored)
+import muscleInfoData from './muscle-info-v1.1.json' with { type: 'json' }
+import muscleNamesData from '../data/muscle-names.json'
+
+for (const m of muscleNamesData.muscles) {
+  if (m.where_ar) {
+    const claimId = `muscle_where.${m.id}`
+    CLAIMS[claimId] = {
+      id: claimId,
+      text_ar: m.where_ar,
+      source_id: null,
+      source_text: 'Gray’s Anatomy / Kendall (Coach authored)',
+      status: 'coach_authored',
+    }
   }
 }
+
+for (const [muscleId, info] of Object.entries(muscleInfoData.muscles)) {
+  const typedInfo = info as { does_ar: string; attaches_ar?: string }
+  if (typedInfo.does_ar) {
+    const claimId = `muscle_does.${muscleId}`
+    CLAIMS[claimId] = {
+      id: claimId,
+      text_ar: typedInfo.does_ar,
+      source_id: null,
+      source_text: 'Gray’s Anatomy / Kendall (Coach authored)',
+      status: 'coach_authored',
+    }
+  }
+  if (typedInfo.attaches_ar) {
+    const claimId = `muscle_attaches.${muscleId}`
+    CLAIMS[claimId] = {
+      id: claimId,
+      text_ar: typedInfo.attaches_ar,
+      source_id: null,
+      source_text: 'Gray’s Anatomy / Kendall (Coach authored)',
+      status: 'coach_authored',
+    }
+  }
+}
+
 

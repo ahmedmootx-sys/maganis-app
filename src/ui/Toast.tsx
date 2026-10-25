@@ -104,7 +104,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
     <ToastContext.Provider value={{ showToast }}>
       {children}
       {toasts.length > 0 && (
-        <div className="toast-container" aria-live="polite">
+        <div className="toast-container" aria-live="polite" data-overlay="true">
           {toasts.map((t) => (
             <div key={t.id} className="toast" role="status">
               <div

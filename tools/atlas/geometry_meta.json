@@ -27,11 +27,11 @@
       "FJ1464M"
     ],
     "posOffset": 80148,
-    "posCount": 32838,
-    "idxOffset": 211500,
-    "idxCount": 34872,
-    "numVertices": 10946,
-    "numTriangles": 11624
+    "posCount": 107172,
+    "idxOffset": 508836,
+    "idxCount": 35724,
+    "numVertices": 35724,
+    "numTriangles": 11908
   },
   {
     "id": "pec_costal",
@@ -43,12 +43,12 @@
       "FJ1464",
       "FJ1464M"
     ],
-    "posOffset": 350988,
-    "posCount": 32838,
-    "idxOffset": 482340,
-    "idxCount": 7812,
-    "numVertices": 10946,
-    "numTriangles": 2604
+    "posOffset": 651732,
+    "posCount": 26064,
+    "idxOffset": 755988,
+    "idxCount": 8688,
+    "numVertices": 8688,
+    "numTriangles": 2896
   },
   {
     "id": "pec_minor",
@@ -60,9 +60,9 @@
       "FJ1456",
       "FJ1456M"
     ],
-    "posOffset": 513588,
+    "posOffset": 790740,
     "posCount": 40461,
-    "idxOffset": 675432,
+    "idxOffset": 952584,
     "idxCount": 56808,
     "numVertices": 13487,
     "numTriangles": 18936
@@ -77,9 +77,9 @@
       "FJ1459",
       "FJ1459M"
     ],
-    "posOffset": 902664,
+    "posOffset": 1179816,
     "posCount": 170745,
-    "idxOffset": 1585644,
+    "idxOffset": 1862796,
     "idxCount": 295272,
     "numVertices": 56915,
     "numTriangles": 98424
@@ -94,9 +94,9 @@
       "FJ1468",
       "FJ1468M"
     ],
-    "posOffset": 2766732,
+    "posOffset": 3043884,
     "posCount": 15588,
-    "idxOffset": 2829084,
+    "idxOffset": 3106236,
     "idxCount": 13236,
     "numVertices": 5196,
     "numTriangles": 4412
@@ -111,9 +111,9 @@
       "FJ1467",
       "FJ1467M"
     ],
-    "posOffset": 2882028,
+    "posOffset": 3159180,
     "posCount": 5502,
-    "idxOffset": 2904036,
+    "idxOffset": 3181188,
     "idxCount": 7800,
     "numVertices": 1834,
     "numTriangles": 2600
@@ -128,9 +128,9 @@
       "FJ1513",
       "FJ1513M"
     ],
-    "posOffset": 2935236,
+    "posOffset": 3212388,
     "posCount": 10029,
-    "idxOffset": 2975352,
+    "idxOffset": 3252504,
     "idxCount": 11400,
     "numVertices": 3343,
     "numTriangles": 3800
@@ -145,9 +145,9 @@
       "FJ1478",
       "FJ1478M"
     ],
-    "posOffset": 3020952,
+    "posOffset": 3298104,
     "posCount": 6276,
-    "idxOffset": 3046056,
+    "idxOffset": 3323208,
     "idxCount": 8556,
     "numVertices": 2092,
     "numTriangles": 2852
@@ -162,9 +162,9 @@
       "FJ1512",
       "FJ1512M"
     ],
-    "posOffset": 3080280,
+    "posOffset": 3357432,
     "posCount": 10446,
-    "idxOffset": 3122064,
+    "idxOffset": 3399216,
     "idxCount": 11136,
     "numVertices": 3482,
     "numTriangles": 3712
@@ -179,9 +179,9 @@
       "FJ1486",
       "FJ1486M"
     ],
-    "posOffset": 3166608,
+    "posOffset": 3443760,
     "posCount": 7566,
-    "idxOffset": 3196872,
+    "idxOffset": 3474024,
     "idxCount": 10476,
     "numVertices": 2522,
     "numTriangles": 3492
@@ -196,9 +196,9 @@
       "FJ1487",
       "FJ1487M"
     ],
-    "posOffset": 3238776,
+    "posOffset": 3515928,
     "posCount": 19626,
-    "idxOffset": 3317280,
+    "idxOffset": 3594432,
     "idxCount": 29244,
     "numVertices": 6542,
     "numTriangles": 9748
@@ -225,9 +225,9 @@
       "FJ1497",
       "FJ1497M"
     ],
-    "posOffset": 3434256,
+    "posOffset": 3711408,
     "posCount": 116931,
-    "idxOffset": 3901980,
+    "idxOffset": 4179132,
     "idxCount": 148272,
     "numVertices": 38977,
     "numTriangles": 49424
@@ -252,9 +252,9 @@
       "FJ1491",
       "FJ1491M"
     ],
-    "posOffset": 4495068,
+    "posOffset": 4772220,
     "posCount": 70350,
-    "idxOffset": 4776468,
+    "idxOffset": 5053620,
     "idxCount": 82164,
     "numVertices": 23450,
     "numTriangles": 27388
@@ -269,9 +269,9 @@
       "FJ1452",
       "FJ1452M"
     ],
-    "posOffset": 5105124,
+    "posOffset": 5382276,
     "posCount": 383400,
-    "idxOffset": 6638724,
+    "idxOffset": 6915876,
     "idxCount": 670956,
     "numVertices": 127800,
     "numTriangles": 223652
@@ -288,9 +288,9 @@
       "FJ1422",
       "FJ1422M"
     ],
-    "posOffset": 9322548,
+    "posOffset": 9599700,
     "posCount": 36495,
-    "idxOffset": 9468528,
+    "idxOffset": 9745680,
     "idxCount": 46572,
     "numVertices": 12165,
     "numTriangles": 15524
@@ -305,9 +305,9 @@
       "FJ1438",
       "FJ1438M"
     ],
-    "posOffset": 9654816,
+    "posOffset": 9931968,
     "posCount": 6522,
-    "idxOffset": 9680904,
+    "idxOffset": 9958056,
     "idxCount": 7524,
     "numVertices": 2174,
     "numTriangles": 2508
@@ -322,9 +322,9 @@
       "FJ1434",
       "FJ1434M"
     ],
-    "posOffset": 9711000,
+    "posOffset": 9988152,
     "posCount": 15789,
-    "idxOffset": 9774156,
+    "idxOffset": 10051308,
     "idxCount": 20664,
     "numVertices": 5263,
     "numTriangles": 6888
@@ -339,9 +339,9 @@
       "FJ1433",
       "FJ1433M"
     ],
-    "posOffset": 9856812,
+    "posOffset": 10133964,
     "posCount": 19956,
-    "idxOffset": 9936636,
+    "idxOffset": 10213788,
     "idxCount": 34128,
     "numVertices": 6652,
     "numTriangles": 11376
@@ -356,9 +356,9 @@
       "FJ1442",
       "FJ1442M"
     ],
-    "posOffset": 10073148,
+    "posOffset": 10350300,
     "posCount": 23847,
-    "idxOffset": 10168536,
+    "idxOffset": 10445688,
     "idxCount": 40128,
     "numVertices": 7949,
     "numTriangles": 13376
@@ -373,9 +373,9 @@
       "FJ1443",
       "FJ1443M"
     ],
-    "posOffset": 10329048,
+    "posOffset": 10606200,
     "posCount": 16635,
-    "idxOffset": 10395588,
+    "idxOffset": 10672740,
     "idxCount": 27312,
     "numVertices": 5545,
     "numTriangles": 9104
@@ -390,9 +390,9 @@
       "FJ1441",
       "FJ1441M"
     ],
-    "posOffset": 10504836,
+    "posOffset": 10781988,
     "posCount": 16476,
-    "idxOffset": 10570740,
+    "idxOffset": 10847892,
     "idxCount": 25560,
     "numVertices": 5492,
     "numTriangles": 8520
@@ -415,9 +415,9 @@
       "FJ1427",
       "FJ1427M"
     ],
-    "posOffset": 10672980,
+    "posOffset": 10950132,
     "posCount": 61413,
-    "idxOffset": 10918632,
+    "idxOffset": 11195784,
     "idxCount": 87624,
     "numVertices": 20471,
     "numTriangles": 29208
@@ -432,9 +432,9 @@
       "FJ1439",
       "FJ1439M"
     ],
-    "posOffset": 11269128,
+    "posOffset": 11546280,
     "posCount": 13230,
-    "idxOffset": 11322048,
+    "idxOffset": 11599200,
     "idxCount": 15060,
     "numVertices": 4410,
     "numTriangles": 5020
@@ -449,9 +449,9 @@
       "FJ1573",
       "FJ1595"
     ],
-    "posOffset": 11382288,
+    "posOffset": 11659440,
     "posCount": 38556,
-    "idxOffset": 11536512,
+    "idxOffset": 11813664,
     "idxCount": 61704,
     "numVertices": 12852,
     "numTriangles": 20568
@@ -466,9 +466,9 @@
       "FJ1521",
       "FJ1521M"
     ],
-    "posOffset": 11783328,
+    "posOffset": 12060480,
     "posCount": 30066,
-    "idxOffset": 11903592,
+    "idxOffset": 12180744,
     "idxCount": 42648,
     "numVertices": 10022,
     "numTriangles": 14216
@@ -483,9 +483,9 @@
       "FJ1554",
       "FJ1554M"
     ],
-    "posOffset": 12074184,
+    "posOffset": 12351336,
     "posCount": 21210,
-    "idxOffset": 12159024,
+    "idxOffset": 12436176,
     "idxCount": 26760,
     "numVertices": 7070,
     "numTriangles": 8920
@@ -500,9 +500,9 @@
       "FJ1520",
       "FJ1520M"
     ],
-    "posOffset": 12266064,
+    "posOffset": 12543216,
     "posCount": 45120,
-    "idxOffset": 12446544,
+    "idxOffset": 12723696,
     "idxCount": 63180,
     "numVertices": 15040,
     "numTriangles": 21060
@@ -519,9 +519,9 @@
       "FJ1537",
       "FJ1537M"
     ],
-    "posOffset": 12699264,
+    "posOffset": 12976416,
     "posCount": 39393,
-    "idxOffset": 12856836,
+    "idxOffset": 13133988,
     "idxCount": 56448,
     "numVertices": 13131,
     "numTriangles": 18816
@@ -536,9 +536,9 @@
       "FJ1532",
       "FJ1532M"
     ],
-    "posOffset": 13082628,
+    "posOffset": 13359780,
     "posCount": 19905,
-    "idxOffset": 13162248,
+    "idxOffset": 13439400,
     "idxCount": 28308,
     "numVertices": 6635,
     "numTriangles": 9436
@@ -553,9 +553,9 @@
       "FJ1507",
       "FJ1507M"
     ],
-    "posOffset": 13275480,
+    "posOffset": 13552632,
     "posCount": 6288,
-    "idxOffset": 13300632,
+    "idxOffset": 13577784,
     "idxCount": 6252,
     "numVertices": 2096,
     "numTriangles": 2084
@@ -570,9 +570,9 @@
       "FJ1508",
       "FJ1508M"
     ],
-    "posOffset": 13325640,
+    "posOffset": 13602792,
     "posCount": 2349,
-    "idxOffset": 13335036,
+    "idxOffset": 13612188,
     "idxCount": 3036,
     "numVertices": 783,
     "numTriangles": 1012
@@ -587,9 +587,9 @@
       "FJ1500M",
       "FJ1500"
     ],
-    "posOffset": 13347180,
+    "posOffset": 13624332,
     "posCount": 4443,
-    "idxOffset": 13364952,
+    "idxOffset": 13642104,
     "idxCount": 5196,
     "numVertices": 1481,
     "numTriangles": 1732
@@ -604,9 +604,9 @@
       "FJ1506",
       "FJ1506M"
     ],
-    "posOffset": 13385736,
+    "posOffset": 13662888,
     "posCount": 5055,
-    "idxOffset": 13405956,
+    "idxOffset": 13683108,
     "idxCount": 5268,
     "numVertices": 1685,
     "numTriangles": 1756
@@ -621,9 +621,9 @@
       "FJ1479",
       "FJ1479M"
     ],
-    "posOffset": 13427028,
+    "posOffset": 13704180,
     "posCount": 6642,
-    "idxOffset": 13453596,
+    "idxOffset": 13730748,
     "idxCount": 9528,
     "numVertices": 2214,
     "numTriangles": 3176
@@ -638,9 +638,9 @@
       "FJ1477",
       "FJ1477M"
     ],
-    "posOffset": 13491708,
+    "posOffset": 13768860,
     "posCount": 10062,
-    "idxOffset": 13531956,
+    "idxOffset": 13809108,
     "idxCount": 15636,
     "numVertices": 3354,
     "numTriangles": 5212
@@ -655,9 +655,9 @@
       "FJ1480",
       "FJ1480M"
     ],
-    "posOffset": 13594500,
+    "posOffset": 13871652,
     "posCount": 3711,
-    "idxOffset": 13609344,
+    "idxOffset": 13886496,
     "idxCount": 4992,
     "numVertices": 1237,
     "numTriangles": 1664
@@ -686,9 +686,9 @@
       "FJ1544",
       "FJ1544M"
     ],
-    "posOffset": 13629312,
+    "posOffset": 13906464,
     "posCount": 255204,
-    "idxOffset": 14650128,
+    "idxOffset": 14927280,
     "idxCount": 336528,
     "numVertices": 85068,
     "numTriangles": 112176
@@ -703,9 +703,9 @@
       "FJ1418",
       "FJ1418M"
     ],
-    "posOffset": 15996240,
+    "posOffset": 16273392,
     "posCount": 12318,
-    "idxOffset": 16045512,
+    "idxOffset": 16322664,
     "idxCount": 14256,
     "numVertices": 4106,
     "numTriangles": 4752
@@ -720,9 +720,9 @@
       "FJ1419",
       "FJ1419M"
     ],
-    "posOffset": 16102536,
+    "posOffset": 16379688,
     "posCount": 13860,
-    "idxOffset": 16157976,
+    "idxOffset": 16435128,
     "idxCount": 20136,
     "numVertices": 4620,
     "numTriangles": 6712
@@ -737,9 +737,9 @@
       "FJ1420",
       "FJ1420M"
     ],
-    "posOffset": 16238520,
+    "posOffset": 16515672,
     "posCount": 18396,
-    "idxOffset": 16312104,
+    "idxOffset": 16589256,
     "idxCount": 25248,
     "numVertices": 6132,
     "numTriangles": 8416
@@ -754,9 +754,9 @@
       "FJ1395",
       "FJ1395M"
     ],
-    "posOffset": 16413096,
+    "posOffset": 16690248,
     "posCount": 17025,
-    "idxOffset": 16481196,
+    "idxOffset": 16758348,
     "idxCount": 30660,
     "numVertices": 5675,
     "numTriangles": 10220
@@ -771,9 +771,9 @@
       "FJ1444",
       "FJ1444M"
     ],
-    "posOffset": 16603836,
+    "posOffset": 16880988,
     "posCount": 7278,
-    "idxOffset": 16632948,
+    "idxOffset": 16910100,
     "idxCount": 10368,
     "numVertices": 2426,
     "numTriangles": 3456
@@ -788,9 +788,9 @@
       "FJ1436",
       "FJ1436M"
     ],
-    "posOffset": 16674420,
+    "posOffset": 16951572,
     "posCount": 10860,
-    "idxOffset": 16717860,
+    "idxOffset": 16995012,
     "idxCount": 16272,
     "numVertices": 3620,
     "numTriangles": 5424
@@ -805,9 +805,9 @@
       "FJ1435",
       "FJ1435M"
     ],
-    "posOffset": 16782948,
+    "posOffset": 17060100,
     "posCount": 15528,
-    "idxOffset": 16845060,
+    "idxOffset": 17122212,
     "idxCount": 27672,
     "numVertices": 5176,
     "numTriangles": 9224
@@ -822,9 +822,9 @@
       "FJ1397",
       "FJ1397M"
     ],
-    "posOffset": 16955748,
+    "posOffset": 17232900,
     "posCount": 13581,
-    "idxOffset": 17010072,
+    "idxOffset": 17287224,
     "idxCount": 23052,
     "numVertices": 4527,
     "numTriangles": 7684
@@ -839,9 +839,9 @@
       "FJ1394",
       "FJ1394M"
     ],
-    "posOffset": 17102280,
+    "posOffset": 17379432,
     "posCount": 10482,
-    "idxOffset": 17144208,
+    "idxOffset": 17421360,
     "idxCount": 18312,
     "numVertices": 3494,
     "numTriangles": 6104
@@ -856,18 +856,18 @@
       "FJ1437",
       "FJ1437M"
     ],
-    "posOffset": 17217456,
+    "posOffset": 17494608,
     "posCount": 16044,
-    "idxOffset": 17281632,
+    "idxOffset": 17558784,
     "idxCount": 26508,
     "numVertices": 5348,
     "numTriangles": 8836
   },
   {
     "id": "body-silhouette",
-    "posOffset": 17387664,
+    "posOffset": 17664816,
     "posCount": 344793,
-    "idxOffset": 18766836,
+    "idxOffset": 19043988,
     "idxCount": 664164,
     "numVertices": 114931,
     "numTriangles": 221388

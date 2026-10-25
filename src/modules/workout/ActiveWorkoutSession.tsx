@@ -21,6 +21,13 @@ import {
   IconInfo,
   IconClose,
 } from '../../components/Icons.tsx'
+import {
+  computeExerciseSuggestions,
+  type CellState,
+} from '../tracking/setPropagation.ts'
+import { Claim } from '../../content/Claim.tsx'
+
+export type { CellState }
 
 export interface ActiveWorkoutSessionProps {
   programDay: ProgramDay
@@ -32,18 +39,23 @@ export interface ActiveWorkoutSessionProps {
   onElapsedSecondsUpdate?: (seconds: number) => void
 }
 
-interface ActiveSet {
+export interface ActiveSet {
   id: string
   setNum: number
   weightKg: number
   reps: number
+  durationSeconds?: number
   isCompleted: boolean
   hasMissingWeight?: boolean
+  weightState: CellState
+  repsState: CellState
+  durationState?: CellState
 }
 
-interface ActiveExerciseState {
+export interface ActiveExerciseState {
   exerciseId: string
   sets: ActiveSet[]
+  hintClaimId?: 'sugg.first_time_weight' | 'sugg.progress' | 'sugg.below_range'
 }
 
 export function getExerciseMeasureType(
@@ -57,7 +69,21 @@ export function getExerciseMeasureType(
   ) {
     return 'timed'
   }
-  if (ex.equipment === 'bodyweight' || ex.measurementType === 'bodyweight') {
+  const eq = (
+    (ex.equipmentDetail as any)?.db ||
+    (typeof ex.equipment === 'string'
+      ? ex.equipment
+      : (ex.equipment as unknown as { db?: string })?.db) ||
+    ''
+  ).toLowerCase()
+
+  if (
+    eq === 'body only' ||
+    eq === 'bodyweight' ||
+    eq === 'none' ||
+    ex.equipment === 'bodyweight' ||
+    ex.measurementType === 'bodyweight'
+  ) {
     return 'bodyweight'
   }
   return 'weight'
@@ -71,7 +97,7 @@ export function isSetReadyToComplete(
     return set.reps >= 1
   }
   if (measureType === 'timed') {
-    return set.reps >= 1
+    return (set.durationSeconds ?? set.reps) >= 1
   }
   return set.weightKg > 0 && set.reps >= 1
 }
@@ -123,19 +149,54 @@ export function ActiveWorkoutSession({
       }
       return programDay.exercises.map((pe) => {
         const defaultSetsCount = Math.max(1, pe.sets || 3)
+        // Check suggestions from previous history
+        const exSessions = (previousSessions || [])
+          .filter(
+            (s) =>
+              s.exercises &&
+              s.exercises.some((e) => e.exerciseId === pe.exerciseId),
+          )
+          .map((s) => ({
+            date: s.date,
+            sets:
+              s.exercises
+                .find((e) => e.exerciseId === pe.exerciseId)
+                ?.sets?.map((st) => ({
+                  reps: st.reps,
+                  weightKg: st.weightKg,
+                })) || [],
+          }))
+
+        const sugg = computeExerciseSuggestions(
+          {
+            reps: pe.reps,
+            repsMin: pe.repsMin,
+            repsMax: pe.repsMax,
+            durationSeconds: pe.restSeconds,
+          },
+          exSessions,
+        )
+
+        // Rule: with no history, pre-fill reps from the program's range and leave weight empty with the hint sugg.first_time_weight
+        const defaultReps = sugg.suggestedReps ?? pe.repsMin ?? pe.reps ?? 10
+        const defaultWeight = sugg.suggestedWeight ?? 0
+
         const sets: ActiveSet[] = Array.from(
           { length: defaultSetsCount },
           (_, idx) => ({
             id: uniqueId(),
             setNum: idx + 1,
-            weightKg: 0,
-            reps: 0,
+            weightKg: defaultWeight,
+            reps: defaultReps,
             isCompleted: false,
+            weightState: defaultWeight > 0 ? 'suggested' : 'empty',
+            repsState: defaultReps > 0 ? 'suggested' : 'empty',
           }),
         )
         return {
           exerciseId: pe.exerciseId,
           sets,
+          hintClaimId: sugg.hintClaimId,
         }
       })
     },
@@ -263,6 +324,13 @@ export function ActiveWorkoutSession({
 
       const newStatus = !currentSet.isCompleted
       currentSet.isCompleted = newStatus
+      if (newStatus) {
+        if (currentSet.weightKg > 0) currentSet.weightState = 'done'
+        if (currentSet.reps > 0) currentSet.repsState = 'done'
+      } else {
+        if (currentSet.weightKg > 0) currentSet.weightState = 'user'
+        if (currentSet.reps > 0) currentSet.repsState = 'user'
+      }
       nextSets[setIndex] = currentSet
       currentEx.sets = nextSets
       next[exerciseIndex] = currentEx
@@ -280,6 +348,14 @@ export function ActiveWorkoutSession({
 
   // Inline Hint state when clicking disabled checkmark
   const [inlineHintSetId, setInlineHintSetId] = useState<string | null>(null)
+
+  // Propagation Undo state
+  const [propagationUndoSnapshot, setPropagationUndoSnapshot] = useState<{
+    exerciseIndex: number
+    sets: ActiveSet[]
+  } | null>(null)
+  const [showPropagationToast, setShowPropagationToast] = useState(false)
+  const propagationTimerRef = useRef<number | null>(null)
 
   // Undo delete state
   const [deletedSetInfo, setDeletedSetInfo] = useState<{
@@ -346,16 +422,76 @@ export function ActiveWorkoutSession({
     setExercisesState((prev) => {
       const next = [...prev]
       const currentEx = { ...next[exerciseIndex] }
-      const nextSets = [...currentEx.sets]
-      nextSets[setIndex] = {
-        ...nextSets[setIndex],
-        [field]: Math.max(0, value),
+      const snapshot: ActiveSet[] = JSON.parse(JSON.stringify(currentEx.sets))
+      const nextSets: ActiveSet[] = JSON.parse(JSON.stringify(currentEx.sets))
+
+      const targetSet = nextSets[setIndex]
+      const numVal = Math.max(0, value)
+      targetSet[field] = numVal
+      if (field === 'weightKg') targetSet.weightState = numVal > 0 ? 'user' : 'empty'
+      if (field === 'reps') targetSet.repsState = numVal > 0 ? 'user' : 'empty'
+
+      let propagatedCount = 0
+
+      // Propagate forward to sets j > setIndex where cell is empty, suggested, or auto
+      if (numVal > 0) {
+        for (let j = setIndex + 1; j < nextSets.length; j++) {
+          const s = nextSets[j]
+          if (field === 'weightKg') {
+            if (
+              s.weightState === 'empty' ||
+              s.weightState === 'suggested' ||
+              s.weightState === 'auto'
+            ) {
+              s.weightKg = numVal
+              s.weightState = 'auto'
+              propagatedCount++
+            }
+          } else if (field === 'reps') {
+            if (
+              s.repsState === 'empty' ||
+              s.repsState === 'suggested' ||
+              s.repsState === 'auto'
+            ) {
+              s.reps = numVal
+              s.repsState = 'auto'
+              propagatedCount++
+            }
+          }
+        }
       }
+
       currentEx.sets = nextSets
       next[exerciseIndex] = currentEx
+
+      if (propagatedCount > 0) {
+        setPropagationUndoSnapshot({ exerciseIndex, sets: snapshot })
+        setShowPropagationToast(true)
+        if (propagationTimerRef.current) clearTimeout(propagationTimerRef.current)
+        propagationTimerRef.current = window.setTimeout(() => {
+          setShowPropagationToast(false)
+        }, 6000)
+      }
+
       return next
     })
     setInlineHintSetId(null)
+  }
+
+  function handleUndoPropagation() {
+    if (!propagationUndoSnapshot) return
+    if (propagationTimerRef.current) clearTimeout(propagationTimerRef.current)
+    const { exerciseIndex, sets } = propagationUndoSnapshot
+    setExercisesState((prev) => {
+      const next = [...prev]
+      next[exerciseIndex] = {
+        ...next[exerciseIndex],
+        sets: JSON.parse(JSON.stringify(sets)),
+      }
+      return next
+    })
+    setPropagationUndoSnapshot(null)
+    setShowPropagationToast(false)
   }
 
   // Previous-value shortcut (A2)
@@ -396,6 +532,8 @@ export function ActiveWorkoutSession({
         weightKg: 0,
         reps: 0,
         isCompleted: false,
+        weightState: 'empty',
+        repsState: 'empty',
       }
       currentEx.sets = [...currentEx.sets, newSet]
       next[exerciseIndex] = currentEx
@@ -598,7 +736,7 @@ export function ActiveWorkoutSession({
                 fontVariantNumeric: 'tabular-nums',
                 fontWeight: 700,
                 fontSize: '13.5px',
-                color: 'var(--brand)',
+                color: 'var(--color-accent-text, #b83a00)',
                 background: 'var(--card-subtle)',
                 padding: '4px 8px',
                 borderRadius: '8px',
@@ -725,7 +863,7 @@ export function ActiveWorkoutSession({
             }}
           >
             <IconClock size={18} style={{ color: 'var(--brand)' }} />
-            <span>فترة الراحة</span>
+            <span style={{ color: 'var(--color-text, #111)', fontWeight: 700 }}>فترة الراحة</span>
             <strong
               style={{
                 color: 'var(--brand)',
@@ -881,7 +1019,7 @@ export function ActiveWorkoutSession({
                                 fontVariantNumeric: 'tabular-nums',
                               }}
                             >
-                              · {formatPrescription(pe)}
+                              · <bdi dir="ltr">{formatPrescription(pe)}</bdi>
                             </span>
                           )
                         })()}
@@ -915,104 +1053,116 @@ export function ActiveWorkoutSession({
                 </button>
               </div>
 
-              {/* Sets Table */}
-              <div className="sets-table-wrapper" style={{ overflowX: 'auto' }}>
-                <table className="sets-table" style={{ width: '100%' }}>
-                  <thead>
-                    <tr>
-                      <th className="col-set">المجموعة</th>
-                      <th className="col-prev">السابق</th>
-                      <th className="col-input">الوزن</th>
-                      <th className="col-input">التكرارات</th>
-                      <th className="col-check">تم</th>
-                      <th className="col-action"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {exState.sets.map((set, sIdx) => {
-                      const measureType = getExerciseMeasureType(exercise)
-                      const prevExSets = previousHistoryMap[exState.exerciseId]
-                      const prevSet = prevExSets?.[sIdx]
-                      const targetReps =
-                        programDay.exercises.find(
-                          (e) => e.exerciseId === exState.exerciseId,
-                        )?.reps ?? 0
-                      const prevText = prevSet
-                        ? `${prevSet.weightKg}\u00A0كجم × ${prevSet.reps}`
-                        : '—'
-                      const isReady = isSetReadyToComplete(set, measureType)
+              {/* Suggestions Hint Claim */}
+              {exState.hintClaimId && (
+                <div style={{ margin: '4px 0 10px', padding: '0 4px' }}>
+                  <Claim id={exState.hintClaimId} />
+                </div>
+              )}
 
-                      return (
-                        <React.Fragment key={set.id}>
-                          <tr
-                            className={`set-row ${set.isCompleted ? 'set-completed' : ''}`}
-                          >
-                            <td className="col-set">
-                              <span className="set-number-badge">
-                                {set.setNum}
-                              </span>
-                            </td>
-                            <td className="col-prev">
-                              <button
-                                type="button"
-                                data-testid={`prev-set-btn-${exIdx}-${sIdx}`}
-                                className="set-prev-badge set-prev-btn"
-                                onClick={() => handleCopyPrevious(exIdx, sIdx)}
-                                title={
-                                  prevSet
-                                    ? 'نسخ قيم الجلسة السابقة'
-                                    : 'لا توجد بيانات سابقة'
-                                }
-                                disabled={!prevSet}
+              {/* Sets Table */}
+              {(() => {
+                const cardMeasureType = getExerciseMeasureType(exercise)
+                const isBodyweight = cardMeasureType === 'bodyweight'
+                const isTimed = cardMeasureType === 'timed'
+
+                return (
+                  <div className="sets-table-wrapper" style={{ overflowX: 'auto' }}>
+                    <table className="sets-table" style={{ width: '100%' }}>
+                      <thead>
+                        <tr>
+                          <th className="col-set">المجموعة</th>
+                          <th className="col-prev">السابق</th>
+                          {!isBodyweight && !isTimed && (
+                            <th className="col-input">الوزن</th>
+                          )}
+                          <th className="col-input">
+                            {isTimed ? 'المدة' : 'التكرارات'}
+                          </th>
+                          <th className="col-check">تم</th>
+                          <th className="col-action"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {exState.sets.map((set, sIdx) => {
+                          const measureType = cardMeasureType
+                          const prevExSets = previousHistoryMap[exState.exerciseId]
+                          const prevSet = prevExSets?.[sIdx]
+                          const prevText = prevSet
+                            ? isBodyweight
+                              ? `${prevSet.reps}\u00A0عدات`
+                              : isTimed
+                                ? `${(prevSet as any).durationSeconds ?? prevSet.reps}\u00A0ثانية`
+                                : `${prevSet.weightKg}\u00A0كجم × ${prevSet.reps}`
+                            : '—'
+                          const isReady = isSetReadyToComplete(set, measureType)
+
+                          return (
+                            <React.Fragment key={set.id}>
+                              <tr
+                                className={`set-row ${set.isCompleted ? 'set-completed' : ''}`}
                               >
-                                {prevText}
-                              </button>
-                            </td>
-                            <td className="col-input">
-                              {measureType === 'bodyweight' ? (
-                                <span className="bodyweight-tag">
-                                  وزن الجسم
-                                </span>
-                              ) : measureType === 'timed' ? (
-                                <span className="bodyweight-tag">بدون وزن</span>
-                              ) : (
-                                <input
-                                  type="number"
-                                  min="0"
-                                  step="0.5"
-                                  value={set.weightKg === 0 ? '' : set.weightKg}
-                                  placeholder={
-                                    prevSet && prevSet.weightKg > 0
-                                      ? String(prevSet.weightKg)
-                                      : 'كجم'
-                                  }
-                                  onChange={(e) =>
-                                    handleUpdateSetField(
-                                      exIdx,
-                                      sIdx,
-                                      'weightKg',
-                                      parseFloat(e.target.value) || 0,
-                                    )
-                                  }
-                                  className="set-field-input"
-                                  aria-label={`وزن المجموعة ${set.setNum}`}
-                                />
-                              )}
-                            </td>
-                            <td className="col-input">
+                                <td className="col-set">
+                                  <span className="set-number-badge">
+                                    {set.setNum}
+                                  </span>
+                                </td>
+                                <td className="col-prev">
+                                  <button
+                                    type="button"
+                                    data-testid={`prev-set-btn-${exIdx}-${sIdx}`}
+                                    className="set-prev-badge set-prev-btn"
+                                    onClick={() => handleCopyPrevious(exIdx, sIdx)}
+                                    title={
+                                      prevSet
+                                        ? 'نسخ قيم الجلسة السابقة'
+                                        : 'لا توجد بيانات سابقة'
+                                    }
+                                    disabled={!prevSet}
+                                  >
+                                    {prevText}
+                                  </button>
+                                </td>
+                                {!isBodyweight && !isTimed && (
+                                  <td className="col-input">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      step="0.5"
+                                      value={set.weightKg === 0 ? '' : set.weightKg}
+                                      placeholder="كجم"
+                                      onChange={(e) =>
+                                        handleUpdateSetField(
+                                          exIdx,
+                                          sIdx,
+                                          'weightKg',
+                                          parseFloat(e.target.value) || 0,
+                                        )
+                                      }
+                                      className="set-field-input"
+                                      style={{
+                                        border:
+                                          set.weightState === 'auto'
+                                            ? '1.5px dashed var(--color-accent, #f95700)'
+                                            : set.weightState === 'suggested'
+                                              ? '1px dashed var(--color-divider)'
+                                              : undefined,
+                                        fontWeight: set.weightState === 'auto' ? 700 : undefined,
+                                      }}
+                                      aria-label={`وزن المجموعة ${set.setNum}`}
+                                    />
+                                  </td>
+                                )}
+                                <td className="col-input">
                               <input
                                 type="number"
                                 min="0"
                                 step="1"
                                 value={set.reps === 0 ? '' : set.reps}
                                 placeholder={
-                                  targetReps > 0
-                                    ? String(targetReps)
-                                    : prevSet && prevSet.reps > 0
-                                      ? String(prevSet.reps)
-                                      : measureType === 'timed'
-                                        ? 'ثوانٍ'
-                                        : 'تكرار'
+                                  measureType === 'timed'
+                                    ? 'ثوانٍ'
+                                    : 'تكرار'
                                 }
                                 onChange={(e) =>
                                   handleUpdateSetField(
@@ -1023,6 +1173,15 @@ export function ActiveWorkoutSession({
                                   )
                                 }
                                 className="set-field-input"
+                                style={{
+                                  border:
+                                    set.repsState === 'auto'
+                                      ? '1.5px dashed var(--color-accent, #f95700)'
+                                      : set.repsState === 'suggested'
+                                        ? '1px dashed var(--color-divider)'
+                                        : undefined,
+                                  fontWeight: set.repsState === 'auto' ? 700 : undefined,
+                                }}
                                 aria-label={
                                   measureType === 'timed'
                                     ? `ثواني المجموعة ${set.setNum}`
@@ -1074,7 +1233,7 @@ export function ActiveWorkoutSession({
                           </tr>
                           {inlineHintSetId === set.id && (
                             <tr className="set-hint-row">
-                              <td colSpan={6} style={{ padding: '0 4px 8px' }}>
+                              <td colSpan={isBodyweight || isTimed ? 5 : 6} style={{ padding: '0 4px 8px' }}>
                                 <div className="set-row-hint" role="alert">
                                   {measureType === 'bodyweight'
                                     ? 'اكتب التكرارات أولًا'
@@ -1091,6 +1250,8 @@ export function ActiveWorkoutSession({
                   </tbody>
                 </table>
               </div>
+            )
+          })()}
 
               {/* Add Set Button */}
               <div className="exercise-card-footer">
@@ -1104,7 +1265,7 @@ export function ActiveWorkoutSession({
                     borderRadius: '10px',
                     border: '1px dashed var(--line)',
                     background: 'var(--card-subtle)',
-                    color: 'var(--brand)',
+                    color: 'var(--color-accent-text, #b83a00)',
                     fontWeight: 700,
                     cursor: 'pointer',
                   }}
@@ -1120,6 +1281,7 @@ export function ActiveWorkoutSession({
       {/* Bottom Sticky Action Bar: EXACTLY ONE finish button */}
       <footer
         className="active-workout-footer"
+        data-overlay="true"
         style={{
           position: 'fixed',
           bottom: 0,
@@ -1168,6 +1330,7 @@ export function ActiveWorkoutSession({
           role="status"
           aria-live="polite"
           className="toast"
+          data-overlay="true"
           style={{
             position: 'fixed',
             bottom: '76px',
@@ -1484,6 +1647,50 @@ export function ActiveWorkoutSession({
               background: 'none',
               border: 'none',
               color: 'var(--brand-accent, #38bdf8)',
+              fontWeight: 700,
+              cursor: 'pointer',
+              padding: '4px 8px',
+              fontSize: '13.5px',
+            }}
+          >
+            تراجع
+          </button>
+        </div>
+      )}
+
+      {/* Propagation Toast with Undo (D2) */}
+      {showPropagationToast && (
+        <div
+          data-testid="propagation-toast"
+          data-overlay="true"
+          style={{
+            position: 'fixed',
+            bottom: '140px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            background: 'var(--color-surface-2, #212429)',
+            color: 'var(--color-text, #f2f3f5)',
+            border: '1px solid var(--color-divider, #2b2f35)',
+            padding: '8px 16px',
+            borderRadius: '12px',
+            fontSize: '13.5px',
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+          }}
+        >
+          <span>اتنقلت لباقي المجموعات</span>
+          <button
+            type="button"
+            className="undo-toast-btn"
+            onClick={handleUndoPropagation}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--color-accent-text, #b83a00)',
               fontWeight: 700,
               cursor: 'pointer',
               padding: '4px 8px',

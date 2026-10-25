@@ -7,7 +7,7 @@ import {
   type CardioEffortLevel,
   type CardioEstimateResult,
 } from './cardioEngine.ts'
-import { TopBar, Button, ConfirmSheet, Icon } from '../../ui/index.ts'
+import { TopBar, Button, Sheet, Icon } from '../../ui/index.ts'
 import { Claim } from '../../content/Claim.tsx'
 import { plural } from '../../utils/plural.ts'
 
@@ -22,6 +22,7 @@ export interface CardioSessionPersistence {
   isPaused: boolean
   pausedAt: number | null
   estimate: CardioEstimateResult
+  minimized?: boolean
 }
 
 export interface CardioRunnerProps {
@@ -36,8 +37,11 @@ export interface CardioRunnerProps {
     durationMinutes: number
     grossKcal: number
     netKcal: number
+    kind?: 'cardio' | 'finisher'
   }) => void
   onCancel: () => void
+  onMinimize?: () => void
+  initialSessionState?: Partial<CardioSessionPersistence> | null
 }
 
 const STORAGE_KEY = 'maganis:cardio_active_session'
@@ -49,6 +53,8 @@ export function CardioRunner({
   weightKg,
   onFinish,
   onCancel,
+  onMinimize,
+  initialSessionState: _initialSessionState,
 }: CardioRunnerProps) {
   const estimate = useMemo(() => {
     return calculateCardioEnergy(activityId, level, durationMinutes, weightKg)
@@ -62,9 +68,25 @@ export function CardioRunner({
   const [pausedTotalMs, setPausedTotalMs] = useState(0)
   const [lastPauseTime, setLastPauseTime] = useState<number | null>(null)
   const [now, setNow] = useState<number>(() => Date.now())
-  const [showEndConfirm, setShowEndConfirm] = useState(false)
+  const [showLeaveSheet, setShowLeaveSheet] = useState(false)
+  const [showSaveDiscardSheet, setShowSaveDiscardSheet] = useState(false)
   const [wakeLockActive, setWakeLockActive] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
+
+  // System back / router popstate interception
+  useEffect(() => {
+    if (phase !== 'running') return
+    const onPop = (e: PopStateEvent) => {
+      e.preventDefault()
+      window.history.pushState(null, '', window.location.href)
+      setShowLeaveSheet(true)
+    }
+    window.history.pushState(null, '', window.location.href)
+    window.addEventListener('popstate', onPop)
+    return () => {
+      window.removeEventListener('popstate', onPop)
+    }
+  }, [phase])
 
   const wakeLockRef = useRef<WakeLockSentinel | null>(null)
 
@@ -238,12 +260,6 @@ export function CardioRunner({
     }
   }
 
-  function handleConfirmEnd() {
-    setShowEndConfirm(false)
-    localStorage.removeItem(STORAGE_KEY)
-    setPhase('finished')
-  }
-
   function handleSaveFinal() {
     if (isSaved || !estimate) return
     setIsSaved(true)
@@ -327,7 +343,7 @@ export function CardioRunner({
         style={{
           position: 'fixed',
           inset: 0,
-          zIndex: 500,
+          zIndex: 60,
           background: 'var(--bg)',
           display: 'flex',
           flexDirection: 'column',
@@ -403,8 +419,8 @@ export function CardioRunner({
                 }}
               >
                 <div style={{ fontSize: '12px', color: 'var(--muted)' }}>إجمالي الطاقة</div>
-                <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-text)' }}>
-                  {finalGross} <span style={{ fontSize: '13px', fontWeight: 600 }}>سعرة</span>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-text)' }}>
+                  {plural(finalGross, 'سعرة')}
                 </div>
               </div>
 
@@ -417,8 +433,8 @@ export function CardioRunner({
                 }}
               >
                 <div style={{ fontSize: '12px', color: 'var(--muted)' }}>الزيادة بالتمرين</div>
-                <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-accent)' }}>
-                  {finalNet} <span style={{ fontSize: '13px', fontWeight: 600 }}>سعرة</span>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-accent)' }}>
+                  {plural(finalNet, 'سعرة')}
                 </div>
               </div>
             </div>
@@ -456,7 +472,7 @@ export function CardioRunner({
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 500,
+        zIndex: 60,
         background: 'var(--bg)',
         display: 'flex',
         flexDirection: 'column',
@@ -465,7 +481,7 @@ export function CardioRunner({
         boxSizing: 'border-box',
       }}
     >
-      <TopBar title={`جلسة ${actName}`} onBack={() => setShowEndConfirm(true)} />
+      <TopBar title={`جلسة ${actName.replace(/جرى/g, 'جري')}`} onBack={() => setShowLeaveSheet(true)} />
 
       <div
         style={{
@@ -478,6 +494,8 @@ export function CardioRunner({
           gap: '20px',
           flex: 1,
           justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '0 8px',
         }}
       >
         {/* Activity & Level Pill */}
@@ -494,7 +512,7 @@ export function CardioRunner({
             color: 'var(--color-text)',
           }}
         >
-          <span>{actName}</span>
+          <span>{actName.replace(/جرى/g, 'جري')}</span>
           <span style={{ color: 'var(--muted)' }}>·</span>
           <span style={{ color: 'var(--color-accent)' }}>{levelLabel}</span>
           {isPaused && (
@@ -512,8 +530,17 @@ export function CardioRunner({
           )}
         </div>
 
-        {/* Circular Progress & Remaining Time */}
-        <div style={{ position: 'relative', width: '220px', height: '220px' }}>
+        {/* Circular Progress & Remaining Time - fixed at font scale 1.3 */}
+        <div
+          style={{
+            position: 'relative',
+            width: '220px',
+            height: '220px',
+            minWidth: '220px',
+            minHeight: '220px',
+            flexShrink: 0,
+          }}
+        >
           <svg width="220" height="220" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
             <circle
               cx="50"
@@ -560,16 +587,17 @@ export function CardioRunner({
               {String(remainingMinutes).padStart(2, '0')}:{String(remainingSeconds).padStart(2, '0')}
             </span>
             <span style={{ fontSize: '11.5px', color: 'var(--muted)', marginTop: '4px' }}>
-              من {durationMinutes} دقيقة
+              من {plural(durationMinutes, 'دقيقة')}
             </span>
           </div>
         </div>
 
-        {/* Live Calories Burned Counter */}
+        {/* Live Calories Burned Counter with Page Gutters */}
         <div
           className="card"
           style={{
             width: '100%',
+            boxSizing: 'border-box',
             padding: '16px 20px',
             borderRadius: '16px',
             background: 'var(--color-surface)',
@@ -594,11 +622,11 @@ export function CardioRunner({
           >
             {liveGrossKcal}{' '}
             <span style={{ fontSize: '15px', color: 'var(--muted)', fontWeight: 600 }}>
-              / {Math.round(estimate?.grossSessionKcal || 0)} سعرة
+              / {plural(Math.round(estimate?.grossSessionKcal || 0), 'سعرة')}
             </span>
           </div>
           <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
-            (صافي الزيادة بالتمرين: {liveNetKcal} سعرة)
+            (صافي الزيادة بالتمرين: {plural(liveNetKcal, 'سعرة')})
           </div>
         </div>
 
@@ -616,14 +644,14 @@ export function CardioRunner({
           </div>
         )}
 
-        {/* Action Controls */}
+        {/* Action Controls - Two equal-width real buttons */}
         <div style={{ display: 'flex', gap: '12px', width: '100%', marginTop: '8px' }}>
           <Button
             variant={isPaused ? 'primary' : 'secondary'}
             size="lg"
             fullWidth
             onClick={handleTogglePause}
-            style={{ flex: 1 }}
+            style={{ flex: 1, minHeight: '48px', borderRadius: '12px', fontWeight: 700 }}
           >
             {isPaused ? (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -637,26 +665,127 @@ export function CardioRunner({
           </Button>
 
           <Button
-            variant="ghost"
+            variant="secondary"
             size="lg"
-            onClick={() => setShowEndConfirm(true)}
-            style={{ flex: 1, color: 'var(--color-danger)' }}
+            fullWidth
+            onClick={() => setShowLeaveSheet(true)}
+            style={{
+              flex: 1,
+              minHeight: '48px',
+              borderRadius: '12px',
+              border: '1px solid var(--color-danger, #ef4444)',
+              background: 'var(--color-danger-subtle, rgba(239, 68, 68, 0.08))',
+              color: 'var(--color-danger, #ef4444)',
+              fontWeight: 700,
+            }}
           >
             إنهاء الجلسة
           </Button>
         </div>
       </div>
 
-      {/* Confirm Ending Early Sheet */}
-      <ConfirmSheet
-        isOpen={showEndConfirm}
-        onClose={() => setShowEndConfirm(false)}
-        onConfirm={handleConfirmEnd}
-        title="إنهاء الجلسة مبكراً؟"
-        message="هل تريد إنهاء جلسة الكارديو الآن؟ سيتم حفظ المدة والسعرات المحروقة حتى هذه اللحظة."
-        confirmLabel="إنهاء وحفظ النتيجة"
-        cancelLabel="متابعة الجلسة"
-      />
+      {/* Leave Running Session Action Sheet (B3.1) */}
+      <Sheet
+        isOpen={showLeaveSheet}
+        onClose={() => setShowLeaveSheet(false)}
+        title="جلسة الكارديو جارية"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <Button
+            variant="primary"
+            size="large"
+            fullWidth
+            onClick={() => setShowLeaveSheet(false)}
+            style={{ fontWeight: 700 }}
+          >
+            كمّل الجلسة
+          </Button>
+
+          <Button
+            variant="secondary"
+            size="large"
+            fullWidth
+            onClick={() => {
+              setShowLeaveSheet(false)
+              if (estimate) {
+                const sessionData: CardioSessionPersistence = {
+                  id: `cardio-${startTime}`,
+                  activityId,
+                  level,
+                  durationMinutes,
+                  weightKg,
+                  startTime,
+                  pausedTotalMs,
+                  isPaused,
+                  pausedAt: lastPauseTime,
+                  estimate,
+                  minimized: true,
+                }
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
+              }
+              if (onMinimize) {
+                onMinimize()
+              } else {
+                onCancel()
+              }
+            }}
+            style={{ fontWeight: 700 }}
+          >
+            صغّر الجلسة (متابعة بالخلفية)
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="large"
+            fullWidth
+            onClick={() => {
+              setShowLeaveSheet(false)
+              setShowSaveDiscardSheet(true)
+            }}
+            style={{ color: 'var(--color-danger, #ef4444)', fontWeight: 700 }}
+          >
+            إنهاء الجلسة
+          </Button>
+        </div>
+      </Sheet>
+
+      {/* End Session: Save or Discard Sheet */}
+      <Sheet
+        isOpen={showSaveDiscardSheet}
+        onClose={() => setShowSaveDiscardSheet(false)}
+        title="احفظ الجلسة؟"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ fontSize: '14px', color: 'var(--ink)' }}>
+            أنجزت <strong>{Math.max(1, Math.round(elapsedMinutes))} دقيقة</strong> وحرقت <strong>{liveGrossKcal} سعرة</strong> حتى الآن.
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <Button
+              variant="primary"
+              size="large"
+              style={{ flex: 1, fontWeight: 700 }}
+              onClick={() => {
+                setShowSaveDiscardSheet(false)
+                handleSaveFinal()
+              }}
+            >
+              حفظ الجلسة
+            </Button>
+            <Button
+              variant="ghost"
+              size="large"
+              style={{ flex: 1, color: 'var(--color-danger, #ef4444)', fontWeight: 700 }}
+              onClick={() => {
+                setShowSaveDiscardSheet(false)
+                localStorage.removeItem(STORAGE_KEY)
+                onCancel()
+              }}
+            >
+              تجاهل الجلسة
+            </Button>
+          </div>
+        </div>
+      </Sheet>
     </div>
   )
 }

@@ -190,6 +190,11 @@ export interface ProgramDay {
   sections?: DaySectionConfig[]
   cardio?: CardioConfig
   cardioConfig?: CardioConfig
+  finisher?: {
+    activity: string
+    minutes: number
+    level: 'خفيف' | 'متوسط' | 'عالي'
+  } | null
   warmup?: ProgramExercise[]
   pullPrep?: ProgramExercise[]
   cooldown?: ProgramExercise[]
@@ -264,6 +269,8 @@ export interface TrackingSession {
   notes: string
   createdAt: number
   cardioDetails?: CardioSessionDetails
+  kind?: 'strength' | 'cardio' | 'finisher'
+  finisherDetails?: CardioSessionDetails
 }
 
 export interface BodyLogEntry {

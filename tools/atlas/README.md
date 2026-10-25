@@ -102,4 +102,5 @@ All generated assets are static files placed in `public/atlas/`:
 ## 5. Licensing & Data Hygiene
 
 - Raw BodyParts3D files reside in `.cache/bp3d/` (git-ignored) and are never committed.
-- Full CC BY attribution and changes made are documented in [`LICENSE-ATLAS.txt`](../../LICENSE-ATLAS.txt).
+- BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International. Full attribution and changes made are documented in [`LICENSE-ATLAS.txt`](../../LICENSE-ATLAS.txt).
+

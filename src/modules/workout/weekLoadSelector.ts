@@ -77,6 +77,16 @@ export function selectWeekLoad(
     } else {
       // 'strength' or any non-cardio/non-mobility day counts as resistance
       resistanceDays++
+      // If resistance day has a cardio finisher (B3.2), add its minutes
+      const finisher = day.finisher as
+        | { minutes?: number; plannedMinutes?: number }
+        | undefined
+      if (finisher) {
+        const finMin = finisher.minutes ?? finisher.plannedMinutes ?? 0
+        if (typeof finMin === 'number' && finMin > 0) {
+          plannedCardioMinutes += finMin
+        }
+      }
     }
   }
 

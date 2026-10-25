@@ -28,7 +28,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   className = '',
 }) => {
   return (
-    <header className={`top-bar ${className}`.trim()}>
+    <header className={`top-bar ${className}`.trim()} data-overlay="true">
       <div className="top-bar__inner">
         <div className="top-bar__start">
           {onBack ? (

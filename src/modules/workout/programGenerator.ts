@@ -1,8 +1,7 @@
-import type { Goal } from '../onboarding/types.ts'
+import type { Goal, UserProfile } from '../onboarding/types.ts'
 import type {
   CustomExercise,
   Difficulty,
-  Equipment,
   Exercise,
   MuscleGroup,
   ProgramDay,
@@ -12,6 +11,11 @@ import type {
 } from '../shared/types.ts'
 import { DAY_NAMES_AR, MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import { EXERCISES, filterByInjuries } from './exercises.ts'
+import {
+  deriveConstraints,
+  isExerciseAllowed,
+  type UserWorkoutConstraints,
+} from './constraints.ts'
 
 // ============================================================
 // منهجية بناء البرنامج وفق إرشادات ACSM/NSCA:
@@ -116,38 +120,46 @@ function resolveSplit(
   groups: MuscleGroup[][]
   labels: string[]
 } {
+  const normalizedDays = Math.min(6, Math.max(2, daysCount))
+
   if (splitType && splitType !== 'custom' && SPLIT_CONFIGS[splitType]) {
     const config = SPLIT_CONFIGS[splitType]
-    const needed = Math.min(daysCount, config.splits.length)
+    const groups: MuscleGroup[][] = []
+    const labels: string[] = []
+    for (let i = 0; i < normalizedDays; i++) {
+      groups.push(config.splits[i % config.splits.length])
+      const baseLabel = config.dayLabels[i % config.dayLabels.length]
+      labels.push(i >= config.splits.length ? `${baseLabel} (إضافي)` : baseLabel)
+    }
     return {
       type: splitType,
-      groups: config.splits.slice(0, needed),
-      labels: config.dayLabels.slice(0, needed),
+      groups,
+      labels,
     }
   }
 
-  if (daysCount >= 6) {
+  if (normalizedDays >= 6) {
     return {
       type: 'ppl',
-      groups: SPLIT_CONFIGS.ppl.splits,
-      labels: SPLIT_CONFIGS.ppl.dayLabels,
+      groups: SPLIT_CONFIGS.ppl.splits.slice(0, 6),
+      labels: SPLIT_CONFIGS.ppl.dayLabels.slice(0, 6),
     }
   }
-  if (daysCount === 5) {
+  if (normalizedDays === 5) {
     return {
       type: 'bro_split',
-      groups: SPLIT_CONFIGS.bro_split.splits,
-      labels: SPLIT_CONFIGS.bro_split.dayLabels,
+      groups: SPLIT_CONFIGS.bro_split.splits.slice(0, 5),
+      labels: SPLIT_CONFIGS.bro_split.dayLabels.slice(0, 5),
     }
   }
-  if (daysCount === 4) {
+  if (normalizedDays === 4) {
     return {
       type: 'upper_lower',
-      groups: SPLIT_CONFIGS.upper_lower.splits,
-      labels: SPLIT_CONFIGS.upper_lower.dayLabels,
+      groups: SPLIT_CONFIGS.upper_lower.splits.slice(0, 4),
+      labels: SPLIT_CONFIGS.upper_lower.dayLabels.slice(0, 4),
     }
   }
-  if (daysCount === 3) {
+  if (normalizedDays === 3) {
     return {
       type: 'ppl',
       groups: SPLIT_CONFIGS.ppl.splits.slice(0, 3),
@@ -230,15 +242,23 @@ function selectForGroup(
   pool: Exercise[],
   count: number,
   usedIds: Set<string>,
+  levelCeiling?: 'beginner' | 'intermediate' | 'advanced',
 ): Exercise[] {
   const candidates = pool.filter(
     (e) => e.category === group && !usedIds.has(e.id),
   )
-  const ordered = [
-    ...shuffle(candidates.filter((e) => e.difficulty === 'beginner')),
-    ...shuffle(candidates.filter((e) => e.difficulty === 'intermediate')),
-    ...shuffle(candidates.filter((e) => e.difficulty === 'advanced')),
-  ]
+
+  const beginner = shuffle(candidates.filter((e) => e.difficulty === 'beginner'))
+  const intermediate = shuffle(candidates.filter((e) => e.difficulty === 'intermediate'))
+  const advanced = shuffle(candidates.filter((e) => e.difficulty === 'advanced'))
+
+  const ordered =
+    levelCeiling === 'beginner'
+      ? [...beginner, ...intermediate, ...advanced]
+      : levelCeiling === 'intermediate'
+        ? [...intermediate, ...beginner, ...advanced]
+        : [...beginner, ...intermediate, ...advanced]
+
   return ordered.slice(0, count)
 }
 
@@ -249,33 +269,38 @@ function buildProgramExercise(
   difficulty: Difficulty,
   config: SetRepConfig,
   goal: Goal,
+  allowsLoadedExercises: boolean = true,
 ): ProgramExercise {
   // Progressive overload: المستوى المتقدم يحصل على حجم أعلى قليلاً
   const diffBonus = difficulty === 'advanced' ? 1 : 0
   const sets = randInt(config.minSets, config.maxSets) + diffBonus
 
-  const reps =
-    goal === 'calisthenics'
-      ? 0 // 0 تعني "أقصى عدد ممكن" (AMRAP)
-      : randInt(config.minReps, config.maxReps)
+  const isBodyweight = goal === 'calisthenics' || !allowsLoadedExercises
+  const reps = isBodyweight
+    ? 0 // 0 تعني "أقصى عدد ممكن" (AMRAP)
+    : randInt(config.minReps, config.maxReps)
 
   return {
     exerciseId,
     sets,
     reps,
     restSeconds: config.restSeconds,
+    targetWeightKg: isBodyweight ? 0 : undefined,
+    unit: 'reps',
   }
 }
 
 // --------------- Core logic ---------------
 
-interface GenerateParams {
+export interface GenerateParams {
   goal: Goal
   trainingDaysPerWeek: number
   splitType?: WorkoutSplitType
   injuries?: string[]
   customExercises?: CustomExercise[]
   excludedExerciseIds?: string[]
+  profile?: UserProfile | null
+  constraints?: UserWorkoutConstraints
 }
 
 export function generateProgram(params: GenerateParams): WorkoutProgram {
@@ -286,14 +311,27 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
     injuries = [],
     customExercises = [],
     excludedExerciseIds = [],
+    profile,
+    constraints: customConstraints,
   } = params
 
-  // 1. بناء مجمّع التمارين المتاحة (مع استبعاد التمارين المحذوفة والإصابات)
+  // Derive constraints from profile or create appropriate fallback
+  const effectiveConstraints =
+    customConstraints ||
+    (profile
+      ? deriveConstraints(profile)
+      : deriveConstraints({
+          primaryGoal: goal,
+          trainingStyle: goal === 'calisthenics' ? ['calisthenics'] : ['weights'],
+        } as UserProfile))
+
+  // 1. بناء مجمّع التمارين المتاحة بالاعتماد الحصري على deriveConstraints
   const basePool = filterByInjuries(EXERCISES, injuries)
-  const equipmentOk = goalEquipmentFilter(goal)
   const pool = shuffle(
     [...basePool, ...customExercises].filter(
-      (e) => equipmentOk(e.equipment) && !excludedExerciseIds.includes(e.id),
+      (e) =>
+        isExerciseAllowed(e, effectiveConstraints) &&
+        !excludedExerciseIds.includes(e.id),
     ),
   )
 
@@ -302,7 +340,9 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
   const resolved = resolveSplit(normalizedDays, splitType)
   const splits = resolved.groups
   const dayLabels = resolved.labels
-  const config = GOAL_CONFIG[goal]
+  const config = GOAL_CONFIG[goal] || GOAL_CONFIG.hypertrophy
+
+  const noticesSet = new Set<string>()
 
   // 3. بناء كل يوم تدريبي بعدد 5 إلى 6 تمارين
   const days: ProgramDay[] = splits.map((groups, dayIdx) => {
@@ -318,12 +358,34 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
         Math.max(1, Math.ceil(remainingSlots / Math.max(1, groups.length))),
         remainingSlots,
       )
-      const picks = selectForGroup(group, pool, countForGroup, usedToday)
+      const picks = selectForGroup(
+        group,
+        pool,
+        countForGroup,
+        usedToday,
+        effectiveConstraints.levelCeiling,
+      )
+
+      if (picks.length === 0) {
+        // فحص ما إذا كانت المجموعة العضلية تفتقر لتمارين متوافقة مع المعدات
+        const hasAnyInCatalog = pool.some((e) => e.category === group)
+        if (!hasAnyInCatalog) {
+          const muscleLabel = MUSCLE_GROUP_LABELS[group] || group
+          noticesSet.add(`مفيش تمرين مناسب لـ ${muscleLabel} بالمعدات اللي اخترتها`)
+        }
+      }
+
       for (const pick of picks) {
         if (exercises.length >= targetCount) break
         usedToday.add(pick.id)
         exercises.push(
-          buildProgramExercise(pick.id, pick.difficulty, config, goal),
+          buildProgramExercise(
+            pick.id,
+            pick.difficulty,
+            config,
+            goal,
+            effectiveConstraints.allowsLoadedExercises,
+          ),
         )
       }
     }
@@ -337,24 +399,55 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
           pool,
           targetCount - exercises.length,
           usedToday,
+          effectiveConstraints.levelCeiling,
         )
         for (const pick of picks) {
           if (exercises.length >= targetCount) break
           usedToday.add(pick.id)
           exercises.push(
-            buildProgramExercise(pick.id, pick.difficulty, config, goal),
+            buildProgramExercise(
+              pick.id,
+              pick.difficulty,
+              config,
+              goal,
+              effectiveConstraints.allowsLoadedExercises,
+            ),
           )
         }
       }
     }
 
-    // المرحلة الثالثة: ضمان ألا يقل اليوم عن 5 تمارين إطلاقاً
+    // المرحلة الثالثة: ملء التمارين المتبقية من التمارين المسموحة حصراً
     if (exercises.length < 5) {
       for (const e of pool) {
         if (exercises.length >= 5) break
         if (usedToday.has(e.id)) continue
         usedToday.add(e.id)
-        exercises.push(buildProgramExercise(e.id, e.difficulty, config, goal))
+        exercises.push(
+          buildProgramExercise(
+            e.id,
+            e.difficulty,
+            config,
+            goal,
+            effectiveConstraints.allowsLoadedExercises,
+          ),
+        )
+      }
+    }
+
+    // ضمان ألا يكون اليوم فارغاً إذا وُجدت أي تمارين مسموحة في الكتالوج
+    if (exercises.length === 0 && pool.length > 0) {
+      const fallback = pool[dayIdx % pool.length]
+      if (fallback) {
+        exercises.push(
+          buildProgramExercise(
+            fallback.id,
+            fallback.difficulty,
+            config,
+            goal,
+            effectiveConstraints.allowsLoadedExercises,
+          ),
+        )
       }
     }
 
@@ -374,17 +467,10 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
     id: uniqueId(),
     createdAt: Date.now(),
     primaryGoal: goal,
-    trainingDaysPerWeek,
+    trainingDaysPerWeek: normalizedDays,
     splitType: resolved.type,
     days,
+    generationNotices: Array.from(noticesSet),
+    constraints: effectiveConstraints,
   }
-}
-
-// --------------- Goal -> equipment filter ---------------
-
-function goalEquipmentFilter(goal: Goal): (eq: Equipment) => boolean {
-  if (goal === 'calisthenics') return (eq) => eq === 'bodyweight'
-  if (goal === 'flexibility')
-    return (eq) => eq === 'bodyweight' || eq === 'band'
-  return () => true
 }

@@ -1,511 +1,212 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { chromium } from 'playwright'
+import { fileURLToPath } from 'node:url'
 
-// 1. Read base SVG files (strip internal <style>...</style> so they don't leak globally)
-let anteriorSvg = fs.readFileSync('public/atlas/anterior.svg', 'utf8')
-let posteriorSvg = fs.readFileSync('public/atlas/posterior.svg', 'utf8')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const rootDir = path.resolve(__dirname, '..')
 
-anteriorSvg = anteriorSvg.replace(/<defs>[\s\S]*?<\/defs>/, '')
-posteriorSvg = posteriorSvg.replace(/<defs>[\s\S]*?<\/defs>/, '')
+const atlasMusclesData = JSON.parse(fs.readFileSync(path.join(rootDir, 'data/atlas_muscles.json'), 'utf8'))
+const muscleNamesData = JSON.parse(fs.readFileSync(path.join(rootDir, 'src/data/muscle-names.json'), 'utf8'))
+const anteriorSvgRaw = fs.readFileSync(path.join(rootDir, 'public/atlas/anterior.svg'), 'utf8')
+const posteriorSvgRaw = fs.readFileSync(path.join(rootDir, 'public/atlas/posterior.svg'), 'utf8')
 
-// 2. 8 Representative Exercises Specification
-const EXERCISES_TO_RENDER = [
-  {
-    id: 'chest-sample',
-    titleAr: 'ضغط صدري مائل بالبار',
-    titleEn: 'Incline Barbell Bench Press',
-    category: 'الصدر (Chest)',
-    tier: 'Tier 1 (مدروس يدوياً)',
-    muscles: [
-      {
-        id: 'pec_clavicular',
-        role: 'primary',
-        nameAr: 'عضلة الصدر العلوية (الترقوية)',
-      },
-      { id: 'pec_sternal', role: 'secondary', nameAr: 'عضلة الصدر الوسطى' },
-      { id: 'pec_costal', role: 'secondary', nameAr: 'عضلة الصدر السفلية' },
-      { id: 'delt_anterior', role: 'secondary', nameAr: 'الدالية الأمامية' },
-    ],
-  },
-  {
-    id: 'back-sample',
-    titleAr: 'عقلة قبضة واسعة للظهر',
-    titleEn: 'Wide-Grip Pull-Up',
-    category: 'الظهر (Back)',
-    tier: 'Tier 1 (مدروس يدوياً)',
-    muscles: [
-      { id: 'lats', role: 'primary', nameAr: 'عضلة الظهر العريضة (اللاتس)' },
-      { id: 'trap_middle', role: 'secondary', nameAr: 'الترابيس الوسطى' },
-      { id: 'trap_lower', role: 'secondary', nameAr: 'الترابيس السفلية' },
-      {
-        id: 'rhomboids',
-        role: 'secondary',
-        nameAr: 'العضلات المعينية (الرومبويدز)',
-      },
-    ],
-  },
-  {
-    id: 'shoulder-sample',
-    titleAr: 'ضغط أكتاف بالدمبل جالساً',
-    titleEn: 'Seated Dumbbell Shoulder Press',
-    category: 'الأكتاف (Shoulders)',
-    tier: 'Tier 1 (مدروس يدوياً)',
-    muscles: [
-      { id: 'delt_anterior', role: 'primary', nameAr: 'الدالية الأمامية' },
-      { id: 'delt_lateral', role: 'primary', nameAr: 'الدالية الجانبية' },
-      { id: 'delt_posterior', role: 'secondary', nameAr: 'الدالية الخلفية' },
-      { id: 'triceps_lateral', role: 'secondary', nameAr: 'الترايسبس' },
-    ],
-  },
-  {
-    id: 'arms-sample',
-    titleAr: 'مرجحة بايسبس بالدمبل واقفاً',
-    titleEn: 'Standing Dumbbell Bicep Curl',
-    category: 'الذراعين (Arms)',
-    tier: 'Tier 1 (مدروس يدوياً)',
-    muscles: [
-      { id: 'biceps_long', role: 'primary', nameAr: 'البايسبس (الرأس الطويل)' },
-      {
-        id: 'biceps_short',
-        role: 'primary',
-        nameAr: 'البايسبس (الرأس القصير)',
-      },
-      {
-        id: 'brachialis',
-        role: 'secondary',
-        nameAr: 'العضلة العضدية (براكياليس)',
-      },
-      { id: 'forearm_flexors', role: 'secondary', nameAr: 'قوابض الساعد' },
-    ],
-  },
-  {
-    id: 'quads-sample',
-    titleAr: 'مد الساقين على الجهاز (رفرفة أمامي)',
-    titleEn: 'Leg Extension Machine',
-    category: 'الفخذ الأمامي (Quads)',
-    tier: 'Tier 1 (مدروس يدوياً)',
-    muscles: [
-      { id: 'rectus_femoris', role: 'primary', nameAr: 'الفخذية المستقيمة' },
-      { id: 'vastus_lateralis', role: 'primary', nameAr: 'المتسعة الوحشية' },
-      { id: 'vastus_medialis', role: 'primary', nameAr: 'المتسعة الإنسية' },
-      { id: 'vastus_intermedius', role: 'primary', nameAr: 'المتسعة الوسطية' },
-    ],
-  },
-  {
-    id: 'hamstrings-glutes-sample',
-    titleAr: 'ديدليفت روماني بالبار',
-    titleEn: 'Romanian Deadlift (RDL)',
-    category: 'الفخذ الخلفي والألوية (Hamstrings & Glutes)',
-    tier: 'Tier 1 (مدروس يدوياً)',
-    muscles: [
-      {
-        id: 'glute_max',
-        role: 'primary',
-        nameAr: 'الألوية الكبرى (Gluteus Maximus)',
-      },
-      {
-        id: 'hamstring_bf_long',
-        role: 'primary',
-        nameAr: 'الفخذية ذات الرأسين (الطويل)',
-      },
-      {
-        id: 'hamstring_semitendinosus',
-        role: 'primary',
-        nameAr: 'نصف الوترية',
-      },
-      {
-        id: 'erector_spinae',
-        role: 'secondary',
-        nameAr: 'ناصبات العمود الفقري',
-      },
-    ],
-  },
-  {
-    id: 'core-sample',
-    titleAr: 'بلانك مع ثبات الجذع',
-    titleEn: 'Isometric Core Plank',
-    category: 'الجذع والبطن (Core)',
-    tier: 'Tier 1 (مدروس يدوياً)',
-    muscles: [
-      {
-        id: 'rectus_abdominis_upper',
-        role: 'primary',
-        nameAr: 'عضلات البطن العلوية',
-      },
-      {
-        id: 'rectus_abdominis_lower',
-        role: 'primary',
-        nameAr: 'عضلات البطن السفلية',
-      },
-      {
-        id: 'obliques_external',
-        role: 'secondary',
-        nameAr: 'العضلات المائلة الخارجية',
-      },
-    ],
-  },
-  {
-    id: 'custom-sample',
-    titleAr: 'تمرين مخصص: دفع ترقوي وترايسبس',
-    titleEn: 'Custom Compound: Clavicular Pec & Lateral Triceps',
-    category: 'تمرين مخصص (Custom Tier 2)',
-    tier: 'Tier 2 (محدد مخصصاً)',
-    muscles: [
-      { id: 'pec_clavicular', role: 'primary', nameAr: 'الصدر الترقوي' },
-      { id: 'triceps_lateral', role: 'secondary', nameAr: 'الترايسبس الوحشي' },
-    ],
-  },
-]
+// Parse silhouette and paths from SVG
+function extractSvgParts(svgStr) {
+  const silMatch = svgStr.match(/<path[^>]+id="body-silhouette"[^>]*\/>/i) || svgStr.match(/<path[^>]+class="[^"]*body-silhouette[^"]*"[^>]*\/>/i)
+  const silhouette = silMatch ? silMatch[0] : ''
 
-// 3. Build Scoped CSS per exercise
-let dynamicScopedCss = ''
-let cardsHtml = ''
-
-for (const ex of EXERCISES_TO_RENDER) {
-  const cardClass = `card-${ex.id}`
-  const primaryIds = ex.muscles
-    .filter((m) => m.role === 'primary')
-    .map((m) => m.id)
-  const secondaryIds = ex.muscles
-    .filter((m) => m.role === 'secondary')
-    .map((m) => m.id)
-
-  // Default dim for all muscles in this card
-  dynamicScopedCss += `
-    .${cardClass} .atlas-silhouette { fill: #22252a !important; opacity: 0.15 !important; }
-    .${cardClass} .muscle-full { display: none !important; }
-    .${cardClass} .muscle-vis { fill: #22252a !important; opacity: 0.12 !important; }
-  `
-
-  // Highlight primary muscles
-  for (const pid of primaryIds) {
-    dynamicScopedCss += `
-      .${cardClass} [data-muscle="${pid}"].muscle-vis {
-        fill: #E53935 !important;
-        opacity: 1 !important;
-        stroke: #B71C1C !important;
-        stroke-width: 2.5px !important;
-      }
-    `
+  const paths = new Map()
+  const pathRegex = /<path([^>]+)\/>/gi
+  let m
+  while ((m = pathRegex.exec(svgStr)) !== null) {
+    const full = m[0]
+    const muscleMatch = full.match(/data-muscle="([^"]+)"/)
+    if (muscleMatch) {
+      const id = muscleMatch[1]
+      const isFull = full.includes('class="muscle-full"') || full.includes('id="m-' + id + '-full"')
+      const isVis = full.includes('class="muscle-vis"') || full.includes('id="m-' + id + '-vis"')
+      if (!paths.has(id)) paths.set(id, { full: [], vis: [] })
+      if (isFull) paths.get(id).full.push(full)
+      else if (isVis) paths.get(id).vis.push(full)
+      else paths.get(id).vis.push(full)
+    }
   }
-
-  // Highlight secondary muscles
-  for (const sid of secondaryIds) {
-    dynamicScopedCss += `
-      .${cardClass} [data-muscle="${sid}"].muscle-vis {
-        fill: #FDD835 !important;
-        opacity: 1 !important;
-        stroke: #F9A825 !important;
-        stroke-width: 2.5px !important;
-      }
-    `
-  }
-
-  const primaryCount = primaryIds.length
-  const secondaryCount = secondaryIds.length
-
-  cardsHtml += `
-    <div class="exercise-card ${cardClass}">
-      <div class="card-header">
-        <div class="badge-row">
-          <span class="category-badge">${ex.category}</span>
-          <span class="tier-badge">${ex.tier}</span>
-        </div>
-        <h2 class="exercise-title">${ex.titleAr}</h2>
-        <div class="exercise-en">${ex.titleEn}</div>
-      </div>
-
-      <div class="atlas-dual-viewport">
-        <div class="viewport-box">
-          <div class="view-label">منظر أمامي (Anterior)</div>
-          <div class="svg-wrapper">
-            ${anteriorSvg}
-            <img src="../public/atlas/shade-anterior.webp" class="shade-overlay" alt="" />
-          </div>
-        </div>
-
-        <div class="viewport-box">
-          <div class="view-label">منظر خلفي (Posterior)</div>
-          <div class="svg-wrapper">
-            ${posteriorSvg}
-            <img src="../public/atlas/shade-posterior.webp" class="shade-overlay" alt="" />
-          </div>
-        </div>
-      </div>
-
-      <div class="legend-box">
-        <div class="legend-item">
-          <span class="legend-shape shape-primary"></span>
-          <span>عضلة رئيسية (${primaryCount})</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-shape shape-secondary"></span>
-          <span>عضلة مساعدة (${secondaryCount})</span>
-        </div>
-      </div>
-
-      <div class="muscles-list">
-        ${ex.muscles
-          .map(
-            (m) => `
-          <span class="muscle-tag ${m.role === 'primary' ? 'primary-tag' : 'secondary-tag'}">
-            <span class="role-marker ${m.role === 'primary' ? 'marker-diamond' : 'marker-circle'}"></span>
-            ${m.nameAr}
-          </span>
-        `,
-          )
-          .join('')}
-      </div>
-
-      <div class="status-line">
-        تم التحقق: ألوان الاستهداف متوافقة (#E53935 رئيسي / #FDD835 مساعد)، خالية من الأخطاء التشريحية.
-      </div>
-    </div>
-  `
+  return { silhouette, paths }
 }
 
-const htmlDocument = `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <title>Maganis Atlas Contact Sheet (8 Exercises × 2 Views)</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 32px 24px;
-      background: #14161A;
-      color: #F0F2F5;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .header-section {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    .header-section h1 {
-      margin: 0 0 8px 0;
-      font-size: 26px;
-      color: #F0F2F5;
-    }
-    .header-section p {
-      margin: 0;
-      color: #9CA3AF;
-      font-size: 14px;
-    }
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-      max-width: 1440px;
-      margin: 0 auto;
-    }
-    @media (max-width: 1024px) {
-      .grid-container { grid-template-columns: 1fr; }
-    }
-    .exercise-card {
-      background: #1E2228;
-      border: 1px solid #2D333B;
-      border-radius: 16px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .badge-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .category-badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 9999px;
-      background: #2D333B;
-      color: #9CA3AF;
-    }
-    .tier-badge {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 9999px;
-      background: rgba(229, 57, 53, 0.15);
-      color: #FF6B6B;
-    }
-    .exercise-title {
-      margin: 0 0 2px 0;
-      font-size: 18px;
-      font-weight: 700;
-      color: #FFFFFF;
-    }
-    .exercise-en {
-      font-size: 12.5px;
-      color: #9CA3AF;
-      direction: ltr;
-      text-align: right;
-    }
-    .atlas-dual-viewport {
-      display: flex;
-      gap: 12px;
-      background: #14161A;
-      border: 1px solid #2D333B;
-      border-radius: 12px;
-      padding: 12px;
-      justify-content: center;
-    }
-    .viewport-box {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .view-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: #9CA3AF;
-      margin-bottom: 8px;
-    }
-    .svg-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 180px;
-      height: 360px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .svg-wrapper svg {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    .shade-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      mix-blend-mode: multiply;
-      pointer-events: none;
-      opacity: 0.85;
-    }
-    .legend-box {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      background: #181C22;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 11.5px;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .legend-shape {
-      width: 10px;
-      height: 10px;
-      display: inline-block;
-    }
-    .shape-primary {
-      background: #E53935;
-      transform: rotate(45deg);
-      border: 1px solid #B71C1C;
-    }
-    .shape-secondary {
-      background: #FDD835;
-      border-radius: 50%;
-      border: 1px solid #F9A825;
-    }
-    .muscles-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .muscle-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11.5px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: #181C22;
-      border: 1px solid #2D333B;
-    }
-    .primary-tag {
-      border-color: rgba(229, 57, 53, 0.4);
-      color: #FF8A80;
-    }
-    .secondary-tag {
-      border-color: rgba(253, 216, 53, 0.4);
-      color: #FFF59D;
-    }
-    .role-marker {
-      width: 7px;
-      height: 7px;
-      display: inline-block;
-    }
-    .marker-diamond {
-      background: #E53935;
-      transform: rotate(45deg);
-    }
-    .marker-circle {
-      background: #FDD835;
-      border-radius: 50%;
-    }
-    .status-line {
-      font-size: 11px;
-      color: #34D399;
-      background: rgba(52, 211, 153, 0.1);
-      padding: 6px 10px;
-      border-radius: 6px;
-      text-align: center;
-    }
+const antParts = extractSvgParts(anteriorSvgRaw)
+const postParts = extractSvgParts(posteriorSvgRaw)
 
-    /* Scoped Highlights per Exercise */
-    ${dynamicScopedCss}
-  </style>
+const namesMap = new Map(muscleNamesData.muscles.map(m => [m.id, m]))
+
+const outDir = path.join(rootDir, 'evidence/g6-c/contact-sheet')
+if (!fs.existsSync(outDir)) {
+  fs.mkdirSync(outDir, { recursive: true })
+}
+
+// Build HTML content for contact sheet
+let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Maganis Anatomical Muscle Atlas Contact Sheet (53 Muscles)</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+  h1, h2 { color: #38bdf8; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-top: 20px; }
+  .tile { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+  .tile-title { font-size: 12px; font-weight: bold; margin-top: 8px; text-align: center; color: #f1f5f9; }
+  .tile-sub { font-size: 10px; color: #94a3b8; text-align: center; }
+  .tile-badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-top: 4px; font-weight: 600; }
+  .badge-mesh { background: #065f46; color: #34d399; }
+  .badge-derived { background: #854d0e; color: #facc15; }
+  .badge-nomesh { background: #7f1d1d; color: #f87171; }
+  .svg-wrap { width: 160px; height: 240px; background: #090d16; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+  .svg-wrap svg { width: 100%; height: 100%; }
+  .overview-container { display: flex; gap: 24px; margin-bottom: 32px; }
+  .overview-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: center; }
+  .overview-svg { width: 240px; height: 360px; background: #090d16; border-radius: 6px; }
+</style>
 </head>
 <body>
-  <div class="header-section">
-    <h1>لوحة العرض البصري للأطلس العضلي (Atlas Visual Contact Sheet)</h1>
-    <p>توثيق 8 نماذج تشريحية رئيسية عبر المنظرين الأمامي والخلفي بدقة BodyParts3D وتباين لوني معتمد</p>
-  </div>
+<h1>Maganis Anatomical Muscle Atlas — 53 Muscles Contact Sheet</h1>
+<p style="color: #cbd5e1; font-size: 13px;">Full-body overviews in muscle tone and individual 160x240 px tiles for each of the 53 muscles in expected views.</p>
 
-  <div class="grid-container">
-    ${cardsHtml}
+<div class="overview-container">
+  <div class="overview-card" id="overview-card-A">
+    <h2>Anterior Overview (All Muscles)</h2>
+    <div class="overview-svg">
+      <svg viewBox="0 0 1024 2048">
+        <style>
+          .body-silhouette { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.2); stroke-width: 2px; }
+          .muscle-vis, .muscle-full { fill: #e53935; stroke: #b71c1c; stroke-width: 1.5px; opacity: 0.85; }
+        </style>
+        ${antParts.silhouette}
+        ${Array.from(antParts.paths.values()).flatMap(v => v.vis).join('\n')}
+      </svg>
+    </div>
   </div>
+  <div class="overview-card" id="overview-card-P">
+    <h2>Posterior Overview (All Muscles)</h2>
+    <div class="overview-svg">
+      <svg viewBox="0 0 1024 2048">
+        <style>
+          .body-silhouette { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.2); stroke-width: 2px; }
+          .muscle-vis, .muscle-full { fill: #e53935; stroke: #b71c1c; stroke-width: 1.5px; opacity: 0.85; }
+        </style>
+        ${postParts.silhouette}
+        ${Array.from(postParts.paths.values()).flatMap(v => v.vis).join('\n')}
+      </svg>
+    </div>
+  </div>
+</div>
+
+<h2>Individual Muscle Tiles (160x240 px)</h2>
+<div class="grid">
+`
+
+const tileRecords = []
+
+for (const m of atlasMusclesData.muscles) {
+  const nameInfo = namesMap.get(m.id) || {}
+  const atlasVal = nameInfo.atlas || 'mesh'
+  const views = m.expected_views === 'A+P' ? ['A', 'P'] : [m.expected_views]
+
+  for (const v of views) {
+    const isAnt = v === 'A'
+    const parts = isAnt ? antParts : postParts
+    const mPaths = parts.paths.get(m.id)
+
+    let pathContent = ''
+    let hasGeometry = false
+
+    if (mPaths && (mPaths.vis.length > 0 || mPaths.full.length > 0)) {
+      hasGeometry = true
+      // Render visible path in accent, full in semi-trans
+      pathContent = (mPaths.full.length > 0 ? mPaths.full.join('\n') : mPaths.vis.join('\n'))
+    }
+
+    const badgeClass = atlasVal === 'mesh' ? 'badge-mesh' : atlasVal === 'derived_approx' ? 'badge-derived' : 'badge-nomesh'
+    const badgeLabel = atlasVal === 'mesh' ? 'mesh (BP3D)' : atlasVal === 'derived_approx' ? 'derived_approx' : 'no_mesh (locator)'
+
+    const tileId = `tile-${m.id}-${v}`
+    tileRecords.push({
+      id: m.id,
+      view: v,
+      gym_ar: nameInfo.gym_ar || m.ar,
+      sci_en: nameInfo.sci_en || m.en,
+      atlas: atlasVal,
+      hasGeometry,
+      tileId,
+    })
+
+    html += `
+  <div class="tile" id="${tileId}">
+    <div class="svg-wrap">
+      <svg viewBox="0 0 1024 2048">
+        <style>
+          .body-silhouette { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.22); stroke-width: 2px; }
+          .target-muscle { fill: #f95700; stroke: #ff8a50; stroke-width: 2.5px; opacity: 0.95; }
+        </style>
+        ${parts.silhouette}
+        ${hasGeometry ? `<g class="target-muscle">${pathContent.replace(/class="[^"]*"/g, 'class="target-muscle"')}</g>` : `
+          <g>
+            <circle cx="512" cy="700" r="16" fill="#ef4444" />
+            <text x="512" y="740" text-anchor="middle" fill="#ef4444" font-size="28" font-family="sans-serif">No Mesh</text>
+          </g>
+        `}
+      </svg>
+    </div>
+    <div class="tile-title">${m.id} (${v === 'A' ? 'أمامي' : 'خلفي'})</div>
+    <div class="tile-sub">${nameInfo.gym_ar || m.ar} · ${m.en}</div>
+    <div class="tile-badge ${badgeClass}">${badgeLabel}</div>
+  </div>
+`
+  }
+}
+
+html += `
+</div>
 </body>
 </html>`
 
-fs.mkdirSync('docs', { recursive: true })
-fs.writeFileSync('docs/atlas-contact-sheet.html', htmlDocument, 'utf8')
-console.log('Saved docs/atlas-contact-sheet.html with scoped styles')
+const htmlPath = path.join(outDir, 'index.html')
+fs.writeFileSync(htmlPath, html, 'utf8')
+console.log('Generated contact sheet HTML at:', htmlPath)
 
-// 4. Capture screenshot using Playwright Chromium/Edge
-async function captureScreenshot() {
-  console.log('Launching browser for contact sheet capture...')
-  const browser = await chromium.launch({ channel: 'msedge' })
-  const page = await browser.newPage({
-    viewport: { width: 1480, height: 2600 },
-    deviceScaleFactor: 1.5,
-  })
+// Use Playwright to capture images
+async function captureImages() {
+  const browser = await chromium.launch({ channel: 'chrome', headless: true })
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+  await page.goto(`file://${htmlPath}`, { waitUntil: 'load' })
+  await page.waitForTimeout(500)
 
-  const filePath = path.resolve('docs/atlas-contact-sheet.html')
-  await page.goto(`file://${filePath}`, { waitUntil: 'networkidle' })
-  await page.waitForTimeout(1000)
+  // 1. Capture anterior overview
+  console.log('Capturing overview_anterior.png...')
+  const elA = page.locator('#overview-card-A .overview-svg')
+  await elA.screenshot({ path: path.join(outDir, 'overview_anterior.png') })
 
-  const outputPath = path.resolve('docs/atlas-contact-sheet.png')
-  await page.screenshot({ path: outputPath, fullPage: true })
-  console.log(`Successfully generated ${outputPath}`)
+  // 2. Capture posterior overview
+  console.log('Capturing overview_posterior.png...')
+  const elP = page.locator('#overview-card-P .overview-svg')
+  await elP.screenshot({ path: path.join(outDir, 'overview_posterior.png') })
+
+  // 3. Capture individual tiles for key muscles and sample
+  for (const r of tileRecords) {
+    const tileLoc = page.locator(`#${r.tileId} .svg-wrap`)
+    if (await tileLoc.count() > 0) {
+      await tileLoc.screenshot({ path: path.join(outDir, `${r.tileId}.png`) })
+    }
+  }
+
+  // 4. Capture full contact sheet view
+  console.log('Capturing full contact_sheet.png...')
+  await page.screenshot({ path: path.join(outDir, 'contact_sheet.png'), fullPage: true })
 
   await browser.close()
+  console.log('Contact sheet images captured successfully!')
 }
 
-captureScreenshot().catch((err) => {
-  console.error('Screenshot capture failed:', err)
-  process.exit(1)
-})
+captureImages().catch(console.error)

@@ -5,9 +5,9 @@ Maganis Muscle Atlas License & Attribution Notice
 -----------------------
 This project incorporates anatomical 3D models and anatomical terminology from BodyParts3D:
 
-"BodyParts3D, (c) The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan"
+"BodyParts3D, (c) The Database Center for Life Science licensed under CC Attribution 4.0 International"
 Source database URL: http://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html
-Dataset: BodyParts3D Release 4.0 (IS-A part tree OBJ dataset, 2013).
+Dataset: BodyParts3D Release 4.0 (IS-A part tree OBJ dataset, 2013, license updated to CC BY 4.0).
 
 The original 3D polygon meshes and ontology mappings were developed and released by the Database Center for Life Science (DBCLS), Japan.
 

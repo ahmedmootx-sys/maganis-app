@@ -1774,16 +1774,16 @@ button.ghost-danger:hover {
 }
 
 .button-success {
-  background: #10b981 !important;
-  border-color: #10b981 !important;
+  background: var(--color-success, #15803d) !important;
+  border-color: var(--color-success, #15803d) !important;
   color: #ffffff !important;
   font-weight: 700;
   cursor: pointer;
 }
 
 .button-success:hover {
-  background: #059669 !important;
-  border-color: #059669 !important;
+  background: #166534 !important;
+  border-color: #166534 !important;
 }
 
 /* Floating Rest Timer */
@@ -2073,8 +2073,8 @@ button.ghost-danger:hover {
 }
 
 .set-check-btn.checked {
-  background: #10b981;
-  border-color: #10b981;
+  background: var(--color-success, #15803d);
+  border-color: var(--color-success, #15803d);
   color: #ffffff;
   transform: scale(1.05);
 }
@@ -3897,3 +3897,19 @@ input[type='url'],
 .sticky-bottom-bar:has(> .btn:nth-child(2)) .btn {
   flex: 1;
 }
+
+/* --- B3.1 Cardio Mini Bar Padding --- */
+body.with-cardio-mini-bar .app-main,
+body.with-cardio-mini-bar .screen-content,
+body.with-cardio-mini-bar .dashboard-screen,
+body.with-cardio-mini-bar .training-screen,
+body.with-cardio-mini-bar .nutrition-screen,
+body.with-cardio-mini-bar .progress-screen,
+body.with-cardio-mini-bar .settings-screen {
+  padding-bottom: calc(var(--bottom-nav-height, 64px) + 56px + env(safe-area-inset-bottom, 0px) + 16px) !important;
+}
+
+body.with-cardio-mini-bar .maganis-toast-portal {
+  bottom: calc(var(--bottom-nav-height, 64px) + 56px + 16px + var(--bottom-inset)) !important;
+}
+

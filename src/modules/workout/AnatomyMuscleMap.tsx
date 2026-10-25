@@ -16,6 +16,8 @@ import { loadAtlasSvg } from './atlasSvgLoader.ts'
 import { APPROXIMATE_REGIONS } from './approximateRegions.ts'
 import atlasMusclesData from '../../data/atlas_muscles.json'
 import atlasGroupsData from '../../data/atlas-groups.json'
+import atlasAnchorsData from '../../data/atlas-anchors.json' with { type: 'json' }
+import muscleInfoData from '../../content/muscle-info-v1.1.json' with { type: 'json' }
 import atlasMetaData from '../../../public/atlas/atlas-meta.json' with { type: 'json' }
 import catalogData from '../../data/catalog-v1.json' with { type: 'json' }
 import { Segmented, Sheet, Callout, Button } from '../../ui/index.ts'
@@ -180,16 +182,7 @@ export function AnatomyMuscleMap({
     return map
   }, [resolved.muscles])
 
-  // Deep muscles presence detection
-  const hasDeepMuscles = useMemo(() => {
-    if (!hasContext) return true
-    return resolved.muscles.some((m) => {
-      const meta = META_MUSCLES[m.id]
-      return (
-        meta && (meta.best_layer === 'D' || (meta.visible_ratio ?? 1) < 0.65)
-      )
-    })
-  }, [resolved.muscles, hasContext])
+
 
   // Drawn counts in current view and other view, and tracking unpainted muscles
   const {
@@ -463,44 +456,75 @@ export function AnatomyMuscleMap({
     applyHighlights()
   })
 
-  // Select muscle and shift viewBox so it remains visible above bottom sheet (C1.2)
+  // Select muscle and shift viewBox so it remains visible above bottom sheet (C1)
   const selectMuscleWithOcclusionShift = useCallback(
     (muscleId: string) => {
       setViewState((s) => ({ ...s, selectedMuscleId: muscleId }))
 
       const meta = META_MUSCLES[muscleId]
+      const approx = APPROXIMATE_REGIONS[muscleId]
       const anchor =
         meta?.views?.[viewState.view]?.anchor ||
         (meta as { anchors?: Record<string, number[]> } | undefined)?.anchors?.[
           viewState.view
-        ]
+        ] ||
+        (approx && approx.view === viewState.view ? approx.anchor : null)
 
       if (anchor && Array.isArray(anchor) && anchor.length === 2) {
-        // In 1024x2048 viewBox, muscles with Y > 650 would be occluded by the 340px sheet.
-        // Shift pan.y upward proportionally so the muscle stays in the upper visible area.
-        if (anchor[1] > 650) {
-          const shiftY = -Math.min(130, Math.round(((anchor[1] - 650) / 1400) * 135))
+        // Shift pan.y upward proportionally so lower muscles stay in upper safe area
+        if (anchor[1] > 600) {
+          const shiftY = -Math.min(220, Math.round(((anchor[1] - 600) / 1448) * 220))
           setPan((p) => ({ ...p, y: shiftY }))
+        } else {
+          setPan((p) => ({ ...p, y: 0 }))
         }
       }
     },
     [viewState.view],
   )
 
-  // Handle click on SVG: select muscle or clear selection on background tap
+  // Handle click on SVG: select muscle or clear selection on background tap (C1)
+  // Hit areas >= 24x24 px, smaller/more specific muscle wins on overlap, layer-aware
   const handleSvgClick = useCallback(
     (e: React.MouseEvent) => {
-      const target = e.target as SVGElement
-      const muscleId = target.getAttribute?.('data-muscle')
+      const isDeepMode = viewState.layer === 'deep'
+      const clientX = e.clientX
+      const clientY = e.clientY
 
-      if (muscleId && (MUSCLE_DEFS[muscleId] || getMuscleInfo(muscleId))) {
-        selectMuscleWithOcclusionShift(muscleId)
+      let elements: Element[] = []
+      if (typeof document !== 'undefined' && typeof document.elementsFromPoint === 'function') {
+        elements = document.elementsFromPoint(clientX, clientY)
       } else {
-        // Tap on empty space clears selection (C1.2)
+        const target = e.target as SVGElement
+        if (target) elements = [target]
+      }
+
+      const candidates: Array<{ id: string; area: number; isDeep: boolean }> = []
+      for (const el of elements) {
+        const mId = el.getAttribute?.('data-muscle')
+        if (mId && (MUSCLE_DEFS[mId] || getMuscleInfo(mId))) {
+          const meta = META_MUSCLES[mId]
+          const isDeep = meta?.best_layer === 'D'
+          const area = Number(meta?.views?.[viewState.view]?.visible_pixels ?? (meta?.area_px as number | undefined) ?? 10000)
+          candidates.push({ id: mId, area, isDeep })
+        }
+      }
+
+      // In deep mode taps go to deep muscles only, in surface mode to surface muscles only
+      const layerMatches = candidates.filter((c) => (isDeepMode ? c.isDeep : !c.isDeep))
+      const matching = layerMatches.length > 0 ? layerMatches : candidates
+
+      if (matching.length > 0) {
+        // Smaller or more specific muscle wins on overlap
+        matching.sort((a, b) => a.area - b.area)
+        selectMuscleWithOcclusionShift(matching[0].id)
+      } else {
+        // Tap on empty space clears selection (C1)
         setViewState((s) => ({ ...s, selectedMuscleId: null }))
+        setPan((p) => ({ ...p, y: 0 }))
       }
     },
-    [selectMuscleWithOcclusionShift],
+    [viewState.layer, viewState.view, selectMuscleWithOcclusionShift],
   )
 
   // Double-tap zoom (1x -> 2x -> 3x -> 1x) with natural reset
@@ -598,12 +622,110 @@ export function AnatomyMuscleMap({
     selectMuscleWithOcclusionShift(mId)
   }
 
-  // Leader line labels to render
-  const activeLabels: AtlasLabel[] = showLabels
-    ? viewState.view === 'A'
-      ? ANTERIOR_LABELS
-      : POSTERIOR_LABELS
-    : []
+  // C2: Readable leader-line labels with collision avoidance
+  const activeLabels = useMemo(() => {
+    if (!showLabels) return []
+    const baseLabels =
+      viewState.view === 'A' ? ANTERIOR_LABELS : POSTERIOR_LABELS
+    let filtered: AtlasLabel[] = []
+
+    if (zoom >= 2.0) {
+      filtered = baseLabels
+    } else if (hasContext) {
+      filtered = baseLabels.filter(
+        (lbl) => roleMap.has(lbl.id) || lbl.id === viewState.selectedMuscleId,
+      )
+      if (filtered.length < 5) {
+        const existingIds = new Set(filtered.map((l) => l.id))
+        const majorAnterior = [
+          'pec_sternal',
+          'delt_anterior',
+          'biceps_long',
+          'obliques_external',
+          'rectus_femoris',
+          'tibialis_anterior',
+        ]
+        const majorPosterior = [
+          'trap_upper',
+          'trap_middle',
+          'trap_lower',
+          'delt_posterior',
+          'erector_spinae',
+          'triceps_long',
+          'glute_max',
+        ]
+        const candidates = (
+          viewState.view === 'A' ? majorAnterior : majorPosterior
+        ).filter((id) => !existingIds.has(id))
+        for (const id of candidates) {
+          const found = baseLabels.find((l) => l.id === id)
+          if (found) {
+            filtered.push(found)
+            if (filtered.length >= 5) break
+          }
+        }
+      }
+    } else {
+      // With no exercise context: labels for the main muscle groups
+      const majorAnterior = [
+        'pec_sternal',
+        'delt_anterior',
+        'biceps_long',
+        'obliques_external',
+        'rectus_femoris',
+        'tibialis_anterior',
+      ]
+      const majorPosterior = [
+        'trap_upper',
+        'delt_posterior',
+        'erector_spinae',
+        'triceps_long',
+        'glute_max',
+        'hamstring_bf_long',
+        'gastrocnemius_medial',
+      ]
+      const targetIds =
+        viewState.view === 'A' ? majorAnterior : majorPosterior
+      filtered = baseLabels.filter(
+        (lbl) => targetIds.includes(lbl.id) || lbl.id === viewState.selectedMuscleId,
+      )
+    }
+
+    // Automatic collision avoidance: ensure minimum vertical clearance between cards
+    const leftSide = filtered.filter((lbl) => lbl.align === 'end')
+    const rightSide = filtered.filter((lbl) => lbl.align === 'start')
+
+    const adjustSide = (list: AtlasLabel[]) => {
+      const sorted = list
+        .map((l) => ({
+          ...l,
+          box: [...l.box] as [number, number, number, number],
+          lineEnd: [...l.lineEnd] as [number, number],
+        }))
+        .sort((a, b) => a.anchor[1] - b.anchor[1])
+      let lastBottom = 10
+      for (const item of sorted) {
+        let boxY = item.box[1]
+        if (boxY < lastBottom + 12) {
+          boxY = lastBottom + 12
+        }
+        item.box = [item.box[0], boxY, item.box[2], item.box[3]]
+        item.lineEnd = [item.lineEnd[0], boxY + item.box[3] / 2]
+        lastBottom = boxY + item.box[3]
+      }
+      return sorted
+    }
+
+    return [...adjustSide(leftSide), ...adjustSide(rightSide)]
+  }, [
+    showLabels,
+    viewState.view,
+    viewState.selectedMuscleId,
+    zoom,
+    hasContext,
+    roleMap,
+  ])
+
 
   // All groups and filtered muscles for the chip list under figure
   const allGroups = useMemo(() => getAllGroups(), [])
@@ -747,39 +869,37 @@ export function AnatomyMuscleMap({
             الأسماء
           </button>
 
-          {/* Deep Muscle Toggle (C1.3) */}
-          {hasDeepMuscles && (
-            <button
-              type="button"
-              role="checkbox"
-              aria-checked={isDeep}
-              className={`chip ${isDeep ? 'chip--active' : ''}`}
-              onClick={() =>
-                setViewState((s) => ({
-                  ...s,
-                  layer: s.layer === 'deep' ? 'surface' : 'deep',
-                  selectedMuscleId: null,
-                }))
-              }
-              style={{
-                cursor: 'pointer',
-                border: isDeep
-                  ? '1.5px solid var(--color-accent)'
-                  : '1px solid var(--color-divider)',
-                background: isDeep
-                  ? 'var(--color-surface-2)'
-                  : 'var(--color-surface)',
-                color: isDeep
-                  ? 'var(--color-accent-text)'
-                  : 'var(--color-text-2)',
-                fontWeight: isDeep ? 700 : 500,
-                padding: '6px 12px',
-                borderRadius: 'var(--radius-full)',
-              }}
-            >
-              إظهار العضلات العميقة
-            </button>
-          )}
+          {/* Deep Muscle Toggle (C2: always in the same order and place) */}
+          <button
+            type="button"
+            role="checkbox"
+            aria-checked={isDeep}
+            className={`chip ${isDeep ? 'chip--active' : ''}`}
+            onClick={() =>
+              setViewState((s) => ({
+                ...s,
+                layer: s.layer === 'deep' ? 'surface' : 'deep',
+                selectedMuscleId: null,
+              }))
+            }
+            style={{
+              cursor: 'pointer',
+              border: isDeep
+                ? '1.5px solid var(--color-accent)'
+                : '1px solid var(--color-divider)',
+              background: isDeep
+                ? 'var(--color-surface-2)'
+                : 'var(--color-surface)',
+              color: isDeep
+                ? 'var(--color-accent-text)'
+                : 'var(--color-text-2)',
+              fontWeight: isDeep ? 700 : 500,
+              padding: '6px 12px',
+              borderRadius: 'var(--radius-full)',
+            }}
+          >
+            إظهار العضلات العميقة
+          </button>
         </div>
       </div>
 
@@ -850,7 +970,7 @@ export function AnatomyMuscleMap({
             dangerouslySetInnerHTML={svgHtml}
           />
 
-          {/* Leader-line labels overlay (C1.1) */}
+          {/* Leader-line labels overlay (C2: readable labels with solid lines and tap-to-select) */}
           {showLabels && activeLabels.length > 0 && (
             <svg
               className="atlas-labels-layer"
@@ -866,8 +986,17 @@ export function AnatomyMuscleMap({
               aria-hidden="true"
             >
               {activeLabels.map((lbl) => (
-                <g key={lbl.id} className="atlas-label-group">
-                  {/* Leader line from muscle anchor to label lineEnd */}
+                <g
+                  key={lbl.id}
+                  className="atlas-label-group"
+                  data-muscle={lbl.id}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleSelectMuscle(lbl.id)
+                  }}
+                  style={{ cursor: 'pointer', pointerEvents: 'all' }}
+                >
+                  {/* Leader line from muscle anchor to label lineEnd: thin solid line */}
                   <line
                     x1={lbl.anchor[0]}
                     y1={lbl.anchor[1]}
@@ -875,37 +1004,36 @@ export function AnatomyMuscleMap({
                     y2={lbl.lineEnd[1]}
                     stroke="var(--atlas-line)"
                     strokeWidth="1.5"
-                    strokeDasharray="4 3"
                     vectorEffect="non-scaling-stroke"
                   />
                   {/* Anchor point circle */}
                   <circle
                     cx={lbl.anchor[0]}
                     cy={lbl.anchor[1]}
-                    r="4"
+                    r="5"
                     fill="var(--color-accent)"
                     vectorEffect="non-scaling-stroke"
                   />
-                  {/* Label card box */}
+                  {/* Label card box: solid surface background */}
                   <rect
                     x={lbl.box[0]}
                     y={lbl.box[1]}
                     width={lbl.box[2]}
-                    height={lbl.box[3]}
+                    height={Math.max(50, lbl.box[3])}
                     rx="8"
                     fill="var(--color-surface)"
                     stroke="var(--color-divider)"
                     strokeWidth="1.5"
                     vectorEffect="non-scaling-stroke"
                   />
-                  {/* Gym name text */}
+                  {/* Gym name text: 32 SVG units = 11.25 CSS px at 360px viewport */}
                   <text
                     x={lbl.box[0] + lbl.box[2] / 2}
-                    y={lbl.box[1] + lbl.box[3] / 2 + 5}
+                    y={lbl.box[1] + Math.max(50, lbl.box[3]) / 2 + 10}
                     textAnchor="middle"
                     fill="var(--color-text)"
-                    fontSize="17"
-                    fontWeight="600"
+                    fontSize="32"
+                    fontWeight="700"
                     fontFamily="inherit"
                   >
                     {lbl.gym_ar}
@@ -915,41 +1043,82 @@ export function AnatomyMuscleMap({
             </svg>
           )}
 
-          {/* Approximate Polygon Overlay Layer for muscles absent in BP3D 4.0 */}
+          {/* C3.4 Locator Pin Layer for No-Mesh Muscles (No fake polygon drawings) */}
           <svg
-            className="atlas-approx-layer"
+            className="atlas-locators-layer"
             viewBox="0 0 1024 2048"
             style={{
               position: 'absolute',
               inset: 0,
               width: '100%',
               height: '100%',
-              zIndex: 4,
-              pointerEvents: 'auto',
+              zIndex: 5,
+              pointerEvents: 'none',
             }}
             aria-hidden="true"
           >
-            {resolved.muscles.map((m) => {
-              const approx = APPROXIMATE_REGIONS[m.id]
-              if (!approx || approx.view !== viewState.view) return null
-              const isPrimary = m.role === 'primary'
-              const isSelected = viewState.selectedMuscleId === m.id
+            {Object.entries(atlasAnchorsData.anchors).map(([mId, anchorDef]) => {
+              const a = anchorDef as {
+                id: string
+                view: 'A' | 'P'
+                host_mesh: string
+                fraction_x: number
+                fraction_y: number
+                note_ar: string
+              }
+              if (a.view !== viewState.view) return null
+              const role = roleMap.get(mId)
+              const isSelected = viewState.selectedMuscleId === mId
+              // Show pin if muscle is targeted by exercise or currently selected
+              if (!role && !isSelected) return null
+
+              const approx = APPROXIMATE_REGIONS[mId]
+              const cx = approx?.anchor?.[0] || 512
+              const cy = approx?.anchor?.[1] || 750
+              const pinColor = isSelected
+                ? 'var(--color-accent)'
+                : role === 'primary'
+                  ? 'var(--atlas-primary)'
+                  : 'var(--atlas-secondary)'
+
               return (
-                <path
-                  key={m.id}
-                  d={approx.path}
-                  data-muscle={m.id}
-                  onClick={handleSvgClick}
-                  className={`muscle-vis ${isPrimary ? 'muscle-primary' : 'muscle-secondary'} muscle-approximate ${isSelected ? 'muscle-targeted-highlight' : ''}`}
-                  fill={
-                    isPrimary
-                      ? 'rgba(229, 57, 53, 0.45)'
-                      : 'rgba(253, 216, 53, 0.45)'
-                  }
-                  stroke={isPrimary ? '#b71c1c' : '#f9a825'}
-                  strokeWidth="1.5"
-                  strokeDasharray="6 4"
-                />
+                <g
+                  key={mId}
+                  className="atlas-locator-pin"
+                  data-muscle={mId}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleSelectMuscle(mId)
+                  }}
+                  style={{ cursor: 'pointer', pointerEvents: 'all' }}
+                >
+                  {/* Hit Target (diameter 70 SVG units = 24.6 CSS px) */}
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r="35"
+                    fill="transparent"
+                    data-muscle={mId}
+                  />
+                  {/* Outer pulse/focus ring */}
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={isSelected ? 18 : 14}
+                    fill="none"
+                    stroke={pinColor}
+                    strokeWidth="2.5"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  {/* Inner solid marker */}
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={isSelected ? 9 : 7}
+                    fill={pinColor}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </g>
               )
             })}
           </svg>
@@ -1106,6 +1275,7 @@ export function AnatomyMuscleMap({
                     return (
                       <button
                         key={m.id}
+                        data-muscle-chip={m.id}
                         type="button"
                         onClick={() => handleSelectMuscle(m.id)}
                         className={`chip ${isSelected ? 'chip--active' : ''}`}
@@ -1169,7 +1339,10 @@ export function AnatomyMuscleMap({
       {/* 6. Muscle Detail Card Bottom Sheet (C1.2) */}
       <Sheet
         isOpen={!!viewState.selectedMuscleId}
-        onClose={() => setViewState((s) => ({ ...s, selectedMuscleId: null }))}
+        onClose={() => {
+          setViewState((s) => ({ ...s, selectedMuscleId: null }))
+          setPan((p) => ({ ...p, y: 0 }))
+        }}
         title={
           selectedInfo?.gym_ar ||
           (viewState.selectedMuscleId
@@ -1212,7 +1385,7 @@ export function AnatomyMuscleMap({
               </bdi>
             </div>
 
-            {/* 3. Where it is (where_ar) */}
+            {/* 3. Where it is ("فين مكانها" via <Claim id={`muscle_where.${id}`} status="coach_authored">) */}
             {selectedInfo?.where_ar && (
               <div
                 style={{
@@ -1224,29 +1397,52 @@ export function AnatomyMuscleMap({
                   borderRadius: 'var(--radius-control)',
                 }}
               >
-                <strong>الموقع: </strong>
-                <span>{selectedInfo.where_ar}</span>
+                <div style={{ fontWeight: 600, marginBottom: '4px' }}>
+                  فين مكانها:
+                </div>
+                <Claim id={`muscle_where.${viewState.selectedMuscleId}`} />
               </div>
             )}
 
-            {/* 4. What it does (does_ar via <Claim id={`muscle_does.${id}`} status="coach_authored">) */}
-            <div
-              style={{
-                fontSize: '13.5px',
-                lineHeight: 1.6,
-                color: 'var(--color-text)',
-                background: 'var(--color-surface-2)',
-                padding: '10px 14px',
-                borderRadius: 'var(--radius-control)',
-              }}
-            >
-              <div style={{ fontWeight: 600, marginBottom: '4px' }}>
-                وظيفتها الحركية:
+            {/* 4. Where it attaches ("بتتربط فين" via <Claim id={`muscle_attaches.${id}`} status="coach_authored">) */}
+            {muscleInfoData.muscles[viewState.selectedMuscleId as keyof typeof muscleInfoData.muscles]?.attaches_ar && (
+              <div
+                style={{
+                  fontSize: '13.5px',
+                  lineHeight: 1.5,
+                  color: 'var(--color-text)',
+                  background: 'var(--color-surface-2)',
+                  padding: '10px 14px',
+                  borderRadius: 'var(--radius-control)',
+                }}
+              >
+                <div style={{ fontWeight: 600, marginBottom: '4px' }}>
+                  بتتربط فين:
+                </div>
+                <Claim id={`muscle_attaches.${viewState.selectedMuscleId}`} />
               </div>
-              <Claim id={`muscle_does.${viewState.selectedMuscleId}`} />
-            </div>
+            )}
 
-            {/* 5. Group Name */}
+            {/* 5. What it does ("بتعمل إيه" via <Claim id={`muscle_does.${id}`} status="coach_authored">) */}
+            {muscleInfoData.muscles[viewState.selectedMuscleId as keyof typeof muscleInfoData.muscles]?.does_ar && (
+              <div
+                style={{
+                  fontSize: '13.5px',
+                  lineHeight: 1.6,
+                  color: 'var(--color-text)',
+                  background: 'var(--color-surface-2)',
+                  padding: '10px 14px',
+                  borderRadius: 'var(--radius-control)',
+                }}
+              >
+                <div style={{ fontWeight: 600, marginBottom: '4px' }}>
+                  بتعمل إيه:
+                </div>
+                <Claim id={`muscle_does.${viewState.selectedMuscleId}`} />
+              </div>
+            )}
+
+            {/* 6. Group Name */}
             {groupName && (
               <div style={{ fontSize: '13px', color: 'var(--color-text-2)' }}>
                 <span>المجموعة العضلية: </span>
@@ -1256,7 +1452,7 @@ export function AnatomyMuscleMap({
               </div>
             )}
 
-            {/* 6. Note "الرسم تقريبي" when derived_approx */}
+            {/* 7. Note "تقريبي" when derived_approx */}
             {selectedInfo?.atlas === 'derived_approx' && (
               <div
                 style={{
@@ -1267,9 +1463,24 @@ export function AnatomyMuscleMap({
                   padding: '8px 12px',
                   borderRadius: 'var(--radius-control)',
                   lineHeight: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
                 }}
               >
-                <strong>الرسم تقريبي: </strong>
+                <span
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius-full)',
+                    background: 'var(--color-surface)',
+                    border: '1px solid var(--color-warning)',
+                    color: 'var(--color-warning)',
+                  }}
+                >
+                  تقريبي
+                </span>
                 <span>
                   {selectedInfo.note_ar ||
                     'تمثيل هندسي تقريبي في الأطلس التشريحي'}
@@ -1277,7 +1488,42 @@ export function AnatomyMuscleMap({
               </div>
             )}
 
-            {/* 7. Exercises activating this muscle ("تمارين بتشغّل العضلة دي") */}
+            {/* Note "مفيش رسم للعضلة دي" when no_mesh */}
+            {selectedInfo?.atlas === 'no_mesh' && (
+              <div
+                style={{
+                  fontSize: '12.5px',
+                  color: 'var(--color-text-2)',
+                  background: 'var(--color-surface-2)',
+                  border: '1px solid var(--color-divider)',
+                  padding: '8px 12px',
+                  borderRadius: 'var(--radius-control)',
+                  lineHeight: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius-full)',
+                    background: 'var(--color-surface)',
+                    border: '1px solid var(--color-divider)',
+                    color: 'var(--color-text-2)',
+                  }}
+                >
+                  مفيش رسم للعضلة دي
+                </span>
+                <span>
+                  محددة بدبوس توضيحي على الجسم لعدم توفر رسم دقيق في الأطلس
+                </span>
+              </div>
+            )}
+
+            {/* 8. Exercises activating this muscle ("تمارين بتشغّل العضلة دي") */}
             {relevantExercises.length > 0 && (
               <div style={{ marginTop: '6px' }}>
                 <div
@@ -1298,19 +1544,29 @@ export function AnatomyMuscleMap({
                   }}
                 >
                   {relevantExercises.map((ex) => (
-                    <div
+                    <button
                       key={ex.key}
+                      type="button"
+                      onClick={() => {
+                        window.location.hash = `#/exercise/${ex.key}`
+                      }}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '8px 12px',
                         background: 'var(--color-surface-2)',
+                        border: '1px solid var(--color-divider)',
                         borderRadius: 'var(--radius-control)',
                         fontSize: '13px',
+                        cursor: 'pointer',
+                        textAlign: 'right',
+                        width: '100%',
                       }}
                     >
-                      <span style={{ fontWeight: 600 }}>{ex.name_ar}</span>
+                      <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
+                        {ex.name_ar}
+                      </span>
                       <span
                         style={{
                           fontSize: '11px',
@@ -1329,7 +1585,7 @@ export function AnatomyMuscleMap({
                       >
                         {ex.role === 'primary' ? 'أساسية' : 'مساعدة'}
                       </span>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
