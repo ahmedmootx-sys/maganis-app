@@ -162,6 +162,9 @@ export function ExerciseDetailView({
 
   const [refreshKey, setRefreshKey] = useState(0)
   const [showEditSheet, setShowEditSheet] = useState(false)
+  // Which field the edit sheet should scroll to and focus when it opens (the video
+  // field is the last one in a long form, so "add video link" must jump to it).
+  const [editFocus, setEditFocus] = useState<'video' | null>(null)
   const [toastMsg, setToastMsg] = useState('')
   const [showConfirmReset, setShowConfirmReset] = useState(false)
   const [undoOverrideSnapshot, setUndoOverrideSnapshot] = useState<{
@@ -604,7 +607,14 @@ export function ExerciseDetailView({
               flexWrap: 'wrap',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                flexWrap: 'wrap',
+              }}
+            >
               <h1
                 style={{
                   margin: 0,
@@ -644,7 +654,10 @@ export function ExerciseDetailView({
               <button
                 type="button"
                 data-testid="edit-exercise-btn"
-                onClick={() => setShowEditSheet(true)}
+                onClick={() => {
+                  setEditFocus(null)
+                  setShowEditSheet(true)
+                }}
                 style={{
                   minHeight: 'var(--touch-target-min)',
                   padding: 'var(--space-2) var(--space-3)',
@@ -690,9 +703,7 @@ export function ExerciseDetailView({
           >
             {getMuscleGroupLabel(exercise.category)}
           </span>
-          <span className="chip">
-            {getEquipmentLabel(exercise.equipment)}
-          </span>
+          <span className="chip">{getEquipmentLabel(exercise.equipment)}</span>
           <span className="chip">
             {getDifficultyLabel(exercise.difficulty)}
           </span>
@@ -701,19 +712,20 @@ export function ExerciseDetailView({
               {formatMuscleLabel(exercise.targetSubMuscleAr)}
             </span>
           )}
-          {('isCustom' in exercise && Boolean((exercise as { isCustom?: boolean }).isCustom)) && (
-            <span
-              className="chip chip--custom"
-              style={{
-                fontWeight: 700,
-                background: 'var(--color-surface-2)',
-                color: 'var(--color-text)',
-                border: '1px solid var(--color-divider)',
-              }}
-            >
-              أضفته أنت
-            </span>
-          )}
+          {'isCustom' in exercise &&
+            Boolean((exercise as { isCustom?: boolean }).isCustom) && (
+              <span
+                className="chip chip--custom"
+                style={{
+                  fontWeight: 700,
+                  background: 'var(--color-surface-2)',
+                  color: 'var(--color-text)',
+                  border: '1px solid var(--color-divider)',
+                }}
+              >
+                أضفته أنت
+              </span>
+            )}
           {exercise.archived && (
             <div
               style={{
@@ -833,15 +845,24 @@ export function ExerciseDetailView({
           exercise={exercise}
           showPlaceholderIfEmpty
           onToast={(msg) => setToastMsg(msg)}
-          onAddImage={() => setShowEditSheet(true)}
-          onAddVideo={() => setShowEditSheet(true)}
+          onAddImage={() => {
+            setEditFocus(null)
+            setShowEditSheet(true)
+          }}
+          onAddVideo={() => {
+            setEditFocus('video')
+            setShowEditSheet(true)
+          }}
         />
 
         {/* Video Player Section (Task G5-B3) */}
         <VideoPlayer
           videoUrl={exercise.videoUrl}
           exerciseName={nameAr}
-          onAddVideo={() => setShowEditSheet(true)}
+          onAddVideo={() => {
+            setEditFocus('video')
+            setShowEditSheet(true)
+          }}
         />
 
         {/* Personal Note Card if present */}
@@ -1197,9 +1218,8 @@ export function ExerciseDetailView({
                       lineHeight: 1.6,
                     }}
                   >
-                    شغالين على توثيق التحليل الحركي للتمرين ده بدقة علمية.
-                    تقدر تشوف خطوات الأداء الفنية وإرشادات الأمان في تبويب
-                    «الأداء».
+                    شغالين على توثيق التحليل الحركي للتمرين ده بدقة علمية. تقدر
+                    تشوف خطوات الأداء الفنية وإرشادات الأمان في تبويب «الأداء».
                   </p>
                 </div>
               </Card>
@@ -1677,8 +1697,7 @@ export function ExerciseDetailView({
                   }}
                 >
                   الحجم التدريبي الأسبوعي لعضلة (
-                  {getMuscleGroupLabel(exercise.category)}
-                  )
+                  {getMuscleGroupLabel(exercise.category)})
                 </h3>
                 <div
                   style={{
@@ -2199,7 +2218,11 @@ export function ExerciseDetailView({
       {showEditSheet && (
         <ExerciseEditSheet
           isOpen={showEditSheet}
-          onClose={() => setShowEditSheet(false)}
+          onClose={() => {
+            setShowEditSheet(false)
+            setEditFocus(null)
+          }}
+          focusField={editFocus}
           exercise={exercise}
           onSaved={() => setRefreshKey((k) => k + 1)}
           onResetOriginal={() => setRefreshKey((k) => k + 1)}

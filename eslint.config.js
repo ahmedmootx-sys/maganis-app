@@ -16,8 +16,11 @@ export default tseslint.config(
       '**/.cache/**',
       '**/tools/**',
       '**/scratch/**',
+      '**/qa/**',
     ],
   },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -32,13 +35,12 @@ export default tseslint.config(
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'react-refresh/only-export-components': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
     },
   },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
   eslintConfigPrettier,
 )

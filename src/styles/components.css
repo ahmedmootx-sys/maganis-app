@@ -65,6 +65,14 @@
   box-sizing: border-box;
 }
 
+/* Children of a scroller never shrink: a flex item with overflow:hidden has an
+   automatic minimum height of 0 and collapses to its borders inside a fixed-height
+   flex column (this is what made the video player disappear). :where() keeps the
+   specificity at 0 so any explicit flex rule still wins. */
+:where(.screen-content, .scroller, .wizard-step-body) > * {
+  flex-shrink: 0;
+}
+
 /* Scroller: one token --page-end and nothing else */
 .screen-content,
 .scroller,
@@ -1538,7 +1546,6 @@ body[data-sheet-open='true'] .bottom-nav {
   pointer-events: all;
 }
 
-
 /* Tap Interaction: selected muscle gets 2px accent outline, others drop to 45% */
 .muscle-targeted-highlight {
   stroke: var(--atlas-accent-outline, #f95700) !important;
@@ -1623,7 +1630,6 @@ body[data-sheet-open='true'] .bottom-nav {
     animation: none !important;
   }
 }
-
 
 /* Atlas Zoom Controls */
 /* Atlas Zoom Controls */
@@ -1947,4 +1953,3 @@ input::placeholder {
   color: var(--color-placeholder, #52525b) !important;
   opacity: 1 !important;
 }
-

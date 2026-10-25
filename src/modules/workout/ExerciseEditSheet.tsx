@@ -39,6 +39,8 @@ export interface ExerciseEditSheetProps {
   exercise: Exercise
   onSaved?: (updated: Exercise) => void
   onResetOriginal?: () => void
+  /** Field to scroll to and focus once the sheet is open (e.g. "add video link"). */
+  focusField?: 'video' | null
 }
 
 export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
@@ -47,6 +49,7 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   exercise,
   onSaved,
   onResetOriginal,
+  focusField = null,
 }) => {
   let showToast: ReturnType<typeof useToast>['showToast'] | undefined
   try {
@@ -64,13 +67,17 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   const [showOriginal, setShowOriginal] = useState(false)
   const [showConfirmReset, setShowConfirmReset] = useState(false)
   const [showConfirmClose, setShowConfirmClose] = useState(false)
-  const [activeMusclePickerId, setActiveMusclePickerId] = useState<string | null>(null)
+  const [activeMusclePickerId, setActiveMusclePickerId] = useState<
+    string | null
+  >(null)
   const [errorMsg, setErrorMsg] = useState('')
 
   // Form State
   const [nameAr, setNameAr] = useState('')
   const [nameEn, setNameEn] = useState('')
-  const [imageMode, setImageMode] = useState<'original' | 'none' | 'custom'>('original')
+  const [imageMode, setImageMode] = useState<'original' | 'none' | 'custom'>(
+    'original',
+  )
   const [customImageBlob, setCustomImageBlob] = useState<string>('')
   const [benefitAr, setBenefitAr] = useState('')
   const [mechanicsAr, setMechanicsAr] = useState('')
@@ -86,8 +93,10 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
     const origNameEn = ov?.nameEn ?? exercise.nameEn ?? exercise.name ?? ''
     const origImageMode = ov?.imageMode ?? 'original'
     const origCustomImageBlob = ov?.customImageBlob ?? ''
-    const origBenefitAr = ov?.benefitAr ?? exercise.benefitAr ?? exercise.benefit ?? ''
-    const origMechanicsAr = ov?.mechanicsAr ?? exercise.mechanicsAr ?? exercise.mechanics ?? ''
+    const origBenefitAr =
+      ov?.benefitAr ?? exercise.benefitAr ?? exercise.benefit ?? ''
+    const origMechanicsAr =
+      ov?.mechanicsAr ?? exercise.mechanicsAr ?? exercise.mechanics ?? ''
     const origSteps =
       ov?.howToStepsAr ??
       exercise.howToStepsAr ??
@@ -159,8 +168,12 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
       setNameEn(ov?.nameEn ?? exercise.nameEn ?? exercise.name ?? '')
       setImageMode(ov?.imageMode ?? 'original')
       setCustomImageBlob(ov?.customImageBlob ?? '')
-      setBenefitAr(ov?.benefitAr ?? exercise.benefitAr ?? exercise.benefit ?? '')
-      setMechanicsAr(ov?.mechanicsAr ?? exercise.mechanicsAr ?? exercise.mechanics ?? '')
+      setBenefitAr(
+        ov?.benefitAr ?? exercise.benefitAr ?? exercise.benefit ?? '',
+      )
+      setMechanicsAr(
+        ov?.mechanicsAr ?? exercise.mechanicsAr ?? exercise.mechanics ?? '',
+      )
 
       const initialSteps =
         ov?.howToStepsAr ??
@@ -178,6 +191,20 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
       setVideoUrl(ov?.videoUrl ?? '')
     }
   }, [isOpen, exercise, existingOverride])
+
+  // Jump to the requested field after the sheet content has rendered. The video field is
+  // the last control of a long form: without this, "add video link" opens the sheet at the
+  // top and the person never sees a place to paste the link.
+  React.useEffect(() => {
+    if (!isOpen || focusField !== 'video') return
+    const timer = window.setTimeout(() => {
+      const el = document.getElementById('edit-video-url')
+      if (!el) return
+      el.scrollIntoView({ block: 'center' })
+      ;(el as HTMLInputElement).focus({ preventScroll: true })
+    }, 120)
+    return () => window.clearTimeout(timer)
+  }, [isOpen, focusField])
 
   // Step operations
   const handleAddStep = () => {
@@ -199,15 +226,16 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   }
 
   // Muscle Targeting explicit role setter
-  const handleSetMuscleRole = (muscleId: string, role: 'primary' | 'secondary' | 'none') => {
+  const handleSetMuscleRole = (
+    muscleId: string,
+    role: 'primary' | 'secondary' | 'none',
+  ) => {
     if (role === 'none') {
       setMuscles(muscles.filter((m) => m.id !== muscleId))
     } else {
       const exists = muscles.some((m) => m.id === muscleId)
       if (exists) {
-        setMuscles(
-          muscles.map((m) => (m.id === muscleId ? { ...m, role } : m)),
-        )
+        setMuscles(muscles.map((m) => (m.id === muscleId ? { ...m, role } : m)))
       } else {
         setMuscles([...muscles, { id: muscleId, role }])
       }
@@ -280,7 +308,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                 nameEn: prevOverride.nameEn || exercise.nameEn,
                 benefitAr: prevOverride.benefitAr || exercise.benefitAr,
                 mechanicsAr: prevOverride.mechanicsAr || exercise.mechanicsAr,
-                howToStepsAr: prevOverride.howToStepsAr || exercise.howToStepsAr,
+                howToStepsAr:
+                  prevOverride.howToStepsAr || exercise.howToStepsAr,
                 muscles: prevOverride.muscles || exercise.muscles,
               })
             }
@@ -299,7 +328,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   const handleAutoGrow = (e: React.FormEvent<HTMLTextAreaElement>) => {
     const el = e.currentTarget
     el.style.height = 'auto'
-    const maxHeight = typeof window !== 'undefined' ? window.innerHeight * 0.4 : 320
+    const maxHeight =
+      typeof window !== 'undefined' ? window.innerHeight * 0.4 : 320
     el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
   }
 
@@ -395,8 +425,15 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               borderRadius: 'var(--radius-control)',
             }}
           >
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}>
-              {showOriginal ? 'عرض البيانات الأصلية (للمعاينة فقط)' : 'تعديل البيانات'}
+            <span
+              style={{
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-semibold)',
+              }}
+            >
+              {showOriginal
+                ? 'عرض البيانات الأصلية (للمعاينة فقط)'
+                : 'تعديل البيانات'}
             </span>
             <button
               type="button"
@@ -426,14 +463,24 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               }}
             >
               <div>
-                <strong style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-2)' }}>
+                <strong
+                  style={{
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--color-text-2)',
+                  }}
+                >
                   الاسم بالعربي:
                 </strong>
                 <div>{exercise.nameAr}</div>
               </div>
               {exercise.nameEn && (
                 <div>
-                  <strong style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-2)' }}>
+                  <strong
+                    style={{
+                      fontSize: 'var(--font-size-xs)',
+                      color: 'var(--color-text-2)',
+                    }}
+                  >
                     الاسم بالإنجليزي:
                   </strong>
                   <div>
@@ -443,7 +490,12 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               )}
               {exercise.benefitAr && (
                 <div>
-                  <strong style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-2)' }}>
+                  <strong
+                    style={{
+                      fontSize: 'var(--font-size-xs)',
+                      color: 'var(--color-text-2)',
+                    }}
+                  >
                     الفائدة:
                   </strong>
                   <div>{exercise.benefitAr}</div>
@@ -451,7 +503,12 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               )}
               {exercise.mechanicsAr && (
                 <div>
-                  <strong style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-2)' }}>
+                  <strong
+                    style={{
+                      fontSize: 'var(--font-size-xs)',
+                      color: 'var(--color-text-2)',
+                    }}
+                  >
                     الميكانيكا:
                   </strong>
                   <div>{exercise.mechanicsAr}</div>
@@ -462,10 +519,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
             /* Editable Form */
             <>
               {/* Arabic Name */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-1)',
+                }}
+              >
                 <label
                   htmlFor="edit-name-ar"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}
+                  style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-semibold)',
+                  }}
                 >
                   الاسم بالعربي
                 </label>
@@ -488,10 +554,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               </div>
 
               {/* English Name */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-1)',
+                }}
+              >
                 <label
                   htmlFor="edit-name-en"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}
+                  style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-semibold)',
+                  }}
                 >
                   الاسم بالإنجليزي
                 </label>
@@ -515,8 +590,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               </div>
 
               {/* Image Mode */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-2)',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-semibold)',
+                  }}
+                >
                   صورة التمرين
                 </span>
                 <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
@@ -529,8 +615,14 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                       minHeight: 'var(--touch-target-min)',
                       borderRadius: 'var(--radius-control)',
                       border: `1px solid ${imageMode === 'original' ? 'var(--color-accent)' : 'var(--color-divider)'}`,
-                      backgroundColor: imageMode === 'original' ? 'var(--color-accent-tint)' : 'var(--color-surface)',
-                      color: imageMode === 'original' ? 'var(--color-accent-text)' : 'var(--color-text)',
+                      backgroundColor:
+                        imageMode === 'original'
+                          ? 'var(--color-accent-tint)'
+                          : 'var(--color-surface)',
+                      color:
+                        imageMode === 'original'
+                          ? 'var(--color-accent-text)'
+                          : 'var(--color-text)',
                       fontWeight: 'var(--font-weight-semibold)',
                       cursor: 'pointer',
                     }}
@@ -546,8 +638,14 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                       minHeight: 'var(--touch-target-min)',
                       borderRadius: 'var(--radius-control)',
                       border: `1px solid ${imageMode === 'none' ? 'var(--color-accent)' : 'var(--color-divider)'}`,
-                      backgroundColor: imageMode === 'none' ? 'var(--color-accent-tint)' : 'var(--color-surface)',
-                      color: imageMode === 'none' ? 'var(--color-accent-text)' : 'var(--color-text)',
+                      backgroundColor:
+                        imageMode === 'none'
+                          ? 'var(--color-accent-tint)'
+                          : 'var(--color-surface)',
+                      color:
+                        imageMode === 'none'
+                          ? 'var(--color-accent-text)'
+                          : 'var(--color-text)',
                       fontWeight: 'var(--font-weight-semibold)',
                       cursor: 'pointer',
                     }}
@@ -563,8 +661,14 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                       minHeight: 'var(--touch-target-min)',
                       borderRadius: 'var(--radius-control)',
                       border: `1px solid ${imageMode === 'custom' ? 'var(--color-accent)' : 'var(--color-divider)'}`,
-                      backgroundColor: imageMode === 'custom' ? 'var(--color-accent-tint)' : 'var(--color-surface)',
-                      color: imageMode === 'custom' ? 'var(--color-accent-text)' : 'var(--color-text)',
+                      backgroundColor:
+                        imageMode === 'custom'
+                          ? 'var(--color-accent-tint)'
+                          : 'var(--color-surface)',
+                      color:
+                        imageMode === 'custom'
+                          ? 'var(--color-accent-text)'
+                          : 'var(--color-text)',
                       fontWeight: 'var(--font-weight-semibold)',
                       cursor: 'pointer',
                     }}
@@ -583,7 +687,12 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                       style={{ fontSize: 'var(--font-size-sm)' }}
                     />
                     {customImageBlob && (
-                      <div style={{ marginTop: 'var(--space-2)', textAlign: 'center' }}>
+                      <div
+                        style={{
+                          marginTop: 'var(--space-2)',
+                          textAlign: 'center',
+                        }}
+                      >
                         <img
                           src={customImageBlob}
                           alt="معاينة الصورة"
@@ -601,10 +710,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               </div>
 
               {/* How to Perform: Benefit & Mechanics (Auto-grow, start-aligned, min 4 lines, max 40vh) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-1)',
+                }}
+              >
                 <label
                   htmlFor="edit-benefit"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}
+                  style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-semibold)',
+                  }}
                 >
                   الفائدة العضلية
                 </label>
@@ -632,10 +750,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                 />
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-1)',
+                }}
+              >
                 <label
                   htmlFor="edit-mechanics"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}
+                  style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-semibold)',
+                  }}
                 >
                   ميكانيكا الأداء
                 </label>
@@ -664,8 +791,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               </div>
 
               {/* Steps List (Add, Remove, Reorder with 44x44px chevron buttons and step numbers) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-2)',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-semibold)',
+                  }}
+                >
                   خطوات الأداء ({steps.length})
                 </span>
                 {steps.map((st, idx) => (
@@ -691,7 +829,13 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                     >
                       {idx + 1}.
                     </span>
-                    <span style={{ flex: 1, fontSize: 'var(--font-size-sm)', lineHeight: '1.5' }}>
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: 'var(--font-size-sm)',
+                        lineHeight: '1.5',
+                      }}
+                    >
                       {st}
                     </span>
                     <button
@@ -727,7 +871,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                         justifyContent: 'center',
                         border: 'none',
                         background: 'none',
-                        cursor: idx === steps.length - 1 ? 'default' : 'pointer',
+                        cursor:
+                          idx === steps.length - 1 ? 'default' : 'pointer',
                         opacity: idx === steps.length - 1 ? 0.3 : 1,
                         color: 'var(--color-text)',
                       }}
@@ -755,7 +900,13 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                   </div>
                 ))}
 
-                <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-1)' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: 'var(--space-2)',
+                    marginTop: 'var(--space-1)',
+                  }}
+                >
                   <input
                     type="text"
                     data-testid="input-new-step"
@@ -780,8 +931,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               </div>
 
               {/* Muscle Targeting (NO nested scroll, organized by groups, summary line, 3-option segmented control, AA badges) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-3)',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-semibold)',
+                  }}
+                >
                   العضلات المستهدفة
                 </span>
 
@@ -798,21 +960,45 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                   }}
                 >
                   <div style={{ fontSize: 'var(--font-size-xs)' }}>
-                    <strong style={{ color: 'var(--color-text)' }}>العضلات الأساسية: </strong>
-                    <span style={{ color: primarySummary ? 'var(--color-danger)' : 'var(--color-text-2)', fontWeight: '600' }}>
+                    <strong style={{ color: 'var(--color-text)' }}>
+                      العضلات الأساسية:{' '}
+                    </strong>
+                    <span
+                      style={{
+                        color: primarySummary
+                          ? 'var(--color-danger)'
+                          : 'var(--color-text-2)',
+                        fontWeight: '600',
+                      }}
+                    >
                       {primarySummary || 'لم تحدد'}
                     </span>
                   </div>
                   <div style={{ fontSize: 'var(--font-size-xs)' }}>
-                    <strong style={{ color: 'var(--color-text)' }}>العضلات المساعدة: </strong>
-                    <span style={{ color: secondarySummary ? 'var(--color-warning-text, #d97706)' : 'var(--color-text-2)', fontWeight: '600' }}>
+                    <strong style={{ color: 'var(--color-text)' }}>
+                      العضلات المساعدة:{' '}
+                    </strong>
+                    <span
+                      style={{
+                        color: secondarySummary
+                          ? 'var(--color-warning-text, #d97706)'
+                          : 'var(--color-text-2)',
+                        fontWeight: '600',
+                      }}
+                    >
                       {secondarySummary || 'لم تحدد'}
                     </span>
                   </div>
                 </div>
 
                 {/* Groups from muscle-names.json */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 'var(--space-3)',
+                  }}
+                >
                   {muscleNamesData.groups.map((grp) => (
                     <div
                       key={grp.id}
@@ -836,10 +1022,18 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                         }}
                       >
                         <span>{grp.gym_ar}</span>
-                        <bdi dir="ltr" style={{ opacity: 0.8 }}>({grp.sci_en})</bdi>
+                        <bdi dir="ltr" style={{ opacity: 0.8 }}>
+                          ({grp.sci_en})
+                        </bdi>
                       </div>
 
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 'var(--space-2)',
+                        }}
+                      >
                         {grp.members.map((mId) => {
                           const mInfo = getMuscleInfo(mId)
                           const targetMatch = muscles.find((t) => t.id === mId)
@@ -851,11 +1045,13 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                           let color = 'var(--color-text)'
 
                           if (currentRole === 'primary') {
-                            border = '1px solid var(--atlas-primary-stroke, #b91c1c)'
+                            border =
+                              '1px solid var(--atlas-primary-stroke, #b91c1c)'
                             bg = 'var(--atlas-primary, #ef4444)'
                             color = '#ffffff'
                           } else if (currentRole === 'secondary') {
-                            border = '1px solid var(--atlas-secondary-stroke, #d97706)'
+                            border =
+                              '1px solid var(--atlas-secondary-stroke, #d97706)'
                             bg = 'var(--atlas-secondary, #f59e0b)'
                             color = '#0b0c0e'
                           }
@@ -873,7 +1069,9 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                                 type="button"
                                 data-testid={`muscle-chip-${mId}`}
                                 onClick={() =>
-                                  setActiveMusclePickerId(isPickerOpen ? null : mId)
+                                  setActiveMusclePickerId(
+                                    isPickerOpen ? null : mId,
+                                  )
                                 }
                                 style={{
                                   padding: 'var(--space-1) var(--space-2)',
@@ -891,17 +1089,30 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                               >
                                 <span>{mInfo?.gymAr || mId}</span>
                                 {mInfo?.sciEn && (
-                                  <bdi dir="ltr" style={{ opacity: 0.85, fontSize: '10px' }}>
+                                  <bdi
+                                    dir="ltr"
+                                    style={{ opacity: 0.85, fontSize: '10px' }}
+                                  >
                                     ({mInfo.sciEn})
                                   </bdi>
                                 )}
                                 {currentRole === 'primary' && (
-                                  <span style={{ fontWeight: 'bold', marginInlineStart: '4px' }}>
+                                  <span
+                                    style={{
+                                      fontWeight: 'bold',
+                                      marginInlineStart: '4px',
+                                    }}
+                                  >
                                     أساسية
                                   </span>
                                 )}
                                 {currentRole === 'secondary' && (
-                                  <span style={{ fontWeight: 'bold', marginInlineStart: '4px' }}>
+                                  <span
+                                    style={{
+                                      fontWeight: 'bold',
+                                      marginInlineStart: '4px',
+                                    }}
+                                  >
                                     مساعدة
                                   </span>
                                 )}
@@ -956,7 +1167,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                                       fontSize: '11px',
                                       fontWeight: '600',
                                       border: 'none',
-                                      borderInline: '1px solid var(--color-divider)',
+                                      borderInline:
+                                        '1px solid var(--color-divider)',
                                       cursor: 'pointer',
                                       backgroundColor:
                                         currentRole === 'secondary'
@@ -1002,18 +1214,32 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               </div>
 
               {/* Personal Note (Max 500 chars with correct counter order <bdi dir="ltr">{personalNote.length} / 500</bdi>) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-1)',
+                }}
+              >
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
                   <label
                     htmlFor="edit-personal-note"
-                    style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}
+                    style={{
+                      fontSize: 'var(--font-size-sm)',
+                      fontWeight: 'var(--font-weight-semibold)',
+                    }}
                   >
                     ملاحظة شخصية
                   </label>
                   <span
                     style={{
                       fontSize: 'var(--font-size-xs)',
-                      color: personalNote.length > 500 ? 'var(--color-danger)' : 'var(--color-text-2)',
+                      color:
+                        personalNote.length > 500
+                          ? 'var(--color-danger)'
+                          : 'var(--color-text-2)',
                     }}
                   >
                     <bdi dir="ltr">{personalNote.length} / 500</bdi>
@@ -1041,10 +1267,19 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
               </div>
 
               {/* Video URL (Task B3) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-1)',
+                }}
+              >
                 <label
                   htmlFor="edit-video-url"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}
+                  style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-semibold)',
+                  }}
                 >
                   رابط فيديو شرح (يوتيوب أو فيميو أو ملف فيديو مباشر)
                 </label>

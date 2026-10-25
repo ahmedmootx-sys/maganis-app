@@ -1,0 +1,9 @@
+PASS  video link field is visible right after tapping "add video link"
+PASS  video link field is focused
+PASS  play facade appears after saving the link
+PASS  iframe is mounted after tapping play
+PASS  iframe has its own size (got 200px)
+PASS  iframe is actually visible, not clipped by a collapsed container (visible 200px; the bug gave ~2px)
+PASS  iframe src is the nocookie embed of the right video
+
+all checks passed

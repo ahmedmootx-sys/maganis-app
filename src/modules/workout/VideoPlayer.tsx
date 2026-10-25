@@ -41,7 +41,11 @@ export class VideoErrorBoundary extends React.Component<
   }
 
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.warn('[VideoErrorBoundary] caught error in video embed:', error, errorInfo)
+    console.warn(
+      '[VideoErrorBoundary] caught error in video embed:',
+      error,
+      errorInfo,
+    )
   }
 
   override render() {
@@ -61,7 +65,12 @@ export class VideoErrorBoundary extends React.Component<
             textAlign: 'center',
           }}
         >
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text)' }}>
+          <div
+            style={{
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--color-text)',
+            }}
+          >
             الفيديو مش بيشتغل جوه التطبيق دلوقتي
           </div>
           <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
@@ -170,7 +179,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           gap: 'var(--space-2)',
         }}
       >
-        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-2)' }}>
+        <span
+          style={{
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--color-text-2)',
+          }}
+        >
           لا يوجد فيديو شرح لهذا التمرين
         </span>
         {onAddVideo && (
@@ -200,7 +214,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const parsed: ParsedVideoInfo = parseVideoUrl(videoUrl)
 
   // 2. Unsupported host (e.g. Instagram, TikTok, Facebook)
-  if (parsed.sourceType === 'unsupported' || (!parsed.isValid && parsed.rawUrl)) {
+  if (
+    parsed.sourceType === 'unsupported' ||
+    (!parsed.isValid && parsed.rawUrl)
+  ) {
     return (
       <div
         data-testid="video-unsupported"
@@ -216,7 +233,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           textAlign: 'center',
         }}
       >
-        <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-2)' }}>
+        <div
+          style={{
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--color-text-2)',
+          }}
+        >
           {parsed.error || 'الموقع ده مش بيتشغل جوه التطبيق'}
         </div>
         <a
@@ -331,7 +353,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           gap: 'var(--space-3)',
         }}
       >
-        <div style={{ color: 'var(--color-warning)', fontWeight: 'var(--font-weight-semibold)' }}>
+        <div
+          style={{
+            color: 'var(--color-warning)',
+            fontWeight: 'var(--font-weight-semibold)',
+          }}
+        >
           الفيديو محتاج إنترنت
         </div>
         <button
@@ -362,7 +389,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         data-testid="video-direct-player"
         style={{
           borderRadius: 'var(--radius-card)',
-          overflow: 'hidden', /* clip-ok: rounded video container */
+          overflow: 'hidden' /* clip-ok: rounded video container */,
+          flexShrink: 0,
           border: '1px solid var(--color-divider)',
           backgroundColor: 'var(--color-surface)',
           display: 'flex',
@@ -390,7 +418,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             backgroundColor: 'var(--color-surface-2)',
           }}
         >
-          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text)' }}>
+          <span
+            style={{
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--color-text)',
+            }}
+          >
             {exerciseName}
           </span>
           <button
@@ -417,9 +450,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   // 6. Embedded IFrame (YouTube or Vimeo)
   const fallbackLabel =
-    parsed.sourceType === 'youtube'
-      ? 'افتح في يوتيوب ↗'
-      : 'افتح في فيميو ↗'
+    parsed.sourceType === 'youtube' ? 'افتح في يوتيوب ↗' : 'افتح في فيميو ↗'
 
   if (loadTimedOut && !isLoaded) {
     return (
@@ -437,10 +468,21 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           gap: 'var(--space-3)',
         }}
       >
-        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text)', fontWeight: 600 }}>
+        <span
+          style={{
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--color-text)',
+            fontWeight: 600,
+          }}
+        >
           الفيديو مش بيشتغل جوه التطبيق دلوقتي
         </span>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-2)' }}>
+        <span
+          style={{
+            fontSize: 'var(--font-size-xs)',
+            color: 'var(--color-text-2)',
+          }}
+        >
           لو الفيديو مش بيشتغل، صاحب الفيديو ممكن يكون قافل التضمين
         </span>
         <a
@@ -482,12 +524,16 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }
 
   return (
-    <VideoErrorBoundary fallbackUrl={parsed.rawUrl} onClose={() => setIsMounted(false)}>
+    <VideoErrorBoundary
+      fallbackUrl={parsed.rawUrl}
+      onClose={() => setIsMounted(false)}
+    >
       <div
         data-testid="video-iframe-player"
         style={{
           borderRadius: 'var(--radius-card)',
           overflow: 'hidden' /* clip-ok: rounded iframe container */,
+          flexShrink: 0,
           border: '1px solid var(--color-divider)',
           backgroundColor: 'var(--color-surface)',
           display: 'flex',
@@ -530,7 +576,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   animation: 'spin 1s linear infinite',
                 }}
               />
-              <span style={{ fontSize: '12px', fontWeight: 600 }}>جاري تشغيل الفيديو...</span>
+              <span style={{ fontSize: '12px', fontWeight: 600 }}>
+                جاري تشغيل الفيديو...
+              </span>
             </div>
           )}
 

@@ -13,6 +13,7 @@
     "build:atlas": "node tools/atlas/build_atlas.mjs",
     "prebuild": "node scripts/check-env.mjs production",
     "preview": "vite preview",
+    "qa:video": "node scripts/run-qa-video.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
