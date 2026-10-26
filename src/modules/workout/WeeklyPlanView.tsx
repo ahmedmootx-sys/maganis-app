@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import type {
   CustomExercise,
   Exercise,
@@ -16,7 +16,8 @@ import {
   MUSCLE_GROUP_LABELS,
 } from '../shared/types.ts'
 import { navigationHistory } from '../../utils/navigationHistory.ts'
-import { getExerciseById } from './exercises.ts'
+import { getEffectiveExercise } from './exerciseStore.ts'
+import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExercisePickerModal } from './ExercisePickerModal.tsx'
 import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
@@ -41,7 +42,9 @@ import {
   Icon,
   Choice,
 } from '../../ui/index.ts'
-import { CardioRunner } from './CardioRunner.tsx'
+const CardioRunner = lazy(() =>
+  import('./CardioRunner.tsx').then((m) => ({ default: m.CardioRunner })),
+)
 import {
   calculateCardioEnergy,
   getCardioActivity,
@@ -137,7 +140,7 @@ export function deriveDayMuscleSummary(
   if (!exercises || exercises.length === 0) return 'راحة واستشفاء'
   const cats = new Set<string>()
   for (const pe of exercises) {
-    const ex = getExerciseById(pe.exerciseId)
+    const ex = getEffectiveExercise(pe.exerciseId)
     if (ex?.category) cats.add(ex.category)
   }
   if (cats.size === 0) return 'تمارين متنوعة'
@@ -377,37 +380,39 @@ export function CardioDayScreen({
   // Active Runner screen
   if (isRunnerActive) {
     return (
-      <CardioRunner
-        activityId={activityId}
-        level={effort}
-        durationMinutes={plannedMinutes}
-        weightKg={effectiveWeight > 0 ? effectiveWeight : 70}
-        onCancel={() => setIsRunnerActive(false)}
-        onFinish={(sessionData) => {
-          setIsRunnerActive(false)
-          const nowStr = new Date().toISOString().slice(0, 10)
-          const session: TrackingSession = {
-            id: `cardio-${Date.now()}`,
-            date: nowStr,
-            programDayIndex: day.dayIndex,
-            exercises: [],
-            notes: `جلسة كارديو: ${sessionData.activityNameAr} (${sessionData.durationMinutes} دقيقة) · الإجمالي: ${sessionData.grossKcal} سعرة`,
-            createdAt: Date.now(),
-            cardioDetails: sessionData,
-          }
-          trackingStore.saveSession(session)
-          if (onSaveSession) {
-            onSaveSession(session)
-          }
-          if (onCompleteSession) {
-            onCompleteSession()
-          }
-          setToastMsg(
-            `تم حفظ جلسة الكارديو: ${plural(sessionData.durationMinutes, 'minute')} (${plural(sessionData.grossKcal, 'calorie')})`,
-          )
-          setTimeout(() => setToastMsg(null), 3500)
-        }}
-      />
+      <Suspense fallback={null}>
+        <CardioRunner
+          activityId={activityId}
+          level={effort}
+          durationMinutes={plannedMinutes}
+          weightKg={effectiveWeight > 0 ? effectiveWeight : 70}
+          onCancel={() => setIsRunnerActive(false)}
+          onFinish={(sessionData) => {
+            setIsRunnerActive(false)
+            const nowStr = new Date().toISOString().slice(0, 10)
+            const session: TrackingSession = {
+              id: `cardio-${Date.now()}`,
+              date: nowStr,
+              programDayIndex: day.dayIndex,
+              exercises: [],
+              notes: `جلسة كارديو: ${sessionData.activityNameAr} (${sessionData.durationMinutes} دقيقة) · الإجمالي: ${sessionData.grossKcal} سعرة`,
+              createdAt: Date.now(),
+              cardioDetails: sessionData,
+            }
+            trackingStore.saveSession(session)
+            if (onSaveSession) {
+              onSaveSession(session)
+            }
+            if (onCompleteSession) {
+              onCompleteSession()
+            }
+            setToastMsg(
+              `تم حفظ جلسة الكارديو: ${plural(sessionData.durationMinutes, 'minute')} (${plural(sessionData.grossKcal, 'calorie')})`,
+            )
+            setTimeout(() => setToastMsg(null), 3500)
+          }}
+        />
+      </Suspense>
     )
   }
 
@@ -1706,7 +1711,7 @@ export function WeeklyPlanView({
     ]
     for (const d of p.days) {
       for (const ex of d.exercises) {
-        const def = getExerciseById(ex.exerciseId)
+        const def = getEffectiveExercise(ex.exerciseId, customExercises)
         rows.push([
           d.labelAr,
           d.focus,
@@ -1860,7 +1865,7 @@ export function WeeklyPlanView({
                   className="button-secondary full-width"
                   onClick={onOpenAiDesigner}
                 >
-                  صمم لي جدولي الخاص (مرشد الذكاء الاصطناعي)
+                  صمم لي جدولي بالذكاء الاصطناعي
                 </button>
               </div>
             }
@@ -2128,7 +2133,10 @@ export function WeeklyPlanView({
               >
                 {warmupExercises.map((pe, idx) => {
                   const globalIdx = selectedDay.exercises.indexOf(pe)
-                  const ex = getExerciseById(pe.exerciseId)
+                  const ex = getEffectiveExercise(
+                    pe.exerciseId,
+                    customExercises,
+                  )
                   const arabicName = ex?.nameAr ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
@@ -2151,7 +2159,20 @@ export function WeeklyPlanView({
                           size={56}
                         />
                       }
-                      title={arabicName}
+                      title={
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <span>{arabicName}</span>
+                          <ExerciseMarks
+                            hasVideo={ex?.hasVideo}
+                            hasCustomMedia={ex?.hasCustomMedia}
+                          />
+                        </span>
+                      }
                       secondary={englishName}
                       secondaryIsLtr={true}
                       trailing={
@@ -2311,7 +2332,10 @@ export function WeeklyPlanView({
               >
                 {primaryExercises.map((pe, idx) => {
                   const globalIdx = selectedDay.exercises.indexOf(pe)
-                  const ex = getExerciseById(pe.exerciseId)
+                  const ex = getEffectiveExercise(
+                    pe.exerciseId,
+                    customExercises,
+                  )
                   const arabicName = ex?.nameAr ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
@@ -2334,7 +2358,20 @@ export function WeeklyPlanView({
                           size={56}
                         />
                       }
-                      title={arabicName}
+                      title={
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <span>{arabicName}</span>
+                          <ExerciseMarks
+                            hasVideo={ex?.hasVideo}
+                            hasCustomMedia={ex?.hasCustomMedia}
+                          />
+                        </span>
+                      }
                       secondary={englishName}
                       secondaryIsLtr={true}
                       trailing={
@@ -2453,7 +2490,10 @@ export function WeeklyPlanView({
               >
                 {cooldownExercises.map((pe, idx) => {
                   const globalIdx = selectedDay.exercises.indexOf(pe)
-                  const ex = getExerciseById(pe.exerciseId)
+                  const ex = getEffectiveExercise(
+                    pe.exerciseId,
+                    customExercises,
+                  )
                   const arabicName = ex?.nameAr ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
@@ -2476,7 +2516,20 @@ export function WeeklyPlanView({
                           size={56}
                         />
                       }
-                      title={arabicName}
+                      title={
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <span>{arabicName}</span>
+                          <ExerciseMarks
+                            hasVideo={ex?.hasVideo}
+                            hasCustomMedia={ex?.hasCustomMedia}
+                          />
+                        </span>
+                      }
                       secondary={englishName}
                       secondaryIsLtr={true}
                       trailing={
@@ -3307,8 +3360,12 @@ export function WeeklyPlanView({
                         }}
                         aria-label="خيارات اليوم"
                         style={{
-                          padding: '4px',
-                          borderRadius: '6px',
+                          width: '44px',
+                          height: '44px',
+                          minWidth: '44px',
+                          minHeight: '44px',
+                          padding: 0,
+                          borderRadius: '8px',
                           color: 'var(--color-text-2)',
                           display: 'inline-flex',
                           alignItems: 'center',
@@ -3913,7 +3970,10 @@ export function WeeklyPlanView({
                   ),
                 )
                 .map((pe) => {
-                  const ex = getExerciseById(pe.exerciseId)
+                  const ex = getEffectiveExercise(
+                    pe.exerciseId,
+                    customExercises,
+                  )
                   return ex?.nameAr || pe.exerciseId
                 })
                 .join('، ')}). هل تود إكمال الجلسة بحذر؟`

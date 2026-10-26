@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react'
 import type { ProgramDay, TrackingSession, Exercise } from '../shared/types.ts'
-import { getExerciseById, EXERCISES } from '../workout/exercises.ts'
+import { EXERCISES } from '../workout/exercises.ts'
+import { getEffectiveExercise } from '../workout/exerciseStore.ts'
+import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import { ExerciseDetailModal } from '../workout/ExerciseDetailModal.tsx'
 import { ExerciseVisual } from '../workout/ExerciseVisual.tsx'
 import { TopBar, DateField, EmptyState, Sheet } from '../../ui/index.ts'
@@ -15,7 +17,6 @@ import {
 } from './setPropagation.ts'
 import { Claim } from '../../content/Claim.tsx'
 import { Toast } from '../../components/Toast.tsx'
-import { selectEffectiveExercise } from '../workout/exerciseOverrides.ts'
 
 export interface SessionLoggerProps {
   programDay: ProgramDay | null
@@ -118,8 +119,7 @@ export function SessionLogger({
 
   // Find exercise details
   const findExercise = (id: string): Exercise | undefined => {
-    const raw = customExercises.find((e) => e.id === id) || getExerciseById(id)
-    return raw ? selectEffectiveExercise(raw) : undefined
+    return getEffectiveExercise(id, customExercises) || undefined
   }
 
   // Filtered exercises for add sheet
@@ -451,6 +451,15 @@ export function SessionLogger({
                             }}
                           >
                             {exInfo?.nameAr ?? se.exerciseId}
+                            <ExerciseMarks
+                              hasVideo={
+                                (exInfo as { hasVideo?: boolean })?.hasVideo
+                              }
+                              hasCustomMedia={
+                                (exInfo as { hasCustomMedia?: boolean })
+                                  ?.hasCustomMedia
+                              }
+                            />
                           </h3>
                           {exInfo?.name && (
                             <span

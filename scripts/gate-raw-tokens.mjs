@@ -8,7 +8,8 @@
  * 2. No visible text node contains known internal enum values:
  *    none, body only, barbell, dumbbell, cable, machine, and catalog muscle IDs.
  * 3. No Latin words outside an element marked <bdi dir="ltr">.
- * 4. Prints total text nodes examined and enforces minimums (at least 20 text nodes per state).
+ * 4. No ASCII arrows (->, <-, =>, <=) in visible text nodes.
+ * 5. Prints total text nodes examined and enforces minimums (at least 20 text nodes per state).
  */
 
 import { chromium } from 'playwright'
@@ -212,6 +213,18 @@ async function run() {
                     })
                   }
                 }
+              }
+
+              // 4. Check ASCII arrows (->, <-, =>, <=) in visible text
+              const arrowMatch = text.match(/(?:->|<-|=>|<=)/)
+              if (arrowMatch) {
+                stateViolations.push({
+                  type: 'ASCII_ARROW_LEAK',
+                  token: arrowMatch[0],
+                  fullText: text,
+                  parentTag: parent?.tagName.toLowerCase(),
+                  stateId,
+                })
               }
 
               currentNode = walker.nextNode()

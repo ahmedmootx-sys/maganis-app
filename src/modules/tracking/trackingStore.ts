@@ -1,4 +1,5 @@
 import { createStorage, type Storage } from '../../lib/storage.ts'
+import { requestStoragePersistenceOnce } from '../../lib/storagePersist.ts'
 import type { TrackingSession, BodyLogEntry, DayNote } from '../shared/types.ts'
 
 export interface TrackingStore {
@@ -20,6 +21,7 @@ export function createTrackingStore(storage: Storage): TrackingStore {
   function saveSession(session: TrackingSession): void {
     const existing = storage.get<TrackingSession[]>(SESSIONS_KEY, [])
     storage.set(SESSIONS_KEY, [...existing, session])
+    void requestStoragePersistenceOnce()
   }
 
   function loadSessions(): TrackingSession[] {

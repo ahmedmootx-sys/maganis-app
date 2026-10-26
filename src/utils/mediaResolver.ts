@@ -1,5 +1,5 @@
 import type { Exercise } from '../modules/shared/types.ts'
-import { EXERCISES, getExerciseById } from '../modules/workout/exercises.ts'
+import { EXERCISES } from '../modules/workout/exercises.ts'
 import { assetUrl } from './assetUrl.ts'
 import mediaFramesData from '../data/media-frames.json' with { type: 'json' }
 
@@ -33,38 +33,56 @@ const framesDb =
 
 /**
  * Single source of truth for resolving exercise media / thumbnails.
- * Used identically across:
- * - Day lists (WeeklyPlanView)
- * - Library rows (ExerciseLibraryView)
- * - Add-to-day sheet (ExerciseSelectSheet / ExercisePickerModal)
- * - Active session (ActiveWorkoutSession)
- * - History (SessionLogger / ProgressScreen)
- * - Exercise page (ExerciseDetailView)
+ * Task H2.1: Must take an effective exercise only (or custom exercise object).
+ * The string ID path that bypassed overrides has been removed.
+ *
+ * Precedence:
+ * 1. User's override media first (also when catalog has media)
+ * 2. Catalog verified media (exact match only; "nearest" is never shown)
+ * 3. Local keyframed exercises from media-frames.json
+ * 4. Local or verified external image properties (https: allowed)
+ * 5. Explicit null
  */
 export function resolveMedia(
-  exerciseOrId: Exercise | Partial<Exercise> | string | null | undefined,
-  customExercises: Exercise[] = [],
+  exercise: Exercise | Partial<Exercise> | null | undefined,
 ): ResolvedMedia {
-  if (!exerciseOrId) {
+  if (!exercise) {
     return { url: null, frame1Url: null, isKeyframed: false }
   }
 
-  let exercise: Partial<Exercise> | null = null
-  let exId = ''
-
-  if (typeof exerciseOrId === 'string') {
-    exId = exerciseOrId
-    exercise =
-      customExercises.find((c) => c.id === exId) ||
-      getExerciseById(exId) ||
-      null
-  } else {
-    exercise = exerciseOrId
-    exId = exercise.id || ''
+  const exId = exercise.id || exercise.key || ''
+  const ex = exercise as Exercise & {
+    hasCustomMedia?: boolean
+    isModified?: boolean
+    mediaOverride?: { kind: string; url?: string }
+    imageMode?: string
   }
 
-  // 1. Check catalog-v1 verified media
-  if (exercise?.media) {
+  // 1. User's override media first (Task H2.2 precedence)
+  if (ex.hasCustomMedia || ex.mediaOverride) {
+    const candidate = ex.gifUrl || ex.imageUrl || ex.thumbnailUrl
+    if (candidate && typeof candidate === 'string' && candidate.trim()) {
+      const isGif =
+        ex.mediaOverride?.kind === 'upload-gif' ||
+        ex.mediaOverride?.kind === 'external-gif' ||
+        candidate.endsWith('.gif') ||
+        candidate.startsWith('data:image/gif')
+
+      return {
+        url: candidate,
+        frame1Url: isGif && ex.thumbnailUrl ? ex.thumbnailUrl : null,
+        isKeyframed: false,
+      }
+    }
+  }
+
+  // If user explicitly removed image (imageMode: 'none')
+  if (ex.isModified && ex.imageMode === 'none') {
+    return { url: null, frame1Url: null, isKeyframed: false }
+  }
+
+  // 2. Check catalog-v1 verified media
+  if (exercise.media) {
     const key = exercise.key || exId
     if (
       exercise.media.gif?.display === true &&
@@ -94,7 +112,7 @@ export function resolveMedia(
     }
   }
 
-  // 2. Check local keyframed exercises from media-frames.json
+  // 3. Check local keyframed exercises from media-frames.json
   if (exId && framesDb[exId] && Array.isArray(framesDb[exId].frames)) {
     const entry = framesDb[exId]
     const f0 = entry.frames[0]?.url
@@ -112,40 +130,45 @@ export function resolveMedia(
     }
   }
 
-  // 3. Check local/custom exercise media properties (local assets or data URIs only)
-  if (exercise) {
-    const candidate =
-      exercise.thumbnailUrl ||
-      exercise.imageUrl ||
-      exercise.image ||
-      exercise.gifUrl
+  // 4. Check local/custom exercise media properties (local assets, data URIs, or https: URLs)
+  const candidate =
+    exercise.thumbnailUrl ||
+    exercise.imageUrl ||
+    exercise.image ||
+    exercise.gifUrl
 
-    if (candidate && typeof candidate === 'string' && candidate.trim()) {
-      const trimmed = candidate.trim()
+  if (candidate && typeof candidate === 'string' && candidate.trim()) {
+    const trimmed = candidate.trim()
 
-      // Disallow external URLs (offline PWA contract requires local assets or explicit null)
-      if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
-        let f1: string | null = null
-
-        if (trimmed.endsWith('/0.jpg')) {
-          f1 = trimmed.replace(/\/0\.jpg$/i, '/1.jpg')
-        } else if (trimmed.endsWith('_0.jpg')) {
-          f1 = trimmed.replace(/_0\.jpg$/i, '_1.jpg')
-        }
-
-        const cleanF0 = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed
-        const cleanF1 = f1 ? (f1.startsWith('/') ? f1.slice(1) : f1) : null
-
+    // Disallow insecure http: URLs, but allow secure https: and data: and local paths
+    if (!trimmed.startsWith('http://')) {
+      if (trimmed.startsWith('https://')) {
         return {
-          url: trimmed.startsWith('data:') ? trimmed : assetUrl(cleanF0),
-          frame1Url: cleanF1 ? assetUrl(cleanF1) : null,
-          isKeyframed: Boolean(cleanF1 && cleanF0 !== cleanF1),
+          url: trimmed,
+          frame1Url: null,
+          isKeyframed: false,
         }
+      }
+
+      let f1: string | null = null
+      if (trimmed.endsWith('/0.jpg')) {
+        f1 = trimmed.replace(/\/0\.jpg$/i, '/1.jpg')
+      } else if (trimmed.endsWith('_0.jpg')) {
+        f1 = trimmed.replace(/_0\.jpg$/i, '_1.jpg')
+      }
+
+      const cleanF0 = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed
+      const cleanF1 = f1 ? (f1.startsWith('/') ? f1.slice(1) : f1) : null
+
+      return {
+        url: trimmed.startsWith('data:') ? trimmed : assetUrl(cleanF0),
+        frame1Url: cleanF1 ? assetUrl(cleanF1) : null,
+        isKeyframed: Boolean(cleanF1 && cleanF0 !== cleanF1),
       }
     }
   }
 
-  // 4. Fallback: explicit null (no unverified or external media)
+  // 5. Fallback: explicit null
   return {
     url: null,
     frame1Url: null,
@@ -160,5 +183,5 @@ export function getNullMediaExercises(
   customExercises: Exercise[] = [],
 ): Exercise[] {
   const all = [...EXERCISES, ...customExercises]
-  return all.filter((ex) => resolveMedia(ex, customExercises).url === null)
+  return all.filter((ex) => resolveMedia(ex).url === null)
 }

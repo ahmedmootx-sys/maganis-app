@@ -203,14 +203,14 @@ describe('exerciseOverrides', () => {
         })
       }
 
-      // 11th should throw
+      // Exceeding MAX_USER_IMAGES should throw
       await expect(
         saveExerciseOverride({
-          exerciseId: `ex_11`,
+          exerciseId: `ex_overflow`,
           imageMode: 'custom',
-          customImageBlob: 'data:image/jpeg;base64,image_11',
+          customImageBlob: 'data:image/jpeg;base64,image_overflow',
         }),
-      ).rejects.toThrow(/الحد الأقصى للصور/)
+      ).rejects.toThrow(/الحد الأقصى/)
     })
   })
 })

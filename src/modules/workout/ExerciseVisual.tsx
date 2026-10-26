@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { MuscleGroup } from '../shared/types.ts'
 import { Icon, type IconName } from '../../ui/Icon.tsx'
 import { resolveMedia } from '../../utils/mediaResolver.ts'
-import { getExerciseById } from './exercises.ts'
+import { useEffectiveExercise } from './exerciseStore.ts'
 import { SafeImage } from '../../components/SafeImage.tsx'
 
 interface ExerciseVisualProps {
@@ -41,9 +41,10 @@ function getCategoryIcon(cat?: string): IconName {
 
 /**
  * ExerciseVisual handles list thumbnails and media previews.
+ * - Uses useEffectiveExercise to guarantee user overrides appear everywhere.
  * - In lists (small): 40x40 icon tile, no text, no empty message.
- * - When media is absent: renders category line icon (never picture icon).
- * - SafeImage used for all images.
+ * - When media is absent: renders category line icon.
+ * - When external media fails offline: shows category icon in lists, and on page shows "الصورة دي محتاجة إنترنت".
  */
 export function ExerciseVisual({
   category,
@@ -54,10 +55,11 @@ export function ExerciseVisual({
   size = 'small',
 }: ExerciseVisualProps) {
   const [frameIndex] = useState<0 | 1>(0)
+  const [hasFailed, setHasFailed] = useState(false)
 
-  const rawEx = exerciseId ? getExerciseById(exerciseId) : null
+  const effectiveEx = useEffectiveExercise(exerciseId)
   const resolved = resolveMedia(
-    rawEx || { id: exerciseId || '', imageUrl: gifUrl || imageUrl },
+    effectiveEx || { id: exerciseId || '', imageUrl: gifUrl || imageUrl },
   )
 
   const frame0 = resolved.url || ''
@@ -66,7 +68,8 @@ export function ExerciseVisual({
     resolved.isKeyframed && Boolean(frame0 && frame1 && frame0 !== frame1)
   const currentSrc = hasTwoFrames && frameIndex === 1 ? frame1 : frame0
 
-  const catIconName = getCategoryIcon(category || rawEx?.category)
+  const catIconName = getCategoryIcon(category || effectiveEx?.category)
+  const isExternal = currentSrc.startsWith('https://')
 
   const iconFallback = (
     <div
@@ -74,14 +77,21 @@ export function ExerciseVisual({
         width: size === 'small' ? '40px' : '100%',
         height: size === 'small' ? '40px' : '140px',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         background: 'var(--color-surface-2)',
         color: 'var(--color-text-2)',
         borderRadius: 'var(--radius-control)',
+        gap: '4px',
       }}
     >
       <Icon name={catIconName} size={size === 'small' ? 20 : 32} />
+      {size !== 'small' && hasFailed && isExternal && (
+        <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+          الصورة دي محتاجة إنترنت
+        </span>
+      )}
     </div>
   )
 
@@ -106,13 +116,17 @@ export function ExerciseVisual({
         justifyContent: 'center',
         background: 'var(--color-surface-2)',
         borderRadius: 'var(--radius-control)',
-        overflow: 'hidden' /* clip-ok: visual element boundary */,
+        overflow: 'hidden',
         flexShrink: 0,
       }}
     >
       <SafeImage
         src={currentSrc}
         fallback={iconFallback}
+        loading="lazy"
+        decoding="async"
+        referrerPolicy="no-referrer"
+        onError={() => setHasFailed(true)}
         style={{
           width: '100%',
           height: '100%',

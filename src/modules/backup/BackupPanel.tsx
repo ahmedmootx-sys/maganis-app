@@ -17,8 +17,11 @@ import {
 
 import {
   getPreUpdateSnapshot,
+  takePreUpdateSnapshot,
   type PreUpdateSnapshotMeta,
 } from './preUpdateSnapshot.ts'
+import { ConfirmSheet } from '../../ui/ConfirmSheet.tsx'
+import { plural } from '../../utils/plural.ts'
 
 export interface BackupPanelProps {
   backupData: () => BackupData
@@ -145,20 +148,49 @@ export function BackupPanel({
     }
   }
 
+  const [pendingImport, setPendingImport] = useState<{
+    data: BackupData
+    summary: string
+  } | null>(null)
+
+  function buildImportSummary(data: BackupData): string {
+    const parts: string[] = []
+    if (data.workoutProgram && typeof data.workoutProgram === 'object') {
+      const prog = data.workoutProgram as { name?: string; title?: string }
+      parts.push(`برنامج (${prog.name || prog.title || 'تدريبي'})`)
+    }
+    if (data.trackingSessions && data.trackingSessions.length > 0) {
+      parts.push(plural(data.trackingSessions.length, 'جلسة'))
+    }
+    if (data.customExercises && data.customExercises.length > 0) {
+      parts.push(plural(data.customExercises.length, 'تمرين'))
+    }
+    if (
+      data.exerciseOverrides &&
+      Object.keys(data.exerciseOverrides).length > 0
+    ) {
+      parts.push(
+        `${plural(Object.keys(data.exerciseOverrides).length, 'تمرين')} بتعديلات`,
+      )
+    }
+    if (data.bodyLog && data.bodyLog.length > 0) {
+      parts.push(plural(data.bodyLog.length, 'يوم') + ' قياس')
+    }
+    if (parts.length === 0) return 'بيانات عامة'
+    return parts.join('، ')
+  }
+
   async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setError('')
-    setStatus('جاري استيراد البيانات...')
+    setStatus('جاري فحص ملف النسخة الاحتياطية...')
     try {
       const result = await store.importData(file)
       if (result.ok && result.data) {
-        setStatus('تم استيراد البيانات بنجاح')
-        if (onRestore) {
-          onRestore(result.data)
-        } else {
-          onImported?.()
-        }
+        setStatus('')
+        const summary = buildImportSummary(result.data)
+        setPendingImport({ data: result.data, summary })
       } else {
         setError(result.error ?? 'فشل في الاستيراد')
         setStatus('')
@@ -168,6 +200,33 @@ export function BackupPanel({
       setStatus('')
     }
     e.target.value = ''
+  }
+
+  async function handleConfirmImport() {
+    if (!pendingImport) return
+    setError('')
+    setStatus('جاري حفظ نسخة احتياطية وتطبيق الاستيراد...')
+    try {
+      // 1. Take automatic pre-import snapshot
+      await takePreUpdateSnapshot(backupData, true)
+
+      // 2. Restore data
+      if (onRestore) {
+        onRestore(pendingImport.data)
+      } else {
+        onImported?.()
+      }
+
+      // 3. Update snapshot metadata in UI
+      const snap = await getPreUpdateSnapshot()
+      setPreSnapshot(snap)
+
+      setStatus('تم استيراد البيانات بنجاح')
+      setPendingImport(null)
+    } catch (err) {
+      setError('فشل في استيراد البيانات: ' + String(err))
+      setStatus('')
+    }
   }
 
   function triggerFileInput() {
@@ -372,6 +431,36 @@ export function BackupPanel({
           </Callout>
         </div>
       )}
+
+      {/* Confirm Import Sheet */}
+      <ConfirmSheet
+        isOpen={Boolean(pendingImport)}
+        onClose={() => setPendingImport(null)}
+        onConfirm={handleConfirmImport}
+        title="تأكيد استيراد البيانات"
+        confirmLabel="تأكيد واستيراد"
+        cancelLabel="إلغاء"
+        consequences={[
+          'سيتم استبدال البيانات الحالية بالبيانات الموجودة في الملف.',
+          'سيتم حفظ نسخة احتياطية تلقائياً من بياناتك الحالية قبل الاستيراد.',
+        ]}
+      >
+        {pendingImport && (
+          <div
+            style={{
+              padding: '10px 14px',
+              backgroundColor: 'var(--color-surface-2)',
+              borderRadius: 'var(--radius-md)',
+              fontWeight: 600,
+              fontSize: '14px',
+              color: 'var(--color-text)',
+              marginBottom: '4px',
+            }}
+          >
+            هتستورد: {pendingImport.summary}
+          </div>
+        )}
+      </ConfirmSheet>
     </div>
   )
 

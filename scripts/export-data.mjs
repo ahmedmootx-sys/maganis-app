@@ -199,4 +199,6 @@ fs.writeFileSync(
   JSON.stringify(ownerProfileDump, null, 2),
   'utf8',
 )
-console.log(`✓ Exported persona synthetic dump to fixtures/persona.synthetic.json`)
+console.log(
+  `✓ Exported persona synthetic dump to fixtures/persona.synthetic.json`,
+)

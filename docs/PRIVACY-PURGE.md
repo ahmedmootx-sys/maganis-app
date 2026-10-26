@@ -12,25 +12,32 @@
 لإزالة الملف من تاريخ المستودع بالكامل دون التأثير على بقية الملفات، يُوصى باستخدام أداة `git-filter-repo` الرسمية:
 
 ### أ. تثبيت الأداة
+
 ```bash
 # باستخدام pip
 pip install git-filter-repo
 ```
 
 ### ب. أخذ نسخة احتياطية من المستودع أولاً
+
 قبل أي تعديل على تاريخ Git، قم بعمل نسخة احتياطية كاملة للمجلد محلياً:
+
 ```bash
 cp -r maganis-project maganis-project-backup
 ```
 
 ### ج. تشغيل أمر التطهير
+
 في مجلد المشروع:
+
 ```bash
 git filter-repo --path docs/owner-profile-dump.json --invert-paths
 ```
 
 ### د. إعادة ربط الـ Remote والدفع بالقوة (Force Push)
+
 تقوم أداة filter-repo بإلغاء ربط الـ origin للحماية. أعد إضافته ثم ادفع:
+
 ```bash
 git remote add origin <your-github-repo-url>
 git push origin --force --all
@@ -55,14 +62,18 @@ git push origin --force --tags
 
 عنوان البريد الإلكتروني المستخدم في commits المستودع هو البريد الشخصي للمالك.
 لحماية البريد الشخصي في أي commits مستقبلية:
+
 1. توجّه إلى إعدادات GitHub: **Settings -> Emails**.
 2. فعّل خيار **Keep my email addresses private**.
 3. فعّل خيار **Block command line pushes that expose my email**.
 4. اضبط Git محلياً لاستخدام بريد GitHub المجهول (no-reply):
+
 ```bash
 git config --global user.email "ID+username@users.noreply.github.com"
 ```
+
 أو للمستودع الحالي فقط:
+
 ```bash
 git config user.email "ID+username@users.noreply.github.com"
 ```

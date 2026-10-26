@@ -18,9 +18,12 @@
   - تقتضي شروط المصدر الأصلي ذكر الإسناد وحفظ حقوق الملكية الفكرية.
   - الاستخدام الحالي محصور في بيئة التشغيل المحلي والأغراض غير التجارية والتجريبية.
 
-### ب. النماذج التشريحية (BodyParts3D / Anatomography)
+### ب. النماذج التشريحية (BodyParts3D / Anatomography - الإصدار 4.0)
 
-- **المصدر**: BodyParts3D, © The Database Center for Life Sciences (DBCLS) licensed under CC Attribution-Share Alike 2.1 Japan.
+- **المصدر**: BodyParts3D, © The Database Center for Life Science (DBCLS).
+- **الرخصة**: [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
+- **النص الرسمي الصريح (Exact Official DBCLS Quote)**:
+  > "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International."
 - **التوثيق**: مفصل بالكامل في `docs/atlas-missing-muscles.md`.
 
 ---

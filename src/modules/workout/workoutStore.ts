@@ -1,4 +1,5 @@
 import type { Storage } from '../../lib/storage.ts'
+import { requestStoragePersistenceOnce } from '../../lib/storagePersist.ts'
 import type {
   CustomExercise,
   SavedWorkoutProgram,
@@ -61,6 +62,7 @@ export function healProgram(
 export function createWorkoutStore(storage: Storage): WorkoutStore {
   function saveProgram(program: WorkoutProgram): void {
     storage.set(PROGRAM_KEY, healProgram(program) || program)
+    void requestStoragePersistenceOnce()
   }
 
   function loadProgram(): WorkoutProgram | null {

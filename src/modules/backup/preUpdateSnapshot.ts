@@ -11,13 +11,16 @@ export interface PreUpdateSnapshotMeta {
 
 export async function takePreUpdateSnapshot(
   getData: () => BackupData,
+  force: boolean = false,
 ): Promise<boolean> {
   if (typeof window === 'undefined') return false
 
   try {
-    const flag = localStorage.getItem(PRE_UPDATE_SNAPSHOT_FLAG)
-    if (flag) {
-      return false
+    if (!force) {
+      const flag = localStorage.getItem(PRE_UPDATE_SNAPSHOT_FLAG)
+      if (flag) {
+        return false
+      }
     }
 
     const currentData = getData()

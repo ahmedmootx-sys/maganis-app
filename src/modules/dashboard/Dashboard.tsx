@@ -9,7 +9,8 @@ import type {
 } from '../shared/types'
 import type { UserProfile } from '../onboarding/types'
 import { GOALS } from '../onboarding/types'
-import { getExerciseById } from '../workout/exercises'
+import { getEffectiveExercise } from '../workout/exerciseStore'
+import { ExerciseMarks } from '../../components/ExerciseMarks'
 import {
   TopBar,
   Button,
@@ -49,6 +50,7 @@ export interface DashboardProps {
   onOpenAiDesigner?: () => void
   onImportProgram?: () => void
   onCreateManualProgram?: () => void
+  onSaveBackup?: () => Promise<boolean> | void
 }
 
 function getGreeting(name?: string): string {
@@ -140,6 +142,7 @@ export function Dashboard({
   onOpenAiDesigner,
   onImportProgram,
   onCreateManualProgram,
+  onSaveBackup,
 }: DashboardProps) {
   const weekStartDay = profile?.weekStartDay ?? 6
   const greeting = getGreeting(profile?.name)
@@ -147,6 +150,36 @@ export function Dashboard({
   const sessionsThisWeek = getSessionsThisWeek(recentSessions, weekStartDay)
   const currentWeight = getCurrentWeightDisplay(bodyLog, profile)
   const goalLabel = getGoalLabel(profile)
+
+  const [backupDismissed, setBackupDismissed] = useState<boolean>(() => {
+    try {
+      const raw = localStorage.getItem('maganis:backup_reminder_dismissed')
+      if (!raw) return false
+      const ts = Number(raw)
+      return Number.isFinite(ts) && Date.now() - ts < 3 * 24 * 60 * 60 * 1000
+    } catch {
+      return false
+    }
+  })
+
+  const lastBackupAt = useMemo<number | null>(() => {
+    try {
+      const raw = localStorage.getItem('backup.last-export')
+      if (!raw) return null
+      const ts = Number(JSON.parse(raw))
+      return Number.isFinite(ts) ? ts : null
+    } catch {
+      return null
+    }
+  }, [])
+
+  const hasData = Boolean(
+    program || recentSessions.length > 0 || bodyLog.length > 0 || profile,
+  )
+
+  const isBackupOverdue =
+    !lastBackupAt || Date.now() - lastBackupAt > 7 * 24 * 60 * 60 * 1000
+  const showBackupReminder = hasData && !backupDismissed && isBackupOverdue
 
   // Schedule decoupled from program definition
   const schedule = useMemo(
@@ -325,6 +358,106 @@ export function Dashboard({
           }
         />
 
+        {/* Calm Backup Reminder Card */}
+        {showBackupReminder && (
+          <div
+            style={{
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-divider)',
+              borderRadius: 'var(--radius-md)',
+              padding: '12px 14px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                gap: '8px',
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: 'var(--color-text)',
+                  }}
+                >
+                  {lastBackupAt
+                    ? `آخر نسخة احتياطية من ${formatArabicDate(new Date(lastBackupAt).toISOString().slice(0, 10))}`
+                    : 'آخر نسخة احتياطية: لم يتم أخذ نسخة بعد'}
+                </div>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--color-text-2)',
+                    marginTop: '2px',
+                  }}
+                >
+                  احفظ نسخة من بياناتك لضمان عدم ضياع تمارينك وسجلاتك.
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    localStorage.setItem(
+                      'maganis:backup_reminder_dismissed',
+                      String(Date.now()),
+                    )
+                  } catch {
+                    // ignore
+                  }
+                  setBackupDismissed(true)
+                }}
+                aria-label="إغلاق التنبيه"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--color-text-2)',
+                  fontSize: '20px',
+                  minWidth: '44px',
+                  minHeight: '44px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0',
+                  lineHeight: 1,
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <div>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={async () => {
+                  if (onSaveBackup) {
+                    await onSaveBackup()
+                  }
+                  try {
+                    localStorage.setItem(
+                      'maganis:backup_reminder_dismissed',
+                      String(Date.now()),
+                    )
+                  } catch {
+                    // ignore
+                  }
+                  setBackupDismissed(true)
+                }}
+              >
+                احفظ نسخة دلوقتي
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Card تمرين اليوم أو ابدأ برنامجك عند عدم وجود جدول */}
         <Section
           title={
@@ -364,7 +497,7 @@ export function Dashboard({
                   fullWidth
                   onClick={onOpenAiDesigner}
                 >
-                  صمم لي جدولي الخاص
+                  صمم لي جدولي بالذكاء الاصطناعي
                 </Button>
                 <Button variant="secondary" fullWidth onClick={onImportProgram}>
                   استيراد جدول
@@ -434,7 +567,7 @@ export function Dashboard({
                   }}
                 >
                   {todayProgramDay.exercises.slice(0, 3).map((pe, idx) => {
-                    const ex = getExerciseById(pe.exerciseId)
+                    const ex = getEffectiveExercise(pe.exerciseId)
                     const arabicName =
                       ex?.nameAr ??
                       ((pe as unknown as Record<string, unknown>).customName as
@@ -452,7 +585,20 @@ export function Dashboard({
                             size={40}
                           />
                         }
-                        title={arabicName}
+                        title={
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <span>{arabicName}</span>
+                            <ExerciseMarks
+                              hasVideo={ex?.hasVideo}
+                              hasCustomMedia={ex?.hasCustomMedia}
+                            />
+                          </span>
+                        }
                         subtitle={englishName}
                         trailing={
                           <span
@@ -544,12 +690,12 @@ export function Dashboard({
             value={
               program && program.days.length > 0
                 ? `${sessionsThisWeek} من ${weekLoad.totalScheduledSessions}`
-                : '—'
+                : '٠ من ٤'
             }
             secondary={
               program && program.days.length > 0
                 ? `${weekLoad.breakdownAr}${weekLoad.plannedCardioMinutes > 0 ? ` (+ ${plural(weekLoad.plannedCardioMinutes, 'دقيقة')} كارديو)` : ''}`
-                : undefined
+                : plural(0, 'جلسة')
             }
           />
           <Stat

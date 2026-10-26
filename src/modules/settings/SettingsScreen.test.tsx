@@ -156,15 +156,21 @@ describe('SettingsScreen', () => {
       />,
     )
 
-    const resetTrigger = screen.getByText('إعادة ضبط التطبيق')
+    const resetTrigger = screen.getByRole('button', {
+      name: /إعادة ضبط التطبيق/i,
+    })
     fireEvent.click(resetTrigger)
 
-    // Confirm sheet title
-    expect(screen.getByText('تأكيد إعادة ضبط المصنع الشاملة')).toBeDefined()
+    // Reset sheet title & options
+    expect(screen.getByTestId('reset-sheet-content')).toBeDefined()
+    expect(screen.getByTestId('reset-option-keep-edits')).toBeDefined()
+    expect(screen.getByTestId('reset-option-delete-all')).toBeDefined()
 
-    const confirmBtn = screen.getByRole('button', {
-      name: 'حذف كل شيء والبدء من جديد',
-    })
+    const confirmBtn = screen.getByTestId('btn-confirm-factory-reset')
+    expect(confirmBtn).toBeDisabled()
+
+    // Select delete all option
+    fireEvent.click(screen.getByTestId('reset-option-delete-all'))
     expect(confirmBtn).toBeDisabled()
 
     const input = screen.getByPlaceholderText('حذف')
@@ -173,7 +179,7 @@ describe('SettingsScreen', () => {
 
     fireEvent.click(confirmBtn)
 
-    expect(handleReset).toHaveBeenCalledTimes(1)
+    expect(handleReset).toHaveBeenCalledWith('delete-all')
   })
 
   it('only displays Atlas Inspector when ?debug=1 is in URL', () => {

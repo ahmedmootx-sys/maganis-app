@@ -25,12 +25,13 @@
 
 ---
 
-## 3. أطلس المجسمات التشريحية: BodyParts3D
+## 3. أطلس المجسمات التشريحية: BodyParts3D (الإصدار 4.0)
 
-- **المصدر**: قاعدة بيانات BodyParts3D / Anatomography (مركز العلوم الحيوية المتكاملة، اليابان - DBCLS).
-- **الرخصة**: [Creative Commons Attribution-ShareAlike 2.1 Japan (CC BY-SA 2.1 JP)](https://creativecommons.org/licenses/by-sa/2.1/jp/)
-- **البيان**: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan.
-- **ملاحظة**: رصيد واعتراف BodyParts3D يُدمج رسمياً في واجهات الأطلس وصفحات التمارين وفق مراحل المهام المعتمدة.
+- **المصدر**: قاعدة بيانات BodyParts3D / Anatomography (مركز علوم الحياة المتكاملة، اليابان - Database Center for Life Science / DBCLS).
+- **الرخصة**: [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
+- **النص والبيان الرسمي الصريح من DBCLS (Exact Official DBCLS Quote)**:
+  > "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International."
+- **ملاحظة**: تم تحديث الرخصة رسمياً من الإصدار القديم (CC BY-SA 2.1 JP) إلى رخصة الإصدار 4.0 الأحدث (CC BY 4.0 International)، والتي تتيح حرية الاستخدام والتعديل والمشاركة لأي غرض (بما في ذلك الأغراض التجارية) مع الالتزام بذكر الإسناد وحفظ الحقوق. رصيد واعتراف BodyParts3D مدمج رسمياً في واجهات الأطلس وصفحات التمارين.
 
 ---
 

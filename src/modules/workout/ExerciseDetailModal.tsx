@@ -1,5 +1,11 @@
+import { lazy, Suspense } from 'react'
 import type { Exercise } from '../shared/types.ts'
-import { ExerciseDetailView } from './ExerciseDetailView.tsx'
+
+const ExerciseDetailView = lazy(() =>
+  import('./ExerciseDetailView.tsx').then((m) => ({
+    default: m.ExerciseDetailView,
+  })),
+)
 
 export interface ExerciseDetailModalProps {
   exercise: Exercise | null
@@ -31,11 +37,13 @@ export function ExerciseDetailModal({
           maxWidth: '640px',
         }}
       >
-        <ExerciseDetailView
-          exerciseId={exercise.id}
-          exercise={exercise}
-          onBack={onClose}
-        />
+        <Suspense fallback={null}>
+          <ExerciseDetailView
+            exerciseId={exercise.id}
+            exercise={exercise}
+            onBack={onClose}
+          />
+        </Suspense>
         {onSwapClick && (
           <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
             <button

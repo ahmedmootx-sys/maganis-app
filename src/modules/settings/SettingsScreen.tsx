@@ -16,7 +16,6 @@ import {
   ListRow,
   Select,
   Sheet,
-  ConfirmSheet,
   Segmented,
   Button,
   Field,
@@ -26,8 +25,11 @@ import {
 import { BackupPanel } from '../backup/BackupPanel.tsx'
 import { fmtFactor } from '../../utils/bidi.ts'
 import { DiagnosticsSheet } from './DiagnosticsSheet.tsx'
+import { ResetSheet } from './ResetSheet.tsx'
 import { LimitationsEditor } from '../workout/LimitationsEditor.tsx'
 import { getRegionLabel, type UserLimitation } from '../workout/limitations.ts'
+import type { CustomExercise } from '../shared/types.ts'
+import { isStoragePersisted } from '../../lib/storagePersist.ts'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
 
@@ -44,7 +46,9 @@ export interface SettingsScreenProps {
   onRestore?: (data: BackupData) => void
   onOpenAtlasDebug: () => void
   onOpenAiDesigner?: () => void
-  onFactoryReset: () => void
+  onFactoryReset: (mode?: 'keep-edits' | 'delete-all') => void | Promise<void>
+  customExercises?: CustomExercise[]
+  deletedExerciseIds?: string[]
 }
 
 const EXPERIENCE_OPTIONS = [
@@ -88,6 +92,8 @@ export function SettingsScreen({
   onOpenAtlasDebug,
   onOpenAiDesigner,
   onFactoryReset,
+  customExercises = [],
+  deletedExerciseIds = [],
 }: SettingsScreenProps) {
   const [currentThemeMode, setCurrentThemeMode] = useState<ThemeMode>(() => {
     if (propThemeMode) return propThemeMode
@@ -102,6 +108,11 @@ export function SettingsScreen({
   })
 
   const [issueCopied, setIssueCopied] = useState(false)
+  const [storageProtected, setStorageProtected] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    isStoragePersisted().then((persisted) => setStorageProtected(persisted))
+  }, [])
 
   function handleReportIssue() {
     const report = [
@@ -559,6 +570,56 @@ export function SettingsScreen({
                   stacked: true,
                 },
                 {
+                  key: 'حماية التخزين المحلي',
+                  value:
+                    storageProtected === null ? (
+                      'جاري التحقق...'
+                    ) : storageProtected ? (
+                      <div>
+                        <div
+                          style={{
+                            color: 'var(--color-primary)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          التخزين محمي
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '12px',
+                            color: 'var(--color-text-2)',
+                            marginTop: '2px',
+                          }}
+                        >
+                          المتصفح لن يمسح بياناتك تلقائياً حتى لو انخفضت
+                          المساحة.
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <div
+                          style={{
+                            color: 'var(--color-warning, #f59e0b)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          التخزين ممكن يتمسح لو المساحة قلّت
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '12px',
+                            color: 'var(--color-text-2)',
+                            marginTop: '2px',
+                          }}
+                        >
+                          المتصفح قد يحذف البيانات المؤقتة إذا امتلأت مساحة
+                          الجهاز، يُنصح بحفظ نسخ احتياطية بانتظام.
+                        </div>
+                      </div>
+                    ),
+                  stacked: true,
+                },
+                {
                   key: 'النموذج التشريحي',
                   value: (
                     <bdi dir="ltr">
@@ -634,6 +695,7 @@ export function SettingsScreen({
         <Section title="منطقة الخطر">
           <Card padding="md">
             <ListRow
+              data-testid="btn-trigger-reset"
               title="إعادة ضبط التطبيق"
               subtitle="حذف الحساب والبيانات والبدء من جديد"
               onClick={() => setShowConfirmReset(true)}
@@ -869,31 +931,21 @@ export function SettingsScreen({
         </div>
       </Sheet>
 
-      {/* Danger Zone: ConfirmSheet with verification */}
-      <ConfirmSheet
+      {/* Danger Zone: ResetSheet with two explicit choices (Task H2.4) */}
+      <ResetSheet
         isOpen={showConfirmReset}
         onClose={() => setShowConfirmReset(false)}
-        onConfirm={onFactoryReset}
-        title="تأكيد إعادة ضبط المصنع الشاملة"
-        consequences={[
-          'سيتم مسح ملفك الشخصي وإعداداتك نهائياً.',
-          'سيتم مسح الجداول التدريبية والتمارين المخصصة.',
-          'سيتم مسح كافة سجلات الوزن، الملاحظات، وسجلات التغذية اليومية.',
-          'سيتم فصل المزامنة الحية لحماية ملف المزامنة الخارجي من الحذف.',
-        ]}
-        requiredWord="حذف"
-        backupOffer={{
-          label: 'حفظ نسخة أولاً',
-          onBackup: async () => {
-            const { createBackupStore } =
-              await import('../backup/backupStore.ts')
-            const store = createBackupStore()
-            await store.exportData(backupData())
-          },
+        onConfirm={async (mode) => {
+          setShowConfirmReset(false)
+          await onFactoryReset(mode)
         }}
-        confirmLabel="حذف كل شيء والبدء من جديد"
-        cancelLabel="تراجع"
-        isDestructive
+        customExercises={customExercises}
+        deletedExerciseIds={deletedExerciseIds}
+        onBackup={async () => {
+          const { createBackupStore } = await import('../backup/backupStore.ts')
+          const store = createBackupStore()
+          await store.exportData(backupData())
+        }}
       />
 
       <DiagnosticsSheet

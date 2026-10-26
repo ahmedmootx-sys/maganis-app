@@ -93,7 +93,11 @@ describe('deriveConstraints - pure function contract', () => {
   })
 
   it('runs cleanly on synthetic persona dump (fixtures/persona.synthetic.json)', () => {
-    const dumpPath = path.join(process.cwd(), 'fixtures', 'persona.synthetic.json')
+    const dumpPath = path.join(
+      process.cwd(),
+      'fixtures',
+      'persona.synthetic.json',
+    )
     expect(fs.existsSync(dumpPath)).toBe(true)
     const dumpData = JSON.parse(fs.readFileSync(dumpPath, 'utf-8'))
     const personaProfile = dumpData.profile as UserProfile

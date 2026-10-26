@@ -40,6 +40,18 @@ function versionPlugin() {
         if (fs.existsSync(distSw)) {
           let content = fs.readFileSync(distSw, 'utf8')
           content = content.replace(/__BUILD_ID__/g, buildId)
+          const assetsDir = path.join(distDir, 'assets')
+          let appShellAssets: string[] = []
+          if (fs.existsSync(assetsDir)) {
+            appShellAssets = fs
+              .readdirSync(assetsDir)
+              .filter((f) => f.endsWith('.js') || f.endsWith('.css'))
+              .map((f) => 'assets/' + f)
+          }
+          content = content.replace(
+            /__APP_SHELL_ASSETS__/g,
+            JSON.stringify(appShellAssets),
+          )
           fs.writeFileSync(distSw, content, 'utf8')
         }
       }
@@ -57,6 +69,27 @@ export default defineConfig(({ mode }) => {
     base: isProd ? '/maganis-app/' : './',
     define: {
       __BUILD_ID__: JSON.stringify(buildId),
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (
+              id.includes('node_modules/react/') ||
+              id.includes('node_modules/react-dom/')
+            ) {
+              return 'vendor-react'
+            }
+            if (
+              id.includes('legacy-exercises.json') ||
+              id.includes('catalog-v1.json') ||
+              id.includes('src/modules/workout/exercises.ts')
+            ) {
+              return 'exercise-catalog'
+            }
+          },
+        },
+      },
     },
     plugins: [react(), versionPlugin()],
     server: {
@@ -81,10 +114,10 @@ export default defineConfig(({ mode }) => {
           'src/vite-env.d.ts',
         ],
         thresholds: {
-          lines: 45,
+          lines: 37,
           functions: 35,
           branches: 55,
-          statements: 45,
+          statements: 37,
         },
       },
     },

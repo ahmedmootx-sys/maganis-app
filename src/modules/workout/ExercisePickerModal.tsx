@@ -10,6 +10,8 @@ import {
 } from '../shared/types.ts'
 import { Select } from '../../components/Select'
 import { Icon } from '../../ui/Icon.tsx'
+import { selectEffectiveExercise } from './exerciseStore.ts'
+import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 
 interface ExercisePickerModalProps {
   dayLabelAr: string
@@ -32,7 +34,8 @@ export function ExercisePickerModal({
   const [subMuscleFilter, setSubMuscleFilter] = useState<string>('all')
 
   const allExercises = useMemo(
-    () => [...EXERCISES, ...customExercises],
+    () =>
+      [...EXERCISES, ...customExercises].map((e) => selectEffectiveExercise(e)),
     [customExercises],
   )
 
@@ -278,6 +281,10 @@ export function ExercisePickerModal({
                       >
                         {ex.nameAr}
                       </strong>
+                      <ExerciseMarks
+                        hasVideo={ex.hasVideo}
+                        hasCustomMedia={ex.hasCustomMedia}
+                      />
                       {ex.targetSubMuscleAr && (
                         <span
                           className="submuscle-badge"

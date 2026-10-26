@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import type { AppConfig } from './config/appConfig.ts'
 import { assetUrl } from './utils/assetUrl.ts'
 import { createStorage } from './lib/storage.ts'
@@ -20,23 +27,21 @@ import type {
   CustomExercise,
 } from './modules/shared/types.ts'
 import type { UserProfile } from './modules/onboarding/types.ts'
-import { WeeklyPlanView } from './modules/workout/WeeklyPlanView.tsx'
 import { CustomExerciseBuilder } from './modules/workout/CustomExerciseBuilder.tsx'
-import { ExerciseLibraryModal } from './modules/workout/ExerciseLibraryModal.tsx'
 import { takePreUpdateSnapshot } from './modules/backup/preUpdateSnapshot.ts'
+import { executeFactoryReset } from './modules/settings/resetService.ts'
 import { CustomScheduleModal } from './modules/workout/CustomScheduleModal.tsx'
 import { ProgramVaultModal } from './modules/workout/ProgramVaultModal.tsx'
 import { AiDesignerModal } from './modules/workout/AiDesignerModal.tsx'
 import { ActiveWorkoutSession } from './modules/workout/ActiveWorkoutSession.tsx'
 import { CardioMiniBar } from './modules/workout/CardioMiniBar.tsx'
-import { CardioRunner } from './modules/workout/CardioRunner.tsx'
+import type {
+  CardioActivityId,
+  CardioEffortLevel,
+} from './modules/workout/cardioEngine.ts'
 import { formatTime } from './modules/workout/workoutUtils.ts'
 import { generateProgram } from './modules/workout/programGenerator.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
-import { SettingsScreen } from './modules/settings/SettingsScreen.tsx'
-import { NutritionModule } from './modules/nutrition/NutritionModule.tsx'
-import { MuscleAtlasDebug } from './modules/workout/MuscleAtlasDebug.tsx'
-import { ProgressScreen } from './modules/tracking/ProgressScreen.tsx'
 import { Toast } from './components/Toast.tsx'
 import { updateManager } from './utils/updateManager.ts'
 import {
@@ -47,18 +52,91 @@ import {
   IconSettings,
   IconClose,
 } from './components/Icons.tsx'
-import { ExerciseDetailView } from './modules/workout/ExerciseDetailView.tsx'
 import {
   getAllExerciseOverrides,
   saveExerciseOverride,
   type ExerciseOverride,
 } from './modules/workout/exerciseOverrides.ts'
-import { ConfirmSheet } from './ui/index.ts'
+import { ConfirmSheet, Icon, Skeleton } from './ui/index.ts'
 import { IconSprite } from './ui/IconSprite.tsx'
-import { Styleguide } from './shell/Styleguide.tsx'
-import { ComponentGallery } from './modules/gallery/ComponentGallery.tsx'
 import { useRouter } from './shell/router.ts'
 import './styles/app.css'
+
+// Lazy-loaded routes and heavy surfaces
+const WeeklyPlanView = lazy(() =>
+  import('./modules/workout/WeeklyPlanView.tsx').then((m) => ({
+    default: m.WeeklyPlanView,
+  })),
+)
+const ExerciseDetailView = lazy(() =>
+  import('./modules/workout/ExerciseDetailView.tsx').then((m) => ({
+    default: m.ExerciseDetailView,
+  })),
+)
+const ExerciseLibraryModal = lazy(() =>
+  import('./modules/workout/ExerciseLibraryModal.tsx').then((m) => ({
+    default: m.ExerciseLibraryModal,
+  })),
+)
+const CardioRunner = lazy(() =>
+  import('./modules/workout/CardioRunner.tsx').then((m) => ({
+    default: m.CardioRunner,
+  })),
+)
+const SettingsScreen = lazy(() =>
+  import('./modules/settings/SettingsScreen.tsx').then((m) => ({
+    default: m.SettingsScreen,
+  })),
+)
+const NutritionModule = lazy(() =>
+  import('./modules/nutrition/NutritionModule.tsx').then((m) => ({
+    default: m.NutritionModule,
+  })),
+)
+const MuscleAtlasDebug = lazy(() =>
+  import('./modules/workout/MuscleAtlasDebug.tsx').then((m) => ({
+    default: m.MuscleAtlasDebug,
+  })),
+)
+const ProgressScreen = lazy(() =>
+  import('./modules/tracking/ProgressScreen.tsx').then((m) => ({
+    default: m.ProgressScreen,
+  })),
+)
+const Styleguide = lazy(() =>
+  import('./shell/Styleguide.tsx').then((m) => ({
+    default: m.Styleguide,
+  })),
+)
+const ComponentGallery = lazy(() =>
+  import('./modules/gallery/ComponentGallery.tsx').then((m) => ({
+    default: m.ComponentGallery,
+  })),
+)
+
+function ScreenSkeleton() {
+  return (
+    <div
+      style={{
+        padding: '16px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        maxWidth: '720px',
+        margin: '0 auto',
+        width: '100%',
+        boxSizing: 'border-box',
+      }}
+      aria-busy="true"
+      aria-label="جاري التحميل..."
+    >
+      <Skeleton height={28} width="45%" radius="control" />
+      <Skeleton height={140} radius="card" />
+      <Skeleton height={70} radius="card" />
+      <Skeleton height={160} radius="card" />
+    </div>
+  )
+}
 
 type TabId =
   | 'dashboard'
@@ -238,8 +316,8 @@ export function App({ config }: AppProps) {
   >(() => workoutStore.getSavedPrograms())
 
   const [activeCardioSession, setActiveCardioSession] = useState<{
-    activityId: any
-    level: any
+    activityId: CardioActivityId
+    level: CardioEffortLevel
     startTime: number
     durationMinutes: number
     weightKg: number
@@ -329,6 +407,10 @@ export function App({ config }: AppProps) {
       setHasAppUpdate(avail)
     })
   }, [])
+
+  useEffect(() => {
+    updateManager.setWorkoutActive(Boolean(activeWorkoutDay))
+  }, [activeWorkoutDay])
 
   useEffect(() => {
     navigationHistory.setOnShowToast((msg) => {
@@ -434,35 +516,17 @@ export function App({ config }: AppProps) {
     [profileStore],
   )
 
-  const handleFactoryReset = useCallback(async () => {
-    try {
-      await liveSyncManager.disable()
-    } catch {
-      // ignore
-    }
-    try {
-      localStorage.clear()
-    } catch {
-      // ignore
-    }
-    profileStore.clearProfile()
-    profileStore.clearDraft()
-    workoutStore.clearProgram()
-    storage.keys().forEach((k) => storage.remove(k))
-    setDeletedExerciseIds([])
-    setCustomExercisesList([])
-    setSavedProgramsList([])
-    setProfile(null)
-    setEditing(false)
-    setProgram(null)
-    setSessions([])
-    setBodyLog([])
-    setDayNotes([])
-    setActiveWorkoutDay(null)
-    setIsWorkoutSessionExpanded(false)
-    setActiveSessionSeconds(0)
-    setActiveTab('dashboard')
-  }, [profileStore, workoutStore, storage, liveSyncManager])
+  const handleFactoryReset = useCallback(
+    async (mode: 'keep-edits' | 'delete-all' = 'delete-all') => {
+      try {
+        await liveSyncManager.disable()
+      } catch {
+        // ignore
+      }
+      await executeFactoryReset(mode)
+    },
+    [liveSyncManager],
+  )
 
   const doGenerateProgram = useCallback(() => {
     if (!profile) return
@@ -721,7 +785,9 @@ export function App({ config }: AppProps) {
     return (
       <div className="maganis-shell">
         <IconSprite />
-        <Styleguide />
+        <Suspense fallback={<ScreenSkeleton />}>
+          <Styleguide />
+        </Suspense>
       </div>
     )
   }
@@ -731,7 +797,9 @@ export function App({ config }: AppProps) {
     return (
       <div className="maganis-shell">
         <IconSprite />
-        <ComponentGallery />
+        <Suspense fallback={<ScreenSkeleton />}>
+          <ComponentGallery />
+        </Suspense>
       </div>
     )
   }
@@ -861,6 +929,12 @@ export function App({ config }: AppProps) {
             onOpenAiDesigner={() => setShowAiDesignerModal(true)}
             onImportProgram={() => {
               setActiveTab('workouts')
+            }}
+            onSaveBackup={async () => {
+              const { createBackupStore } =
+                await import('./modules/backup/backupStore.ts')
+              const store = createBackupStore()
+              return await store.shareData(handleBackupData())
             }}
             onCreateManualProgram={() => {
               const emptyProgram: WorkoutProgram = {
@@ -1066,6 +1140,8 @@ export function App({ config }: AppProps) {
             onOpenAtlasDebug={() => setShowAtlasDebugModal(true)}
             onOpenAiDesigner={() => setShowAiDesignerModal(true)}
             onFactoryReset={handleFactoryReset}
+            customExercises={customExercisesList}
+            deletedExerciseIds={deletedExerciseIds}
           />
         )
       }
@@ -1205,7 +1281,60 @@ export function App({ config }: AppProps) {
           </div>
         )}
 
-        <main className="app-main">{renderContent()}</main>
+        {hasAppUpdate && !activeWorkoutDay && (
+          <div
+            role="status"
+            aria-live="polite"
+            data-testid="app-update-banner"
+            style={{
+              background:
+                'var(--color-primary-surface, rgba(14, 165, 233, 0.12))',
+              borderBottom: '1px solid var(--color-primary, #0ea5e9)',
+              padding: '10px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              width: '100%',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon
+                name="refresh-cw"
+                size={18}
+                style={{ color: 'var(--color-primary)' }}
+              />
+              <span
+                style={{
+                  fontSize: '13.5px',
+                  fontWeight: 600,
+                  color: 'var(--color-text)',
+                }}
+              >
+                تحديث جديد جاهز للتطبيق
+              </span>
+            </div>
+            <button
+              type="button"
+              className="btn btn--primary btn--small"
+              onClick={() => updateManager.applyUpdate()}
+              style={{
+                fontSize: '12.5px',
+                padding: '6px 14px',
+                cursor: 'pointer',
+                borderRadius: 'var(--radius-control)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              تحديث الآن
+            </button>
+          </div>
+        )}
+
+        <main className="app-main">
+          <Suspense fallback={<ScreenSkeleton />}>{renderContent()}</Suspense>
+        </main>
 
         {activeCardioSession &&
           activeCardioSession.minimized &&
@@ -1260,46 +1389,48 @@ export function App({ config }: AppProps) {
               background: 'var(--color-bg, #09090b)',
             }}
           >
-            <CardioRunner
-              activityId={activeCardioSession.activityId}
-              level={activeCardioSession.level}
-              durationMinutes={activeCardioSession.durationMinutes}
-              weightKg={activeCardioSession.weightKg}
-              onCancel={() => {
-                setIsCardioRunnerOpen(false)
-                localStorage.removeItem('maganis:cardio_active_session')
-                setActiveCardioSession(null)
-                window.dispatchEvent(new Event('cardio-session-sync'))
-              }}
-              onMinimize={() => {
-                setIsCardioRunnerOpen(false)
-                try {
-                  const raw = localStorage.getItem(
-                    'maganis:cardio_active_session',
-                  )
-                  setActiveCardioSession(raw ? JSON.parse(raw) : null)
-                } catch {
-                  // ignore
-                }
-              }}
-              onFinish={(sessionData) => {
-                setIsCardioRunnerOpen(false)
-                localStorage.removeItem('maganis:cardio_active_session')
-                setActiveCardioSession(null)
-                window.dispatchEvent(new Event('cardio-session-sync'))
-                const nowStr = new Date().toISOString().slice(0, 10)
-                const session: TrackingSession = {
-                  id: `cardio-${Date.now()}`,
-                  date: nowStr,
-                  programDayIndex: null,
-                  exercises: [],
-                  notes: `جلسة كارديو: ${sessionData.activityNameAr} (${sessionData.durationMinutes} دقيقة) · الإجمالي: ${sessionData.grossKcal} سعرة`,
-                  createdAt: Date.now(),
-                  cardioDetails: sessionData,
-                }
-                trackingStore.saveSession(session)
-              }}
-            />
+            <Suspense fallback={<ScreenSkeleton />}>
+              <CardioRunner
+                activityId={activeCardioSession.activityId}
+                level={activeCardioSession.level}
+                durationMinutes={activeCardioSession.durationMinutes}
+                weightKg={activeCardioSession.weightKg}
+                onCancel={() => {
+                  setIsCardioRunnerOpen(false)
+                  localStorage.removeItem('maganis:cardio_active_session')
+                  setActiveCardioSession(null)
+                  window.dispatchEvent(new Event('cardio-session-sync'))
+                }}
+                onMinimize={() => {
+                  setIsCardioRunnerOpen(false)
+                  try {
+                    const raw = localStorage.getItem(
+                      'maganis:cardio_active_session',
+                    )
+                    setActiveCardioSession(raw ? JSON.parse(raw) : null)
+                  } catch {
+                    // ignore
+                  }
+                }}
+                onFinish={(sessionData) => {
+                  setIsCardioRunnerOpen(false)
+                  localStorage.removeItem('maganis:cardio_active_session')
+                  setActiveCardioSession(null)
+                  window.dispatchEvent(new Event('cardio-session-sync'))
+                  const nowStr = new Date().toISOString().slice(0, 10)
+                  const session: TrackingSession = {
+                    id: `cardio-${Date.now()}`,
+                    date: nowStr,
+                    programDayIndex: null,
+                    exercises: [],
+                    notes: `جلسة كارديو: ${sessionData.activityNameAr} (${sessionData.durationMinutes} دقيقة) · الإجمالي: ${sessionData.grossKcal} سعرة`,
+                    createdAt: Date.now(),
+                    cardioDetails: sessionData,
+                  }
+                  trackingStore.saveSession(session)
+                }}
+              />
+            </Suspense>
           </div>
         )}
 
@@ -1348,7 +1479,11 @@ export function App({ config }: AppProps) {
                 overflowY: 'auto',
               }}
             >
-              <MuscleAtlasDebug onClose={() => setShowAtlasDebugModal(false)} />
+              <Suspense fallback={<ScreenSkeleton />}>
+                <MuscleAtlasDebug
+                  onClose={() => setShowAtlasDebugModal(false)}
+                />
+              </Suspense>
             </div>
           </div>
         )}
@@ -1435,17 +1570,6 @@ export function App({ config }: AppProps) {
           message={backToastMessage}
           onDismiss={() => setBackToastMessage(null)}
         />
-
-        {hasAppUpdate && (
-          <Toast
-            message="تحديث جديد جاهز"
-            duration={0}
-            action={{
-              label: 'تحديث الآن',
-              onClick: () => updateManager.applyUpdate(),
-            }}
-          />
-        )}
       </div>
     </>
   )

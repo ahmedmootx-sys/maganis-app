@@ -68,6 +68,8 @@ const ICONS = [
   'rotate-ccw',
   'play',
   'pause',
+  'video-play',
+  'image-up',
   // Fitness, Body & Nutrition
   'flame',
   'activity',
@@ -119,21 +121,30 @@ const directionalIcons = [
 
 const iconsDir = path.join(rootDir, 'node_modules', 'lucide-static', 'icons')
 
+const CUSTOM_ICONS = {
+  'video-play':
+    '<rect width="20" height="15" x="2" y="4.5" rx="3" /><polygon points="10 8.5 15 12 10 15.5 10 8.5" fill="currentColor" />',
+}
+
 const symbols = []
 
 for (const name of ICONS) {
-  const filePath = path.join(iconsDir, `${name}.svg`)
-  if (!fs.existsSync(filePath)) {
-    console.error(`Icon not found: ${name} at ${filePath}`)
-    process.exit(1)
+  let inner = ''
+  if (CUSTOM_ICONS[name]) {
+    inner = CUSTOM_ICONS[name]
+  } else {
+    const filePath = path.join(iconsDir, `${name}.svg`)
+    if (!fs.existsSync(filePath)) {
+      console.error(`Icon not found: ${name} at ${filePath}`)
+      process.exit(1)
+    }
+    const content = fs.readFileSync(filePath, 'utf8')
+    inner = content
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/<svg[^>]*>/, '')
+      .replace(/<\/svg>/, '')
+      .trim()
   }
-  const content = fs.readFileSync(filePath, 'utf8')
-  // Extract inner SVG content
-  const inner = content
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/<svg[^>]*>/, '')
-    .replace(/<\/svg>/, '')
-    .trim()
 
   symbols.push(
     `      <symbol id="icon-${name}" viewBox="0 0 24 24">${inner}</symbol>`,

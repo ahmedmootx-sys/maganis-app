@@ -1,5 +1,6 @@
 import type { Exercise } from '../modules/shared/types.ts'
 import { resolveMedia } from '../utils/mediaResolver.ts'
+import { useEffectiveExercise } from '../modules/workout/exerciseStore.ts'
 import { SafeImage } from './SafeImage.tsx'
 import { IconImage } from './Icons.tsx'
 
@@ -24,8 +25,7 @@ export interface ExerciseThumbProps {
  * - Exercise page (ExerciseDetailView)
  *
  * Guarantees a stable, non-jumping box size regardless of loading or placeholder state.
- * In lists: 40x40 icon-only tile.
- * Never paints browser alt text on error (handled by SafeImage).
+ * Uses useEffectiveExercise so no caller can forget user overrides.
  */
 export function ExerciseThumb({
   exercise,
@@ -36,6 +36,10 @@ export function ExerciseThumb({
   className = '',
   style = {},
 }: ExerciseThumbProps) {
+  const targetId = exerciseId || exercise?.id || ''
+  const effective = useEffectiveExercise(targetId, customExercises)
+  const finalExercise = effective || exercise
+
   const dimension =
     typeof size === 'number'
       ? `${size}px`
@@ -45,8 +49,9 @@ export function ExerciseThumb({
           ? '56px'
           : '72px'
 
-  const resolved = resolveMedia(exercise || exerciseId, customExercises)
-  const name = exerciseName || exercise?.nameAr || exercise?.name || 'تمرين'
+  const resolved = resolveMedia(finalExercise)
+  const name =
+    exerciseName || finalExercise?.nameAr || finalExercise?.name || 'تمرين'
 
   const fallbackIcon = (
     <div
@@ -74,7 +79,7 @@ export function ExerciseThumb({
         minWidth: dimension,
         minHeight: dimension,
         borderRadius: '8px',
-        overflow: 'hidden' /* clip-ok: visual element boundary */,
+        overflow: 'hidden',
         background: 'var(--card-subtle, rgba(255, 255, 255, 0.04))',
         border: '1px solid var(--line, rgba(255, 255, 255, 0.1))',
         display: 'flex',
@@ -92,6 +97,7 @@ export function ExerciseThumb({
           fallback={fallbackIcon}
           loading="lazy"
           decoding="async"
+          referrerPolicy="no-referrer"
           style={{
             width: '100%',
             height: '100%',

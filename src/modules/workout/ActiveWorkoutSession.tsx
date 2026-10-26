@@ -5,7 +5,8 @@ import type {
   SessionExercise,
   TrackingSession,
 } from '../shared/types.ts'
-import { getExerciseById } from './exercises.ts'
+import { getEffectiveExercise } from './exerciseStore.ts'
+import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
 import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
@@ -70,7 +71,7 @@ export function getExerciseMeasureType(
     return 'timed'
   }
   const eq = (
-    (ex.equipmentDetail as any)?.db ||
+    (ex.equipmentDetail as { db?: string } | undefined)?.db ||
     (typeof ex.equipment === 'string'
       ? ex.equipment
       : (ex.equipment as unknown as { db?: string })?.db) ||
@@ -299,8 +300,7 @@ export function ActiveWorkoutSession({
     useState<Exercise | null>(null)
 
   function handleOpenExerciseDetail(exerciseId: string) {
-    const custom = customExercises.find((c) => c.id === exerciseId)
-    const ex = custom ?? getExerciseById(exerciseId)
+    const ex = getEffectiveExercise(exerciseId, customExercises)
     if (ex) {
       setSelectedExerciseForDetail(ex)
     }
@@ -369,8 +369,7 @@ export function ActiveWorkoutSession({
   function handleToggleSetCompleted(exerciseIndex: number, setIndex: number) {
     const exState = exercisesState[exerciseIndex]
     const exId = exState?.exerciseId
-    const custom = customExercises.find((c) => c.id === exId)
-    const exercise = custom ?? getExerciseById(exId)
+    const exercise = getEffectiveExercise(exId, customExercises)
     const measureType = getExerciseMeasureType(exercise)
     const currentSet = exState.sets[setIndex]
 
@@ -631,8 +630,7 @@ export function ActiveWorkoutSession({
 
   const totalVolumeKg = useMemo(() => {
     return exercisesState.reduce((acc, ex) => {
-      const custom = customExercises.find((c) => c.id === ex.exerciseId)
-      const exercise = custom ?? getExerciseById(ex.exerciseId)
+      const exercise = getEffectiveExercise(ex.exerciseId, customExercises)
       const measureType = getExerciseMeasureType(exercise)
       if (measureType !== 'weight') return acc
 
@@ -647,8 +645,7 @@ export function ActiveWorkoutSession({
 
   const unweightedCompletedSetsCount = useMemo(() => {
     return exercisesState.reduce((acc, ex) => {
-      const custom = customExercises.find((c) => c.id === ex.exerciseId)
-      const exercise = custom ?? getExerciseById(ex.exerciseId)
+      const exercise = getEffectiveExercise(ex.exerciseId, customExercises)
       const measureType = getExerciseMeasureType(exercise)
       if (measureType !== 'weight') return acc
 
@@ -665,8 +662,10 @@ export function ActiveWorkoutSession({
 
     const sessionExercises: SessionExercise[] = exercisesState.map(
       (exState) => {
-        const custom = customExercises.find((c) => c.id === exState.exerciseId)
-        const exercise = custom ?? getExerciseById(exState.exerciseId)
+        const exercise = getEffectiveExercise(
+          exState.exerciseId,
+          customExercises,
+        )
         const measureType = getExerciseMeasureType(exercise)
 
         const completedSets = exState.sets
@@ -931,10 +930,10 @@ export function ActiveWorkoutSession({
         }}
       >
         {exercisesState.map((exState, exIdx) => {
-          const custom = customExercises.find(
-            (c) => c.id === exState.exerciseId,
+          const exercise = getEffectiveExercise(
+            exState.exerciseId,
+            customExercises,
           )
-          const exercise = custom ?? getExerciseById(exState.exerciseId)
           const exerciseName = exercise?.nameAr ?? exState.exerciseId
 
           return (
@@ -989,6 +988,10 @@ export function ActiveWorkoutSession({
                       }}
                     >
                       {exerciseName}
+                      <ExerciseMarks
+                        hasVideo={exercise?.hasVideo}
+                        hasCustomMedia={exercise?.hasCustomMedia}
+                      />
                     </h3>
                     {exercise && (
                       <div
@@ -1100,7 +1103,7 @@ export function ActiveWorkoutSession({
                             ? isBodyweight
                               ? `${prevSet.reps}\u00A0عدات`
                               : isTimed
-                                ? `${(prevSet as any).durationSeconds ?? prevSet.reps}\u00A0ثانية`
+                                ? `${(prevSet as { durationSeconds?: number; reps?: number }).durationSeconds ?? prevSet.reps}\u00A0ثانية`
                                 : `${prevSet.weightKg}\u00A0كجم × ${prevSet.reps}`
                             : '—'
                           const isReady = isSetReadyToComplete(set, measureType)

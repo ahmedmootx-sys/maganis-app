@@ -106,7 +106,20 @@ class UpdateManager {
     }
   }
 
-  applyUpdate() {
+  private isWorkoutActive = false
+
+  setWorkoutActive(active: boolean) {
+    this.isWorkoutActive = active
+  }
+
+  applyUpdate(force: boolean = false) {
+    if (this.isWorkoutActive && !force) {
+      console.warn(
+        'Update application deferred: workout session is currently active.',
+      )
+      return
+    }
+
     if (this.waitingWorker) {
       this.waitingWorker.postMessage({ type: 'SKIP_WAITING' })
     }

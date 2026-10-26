@@ -16,7 +16,6 @@ export default tseslint.config(
       '**/.cache/**',
       '**/tools/**',
       '**/scratch/**',
-      '**/qa/**',
     ],
   },
   js.configs.recommended,
@@ -35,11 +34,21 @@ export default tseslint.config(
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'react-refresh/only-export-components': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+    },
+  },
+  {
+    files: ['qa/**/*.{ts,js,mjs}'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
     },
   },
   eslintConfigPrettier,

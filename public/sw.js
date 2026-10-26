@@ -1,9 +1,16 @@
 const CACHE_VERSION = '__BUILD_ID__'
 const CACHE_NAME = 'maganis-' + CACHE_VERSION
+const MEDIA_CACHE_NAME = 'maganis-media-v1'
+const MEDIA_CACHE_MAX_ENTRIES = 400
 
 // Use the service worker's own scope to determine the base path
-// This makes it work on both localhost (/) and GitHub Pages (/maganis-app/)
 const BASE = new URL('./', self.location).pathname
+
+const APP_SHELL_ASSETS =
+  typeof __APP_SHELL_ASSETS__ !== 'undefined' &&
+  Array.isArray(__APP_SHELL_ASSETS__)
+    ? __APP_SHELL_ASSETS__.map((a) => BASE + a)
+    : []
 
 const STATIC_ASSETS = [
   BASE,
@@ -19,7 +26,22 @@ const STATIC_ASSETS = [
   BASE + 'atlas/atlas-meta.json',
   BASE + 'atlas/shade-anterior.webp',
   BASE + 'atlas/shade-posterior.webp',
+  ...APP_SHELL_ASSETS,
 ]
+
+// LRU cache trimmer for media
+async function trimMediaCache() {
+  try {
+    const cache = await caches.open(MEDIA_CACHE_NAME)
+    const keys = await cache.keys()
+    if (keys.length > MEDIA_CACHE_MAX_ENTRIES) {
+      await cache.delete(keys[0])
+      return trimMediaCache()
+    }
+  } catch {
+    // silent
+  }
+}
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
@@ -41,7 +63,7 @@ self.addEventListener('activate', (event) => {
       .then((keys) =>
         Promise.all(
           keys
-            .filter((key) => key !== CACHE_NAME)
+            .filter((key) => key !== CACHE_NAME && key !== MEDIA_CACHE_NAME)
             .map((key) => caches.delete(key)),
         ),
       )
@@ -49,20 +71,13 @@ self.addEventListener('activate', (event) => {
   )
 })
 
-// Network-First Strategy: always try to fetch fresh from network first, fall back to cache if offline
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
   if (url.origin !== location.origin) return
 
-  // Always bypass cache for version.json and explicit no-store requests
-  if (url.pathname.endsWith('version.json') || request.cache === 'no-store') {
-    event.respondWith(fetch(request))
-    return
-  }
-
-  // Task G5-B3: Never cache video responses in the service worker
+  // 1. Task G5-B3: Never cache video responses in the service worker
   if (
     request.destination === 'video' ||
     /\.(mp4|webm|m4v)$/i.test(url.pathname)
@@ -71,7 +86,7 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Skip caching for development requests or live reloads
+  // 2. Skip caching for development requests or live reloads
   if (
     url.pathname.includes('/@vite') ||
     url.pathname.includes('/@fs') ||
@@ -80,6 +95,121 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  // 3. Network-first with a 3s timeout for index.html and version.json, falling back to cache
+  const isHtml =
+    request.destination === 'document' ||
+    request.mode === 'navigate' ||
+    url.pathname.endsWith('index.html') ||
+    url.pathname === BASE ||
+    url.pathname === BASE.slice(0, -1)
+  const isVersion = url.pathname.endsWith('version.json')
+
+  if (isHtml || isVersion) {
+    event.respondWith(
+      new Promise((resolve) => {
+        let timedOut = false
+        const timer = setTimeout(() => {
+          timedOut = true
+          caches
+            .match(isHtml ? BASE + 'index.html' : request)
+            .then((cached) => {
+              if (cached) resolve(cached)
+              else
+                resolve(
+                  new Response('Offline', {
+                    status: 503,
+                    statusText: 'Offline',
+                  }),
+                )
+            })
+        }, 3000)
+
+        fetch(request, { cache: isVersion ? 'no-cache' : 'default' })
+          .then((networkRes) => {
+            clearTimeout(timer)
+            if (!timedOut) {
+              if (networkRes.ok && request.method === 'GET') {
+                const clone = networkRes.clone()
+                caches
+                  .open(CACHE_NAME)
+                  .then((cache) => cache.put(request, clone))
+              }
+              resolve(networkRes)
+            }
+          })
+          .catch(async () => {
+            clearTimeout(timer)
+            if (!timedOut) {
+              const cached = await caches.match(
+                isHtml ? BASE + 'index.html' : request,
+              )
+              if (cached) resolve(cached)
+              else
+                resolve(
+                  new Response('Offline', {
+                    status: 503,
+                    statusText: 'Offline',
+                  }),
+                )
+            }
+          })
+      }),
+    )
+    return
+  }
+
+  // 4. Cache-first for hashed assets under assets/
+  if (url.pathname.includes('/assets/')) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) return cached
+        return fetch(request).then((networkRes) => {
+          if (networkRes.ok && request.method === 'GET') {
+            const clone = networkRes.clone()
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+          }
+          return networkRes
+        })
+      }),
+    )
+    return
+  }
+
+  // 5. Dedicated long-lived cache maganis-media-v1 for exercise images
+  const isMediaImage =
+    request.destination === 'image' ||
+    /\.(png|jpe?g|webp|gif|svg)$/i.test(url.pathname)
+
+  if (
+    isMediaImage &&
+    (url.pathname.includes('media/') || url.pathname.includes('exercises/'))
+  ) {
+    event.respondWith(
+      caches.match(request, { cacheName: MEDIA_CACHE_NAME }).then((cached) => {
+        if (cached) return cached
+        return fetch(request)
+          .then((networkRes) => {
+            if (networkRes.ok && request.method === 'GET') {
+              const clone = networkRes.clone()
+              caches.open(MEDIA_CACHE_NAME).then((cache) => {
+                cache.put(request, clone)
+                void trimMediaCache()
+              })
+            }
+            return networkRes
+          })
+          .catch(() => {
+            return new Response('Offline Image', {
+              status: 503,
+              statusText: 'Offline Image',
+            })
+          })
+      }),
+    )
+    return
+  }
+
+  // 6. Default fallback for other GET requests
   event.respondWith(
     fetch(request)
       .then((response) => {
@@ -92,9 +222,6 @@ self.addEventListener('fetch', (event) => {
       .catch(async () => {
         const cached = await caches.match(request)
         if (cached) return cached
-        if (request.destination === 'document' || request.mode === 'navigate') {
-          return caches.match(BASE + 'index.html')
-        }
         return new Response('Offline', { status: 503, statusText: 'Offline' })
       }),
   )

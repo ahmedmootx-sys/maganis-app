@@ -748,7 +748,6 @@ export function NutritionModule({
               <Callout
                 variant="info"
                 title="راجع نمط نشاطك اليومي"
-                message={`قمنا بتحديث نظام السعرات لفصل نمط النشاط اليومي خارج التمرين عن جلسات التمرين حتى لا تُحسب السعرات مرتين.\nالهدف السابق: ${legacyCalorieTarget} سعرة -> الهدف الدقيق الجديد: ${proposedTargets.targetCalories} سعرة (${proposedTargets.proteinGrams} جم بروتين).`}
                 actionLabel="تطبيق"
                 onAction={() => {
                   if (!profile || !onUpdateProfile) return
@@ -778,7 +777,41 @@ export function NutritionModule({
                   }
                   onUpdateProfile(migratedProfile)
                 }}
-              />
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                  }}
+                >
+                  <span>
+                    قمنا بتحديث نظام السعرات لفصل نمط النشاط اليومي خارج التمرين
+                    عن جلسات التمرين حتى لا تُحسب السعرات مرتين.
+                  </span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '2px',
+                      fontSize: '13px',
+                    }}
+                  >
+                    <div>
+                      <span>الهدف السابق: </span>
+                      <bdi dir="ltr">{legacyCalorieTarget}</bdi>
+                      <span> سعرة</span>
+                    </div>
+                    <div>
+                      <span>الهدف الدقيق الجديد: </span>
+                      <bdi dir="ltr">{proposedTargets.targetCalories}</bdi>
+                      <span> سعرة (</span>
+                      <bdi dir="ltr">{proposedTargets.proteinGrams}</bdi>
+                      <span> جم بروتين)</span>
+                    </div>
+                  </div>
+                </div>
+              </Callout>
               <div
                 style={{
                   display: 'flex',

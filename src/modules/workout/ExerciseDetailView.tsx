@@ -5,11 +5,9 @@ import type {
   TrackingSession,
 } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
-import {
-  getExerciseById,
-  getCatalogReplacements,
-  EXERCISES,
-} from './exercises.ts'
+import { getCatalogReplacements, EXERCISES } from './exercises.ts'
+import { getEffectiveExercise, useEffectiveExercise } from './exerciseStore.ts'
+import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import { AnatomyMuscleMap } from './AnatomyMuscleMap.tsx'
 import { ExerciseMediaCard } from '../../components/ExerciseMediaCard.tsx'
 import {
@@ -47,6 +45,7 @@ import { ExerciseEditSheet } from './ExerciseEditSheet.tsx'
 import { CopyExerciseNameButton } from './CopyExerciseNameButton.tsx'
 import { VideoPlayer } from './VideoPlayer.tsx'
 import { Toast } from '../../components/Toast.tsx'
+import { Claim, type ClaimStatus } from '../../content/Claim.tsx'
 
 interface AuthoredExerciseContent {
   whyThisExerciseAr?: string
@@ -156,15 +155,17 @@ export function ExerciseDetailView({
   const [showSwapModal, setShowSwapModal] = useState(false)
 
   // Find exercise in unified library or use passed object
-  const rawExercise = useMemo(() => {
-    return passedExercise || getExerciseById(exerciseId) || null
-  }, [passedExercise, exerciseId])
+  const hookedEffective = useEffectiveExercise(exerciseId)
+  const exercise = passedExercise
+    ? selectEffectiveExercise(passedExercise as Exercise)
+    : hookedEffective
 
   const [refreshKey, setRefreshKey] = useState(0)
   const [showEditSheet, setShowEditSheet] = useState(false)
-  // Which field the edit sheet should scroll to and focus when it opens (the video
-  // field is the last one in a long form, so "add video link" must jump to it).
-  const [editFocus, setEditFocus] = useState<'video' | null>(null)
+  // Which field the edit sheet should scroll to and focus when it opens
+  const [editFocus, setEditFocus] = useState<
+    'video' | 'media' | 'image' | null
+  >(null)
   const [toastMsg, setToastMsg] = useState('')
   const [showConfirmReset, setShowConfirmReset] = useState(false)
   const [undoOverrideSnapshot, setUndoOverrideSnapshot] = useState<{
@@ -198,11 +199,6 @@ export function ExerciseDetailView({
     setRefreshKey((k) => k + 1)
     setToastMsg('تمت استعادة تعديلاتك')
   }
-
-  const exercise = useMemo(() => {
-    if (!rawExercise) return null
-    return selectEffectiveExercise(rawExercise as Exercise)
-  }, [rawExercise, refreshKey])
 
   const limitationDetails = useMemo(() => {
     return getExerciseDetailsWithLimitations(exercise?.id || exerciseId)
@@ -387,7 +383,7 @@ export function ExerciseDetailView({
 
     for (const day of program.days) {
       for (const exItem of day.exercises) {
-        const fullEx = getExerciseById(exItem.exerciseId)
+        const fullEx = getEffectiveExercise(exItem.exerciseId)
         if (fullEx && fullEx.category === group) {
           totalSets += exItem.sets || 3
         }
@@ -531,7 +527,11 @@ export function ExerciseDetailView({
   }
 
   return (
-    <div className="exercise-detail-page screen-container" dir="rtl">
+    <div
+      className="exercise-detail-page screen-container"
+      key={refreshKey}
+      dir="rtl"
+    >
       {/* 1. Header: Back button with title and reset action (D9, D3) */}
       <TopBar
         title={
@@ -627,22 +627,10 @@ export function ExerciseDetailView({
               >
                 {nameAr}
               </h1>
-              {exercise.isModified && (
-                <span
-                  data-testid="badge-modified"
-                  style={{
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    padding: '2px 8px',
-                    borderRadius: 'var(--radius-control)',
-                    backgroundColor: 'var(--color-accent-tint)',
-                    color: 'var(--color-accent-text)',
-                    border: '1px solid var(--color-accent)',
-                  }}
-                >
-                  معدّل
-                </span>
-              )}
+              <ExerciseMarks
+                hasVideo={exercise.hasVideo}
+                hasCustomMedia={exercise.hasCustomMedia}
+              />
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -794,7 +782,7 @@ export function ExerciseDetailView({
                       }}
                     >
                       {flagInfo.saferAlternatives.map((altId: string) => {
-                        const altEx = getExerciseById(altId)
+                        const altEx = getEffectiveExercise(altId)
                         const altName = altEx
                           ? altEx.nameAr || altEx.name
                           : altId
@@ -846,7 +834,7 @@ export function ExerciseDetailView({
           showPlaceholderIfEmpty
           onToast={(msg) => setToastMsg(msg)}
           onAddImage={() => {
-            setEditFocus(null)
+            setEditFocus('media')
             setShowEditSheet(true)
           }}
           onAddVideo={() => {
@@ -1077,7 +1065,13 @@ export function ExerciseDetailView({
                     >
                       ليه التمرين ده؟
                     </h3>
-                    <p
+                    <Claim
+                      id={`ex_benefit.${exercise.id || exercise.key}`}
+                      status={
+                        (exercise.content_status as ClaimStatus) ||
+                        'coach_authored'
+                      }
+                      as="p"
                       style={{
                         margin: 0,
                         fontSize: '14px',
@@ -1086,7 +1080,7 @@ export function ExerciseDetailView({
                       }}
                     >
                       {exercise.benefitAr || exercise.benefit}
-                    </p>
+                    </Claim>
                   </Card>
                 )}
 
@@ -1105,7 +1099,13 @@ export function ExerciseDetailView({
                     >
                       إزاي بيشتغل
                     </h3>
-                    <p
+                    <Claim
+                      id={`ex_mechanics.${exercise.id || exercise.key}`}
+                      status={
+                        (exercise.content_status as ClaimStatus) ||
+                        'coach_authored'
+                      }
+                      as="p"
                       style={{
                         margin: 0,
                         fontSize: '14px',
@@ -1116,7 +1116,7 @@ export function ExerciseDetailView({
                       {exercise.mechanicsAr ||
                         exercise.mechanics ||
                         exercise.descriptionAr}
-                    </p>
+                    </Claim>
                   </Card>
                 )}
 
@@ -1186,13 +1186,32 @@ export function ExerciseDetailView({
                       paddingInline: '4px',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '4px',
+                      gap: '6px',
+                      flexWrap: 'wrap',
                     }}
                   >
-                    <span>المصدر العلمي</span>
+                    <span>المصدر العلمي:</span>
                     <bdi dir="ltr">
                       {exercise.medicalSource || exercise.reference}
                     </bdi>
+                    <span
+                      style={{
+                        fontSize: '10.5px',
+                        padding: '1px 6px',
+                        borderRadius: 'var(--radius-full)',
+                        background: 'var(--color-surface-2)',
+                        color: 'var(--color-text-2)',
+                      }}
+                    >
+                      {(exercise.medicalSource || exercise.reference || '')
+                        .toLowerCase()
+                        .includes('gray') ||
+                      (exercise.medicalSource || exercise.reference || '')
+                        .toLowerCase()
+                        .includes('kendall')
+                        ? 'مرجع عام'
+                        : 'دراسة محددة'}
+                    </span>
                   </div>
                 )}
               </>
@@ -1254,7 +1273,17 @@ export function ExerciseDetailView({
                   {stepsList.map((step: string, i: number) => (
                     <div key={i} className="step-card">
                       <span className="step-card__number">{i + 1}</span>
-                      <p className="step-card__text">{step}</p>
+                      <Claim
+                        id={`ex_step.${exercise.id || exercise.key}.${i}`}
+                        status={
+                          (exercise.content_status as ClaimStatus) ||
+                          'coach_authored'
+                        }
+                        as="p"
+                        className="step-card__text"
+                      >
+                        {step}
+                      </Claim>
                     </div>
                   ))}
                 </div>
@@ -1449,7 +1478,7 @@ export function ExerciseDetailView({
                         }}
                       >
                         {limitationDetails.alternatives.map((altId) => {
-                          const altEx = getExerciseById(altId)
+                          const altEx = getEffectiveExercise(altId)
                           const altName = altEx?.nameAr || altId
                           return (
                             <div

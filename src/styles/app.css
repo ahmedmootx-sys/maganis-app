@@ -3917,3 +3917,29 @@ body.with-cardio-mini-bar .maganis-toast-portal {
     var(--bottom-nav-height, 64px) + 56px + 16px + var(--bottom-inset)
   ) !important;
 }
+
+/* --- B2: Accessibility & Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .toast,
+  .maganis-callout-toast,
+  .maganis-toast-portal {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .countdown-number {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}

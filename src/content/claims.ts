@@ -5,6 +5,7 @@
  */
 
 export type ClaimStatus = 'sourced' | 'coach_authored' | 'unverified'
+export type ReferenceKind = 'general' | 'specific'
 
 export interface ClaimDef {
   id: string
@@ -12,6 +13,7 @@ export interface ClaimDef {
   source_id: string | null
   source_text?: string
   status: ClaimStatus
+  reference_kind?: ReferenceKind
 }
 
 export const CLAIMS: Record<string, ClaimDef> = {
@@ -23,6 +25,7 @@ export const CLAIMS: Record<string, ClaimDef> = {
     source_id: 'atwater_factors',
     source_text: 'معاملات أتواتر العامة (Atwater general factors)',
     status: 'sourced',
+    reference_kind: 'general',
   },
   guide_bmr_formula: {
     id: 'guide_bmr_formula',
@@ -31,6 +34,7 @@ export const CLAIMS: Record<string, ClaimDef> = {
     source_id: 'mifflin_1990',
     source_text: 'Mifflin وآخرون، 1990، American Journal of Clinical Nutrition',
     status: 'sourced',
+    reference_kind: 'specific',
   },
   guide_tdee_calculation: {
     id: 'guide_tdee_calculation',
@@ -53,6 +57,7 @@ export const CLAIMS: Record<string, ClaimDef> = {
     source_id: 'morton_2018',
     source_text: 'Morton وآخرون، 2018، British Journal of Sports Medicine',
     status: 'sourced',
+    reference_kind: 'specific',
   },
   guide_fat_intake: {
     id: 'guide_fat_intake',
@@ -61,6 +66,7 @@ export const CLAIMS: Record<string, ClaimDef> = {
     source_id: 'iom_2005',
     source_text: 'Institute of Medicine، 2005، Dietary Reference Intakes',
     status: 'sourced',
+    reference_kind: 'specific',
   },
   guide_carb_intake: {
     id: 'guide_carb_intake',
@@ -125,6 +131,7 @@ export const CLAIMS: Record<string, ClaimDef> = {
     source_text:
       'Ainsworth et al., Med Sci Sports Exerc 2011;43(8):1575-1581 (Compendium of Physical Activities)',
     status: 'sourced',
+    reference_kind: 'specific',
   },
   cardio_gross_vs_net: {
     id: 'cardio_gross_vs_net',
@@ -143,6 +150,7 @@ export const CLAIMS: Record<string, ClaimDef> = {
     source_text:
       'Helms ER, Cronin J, Storey A, Zourdos MC. Application of the Repetitions in Reserve-Based Rating of Perceived Exertion Scale for Resistance Training. Strength Cond J. 2016;38(4):42-49.',
     status: 'sourced',
+    reference_kind: 'specific',
   },
   'sugg.progress': {
     id: 'sugg.progress',
@@ -152,6 +160,7 @@ export const CLAIMS: Record<string, ClaimDef> = {
     source_text:
       'American College of Sports Medicine. Progression models in resistance training for healthy adults. Med Sci Sports Exerc. 2009;41(3):687-708.',
     status: 'sourced',
+    reference_kind: 'specific',
   },
   'sugg.below_range': {
     id: 'sugg.below_range',
@@ -175,6 +184,7 @@ for (const m of muscleNamesData.muscles) {
       source_id: null,
       source_text: 'Gray’s Anatomy / Kendall (Coach authored)',
       status: 'coach_authored',
+      reference_kind: 'general',
     }
   }
 }
@@ -189,6 +199,7 @@ for (const [muscleId, info] of Object.entries(muscleInfoData.muscles)) {
       source_id: null,
       source_text: 'Gray’s Anatomy / Kendall (Coach authored)',
       status: 'coach_authored',
+      reference_kind: 'general',
     }
   }
   if (typedInfo.attaches_ar) {
@@ -199,6 +210,7 @@ for (const [muscleId, info] of Object.entries(muscleInfoData.muscles)) {
       source_id: null,
       source_text: 'Gray’s Anatomy / Kendall (Coach authored)',
       status: 'coach_authored',
+      reference_kind: 'general',
     }
   }
 }

@@ -71,10 +71,7 @@ async function runGate() {
     await import('../src/modules/nutrition/computeEnergyPlan.ts')
 
   // Load Persona Profile Dump
-  const personaDumpPath = path.join(
-    rootDir,
-    'fixtures/persona.synthetic.json',
-  )
+  const personaDumpPath = path.join(rootDir, 'fixtures/persona.synthetic.json')
   const personaDump = JSON.parse(fs.readFileSync(personaDumpPath, 'utf8'))
   const personaProfile = personaDump.profile
 

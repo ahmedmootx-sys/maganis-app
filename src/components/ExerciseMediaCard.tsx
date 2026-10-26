@@ -4,6 +4,8 @@ import { SafeImage } from './SafeImage.tsx'
 import { assetUrl } from '../utils/assetUrl.ts'
 import { NoImageExercisePlaceholder } from '../modules/workout/NoImageExercisePlaceholder.tsx'
 
+import { IconImage } from './Icons.tsx'
+
 export interface ExerciseMediaCardProps {
   exercise: Exercise | Partial<Exercise>
   showPlaceholderIfEmpty?: boolean
@@ -30,6 +32,7 @@ export function ExerciseMediaCard({
 }: ExerciseMediaCardProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [frameStep, setFrameStep] = useState<'start' | 'peak'>('start')
+  const [loadFailed, setLoadFailed] = useState(false)
 
   // Check prefers-reduced-motion
   useEffect(() => {
@@ -55,14 +58,19 @@ export function ExerciseMediaCard({
     media?.frames?.display === true && media?.frames?.match === 'exact',
   )
 
-  // Custom exercise uploaded image or data URI fallback (Part 1.7)
-  const customMediaUrl =
-    exercise.imageUrl || exercise.thumbnailUrl || exercise.image
+  // Custom exercise uploaded image, gif or external url (Task H2.2)
+  const activeMediaUrl =
+    exercise.gifUrl ||
+    exercise.imageUrl ||
+    exercise.thumbnailUrl ||
+    exercise.image
   const hasCustomMedia = Boolean(
-    customMediaUrl &&
-    (customMediaUrl.startsWith('data:') ||
-      customMediaUrl.startsWith('blob:') ||
-      customMediaUrl.startsWith('media/')),
+    activeMediaUrl &&
+    (activeMediaUrl.startsWith('data:') ||
+      activeMediaUrl.startsWith('blob:') ||
+      activeMediaUrl.startsWith('media/') ||
+      activeMediaUrl.startsWith('https://') ||
+      activeMediaUrl.startsWith('http://')),
   )
 
   // If no GIF, no frames, and no custom media -> render placeholder if requested, or null
@@ -271,8 +279,61 @@ export function ExerciseMediaCard({
     )
   }
 
-  // 3. User Custom Media (IndexedDB / Data URI)
-  if (hasCustomMedia && customMediaUrl) {
+  // 3. User Custom Media (IndexedDB / Data URI / External link / GIF)
+  if (hasCustomMedia && activeMediaUrl) {
+    const isExternal =
+      activeMediaUrl.startsWith('https://') ||
+      activeMediaUrl.startsWith('http://')
+
+    if (loadFailed) {
+      return (
+        <div
+          className="card exercise-media-card"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px',
+            background: 'var(--color-surface)',
+            borderRadius: 'var(--radius-card, 16px)',
+            border: '1px solid var(--color-divider)',
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
+          <div
+            style={{
+              width: '180px',
+              height: '180px',
+              borderRadius: '12px',
+              background: 'var(--color-surface-2)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              padding: '12px',
+              boxSizing: 'border-box',
+              textAlign: 'center',
+            }}
+          >
+            <IconImage size={40} />
+            <span
+              style={{
+                fontSize: '12.5px',
+                color: 'var(--color-text-2)',
+                fontWeight: 600,
+                lineHeight: 1.4,
+              }}
+            >
+              الصورة دي محتاجة إنترنت
+            </span>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div
         className="card exercise-media-card"
@@ -302,7 +363,13 @@ export function ExerciseMediaCard({
           }}
         >
           <SafeImage
-            src={customMediaUrl}
+            src={activeMediaUrl}
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            onError={() => {
+              if (isExternal) setLoadFailed(true)
+            }}
             style={{
               width: '180px',
               height: '180px',

@@ -26,7 +26,7 @@
     "check:ui": "node scripts/check-ui.mjs",
     "catalog:check": "node scripts/check-catalog.mjs",
     "verify": "node scripts/verify.mjs",
-    "gates": "npm run check:emoji && npm run lint && npm run format:check && npm run typecheck && npm run test && npm run build",
+    "gates": "node scripts/gate-no-personal-data.mjs && npm run check:emoji && npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && npm run build",
     "prepare": "husky"
   },
   "lint-staged": {

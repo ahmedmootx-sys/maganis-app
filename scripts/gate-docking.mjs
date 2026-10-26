@@ -49,9 +49,7 @@ async function runGate() {
   if (fs.existsSync(personaProfilePath)) {
     personaDump = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
   }
-  const personaProfile = personaDump
-    ? personaDump.profile || personaDump
-    : null
+  const personaProfile = personaDump ? personaDump.profile || personaDump : null
 
   let totalStatesExamined = 0
   const violations = []

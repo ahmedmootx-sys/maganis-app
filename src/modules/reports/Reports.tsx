@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import type { TrackingSession, BodyLogEntry } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
-import { getExerciseById } from '../workout/exercises.ts'
+import { getEffectiveExercise } from '../workout/exerciseStore.ts'
 import { calculateCalorieMacroTargets } from '../nutrition/calorieCalculator.ts'
 import { SvgLineChart } from './SvgLineChart.tsx'
 import { ConfirmSheet } from '../../ui/index.ts'
@@ -343,7 +343,7 @@ export function Reports({
   const prMap: Record<string, { name: string; weight: number }> = {}
   for (const session of sessions) {
     for (const ex of session.exercises) {
-      const info = getExerciseById(ex.exerciseId)
+      const info = getEffectiveExercise(ex.exerciseId)
       const name = info?.nameAr ?? ex.exerciseId
       const maxWeight = Math.max(...ex.sets.map((s) => s.weightKg), 0)
       if (maxWeight > 0) {

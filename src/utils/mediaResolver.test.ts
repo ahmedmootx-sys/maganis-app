@@ -10,8 +10,8 @@ describe('Exercise Media Resolver: resolveMedia', () => {
     expect(bench).toBeDefined()
     if (bench) {
       const resObj = resolveMedia(bench)
-      const resId = resolveMedia(bench.id)
-      expect(resObj.url).toBe(resId.url)
+      const resClone = resolveMedia({ ...bench })
+      expect(resObj.url).toBe(resClone.url)
       expect(resObj.url).not.toBeNull()
       expect(resObj.url).toContain('media/bench/animation.gif')
     }
@@ -24,8 +24,8 @@ describe('Exercise Media Resolver: resolveMedia', () => {
     expect(pullup).toBeDefined()
     if (pullup) {
       const resObj = resolveMedia(pullup)
-      const resId = resolveMedia(pullup.id)
-      expect(resObj.url).toBe(resId.url)
+      const resClone = resolveMedia({ ...pullup })
+      expect(resObj.url).toBe(resClone.url)
       expect(resObj.url).not.toBeNull()
       expect(resObj.url).toContain('media/pullup/animation.gif')
     }
@@ -35,9 +35,9 @@ describe('Exercise Media Resolver: resolveMedia', () => {
     for (const ex of EXERCISES.slice(0, 50)) {
       const first = resolveMedia(ex)
       const second = resolveMedia(ex)
-      const byId = resolveMedia(ex.id)
+      const clone = resolveMedia({ ...ex })
       expect(first.url).toBe(second.url)
-      expect(first.url).toBe(byId.url)
+      expect(first.url).toBe(clone.url)
     }
   })
 

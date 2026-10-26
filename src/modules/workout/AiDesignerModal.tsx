@@ -71,7 +71,7 @@ export function AiDesignerModal({
     if (!profile) return null
     return {
       ...profile,
-      primaryGoal: editGoal as any,
+      primaryGoal: editGoal as UserProfile['primaryGoal'],
       trainingDaysPerWeek: editDays,
       equipmentAvailable: editEquipment
         .split(',')
@@ -263,7 +263,7 @@ export function AiDesignerModal({
                       <Select
                         id="ai-designer-sex"
                         value={editSex}
-                        onChange={(val) => setEditSex(val as any)}
+                        onChange={(val) => setEditSex(val as 'male' | 'female')}
                         options={[
                           { value: 'male', labelAr: 'ذكر' },
                           { value: 'female', labelAr: 'أنثى' },
@@ -340,7 +340,7 @@ export function AiDesignerModal({
                       borderRadius: 'var(--radius-control)',
                     }}
                   >
-                    🛡️ الخصوصية: لا يتم تضمين بيانات الإصابات أو الصحة تلقائياً،
+                    الخصوصية: لا يتم تضمين بيانات الإصابات أو الصحة تلقائياً،
                     حيث يجمعها المدرب مباشرة أثناء المقابلة.
                   </div>
                 </div>

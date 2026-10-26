@@ -123,7 +123,12 @@ export async function initStorage(page: Page, options: DriveOptions = {}) {
         document.documentElement.style.fontSize = `${16 * fsScale}px`
       }
     },
-    { profile: ownerProfile, prog: ownerProgram, t: theme, fsScale: fontScale },
+    {
+      profile: personaProfile,
+      prog: personaProgram,
+      t: theme,
+      fsScale: fontScale,
+    },
   )
 }
 

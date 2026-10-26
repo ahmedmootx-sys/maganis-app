@@ -11,7 +11,7 @@ export const IconSprite: React.FC = () => {
         position: 'absolute',
         width: 0,
         height: 0,
-        overflow: 'hidden' /* clip-ok: visual element boundary */,
+        overflow: 'hidden',
       }}
       aria-hidden="true"
     >
@@ -283,6 +283,16 @@ export const IconSprite: React.FC = () => {
         <symbol id="icon-pause" viewBox="0 0 24 24">
           <rect x="14" y="3" width="5" height="18" rx="1" />
           <rect x="5" y="3" width="5" height="18" rx="1" />
+        </symbol>
+        <symbol id="icon-video-play" viewBox="0 0 24 24">
+          <rect width="20" height="15" x="2" y="4.5" rx="3" />
+          <polygon points="10 8.5 15 12 10 15.5 10 8.5" fill="currentColor" />
+        </symbol>
+        <symbol id="icon-image-up" viewBox="0 0 24 24">
+          <path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21" />
+          <path d="m14 19.5 3-3 3 3" />
+          <path d="M17 22v-5.5" />
+          <circle cx="9" cy="9" r="2" />
         </symbol>
         <symbol id="icon-flame" viewBox="0 0 24 24">
           <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />

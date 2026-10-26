@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import type { BackupData } from '../shared/types.ts'
 
 export interface BackupStore {
@@ -22,6 +23,79 @@ function readWithFileReader(file: File): Promise<string> {
     reader.readAsText(file)
   })
 }
+
+export const BackupImportSchema = z
+  .object({
+    exportVersion: z.number({
+      message: 'رقم إصدار ملف النسخة الاحتياطية مفقود أو غير صالح',
+    }),
+    exportedAt: z.number().optional(),
+    profile: z
+      .unknown()
+      .refine(
+        (val) =>
+          val === undefined ||
+          val === null ||
+          (typeof val === 'object' && !Array.isArray(val)),
+        { message: 'بيانات الملف الشخصي في النسخة غير صالحة' },
+      )
+      .optional(),
+    workoutProgram: z
+      .unknown()
+      .refine(
+        (val) =>
+          val === undefined ||
+          val === null ||
+          (typeof val === 'object' && !Array.isArray(val)),
+        { message: 'بيانات البرنامج التدريبي في النسخة غير صالحة' },
+      )
+      .optional(),
+    customExercises: z
+      .array(z.unknown(), {
+        message: 'بيانات customExercises في النسخة الاحتياطية غير صالحة',
+      })
+      .optional()
+      .default([]),
+    trackingSessions: z
+      .array(z.unknown(), {
+        message: 'بيانات trackingSessions في النسخة الاحتياطية غير صالحة',
+      })
+      .optional()
+      .default([]),
+    bodyLog: z
+      .array(z.unknown(), {
+        message: 'بيانات bodyLog في النسخة الاحتياطية غير صالحة',
+      })
+      .optional()
+      .default([]),
+    dayNotes: z
+      .array(z.unknown(), {
+        message: 'بيانات dayNotes في النسخة الاحتياطية غير صالحة',
+      })
+      .optional()
+      .default([]),
+    exerciseOverrides: z
+      .unknown()
+      .refine(
+        (val) => {
+          if (val === undefined || val === null) return true
+          if (typeof val !== 'object' || Array.isArray(val)) return false
+          for (const [_id, overrideObj] of Object.entries(
+            val as Record<string, unknown>,
+          )) {
+            if (!overrideObj || typeof overrideObj !== 'object') {
+              return false
+            }
+          }
+          return true
+        },
+        {
+          message: 'بيانات تعديلات التمارين في النسخة الاحتياطية غير صالحة',
+        },
+      )
+      .optional(),
+  })
+  .passthrough()
 
 export function createBackupStore(): BackupStore {
   function getLastExport(): number | null {
@@ -152,77 +226,16 @@ export function createBackupStore(): BackupStore {
         }
       }
 
-      const raw = parsed as Record<string, unknown>
-      if (typeof raw.exportVersion !== 'number') {
+      const zodResult = BackupImportSchema.safeParse(parsed)
+      if (!zodResult.success) {
+        const issue = zodResult.error.issues[0]
         return {
           ok: false,
-          error: 'رقم إصدار ملف النسخة الاحتياطية مفقود أو غير صالح',
+          error: issue?.message || 'ملف النسخة الاحتياطية غير صالح',
         }
       }
 
-      if (raw.profile !== undefined && raw.profile !== null) {
-        if (typeof raw.profile !== 'object' || Array.isArray(raw.profile)) {
-          return { ok: false, error: 'بيانات الملف الشخصي في النسخة غير صالحة' }
-        }
-      }
-
-      if (raw.workoutProgram !== undefined && raw.workoutProgram !== null) {
-        if (
-          typeof raw.workoutProgram !== 'object' ||
-          Array.isArray(raw.workoutProgram)
-        ) {
-          return {
-            ok: false,
-            error: 'بيانات البرنامج التدريبي في النسخة غير صالحة',
-          }
-        }
-      }
-
-      const arrayKeys = [
-        'customExercises',
-        'trackingSessions',
-        'bodyLog',
-        'dayNotes',
-      ] as const
-      for (const key of arrayKeys) {
-        if (
-          raw[key] !== undefined &&
-          raw[key] !== null &&
-          !Array.isArray(raw[key])
-        ) {
-          return {
-            ok: false,
-            error: `بيانات ${key} في النسخة الاحتياطية غير صالحة`,
-          }
-        }
-      }
-
-      // Task G5-B4: Validate exerciseOverrides on import
-      if (
-        raw.exerciseOverrides !== undefined &&
-        raw.exerciseOverrides !== null
-      ) {
-        if (
-          typeof raw.exerciseOverrides !== 'object' ||
-          Array.isArray(raw.exerciseOverrides)
-        ) {
-          return {
-            ok: false,
-            error: 'بيانات تعديلات التمارين في النسخة الاحتياطية غير صالحة',
-          }
-        }
-        const overridesMap = raw.exerciseOverrides as Record<string, unknown>
-        for (const [id, overrideObj] of Object.entries(overridesMap)) {
-          if (!overrideObj || typeof overrideObj !== 'object') {
-            return {
-              ok: false,
-              error: `تعديل التمرين "${id}" غير صالح`,
-            }
-          }
-        }
-      }
-
-      return { ok: true, data: parsed as BackupData }
+      return { ok: true, data: zodResult.data as unknown as BackupData }
     } catch {
       return { ok: false, error: 'فشل في قراءة أو تحليل ملف النسخة الاحتياطية' }
     }

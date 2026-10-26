@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { ActiveWorkoutSession } from './ActiveWorkoutSession.tsx'
-import type { ProgramDay, TrackingSession } from '../shared/types.ts'
+import type { Exercise, ProgramDay, TrackingSession } from '../shared/types.ts'
 
 const mockDay: ProgramDay = {
   dayIndex: 0,
@@ -216,7 +216,7 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
     render(
       <ActiveWorkoutSession
         programDay={bodyweightDay}
-        customExercises={mockCustomExercises as any}
+        customExercises={mockCustomExercises as unknown as Exercise[]}
         onFinish={vi.fn()}
         onCancel={vi.fn()}
       />,

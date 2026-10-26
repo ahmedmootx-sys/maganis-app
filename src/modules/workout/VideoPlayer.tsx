@@ -91,7 +91,7 @@ export class VideoErrorBoundary extends React.Component<
                 textDecoration: 'none',
               }}
             >
-              افتح في يوتيوب ↗
+              افتح في يوتيوب
             </a>
             <button
               type="button"
@@ -261,7 +261,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             textDecoration: 'none',
           }}
         >
-          افتح في المتصفح ↗
+          افتح في المتصفح
         </a>
       </div>
     )
@@ -450,7 +450,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   // 6. Embedded IFrame (YouTube or Vimeo)
   const fallbackLabel =
-    parsed.sourceType === 'youtube' ? 'افتح في يوتيوب ↗' : 'افتح في فيميو ↗'
+    parsed.sourceType === 'youtube' ? 'افتح في يوتيوب' : 'افتح في فيميو'
 
   if (loadTimedOut && !isLoaded) {
     return (

@@ -53,7 +53,7 @@ export const Toast: React.FC<ToastProps> = ({
           'calc(var(--bottom-nav-height, 64px) + 16px + env(safe-area-inset-bottom, 0px))',
         left: '50%',
         transform: 'translateX(-50%)',
-        zIndex: 'var(--z-toast)' as any,
+        zIndex: 'var(--z-toast)' as React.CSSProperties['zIndex'],
         pointerEvents: 'none',
         display: 'flex',
         justifyContent: 'center',

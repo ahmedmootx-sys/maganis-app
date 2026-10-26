@@ -7,7 +7,8 @@ import type {
 } from '../shared/types.ts'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
-import { getExerciseById } from '../workout/exercises.ts'
+import { getEffectiveExercise } from '../workout/exerciseStore.ts'
+import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import { SvgLineChart } from '../reports/SvgLineChart.tsx'
 import { formatArabicDate } from '../../components/DateField.tsx'
 import {
@@ -287,7 +288,7 @@ export function ProgressScreen({
     const muscleMap: Record<string, number> = {}
     for (const s of filteredSessions) {
       for (const ex of s.exercises) {
-        const info = getExerciseById(ex.exerciseId)
+        const info = getEffectiveExercise(ex.exerciseId)
         const group = info?.category || 'other'
         const label = MUSCLE_GROUP_LABELS[group as MuscleGroup] || group
         const validSets = ex.sets.filter((st) => st.reps > 0).length
@@ -301,15 +302,28 @@ export function ProgressScreen({
 
   // Personal Records
   const personalRecords = useMemo(() => {
-    const map: Record<string, { name: string; weight: number }> = {}
+    const map: Record<
+      string,
+      {
+        name: string
+        weight: number
+        hasVideo?: boolean
+        hasCustomMedia?: boolean
+      }
+    > = {}
     for (const s of sessions) {
       for (const ex of s.exercises) {
-        const info = getExerciseById(ex.exerciseId)
+        const info = getEffectiveExercise(ex.exerciseId)
         const name = info?.nameAr ?? ex.exerciseId
         const maxWeight = Math.max(...ex.sets.map((set) => set.weightKg), 0)
         if (maxWeight > 0) {
           if (!map[ex.exerciseId] || maxWeight > map[ex.exerciseId].weight) {
-            map[ex.exerciseId] = { name, weight: maxWeight }
+            map[ex.exerciseId] = {
+              name,
+              weight: maxWeight,
+              hasVideo: info?.hasVideo,
+              hasCustomMedia: info?.hasCustomMedia,
+            }
           }
         }
       }
@@ -1471,9 +1485,15 @@ export function ProgressScreen({
                           fontSize: '14.5px',
                           fontWeight: 600,
                           color: 'var(--ink)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
                         }}
                       >
-                        {pr.name}
+                        <span>{pr.name}</span>
+                        <ExerciseMarks
+                          hasVideo={pr.hasVideo}
+                          hasCustomMedia={pr.hasCustomMedia}
+                        />
                       </span>
                       <strong
                         style={{

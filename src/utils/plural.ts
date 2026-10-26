@@ -17,6 +17,8 @@ export type PluralWordKey =
   | 'cardio'
   | 'step'
   | 'mistake'
+  | 'image'
+  | 'video'
   | 'تمرين'
   | 'جدول'
   | 'يوم'
@@ -29,6 +31,8 @@ export type PluralWordKey =
   | 'كارديو'
   | 'خطوة'
   | 'خطأ'
+  | 'صورة'
+  | 'فيديو'
   // Legacy aliases
   | 'ثانية'
   | 'تكرار'
@@ -169,6 +173,22 @@ export const ARABIC_PLURAL_TABLE: Record<string, PluralRuleForms> = {
     many: '{n} خطأ',
     other: '{n} خطأ',
   },
+  image: {
+    zero: 'لا توجد صور',
+    one: 'صورة واحدة',
+    two: 'صورتان',
+    few: '{n} صور',
+    many: '{n} صورة',
+    other: '{n} صورة',
+  },
+  video: {
+    zero: 'لا توجد فيديوهات',
+    one: 'فيديو واحد',
+    two: 'فيديوهان',
+    few: '{n} فيديوهات',
+    many: '{n} فيديو',
+    other: '{n} فيديو',
+  },
 }
 
 // Map Arabic keys to canonical English keys
@@ -188,6 +208,8 @@ const ALIASES: Record<string, string> = {
   كارديو: 'cardio',
   خطوة: 'step',
   خطأ: 'mistake',
+  صورة: 'image',
+  فيديو: 'video',
 }
 
 const arPluralRules = new Intl.PluralRules('ar')

@@ -28,6 +28,7 @@ import { selectEffectiveExercise } from './exerciseOverrides.ts'
 import { ExerciseEditSheet } from './ExerciseEditSheet.tsx'
 import { CopyExerciseNameButton } from './CopyExerciseNameButton.tsx'
 import { Toast } from '../../components/Toast.tsx'
+import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import {
   getEquipmentLabel,
   getDifficultyLabel,
@@ -111,13 +112,12 @@ export function ExerciseLibraryModal({
   const [toastMsg, setToastMsg] = useState('')
   const [overridesVersion, setOverridesVersion] = useState(0)
 
-  const allExercises = useMemo(
-    () =>
-      [...EXERCISES, ...customExercises].map((ex) =>
-        selectEffectiveExercise(ex),
-      ),
-    [customExercises, overridesVersion],
-  )
+  const allExercises = useMemo(() => {
+    void overridesVersion
+    return [...EXERCISES, ...customExercises].map((ex) =>
+      selectEffectiveExercise(ex),
+    )
+  }, [customExercises, overridesVersion])
 
   const activeExercises = useMemo(() => {
     return allExercises.filter((e) => !deletedExerciseIds.includes(e.id))
@@ -542,25 +542,12 @@ export function ExerciseLibraryModal({
                       }}
                     >
                       <span>{formatBdiText(ex.nameAr)}</span>
-                      {'isModified' in ex &&
-                        Boolean(
-                          (ex as { isModified?: boolean }).isModified,
-                        ) && (
-                          <span
-                            data-testid="badge-modified"
-                            style={{
-                              fontSize: '10px',
-                              fontWeight: 700,
-                              padding: '1px 6px',
-                              borderRadius: 'var(--radius-control)',
-                              backgroundColor: 'var(--color-accent-tint)',
-                              color: 'var(--color-accent-text)',
-                              border: '1px solid var(--color-accent)',
-                            }}
-                          >
-                            معدّل
-                          </span>
-                        )}
+                      <ExerciseMarks
+                        hasVideo={(ex as { hasVideo?: boolean }).hasVideo}
+                        hasCustomMedia={
+                          (ex as { hasCustomMedia?: boolean }).hasCustomMedia
+                        }
+                      />
                     </span>
                   }
                   secondary={

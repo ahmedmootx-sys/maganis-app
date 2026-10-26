@@ -60,6 +60,8 @@ export type IconName =
   | 'rotate-ccw'
   | 'play'
   | 'pause'
+  | 'video-play'
+  | 'image-up'
   | 'flame'
   | 'activity'
   | 'timer'

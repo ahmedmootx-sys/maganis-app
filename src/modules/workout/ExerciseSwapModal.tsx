@@ -9,6 +9,8 @@ import {
 } from '../shared/types.ts'
 import { Select } from '../../components/Select'
 import { Icon } from '../../ui/Icon.tsx'
+import { selectEffectiveExercise } from './exerciseStore.ts'
+import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 
 interface ExerciseSwapModalProps {
   currentExercise: Exercise
@@ -32,7 +34,9 @@ export function ExerciseSwapModal({
   const [selectedEquipment, setSelectedEquipment] = useState<string>('all')
 
   const candidates = useMemo(() => {
-    const all = [...EXERCISES, ...customExercises]
+    const all = [...EXERCISES, ...customExercises].map((e) =>
+      selectEffectiveExercise(e),
+    )
     return all.filter((e) => {
       if (e.id === currentExercise.id) return false
       // Filter out exercises that conflict with user injuries
@@ -217,6 +221,10 @@ export function ExerciseSwapModal({
                         <strong style={{ fontSize: '14px' }}>
                           {exercise.name || exercise.nameAr}
                         </strong>
+                        <ExerciseMarks
+                          hasVideo={exercise.hasVideo}
+                          hasCustomMedia={exercise.hasCustomMedia}
+                        />
                         {exercise.targetSubMuscleAr && (
                           <span className="submuscle-badge">
                             {exercise.targetSubMuscleAr}

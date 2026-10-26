@@ -24,10 +24,20 @@ export const Sheet: React.FC<SheetProps> = ({
   className = '',
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLElement | null>(null)
 
-  // Esc key closes, focus trap & body scroll lock with BottomNav inert state
+  // Esc key closes, focus trap, return focus & background inert/aria-hidden
   useEffect(() => {
     if (!isOpen) return
+
+    triggerRef.current = document.activeElement as HTMLElement | null
+
+    // Mark background inert & aria-hidden
+    const rootEl = document.getElementById('root')
+    if (rootEl) {
+      rootEl.setAttribute('aria-hidden', 'true')
+      rootEl.inert = true
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -38,7 +48,10 @@ export const Sheet: React.FC<SheetProps> = ({
         const focusable = sheetRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         )
-        if (focusable.length === 0) return
+        if (focusable.length === 0) {
+          e.preventDefault()
+          return
+        }
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
@@ -59,10 +72,46 @@ export const Sheet: React.FC<SheetProps> = ({
 
     window.addEventListener('keydown', handleKeyDown)
 
+    // Focus first interactive element inside sheet if not already focused
+    const focusTimer = setTimeout(() => {
+      if (sheetRef.current) {
+        if (
+          document.activeElement &&
+          sheetRef.current.contains(document.activeElement) &&
+          document.activeElement !== sheetRef.current
+        ) {
+          return
+        }
+        const focusable = sheetRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        )
+        if (focusable.length > 0) {
+          focusable[0].focus()
+        } else {
+          sheetRef.current.focus()
+        }
+      }
+    }, 50)
+
     return () => {
+      clearTimeout(focusTimer)
       document.body.style.overflow = prevOverflow
       delete document.body.dataset.sheetOpen
       window.removeEventListener('keydown', handleKeyDown)
+
+      // Restore background
+      if (rootEl) {
+        rootEl.removeAttribute('aria-hidden')
+        rootEl.inert = false
+      }
+
+      // Return focus to trigger element
+      if (
+        triggerRef.current &&
+        typeof triggerRef.current.focus === 'function'
+      ) {
+        triggerRef.current.focus()
+      }
     }
   }, [isOpen, onClose])
 
