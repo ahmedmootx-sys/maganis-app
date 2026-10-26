@@ -9,7 +9,10 @@ import type { UserProfile } from '../onboarding/types.ts'
 describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
   const rootDir = process.cwd()
   const ownerDump = JSON.parse(
-    fs.readFileSync(path.resolve(rootDir, 'docs/owner-profile-dump.json'), 'utf8'),
+    fs.readFileSync(
+      path.resolve(rootDir, 'docs/owner-profile-dump.json'),
+      'utf8',
+    ),
   )
   const ownerProfile: UserProfile = ownerDump.profile
 
@@ -133,7 +136,9 @@ describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
     expect(prompt).toContain(`- Height: ${ownerProfile.body.heightCm} cm`)
     expect(prompt).toContain(`- Weight: ${ownerProfile.body.weightKg} kg`)
     expect(prompt).toContain(`- Main goal: ${ownerProfile.primaryGoal}`)
-    expect(prompt).toContain(`- Training days per week: ${ownerProfile.trainingDaysPerWeek} days`)
+    expect(prompt).toContain(
+      `- Training days per week: ${ownerProfile.trainingDaysPerWeek} days`,
+    )
 
     // Forbidden in prompt even with switch ON:
     // 1. Owner's name

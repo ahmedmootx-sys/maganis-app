@@ -182,8 +182,6 @@ export function AnatomyMuscleMap({
     return map
   }, [resolved.muscles])
 
-
-
   // Drawn counts in current view and other view, and tracking unpainted muscles
   const {
     currentCounts: _currentCounts,
@@ -316,12 +314,17 @@ export function AnatomyMuscleMap({
   // Relevant exercises list for the selected muscle
   const relevantExercises = useMemo(() => {
     if (!viewState.selectedMuscleId) return []
-    const exercises = (catalogData as { exercises?: Array<{
-      key?: string
-      name_ar?: string
-      name_en?: string
-      muscles?: Array<{ id: string; role: 'primary' | 'secondary' }>
-    }> }).exercises || []
+    const exercises =
+      (
+        catalogData as {
+          exercises?: Array<{
+            key?: string
+            name_ar?: string
+            name_en?: string
+            muscles?: Array<{ id: string; role: 'primary' | 'secondary' }>
+          }>
+        }
+      ).exercises || []
 
     const matches: Array<{
       key: string
@@ -473,7 +476,10 @@ export function AnatomyMuscleMap({
       if (anchor && Array.isArray(anchor) && anchor.length === 2) {
         // Shift pan.y upward proportionally so lower muscles stay in upper safe area
         if (anchor[1] > 600) {
-          const shiftY = -Math.min(220, Math.round(((anchor[1] - 600) / 1448) * 220))
+          const shiftY = -Math.min(
+            220,
+            Math.round(((anchor[1] - 600) / 1448) * 220),
+          )
           setPan((p) => ({ ...p, y: shiftY }))
         } else {
           setPan((p) => ({ ...p, y: 0 }))
@@ -492,26 +498,36 @@ export function AnatomyMuscleMap({
       const clientY = e.clientY
 
       let elements: Element[] = []
-      if (typeof document !== 'undefined' && typeof document.elementsFromPoint === 'function') {
+      if (
+        typeof document !== 'undefined' &&
+        typeof document.elementsFromPoint === 'function'
+      ) {
         elements = document.elementsFromPoint(clientX, clientY)
       } else {
         const target = e.target as SVGElement
         if (target) elements = [target]
       }
 
-      const candidates: Array<{ id: string; area: number; isDeep: boolean }> = []
+      const candidates: Array<{ id: string; area: number; isDeep: boolean }> =
+        []
       for (const el of elements) {
         const mId = el.getAttribute?.('data-muscle')
         if (mId && (MUSCLE_DEFS[mId] || getMuscleInfo(mId))) {
           const meta = META_MUSCLES[mId]
           const isDeep = meta?.best_layer === 'D'
-          const area = Number(meta?.views?.[viewState.view]?.visible_pixels ?? (meta?.area_px as number | undefined) ?? 10000)
+          const area = Number(
+            meta?.views?.[viewState.view]?.visible_pixels ??
+              (meta?.area_px as number | undefined) ??
+              10000,
+          )
           candidates.push({ id: mId, area, isDeep })
         }
       }
 
       // In deep mode taps go to deep muscles only, in surface mode to surface muscles only
-      const layerMatches = candidates.filter((c) => (isDeepMode ? c.isDeep : !c.isDeep))
+      const layerMatches = candidates.filter((c) =>
+        isDeepMode ? c.isDeep : !c.isDeep,
+      )
       const matching = layerMatches.length > 0 ? layerMatches : candidates
 
       if (matching.length > 0) {
@@ -528,16 +544,19 @@ export function AnatomyMuscleMap({
   )
 
   // Double-tap zoom (1x -> 2x -> 3x -> 1x) with natural reset
-  const handleContainerClick = useCallback((_e: React.MouseEvent) => {
-    const now = Date.now()
-    if (now - lastTapRef.current < 280) {
-      setZoom((z) => (z === 1.0 ? 2.0 : z === 2.0 ? 3.0 : 1.0))
-      if (zoom >= 2.0) {
-        setPan({ x: 0, y: 0 })
+  const handleContainerClick = useCallback(
+    (_e: React.MouseEvent) => {
+      const now = Date.now()
+      if (now - lastTapRef.current < 280) {
+        setZoom((z) => (z === 1.0 ? 2.0 : z === 2.0 ? 3.0 : 1.0))
+        if (zoom >= 2.0) {
+          setPan({ x: 0, y: 0 })
+        }
       }
-    }
-    lastTapRef.current = now
-  }, [zoom])
+      lastTapRef.current = now
+    },
+    [zoom],
+  )
 
   // Zoom controls
   function handleZoomIn() {
@@ -600,7 +619,10 @@ export function AnatomyMuscleMap({
       const dy = e.touches[0].clientY - e.touches[1].clientY
       const currentDist = Math.hypot(dx, dy)
       const scale = currentDist / touchStartDistRef.current
-      const nextZoom = Math.max(1.0, Math.min(3.0, +(touchStartZoomRef.current * scale).toFixed(2)))
+      const nextZoom = Math.max(
+        1.0,
+        Math.min(3.0, +(touchStartZoomRef.current * scale).toFixed(2)),
+      )
       setZoom(nextZoom)
     }
   }
@@ -684,10 +706,10 @@ export function AnatomyMuscleMap({
         'hamstring_bf_long',
         'gastrocnemius_medial',
       ]
-      const targetIds =
-        viewState.view === 'A' ? majorAnterior : majorPosterior
+      const targetIds = viewState.view === 'A' ? majorAnterior : majorPosterior
       filtered = baseLabels.filter(
-        (lbl) => targetIds.includes(lbl.id) || lbl.id === viewState.selectedMuscleId,
+        (lbl) =>
+          targetIds.includes(lbl.id) || lbl.id === viewState.selectedMuscleId,
       )
     }
 
@@ -726,7 +748,6 @@ export function AnatomyMuscleMap({
     roleMap,
   ])
 
-
   // All groups and filtered muscles for the chip list under figure
   const allGroups = useMemo(() => getAllGroups(), [])
   const filteredMuscles = useMemo(() => {
@@ -740,7 +761,8 @@ export function AnatomyMuscleMap({
       if (info?.gym_ar.toLowerCase().includes(q)) return true
       if (info?.short_ar.toLowerCase().includes(q)) return true
       if (info?.sci_en.toLowerCase().includes(q)) return true
-      if (info?.gym_ar_alt?.some((alt) => alt.toLowerCase().includes(q))) return true
+      if (info?.gym_ar_alt?.some((alt) => alt.toLowerCase().includes(q)))
+        return true
       return false
     })
   }, [chipSearch])
@@ -810,7 +832,9 @@ export function AnatomyMuscleMap({
   const selectedGroup = selectedInfo?.group
     ? getMuscleGroup(selectedInfo.group)
     : null
-  const groupName = selectedGroup?.gym_ar || (selectedInfo?.group ? MUSCLE_GROUPS[viewState.selectedMuscleId || ''] : '')
+  const groupName =
+    selectedGroup?.gym_ar ||
+    (selectedInfo?.group ? MUSCLE_GROUPS[viewState.selectedMuscleId || ''] : '')
 
   return (
     <div
@@ -1057,70 +1081,72 @@ export function AnatomyMuscleMap({
             }}
             aria-hidden="true"
           >
-            {Object.entries(atlasAnchorsData.anchors).map(([mId, anchorDef]) => {
-              const a = anchorDef as {
-                id: string
-                view: 'A' | 'P'
-                host_mesh: string
-                fraction_x: number
-                fraction_y: number
-                note_ar: string
-              }
-              if (a.view !== viewState.view) return null
-              const role = roleMap.get(mId)
-              const isSelected = viewState.selectedMuscleId === mId
-              // Show pin if muscle is targeted by exercise or currently selected
-              if (!role && !isSelected) return null
+            {Object.entries(atlasAnchorsData.anchors).map(
+              ([mId, anchorDef]) => {
+                const a = anchorDef as {
+                  id: string
+                  view: 'A' | 'P'
+                  host_mesh: string
+                  fraction_x: number
+                  fraction_y: number
+                  note_ar: string
+                }
+                if (a.view !== viewState.view) return null
+                const role = roleMap.get(mId)
+                const isSelected = viewState.selectedMuscleId === mId
+                // Show pin if muscle is targeted by exercise or currently selected
+                if (!role && !isSelected) return null
 
-              const approx = APPROXIMATE_REGIONS[mId]
-              const cx = approx?.anchor?.[0] || 512
-              const cy = approx?.anchor?.[1] || 750
-              const pinColor = isSelected
-                ? 'var(--color-accent)'
-                : role === 'primary'
-                  ? 'var(--atlas-primary)'
-                  : 'var(--atlas-secondary)'
+                const approx = APPROXIMATE_REGIONS[mId]
+                const cx = approx?.anchor?.[0] || 512
+                const cy = approx?.anchor?.[1] || 750
+                const pinColor = isSelected
+                  ? 'var(--color-accent)'
+                  : role === 'primary'
+                    ? 'var(--atlas-primary)'
+                    : 'var(--atlas-secondary)'
 
-              return (
-                <g
-                  key={mId}
-                  className="atlas-locator-pin"
-                  data-muscle={mId}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleSelectMuscle(mId)
-                  }}
-                  style={{ cursor: 'pointer', pointerEvents: 'all' }}
-                >
-                  {/* Hit Target (diameter 70 SVG units = 24.6 CSS px) */}
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r="35"
-                    fill="transparent"
+                return (
+                  <g
+                    key={mId}
+                    className="atlas-locator-pin"
                     data-muscle={mId}
-                  />
-                  {/* Outer pulse/focus ring */}
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r={isSelected ? 18 : 14}
-                    fill="none"
-                    stroke={pinColor}
-                    strokeWidth="2.5"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  {/* Inner solid marker */}
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r={isSelected ? 9 : 7}
-                    fill={pinColor}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </g>
-              )
-            })}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleSelectMuscle(mId)
+                    }}
+                    style={{ cursor: 'pointer', pointerEvents: 'all' }}
+                  >
+                    {/* Hit Target (diameter 70 SVG units = 24.6 CSS px) */}
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r="35"
+                      fill="transparent"
+                      data-muscle={mId}
+                    />
+                    {/* Outer pulse/focus ring */}
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={isSelected ? 18 : 14}
+                      fill="none"
+                      stroke={pinColor}
+                      strokeWidth="2.5"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                    {/* Inner solid marker */}
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={isSelected ? 9 : 7}
+                      fill={pinColor}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </g>
+                )
+              },
+            )}
           </svg>
         </div>
 
@@ -1158,7 +1184,14 @@ export function AnatomyMuscleMap({
 
       {/* 3. Action bar & Legend */}
       <div className="atlas-status-bar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            flexWrap: 'wrap',
+          }}
+        >
           {unpaintedMuscles.length > 0 && (
             <Button
               variant="secondary"
@@ -1194,9 +1227,7 @@ export function AnatomyMuscleMap({
                 fontWeight: 600,
               }}
             >
-              <span>
-                عرض {viewState.view === 'A' ? 'الخلفي' : 'الأمامي'}
-              </span>
+              <span>عرض {viewState.view === 'A' ? 'الخلفي' : 'الأمامي'}</span>
               <span
                 style={{
                   background: 'var(--color-surface-2)',
@@ -1230,9 +1261,31 @@ export function AnatomyMuscleMap({
       </div>
 
       {/* 4. Chip List Under the Figure ("العضلات في المنظر ده" - C1.2) */}
-      <div className="atlas-chips-section" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-          <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text)' }}>
+      <div
+        className="atlas-chips-section"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          marginTop: '4px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '8px',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '15px',
+              fontWeight: 700,
+              color: 'var(--color-text)',
+            }}
+          >
             العضلات في المنظر ده ({filteredMuscles.length})
           </div>
           <input
@@ -1261,8 +1314,17 @@ export function AnatomyMuscleMap({
             if (groupMuscles.length === 0) return null
 
             return (
-              <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <div style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--color-text-2)' }}>
+              <div
+                key={group.id}
+                style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+              >
+                <div
+                  style={{
+                    fontSize: '12.5px',
+                    fontWeight: 600,
+                    color: 'var(--color-text-2)',
+                  }}
+                >
                   {group.gym_ar}
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -1405,7 +1467,9 @@ export function AnatomyMuscleMap({
             )}
 
             {/* 4. Where it attaches ("بتتربط فين" via <Claim id={`muscle_attaches.${id}`} status="coach_authored">) */}
-            {muscleInfoData.muscles[viewState.selectedMuscleId as keyof typeof muscleInfoData.muscles]?.attaches_ar && (
+            {muscleInfoData.muscles[
+              viewState.selectedMuscleId as keyof typeof muscleInfoData.muscles
+            ]?.attaches_ar && (
               <div
                 style={{
                   fontSize: '13.5px',
@@ -1424,7 +1488,9 @@ export function AnatomyMuscleMap({
             )}
 
             {/* 5. What it does ("بتعمل إيه" via <Claim id={`muscle_does.${id}`} status="coach_authored">) */}
-            {muscleInfoData.muscles[viewState.selectedMuscleId as keyof typeof muscleInfoData.muscles]?.does_ar && (
+            {muscleInfoData.muscles[
+              viewState.selectedMuscleId as keyof typeof muscleInfoData.muscles
+            ]?.does_ar && (
               <div
                 style={{
                   fontSize: '13.5px',
@@ -1564,7 +1630,9 @@ export function AnatomyMuscleMap({
                         width: '100%',
                       }}
                     >
-                      <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
+                      <span
+                        style={{ fontWeight: 600, color: 'var(--color-text)' }}
+                      >
                         {ex.name_ar}
                       </span>
                       <span

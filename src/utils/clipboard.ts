@@ -10,7 +10,11 @@ export async function copyToClipboard(text: string): Promise<boolean> {
   if (!text) return false
 
   // 1. Try Modern Async Clipboard API
-  if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+  if (
+    typeof navigator !== 'undefined' &&
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ) {
     try {
       await navigator.clipboard.writeText(text)
       return true

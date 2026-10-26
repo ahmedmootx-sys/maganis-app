@@ -16,12 +16,7 @@
 import cardioMetData from '../../content/cardio-met-table.json'
 
 export type CardioActivityId =
-  | 'run'
-  | 'walk'
-  | 'bike'
-  | 'swim'
-  | 'jumprope'
-  | 'rowing'
+  'run' | 'walk' | 'bike' | 'swim' | 'jumprope' | 'rowing'
 
 export type CardioEffortLevel = 'light' | 'moderate' | 'high'
 

@@ -180,11 +180,7 @@ export function AiDesignerModal({
 
   return (
     <>
-      <Sheet
-        isOpen={isOpen}
-        onClose={onClose}
-        title="صمم لي جدولي الخاص"
-      >
+      <Sheet isOpen={isOpen} onClose={onClose} title="صمم لي جدولي الخاص">
         <div
           className="ai-designer-modal"
           style={{
@@ -206,13 +202,21 @@ export function AiDesignerModal({
               border: '1px solid var(--color-divider)',
             }}
           >
-            <div>هنجهزلك برومبت علمي مفصل تاخده لأي ذكاء اصطناعي (زي ChatGPT أو Claude) يصمملك جدول تدريبي دقيق على مقاسك.</div>
-            <div style={{ marginTop: '4px' }}>المدرب الذكي هيعمل معاك مقابلة كاملة ويسألك عن كل أهدافك ومستواك وإصاباتك خطوة بخطوة.</div>
+            <div>
+              هنجهزلك برومبت علمي مفصل تاخده لأي ذكاء اصطناعي (زي ChatGPT أو
+              Claude) يصمملك جدول تدريبي دقيق على مقاسك.
+            </div>
+            <div style={{ marginTop: '4px' }}>
+              المدرب الذكي هيعمل معاك مقابلة كاملة ويسألك عن كل أهدافك ومستواك
+              وإصاباتك خطوة بخطوة.
+            </div>
           </div>
 
           {/* Privacy Switch */}
           <Card padding="md">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+            >
               <Toggle
                 label="ضمّن بياناتي من التطبيق"
                 checked={includeProfileData}
@@ -284,7 +288,13 @@ export function AiDesignerModal({
                     </Field>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px',
+                    }}
+                  >
                     <Field label="الهدف الأساسي">
                       <Select
                         id="ai-designer-goal"
@@ -330,7 +340,8 @@ export function AiDesignerModal({
                       borderRadius: 'var(--radius-control)',
                     }}
                   >
-                    🛡️ الخصوصية: لا يتم تضمين بيانات الإصابات أو الصحة تلقائياً، حيث يجمعها المدرب مباشرة أثناء المقابلة.
+                    🛡️ الخصوصية: لا يتم تضمين بيانات الإصابات أو الصحة تلقائياً،
+                    حيث يجمعها المدرب مباشرة أثناء المقابلة.
                   </div>
                 </div>
               )}

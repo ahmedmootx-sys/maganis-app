@@ -22,7 +22,10 @@ function parseColor(colorStr) {
   if (str.startsWith('#')) {
     let hex = str.slice(1)
     if (hex.length === 3 || hex.length === 4) {
-      hex = hex.split('').map(c => c + c).join('')
+      hex = hex
+        .split('')
+        .map((c) => c + c)
+        .join('')
     }
     const r = parseInt(hex.slice(0, 2), 16)
     const g = parseInt(hex.slice(2, 4), 16)
@@ -73,7 +76,10 @@ function contrastRatio(fgRgb, bgRgb) {
 }
 
 function extractTokens() {
-  const css = fs.readFileSync(path.join(rootDir, 'src/styles/tokens.css'), 'utf8')
+  const css = fs.readFileSync(
+    path.join(rootDir, 'src/styles/tokens.css'),
+    'utf8',
+  )
 
   // Light tokens
   const light = {
@@ -131,22 +137,102 @@ function extractTokens() {
 }
 
 const PAIRS_TO_CHECK = [
-  { name: 'Primary Text on Surface', fg: '--color-text', bg: '--color-surface', min: 4.5 },
-  { name: 'Primary Text on Surface-2', fg: '--color-text', bg: '--color-surface-2', min: 4.5 },
-  { name: 'Primary Text on BG', fg: '--color-text', bg: '--color-bg', min: 4.5 },
-  { name: 'Secondary Text on Surface', fg: '--color-text-2', bg: '--color-surface', min: 4.5 },
-  { name: 'Secondary Text on Surface-2', fg: '--color-text-2', bg: '--color-surface-2', min: 4.5 },
-  { name: 'Secondary Text on BG', fg: '--color-text-2', bg: '--color-bg', min: 4.5 },
-  { name: 'On-Accent Text on Accent Fill', fg: '--on-accent', bg: '--color-accent', min: 4.5 },
-  { name: 'Accent Text on Surface', fg: '--color-accent-text', bg: '--color-surface', min: 4.5 },
-  { name: 'Accent Text on BG', fg: '--color-accent-text', bg: '--color-bg', min: 4.5 },
-  { name: 'Chip Text on Chip BG', fg: '--chip-text', bg: '--chip-bg', min: 4.5 },
-  { name: 'Selected Chip Text on Accent Fill', fg: '--chip-selected-text', bg: '--chip-selected-bg', min: 4.5 },
-  { name: 'Toast Text on Toast BG', fg: '--color-toast-text', bg: '--color-toast-bg', min: 4.5 },
-  { name: 'Danger Text on Danger BG', fg: '--color-danger', bg: '--color-danger-bg', min: 4.5 },
-  { name: 'Warning Text on Warning BG', fg: '--color-warning', bg: '--color-warning-bg', min: 4.5 },
-  { name: 'Success Text on Success BG', fg: '--color-success', bg: '--color-success-bg', min: 4.5 },
-  { name: 'Info Text on Info BG', fg: '--color-info', bg: '--color-info-bg', min: 4.5 },
+  {
+    name: 'Primary Text on Surface',
+    fg: '--color-text',
+    bg: '--color-surface',
+    min: 4.5,
+  },
+  {
+    name: 'Primary Text on Surface-2',
+    fg: '--color-text',
+    bg: '--color-surface-2',
+    min: 4.5,
+  },
+  {
+    name: 'Primary Text on BG',
+    fg: '--color-text',
+    bg: '--color-bg',
+    min: 4.5,
+  },
+  {
+    name: 'Secondary Text on Surface',
+    fg: '--color-text-2',
+    bg: '--color-surface',
+    min: 4.5,
+  },
+  {
+    name: 'Secondary Text on Surface-2',
+    fg: '--color-text-2',
+    bg: '--color-surface-2',
+    min: 4.5,
+  },
+  {
+    name: 'Secondary Text on BG',
+    fg: '--color-text-2',
+    bg: '--color-bg',
+    min: 4.5,
+  },
+  {
+    name: 'On-Accent Text on Accent Fill',
+    fg: '--on-accent',
+    bg: '--color-accent',
+    min: 4.5,
+  },
+  {
+    name: 'Accent Text on Surface',
+    fg: '--color-accent-text',
+    bg: '--color-surface',
+    min: 4.5,
+  },
+  {
+    name: 'Accent Text on BG',
+    fg: '--color-accent-text',
+    bg: '--color-bg',
+    min: 4.5,
+  },
+  {
+    name: 'Chip Text on Chip BG',
+    fg: '--chip-text',
+    bg: '--chip-bg',
+    min: 4.5,
+  },
+  {
+    name: 'Selected Chip Text on Accent Fill',
+    fg: '--chip-selected-text',
+    bg: '--chip-selected-bg',
+    min: 4.5,
+  },
+  {
+    name: 'Toast Text on Toast BG',
+    fg: '--color-toast-text',
+    bg: '--color-toast-bg',
+    min: 4.5,
+  },
+  {
+    name: 'Danger Text on Danger BG',
+    fg: '--color-danger',
+    bg: '--color-danger-bg',
+    min: 4.5,
+  },
+  {
+    name: 'Warning Text on Warning BG',
+    fg: '--color-warning',
+    bg: '--color-warning-bg',
+    min: 4.5,
+  },
+  {
+    name: 'Success Text on Success BG',
+    fg: '--color-success',
+    bg: '--color-success-bg',
+    min: 4.5,
+  },
+  {
+    name: 'Info Text on Info BG',
+    fg: '--color-info',
+    bg: '--color-info-bg',
+    min: 4.5,
+  },
 ]
 
 async function main() {
@@ -163,9 +249,7 @@ async function main() {
     console.log(
       '| Token Pair | Foreground | Background | Ratio | Min | Status |',
     )
-    console.log(
-      '| :--- | :--- | :--- | :---: | :---: | :---: |',
-    )
+    console.log('| :--- | :--- | :--- | :---: | :---: | :---: |')
 
     const map = theme === 'light' ? light : dark
 
@@ -192,14 +276,18 @@ async function main() {
   console.log(`Failures: ${failures}`)
 
   if (failures > 0) {
-    console.error(`\n❌ Token contrast gate FAILED with ${failures} violations below WCAG AA!`)
+    console.error(
+      `\n❌ Token contrast gate FAILED with ${failures} violations below WCAG AA!`,
+    )
     process.exit(1)
   }
 
-  console.log('\n✅ All token pairs meet or exceed WCAG AA contrast thresholds (100% compliant)!')
+  console.log(
+    '\n✅ All token pairs meet or exceed WCAG AA contrast thresholds (100% compliant)!',
+  )
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err)
   process.exit(1)
 })

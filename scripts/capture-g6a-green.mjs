@@ -54,7 +54,10 @@ async function run() {
     { id: 'd6-edit-sheet', name: 'D6: Exercise Edit Sheet UX' },
     { id: 'd7-contrast', name: 'D7: Contrast & Legibility' },
     { id: 'd8-training-day-titles', name: 'D8: Truncated Day Titles' },
-    { id: 'd9-exercise-page-header', name: 'D9: Exercise Page Header & Safe Area' },
+    {
+      id: 'd9-exercise-page-header',
+      name: 'D9: Exercise Page Header & Safe Area',
+    },
   ]
 
   try {

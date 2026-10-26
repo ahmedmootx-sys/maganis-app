@@ -100,100 +100,130 @@ async function run() {
         await openState(page, stateId, { baseUrl })
         await page.waitForTimeout(350)
 
-        const result = await page.evaluate(({ stateId, bannedTokens }) => {
-          const walker = document.createTreeWalker(
-            document.body,
-            NodeFilter.SHOW_TEXT,
-            {
-              acceptNode: (node) => {
-                const parent = node.parentElement
-                if (!parent) return NodeFilter.FILTER_REJECT
-                const tag = parent.tagName.toLowerCase()
-                if (tag === 'script' || tag === 'style' || tag === 'noscript') {
-                  return NodeFilter.FILTER_REJECT
-                }
-                const text = node.textContent.trim()
-                if (!text) return NodeFilter.FILTER_REJECT
+        const result = await page.evaluate(
+          ({ stateId, bannedTokens }) => {
+            const walker = document.createTreeWalker(
+              document.body,
+              NodeFilter.SHOW_TEXT,
+              {
+                acceptNode: (node) => {
+                  const parent = node.parentElement
+                  if (!parent) return NodeFilter.FILTER_REJECT
+                  const tag = parent.tagName.toLowerCase()
+                  if (
+                    tag === 'script' ||
+                    tag === 'style' ||
+                    tag === 'noscript'
+                  ) {
+                    return NodeFilter.FILTER_REJECT
+                  }
+                  const text = node.textContent.trim()
+                  if (!text) return NodeFilter.FILTER_REJECT
 
-                // Check visibility of parent element
-                const rect = parent.getBoundingClientRect()
-                if (rect.width <= 0 && rect.height <= 0) return NodeFilter.FILTER_REJECT
-                const style = window.getComputedStyle(parent)
-                if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) {
-                  return NodeFilter.FILTER_REJECT
-                }
+                  // Check visibility of parent element
+                  const rect = parent.getBoundingClientRect()
+                  if (rect.width <= 0 && rect.height <= 0)
+                    return NodeFilter.FILTER_REJECT
+                  const style = window.getComputedStyle(parent)
+                  if (
+                    style.display === 'none' ||
+                    style.visibility === 'hidden' ||
+                    parseFloat(style.opacity) === 0
+                  ) {
+                    return NodeFilter.FILTER_REJECT
+                  }
 
-                return NodeFilter.FILTER_ACCEPT
+                  return NodeFilter.FILTER_ACCEPT
+                },
               },
-            },
-          )
+            )
 
-          let examined = 0
-          const stateViolations = []
+            let examined = 0
+            const stateViolations = []
 
-          let currentNode = walker.nextNode()
-          while (currentNode) {
-            examined++
-            const text = currentNode.textContent.trim()
-            const parent = currentNode.parentElement
-            const bdiAncestor = parent ? parent.closest('bdi') : null
+            let currentNode = walker.nextNode()
+            while (currentNode) {
+              examined++
+              const text = currentNode.textContent.trim()
+              const parent = currentNode.parentElement
+              const bdiAncestor = parent ? parent.closest('bdi') : null
 
-            // 1. Check snake_case: identifier with underscore between lowercase words
-            const snakeMatch = text.match(/\b[a-z]{2,}_[a-z0-9_]+\b/)
-            if (snakeMatch) {
-              stateViolations.push({
-                type: 'SNAKE_CASE_LEAK',
-                token: snakeMatch[0],
-                fullText: text,
-                parentTag: parent?.tagName.toLowerCase(),
-                stateId,
-              })
-            }
+              // 1. Check snake_case: identifier with underscore between lowercase words
+              const snakeMatch = text.match(/\b[a-z]{2,}_[a-z0-9_]+\b/)
+              if (snakeMatch) {
+                stateViolations.push({
+                  type: 'SNAKE_CASE_LEAK',
+                  token: snakeMatch[0],
+                  fullText: text,
+                  parentTag: parent?.tagName.toLowerCase(),
+                  stateId,
+                })
+              }
 
-            // 2. Check exact banned internal tokens (case-insensitive boundary match)
-            for (const token of bannedTokens) {
-              const regex = new RegExp(`\\b${token.replace(' ', '\\s+')}\\b`, 'i')
-              if (regex.test(text)) {
-                // If it's a raw enum inside an element without bdi or localized text
-                if (!bdiAncestor || token === 'none' || token === 'body only' || token === 'pec_sternal') {
-                  stateViolations.push({
-                    type: 'RAW_INTERNAL_ENUM',
-                    token,
-                    fullText: text,
-                    parentTag: parent?.tagName.toLowerCase(),
-                    stateId,
-                  })
+              // 2. Check exact banned internal tokens (case-insensitive boundary match)
+              for (const token of bannedTokens) {
+                const regex = new RegExp(
+                  `\\b${token.replace(' ', '\\s+')}\\b`,
+                  'i',
+                )
+                if (regex.test(text)) {
+                  // If it's a raw enum inside an element without bdi or localized text
+                  if (
+                    !bdiAncestor ||
+                    token === 'none' ||
+                    token === 'body only' ||
+                    token === 'pec_sternal'
+                  ) {
+                    stateViolations.push({
+                      type: 'RAW_INTERNAL_ENUM',
+                      token,
+                      fullText: text,
+                      parentTag: parent?.tagName.toLowerCase(),
+                      stateId,
+                    })
+                  }
                 }
               }
-            }
 
-            // 3. Check Latin words outside <bdi dir="ltr"> or allowable tags (e.g. brand code, units like kg/km)
-            if (!bdiAncestor) {
-              // Match english words with 3+ characters, excluding common units like MET, kcal, kg, km/h
-              const latinWords = text.match(/\b[A-Za-z]{3,}\b/g)
-              if (latinWords) {
-                const allowedWords = new Set(['kcal', 'MET', 'min', 'sec', 'kg', 'bpm', 'BMR', 'TDEE', 'PWA'])
-                const leaked = latinWords.filter(w => !allowedWords.has(w))
-                if (leaked.length > 0) {
-                  stateViolations.push({
-                    type: 'LATIN_OUTSIDE_BDI',
-                    token: leaked.join(', '),
-                    fullText: text,
-                    parentTag: parent?.tagName.toLowerCase(),
-                    stateId,
-                  })
+              // 3. Check Latin words outside <bdi dir="ltr"> or allowable tags (e.g. brand code, units like kg/km)
+              if (!bdiAncestor) {
+                // Match english words with 3+ characters, excluding common units like MET, kcal, kg, km/h
+                const latinWords = text.match(/\b[A-Za-z]{3,}\b/g)
+                if (latinWords) {
+                  const allowedWords = new Set([
+                    'kcal',
+                    'MET',
+                    'min',
+                    'sec',
+                    'kg',
+                    'bpm',
+                    'BMR',
+                    'TDEE',
+                    'PWA',
+                  ])
+                  const leaked = latinWords.filter((w) => !allowedWords.has(w))
+                  if (leaked.length > 0) {
+                    stateViolations.push({
+                      type: 'LATIN_OUTSIDE_BDI',
+                      token: leaked.join(', '),
+                      fullText: text,
+                      parentTag: parent?.tagName.toLowerCase(),
+                      stateId,
+                    })
+                  }
                 }
               }
+
+              currentNode = walker.nextNode()
             }
 
-            currentNode = walker.nextNode()
-          }
-
-          return {
-            examined,
-            stateViolations,
-          }
-        }, { stateId, bannedTokens: BANNED_RAW_TOKENS })
+            return {
+              examined,
+              stateViolations,
+            }
+          },
+          { stateId, bannedTokens: BANNED_RAW_TOKENS },
+        )
 
         totalTextNodesExamined += result.examined
 
@@ -232,7 +262,9 @@ async function run() {
     console.error('❌ GATE FAILED: Found raw tokens or Latin text leaks:')
     for (const v of violations.slice(0, 20)) {
       if (v.token) {
-        console.error(`  [${v.stateId}] ${v.type}: "${v.token}" in <${v.parentTag}>: "${v.fullText}"`)
+        console.error(
+          `  [${v.stateId}] ${v.type}: "${v.token}" in <${v.parentTag}>: "${v.fullText}"`,
+        )
       } else {
         console.error(`  [${v.stateId}] ${v.type}: ${v.message}`)
       }
@@ -243,7 +275,9 @@ async function run() {
     process.exit(1)
   }
 
-  console.log('✅ GATE PASSED: Zero raw internal tokens or unescaped Latin leaks found.')
+  console.log(
+    '✅ GATE PASSED: Zero raw internal tokens or unescaped Latin leaks found.',
+  )
 }
 
 run().catch((err) => {

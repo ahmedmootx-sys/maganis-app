@@ -1,9 +1,5 @@
 import { useState, useMemo } from 'react'
-import type {
-  ProgramDay,
-  TrackingSession,
-  Exercise,
-} from '../shared/types.ts'
+import type { ProgramDay, TrackingSession, Exercise } from '../shared/types.ts'
 import { getExerciseById, EXERCISES } from '../workout/exercises.ts'
 import { ExerciseDetailModal } from '../workout/ExerciseDetailModal.tsx'
 import { ExerciseVisual } from '../workout/ExerciseVisual.tsx'
@@ -158,7 +154,9 @@ export function SessionLogger({
 
     let updatedHint = currentEx.hintClaimId
     if (setIdx === 0 && field === 'reps') {
-      const pe = programDay?.exercises.find((e) => e.exerciseId === currentEx.exerciseId)
+      const pe = programDay?.exercises.find(
+        (e) => e.exerciseId === currentEx.exerciseId,
+      )
       const minReps = pe?.repsMin ?? pe?.reps ?? 8
       if (value > 0 && value < minReps) {
         updatedHint = 'sugg.below_range'
@@ -245,9 +243,21 @@ export function SessionLogger({
       {
         exerciseId: exercise.id,
         sets: [
-          { weight: { value: 0, state: 'empty' }, reps: { value: 10, state: 'suggested' }, completed: false },
-          { weight: { value: 0, state: 'empty' }, reps: { value: 10, state: 'suggested' }, completed: false },
-          { weight: { value: 0, state: 'empty' }, reps: { value: 10, state: 'suggested' }, completed: false },
+          {
+            weight: { value: 0, state: 'empty' },
+            reps: { value: 10, state: 'suggested' },
+            completed: false,
+          },
+          {
+            weight: { value: 0, state: 'empty' },
+            reps: { value: 10, state: 'suggested' },
+            completed: false,
+          },
+          {
+            weight: { value: 0, state: 'empty' },
+            reps: { value: 10, state: 'suggested' },
+            completed: false,
+          },
         ],
         hintClaimId: 'sugg.first_time_weight',
       },
@@ -414,7 +424,8 @@ export function SessionLogger({
                             width: '52px',
                             height: '52px',
                             borderRadius: '10px',
-                            overflow: 'hidden' /* clip-ok: visual element boundary */,
+                            overflow:
+                              'hidden' /* clip-ok: visual element boundary */,
                             flexShrink: 0,
                             background: 'var(--card-subtle)',
                             display: 'flex',
@@ -566,8 +577,15 @@ export function SessionLogger({
                             min="0"
                             max="1000"
                             step="0.5"
-                            value={set.weight.value === 0 ? '' : set.weight.value}
-                            placeholder={set.weight.state === 'suggested' && set.weight.value > 0 ? String(set.weight.value) : '0'}
+                            value={
+                              set.weight.value === 0 ? '' : set.weight.value
+                            }
+                            placeholder={
+                              set.weight.state === 'suggested' &&
+                              set.weight.value > 0
+                                ? String(set.weight.value)
+                                : '0'
+                            }
                             onChange={(e) =>
                               updateSet(
                                 ei,
@@ -586,11 +604,13 @@ export function SessionLogger({
                               fontSize: '16px',
                               borderRadius: '10px',
                               border:
-                                set.weight.state === 'auto' || set.weight.state === 'suggested'
+                                set.weight.state === 'auto' ||
+                                set.weight.state === 'suggested'
                                   ? '1px dashed var(--color-accent)'
                                   : '1px solid var(--color-divider)',
                               color:
-                                set.weight.state === 'auto' || set.weight.state === 'suggested'
+                                set.weight.state === 'auto' ||
+                                set.weight.state === 'suggested'
                                   ? 'var(--color-text-2)'
                                   : 'var(--color-text)',
                               backgroundColor: 'var(--color-surface)',
@@ -621,11 +641,13 @@ export function SessionLogger({
                               fontSize: '16px',
                               borderRadius: '10px',
                               border:
-                                set.reps.state === 'auto' || set.reps.state === 'suggested'
+                                set.reps.state === 'auto' ||
+                                set.reps.state === 'suggested'
                                   ? '1px dashed var(--color-accent)'
                                   : '1px solid var(--color-divider)',
                               color:
-                                set.reps.state === 'auto' || set.reps.state === 'suggested'
+                                set.reps.state === 'auto' ||
+                                set.reps.state === 'suggested'
                                   ? 'var(--color-text-2)'
                                   : 'var(--color-text)',
                               backgroundColor: 'var(--color-surface)',

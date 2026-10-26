@@ -63,4 +63,3 @@ export const APPROXIMATE_REGIONS: Record<string, ApproximateRegion> = {
     approximate: true,
   },
 }
-

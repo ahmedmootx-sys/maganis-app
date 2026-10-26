@@ -3,13 +3,14 @@
 **Date**: 2026-10-25  
 **Branch**: `main`  
 **Author**: Antigravity Agent  
-**Language Context**: Arabic (Egyptian slang for gym names, scientific English in `<bdi dir="ltr">`, standard code/reports in English).  
+**Language Context**: Arabic (Egyptian slang for gym names, scientific English in `<bdi dir="ltr">`, standard code/reports in English).
 
 ---
 
 ## 1. Executive Summary
 
 Task G6-C addressed critical defects identified from the owner's real Android phone screenshots:
+
 1. **Unreadable Names Mode**: Replaced 6-7px unreadable labels with >= 11.25 CSS px high-contrast cards, thin solid leader lines, side-aware placement, and collision-avoidance layout.
 2. **Weird Lower Back Block & Sacrum Rectangles**: Traced to fake hand-drawn SVG polygons in `APPROXIMATE_REGIONS` (`lats` and `quadratus_lumborum`). Removed all hand-drawn polygons; replaced with clean anatomical locator pins linked to `data/atlas-anchors.json`.
 3. **Chest Split Sawtooth Raggedness & Sternum Wedges**: Traced to crude centroid triangle filtering during binary mesh generation. Rebuilt the 3D geometry with analytical plane triangle clipping at `splitZ`, yielding smooth, anatomical split curves between `pec_sternal` and `pec_costal`.
@@ -29,22 +30,23 @@ Task G6-C addressed critical defects identified from the owner's real Android ph
 
 ## 2. Defect & Deliverables Table
 
-| ID | Description | Red Screenshot | Green Screenshot | Gate / Verification | Status | One-Sentence Visual Description |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **C1** | Tap Any Muscle & Detail Bottom Sheet | [c3-missing-chips.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-missing-chips.png) | [c1-card-lats.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c1-card-lats.png), [c1-card-pec-minor.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c1-card-pec-minor.png) | `scripts/capture-g6c-green.mjs` (53/53 real Playwright taps pass) | **Fixed** | Selecting any muscle smoothly shifts the viewport and opens a structured card with gym name, English name in `<bdi>`, 3 `<Claim>` texts, badge, and exercise links. |
-| **C2** | Names Mode Labels & Collision Avoidance | [c2-names-mode-labels.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c2-names-mode-labels.png) | [c2-names-mode-labels.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c2-names-mode-labels.png) | `scripts/gate-atlas-labels.mjs` (67 labels checked, 0 errors) | **Fixed** | Labels render as solid high-contrast rounded cards with >= 11.25 CSS px font and thin solid leader lines with zero collisions. |
-| **C2.Toolbar** | Unified Toolbar Order & Deep Toggle | [c2-toolbar-shift.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c2-toolbar-shift.png) | [c2-toolbar-shift.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c2-toolbar-shift.png) | `scripts/gate-atlas.mjs` | **Fixed** | The toolbar maintains constant order: View Toggle (أمامي / خلفي), Deep Muscle Toggle, Names Mode Toggle across all exercises. |
-| **C3.1** | Weird Lower Back Block (Scapular Pull-up) | [c3-scapular-pullup-block.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-scapular-pullup-block.png) | [c3-scapular-pullup-block.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c3-scapular-pullup-block.png) | `scripts/gate-atlas.mjs` | **Fixed** | The fake hand-drawn dashed red block (`lats` approximate polygon) is eliminated, replaced by real anatomical meshes and an honest locator pin. |
-| **C3.2** | Weird Rectangles at Sacrum (Side Plank) | [c3-sacrum-rectangles.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-sacrum-rectangles.png) | [c3-sacrum-rectangles.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c3-sacrum-rectangles.png) | `scripts/gate-atlas.mjs` | **Fixed** | The two red rectangles (`quadratus_lumborum` polygon) are removed in favor of a clean locator pin and true erector spinae / glute med geometry. |
-| **C3.3** | Sawtooth Jagged Chest Split (Bench Press) | [c3-bench-press-ragged.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-bench-press-ragged.png) | [c3-bench-press-ragged.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c3-bench-press-ragged.png) | `scripts/gate-atlas.mjs` | **Fixed** | The chest split line between sternal and costal pec heads is an analytically clipped smooth curve with no jagged teeth. |
-| **C3.4** | Missing Chips & No-Mesh Identification | [c3-missing-chips.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-missing-chips.png) | [c3-missing-chips.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c3-missing-chips.png) | `scripts/gate-atlas.mjs` | **Fixed** | The 5 muscles without 3D geometry in BodyParts3D are clearly badged "مفيش رسم للعضلة دي" and open full educational detail cards. |
-| **C3.5** | License Footer Accuracy | N/A (repo text mismatch) | Verified official DBCLS 2025/02/27 notice | `tools/atlas/README.md`, `LICENSE-ATLAS.txt` | **Fixed** | Footer, README, and licenses updated to "CC Attribution 4.0 International" in agreement with DBCLS official license. |
+| ID             | Description                               | Red Screenshot                                                                                                                         | Green Screenshot                                                                                                                                                                                                                             | Gate / Verification                                               | Status    | One-Sentence Visual Description                                                                                                                                     |
+| :------------- | :---------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------- | :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **C1**         | Tap Any Muscle & Detail Bottom Sheet      | [c3-missing-chips.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-missing-chips.png)                 | [c1-card-lats.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c1-card-lats.png), [c1-card-pec-minor.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c1-card-pec-minor.png) | `scripts/capture-g6c-green.mjs` (53/53 real Playwright taps pass) | **Fixed** | Selecting any muscle smoothly shifts the viewport and opens a structured card with gym name, English name in `<bdi>`, 3 `<Claim>` texts, badge, and exercise links. |
+| **C2**         | Names Mode Labels & Collision Avoidance   | [c2-names-mode-labels.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c2-names-mode-labels.png)         | [c2-names-mode-labels.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c2-names-mode-labels.png)                                                                                                             | `scripts/gate-atlas-labels.mjs` (67 labels checked, 0 errors)     | **Fixed** | Labels render as solid high-contrast rounded cards with >= 11.25 CSS px font and thin solid leader lines with zero collisions.                                      |
+| **C2.Toolbar** | Unified Toolbar Order & Deep Toggle       | [c2-toolbar-shift.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c2-toolbar-shift.png)                 | [c2-toolbar-shift.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c2-toolbar-shift.png)                                                                                                                     | `scripts/gate-atlas.mjs`                                          | **Fixed** | The toolbar maintains constant order: View Toggle (أمامي / خلفي), Deep Muscle Toggle, Names Mode Toggle across all exercises.                                       |
+| **C3.1**       | Weird Lower Back Block (Scapular Pull-up) | [c3-scapular-pullup-block.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-scapular-pullup-block.png) | [c3-scapular-pullup-block.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c3-scapular-pullup-block.png)                                                                                                     | `scripts/gate-atlas.mjs`                                          | **Fixed** | The fake hand-drawn dashed red block (`lats` approximate polygon) is eliminated, replaced by real anatomical meshes and an honest locator pin.                      |
+| **C3.2**       | Weird Rectangles at Sacrum (Side Plank)   | [c3-sacrum-rectangles.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-sacrum-rectangles.png)         | [c3-sacrum-rectangles.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c3-sacrum-rectangles.png)                                                                                                             | `scripts/gate-atlas.mjs`                                          | **Fixed** | The two red rectangles (`quadratus_lumborum` polygon) are removed in favor of a clean locator pin and true erector spinae / glute med geometry.                     |
+| **C3.3**       | Sawtooth Jagged Chest Split (Bench Press) | [c3-bench-press-ragged.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-bench-press-ragged.png)       | [c3-bench-press-ragged.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c3-bench-press-ragged.png)                                                                                                           | `scripts/gate-atlas.mjs`                                          | **Fixed** | The chest split line between sternal and costal pec heads is an analytically clipped smooth curve with no jagged teeth.                                             |
+| **C3.4**       | Missing Chips & No-Mesh Identification    | [c3-missing-chips.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/red/c3-missing-chips.png)                 | [c3-missing-chips.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-c/green/c3-missing-chips.png)                                                                                                                     | `scripts/gate-atlas.mjs`                                          | **Fixed** | The 5 muscles without 3D geometry in BodyParts3D are clearly badged "مفيش رسم للعضلة دي" and open full educational detail cards.                                    |
+| **C3.5**       | License Footer Accuracy                   | N/A (repo text mismatch)                                                                                                               | Verified official DBCLS 2025/02/27 notice                                                                                                                                                                                                    | `tools/atlas/README.md`, `LICENSE-ATLAS.txt`                      | **Fixed** | Footer, README, and licenses updated to "CC Attribution 4.0 International" in agreement with DBCLS official license.                                                |
 
 ---
 
 ## 3. Files Modified & Created
 
 ### Project Source Files:
+
 - [src/modules/workout/AnatomyMuscleMap.tsx](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/AnatomyMuscleMap.tsx):
   - Added full muscle selection in surface, deep, names, and no-exercise modes.
   - Implemented C2 leader-line labels with collision-avoidance layout, >= 11.25 CSS px font, solid backgrounds, and thin solid lines.
@@ -68,6 +70,7 @@ Task G6-C addressed critical defects identified from the owner's real Android ph
   - Registered G6-C atlas states (`choice-atlas-names-front`, `choice-atlas-names-back`, `choice-atlas-bench-press`, `choice-atlas-scapular-pullup`, `choice-atlas-side-plank`, `choice-atlas-pullup`).
 
 ### Pipeline & Tooling:
+
 - [tools/atlas/build_binary_geometry.mjs](file:///c:/Users/power%20tech/Downloads/maganis-project/tools/atlas/build_binary_geometry.mjs):
   - Replaced crude centroid triangle filtering with exact plane triangle clipping (`clipTrianglesPlane`) at $z = \text{splitZ}$. Rebuilt binary geometry (`tools/atlas/geometry_bundle.bin`, 20.70 MB).
 - [tools/atlas/render_server.mjs](file:///c:/Users/power%20tech/Downloads/maganis-project/tools/atlas/render_server.mjs):
@@ -76,6 +79,7 @@ Task G6-C addressed critical defects identified from the owner's real Android ph
   - Updated license to CC Attribution 4.0 International.
 
 ### Automated Gates & Verification:
+
 - [scripts/gate-atlas.mjs](file:///c:/Users/power%20tech/Downloads/maganis-project/scripts/gate-atlas.mjs): Passed (456 checks, 0 errors).
 - [scripts/gate-atlas-deep.mjs](file:///c:/Users/power%20tech/Downloads/maganis-project/scripts/gate-atlas-deep.mjs): Passed (7 checks, 0 errors).
 - [scripts/gate-atlas-labels.mjs](file:///c:/Users/power%20tech/Downloads/maganis-project/scripts/gate-atlas-labels.mjs): Passed (67 label instances checked across 8 states, 0 errors).
@@ -87,25 +91,32 @@ Task G6-C addressed critical defects identified from the owner's real Android ph
 ## 4. Accuracy Audit & Rebuild Findings (C3)
 
 ### 4.1 Contact Sheet Audit
+
 All 53 muscles were rendered in isolation in 160x240 tiles and audited in [docs/atlas-contact-sheet-audit.md](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/atlas-contact-sheet-audit.md).
+
 - **Owner Screenshot 2 (Scapular Pull-up lower back block)**: Caused by a hand-drawn SVG polygon in `approximateRegions.ts` assigned to `lats` with `strokeDasharray: "6 4"`. Status: **Eliminated**.
 - **Owner Screenshot 3 (Side plank sacrum rectangles)**: Caused by hand-drawn SVG polygons in `approximateRegions.ts` assigned to `quadratus_lumborum`. Status: **Eliminated**.
 - **Owner Screenshot 4 & 5 (Sawtooth chest split & sternum wedges)**: Caused by centroid triangle filtering in `build_binary_geometry.mjs` splitting triangles based on whether the center was $\lessgtr z_{\text{split}}$, creating jagged steps. Status: **Eliminated** via plane triangle clipping.
 
 ### 4.2 BodyParts3D 4.0 "No Mesh" Reality
+
 The parts lists and releases of BodyParts3D 4.0 were searched by Latin anatomical names and FMA IDs:
+
 - `latissimus dorsi` (FMA: 9626): **0 OBJ files** in BP3D 4.0.
 - `quadratus lumborum` (FMA: 19728): **0 OBJ files** in BP3D 4.0.
 - `transversus abdominis` (FMA: 9630): **0 OBJ files** in BP3D 4.0.
 - `rectus abdominis` (FMA: 9628): **0 OBJ files** in BP3D 4.0 (neither upper nor lower segments exist as separate meshes).
-Earlier reports claiming meshes existed or could be trivially exported were **false**.
+  Earlier reports claiming meshes existed or could be trivially exported were **false**.
 
 ### 4.3 Alternative 3D Open Anatomical Sources Spike
+
 A comprehensive spike was written in [docs/spikes/atlas-sources.md](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/spikes/atlas-sources.md) evaluating Zygote, Blender Human Base Meshes, Visible Human, and DBCLS 4.2:
+
 - Mixing 3D meshes from different anatomical donors without high-density non-rigid registration creates severe alignment mismatch (e.g. muscles floating outside skin or penetrating bones).
 - Therefore, in strict adherence to Rule R2 (no fake drawings), no-geometry muscles are represented honestly via **anatomical locator pins** with the clear label "مفيش رسم للعضلة دي".
 
 ### 4.4 BodyParts3D License Reconciliation
+
 - Official DBCLS release notes in `.cache/bp3d/README_e.html` (updated 2025/02/27) confirm BodyParts3D 4.0 is licensed under:
   $$\text{Creative Commons Attribution 4.0 International (CC BY 4.0)}$$
 - The earlier note referencing CC BY-SA 2.1 Japan was an outdated legacy reference from older 2008 BodyParts3D releases.
@@ -128,13 +139,13 @@ A comprehensive spike was written in [docs/spikes/atlas-sources.md](file:///c:/U
 
 ## 6. Bundle Size Delta
 
-| Asset | Before G6-C | After G6-C | Delta |
-| :--- | :--- | :--- | :--- |
-| **`dist/assets/index.js`** | 1,732.07 kB | 1,772.41 kB (gzip: 350.12 kB) | +40.34 kB |
-| **`dist/assets/index.css`** | 102.80 kB | 103.38 kB (gzip: 18.15 kB) | +0.58 kB |
-| **Dependencies** | 0 new npm packages | 0 new npm packages | 0 |
+| Asset                       | Before G6-C        | After G6-C                    | Delta     |
+| :-------------------------- | :----------------- | :---------------------------- | :-------- |
+| **`dist/assets/index.js`**  | 1,732.07 kB        | 1,772.41 kB (gzip: 350.12 kB) | +40.34 kB |
+| **`dist/assets/index.css`** | 102.80 kB          | 103.38 kB (gzip: 18.15 kB)    | +0.58 kB  |
+| **Dependencies**            | 0 new npm packages | 0 new npm packages            | 0         |
 
-*Note*: The delta is due to the complete educational content additions: `where_ar`, `attaches_ar`, and `does_ar` claims for all 53 muscles in `muscle-info-v1.1.json`, claim registrations in `claims.ts`, and locator coordinates in `atlas-anchors.json`.
+_Note_: The delta is due to the complete educational content additions: `where_ar`, `attaches_ar`, and `does_ar` claims for all 53 muscles in `muscle-info-v1.1.json`, claim registrations in `claims.ts`, and locator coordinates in `atlas-anchors.json`.
 
 ---
 

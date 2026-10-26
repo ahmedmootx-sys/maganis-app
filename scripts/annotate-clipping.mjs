@@ -14,7 +14,8 @@ const targetFiles = [
       for (const e of fs.readdirSync(fullDir, { withFileTypes: true })) {
         const f = path.join(fullDir, e.name)
         if (e.isDirectory()) r = r.concat(walk(path.relative(rootDir, f)))
-        else if (['.css', '.tsx', '.ts'].some((ext) => f.endsWith(ext))) r.push(f)
+        else if (['.css', '.tsx', '.ts'].some((ext) => f.endsWith(ext)))
+          r.push(f)
       }
       return r
     }
@@ -63,7 +64,8 @@ for (const file of targetFiles) {
         /(?:^|\s)(?:max-)?height\s*:\s*\d+(?:px|vh|dvh|rem|em)/i.test(line)
       matchesClip = isClip || isFixedHeight
       if (/overflow-x/i.test(line)) reason = 'prevent horizontal drift'
-      else if (/height/i.test(line)) reason = 'layout sheet or container constraint'
+      else if (/height/i.test(line))
+        reason = 'layout sheet or container constraint'
       else if (/ellipsis|title|label|subtitle/i.test(currentSelector))
         reason = 'text ellipsis truncation'
       else if (/thumb|avatar|circle|frame|box|track|bar/i.test(currentSelector))
@@ -71,7 +73,11 @@ for (const file of targetFiles) {
       else reason = 'scaffold container boundary'
     } else {
       matchesClip = TSX_CLIP_PATTERNS.some((pat) => pat.test(line))
-      if (/textOverflow|ellipsis/i.test(lines.slice(Math.max(0, i - 3), i + 4).join(' '))) {
+      if (
+        /textOverflow|ellipsis/i.test(
+          lines.slice(Math.max(0, i - 3), i + 4).join(' '),
+        )
+      ) {
         reason = 'text ellipsis truncation'
       } else if (/input|file/i.test(file.toLowerCase())) {
         reason = 'hidden native input overlay'
@@ -91,10 +97,12 @@ for (const file of targetFiles) {
       ].join(' ')
       if (!/(?:\/\*|\/\/)\s*clip-ok/i.test(context)) {
         if (file.endsWith('.css')) {
-          lines[i] = line.replace(/;?\s*$/, ` /* clip-ok: ${reason} */;`)
+          lines[i] = line
+            .replace(/;?\s*$/, ` /* clip-ok: ${reason} */;`)
             .replace(/;;$/, ';')
         } else {
-          lines[i] = line.replace(/,?\s*$/, ` /* clip-ok: ${reason} */,`)
+          lines[i] = line
+            .replace(/,?\s*$/, ` /* clip-ok: ${reason} */,`)
             .replace(/,,$/, ',')
         }
         annotatedCount++
@@ -108,4 +116,6 @@ for (const file of targetFiles) {
   }
 }
 
-console.log(`✅ Annotated ${annotatedCount} clipping declarations with clip-ok reason comments.`)
+console.log(
+  `✅ Annotated ${annotatedCount} clipping declarations with clip-ok reason comments.`,
+)

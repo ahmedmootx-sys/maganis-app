@@ -28,27 +28,72 @@
       "id": "run",
       "name_ar": "جري خارجي",
       "levels": {
-        "light":    {"compendium_code": "12029", "met": 6.0, "basis_en": "Jogging, about 4 mph (6.4 km/h)", "ui_hint_ar": "جري خفيف، تقدر تتكلم وانت بتجري (حوالي 6.4 كم/س)"},
-        "moderate": {"compendium_code": "12030", "met": 8.3, "basis_en": "Running, about 5 mph (8 km/h)", "ui_hint_ar": "جري متوسط، الكلام بيبقى بالعافية (حوالي 8 كم/س)"},
-        "high":     {"compendium_code": "12050", "met": 9.8, "basis_en": "Running, about 6 mph (9.7 km/h)", "ui_hint_ar": "جري سريع، صعب تتكلم (حوالي 9.7 كم/س)"}
+        "light": {
+          "compendium_code": "12029",
+          "met": 6.0,
+          "basis_en": "Jogging, about 4 mph (6.4 km/h)",
+          "ui_hint_ar": "جري خفيف، تقدر تتكلم وانت بتجري (حوالي 6.4 كم/س)"
+        },
+        "moderate": {
+          "compendium_code": "12030",
+          "met": 8.3,
+          "basis_en": "Running, about 5 mph (8 km/h)",
+          "ui_hint_ar": "جري متوسط، الكلام بيبقى بالعافية (حوالي 8 كم/س)"
+        },
+        "high": {
+          "compendium_code": "12050",
+          "met": 9.8,
+          "basis_en": "Running, about 6 mph (9.7 km/h)",
+          "ui_hint_ar": "جري سريع، صعب تتكلم (حوالي 9.7 كم/س)"
+        }
       }
     },
     {
       "id": "walk",
       "name_ar": "مشي سريع / مشي بميل",
       "levels": {
-        "light":    {"compendium_code": "17200", "met": 4.3, "basis_en": "Walking, level surface, brisk, about 3.5 mph (5.6 km/h)", "ui_hint_ar": "مشي سريع على أرض مستوية (حوالي 5.6 كم/س)"},
-        "moderate": {"compendium_code": "17210", "met": 5.3, "basis_en": "Walking uphill, 1-5% grade", "ui_hint_ar": "مشي بميل خفيف (من 1 لـ 5%)"},
-        "high":     {"compendium_code": "17211", "met": 8.0, "basis_en": "Walking uphill, 6-15% grade", "ui_hint_ar": "مشي بميل عالي (من 6 لـ 15%)"}
+        "light": {
+          "compendium_code": "17200",
+          "met": 4.3,
+          "basis_en": "Walking, level surface, brisk, about 3.5 mph (5.6 km/h)",
+          "ui_hint_ar": "مشي سريع على أرض مستوية (حوالي 5.6 كم/س)"
+        },
+        "moderate": {
+          "compendium_code": "17210",
+          "met": 5.3,
+          "basis_en": "Walking uphill, 1-5% grade",
+          "ui_hint_ar": "مشي بميل خفيف (من 1 لـ 5%)"
+        },
+        "high": {
+          "compendium_code": "17211",
+          "met": 8.0,
+          "basis_en": "Walking uphill, 6-15% grade",
+          "ui_hint_ar": "مشي بميل عالي (من 6 لـ 15%)"
+        }
       }
     },
     {
       "id": "bike",
       "name_ar": "دراجة ثابتة",
       "levels": {
-        "light":    {"compendium_code": "02017", "met": 4.8, "basis_en": "Stationary cycling, 51-89 W", "ui_hint_ar": "مقاومة خفيفة، من غير ما تتعب (حوالي 51 لـ 89 وات)"},
-        "moderate": {"compendium_code": "02012", "met": 6.8, "basis_en": "Stationary cycling, 90-100 W", "ui_hint_ar": "مقاومة متوسطة (حوالي 90 لـ 100 وات)"},
-        "high":     {"compendium_code": "02013", "met": 8.8, "basis_en": "Stationary cycling, 101-160 W", "ui_hint_ar": "مقاومة عالية (حوالي 101 لـ 160 وات)"}
+        "light": {
+          "compendium_code": "02017",
+          "met": 4.8,
+          "basis_en": "Stationary cycling, 51-89 W",
+          "ui_hint_ar": "مقاومة خفيفة، من غير ما تتعب (حوالي 51 لـ 89 وات)"
+        },
+        "moderate": {
+          "compendium_code": "02012",
+          "met": 6.8,
+          "basis_en": "Stationary cycling, 90-100 W",
+          "ui_hint_ar": "مقاومة متوسطة (حوالي 90 لـ 100 وات)"
+        },
+        "high": {
+          "compendium_code": "02013",
+          "met": 8.8,
+          "basis_en": "Stationary cycling, 101-160 W",
+          "ui_hint_ar": "مقاومة عالية (حوالي 101 لـ 160 وات)"
+        }
       },
       "note_ar": "لو الدراجة بتعرض الوات، اختار المستوى على حسبه. لو مش بتعرضه، اختار بالإحساس."
     },
@@ -56,35 +101,112 @@
       "id": "swim",
       "name_ar": "سباحة حرة",
       "levels": {
-        "light":    {"compendium_code": "18240", "met": 5.8, "basis_en": "Swimming, freestyle, light or moderate effort", "ui_hint_ar": "سباحة هادية بسرعة خفيفة"},
-        "moderate": {"compendium_code": "18290", "met": 8.3, "basis_en": "Swimming, freestyle, about 50 yd/min (about 46 m/min), moderate to vigorous", "ui_hint_ar": "سباحة بسرعة متوسطة (حوالي 46 متر في الدقيقة)"},
-        "high":     {"compendium_code": "18230", "met": 9.8, "basis_en": "Swimming, freestyle, vigorous effort", "ui_hint_ar": "سباحة سريعة ومجهدة"}
+        "light": {
+          "compendium_code": "18240",
+          "met": 5.8,
+          "basis_en": "Swimming, freestyle, light or moderate effort",
+          "ui_hint_ar": "سباحة هادية بسرعة خفيفة"
+        },
+        "moderate": {
+          "compendium_code": "18290",
+          "met": 8.3,
+          "basis_en": "Swimming, freestyle, about 50 yd/min (about 46 m/min), moderate to vigorous",
+          "ui_hint_ar": "سباحة بسرعة متوسطة (حوالي 46 متر في الدقيقة)"
+        },
+        "high": {
+          "compendium_code": "18230",
+          "met": 9.8,
+          "basis_en": "Swimming, freestyle, vigorous effort",
+          "ui_hint_ar": "سباحة سريعة ومجهدة"
+        }
       }
     },
     {
       "id": "jumprope",
       "name_ar": "نط الحبل",
       "levels": {
-        "light":    {"compendium_code": "15552", "met": 8.8, "basis_en": "Rope jumping, slow, fewer than 100 skips/min", "ui_hint_ar": "نط بطيء، أقل من 100 نطة في الدقيقة"},
-        "moderate": {"compendium_code": "15551", "met": 11.8, "basis_en": "Rope jumping, moderate, 100-120 skips/min", "ui_hint_ar": "نط متوسط، من 100 لـ 120 نطة في الدقيقة"},
-        "high":     {"compendium_code": "15550", "met": 12.3, "basis_en": "Rope jumping, fast, 120-160 skips/min", "ui_hint_ar": "نط سريع، من 120 لـ 160 نطة في الدقيقة"}
+        "light": {
+          "compendium_code": "15552",
+          "met": 8.8,
+          "basis_en": "Rope jumping, slow, fewer than 100 skips/min",
+          "ui_hint_ar": "نط بطيء، أقل من 100 نطة في الدقيقة"
+        },
+        "moderate": {
+          "compendium_code": "15551",
+          "met": 11.8,
+          "basis_en": "Rope jumping, moderate, 100-120 skips/min",
+          "ui_hint_ar": "نط متوسط، من 100 لـ 120 نطة في الدقيقة"
+        },
+        "high": {
+          "compendium_code": "15550",
+          "met": 12.3,
+          "basis_en": "Rope jumping, fast, 120-160 skips/min",
+          "ui_hint_ar": "نط سريع، من 120 لـ 160 نطة في الدقيقة"
+        }
       }
     },
     {
       "id": "rowing",
       "name_ar": "جهاز التجديف",
       "levels": {
-        "light":    {"compendium_code": "02071", "met": 4.8, "basis_en": "Rowing, stationary ergometer, light effort", "ui_hint_ar": "تجديف خفيف"},
-        "moderate": {"compendium_code": "02072", "met": 7.0, "basis_en": "Rowing, stationary ergometer, about 100 W", "ui_hint_ar": "تجديف متوسط (حوالي 100 وات)"},
-        "high":     {"compendium_code": "02073", "met": 8.5, "basis_en": "Rowing, stationary ergometer, about 150 W", "ui_hint_ar": "تجديف قوي (حوالي 150 وات)"}
+        "light": {
+          "compendium_code": "02071",
+          "met": 4.8,
+          "basis_en": "Rowing, stationary ergometer, light effort",
+          "ui_hint_ar": "تجديف خفيف"
+        },
+        "moderate": {
+          "compendium_code": "02072",
+          "met": 7.0,
+          "basis_en": "Rowing, stationary ergometer, about 100 W",
+          "ui_hint_ar": "تجديف متوسط (حوالي 100 وات)"
+        },
+        "high": {
+          "compendium_code": "02073",
+          "met": 8.5,
+          "basis_en": "Rowing, stationary ergometer, about 150 W",
+          "ui_hint_ar": "تجديف قوي (حوالي 150 وات)"
+        }
       }
     }
   ],
   "worked_examples_70kg": [
-    {"activity": "run", "level": "light", "met": 6.0, "minutes": 30, "gross_kcal": 220.5, "net_kcal": 183.75, "calc": "6.0*3.5*70/200 = 7.35 kcal/min; *30 = 220.5. Net: 5.0*3.5*70/200 = 6.125; *30 = 183.75"},
-    {"activity": "bike", "level": "moderate", "met": 6.8, "minutes": 20, "gross_kcal": 166.6, "net_kcal": 142.1, "calc": "6.8*1.225 = 8.33 kcal/min; *20 = 166.6. Net: 5.8*1.225 = 7.105; *20 = 142.1"},
-    {"activity": "walk", "level": "moderate", "met": 5.3, "minutes": 45, "gross_kcal": 292.16, "net_kcal": 237.04, "calc": "5.3*1.225 = 6.4925 kcal/min; *45 = 292.16. Net: 4.3*1.225 = 5.2675; *45 = 237.04"},
-    {"activity": "jumprope", "level": "high", "met": 12.3, "minutes": 10, "gross_kcal": 150.68, "net_kcal": 138.43, "calc": "12.3*1.225 = 15.0675 kcal/min; *10 = 150.68. Net: 11.3*1.225 = 13.8425; *10 = 138.43"}
+    {
+      "activity": "run",
+      "level": "light",
+      "met": 6.0,
+      "minutes": 30,
+      "gross_kcal": 220.5,
+      "net_kcal": 183.75,
+      "calc": "6.0*3.5*70/200 = 7.35 kcal/min; *30 = 220.5. Net: 5.0*3.5*70/200 = 6.125; *30 = 183.75"
+    },
+    {
+      "activity": "bike",
+      "level": "moderate",
+      "met": 6.8,
+      "minutes": 20,
+      "gross_kcal": 166.6,
+      "net_kcal": 142.1,
+      "calc": "6.8*1.225 = 8.33 kcal/min; *20 = 166.6. Net: 5.8*1.225 = 7.105; *20 = 142.1"
+    },
+    {
+      "activity": "walk",
+      "level": "moderate",
+      "met": 5.3,
+      "minutes": 45,
+      "gross_kcal": 292.16,
+      "net_kcal": 237.04,
+      "calc": "5.3*1.225 = 6.4925 kcal/min; *45 = 292.16. Net: 4.3*1.225 = 5.2675; *45 = 237.04"
+    },
+    {
+      "activity": "jumprope",
+      "level": "high",
+      "met": 12.3,
+      "minutes": 10,
+      "gross_kcal": 150.68,
+      "net_kcal": 138.43,
+      "calc": "12.3*1.225 = 15.0675 kcal/min; *10 = 150.68. Net: 11.3*1.225 = 13.8425; *10 = 138.43"
+    }
   ],
   "required_tests": [
     "Each worked example above must be reproduced by the production function to within 0.01 kcal.",

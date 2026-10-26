@@ -88,7 +88,14 @@ export const Sheet: React.FC<SheetProps> = ({
         <div className="sheet__handle" aria-hidden="true" />
         {(title || subtitle || headerAction) && (
           <div className="sheet__header">
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 1,
+                minWidth: 0,
+              }}
+            >
               {title && <h3 className="sheet__title">{title}</h3>}
               {subtitle && (
                 <span

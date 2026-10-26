@@ -31,11 +31,23 @@ describe('Generator Matrix Test - 225 Onboarding Combinations', () => {
       trainingStyle: ['weights'],
       primaryGoal: 'hypertrophy',
       trainingLocation: 'gym',
-      equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'cables', 'bodyweight'],
+      equipmentAvailable: [
+        'barbell',
+        'dumbbell',
+        'machine',
+        'cables',
+        'bodyweight',
+      ],
     },
   ]
 
-  const splits: WorkoutSplitType[] = ['ppl', 'upper_lower', 'arnold', 'bro_split', 'full_body']
+  const splits: WorkoutSplitType[] = [
+    'ppl',
+    'upper_lower',
+    'arnold',
+    'bro_split',
+    'full_body',
+  ]
   const daysOptions = [2, 3, 4, 5, 6]
   const levelOptions: Array<'beginner' | 'intermediate' | 'advanced'> = [
     'beginner',
@@ -118,7 +130,11 @@ describe('Generator Matrix Test - 225 Onboarding Combinations', () => {
       excludedExerciseKeys: new Set<string>(),
       isCalisthenicsOnly: true,
       isHomeDumbbellsOnly: false,
-      measurementDefaults: { weightDefault: 0, repsDefault: 10, restSecondsDefault: 60 },
+      measurementDefaults: {
+        weightDefault: 0,
+        repsDefault: 10,
+        restSecondsDefault: 60,
+      },
     }
 
     const program = generateProgram({

@@ -100,4 +100,3 @@ export function searchMuscles(query: string): MuscleNameEntry[] {
 export function getAllGroups(): MuscleGroupEntry[] {
   return (muscleNamesData as { groups: MuscleGroupEntry[] }).groups || []
 }
-

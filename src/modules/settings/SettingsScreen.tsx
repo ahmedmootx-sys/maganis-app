@@ -519,8 +519,8 @@ export function SettingsScreen({
                   lineHeight: 1.5,
                 }}
               >
-                تقدر تصمم برنامج تمرين علمي مخصص لحالتك وإصاباتك بمساعدة
-                مرشد الذكاء الاصطناعي، أو تنزل جدول جاهز.
+                تقدر تصمم برنامج تمرين علمي مخصص لحالتك وإصاباتك بمساعدة مرشد
+                الذكاء الاصطناعي، أو تنزل جدول جاهز.
               </div>
               <Button variant="secondary" onClick={onOpenAiDesigner} fullWidth>
                 <Icon name="sparkles" size={16} />
@@ -562,7 +562,8 @@ export function SettingsScreen({
                   key: 'النموذج التشريحي',
                   value: (
                     <bdi dir="ltr">
-                      BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International
+                      BodyParts3D, © The Database Center for Life Science
+                      licensed under CC Attribution 4.0 International
                     </bdi>
                   ),
                   stacked: true,
@@ -574,7 +575,9 @@ export function SettingsScreen({
                 },
                 {
                   key: 'وسائط التمارين',
-                  value: <bdi dir="ltr">© Gym visual — https://gymvisual.com/</bdi>,
+                  value: (
+                    <bdi dir="ltr">© Gym visual — https://gymvisual.com/</bdi>
+                  ),
                   stacked: true,
                 },
               ]}

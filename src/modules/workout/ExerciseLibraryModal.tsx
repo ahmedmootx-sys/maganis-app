@@ -80,7 +80,8 @@ export function ExerciseLibraryModal({
       effectiveConstraints.isHomeDumbbellsOnly ||
       effectiveConstraints.excludedExerciseKeys.size > 0 ||
       !effectiveConstraints.allowsLoadedExercises ||
-      effectiveConstraints.allowedEquipment.size < FULL_GYM_ALLOWED_EQUIPMENT.size
+      effectiveConstraints.allowedEquipment.size <
+        FULL_GYM_ALLOWED_EQUIPMENT.size
     )
   }, [effectiveConstraints])
 
@@ -104,7 +105,9 @@ export function ExerciseLibraryModal({
     null,
   )
 
-  const [editSheetExercise, setEditSheetExercise] = useState<Exercise | null>(null)
+  const [editSheetExercise, setEditSheetExercise] = useState<Exercise | null>(
+    null,
+  )
   const [toastMsg, setToastMsg] = useState('')
   const [overridesVersion, setOverridesVersion] = useState(0)
 
@@ -139,9 +142,15 @@ export function ExerciseLibraryModal({
 
   // Active filters list
   const activeFilters = useMemo(() => {
-    const list: Array<{ id: 'category' | 'sub' | 'equip' | 'level'; label: string }> = []
+    const list: Array<{
+      id: 'category' | 'sub' | 'equip' | 'level'
+      label: string
+    }> = []
     if (categoryFilter !== 'all') {
-      list.push({ id: 'category', label: MUSCLE_GROUP_MAP[categoryFilter] || categoryFilter })
+      list.push({
+        id: 'category',
+        label: MUSCLE_GROUP_MAP[categoryFilter] || categoryFilter,
+      })
     }
     if (subMuscleFilter !== 'all') {
       list.push({ id: 'sub', label: subMuscleFilter })
@@ -420,7 +429,8 @@ export function ExerciseLibraryModal({
                   padding: '0 10px',
                   borderRadius: '17px',
                   border: '1px solid var(--color-accent)',
-                  background: 'var(--color-accent-subtle, rgba(235,94,40,0.08))',
+                  background:
+                    'var(--color-accent-subtle, rgba(235,94,40,0.08))',
                   color: 'var(--color-accent-text, #eb5e28)',
                   fontSize: '12px',
                   fontWeight: 600,
@@ -504,7 +514,8 @@ export function ExerciseLibraryModal({
                         width: '56px',
                         height: '56px',
                         borderRadius: '10px',
-                        overflow: 'hidden' /* clip-ok: modal sheet scroller boundary */,
+                        overflow:
+                          'hidden' /* clip-ok: modal sheet scroller boundary */,
                         background: 'var(--color-surface)',
                         border: '1px solid var(--line)',
                         flexShrink: 0,
@@ -523,24 +534,33 @@ export function ExerciseLibraryModal({
                     </div>
                   }
                   title={
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
                       <span>{formatBdiText(ex.nameAr)}</span>
-                      {('isModified' in ex && Boolean((ex as { isModified?: boolean }).isModified)) && (
-                        <span
-                          data-testid="badge-modified"
-                          style={{
-                            fontSize: '10px',
-                            fontWeight: 700,
-                            padding: '1px 6px',
-                            borderRadius: 'var(--radius-control)',
-                            backgroundColor: 'var(--color-accent-tint)',
-                            color: 'var(--color-accent-text)',
-                            border: '1px solid var(--color-accent)',
-                          }}
-                        >
-                          معدّل
-                        </span>
-                      )}
+                      {'isModified' in ex &&
+                        Boolean(
+                          (ex as { isModified?: boolean }).isModified,
+                        ) && (
+                          <span
+                            data-testid="badge-modified"
+                            style={{
+                              fontSize: '10px',
+                              fontWeight: 700,
+                              padding: '1px 6px',
+                              borderRadius: 'var(--radius-control)',
+                              backgroundColor: 'var(--color-accent-tint)',
+                              color: 'var(--color-accent-text)',
+                              border: '1px solid var(--color-accent)',
+                            }}
+                          >
+                            معدّل
+                          </span>
+                        )}
                     </span>
                   }
                   secondary={

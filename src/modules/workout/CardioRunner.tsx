@@ -61,7 +61,9 @@ export function CardioRunner({
   }, [activityId, level, durationMinutes, weightKg])
 
   // State phases: 'countdown' | 'running' | 'finished'
-  const [phase, setPhase] = useState<'countdown' | 'running' | 'finished'>('countdown')
+  const [phase, setPhase] = useState<'countdown' | 'running' | 'finished'>(
+    'countdown',
+  )
   const [countdown, setCountdown] = useState(3)
   const [isPaused, setIsPaused] = useState(false)
   const [startTime, setStartTime] = useState<number>(() => Date.now())
@@ -128,7 +130,10 @@ export function CardioRunner({
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) {
         const data: CardioSessionPersistence = JSON.parse(saved)
-        if (data.activityId === activityId && data.durationMinutes === durationMinutes) {
+        if (
+          data.activityId === activityId &&
+          data.durationMinutes === durationMinutes
+        ) {
           setStartTime(data.startTime)
           setPausedTotalMs(data.pausedTotalMs)
           setIsPaused(data.isPaused)
@@ -190,9 +195,20 @@ export function CardioRunner({
   const totalTargetMs = durationMinutes * 60 * 1000
   const currentElapsedMs = useMemo(() => {
     if (phase !== 'running' && phase !== 'finished') return 0
-    const rawElapsed = (isPaused && lastPauseTime ? lastPauseTime : now) - startTime - pausedTotalMs
+    const rawElapsed =
+      (isPaused && lastPauseTime ? lastPauseTime : now) -
+      startTime -
+      pausedTotalMs
     return Math.max(0, Math.min(rawElapsed, totalTargetMs))
-  }, [phase, isPaused, lastPauseTime, now, startTime, pausedTotalMs, totalTargetMs])
+  }, [
+    phase,
+    isPaused,
+    lastPauseTime,
+    now,
+    startTime,
+    pausedTotalMs,
+    totalTargetMs,
+  ])
 
   const remainingMs = Math.max(0, totalTargetMs - currentElapsedMs)
   const remainingSecondsTotal = Math.ceil(remainingMs / 1000)
@@ -203,7 +219,9 @@ export function CardioRunner({
   const grossRate = estimate?.grossRateKcalPerMin || 0
   const netRate = estimate?.netRateKcalPerMin || 0
 
-  const liveGrossKcal = Math.round(calculateLiveEnergy(grossRate, currentElapsedMs))
+  const liveGrossKcal = Math.round(
+    calculateLiveEnergy(grossRate, currentElapsedMs),
+  )
   const liveNetKcal = Math.round(calculateLiveEnergy(netRate, currentElapsedMs))
 
   // Auto-finish when duration is reached
@@ -238,7 +256,18 @@ export function CardioRunner({
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
     }
-  }, [phase, activityId, level, durationMinutes, weightKg, startTime, pausedTotalMs, isPaused, lastPauseTime, estimate])
+  }, [
+    phase,
+    activityId,
+    level,
+    durationMinutes,
+    weightKg,
+    startTime,
+    pausedTotalMs,
+    isPaused,
+    lastPauseTime,
+    estimate,
+  ])
 
   function handleTogglePause() {
     if (isPaused) {
@@ -281,7 +310,8 @@ export function CardioRunner({
 
   const actDef = getCardioActivity(activityId)
   const actName = actDef?.name_ar || activityId
-  const levelLabel = level === 'light' ? 'خفيف' : level === 'moderate' ? 'متوسط' : 'عالي'
+  const levelLabel =
+    level === 'light' ? 'خفيف' : level === 'moderate' ? 'متوسط' : 'عالي'
 
   // --- 1. Countdown Overlay ---
   if (phase === 'countdown') {
@@ -302,7 +332,14 @@ export function CardioRunner({
           boxSizing: 'border-box',
         }}
       >
-        <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--muted)', marginBottom: '16px' }}>
+        <div
+          style={{
+            fontSize: '18px',
+            fontWeight: 700,
+            color: 'var(--muted)',
+            marginBottom: '16px',
+          }}
+        >
           استعد للبدء: {actName}
         </div>
         <div
@@ -383,7 +420,8 @@ export function CardioRunner({
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'var(--color-accent-subtle, rgba(249, 87, 0, 0.12))',
+                background:
+                  'var(--color-accent-subtle, rgba(249, 87, 0, 0.12))',
                 color: 'var(--color-accent)',
                 display: 'flex',
                 alignItems: 'center',
@@ -398,7 +436,8 @@ export function CardioRunner({
             </h2>
 
             <div style={{ fontSize: '14px', color: 'var(--muted)' }}>
-              المستوى: {levelLabel} · المدة الفعلية: {plural(finalMinutes, 'دقيقة')}
+              المستوى: {levelLabel} · المدة الفعلية:{' '}
+              {plural(finalMinutes, 'دقيقة')}
             </div>
 
             <div
@@ -418,8 +457,16 @@ export function CardioRunner({
                   textAlign: 'center',
                 }}
               >
-                <div style={{ fontSize: '12px', color: 'var(--muted)' }}>إجمالي الطاقة</div>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-text)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                  إجمالي الطاقة
+                </div>
+                <div
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: 800,
+                    color: 'var(--color-text)',
+                  }}
+                >
                   {plural(finalGross, 'سعرة')}
                 </div>
               </div>
@@ -432,8 +479,16 @@ export function CardioRunner({
                   textAlign: 'center',
                 }}
               >
-                <div style={{ fontSize: '12px', color: 'var(--muted)' }}>الزيادة بالتمرين</div>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-accent)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                  الزيادة بالتمرين
+                </div>
+                <div
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: 800,
+                    color: 'var(--color-accent)',
+                  }}
+                >
                   {plural(finalNet, 'سعرة')}
                 </div>
               </div>
@@ -442,7 +497,14 @@ export function CardioRunner({
             <Claim id="cardio_met_caveat" />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              marginTop: '12px',
+            }}
+          >
             <Button
               variant="primary"
               size="large"
@@ -452,7 +514,12 @@ export function CardioRunner({
             >
               {isSaved ? 'تم حفظ الجلسة' : 'احفظ الجلسة في سجلك'}
             </Button>
-            <Button variant="secondary" size="large" fullWidth onClick={onCancel}>
+            <Button
+              variant="secondary"
+              size="large"
+              fullWidth
+              onClick={onCancel}
+            >
               إغلاق
             </Button>
           </div>
@@ -481,7 +548,10 @@ export function CardioRunner({
         boxSizing: 'border-box',
       }}
     >
-      <TopBar title={`جلسة ${actName.replace(/جرى/g, 'جري')}`} onBack={() => setShowLeaveSheet(true)} />
+      <TopBar
+        title={`جلسة ${actName.replace(/جرى/g, 'جري')}`}
+        onBack={() => setShowLeaveSheet(true)}
+      />
 
       <div
         style={{
@@ -518,7 +588,8 @@ export function CardioRunner({
           {isPaused && (
             <span
               style={{
-                background: 'var(--color-warning-surface, rgba(245, 158, 11, 0.15))',
+                background:
+                  'var(--color-warning-surface, rgba(245, 158, 11, 0.15))',
                 color: 'var(--color-warning, #f59e0b)',
                 padding: '2px 8px',
                 borderRadius: '6px',
@@ -541,7 +612,12 @@ export function CardioRunner({
             flexShrink: 0,
           }}
         >
-          <svg width="220" height="220" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
+          <svg
+            width="220"
+            height="220"
+            viewBox="0 0 100 100"
+            style={{ transform: 'rotate(-90deg)' }}
+          >
             <circle
               cx="50"
               cy="50"
@@ -574,7 +650,15 @@ export function CardioRunner({
               justifyContent: 'center',
             }}
           >
-            <span style={{ fontSize: '12px', color: 'var(--muted)', fontWeight: 600 }}>الوقت المتبقي</span>
+            <span
+              style={{
+                fontSize: '12px',
+                color: 'var(--muted)',
+                fontWeight: 600,
+              }}
+            >
+              الوقت المتبقي
+            </span>
             <span
               style={{
                 fontSize: '38px',
@@ -584,9 +668,16 @@ export function CardioRunner({
                 lineHeight: 1.1,
               }}
             >
-              {String(remainingMinutes).padStart(2, '0')}:{String(remainingSeconds).padStart(2, '0')}
+              {String(remainingMinutes).padStart(2, '0')}:
+              {String(remainingSeconds).padStart(2, '0')}
             </span>
-            <span style={{ fontSize: '11.5px', color: 'var(--muted)', marginTop: '4px' }}>
+            <span
+              style={{
+                fontSize: '11.5px',
+                color: 'var(--muted)',
+                marginTop: '4px',
+              }}
+            >
               من {plural(durationMinutes, 'دقيقة')}
             </span>
           </div>
@@ -608,7 +699,13 @@ export function CardioRunner({
             textAlign: 'center',
           }}
         >
-          <div style={{ fontSize: '12.5px', color: 'var(--muted)', fontWeight: 600 }}>
+          <div
+            style={{
+              fontSize: '12.5px',
+              color: 'var(--muted)',
+              fontWeight: 600,
+            }}
+          >
             سعرات حرقتها لحد دلوقتي
           </div>
           <div
@@ -621,7 +718,13 @@ export function CardioRunner({
             }}
           >
             {liveGrossKcal}{' '}
-            <span style={{ fontSize: '15px', color: 'var(--muted)', fontWeight: 600 }}>
+            <span
+              style={{
+                fontSize: '15px',
+                color: 'var(--muted)',
+                fontWeight: 600,
+              }}
+            >
               / {plural(Math.round(estimate?.grossSessionKcal || 0), 'سعرة')}
             </span>
           </div>
@@ -645,20 +748,44 @@ export function CardioRunner({
         )}
 
         {/* Action Controls - Two equal-width real buttons */}
-        <div style={{ display: 'flex', gap: '12px', width: '100%', marginTop: '8px' }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: '12px',
+            width: '100%',
+            marginTop: '8px',
+          }}
+        >
           <Button
             variant={isPaused ? 'primary' : 'secondary'}
             size="lg"
             fullWidth
             onClick={handleTogglePause}
-            style={{ flex: 1, minHeight: '48px', borderRadius: '12px', fontWeight: 700 }}
+            style={{
+              flex: 1,
+              minHeight: '48px',
+              borderRadius: '12px',
+              fontWeight: 700,
+            }}
           >
             {isPaused ? (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
                 <Icon name="play" size={18} /> استئناف
               </span>
             ) : (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
                 <Icon name="pause" size={18} /> إيقاف مؤقت
               </span>
             )}
@@ -757,7 +884,9 @@ export function CardioRunner({
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div style={{ fontSize: '14px', color: 'var(--ink)' }}>
-            أنجزت <strong>{Math.max(1, Math.round(elapsedMinutes))} دقيقة</strong> وحرقت <strong>{liveGrossKcal} سعرة</strong> حتى الآن.
+            أنجزت{' '}
+            <strong>{Math.max(1, Math.round(elapsedMinutes))} دقيقة</strong>{' '}
+            وحرقت <strong>{liveGrossKcal} سعرة</strong> حتى الآن.
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <Button
@@ -774,7 +903,11 @@ export function CardioRunner({
             <Button
               variant="ghost"
               size="large"
-              style={{ flex: 1, color: 'var(--color-danger, #ef4444)', fontWeight: 700 }}
+              style={{
+                flex: 1,
+                color: 'var(--color-danger, #ef4444)',
+                fontWeight: 700,
+              }}
               onClick={() => {
                 setShowSaveDiscardSheet(false)
                 localStorage.removeItem(STORAGE_KEY)

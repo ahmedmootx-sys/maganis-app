@@ -337,8 +337,7 @@ export function CardioDayScreen({
         value: 'light' as const,
         label: 'خفيف',
         description:
-          selectedActivityDef?.levels.light.ui_hint_ar ||
-          'وتيرة خفيفة ومريحة',
+          selectedActivityDef?.levels.light.ui_hint_ar || 'وتيرة خفيفة ومريحة',
       },
       {
         value: 'moderate' as const,
@@ -877,8 +876,8 @@ export function CardioDayScreen({
               lineHeight: 1.5,
             }}
           >
-            <strong>الإجمالي:</strong> يشمل إجمالي الطاقة المصروفة أثناء
-            التمرين متضمنة حرق الراحة الطبيعي.
+            <strong>الإجمالي:</strong> يشمل إجمالي الطاقة المصروفة أثناء التمرين
+            متضمنة حرق الراحة الطبيعي.
           </div>
           <div
             style={{
@@ -983,20 +982,27 @@ export function WeeklyPlanView({
   // B2 Duplicate Day States
   const [isDuplicatePickerOpen, setIsDuplicatePickerOpen] = useState(false)
   const [isDuplicateConfirmOpen, setIsDuplicateConfirmOpen] = useState(false)
-  const [duplicateSourceDay, setDuplicateSourceDay] = useState<ProgramDay | null>(null)
+  const [duplicateSourceDay, setDuplicateSourceDay] =
+    useState<ProgramDay | null>(null)
   const [duplicateNewName, setDuplicateNewName] = useState('')
-  const [duplicateTargetWeekday, setDuplicateTargetWeekday] = useState<number>(0)
+  const [duplicateTargetWeekday, setDuplicateTargetWeekday] =
+    useState<number>(0)
 
   // B1.3 Disallowed Exercises Mismatch States
-  const [dismissedDisallowedMismatch, setDismissedDisallowedMismatch] = useState(false)
+  const [dismissedDisallowedMismatch, setDismissedDisallowedMismatch] =
+    useState(false)
   const [replacementPreviewOpen, setReplacementPreviewOpen] = useState(false)
 
   // B3.2 Cardio Finisher States
   const [isFinisherModalOpen, setIsFinisherModalOpen] = useState(false)
-  const [finisherTargetDay, setFinisherTargetDay] = useState<ProgramDay | null>(null)
+  const [finisherTargetDay, setFinisherTargetDay] = useState<ProgramDay | null>(
+    null,
+  )
   const [finisherActivity, setFinisherActivity] = useState<string>('جري خفيف')
   const [finisherMinutes, setFinisherMinutes] = useState<number>(20)
-  const [finisherLevel, setFinisherLevel] = useState<'خفيف' | 'متوسط' | 'عالي'>('متوسط')
+  const [finisherLevel, setFinisherLevel] = useState<'خفيف' | 'متوسط' | 'عالي'>(
+    'متوسط',
+  )
   const [applyFinisherToAll, setApplyFinisherToAll] = useState(false)
 
   // Constraints & Schedule Derivations
@@ -1267,7 +1273,9 @@ export function WeeklyPlanView({
     const clonedExercises = (duplicateSourceDay.exercises || []).map((pe) => ({
       ...pe,
     }))
-    const nameToUse = duplicateNewName.trim() || `${duplicateSourceDay.name || duplicateSourceDay.labelAr} (نسخة)`
+    const nameToUse =
+      duplicateNewName.trim() ||
+      `${duplicateSourceDay.name || duplicateSourceDay.labelAr} (نسخة)`
     const clonedDay: ProgramDay = {
       ...duplicateSourceDay,
       id: newDayId,
@@ -1276,8 +1284,12 @@ export function WeeklyPlanView({
       labelAr: nameToUse,
       customName: nameToUse,
       exercises: clonedExercises,
-      cardioConfig: duplicateSourceDay.cardioConfig ? { ...duplicateSourceDay.cardioConfig } : undefined,
-      finisher: duplicateSourceDay.finisher ? { ...duplicateSourceDay.finisher } : undefined,
+      cardioConfig: duplicateSourceDay.cardioConfig
+        ? { ...duplicateSourceDay.cardioConfig }
+        : undefined,
+      finisher: duplicateSourceDay.finisher
+        ? { ...duplicateSourceDay.finisher }
+        : undefined,
     }
 
     if (profile && onUpdateProfile && duplicateTargetWeekday !== undefined) {
@@ -1304,11 +1316,15 @@ export function WeeklyPlanView({
   }
 
   function handleConfirmReplaceDisallowed() {
-    if (!program || !onUpdateProgram || disallowedExercisesInfo.length === 0) return
+    if (!program || !onUpdateProgram || disallowedExercisesInfo.length === 0)
+      return
     const replacementMap = new Map<string, string>()
     for (const item of disallowedExercisesInfo) {
       if (item.suggestedReplacement) {
-        replacementMap.set(item.catalogExercise.id, item.suggestedReplacement.id)
+        replacementMap.set(
+          item.catalogExercise.id,
+          item.suggestedReplacement.id,
+        )
       }
     }
 
@@ -1353,13 +1369,20 @@ export function WeeklyPlanView({
     onUpdateProgram({ ...program, days: newDays })
     setIsFinisherModalOpen(false)
     setFinisherTargetDay(null)
-    showToast(applyFinisherToAll ? 'تم تطبيق الكارديو على كل أيام المقاومة' : 'تم حفظ تمرين الكارديو بعد التمرين')
+    showToast(
+      applyFinisherToAll
+        ? 'تم تطبيق الكارديو على كل أيام المقاومة'
+        : 'تم حفظ تمرين الكارديو بعد التمرين',
+    )
   }
 
   function handleRemoveFinisher(removeAll: boolean = false) {
     if (!program || !onUpdateProgram) return
     const newDays = program.days.map((d) => {
-      if (removeAll || (finisherTargetDay && d.dayIndex === finisherTargetDay.dayIndex)) {
+      if (
+        removeAll ||
+        (finisherTargetDay && d.dayIndex === finisherTargetDay.dayIndex)
+      ) {
         return { ...d, finisher: null }
       }
       return d
@@ -1368,7 +1391,9 @@ export function WeeklyPlanView({
     onUpdateProgram({ ...program, days: newDays })
     setIsFinisherModalOpen(false)
     setFinisherTargetDay(null)
-    showToast(removeAll ? 'تم حذف الكارديو من كل الأيام' : 'تم حذف تمرين الكارديو')
+    showToast(
+      removeAll ? 'تم حذف الكارديو من كل الأيام' : 'تم حذف تمرين الكارديو',
+    )
   }
 
   const renderFinisherSheet = () => (
@@ -1377,9 +1402,18 @@ export function WeeklyPlanView({
       onClose={() => setIsFinisherModalOpen(false)}
       title="كارديو بعد التمرين (Finisher)"
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '16px' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px',
+          paddingBottom: '16px',
+        }}
+      >
         <div>
-          <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+          <div
+            style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
+          >
             النشاط
           </div>
           <Select
@@ -1396,7 +1430,9 @@ export function WeeklyPlanView({
         </div>
 
         <div>
-          <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+          <div
+            style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
+          >
             المدة المخططة ({finisherMinutes} دقيقة)
           </div>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -1409,9 +1445,18 @@ export function WeeklyPlanView({
                   padding: '8px 12px',
                   borderRadius: '8px',
                   border: '1px solid',
-                  borderColor: finisherMinutes === m ? 'var(--color-accent)' : 'var(--color-divider)',
-                  background: finisherMinutes === m ? 'var(--color-accent)' : 'var(--color-surface-2)',
-                  color: finisherMinutes === m ? 'var(--color-accent-on)' : 'var(--color-text)',
+                  borderColor:
+                    finisherMinutes === m
+                      ? 'var(--color-accent)'
+                      : 'var(--color-divider)',
+                  background:
+                    finisherMinutes === m
+                      ? 'var(--color-accent)'
+                      : 'var(--color-surface-2)',
+                  color:
+                    finisherMinutes === m
+                      ? 'var(--color-accent-on)'
+                      : 'var(--color-text)',
                   fontWeight: 700,
                   cursor: 'pointer',
                 }}
@@ -1423,24 +1468,47 @@ export function WeeklyPlanView({
         </div>
 
         <div>
-          <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+          <div
+            style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
+          >
             مستوى الشدة
           </div>
           <Choice
             variant="option-card"
             options={[
-              { value: 'خفيف', label: 'خفيف', description: 'مجهود بسيط وسرعة استشفاء' },
-              { value: 'متوسط', label: 'متوسط', description: 'تنفس سريع مع إمكانية الحديث' },
-              { value: 'عالي', label: 'عالي', description: 'جهد مكثف وحرق عالٍ' },
+              {
+                value: 'خفيف',
+                label: 'خفيف',
+                description: 'مجهود بسيط وسرعة استشفاء',
+              },
+              {
+                value: 'متوسط',
+                label: 'متوسط',
+                description: 'تنفس سريع مع إمكانية الحديث',
+              },
+              {
+                value: 'عالي',
+                label: 'عالي',
+                description: 'جهد مكثف وحرق عالٍ',
+              },
             ]}
             value={finisherLevel}
-            onChange={(val) => setFinisherLevel(val as 'خفيف' | 'متوسط' | 'عالي')}
+            onChange={(val) =>
+              setFinisherLevel(val as 'خفيف' | 'متوسط' | 'عالي')
+            }
             ariaLabel="مستوى شدة الكارديو"
           />
         </div>
 
         {/* Energy calculation caveat claim */}
-        <div style={{ padding: '8px 12px', borderRadius: '8px', background: 'var(--color-surface-2)', border: '1px solid var(--color-divider)' }}>
+        <div
+          style={{
+            padding: '8px 12px',
+            borderRadius: '8px',
+            background: 'var(--color-surface-2)',
+            border: '1px solid var(--color-divider)',
+          }}
+        >
           <Claim id="cardio_energy_formula" />
         </div>
 
@@ -1468,13 +1536,25 @@ export function WeeklyPlanView({
             type="checkbox"
             checked={applyFinisherToAll}
             onChange={(e) => setApplyFinisherToAll(e.target.checked)}
-            style={{ width: '18px', height: '18px', accentColor: 'var(--color-accent)' }}
+            style={{
+              width: '18px',
+              height: '18px',
+              accentColor: 'var(--color-accent)',
+            }}
           />
         </label>
 
         {applyFinisherToAll && program && (
-          <div style={{ fontSize: '12px', color: 'var(--color-accent)', padding: '4px 8px' }}>
-            سيتم تطبيقه على {program.days.filter((d) => d.kind !== 'cardio').length} أيام مقاومة: (
+          <div
+            style={{
+              fontSize: '12px',
+              color: 'var(--color-accent)',
+              padding: '4px 8px',
+            }}
+          >
+            سيتم تطبيقه على{' '}
+            {program.days.filter((d) => d.kind !== 'cardio').length} أيام
+            مقاومة: (
             {program.days
               .filter((d) => d.kind !== 'cardio')
               .map((d) => d.name || d.labelAr)
@@ -1491,18 +1571,13 @@ export function WeeklyPlanView({
           >
             إلغاء
           </Button>
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={handleSaveFinisher}
-          >
+          <Button variant="primary" fullWidth onClick={handleSaveFinisher}>
             حفظ الكارديو
           </Button>
         </div>
       </div>
     </Sheet>
   )
-
 
   function handleSwapExercise(newEx: Exercise) {
     if (!swapTarget || !onUpdateProgram || !program) return
@@ -2454,139 +2529,161 @@ export function WeeklyPlanView({
 
           {/* B3.2 Cardio Finisher Card under the exercise list */}
           <section className="screen-section" style={{ marginTop: '12px' }}>
-              <div
-                className="section-title"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '8px',
-                }}
-              >
-                <span>كارديو بعد التمرين (Finisher)</span>
-                {selectedDay.finisher && (
-                  <button
-                    type="button"
-                    className="ghost tiny"
-                    style={{
-                      fontSize: '12px',
-                      color: 'var(--color-accent)',
-                      padding: '2px 8px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => {
-                      setFinisherTargetDay(selectedDay)
-                      setFinisherActivity(selectedDay.finisher?.activity || 'جري خفيف')
-                      setFinisherMinutes(selectedDay.finisher?.minutes || 20)
-                      setFinisherLevel(selectedDay.finisher?.level || 'متوسط')
-                      setApplyFinisherToAll(false)
-                      setIsFinisherModalOpen(true)
-                    }}
-                  >
-                    تعديل
-                  </button>
-                )}
-              </div>
-              {selectedDay.finisher ? (
-                <div
-                  className="card"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '12px 14px',
-                    borderRadius: '12px',
-                    border: '1px solid var(--color-divider)',
-                    background: 'var(--color-surface-2)',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div
-                      style={{
-                        width: '38px',
-                        height: '38px',
-                        borderRadius: '10px',
-                        background: 'var(--color-info-surface, rgba(96, 165, 250, 0.15))',
-                        color: 'var(--color-info)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Icon name="activity" size={20} />
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: '13.5px', color: 'var(--color-text)' }}>
-                        {selectedDay.finisher.activity}
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
-                        {selectedDay.finisher.minutes} دقيقة · شدة {selectedDay.finisher.level}
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="ghost tiny"
-                    style={{ color: 'var(--color-danger)', padding: '6px' }}
-                    onClick={() => {
-                      setFinisherTargetDay(selectedDay)
-                      handleRemoveFinisher(false)
-                    }}
-                    aria-label="حذف الكارديو"
-                  >
-                    <IconTrash size={16} />
-                  </button>
-                </div>
-              ) : (
+            <div
+              className="section-title"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '8px',
+              }}
+            >
+              <span>كارديو بعد التمرين (Finisher)</span>
+              {selectedDay.finisher && (
                 <button
                   type="button"
-                  className="card"
+                  className="ghost tiny"
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '14px 16px',
-                    borderRadius: '12px',
-                    border: '1px dashed var(--color-divider)',
-                    background: 'var(--color-surface)',
-                    width: '100%',
-                    textAlign: 'right',
+                    fontSize: '12px',
+                    color: 'var(--color-accent)',
+                    padding: '2px 8px',
                     cursor: 'pointer',
                   }}
                   onClick={() => {
                     setFinisherTargetDay(selectedDay)
-                    setFinisherActivity('جري خفيف')
-                    setFinisherMinutes(20)
-                    setFinisherLevel('متوسط')
+                    setFinisherActivity(
+                      selectedDay.finisher?.activity || 'جري خفيف',
+                    )
+                    setFinisherMinutes(selectedDay.finisher?.minutes || 20)
+                    setFinisherLevel(selectedDay.finisher?.level || 'متوسط')
                     setApplyFinisherToAll(false)
                     setIsFinisherModalOpen(true)
                   }}
                 >
+                  تعديل
+                </button>
+              )}
+            </div>
+            {selectedDay.finisher ? (
+              <div
+                className="card"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 14px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--color-divider)',
+                  background: 'var(--color-surface-2)',
+                }}
+              >
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+                >
                   <div
                     style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '8px',
-                      background: 'var(--color-surface-2)',
-                      color: 'var(--color-text-2)',
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '10px',
+                      background:
+                        'var(--color-info-surface, rgba(96, 165, 250, 0.15))',
+                      color: 'var(--color-info)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
                   >
-                    <IconPlus size={18} />
+                    <Icon name="activity" size={20} />
                   </div>
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: '13.5px', color: 'var(--color-text)' }}>
-                      + إضافة كارديو بعد التمرين
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '13.5px',
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      {selectedDay.finisher.activity}
                     </div>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
-                      جلسة هوائية خفيفة لزيادة حرق السعرات بعد رفع الأثقال
+                    <div
+                      style={{ fontSize: '12px', color: 'var(--color-text-2)' }}
+                    >
+                      {selectedDay.finisher.minutes} دقيقة · شدة{' '}
+                      {selectedDay.finisher.level}
                     </div>
                   </div>
+                </div>
+                <button
+                  type="button"
+                  className="ghost tiny"
+                  style={{ color: 'var(--color-danger)', padding: '6px' }}
+                  onClick={() => {
+                    setFinisherTargetDay(selectedDay)
+                    handleRemoveFinisher(false)
+                  }}
+                  aria-label="حذف الكارديو"
+                >
+                  <IconTrash size={16} />
                 </button>
-              )}
-            </section>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="card"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '14px 16px',
+                  borderRadius: '12px',
+                  border: '1px dashed var(--color-divider)',
+                  background: 'var(--color-surface)',
+                  width: '100%',
+                  textAlign: 'right',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  setFinisherTargetDay(selectedDay)
+                  setFinisherActivity('جري خفيف')
+                  setFinisherMinutes(20)
+                  setFinisherLevel('متوسط')
+                  setApplyFinisherToAll(false)
+                  setIsFinisherModalOpen(true)
+                }}
+              >
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '8px',
+                    background: 'var(--color-surface-2)',
+                    color: 'var(--color-text-2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <IconPlus size={18} />
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      fontSize: '13.5px',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    + إضافة كارديو بعد التمرين
+                  </div>
+                  <div
+                    style={{ fontSize: '12px', color: 'var(--color-text-2)' }}
+                  >
+                    جلسة هوائية خفيفة لزيادة حرق السعرات بعد رفع الأثقال
+                  </div>
+                </div>
+              </button>
+            )}
+          </section>
         </div>
 
         {/* Sticky Bottom Primary "ابدأ التمرين" */}
@@ -2925,7 +3022,8 @@ export function WeeklyPlanView({
               </div>
             }
           >
-            يحتوي جدولك على {disallowedExercisesInfo.length} تمارين تتطلب معدات غير متوفرة لديك بناءً على إعدادات ملفك الشخصي.
+            يحتوي جدولك على {disallowedExercisesInfo.length} تمارين تتطلب معدات
+            غير متوفرة لديك بناءً على إعدادات ملفك الشخصي.
           </Callout>
         )}
 
@@ -2977,7 +3075,9 @@ export function WeeklyPlanView({
               color: 'var(--muted)',
             }}
           >
-            <span>{plural(weekLoad.totalScheduledSessions, 'يوم')} أسبوعياً</span>
+            <span>
+              {plural(weekLoad.totalScheduledSessions, 'يوم')} أسبوعياً
+            </span>
             {program.isLocked && (
               <span
                 style={{
@@ -3053,7 +3153,9 @@ export function WeeklyPlanView({
               // B6.b: Row title = custom name if set, else «weekday · focus» (e.g. «السبت · صدر / بطن»); no generic word
               let titlePart = cleanName
               if (!titlePart || titlePart === 'يوم تدريبي') {
-                titlePart = day.focus || (isCardio ? 'كارديو' : deriveDayMuscleSummary(day.exercises))
+                titlePart =
+                  day.focus ||
+                  (isCardio ? 'كارديو' : deriveDayMuscleSummary(day.exercises))
               }
               const displayTitle = weekdayInfo
                 ? `${weekdayInfo.nameAr} · ${titlePart}`
@@ -3112,15 +3214,24 @@ export function WeeklyPlanView({
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
-                          overflow: displayTitle.length >= 60 ? 'hidden' : 'visible',
-                          textOverflow: displayTitle.length >= 60 ? 'ellipsis' : 'clip',
+                          overflow:
+                            displayTitle.length >= 60 ? 'hidden' : 'visible',
+                          textOverflow:
+                            displayTitle.length >= 60 ? 'ellipsis' : 'clip',
                           whiteSpace: 'normal',
                           wordBreak: 'break-word',
                         }}
                       >
                         {displayTitle}
                       </span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          flexShrink: 0,
+                        }}
+                      >
                         {isCardio && (
                           <span
                             className="badge"
@@ -3128,7 +3239,8 @@ export function WeeklyPlanView({
                               fontSize: '11px',
                               fontWeight: 700,
                               color: 'var(--color-info)',
-                              background: 'var(--color-info-surface, rgba(96, 165, 250, 0.12))',
+                              background:
+                                'var(--color-info-surface, rgba(96, 165, 250, 0.12))',
                               padding: '2px 6px',
                               borderRadius: '6px',
                               whiteSpace: 'nowrap',
@@ -3145,7 +3257,8 @@ export function WeeklyPlanView({
                               fontSize: '11px',
                               fontWeight: 700,
                               color: 'var(--color-accent-text)',
-                              background: 'var(--color-accent-soft, rgba(235, 94, 40, 0.15))',
+                              background:
+                                'var(--color-accent-soft, rgba(235, 94, 40, 0.15))',
                               padding: '2px 6px',
                               borderRadius: '6px',
                               whiteSpace: 'nowrap',
@@ -3413,14 +3526,27 @@ export function WeeklyPlanView({
               }}
             >
               <div style={{ marginTop: '2px' }}>
-                {program.isLocked ? <IconUnlock size={18} /> : <IconLock size={18} />}
+                {program.isLocked ? (
+                  <IconUnlock size={18} />
+                ) : (
+                  <IconLock size={18} />
+                )}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}
+              >
                 <span style={{ fontWeight: 700 }}>
                   {program.isLocked ? 'إلغاء قفل الجدول' : 'قفل الجدول'}
                 </span>
-                <span style={{ fontSize: '11.5px', color: 'var(--color-text-2)', fontWeight: 400 }}>
-                  يمنع تعديل أو إعادة توليد الجدول الحالي لتجنب تغيير التمارين بالخطأ
+                <span
+                  style={{
+                    fontSize: '11.5px',
+                    color: 'var(--color-text-2)',
+                    fontWeight: 400,
+                  }}
+                >
+                  يمنع تعديل أو إعادة توليد الجدول الحالي لتجنب تغيير التمارين
+                  بالخطأ
                 </span>
               </div>
             </button>
@@ -3901,8 +4027,14 @@ export function WeeklyPlanView({
               height: '52px',
               gap: '12px',
               padding: '0 16px',
-              opacity: allWeekdaysTaken || !program || program.days.length === 0 ? 0.5 : 1,
-              cursor: allWeekdaysTaken || !program || program.days.length === 0 ? 'not-allowed' : 'pointer',
+              opacity:
+                allWeekdaysTaken || !program || program.days.length === 0
+                  ? 0.5
+                  : 1,
+              cursor:
+                allWeekdaysTaken || !program || program.days.length === 0
+                  ? 'not-allowed'
+                  : 'pointer',
             }}
             onClick={() => {
               setIsAddDaySheetOpen(false)
@@ -4056,9 +4188,12 @@ export function WeeklyPlanView({
           {program?.days.map((d) => {
             const sched = getOrDeriveSchedule(profile, program)
             const scheduledWd = Object.entries(sched).find(
-              ([_wd, slot]) => slot === d.id || slot === String(d.dayIndex)
+              ([_wd, slot]) => slot === d.id || slot === String(d.dayIndex),
             )?.[0]
-            const wdInfo = scheduledWd !== undefined ? ALL_WEEKDAYS.find(w => w.weekday === Number(scheduledWd)) : null
+            const wdInfo =
+              scheduledWd !== undefined
+                ? ALL_WEEKDAYS.find((w) => w.weekday === Number(scheduledWd))
+                : null
             const isCardio = d.kind === 'cardio'
 
             return (
@@ -4084,12 +4219,29 @@ export function WeeklyPlanView({
                       fontWeight: 700,
                     }}
                   >
-                    {isCardio ? <Icon name="activity" size={16} /> : <IconDumbbell size={16} />}
+                    {isCardio ? (
+                      <Icon name="activity" size={16} />
+                    ) : (
+                      <IconDumbbell size={16} />
+                    )}
                   </div>
                 }
-                title={wdInfo ? `${wdInfo.nameAr} · ${d.name || d.labelAr}` : d.name || d.labelAr}
-                secondary={isCardio ? 'كارديو ولياقة' : `${d.exercises.length} تمارين · ${d.focus}`}
-                trailing={<IconChevronLeft size={16} style={{ color: 'var(--muted)' }} />}
+                title={
+                  wdInfo
+                    ? `${wdInfo.nameAr} · ${d.name || d.labelAr}`
+                    : d.name || d.labelAr
+                }
+                secondary={
+                  isCardio
+                    ? 'كارديو ولياقة'
+                    : `${d.exercises.length} تمارين · ${d.focus}`
+                }
+                trailing={
+                  <IconChevronLeft
+                    size={16}
+                    style={{ color: 'var(--muted)' }}
+                  />
+                }
               />
             )
           })}
@@ -4102,7 +4254,14 @@ export function WeeklyPlanView({
         onClose={() => setIsDuplicateConfirmOpen(false)}
         title="تكرار اليوم"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            paddingBottom: '16px',
+          }}
+        >
           <Field
             label="اسم اليوم الجديد"
             value={duplicateNewName}
@@ -4111,7 +4270,9 @@ export function WeeklyPlanView({
           />
 
           <div>
-            <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
+            <div
+              style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}
+            >
               اليوم في الأسبوع
             </div>
             {freeWeekdays.length > 0 ? (
@@ -4155,12 +4316,34 @@ export function WeeklyPlanView({
         onClose={() => setReplacementPreviewOpen(false)}
         title="استبدال التمارين غير المتوافقة"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '16px' }}>
-          <p style={{ fontSize: '13px', color: 'var(--color-text-2)', margin: 0 }}>
-            سيتم استبدال كل تمرين غير متوافق مع إعدادات معداتك الحالية ببديل مناسب من نفس المجموعة العضلية:
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px',
+            paddingBottom: '16px',
+          }}
+        >
+          <p
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-text-2)',
+              margin: 0,
+            }}
+          >
+            سيتم استبدال كل تمرين غير متوافق مع إعدادات معداتك الحالية ببديل
+            مناسب من نفس المجموعة العضلية:
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              maxHeight: '300px',
+              overflowY: 'auto',
+            }}
+          >
             {disallowedExercisesInfo.map((item, idx) => (
               <div
                 key={idx}
@@ -4177,13 +4360,34 @@ export function WeeklyPlanView({
                 <div style={{ fontSize: '11px', color: 'var(--color-text-2)' }}>
                   {item.dayName}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                  <span style={{ fontWeight: 600, color: 'var(--color-danger)', fontSize: '13px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '8px',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: 'var(--color-danger)',
+                      fontSize: '13px',
+                    }}
+                  >
                     {item.catalogExercise.nameAr}
                   </span>
                   <span style={{ color: 'var(--muted)' }}>←</span>
-                  <span style={{ fontWeight: 600, color: 'var(--color-success)', fontSize: '13px' }}>
-                    {item.suggestedReplacement ? item.suggestedReplacement.nameAr : 'لا يوجد بديل متاح'}
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: 'var(--color-success)',
+                      fontSize: '13px',
+                    }}
+                  >
+                    {item.suggestedReplacement
+                      ? item.suggestedReplacement.nameAr
+                      : 'لا يوجد بديل متاح'}
                   </span>
                 </div>
               </div>

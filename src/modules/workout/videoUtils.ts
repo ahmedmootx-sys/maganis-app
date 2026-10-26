@@ -5,7 +5,8 @@
  * Strict video URL parsing, validation, and embed URL normalization.
  */
 
-export type VideoSourceType = 'youtube' | 'vimeo' | 'direct_file' | 'unsupported'
+export type VideoSourceType =
+  'youtube' | 'vimeo' | 'direct_file' | 'unsupported'
 
 export interface ParsedVideoInfo {
   isValid: boolean
@@ -44,7 +45,11 @@ export function parseVideoUrl(input: string): ParsedVideoInfo {
 
   // Reject credentials in URL (e.g. https://user:pass@host)
   if (url.username || url.password) {
-    return { isValid: false, rawUrl: trimmed, error: 'الرابط يحتوي على بيانات دخول غير مسموح بها' }
+    return {
+      isValid: false,
+      rawUrl: trimmed,
+      error: 'الرابط يحتوي على بيانات دخول غير مسموح بها',
+    }
   }
 
   const hostname = url.hostname.toLowerCase()

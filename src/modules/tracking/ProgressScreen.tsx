@@ -1017,9 +1017,7 @@ export function ProgressScreen({
                             <span>
                               الإجمالي: {plural(cd.grossKcal, 'calorie')}
                             </span>
-                            <span>
-                              الصافي: {plural(cd.netKcal, 'calorie')}
-                            </span>
+                            <span>الصافي: {plural(cd.netKcal, 'calorie')}</span>
                           </div>
                         </div>
                       )

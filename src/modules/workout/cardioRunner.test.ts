@@ -16,7 +16,12 @@ describe('CardioRunner State Machine & Timers (B3.1)', () => {
   it('1. correctly computes remaining time and live calories from timestamp deltas', () => {
     const weightKg = 70
     const durationMinutes = 30
-    const est = calculateCardioEnergy('run', 'moderate', durationMinutes, weightKg)
+    const est = calculateCardioEnergy(
+      'run',
+      'moderate',
+      durationMinutes,
+      weightKg,
+    )
     expect(est).not.toBeNull()
 
     const grossRate = est!.grossRateKcalPerMin
@@ -82,7 +87,9 @@ describe('CardioRunner State Machine & Timers (B3.1)', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
 
     // 6. User ends session and saves
-    const finalElapsedMinutes = Math.round((Date.now() - session.startTime) / 60000)
+    const finalElapsedMinutes = Math.round(
+      (Date.now() - session.startTime) / 60000,
+    )
     expect(finalElapsedMinutes).toBe(11)
 
     // Clear session storage on save
@@ -140,7 +147,10 @@ describe('CardioRunner State Machine & Timers (B3.1)', () => {
     vi.advanceTimersByTime(25 * 60 * 1000)
 
     const now = Date.now()
-    const elapsedMs = Math.min(now - session.startTime - session.pausedTotalMs, totalTargetMs)
+    const elapsedMs = Math.min(
+      now - session.startTime - session.pausedTotalMs,
+      totalTargetMs,
+    )
     const isExpired = elapsedMs >= totalTargetMs
 
     expect(isExpired).toBe(true)

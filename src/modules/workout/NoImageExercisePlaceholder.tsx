@@ -41,7 +41,13 @@ export const NoImageExercisePlaceholder: React.FC<
         boxSizing: 'border-box',
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-1)',
+        }}
+      >
         <span
           style={{
             fontSize: 'var(--font-size-md)',
@@ -139,12 +145,7 @@ export const NoImageExercisePlaceholder: React.FC<
               cursor: 'pointer',
             }}
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z" />
             </svg>
             <span>ضيف فيديو</span>

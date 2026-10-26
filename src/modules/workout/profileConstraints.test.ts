@@ -21,8 +21,12 @@ describe('deriveConstraints - pure function contract', () => {
     }
 
     // Exercise allowed
-    expect(isExerciseAllowed({ id: 'bench-press', equipment: 'barbell' }, c)).toBe(true)
-    expect(isExerciseAllowed({ id: 'pushup', equipment: 'body only' }, c)).toBe(true)
+    expect(
+      isExerciseAllowed({ id: 'bench-press', equipment: 'barbell' }, c),
+    ).toBe(true)
+    expect(isExerciseAllowed({ id: 'pushup', equipment: 'body only' }, c)).toBe(
+      true,
+    )
   })
 
   it('calisthenics profile restricts equipment to bodyweight/none/other and disallows loaded exercises', () => {
@@ -45,10 +49,16 @@ describe('deriveConstraints - pure function contract', () => {
     expect(c.allowedEquipment.has('machine')).toBe(false)
 
     // Check exercise allowed filtering
-    expect(isExerciseAllowed({ id: 'pullup', equipment: 'body only' }, c)).toBe(true)
+    expect(isExerciseAllowed({ id: 'pullup', equipment: 'body only' }, c)).toBe(
+      true,
+    )
     expect(isExerciseAllowed({ id: 'dip', equipment: 'other' }, c)).toBe(true)
-    expect(isExerciseAllowed({ id: 'bench_press', equipment: 'barbell' }, c)).toBe(false)
-    expect(isExerciseAllowed({ id: 'db_curl', equipment: 'dumbbell' }, c)).toBe(false)
+    expect(
+      isExerciseAllowed({ id: 'bench_press', equipment: 'barbell' }, c),
+    ).toBe(false)
+    expect(isExerciseAllowed({ id: 'db_curl', equipment: 'dumbbell' }, c)).toBe(
+      false,
+    )
   })
 
   it('home dumbbells profile allows dumbbells and bodyweight, disallows heavy gym machines and barbells', () => {
@@ -68,10 +78,18 @@ describe('deriveConstraints - pure function contract', () => {
     expect(c.allowedEquipment.has('cable')).toBe(false)
     expect(c.allowedEquipment.has('machine')).toBe(false)
 
-    expect(isExerciseAllowed({ id: 'db_press', equipment: 'dumbbell' }, c)).toBe(true)
-    expect(isExerciseAllowed({ id: 'pushup', equipment: 'body only' }, c)).toBe(true)
-    expect(isExerciseAllowed({ id: 'barbell_squat', equipment: 'barbell' }, c)).toBe(false)
-    expect(isExerciseAllowed({ id: 'lat_pulldown', equipment: 'cable' }, c)).toBe(false)
+    expect(
+      isExerciseAllowed({ id: 'db_press', equipment: 'dumbbell' }, c),
+    ).toBe(true)
+    expect(isExerciseAllowed({ id: 'pushup', equipment: 'body only' }, c)).toBe(
+      true,
+    )
+    expect(
+      isExerciseAllowed({ id: 'barbell_squat', equipment: 'barbell' }, c),
+    ).toBe(false)
+    expect(
+      isExerciseAllowed({ id: 'lat_pulldown', equipment: 'cable' }, c),
+    ).toBe(false)
   })
 
   it('runs cleanly on real owner production dump (docs/owner-profile-dump.json)', () => {

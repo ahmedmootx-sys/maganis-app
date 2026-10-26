@@ -25,7 +25,9 @@ describe('Exercise Library & Add-Exercise Picker Filtering (B1.3)', () => {
     }
 
     // Weighted exercises are excluded
-    const benchPress = EXERCISES.find((e) => e.nameEn === 'Barbell Bench Press' || e.id.includes('bench'))
+    const benchPress = EXERCISES.find(
+      (e) => e.nameEn === 'Barbell Bench Press' || e.id.includes('bench'),
+    )
     if (benchPress && (benchPress.equipmentDetail as any)?.db === 'barbell') {
       expect(filtered.some((e) => e.id === benchPress.id)).toBe(false)
     }
@@ -43,7 +45,13 @@ describe('Exercise Library & Add-Exercise Picker Filtering (B1.3)', () => {
 
     for (const ex of filtered) {
       const eq = (ex.equipmentDetail as any)?.db || ex.equipment
-      expect(['dumbbell', 'body only', 'bodyweight', 'none', 'other']).toContain(eq)
+      expect([
+        'dumbbell',
+        'body only',
+        'bodyweight',
+        'none',
+        'other',
+      ]).toContain(eq)
     }
   })
 

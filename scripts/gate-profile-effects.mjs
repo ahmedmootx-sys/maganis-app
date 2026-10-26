@@ -15,7 +15,13 @@ import path from 'node:path'
 const ROOT = process.cwd()
 const DOC_PATH = path.join(ROOT, 'docs', 'PROFILE-EFFECTS.md')
 const OWNER_DUMP_PATH = path.join(ROOT, 'docs', 'owner-profile-dump.json')
-const CONSTRAINTS_MODULE = path.join(ROOT, 'src', 'modules', 'workout', 'constraints.ts')
+const CONSTRAINTS_MODULE = path.join(
+  ROOT,
+  'src',
+  'modules',
+  'workout',
+  'constraints.ts',
+)
 
 console.log('=== GATE: PROFILE EFFECTS AUDIT ===\n')
 
@@ -51,9 +57,13 @@ for (const line of lines) {
   }
 }
 
-console.log(`Parsed ${tableRows.length} documented profile fields from PROFILE-EFFECTS.md`)
+console.log(
+  `Parsed ${tableRows.length} documented profile fields from PROFILE-EFFECTS.md`,
+)
 if (tableRows.length < 15) {
-  console.error(`FAIL: Expected at least 15 profile fields, found ${tableRows.length}`)
+  console.error(
+    `FAIL: Expected at least 15 profile fields, found ${tableRows.length}`,
+  )
   process.exit(1)
 }
 
@@ -67,29 +77,42 @@ for (const row of tableRows) {
     displayOnlyCount++
     const reason = cat.replace('`display_only:', '').replace(/`/g, '').trim()
     if (!reason || reason.length < 5) {
-      failures.push(`Field ${row.field} has invalid display_only reason: "${reason}"`)
+      failures.push(
+        `Field ${row.field} has invalid display_only reason: "${reason}"`,
+      )
     }
   } else if (cat.startsWith('`functional:')) {
     functionalCount++
     const testListStr = cat.replace('`functional:', '').replace(/`/g, '').trim()
-    const testFiles = testListStr.split(',').map((t) => t.trim()).filter(Boolean)
+    const testFiles = testListStr
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean)
     if (testFiles.length === 0) {
-      failures.push(`Field ${row.field} marked functional but has no test files specified`)
+      failures.push(
+        `Field ${row.field} marked functional but has no test files specified`,
+      )
     }
     for (const tf of testFiles) {
       // Find file in src/
       const match = findTestFile('src', tf)
       if (!match) {
-        failures.push(`Field ${row.field} references test file "${tf}" which does not exist on disk`)
+        failures.push(
+          `Field ${row.field} references test file "${tf}" which does not exist on disk`,
+        )
       }
     }
   } else {
-    failures.push(`Field ${row.field} has unrecognized category: "${cat}". Must be display_only or functional.`)
+    failures.push(
+      `Field ${row.field} has unrecognized category: "${cat}". Must be display_only or functional.`,
+    )
   }
 
   // Pre-fix check: if the field still has unhandled gap in table
   if (row.g6bConsumer.includes('**NONE (Gap)**')) {
-    failures.push(`Field ${row.field} still has unhandled gap: ${row.g6bConsumer}`)
+    failures.push(
+      `Field ${row.field} still has unhandled gap: ${row.g6bConsumer}`,
+    )
   }
 }
 
@@ -118,7 +141,9 @@ console.log(`Functional fields: ${functionalCount}`)
 console.log(`Display-only fields: ${displayOnlyCount}`)
 
 if (failures.length > 0) {
-  console.error(`\n❌ FAIL: gate-profile-effects detected ${failures.length} issues:`)
+  console.error(
+    `\n❌ FAIL: gate-profile-effects detected ${failures.length} issues:`,
+  )
   for (const f of failures) {
     console.error(`  - ${f}`)
   }

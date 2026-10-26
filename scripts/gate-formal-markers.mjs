@@ -11,21 +11,33 @@ function makeArabicWordRegex(word) {
 const FORMAL_MARKERS = [
   { marker: 'ينبغي', regex: makeArabicWordRegex('ينبغي') },
   { marker: 'يتوجب', regex: makeArabicWordRegex('يتوجب') },
-  { marker: 'يجب أن', regex: /(?:^|[^\p{L}\p{N}])يجب\s+أن(?:[^\p{L}\p{N}]|$)/u },
+  {
+    marker: 'يجب أن',
+    regex: /(?:^|[^\p{L}\p{N}])يجب\s+أن(?:[^\p{L}\p{N}]|$)/u,
+  },
   { marker: 'قم بـ', regex: /(?:^|[^\p{L}\p{N}])قم\s+ب/u },
-  { marker: 'حيث إن', regex: /(?:^|[^\p{L}\p{N}])حيث\s+(إن|ان)(?:[^\p{L}\p{N}]|$)/u },
+  {
+    marker: 'حيث إن',
+    regex: /(?:^|[^\p{L}\p{N}])حيث\s+(إن|ان)(?:[^\p{L}\p{N}]|$)/u,
+  },
   { marker: 'وذلك', regex: makeArabicWordRegex('وذلك') },
   { marker: 'لكي', regex: makeArabicWordRegex('لكي') },
   { marker: 'سوف', regex: makeArabicWordRegex('سوف') },
   { marker: 'بإمكانك', regex: makeArabicWordRegex('ب[إا]مكانك') },
   { marker: 'يمكنك', regex: makeArabicWordRegex('يمكنك') },
   { marker: 'الرجاء', regex: makeArabicWordRegex('الرجاء') },
-  { marker: 'من فضلك', regex: /(?:^|[^\p{L}\p{N}])من\s+فضلك(?:[^\p{L}\p{N}]|$)/u },
+  {
+    marker: 'من فضلك',
+    regex: /(?:^|[^\p{L}\p{N}])من\s+فضلك(?:[^\p{L}\p{N}]|$)/u,
+  },
 ]
 
-
 // Allowlist file
-const allowlistPath = path.join(projectRoot, 'scripts', 'formal-markers-allowlist.json')
+const allowlistPath = path.join(
+  projectRoot,
+  'scripts',
+  'formal-markers-allowlist.json',
+)
 let allowlist = []
 if (fs.existsSync(allowlistPath)) {
   try {
@@ -48,7 +60,7 @@ let totalStringsExamined = 0
 const violations = []
 
 function isAllowed(str, file, marker) {
-  return allowlist.some(item => {
+  return allowlist.some((item) => {
     if (item.marker && item.marker !== marker) return false
     if (item.file && !file.includes(item.file)) return false
     if (item.pattern && str.includes(item.pattern)) return true
@@ -112,7 +124,6 @@ function scanText(code, relPath) {
   }
 }
 
-
 function checkString(str, relPath) {
   for (const { marker, regex } of FORMAL_MARKERS) {
     if (regex.test(str)) {
@@ -120,7 +131,7 @@ function checkString(str, relPath) {
         violations.push({
           file: relPath,
           marker,
-          snippet: str.length > 90 ? str.slice(0, 90) + '...' : str
+          snippet: str.length > 90 ? str.slice(0, 90) + '...' : str,
         })
       }
     }

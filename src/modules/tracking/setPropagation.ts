@@ -63,12 +63,17 @@ export function propagateField(
   // Propagate to later sets j > fromSetIndex
   for (let j = fromSetIndex + 1; j < nextSets.length; j++) {
     const s = nextSets[j]
-    const cell = field === 'weight' ? s.weight : field === 'reps' ? s.reps : s.duration
+    const cell =
+      field === 'weight' ? s.weight : field === 'reps' ? s.reps : s.duration
 
     if (!cell) continue
 
     // Only overwrite empty, suggested, or auto cells
-    if (cell.state === 'empty' || cell.state === 'suggested' || cell.state === 'auto') {
+    if (
+      cell.state === 'empty' ||
+      cell.state === 'suggested' ||
+      cell.state === 'auto'
+    ) {
       cell.value = newValue
       cell.state = 'auto'
       propagatedCount++
@@ -122,7 +127,11 @@ export function computeExerciseSuggestions(
   const maxReps = spec.repsMax ?? spec.reps ?? 12
 
   // Rule 4: If first completed set is below lower bound of the range
-  if (firstCompletedSet && firstCompletedSet.reps > 0 && firstCompletedSet.reps < minReps) {
+  if (
+    firstCompletedSet &&
+    firstCompletedSet.reps > 0 &&
+    firstCompletedSet.reps < minReps
+  ) {
     return {
       hintClaimId: 'sugg.below_range',
     }
@@ -155,7 +164,8 @@ export function computeExerciseSuggestions(
 
     if (lastSessionHitTop && prevSessionHitTop) {
       const avgLastWeight =
-        lastSets.reduce((sum, s) => sum + s.weightKg, 0) / (lastSets.length || 1)
+        lastSets.reduce((sum, s) => sum + s.weightKg, 0) /
+        (lastSets.length || 1)
 
       // 5% increase rounded to nearest 0.5 kg
       const rawProg = avgLastWeight * 1.05

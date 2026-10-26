@@ -32,18 +32,22 @@ export function MacroGuideModal({
   const goalAdjustment = energy?.goalAdjustment?.adjustmentKcal ?? 0
   const adjSign = goalAdjustment >= 0 ? '+' : '−'
   const tdeeVal = energy?.tdee?.value ?? 2000
-  const adjPercent = Math.abs(Math.round((goalAdjustment / (tdeeVal || 1)) * 100)) || 10
+  const adjPercent =
+    Math.abs(Math.round((goalAdjustment / (tdeeVal || 1)) * 100)) || 10
   const goalLabel = energy?.goalAdjustment?.reasonAr || 'بناء العضلات'
 
   const proteinFactor = energy?.proteinBasis?.gPerKg ?? 1.8
-  const proteinG = energy?.targets?.proteinGrams ?? Math.round(weight * proteinFactor)
+  const proteinG =
+    energy?.targets?.proteinGrams ?? Math.round(weight * proteinFactor)
   const proteinKcal = proteinG * 4
 
   const targetKcal = energy?.targets?.targetCalories ?? 2200
   const fatG = energy?.targets?.fatsGrams ?? Math.round((targetKcal * 0.25) / 9)
   const fatPercent = Math.round(((fatG * 9) / (targetKcal || 1)) * 100) || 25
 
-  const carbG = energy?.targets?.carbsGrams ?? Math.max(0, Math.round((targetKcal - proteinKcal - fatG * 9) / 4))
+  const carbG =
+    energy?.targets?.carbsGrams ??
+    Math.max(0, Math.round((targetKcal - proteinKcal - fatG * 9) / 4))
 
   return (
     <Sheet isOpen={true} onClose={onClose} title="دليل حساب السعرات والماكروز">
@@ -59,8 +63,11 @@ export function MacroGuideModal({
       >
         <Callout variant="tip">
           <strong>الأسس المعتمدة لحساب الطاقة والماكروز:</strong>
-          <div style={{ marginTop: '4px', fontSize: '13px', lineHeight: '1.6' }}>
-            تعتمد الحسابات على مراجع التغذية الرياضية المعتمدة لتوزيع الطاقة والمغذيات الكبرى بدقة علمية.
+          <div
+            style={{ marginTop: '4px', fontSize: '13px', lineHeight: '1.6' }}
+          >
+            تعتمد الحسابات على مراجع التغذية الرياضية المعتمدة لتوزيع الطاقة
+            والمغذيات الكبرى بدقة علمية.
           </div>
         </Callout>
 
@@ -84,7 +91,13 @@ export function MacroGuideModal({
               marginBottom: '8px',
             }}
           >
-            <div style={{ fontWeight: 800, fontSize: '15px', color: 'var(--color-text)' }}>
+            <div
+              style={{
+                fontWeight: 800,
+                fontSize: '15px',
+                color: 'var(--color-text)',
+              }}
+            >
               1. الطاقة في الجرام
             </div>
             <div
@@ -118,7 +131,13 @@ export function MacroGuideModal({
             gap: '8px',
           }}
         >
-          <div style={{ fontWeight: 800, fontSize: '15px', color: 'var(--color-text)' }}>
+          <div
+            style={{
+              fontWeight: 800,
+              fontSize: '15px',
+              color: 'var(--color-text)',
+            }}
+          >
             2. معدل الحرق الأساسي والاحتياج اليومي
           </div>
           <Claim id="guide_bmr_formula" showSource={true} />
@@ -168,7 +187,10 @@ export function MacroGuideModal({
                 gap: '8px',
               }}
             >
-              <span className="macro-marker macro-marker--protein" aria-hidden="true" />
+              <span
+                className="macro-marker macro-marker--protein"
+                aria-hidden="true"
+              />
               3. البروتين
             </div>
             <div
@@ -228,7 +250,10 @@ export function MacroGuideModal({
                 gap: '8px',
               }}
             >
-              <span className="macro-marker macro-marker--fats" aria-hidden="true" />
+              <span
+                className="macro-marker macro-marker--fats"
+                aria-hidden="true"
+              />
               4. الدهون
             </div>
             <div
@@ -289,7 +314,10 @@ export function MacroGuideModal({
                 gap: '8px',
               }}
             >
-              <span className="macro-marker macro-marker--carbs" aria-hidden="true" />
+              <span
+                className="macro-marker macro-marker--carbs"
+                aria-hidden="true"
+              />
               5. الكربوهيدرات
             </div>
             <div
@@ -325,8 +353,12 @@ export function MacroGuideModal({
               whiteSpace: 'nowrap',
             }}
           >
-            <bdi dir="ltr" style={{ fontFamily: 'monospace', fontSize: '12.5px' }}>
-              Carbs (g) = (Target Kcal - Protein Kcal - Fat Kcal) / 4 = {carbG} g
+            <bdi
+              dir="ltr"
+              style={{ fontFamily: 'monospace', fontSize: '12.5px' }}
+            >
+              Carbs (g) = (Target Kcal - Protein Kcal - Fat Kcal) / 4 = {carbG}{' '}
+              g
             </bdi>
           </div>
         </div>

@@ -428,7 +428,8 @@ export function ActiveWorkoutSession({
       const targetSet = nextSets[setIndex]
       const numVal = Math.max(0, value)
       targetSet[field] = numVal
-      if (field === 'weightKg') targetSet.weightState = numVal > 0 ? 'user' : 'empty'
+      if (field === 'weightKg')
+        targetSet.weightState = numVal > 0 ? 'user' : 'empty'
       if (field === 'reps') targetSet.repsState = numVal > 0 ? 'user' : 'empty'
 
       let propagatedCount = 0
@@ -467,7 +468,8 @@ export function ActiveWorkoutSession({
       if (propagatedCount > 0) {
         setPropagationUndoSnapshot({ exerciseIndex, sets: snapshot })
         setShowPropagationToast(true)
-        if (propagationTimerRef.current) clearTimeout(propagationTimerRef.current)
+        if (propagationTimerRef.current)
+          clearTimeout(propagationTimerRef.current)
         propagationTimerRef.current = window.setTimeout(() => {
           setShowPropagationToast(false)
         }, 6000)
@@ -863,7 +865,9 @@ export function ActiveWorkoutSession({
             }}
           >
             <IconClock size={18} style={{ color: 'var(--brand)' }} />
-            <span style={{ color: 'var(--color-text, #111)', fontWeight: 700 }}>فترة الراحة</span>
+            <span style={{ color: 'var(--color-text, #111)', fontWeight: 700 }}>
+              فترة الراحة
+            </span>
             <strong
               style={{
                 color: 'var(--brand)',
@@ -1067,7 +1071,10 @@ export function ActiveWorkoutSession({
                 const isTimed = cardMeasureType === 'timed'
 
                 return (
-                  <div className="sets-table-wrapper" style={{ overflowX: 'auto' }}>
+                  <div
+                    className="sets-table-wrapper"
+                    style={{ overflowX: 'auto' }}
+                  >
                     <table className="sets-table" style={{ width: '100%' }}>
                       <thead>
                         <tr>
@@ -1086,7 +1093,8 @@ export function ActiveWorkoutSession({
                       <tbody>
                         {exState.sets.map((set, sIdx) => {
                           const measureType = cardMeasureType
-                          const prevExSets = previousHistoryMap[exState.exerciseId]
+                          const prevExSets =
+                            previousHistoryMap[exState.exerciseId]
                           const prevSet = prevExSets?.[sIdx]
                           const prevText = prevSet
                             ? isBodyweight
@@ -1112,7 +1120,9 @@ export function ActiveWorkoutSession({
                                     type="button"
                                     data-testid={`prev-set-btn-${exIdx}-${sIdx}`}
                                     className="set-prev-badge set-prev-btn"
-                                    onClick={() => handleCopyPrevious(exIdx, sIdx)}
+                                    onClick={() =>
+                                      handleCopyPrevious(exIdx, sIdx)
+                                    }
                                     title={
                                       prevSet
                                         ? 'نسخ قيم الجلسة السابقة'
@@ -1129,7 +1139,9 @@ export function ActiveWorkoutSession({
                                       type="number"
                                       min="0"
                                       step="0.5"
-                                      value={set.weightKg === 0 ? '' : set.weightKg}
+                                      value={
+                                        set.weightKg === 0 ? '' : set.weightKg
+                                      }
                                       placeholder="كجم"
                                       onChange={(e) =>
                                         handleUpdateSetField(
@@ -1147,111 +1159,122 @@ export function ActiveWorkoutSession({
                                             : set.weightState === 'suggested'
                                               ? '1px dashed var(--color-divider)'
                                               : undefined,
-                                        fontWeight: set.weightState === 'auto' ? 700 : undefined,
+                                        fontWeight:
+                                          set.weightState === 'auto'
+                                            ? 700
+                                            : undefined,
                                       }}
                                       aria-label={`وزن المجموعة ${set.setNum}`}
                                     />
                                   </td>
                                 )}
                                 <td className="col-input">
-                              <input
-                                type="number"
-                                min="0"
-                                step="1"
-                                value={set.reps === 0 ? '' : set.reps}
-                                placeholder={
-                                  measureType === 'timed'
-                                    ? 'ثوانٍ'
-                                    : 'تكرار'
-                                }
-                                onChange={(e) =>
-                                  handleUpdateSetField(
-                                    exIdx,
-                                    sIdx,
-                                    'reps',
-                                    parseInt(e.target.value, 10) || 0,
-                                  )
-                                }
-                                className="set-field-input"
-                                style={{
-                                  border:
-                                    set.repsState === 'auto'
-                                      ? '1.5px dashed var(--color-accent, #f95700)'
-                                      : set.repsState === 'suggested'
-                                        ? '1px dashed var(--color-divider)'
-                                        : undefined,
-                                  fontWeight: set.repsState === 'auto' ? 700 : undefined,
-                                }}
-                                aria-label={
-                                  measureType === 'timed'
-                                    ? `ثواني المجموعة ${set.setNum}`
-                                    : `تكرار المجموعة ${set.setNum}`
-                                }
-                              />
-                            </td>
-                            <td className="col-check">
-                              <button
-                                type="button"
-                                className={`set-check-btn ${set.isCompleted ? 'checked' : ''} ${!isReady && !set.isCompleted ? 'disabled' : ''}`}
-                                onClick={() =>
-                                  handleToggleSetCompleted(exIdx, sIdx)
-                                }
-                                aria-pressed={set.isCompleted}
-                                title={
-                                  set.isCompleted
-                                    ? 'إلغاء التحديد'
-                                    : isReady
-                                      ? 'تأكيد إنهاء المجموعة'
-                                      : measureType === 'bodyweight'
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    value={set.reps === 0 ? '' : set.reps}
+                                    placeholder={
+                                      measureType === 'timed'
+                                        ? 'ثوانٍ'
+                                        : 'تكرار'
+                                    }
+                                    onChange={(e) =>
+                                      handleUpdateSetField(
+                                        exIdx,
+                                        sIdx,
+                                        'reps',
+                                        parseInt(e.target.value, 10) || 0,
+                                      )
+                                    }
+                                    className="set-field-input"
+                                    style={{
+                                      border:
+                                        set.repsState === 'auto'
+                                          ? '1.5px dashed var(--color-accent, #f95700)'
+                                          : set.repsState === 'suggested'
+                                            ? '1px dashed var(--color-divider)'
+                                            : undefined,
+                                      fontWeight:
+                                        set.repsState === 'auto'
+                                          ? 700
+                                          : undefined,
+                                    }}
+                                    aria-label={
+                                      measureType === 'timed'
+                                        ? `ثواني المجموعة ${set.setNum}`
+                                        : `تكرار المجموعة ${set.setNum}`
+                                    }
+                                  />
+                                </td>
+                                <td className="col-check">
+                                  <button
+                                    type="button"
+                                    className={`set-check-btn ${set.isCompleted ? 'checked' : ''} ${!isReady && !set.isCompleted ? 'disabled' : ''}`}
+                                    onClick={() =>
+                                      handleToggleSetCompleted(exIdx, sIdx)
+                                    }
+                                    aria-pressed={set.isCompleted}
+                                    title={
+                                      set.isCompleted
+                                        ? 'إلغاء التحديد'
+                                        : isReady
+                                          ? 'تأكيد إنهاء المجموعة'
+                                          : measureType === 'bodyweight'
+                                            ? 'اكتب التكرارات أولًا'
+                                            : measureType === 'timed'
+                                              ? 'اكتب عدد الثواني أولًا'
+                                              : 'اكتب الوزن والتكرارات أولًا'
+                                    }
+                                    aria-label={
+                                      set.isCompleted
+                                        ? 'مكتملة'
+                                        : 'تأكيد إنهاء المجموعة'
+                                    }
+                                  >
+                                    {set.isCompleted ? '✓' : ''}
+                                  </button>
+                                </td>
+                                <td className="col-action">
+                                  {exState.sets.length > 1 && (
+                                    <button
+                                      type="button"
+                                      className="ghost-danger tiny remove-set-btn"
+                                      onClick={() =>
+                                        handleRemoveSet(exIdx, sIdx)
+                                      }
+                                      title="حذف هذه المجموعة"
+                                      aria-label="حذف المجموعة"
+                                    >
+                                      <IconClose size={14} />
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                              {inlineHintSetId === set.id && (
+                                <tr className="set-hint-row">
+                                  <td
+                                    colSpan={isBodyweight || isTimed ? 5 : 6}
+                                    style={{ padding: '0 4px 8px' }}
+                                  >
+                                    <div className="set-row-hint" role="alert">
+                                      {measureType === 'bodyweight'
                                         ? 'اكتب التكرارات أولًا'
                                         : measureType === 'timed'
                                           ? 'اكتب عدد الثواني أولًا'
-                                          : 'اكتب الوزن والتكرارات أولًا'
-                                }
-                                aria-label={
-                                  set.isCompleted
-                                    ? 'مكتملة'
-                                    : 'تأكيد إنهاء المجموعة'
-                                }
-                              >
-                                {set.isCompleted ? '✓' : ''}
-                              </button>
-                            </td>
-                            <td className="col-action">
-                              {exState.sets.length > 1 && (
-                                <button
-                                  type="button"
-                                  className="ghost-danger tiny remove-set-btn"
-                                  onClick={() => handleRemoveSet(exIdx, sIdx)}
-                                  title="حذف هذه المجموعة"
-                                  aria-label="حذف المجموعة"
-                                >
-                                  <IconClose size={14} />
-                                </button>
+                                          : 'اكتب الوزن والتكرارات أولًا'}
+                                    </div>
+                                  </td>
+                                </tr>
                               )}
-                            </td>
-                          </tr>
-                          {inlineHintSetId === set.id && (
-                            <tr className="set-hint-row">
-                              <td colSpan={isBodyweight || isTimed ? 5 : 6} style={{ padding: '0 4px 8px' }}>
-                                <div className="set-row-hint" role="alert">
-                                  {measureType === 'bodyweight'
-                                    ? 'اكتب التكرارات أولًا'
-                                    : measureType === 'timed'
-                                      ? 'اكتب عدد الثواني أولًا'
-                                      : 'اكتب الوزن والتكرارات أولًا'}
-                                </div>
-                              </td>
-                            </tr>
-                          )}
-                        </React.Fragment>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )
-          })()}
+                            </React.Fragment>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )
+              })()}
 
               {/* Add Set Button */}
               <div className="exercise-card-footer">

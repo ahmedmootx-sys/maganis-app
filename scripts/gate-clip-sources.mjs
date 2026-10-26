@@ -42,7 +42,9 @@ function getFiles(dir, exts) {
   return files
 }
 
-const targetFiles = CSS_DIRS.flatMap((d) => getFiles(d, ['.css', '.tsx', '.ts']))
+const targetFiles = CSS_DIRS.flatMap((d) =>
+  getFiles(d, ['.css', '.tsx', '.ts']),
+)
 
 const CLIP_PATTERNS = [
   /overflow\s*:\s*(?:hidden|clip)/i,
@@ -101,7 +103,9 @@ for (const file of targetFiles) {
         lines[i + 1] || '',
       ].join(' ')
 
-      const reasonMatch = context.match(/(?:\/\*|\/\/)\s*clip-ok\s*:\s*([^*/\n]+)/i)
+      const reasonMatch = context.match(
+        /(?:\/\*|\/\/)\s*clip-ok\s*:\s*([^*/\n]+)/i,
+      )
       if (reasonMatch) {
         totalApprovedWithReason++
       } else {
@@ -117,21 +121,31 @@ for (const file of targetFiles) {
 
 console.log('🚀 Running Gate: gate-clip-sources...')
 console.log(`📊 Declarations examined: ${totalExamined}`)
-console.log(`📊 Declarations with explicit clip-ok reason: ${totalApprovedWithReason}`)
-console.log(`📊 Unannotated clipping declarations (violations): ${violations.length}`)
+console.log(
+  `📊 Declarations with explicit clip-ok reason: ${totalApprovedWithReason}`,
+)
+console.log(
+  `📊 Unannotated clipping declarations (violations): ${violations.length}`,
+)
 
 // Gate enforces a minimum examined (at least 20 across codebase)
 if (totalExamined < 20) {
-  console.error(`❌ Vacuous gate error: examined fewer than 20 declarations (${totalExamined})`)
+  console.error(
+    `❌ Vacuous gate error: examined fewer than 20 declarations (${totalExamined})`,
+  )
   process.exit(1)
 }
 
 if (violations.length > 0) {
-  console.error(`❌ Gate FAILED: found ${violations.length} unapproved clipping sources:`)
+  console.error(
+    `❌ Gate FAILED: found ${violations.length} unapproved clipping sources:`,
+  )
   violations.forEach((v, idx) => {
     console.error(`  ${idx + 1}. ${v.file}:${v.line} -> ${v.code}`)
   })
   process.exit(1)
 }
 
-console.log('✅ Gate PASSED: All clipping sources properly documented with clip-ok reason.')
+console.log(
+  '✅ Gate PASSED: All clipping sources properly documented with clip-ok reason.',
+)

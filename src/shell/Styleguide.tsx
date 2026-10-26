@@ -424,10 +424,7 @@ export const Styleguide: React.FC = () => {
                 />
               </Field>
 
-              <Field
-                label="حقل يحتوي على خطأ"
-                error="الوزن لازم يكون رقم موجب"
-              >
+              <Field label="حقل يحتوي على خطأ" error="الوزن لازم يكون رقم موجب">
                 <input
                   type="text"
                   className="field-input field-input--error"

@@ -240,8 +240,6 @@ export function Dashboard({
     )
   }, [recentSessions, weekStartDay])
 
-
-
   return (
     <div className="screen-container home-screen" dir="rtl">
       {/* TopBar with greeting & small mascot avatar */}
@@ -322,7 +320,9 @@ export function Dashboard({
               onViewDay?.(program.days[0])
             }
           }}
-          showToast={onSyncTrainingDays ? () => onSyncTrainingDays() : undefined}
+          showToast={
+            onSyncTrainingDays ? () => onSyncTrainingDays() : undefined
+          }
         />
 
         {/* Card تمرين اليوم أو ابدأ برنامجك عند عدم وجود جدول */}

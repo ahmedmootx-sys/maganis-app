@@ -183,40 +183,102 @@ export function getKindLabel(kind: string | undefined): string {
  * Returns muscle info from muscle-names.json, with safe Egyptian gym fallbacks.
  */
 export function getMuscleInfo(muscleId: string): MuscleLabelInfo {
-  const cleanId = String(muscleId || '').trim().toLowerCase()
+  const cleanId = String(muscleId || '')
+    .trim()
+    .toLowerCase()
   const found = MUSCLE_MAP.get(cleanId)
   if (found) return found
 
   // Derived or approximate head fallbacks without leaking raw snake_case
   if (cleanId.includes('pec')) {
-    return { id: cleanId, gymAr: 'عضلة الصدر', sciEn: 'Pectoralis', shortAr: 'صدر', groupAr: 'صدر' }
+    return {
+      id: cleanId,
+      gymAr: 'عضلة الصدر',
+      sciEn: 'Pectoralis',
+      shortAr: 'صدر',
+      groupAr: 'صدر',
+    }
   }
   if (cleanId.includes('trap')) {
-    return { id: cleanId, gymAr: 'ترابيس', sciEn: 'Trapezius', shortAr: 'ترابيس', groupAr: 'ظهر' }
+    return {
+      id: cleanId,
+      gymAr: 'ترابيس',
+      sciEn: 'Trapezius',
+      shortAr: 'ترابيس',
+      groupAr: 'ظهر',
+    }
   }
   if (cleanId.includes('delt')) {
-    return { id: cleanId, gymAr: 'كتف', sciEn: 'Deltoid', shortAr: 'كتف', groupAr: 'كتف' }
+    return {
+      id: cleanId,
+      gymAr: 'كتف',
+      sciEn: 'Deltoid',
+      shortAr: 'كتف',
+      groupAr: 'كتف',
+    }
   }
   if (cleanId.includes('lat')) {
-    return { id: cleanId, gymAr: 'عضلة الظهر (المجنص)', sciEn: 'Latissimus dorsi', shortAr: 'ظهر', groupAr: 'ظهر' }
+    return {
+      id: cleanId,
+      gymAr: 'عضلة الظهر (المجنص)',
+      sciEn: 'Latissimus dorsi',
+      shortAr: 'ظهر',
+      groupAr: 'ظهر',
+    }
   }
   if (cleanId.includes('bicep')) {
-    return { id: cleanId, gymAr: 'بايسبس', sciEn: 'Biceps', shortAr: 'باي', groupAr: 'ذراعين' }
+    return {
+      id: cleanId,
+      gymAr: 'بايسبس',
+      sciEn: 'Biceps',
+      shortAr: 'باي',
+      groupAr: 'ذراعين',
+    }
   }
   if (cleanId.includes('tricep')) {
-    return { id: cleanId, gymAr: 'ترايسبس', sciEn: 'Triceps', shortAr: 'تراي', groupAr: 'ذراعين' }
+    return {
+      id: cleanId,
+      gymAr: 'ترايسبس',
+      sciEn: 'Triceps',
+      shortAr: 'تراي',
+      groupAr: 'ذراعين',
+    }
   }
   if (cleanId.includes('glute')) {
-    return { id: cleanId, gymAr: 'جلوتس (المؤخرة)', sciEn: 'Gluteal muscles', shortAr: 'جلوتس', groupAr: 'أرجل' }
+    return {
+      id: cleanId,
+      gymAr: 'جلوتس (المؤخرة)',
+      sciEn: 'Gluteal muscles',
+      shortAr: 'جلوتس',
+      groupAr: 'أرجل',
+    }
   }
   if (cleanId.includes('quad') || cleanId.includes('femoris')) {
-    return { id: cleanId, gymAr: 'فخذ أمامي', sciEn: 'Quadriceps', shortAr: 'فخذ أمامي', groupAr: 'أرجل' }
+    return {
+      id: cleanId,
+      gymAr: 'فخذ أمامي',
+      sciEn: 'Quadriceps',
+      shortAr: 'فخذ أمامي',
+      groupAr: 'أرجل',
+    }
   }
   if (cleanId.includes('hamstring')) {
-    return { id: cleanId, gymAr: 'فخذ خلفي (هامسترنج)', sciEn: 'Hamstrings', shortAr: 'فخذ خلفي', groupAr: 'أرجل' }
+    return {
+      id: cleanId,
+      gymAr: 'فخذ خلفي (هامسترنج)',
+      sciEn: 'Hamstrings',
+      shortAr: 'فخذ خلفي',
+      groupAr: 'أرجل',
+    }
   }
   if (cleanId.includes('abdominis') || cleanId.includes('oblique')) {
-    return { id: cleanId, gymAr: 'عضلات البطن والجوانب', sciEn: 'Abdominal muscles', shortAr: 'بطن', groupAr: 'بطن' }
+    return {
+      id: cleanId,
+      gymAr: 'عضلات البطن والجوانب',
+      sciEn: 'Abdominal muscles',
+      shortAr: 'بطن',
+      groupAr: 'بطن',
+    }
   }
 
   return {

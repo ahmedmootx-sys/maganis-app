@@ -83,7 +83,14 @@ function makeProgram(resistanceCount, hasCardio) {
     'ظهر وصدر علوي',
     'سواعد وبطن',
   ]
-  const weekdayNames = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس']
+  const weekdayNames = [
+    'السبت',
+    'الأحد',
+    'الإثنين',
+    'الثلاثاء',
+    'الأربعاء',
+    'الخميس',
+  ]
 
   for (let i = 0; i < resistanceCount; i++) {
     days.push(
@@ -184,14 +191,20 @@ async function run() {
       // Home Screen
       await page.goto(`${baseUrl}#/home`, { waitUntil: 'networkidle' })
       await page.waitForTimeout(600)
-      const homeShot = path.join(evidenceDir, `a1_${cfg.name}_home_${theme}_360x720.png`)
+      const homeShot = path.join(
+        evidenceDir,
+        `a1_${cfg.name}_home_${theme}_360x720.png`,
+      )
       await page.screenshot({ path: homeShot, fullPage: false })
       console.log(`Saved: ${homeShot}`)
 
       // Training Screen
       await page.goto(`${baseUrl}#/training`, { waitUntil: 'networkidle' })
       await page.waitForTimeout(600)
-      const trainShot = path.join(evidenceDir, `a1_${cfg.name}_training_${theme}_360x720.png`)
+      const trainShot = path.join(
+        evidenceDir,
+        `a1_${cfg.name}_training_${theme}_360x720.png`,
+      )
       await page.screenshot({ path: trainShot, fullPage: false })
       console.log(`Saved: ${trainShot}`)
 
@@ -215,7 +228,10 @@ async function run() {
     { route: '#/training?empty=true', name: 'training_empty' },
     { route: '#/library', name: 'library' },
     { route: '#/library?category=chest', name: 'library_muscle_selected' },
-    { route: '#/library?category=chest&sheet=filter', name: 'library_filter_open' },
+    {
+      route: '#/library?category=chest&sheet=filter',
+      name: 'library_filter_open',
+    },
     { route: '#/exercise/bench', name: 'exercise_detail' },
     { route: '#/exercise/bench?tab=history', name: 'exercise_history_tab' },
     { route: '#/training/day/0', name: 'session_logger' },
@@ -291,7 +307,10 @@ async function run() {
     ]) {
       await page.goto(`${baseUrl}${item.route}`, { waitUntil: 'networkidle' })
       await page.waitForTimeout(400)
-      const shotPath = path.join(evidenceDir, `${item.name}_${theme}_360x720.png`)
+      const shotPath = path.join(
+        evidenceDir,
+        `${item.name}_${theme}_360x720.png`,
+      )
       await page.screenshot({ path: shotPath, fullPage: false })
       console.log(`Saved: ${shotPath}`)
     }
@@ -304,7 +323,9 @@ async function run() {
     await server.close()
   }
 
-  console.log(`\n✅ Screenshot capture complete! All screenshots stored under ${evidenceDir}`)
+  console.log(
+    `\n✅ Screenshot capture complete! All screenshots stored under ${evidenceDir}`,
+  )
 }
 
 run().catch((err) => {

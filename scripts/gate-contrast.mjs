@@ -106,8 +106,8 @@ async function run() {
             // Find text elements
             const candidates = Array.from(
               document.querySelectorAll(
-                'button, span, p, label, h1, h2, h3, h4, input, textarea, .badge, .chip-btn, .set-field-input'
-              )
+                'button, span, p, label, h1, h2, h3, h4, input, textarea, .badge, .chip-btn, .set-field-input',
+              ),
             )
 
             function getEffectiveBg(el) {
@@ -116,21 +116,34 @@ async function run() {
                 const s = window.getComputedStyle(cur)
                 const bg = s.backgroundColor
                 if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-                  const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
-                  if (match && (match[4] === undefined || parseFloat(match[4]) > 0.5)) {
-                    return { r: Number(match[1]), g: Number(match[2]), b: Number(match[3]) }
+                  const match = bg.match(
+                    /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/,
+                  )
+                  if (
+                    match &&
+                    (match[4] === undefined || parseFloat(match[4]) > 0.5)
+                  ) {
+                    return {
+                      r: Number(match[1]),
+                      g: Number(match[2]),
+                      b: Number(match[3]),
+                    }
                   }
                 }
                 cur = cur.parentElement
               }
-              return theme === 'dark' ? { r: 18, g: 19, b: 23 } : { r: 255, g: 255, b: 255 }
+              return theme === 'dark'
+                ? { r: 18, g: 19, b: 23 }
+                : { r: 255, g: 255, b: 255 }
             }
 
             const items = []
             for (const el of candidates) {
-              const text = (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea')
-                ? (el.placeholder || el.value || '')
-                : (el.textContent || '').trim()
+              const text =
+                el.tagName.toLowerCase() === 'input' ||
+                el.tagName.toLowerCase() === 'textarea'
+                  ? el.placeholder || el.value || ''
+                  : (el.textContent || '').trim()
 
               if (!text || text.length > 50) continue
 
@@ -139,18 +152,28 @@ async function run() {
               if (rect.bottom < 0 || rect.top > window.innerHeight) continue
 
               const style = window.getComputedStyle(el)
-              if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) {
+              if (
+                style.display === 'none' ||
+                style.visibility === 'hidden' ||
+                parseFloat(style.opacity) === 0
+              ) {
                 continue
               }
 
               const fontSize = parseFloat(style.fontSize)
-              const fontWeight = style.fontWeight === 'bold' || parseInt(style.fontWeight, 10) >= 700
+              const fontWeight =
+                style.fontWeight === 'bold' ||
+                parseInt(style.fontWeight, 10) >= 700
               const isLarge = fontSize >= 18.5 || (fontSize >= 14 && fontWeight)
               const threshold = isLarge ? 3.0 : 4.5
 
               // Sample rendered color
               let color = style.color
-              if ((el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') && !el.value) {
+              if (
+                (el.tagName.toLowerCase() === 'input' ||
+                  el.tagName.toLowerCase() === 'textarea') &&
+                !el.value
+              ) {
                 color = style.color
               }
 
@@ -253,7 +276,9 @@ async function run() {
   if (failures.length > 0) {
     console.error('❌ GATE FAILED: Contrast violations found:')
     for (const f of failures.slice(0, 15)) {
-      console.error(`  [${f.theme || ''} ${f.state}] ${f.element}: ${f.ratio}:1 (threshold ${f.threshold}:1) -> ${f.verdict}`)
+      console.error(
+        `  [${f.theme || ''} ${f.state}] ${f.element}: ${f.ratio}:1 (threshold ${f.threshold}:1) -> ${f.verdict}`,
+      )
     }
     if (failures.length > 15) {
       console.error(`  ... and ${failures.length - 15} more failures.`)
@@ -261,7 +286,9 @@ async function run() {
     process.exit(1)
   }
 
-  console.log('✅ GATE PASSED: All text nodes pass WCAG AA contrast thresholds.')
+  console.log(
+    '✅ GATE PASSED: All text nodes pass WCAG AA contrast thresholds.',
+  )
 }
 
 run().catch((err) => {

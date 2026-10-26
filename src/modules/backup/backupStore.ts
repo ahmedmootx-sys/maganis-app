@@ -198,7 +198,10 @@ export function createBackupStore(): BackupStore {
       }
 
       // Task G5-B4: Validate exerciseOverrides on import
-      if (raw.exerciseOverrides !== undefined && raw.exerciseOverrides !== null) {
+      if (
+        raw.exerciseOverrides !== undefined &&
+        raw.exerciseOverrides !== null
+      ) {
         if (
           typeof raw.exerciseOverrides !== 'object' ||
           Array.isArray(raw.exerciseOverrides)

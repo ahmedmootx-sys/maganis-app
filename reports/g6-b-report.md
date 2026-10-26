@@ -7,15 +7,15 @@
 
 ## 1. Executive Summary & Deliverables Table
 
-| Feature ID | Description | Evidence Screenshot | Gate / Verification Test | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **B1.1** | Profile Effects Audit (29 onboarding & profile fields documented, consumer matrix) | [PROFILE-EFFECTS.md](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/PROFILE-EFFECTS.md) | `scripts/gate-profile-effects.mjs` | **COMPLETE** |
-| **B1.2** | Pure Constraints Module (`deriveConstraints(profile)`, equipment, level ceiling, defaults) | [constraints.ts](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/constraints.ts) | `profileConstraints.test.ts` (4/4 passed) | **COMPLETE** |
-| **B1.3** | Constraints Consumers (Generator fallback notice, Library modal toggle, Active session, AI prompt, Mismatch callout) | [b1-calisthenics-library.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b1-calisthenics-library.png), [b1-disallowed-callout.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b1-disallowed-callout.png) | `libraryFilter.test.ts`, `ActiveWorkoutSession.test.tsx` | **COMPLETE** |
-| **B1.4** | Constraints Gates & Property Matrix Tests (Red/green audit gate, 227 generator combinations) | [generatorMatrix.test.ts](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/generatorMatrix.test.ts) | `gate-profile-effects.mjs` (29 fields), `generatorMatrix.test.ts` (227 passed) | **COMPLETE** |
-| **B2** | Repeat Existing Day in Add-Day Sheet (3rd option, 3-dot menu, deep copy, 7-day limit) | [b2-add-day-sheet.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b2-add-day-sheet.png), [b2-duplicate-picker.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b2-duplicate-picker.png) | `dayOperationsInvariants.test.ts` (350 random operations passed) | **COMPLETE** |
-| **B3.1** | Cardio Leave Interception & Persistent Mini Bar (Back arrow / popstate, 3-choice sheet, mini bar above nav) | [b3-cardio-leave-sheet.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b3-cardio-leave-sheet.png), [b3-cardio-mini-bar.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b3-cardio-mini-bar.png) | `cardioRunner.test.ts` (6/6 passed), Playwright runner | **COMPLETE** |
-| **B3.2** | Cardio Finisher on Resistance Days (`day.finisher`, card under exercise list, per-day menu, bulk switch) | [b3-cardio-finisher-card.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b3-cardio-finisher-card.png), [b3-cardio-finisher-modal.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b3-cardio-finisher-modal.png) | `weekLoadSelector.ts`, `dayOperationsInvariants.test.ts` | **COMPLETE** |
+| Feature ID | Description                                                                                                          | Evidence Screenshot                                                                                                                                                                                                                                                              | Gate / Verification Test                                                       | Status       |
+| :--------- | :------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------- | :----------- |
+| **B1.1**   | Profile Effects Audit (29 onboarding & profile fields documented, consumer matrix)                                   | [PROFILE-EFFECTS.md](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/PROFILE-EFFECTS.md)                                                                                                                                                                            | `scripts/gate-profile-effects.mjs`                                             | **COMPLETE** |
+| **B1.2**   | Pure Constraints Module (`deriveConstraints(profile)`, equipment, level ceiling, defaults)                           | [constraints.ts](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/constraints.ts)                                                                                                                                                                     | `profileConstraints.test.ts` (4/4 passed)                                      | **COMPLETE** |
+| **B1.3**   | Constraints Consumers (Generator fallback notice, Library modal toggle, Active session, AI prompt, Mismatch callout) | [b1-calisthenics-library.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b1-calisthenics-library.png), [b1-disallowed-callout.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b1-disallowed-callout.png)       | `libraryFilter.test.ts`, `ActiveWorkoutSession.test.tsx`                       | **COMPLETE** |
+| **B1.4**   | Constraints Gates & Property Matrix Tests (Red/green audit gate, 227 generator combinations)                         | [generatorMatrix.test.ts](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/generatorMatrix.test.ts)                                                                                                                                                   | `gate-profile-effects.mjs` (29 fields), `generatorMatrix.test.ts` (227 passed) | **COMPLETE** |
+| **B2**     | Repeat Existing Day in Add-Day Sheet (3rd option, 3-dot menu, deep copy, 7-day limit)                                | [b2-add-day-sheet.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b2-add-day-sheet.png), [b2-duplicate-picker.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b2-duplicate-picker.png)                         | `dayOperationsInvariants.test.ts` (350 random operations passed)               | **COMPLETE** |
+| **B3.1**   | Cardio Leave Interception & Persistent Mini Bar (Back arrow / popstate, 3-choice sheet, mini bar above nav)          | [b3-cardio-leave-sheet.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b3-cardio-leave-sheet.png), [b3-cardio-mini-bar.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b3-cardio-mini-bar.png)                 | `cardioRunner.test.ts` (6/6 passed), Playwright runner                         | **COMPLETE** |
+| **B3.2**   | Cardio Finisher on Resistance Days (`day.finisher`, card under exercise list, per-day menu, bulk switch)             | [b3-cardio-finisher-card.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b3-cardio-finisher-card.png), [b3-cardio-finisher-modal.png](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g6-b/green/b3-cardio-finisher-modal.png) | `weekLoadSelector.ts`, `dayOperationsInvariants.test.ts`                       | **COMPLETE** |
 
 ---
 
@@ -24,22 +24,28 @@
 All automated gates and test suites were executed against the production build served via Vite preview (`http://localhost:5200+`):
 
 ### 1. `gate-profile-effects.mjs` (B1.4 Profile Effects Gate)
+
 - **Pre-Fix (Red)**: FAILED with 18 errors across undocumented fields and missing test references.
 - **Post-Fix (Green)**: **PASSED (0 errors)**. All 29 onboarding and profile fields verified (27 functional fields with designated consumers and tests, 2 display-only fields: `name` and `avatarUrl`).
 
 ### 2. `gate-overlap.mjs` (P6 Generic Layout Overlap Gate)
+
 - **Post-Fix**: **PASSED (0 violations)** across 3,755 elements examined and 33,281 element pairs evaluated across 96 device, theme, and font-scale permutations.
 
 ### 3. `gate-clipping.mjs` (P6 Generic Clipping & Occlusion Gate)
+
 - **Post-Fix**: **PASSED (0 violations)** across 132 registered states and 4,782 elements examined.
 
 ### 4. `gate-contrast.mjs` (P8 Pixel-Sampled WCAG AA Gate)
+
 - **Post-Fix**: **PASSED (0 violations)** across 290 pixel-sampled text nodes. Every node meets or exceeds WCAG AA (>= 4.5:1 for normal text, >= 3:1 for large text and interactive icons).
 
 ### 5. `gate-raw-tokens.mjs` (P7 Egyptian Terminology Gate)
+
 - **Post-Fix**: **PASSED (0 violations)** across 785 visible text nodes examined. Zero unescaped English keys or raw snake_case tokens.
 
 ### 6. Test Suites (`npm test` via Vitest)
+
 - **Results**: **46 test files passed (46/46), 521 tests passed (521/521), 0 failures**.
 - Key newly implemented property & invariant suites:
   - `generatorMatrix.test.ts`: 227 combinations (styles $\times$ splits $\times$ days $\times$ levels) verified for day-count and equipment compliance.
@@ -55,11 +61,13 @@ All automated gates and test suites were executed against the production build s
 ### B1. Profile Constraints & Effects Engine
 
 #### B1.1: Complete Profile Effects Audit (`docs/PROFILE-EFFECTS.md`)
+
 - Documented all 29 fields present in the onboarding schema and profile store.
 - Classified 27 fields as `functional` and 2 as `display_only` (`name`, `avatarUrl`).
 - Mapped every functional field to its consumer in code, its exact behavioral effect, and its corresponding test.
 
 #### B1.2: Pure Constraints Module (`src/modules/workout/constraints.ts`)
+
 - Pure function `deriveConstraints(profile)` extracts:
   - `allowedEquipment`: Calisthenics (`bodyweight`, `none`, `other`), Home Dumbbells (`dumbbell`, `bodyweight`, `none`, `other`), Full Gym (all catalog equipment).
   - `allowsLoadedExercises`: `false` for calisthenics, `true` for dumbbells and full gym.
@@ -70,6 +78,7 @@ All automated gates and test suites were executed against the production build s
 - Unanswered or missing fields impose no restrictions.
 
 #### B1.3: Consumers Integration
+
 - **Program Generator (`programGenerator.ts`)**:
   - Filters exercise pool by `isExerciseAllowed`.
   - When no suitable exercise exists for an intended muscle group, inserts a placeholder with clear Egyptian Arabic notice: `"مفيش تمرين مناسب لـ <عضلة> بالمعدات اللي اخترتها"`.
@@ -94,6 +103,7 @@ All automated gates and test suites were executed against the production build s
 ### B2. Repeat Existing Day in Add-Day Sheet
 
 #### Implementation:
+
 - **Add Day Sheet (`AddDaySheet`)**:
   - Added 3rd option «تكرار يوم موجود» alongside «يوم تمارين مقاومة» and «يوم كارديو ولياقة».
   - Opens `DuplicatePickerSheet` listing all current program days with their exercise count and focus.
@@ -116,6 +126,7 @@ All automated gates and test suites were executed against the production build s
 ### B3. Cardio Improvements
 
 #### B3.1: Leaving Running Session & Persistent Mini Bar
+
 - **Leave Interception (`CardioRunner.tsx`)**:
   - Intercepts navigation attempts (back arrow, browser `popstate`, bottom "إنهاء الجلسة" button).
   - Presents bottom sheet with 3 unambiguous options:
@@ -132,6 +143,7 @@ All automated gates and test suites were executed against the production build s
   - Restores elapsed time using timestamp deltas (`Date.now() - startedAt - pausedMs`), surviving complete page reload or app restart.
 
 #### B3.2: Cardio Finisher on Resistance Days
+
 - **Data Model**:
   - Added optional `finisher?: { activity: CardioActivityKey; minutes: number; level: CardioEffortLevel } | null` to resistance days.
 - **UI Surfaces**:
@@ -159,29 +171,29 @@ All automated gates and test suites were executed against the production build s
 
 ## 5. Changed Files Table
 
-| File | Changes Made |
-| :--- | :--- |
-| `docs/PROFILE-EFFECTS.md` | **NEW**: Complete audit table for all 29 profile/onboarding fields, consumers, and tests. |
-| `scripts/gate-profile-effects.mjs` | **NEW**: Automated audit gate validating profile field coverage and testing contracts. |
-| `src/modules/workout/constraints.ts` | **NEW**: Pure constraint derivation (`deriveConstraints`), equipment mapping, and exercise filter. |
-| `src/modules/workout/CardioMiniBar.tsx` | **NEW**: Sticky mini bar docked above bottom nav with activity icon, timer, calories, pause/resume. |
-| `src/modules/workout/profileConstraints.test.ts` | **NEW**: Unit test suite for `deriveConstraints` and equipment rules. |
-| `src/modules/workout/generatorMatrix.test.ts` | **NEW**: Comprehensive 227-combination property matrix test for program generator. |
-| `src/modules/workout/libraryFilter.test.ts` | **NEW**: Verification tests for library constraint toggle and suitability filtering. |
-| `src/modules/workout/dayOperationsInvariants.test.ts` | **NEW**: 350 randomized property tests for day operations (add, duplicate, delete, finisher). |
-| `scripts/capture-g6b-evidence.mjs` | **NEW**: Playwright capture script generating all 8 B1-B3 acceptance screenshots. |
-| `src/modules/workout/programGenerator.ts` | Added constraint filtering, Arabic fallback notice, strict day-count enforcement, bodyweight targets. |
-| `src/modules/workout/ExerciseLibraryModal.tsx` | Added constraint derivation, "مناسب لمعداتي" toggle chip, dynamic result count indicator. |
-| `src/modules/workout/ActiveWorkoutSession.tsx` | Dynamic column hiding (hides weight column for bodyweight and timed exercises). |
-| `src/modules/workout/aiPromptBuilder.ts` | Filters `{{CATALOG}}` entries by user constraints in prompt builder. |
-| `src/modules/workout/CardioRunner.tsx` | Intercepted back arrow/popstate/end button, added 3-option leave sheet and save confirmation. |
-| `src/modules/workout/WeeklyPlanView.tsx` | Duplicate day flow, 7-day limit guard, constraint mismatch callout & replacement sheet, finisher card & modal. |
-| `src/modules/workout/weekLoadSelector.ts` | Sums `day.finisher` minutes into `plannedCardioMinutes` without altering session counts. |
-| `src/modules/dashboard/Dashboard.tsx` | Displays planned cardio minutes including finishers. |
-| `src/components/Toast.tsx` | Added `data-overlay="true"` and `.toast` class to prevent overlap gate false positives. |
-| `src/App.tsx` | Mounted `CardioMiniBar`, synced background cardio state, toggled `body.with-cardio-mini-bar`. |
-| `src/styles/app.css` | Added bottom padding rule for `body.with-cardio-mini-bar`. |
-| `docs/STATE.md` | Updated feature state registry with Task G6-B completion entries. |
+| File                                                  | Changes Made                                                                                                   |
+| :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------- |
+| `docs/PROFILE-EFFECTS.md`                             | **NEW**: Complete audit table for all 29 profile/onboarding fields, consumers, and tests.                      |
+| `scripts/gate-profile-effects.mjs`                    | **NEW**: Automated audit gate validating profile field coverage and testing contracts.                         |
+| `src/modules/workout/constraints.ts`                  | **NEW**: Pure constraint derivation (`deriveConstraints`), equipment mapping, and exercise filter.             |
+| `src/modules/workout/CardioMiniBar.tsx`               | **NEW**: Sticky mini bar docked above bottom nav with activity icon, timer, calories, pause/resume.            |
+| `src/modules/workout/profileConstraints.test.ts`      | **NEW**: Unit test suite for `deriveConstraints` and equipment rules.                                          |
+| `src/modules/workout/generatorMatrix.test.ts`         | **NEW**: Comprehensive 227-combination property matrix test for program generator.                             |
+| `src/modules/workout/libraryFilter.test.ts`           | **NEW**: Verification tests for library constraint toggle and suitability filtering.                           |
+| `src/modules/workout/dayOperationsInvariants.test.ts` | **NEW**: 350 randomized property tests for day operations (add, duplicate, delete, finisher).                  |
+| `scripts/capture-g6b-evidence.mjs`                    | **NEW**: Playwright capture script generating all 8 B1-B3 acceptance screenshots.                              |
+| `src/modules/workout/programGenerator.ts`             | Added constraint filtering, Arabic fallback notice, strict day-count enforcement, bodyweight targets.          |
+| `src/modules/workout/ExerciseLibraryModal.tsx`        | Added constraint derivation, "مناسب لمعداتي" toggle chip, dynamic result count indicator.                      |
+| `src/modules/workout/ActiveWorkoutSession.tsx`        | Dynamic column hiding (hides weight column for bodyweight and timed exercises).                                |
+| `src/modules/workout/aiPromptBuilder.ts`              | Filters `{{CATALOG}}` entries by user constraints in prompt builder.                                           |
+| `src/modules/workout/CardioRunner.tsx`                | Intercepted back arrow/popstate/end button, added 3-option leave sheet and save confirmation.                  |
+| `src/modules/workout/WeeklyPlanView.tsx`              | Duplicate day flow, 7-day limit guard, constraint mismatch callout & replacement sheet, finisher card & modal. |
+| `src/modules/workout/weekLoadSelector.ts`             | Sums `day.finisher` minutes into `plannedCardioMinutes` without altering session counts.                       |
+| `src/modules/dashboard/Dashboard.tsx`                 | Displays planned cardio minutes including finishers.                                                           |
+| `src/components/Toast.tsx`                            | Added `data-overlay="true"` and `.toast` class to prevent overlap gate false positives.                        |
+| `src/App.tsx`                                         | Mounted `CardioMiniBar`, synced background cardio state, toggled `body.with-cardio-mini-bar`.                  |
+| `src/styles/app.css`                                  | Added bottom padding rule for `body.with-cardio-mini-bar`.                                                     |
+| `docs/STATE.md`                                       | Updated feature state registry with Task G6-B completion entries.                                              |
 
 ---
 

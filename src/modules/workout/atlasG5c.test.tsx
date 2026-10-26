@@ -9,7 +9,6 @@ describe('G5-C Atlas Redesign & Interaction Verification', () => {
   })
 
   const sampleExercise = {
-
     id: 'bench_press',
     key: 'bench',
     name: 'Barbell Bench Press',
@@ -49,7 +48,11 @@ describe('G5-C Atlas Redesign & Interaction Verification', () => {
     fireEvent.click(pecChip)
 
     // Container gets selection class
-    expect(container.querySelector('.atlas-wrapper')?.classList.contains('atlas-has-selection')).toBe(true)
+    expect(
+      container
+        .querySelector('.atlas-wrapper')
+        ?.classList.contains('atlas-has-selection'),
+    ).toBe(true)
 
     // Detail sheet opens with gym name, scientific name in <bdi dir="ltr">, and does_ar via <Claim>
     expect(screen.getAllByText(/صدر أوسط/).length).toBeGreaterThan(0)
@@ -60,7 +63,9 @@ describe('G5-C Atlas Redesign & Interaction Verification', () => {
   it('C1.3: deep-mode toggle activates transparent deep layer and adjusts muscle opacities', () => {
     const { container } = render(<AnatomyMuscleMap exercise={sampleExercise} />)
 
-    const deepToggle = screen.getByRole('checkbox', { name: /إظهار العضلات العميقة/ })
+    const deepToggle = screen.getByRole('checkbox', {
+      name: /إظهار العضلات العميقة/,
+    })
     expect(deepToggle).toBeDefined()
 
     // Toggle deep mode ON

@@ -7,14 +7,26 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const rootDir = path.resolve(__dirname, '..')
 
-const atlasMusclesData = JSON.parse(fs.readFileSync(path.join(rootDir, 'data/atlas_muscles.json'), 'utf8'))
-const muscleNamesData = JSON.parse(fs.readFileSync(path.join(rootDir, 'src/data/muscle-names.json'), 'utf8'))
-const anteriorSvgRaw = fs.readFileSync(path.join(rootDir, 'public/atlas/anterior.svg'), 'utf8')
-const posteriorSvgRaw = fs.readFileSync(path.join(rootDir, 'public/atlas/posterior.svg'), 'utf8')
+const atlasMusclesData = JSON.parse(
+  fs.readFileSync(path.join(rootDir, 'data/atlas_muscles.json'), 'utf8'),
+)
+const muscleNamesData = JSON.parse(
+  fs.readFileSync(path.join(rootDir, 'src/data/muscle-names.json'), 'utf8'),
+)
+const anteriorSvgRaw = fs.readFileSync(
+  path.join(rootDir, 'public/atlas/anterior.svg'),
+  'utf8',
+)
+const posteriorSvgRaw = fs.readFileSync(
+  path.join(rootDir, 'public/atlas/posterior.svg'),
+  'utf8',
+)
 
 // Parse silhouette and paths from SVG
 function extractSvgParts(svgStr) {
-  const silMatch = svgStr.match(/<path[^>]+id="body-silhouette"[^>]*\/>/i) || svgStr.match(/<path[^>]+class="[^"]*body-silhouette[^"]*"[^>]*\/>/i)
+  const silMatch =
+    svgStr.match(/<path[^>]+id="body-silhouette"[^>]*\/>/i) ||
+    svgStr.match(/<path[^>]+class="[^"]*body-silhouette[^"]*"[^>]*\/>/i)
   const silhouette = silMatch ? silMatch[0] : ''
 
   const paths = new Map()
@@ -25,8 +37,12 @@ function extractSvgParts(svgStr) {
     const muscleMatch = full.match(/data-muscle="([^"]+)"/)
     if (muscleMatch) {
       const id = muscleMatch[1]
-      const isFull = full.includes('class="muscle-full"') || full.includes('id="m-' + id + '-full"')
-      const isVis = full.includes('class="muscle-vis"') || full.includes('id="m-' + id + '-vis"')
+      const isFull =
+        full.includes('class="muscle-full"') ||
+        full.includes('id="m-' + id + '-full"')
+      const isVis =
+        full.includes('class="muscle-vis"') ||
+        full.includes('id="m-' + id + '-vis"')
       if (!paths.has(id)) paths.set(id, { full: [], vis: [] })
       if (isFull) paths.get(id).full.push(full)
       else if (isVis) paths.get(id).vis.push(full)
@@ -39,7 +55,7 @@ function extractSvgParts(svgStr) {
 const antParts = extractSvgParts(anteriorSvgRaw)
 const postParts = extractSvgParts(posteriorSvgRaw)
 
-const namesMap = new Map(muscleNamesData.muscles.map(m => [m.id, m]))
+const namesMap = new Map(muscleNamesData.muscles.map((m) => [m.id, m]))
 
 const outDir = path.join(rootDir, 'evidence/g6-c/contact-sheet')
 if (!fs.existsSync(outDir)) {
@@ -84,7 +100,9 @@ let html = `<!DOCTYPE html>
           .muscle-vis, .muscle-full { fill: #e53935; stroke: #b71c1c; stroke-width: 1.5px; opacity: 0.85; }
         </style>
         ${antParts.silhouette}
-        ${Array.from(antParts.paths.values()).flatMap(v => v.vis).join('\n')}
+        ${Array.from(antParts.paths.values())
+          .flatMap((v) => v.vis)
+          .join('\n')}
       </svg>
     </div>
   </div>
@@ -97,7 +115,9 @@ let html = `<!DOCTYPE html>
           .muscle-vis, .muscle-full { fill: #e53935; stroke: #b71c1c; stroke-width: 1.5px; opacity: 0.85; }
         </style>
         ${postParts.silhouette}
-        ${Array.from(postParts.paths.values()).flatMap(v => v.vis).join('\n')}
+        ${Array.from(postParts.paths.values())
+          .flatMap((v) => v.vis)
+          .join('\n')}
       </svg>
     </div>
   </div>
@@ -125,11 +145,22 @@ for (const m of atlasMusclesData.muscles) {
     if (mPaths && (mPaths.vis.length > 0 || mPaths.full.length > 0)) {
       hasGeometry = true
       // Render visible path in accent, full in semi-trans
-      pathContent = (mPaths.full.length > 0 ? mPaths.full.join('\n') : mPaths.vis.join('\n'))
+      pathContent =
+        mPaths.full.length > 0 ? mPaths.full.join('\n') : mPaths.vis.join('\n')
     }
 
-    const badgeClass = atlasVal === 'mesh' ? 'badge-mesh' : atlasVal === 'derived_approx' ? 'badge-derived' : 'badge-nomesh'
-    const badgeLabel = atlasVal === 'mesh' ? 'mesh (BP3D)' : atlasVal === 'derived_approx' ? 'derived_approx' : 'no_mesh (locator)'
+    const badgeClass =
+      atlasVal === 'mesh'
+        ? 'badge-mesh'
+        : atlasVal === 'derived_approx'
+          ? 'badge-derived'
+          : 'badge-nomesh'
+    const badgeLabel =
+      atlasVal === 'mesh'
+        ? 'mesh (BP3D)'
+        : atlasVal === 'derived_approx'
+          ? 'derived_approx'
+          : 'no_mesh (locator)'
 
     const tileId = `tile-${m.id}-${v}`
     tileRecords.push({
@@ -151,12 +182,16 @@ for (const m of atlasMusclesData.muscles) {
           .target-muscle { fill: #f95700; stroke: #ff8a50; stroke-width: 2.5px; opacity: 0.95; }
         </style>
         ${parts.silhouette}
-        ${hasGeometry ? `<g class="target-muscle">${pathContent.replace(/class="[^"]*"/g, 'class="target-muscle"')}</g>` : `
+        ${
+          hasGeometry
+            ? `<g class="target-muscle">${pathContent.replace(/class="[^"]*"/g, 'class="target-muscle"')}</g>`
+            : `
           <g>
             <circle cx="512" cy="700" r="16" fill="#ef4444" />
             <text x="512" y="740" text-anchor="middle" fill="#ef4444" font-size="28" font-family="sans-serif">No Mesh</text>
           </g>
-        `}
+        `
+        }
       </svg>
     </div>
     <div class="tile-title">${m.id} (${v === 'A' ? 'أمامي' : 'خلفي'})</div>
@@ -196,14 +231,17 @@ async function captureImages() {
   // 3. Capture individual tiles for key muscles and sample
   for (const r of tileRecords) {
     const tileLoc = page.locator(`#${r.tileId} .svg-wrap`)
-    if (await tileLoc.count() > 0) {
+    if ((await tileLoc.count()) > 0) {
       await tileLoc.screenshot({ path: path.join(outDir, `${r.tileId}.png`) })
     }
   }
 
   // 4. Capture full contact sheet view
   console.log('Capturing full contact_sheet.png...')
-  await page.screenshot({ path: path.join(outDir, 'contact_sheet.png'), fullPage: true })
+  await page.screenshot({
+    path: path.join(outDir, 'contact_sheet.png'),
+    fullPage: true,
+  })
 
   await browser.close()
   console.log('Contact sheet images captured successfully!')

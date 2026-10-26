@@ -280,7 +280,11 @@ export function App({ config }: AppProps) {
   }, [])
 
   useEffect(() => {
-    if (activeCardioSession && activeCardioSession.minimized && !isCardioRunnerOpen) {
+    if (
+      activeCardioSession &&
+      activeCardioSession.minimized &&
+      !isCardioRunnerOpen
+    ) {
       document.body.classList.add('with-cardio-mini-bar')
     } else {
       document.body.classList.remove('with-cardio-mini-bar')
@@ -697,7 +701,10 @@ export function App({ config }: AppProps) {
       if (Array.isArray(data.dayNotes)) {
         storage.set('tracking.notes', data.dayNotes)
       }
-      if (data.exerciseOverrides && typeof data.exerciseOverrides === 'object') {
+      if (
+        data.exerciseOverrides &&
+        typeof data.exerciseOverrides === 'object'
+      ) {
         for (const ov of Object.values(data.exerciseOverrides)) {
           if (ov && typeof ov === 'object') {
             saveExerciseOverride(ov as ExerciseOverride).catch(() => {})
@@ -960,8 +967,6 @@ export function App({ config }: AppProps) {
               />
             )}
 
-
-
             {showLogger && (
               <SessionLogger
                 programDay={todayProgramDay}
@@ -1202,43 +1207,49 @@ export function App({ config }: AppProps) {
 
         <main className="app-main">{renderContent()}</main>
 
-        {activeCardioSession && activeCardioSession.minimized && !isCardioRunnerOpen && (
-          <CardioMiniBar
-            activityId={activeCardioSession.activityId}
-            level={activeCardioSession.level}
-            startTime={activeCardioSession.startTime}
-            durationMinutes={activeCardioSession.durationMinutes}
-            weightKg={activeCardioSession.weightKg}
-            pausedTotalMs={activeCardioSession.pausedTotalMs || 0}
-            isPaused={Boolean(activeCardioSession.isPaused)}
-            pausedAt={activeCardioSession.pausedAt || null}
-            onOpenRunner={() => setIsCardioRunnerOpen(true)}
-            onTogglePause={() => {
-              const now = Date.now()
-              const wasPaused = Boolean(activeCardioSession.isPaused)
-              let updated
-              if (wasPaused) {
-                const addedPauseMs = activeCardioSession.pausedAt
-                  ? now - activeCardioSession.pausedAt
-                  : 0
-                updated = {
-                  ...activeCardioSession,
-                  isPaused: false,
-                  pausedAt: null,
-                  pausedTotalMs: (activeCardioSession.pausedTotalMs || 0) + addedPauseMs,
+        {activeCardioSession &&
+          activeCardioSession.minimized &&
+          !isCardioRunnerOpen && (
+            <CardioMiniBar
+              activityId={activeCardioSession.activityId}
+              level={activeCardioSession.level}
+              startTime={activeCardioSession.startTime}
+              durationMinutes={activeCardioSession.durationMinutes}
+              weightKg={activeCardioSession.weightKg}
+              pausedTotalMs={activeCardioSession.pausedTotalMs || 0}
+              isPaused={Boolean(activeCardioSession.isPaused)}
+              pausedAt={activeCardioSession.pausedAt || null}
+              onOpenRunner={() => setIsCardioRunnerOpen(true)}
+              onTogglePause={() => {
+                const now = Date.now()
+                const wasPaused = Boolean(activeCardioSession.isPaused)
+                let updated
+                if (wasPaused) {
+                  const addedPauseMs = activeCardioSession.pausedAt
+                    ? now - activeCardioSession.pausedAt
+                    : 0
+                  updated = {
+                    ...activeCardioSession,
+                    isPaused: false,
+                    pausedAt: null,
+                    pausedTotalMs:
+                      (activeCardioSession.pausedTotalMs || 0) + addedPauseMs,
+                  }
+                } else {
+                  updated = {
+                    ...activeCardioSession,
+                    isPaused: true,
+                    pausedAt: now,
+                  }
                 }
-              } else {
-                updated = {
-                  ...activeCardioSession,
-                  isPaused: true,
-                  pausedAt: now,
-                }
-              }
-              localStorage.setItem('maganis:cardio_active_session', JSON.stringify(updated))
-              setActiveCardioSession(updated)
-            }}
-          />
-        )}
+                localStorage.setItem(
+                  'maganis:cardio_active_session',
+                  JSON.stringify(updated),
+                )
+                setActiveCardioSession(updated)
+              }}
+            />
+          )}
 
         {isCardioRunnerOpen && activeCardioSession && (
           <div
@@ -1263,7 +1274,9 @@ export function App({ config }: AppProps) {
               onMinimize={() => {
                 setIsCardioRunnerOpen(false)
                 try {
-                  const raw = localStorage.getItem('maganis:cardio_active_session')
+                  const raw = localStorage.getItem(
+                    'maganis:cardio_active_session',
+                  )
                   setActiveCardioSession(raw ? JSON.parse(raw) : null)
                 } catch {
                   // ignore
@@ -1290,7 +1303,11 @@ export function App({ config }: AppProps) {
           </div>
         )}
 
-        <nav className="bottom-nav" data-testid="bottom-nav" data-overlay="true">
+        <nav
+          className="bottom-nav"
+          data-testid="bottom-nav"
+          data-overlay="true"
+        >
           {TABS.map((tab) => (
             <button
               key={tab.id}

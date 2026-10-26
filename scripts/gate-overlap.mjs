@@ -86,96 +86,116 @@ async function run() {
               await page.waitForTimeout(300)
 
               // Evaluate overlaps on page
-              const result = await page.evaluate(({ stateId, vpName, theme, fontScale }) => {
-                // Collect visible text and interactive elements
-                const selector = 'button, input, select, textarea, a, h1, h2, h3, h4, h5, h6, p, span, label, .chip-btn, .select-wrapper, .field, .card, .list-row, [role="button"]'
-                const allNodes = Array.from(document.querySelectorAll(selector))
+              const result = await page.evaluate(
+                ({ stateId, vpName, theme, fontScale }) => {
+                  // Collect visible text and interactive elements
+                  const selector =
+                    'button, input, select, textarea, a, h1, h2, h3, h4, h5, h6, p, span, label, .chip-btn, .select-wrapper, .field, .card, .list-row, [role="button"]'
+                  const allNodes = Array.from(
+                    document.querySelectorAll(selector),
+                  )
 
-                const items = []
-                for (const el of allNodes) {
-                  // Must be visible
-                  const rect = el.getBoundingClientRect()
-                  if (rect.width < 10 || rect.height < 10) continue
-                  // Outside viewport vertically
-                  if (rect.bottom < 0 || rect.top > window.innerHeight) continue
+                  const items = []
+                  for (const el of allNodes) {
+                    // Must be visible
+                    const rect = el.getBoundingClientRect()
+                    if (rect.width < 10 || rect.height < 10) continue
+                    // Outside viewport vertically
+                    if (rect.bottom < 0 || rect.top > window.innerHeight)
+                      continue
 
-                  const style = window.getComputedStyle(el)
-                  if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) {
-                    continue
-                  }
-
-                  // Backdrops are transparent backgrounds, not text/interactive items
-                  if (el.classList.contains('sheet-backdrop') || el.classList.contains('modal-backdrop')) {
-                    continue
-                  }
-
-                  const overlayGroup = el.closest('[data-overlay]') || el.closest('[role="dialog"]') || el.closest('.sheet') || el.closest('.toast') || el.closest('.toast-container') || null
-
-                  items.push({
-                    tag: el.tagName.toLowerCase(),
-                    text: (el.textContent || '').trim().slice(0, 30),
-                    rect: {
-                      left: Math.round(rect.left),
-                      top: Math.round(rect.top),
-                      right: Math.round(rect.right),
-                      bottom: Math.round(rect.bottom),
-                      width: Math.round(rect.width),
-                      height: Math.round(rect.height),
-                    },
-                    node: el,
-                    overlayGroup,
-                  })
-                }
-
-                // Check element pairs for overlap
-                const overlaps = []
-                let pairsCount = 0
-
-                for (let i = 0; i < items.length; i++) {
-                  for (let j = i + 1; j < items.length; j++) {
-                    const a = items[i]
-                    const b = items[j]
-
-                    // Hierarchy containment check
-                    if (a.node.contains(b.node) || b.node.contains(a.node)) {
+                    const style = window.getComputedStyle(el)
+                    if (
+                      style.display === 'none' ||
+                      style.visibility === 'hidden' ||
+                      parseFloat(style.opacity) === 0
+                    ) {
                       continue
                     }
 
-                    // Rule P6: Pair explicitly marked data-overlay / cross-layer overlay comparison
-                    if (a.overlayGroup !== b.overlayGroup) {
+                    // Backdrops are transparent backgrounds, not text/interactive items
+                    if (
+                      el.classList.contains('sheet-backdrop') ||
+                      el.classList.contains('modal-backdrop')
+                    ) {
                       continue
                     }
 
-                    pairsCount++
+                    const overlayGroup =
+                      el.closest('[data-overlay]') ||
+                      el.closest('[role="dialog"]') ||
+                      el.closest('.sheet') ||
+                      el.closest('.toast') ||
+                      el.closest('.toast-container') ||
+                      null
 
-                    // Intersection computation
-                    const interLeft = Math.max(a.rect.left, b.rect.left)
-                    const interTop = Math.max(a.rect.top, b.rect.top)
-                    const interRight = Math.min(a.rect.right, b.rect.right)
-                    const interBottom = Math.min(a.rect.bottom, b.rect.bottom)
+                    items.push({
+                      tag: el.tagName.toLowerCase(),
+                      text: (el.textContent || '').trim().slice(0, 30),
+                      rect: {
+                        left: Math.round(rect.left),
+                        top: Math.round(rect.top),
+                        right: Math.round(rect.right),
+                        bottom: Math.round(rect.bottom),
+                        width: Math.round(rect.width),
+                        height: Math.round(rect.height),
+                      },
+                      node: el,
+                      overlayGroup,
+                    })
+                  }
 
-                    const interWidth = interRight - interLeft
-                    const interHeight = interBottom - interTop
+                  // Check element pairs for overlap
+                  const overlaps = []
+                  let pairsCount = 0
 
-                    if (interWidth > 4 && interHeight > 4) {
-                      // Definite bounding box collision
-                      overlaps.push({
-                        elemA: `<${a.tag}> "${a.text}" [${a.rect.left},${a.rect.top},${a.rect.width}x${a.rect.height}]`,
-                        elemB: `<${b.tag}> "${b.text}" [${b.rect.left},${b.rect.top},${b.rect.width}x${b.rect.height}]`,
-                        overlapArea: interWidth * interHeight,
-                        stateId,
-                        env: `${vpName} ${theme} scale=${fontScale}`,
-                      })
+                  for (let i = 0; i < items.length; i++) {
+                    for (let j = i + 1; j < items.length; j++) {
+                      const a = items[i]
+                      const b = items[j]
+
+                      // Hierarchy containment check
+                      if (a.node.contains(b.node) || b.node.contains(a.node)) {
+                        continue
+                      }
+
+                      // Rule P6: Pair explicitly marked data-overlay / cross-layer overlay comparison
+                      if (a.overlayGroup !== b.overlayGroup) {
+                        continue
+                      }
+
+                      pairsCount++
+
+                      // Intersection computation
+                      const interLeft = Math.max(a.rect.left, b.rect.left)
+                      const interTop = Math.max(a.rect.top, b.rect.top)
+                      const interRight = Math.min(a.rect.right, b.rect.right)
+                      const interBottom = Math.min(a.rect.bottom, b.rect.bottom)
+
+                      const interWidth = interRight - interLeft
+                      const interHeight = interBottom - interTop
+
+                      if (interWidth > 4 && interHeight > 4) {
+                        // Definite bounding box collision
+                        overlaps.push({
+                          elemA: `<${a.tag}> "${a.text}" [${a.rect.left},${a.rect.top},${a.rect.width}x${a.rect.height}]`,
+                          elemB: `<${b.tag}> "${b.text}" [${b.rect.left},${b.rect.top},${b.rect.width}x${b.rect.height}]`,
+                          overlapArea: interWidth * interHeight,
+                          stateId,
+                          env: `${vpName} ${theme} scale=${fontScale}`,
+                        })
+                      }
                     }
                   }
-                }
 
-                return {
-                  elementsCount: items.length,
-                  pairsCount,
-                  overlaps,
-                }
-              }, { stateId, vpName: vp.name, theme, fontScale })
+                  return {
+                    elementsCount: items.length,
+                    pairsCount,
+                    overlaps,
+                  }
+                },
+                { stateId, vpName: vp.name, theme, fontScale },
+              )
 
               totalElementsExamined += result.elementsCount
               totalPairsChecked += result.pairsCount
@@ -218,7 +238,9 @@ async function run() {
     console.error('❌ GATE FAILED: Found element overlaps or rule violations:')
     for (const v of violations.slice(0, 15)) {
       if (v.elemA) {
-        console.error(`  [${v.stateId} | ${v.env}] Overlap (${v.overlapArea}px²):`)
+        console.error(
+          `  [${v.stateId} | ${v.env}] Overlap (${v.overlapArea}px²):`,
+        )
         console.error(`    A: ${v.elemA}`)
         console.error(`    B: ${v.elemB}`)
       } else {

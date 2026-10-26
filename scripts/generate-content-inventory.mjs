@@ -17,7 +17,7 @@ for (const [id, claim] of Object.entries(CLAIMS)) {
     text_ar: claim.text_ar,
     status: claim.status,
     source_id: claim.source_id || null,
-    source_text: claim.source_text || null
+    source_text: claim.source_text || null,
   })
 }
 
@@ -43,7 +43,11 @@ function scanDir(dir) {
     const full = path.join(dir, item.name)
     if (item.isDirectory()) {
       scanDir(full)
-    } else if (item.isFile() && /\.(tsx|ts)$/.test(item.name) && !item.name.includes('.test.')) {
+    } else if (
+      item.isFile() &&
+      /\.(tsx|ts)$/.test(item.name) &&
+      !item.name.includes('.test.')
+    ) {
       scanFile(full)
     }
   }
@@ -61,7 +65,7 @@ function scanFile(filePath) {
     if (str.length >= 60 && /[\u0600-\u06FF]/.test(str)) {
       longStringsOutsideContent.push({
         file: relPath,
-        text_ar: str
+        text_ar: str,
       })
     }
   }
@@ -73,7 +77,7 @@ function scanFile(filePath) {
     if (text.length >= 60) {
       longStringsOutsideContent.push({
         file: relPath,
-        text_ar: text
+        text_ar: text,
       })
     }
   }
@@ -94,8 +98,12 @@ console.log('         CONTENT INVENTORY & R1 AUDIT               ')
 console.log('====================================================')
 console.log(`Registered Claims in inventory: ${inventory.length}`)
 console.log(`Saved inventory to: ${outPath}`)
-console.log(`\nLong Arabic strings (>= 60 chars) outside src/content: ${longStringsOutsideContent.length}`)
+console.log(
+  `\nLong Arabic strings (>= 60 chars) outside src/content: ${longStringsOutsideContent.length}`,
+)
 
 for (const s of longStringsOutsideContent.slice(0, 20)) {
-  console.log(` - in ${s.file} (${s.text_ar.length} chars): "${s.text_ar.slice(0, 80)}..."`)
+  console.log(
+    ` - in ${s.file} (${s.text_ar.length} chars): "${s.text_ar.slice(0, 80)}..."`,
+  )
 }

@@ -87,69 +87,83 @@ async function run() {
           const page = await context.newPage()
 
           // Init with owner profile & cardio test day program
-          await page.addInitScript(({ profile, t, fsScale }) => {
-            if (profile) {
-              localStorage.setItem('maganis:profile.active', JSON.stringify(profile))
-            }
-            localStorage.setItem(
-              'maganis:workout.program',
-              JSON.stringify({
-                id: 'active-prog',
-                title: 'برنامج تجريبي مع كارديو',
-                primaryGoal: 'hypertrophy',
-                trainingDaysPerWeek: 3,
-                splitType: 'custom',
-                days: [
-                  {
-                    dayIndex: 0,
-                    id: 'day-0',
-                    labelAr: 'السبت · تمارين مقاومة',
-                    focus: 'صدر · ظهر',
-                    kind: 'strength',
-                    exercises: [
-                      { exerciseId: 'bench', sets: 3, reps: 10, section: 'primary' },
-                    ],
-                  },
-                  {
-                    dayIndex: 1,
-                    id: 'day-1',
-                    labelAr: 'الأحد · جلسة كارديو',
-                    focus: 'لياقة وحرق دهون',
-                    kind: 'cardio',
-                    cardio: {
-                      activity: 'run',
-                      plannedMinutes: 30,
-                      intensity: 'moderate',
+          await page.addInitScript(
+            ({ profile, t, fsScale }) => {
+              if (profile) {
+                localStorage.setItem(
+                  'maganis:profile.active',
+                  JSON.stringify(profile),
+                )
+              }
+              localStorage.setItem(
+                'maganis:workout.program',
+                JSON.stringify({
+                  id: 'active-prog',
+                  title: 'برنامج تجريبي مع كارديو',
+                  primaryGoal: 'hypertrophy',
+                  trainingDaysPerWeek: 3,
+                  splitType: 'custom',
+                  days: [
+                    {
+                      dayIndex: 0,
+                      id: 'day-0',
+                      labelAr: 'السبت · تمارين مقاومة',
+                      focus: 'صدر · ظهر',
+                      kind: 'strength',
+                      exercises: [
+                        {
+                          exerciseId: 'bench',
+                          sets: 3,
+                          reps: 10,
+                          section: 'primary',
+                        },
+                      ],
                     },
+                    {
+                      dayIndex: 1,
+                      id: 'day-1',
+                      labelAr: 'الأحد · جلسة كارديو',
+                      focus: 'لياقة وحرق دهون',
+                      kind: 'cardio',
+                      cardio: {
+                        activity: 'run',
+                        plannedMinutes: 30,
+                        intensity: 'moderate',
+                      },
+                    },
+                  ],
+                }),
+              )
+              // Add an override for exercise bench to demonstrate badge & edits
+              localStorage.setItem(
+                'maganis:exercise_overrides',
+                JSON.stringify({
+                  bench: {
+                    customNameAr: 'تمرين بنش مخصص معدل',
+                    customNote:
+                      'ملاحظة شخصية: تركيز على النزول البطئ وثبات الكوعين',
+                    videoUrl: 'https://www.youtube.com/watch?v=rT7DgCr-3pg',
+                    muscles: {
+                      primary: ['pec_sternal'],
+                      secondary: ['delt_anterior', 'triceps_lateral'],
+                    },
+                    updatedAt: Date.now(),
                   },
-                ],
-              }),
-            )
-            // Add an override for exercise bench to demonstrate badge & edits
-            localStorage.setItem(
-              'maganis:exercise_overrides',
-              JSON.stringify({
-                bench: {
-                  customNameAr: 'تمرين بنش مخصص معدل',
-                  customNote: 'ملاحظة شخصية: تركيز على النزول البطئ وثبات الكوعين',
-                  videoUrl: 'https://www.youtube.com/watch?v=rT7DgCr-3pg',
-                  muscles: {
-                    primary: ['pec_sternal'],
-                    secondary: ['delt_anterior', 'triceps_lateral'],
-                  },
-                  updatedAt: Date.now(),
-                },
-              }),
-            )
-            document.documentElement.setAttribute('data-theme', t)
-            document.body.setAttribute('data-theme', t)
-            if (fsScale !== 1.0) {
-              document.documentElement.style.fontSize = `${16 * fsScale}px`
-            }
-          }, { profile: ownerProfile, t: theme, fsScale: fontScale })
+                }),
+              )
+              document.documentElement.setAttribute('data-theme', t)
+              document.body.setAttribute('data-theme', t)
+              if (fsScale !== 1.0) {
+                document.documentElement.style.fontSize = `${16 * fsScale}px`
+              }
+            },
+            { profile: ownerProfile, t: theme, fsScale: fontScale },
+          )
 
           // 1. Capture Cardio Setup Screen
-          await page.goto(`${baseUrl}#/training/day/1`, { waitUntil: 'domcontentloaded' })
+          await page.goto(`${baseUrl}#/training/day/1`, {
+            waitUntil: 'domcontentloaded',
+          })
           await page.waitForTimeout(400)
           await page.screenshot({
             path: path.join(evidenceDir, `${prefix}_b1_cardio_setup.png`),
@@ -158,34 +172,43 @@ async function run() {
 
           // 2. Open Cardio Info Sheet (Gross vs Net)
           const infoBtn = page.locator('button:has-text("معلومات")')
-          if (await infoBtn.count() > 0) {
+          if ((await infoBtn.count()) > 0) {
             await infoBtn.first().click()
             await page.waitForTimeout(300)
             await page.screenshot({
-              path: path.join(evidenceDir, `${prefix}_b1_cardio_info_sheet.png`),
+              path: path.join(
+                evidenceDir,
+                `${prefix}_b1_cardio_info_sheet.png`,
+              ),
             })
             // Close sheet
             const closeBtn = page.locator('button:has-text("فهمت الفرق")')
-            if (await closeBtn.count() > 0) await closeBtn.first().click()
+            if ((await closeBtn.count()) > 0) await closeBtn.first().click()
             await page.waitForTimeout(200)
           }
 
           // 3. Capture Cardio Runner (Live session)
-          await page.goto(`${baseUrl}#/training/cardio-runner`, { waitUntil: 'domcontentloaded' })
+          await page.goto(`${baseUrl}#/training/cardio-runner`, {
+            waitUntil: 'domcontentloaded',
+          })
           await page.waitForTimeout(400)
           await page.screenshot({
             path: path.join(evidenceDir, `${prefix}_b1_cardio_runner.png`),
           })
 
           // 4. Capture Set Logging View (B2 Set Auto-Propagation & Suggestions)
-          await page.goto(`${baseUrl}#/session-logger/bench`, { waitUntil: 'domcontentloaded' })
+          await page.goto(`${baseUrl}#/session-logger/bench`, {
+            waitUntil: 'domcontentloaded',
+          })
           await page.waitForTimeout(400)
           await page.screenshot({
             path: path.join(evidenceDir, `${prefix}_b2_session_logger.png`),
           })
 
           // 5. Capture Exercise Detail with B3 Video and B4 Overrides
-          await page.goto(`${baseUrl}#/exercise/bench`, { waitUntil: 'domcontentloaded' })
+          await page.goto(`${baseUrl}#/exercise/bench`, {
+            waitUntil: 'domcontentloaded',
+          })
           await page.waitForTimeout(400)
           await page.screenshot({
             path: path.join(evidenceDir, `${prefix}_b3_b4_exercise_detail.png`),
@@ -193,7 +216,7 @@ async function run() {
 
           // 6. Capture Copy Name Action / Placeholder
           const copyBtn = page.locator('button:has-text("انسخ الاسم")')
-          if (await copyBtn.count() > 0) {
+          if ((await copyBtn.count()) > 0) {
             await copyBtn.first().click()
             await page.waitForTimeout(300)
             await page.screenshot({
@@ -203,7 +226,7 @@ async function run() {
 
           // 7. Capture Exercise Edit Sheet (B4)
           const editBtn = page.locator('button:has-text("تعديل التمرين")')
-          if (await editBtn.count() > 0) {
+          if ((await editBtn.count()) > 0) {
             await editBtn.first().click()
             await page.waitForTimeout(400)
             await page.screenshot({

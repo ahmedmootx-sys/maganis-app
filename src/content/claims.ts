@@ -202,5 +202,3 @@ for (const [muscleId, info] of Object.entries(muscleInfoData.muscles)) {
     }
   }
 }
-
-

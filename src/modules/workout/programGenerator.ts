@@ -129,7 +129,9 @@ function resolveSplit(
     for (let i = 0; i < normalizedDays; i++) {
       groups.push(config.splits[i % config.splits.length])
       const baseLabel = config.dayLabels[i % config.dayLabels.length]
-      labels.push(i >= config.splits.length ? `${baseLabel} (إضافي)` : baseLabel)
+      labels.push(
+        i >= config.splits.length ? `${baseLabel} (إضافي)` : baseLabel,
+      )
     }
     return {
       type: splitType,
@@ -248,9 +250,15 @@ function selectForGroup(
     (e) => e.category === group && !usedIds.has(e.id),
   )
 
-  const beginner = shuffle(candidates.filter((e) => e.difficulty === 'beginner'))
-  const intermediate = shuffle(candidates.filter((e) => e.difficulty === 'intermediate'))
-  const advanced = shuffle(candidates.filter((e) => e.difficulty === 'advanced'))
+  const beginner = shuffle(
+    candidates.filter((e) => e.difficulty === 'beginner'),
+  )
+  const intermediate = shuffle(
+    candidates.filter((e) => e.difficulty === 'intermediate'),
+  )
+  const advanced = shuffle(
+    candidates.filter((e) => e.difficulty === 'advanced'),
+  )
 
   const ordered =
     levelCeiling === 'beginner'
@@ -322,7 +330,8 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
       ? deriveConstraints(profile)
       : deriveConstraints({
           primaryGoal: goal,
-          trainingStyle: goal === 'calisthenics' ? ['calisthenics'] : ['weights'],
+          trainingStyle:
+            goal === 'calisthenics' ? ['calisthenics'] : ['weights'],
         } as UserProfile))
 
   // 1. بناء مجمّع التمارين المتاحة بالاعتماد الحصري على deriveConstraints
@@ -371,7 +380,9 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
         const hasAnyInCatalog = pool.some((e) => e.category === group)
         if (!hasAnyInCatalog) {
           const muscleLabel = MUSCLE_GROUP_LABELS[group] || group
-          noticesSet.add(`مفيش تمرين مناسب لـ ${muscleLabel} بالمعدات اللي اخترتها`)
+          noticesSet.add(
+            `مفيش تمرين مناسب لـ ${muscleLabel} بالمعدات اللي اخترتها`,
+          )
         }
       }
 

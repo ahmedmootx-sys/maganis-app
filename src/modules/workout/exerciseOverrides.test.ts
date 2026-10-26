@@ -32,7 +32,11 @@ const BASE_EXERCISE: Exercise = {
   imageUrl: 'https://example.com/original-bench.png',
   benefitAr: 'بناء القوة والحجم العضلي للصدر',
   mechanicsAr: 'دفع الوزن لأعلى بنمط حركة عمودي',
-  howToStepsAr: ['استلقِ على البنش', 'امسك البار بقبضة مناسبة', 'ادفع البار لأعلى'],
+  howToStepsAr: [
+    'استلقِ على البنش',
+    'امسك البار بقبضة مناسبة',
+    'ادفع البار لأعلى',
+  ],
   muscles: [
     { id: 'chest_mid', role: 'primary' },
     { id: 'triceps_lateral', role: 'secondary' },
@@ -87,7 +91,9 @@ describe('exerciseOverrides', () => {
       { id: 'delt_anterior', role: 'secondary' },
     ])
     expect(effective.personalNote).toBe('ركز على تقريب لوحي الكتف')
-    expect(effective.videoUrl).toBe('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+    expect(effective.videoUrl).toBe(
+      'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    )
     // Original catalog entry is preserved in baseExercise
     expect(effective.baseExercise?.nameAr).toBe('بنش برس بالبار')
     expect(effective.baseExercise?.imageUrl).toBe(
@@ -137,9 +143,7 @@ describe('exerciseOverrides', () => {
     const resolved = resolveMuscles(effective)
 
     expect(resolved.tier).toBe(2)
-    expect(resolved.muscles).toEqual([
-      { id: 'biceps_long', role: 'primary' },
-    ])
+    expect(resolved.muscles).toEqual([{ id: 'biceps_long', role: 'primary' }])
   })
 
   describe('validation on import', () => {

@@ -243,7 +243,8 @@ export function ExerciseSwapModal({
                           display: '-webkit-box',
                           WebkitLineClamp: 1,
                           WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden' /* clip-ok: modal sheet scroller boundary */,
+                          overflow:
+                            'hidden' /* clip-ok: modal sheet scroller boundary */,
                         }}
                       >
                         {exercise.descriptionAr}

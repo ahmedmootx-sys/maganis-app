@@ -18,12 +18,26 @@ describe('Set Propagation & Suggestions (Task G5-B2)', () => {
   describe('B2.1 Propagation and Undo', () => {
     it('1. propagates typed value in set i to all subsequent empty, suggested, or auto cells', () => {
       const initial: TrackedSetItem[] = [
-        { weight: { value: 0, state: 'empty' }, reps: { value: 8, state: 'suggested' } },
-        { weight: { value: 0, state: 'empty' }, reps: { value: 8, state: 'suggested' } },
-        { weight: { value: 0, state: 'empty' }, reps: { value: 8, state: 'suggested' } },
+        {
+          weight: { value: 0, state: 'empty' },
+          reps: { value: 8, state: 'suggested' },
+        },
+        {
+          weight: { value: 0, state: 'empty' },
+          reps: { value: 8, state: 'suggested' },
+        },
+        {
+          weight: { value: 0, state: 'empty' },
+          reps: { value: 8, state: 'suggested' },
+        },
       ]
 
-      const { nextSets, propagatedCount } = propagateField(initial, 0, 'weight', 60)
+      const { nextSets, propagatedCount } = propagateField(
+        initial,
+        0,
+        'weight',
+        60,
+      )
 
       expect(propagatedCount).toBe(2)
       expect(nextSets[0].weight).toEqual({ value: 60, state: 'user' })
@@ -33,15 +47,35 @@ describe('Set Propagation & Suggestions (Task G5-B2)', () => {
 
     it('2. never overwrites user or done cells and never touches earlier sets', () => {
       const initial: TrackedSetItem[] = [
-        { weight: { value: 40, state: 'done' }, reps: { value: 10, state: 'done' } },
-        { weight: { value: 50, state: 'user' }, reps: { value: 10, state: 'user' } },
-        { weight: { value: 0, state: 'empty' }, reps: { value: 8, state: 'suggested' } },
-        { weight: { value: 70, state: 'user' }, reps: { value: 6, state: 'user' } },
-        { weight: { value: 0, state: 'auto' }, reps: { value: 8, state: 'auto' } },
+        {
+          weight: { value: 40, state: 'done' },
+          reps: { value: 10, state: 'done' },
+        },
+        {
+          weight: { value: 50, state: 'user' },
+          reps: { value: 10, state: 'user' },
+        },
+        {
+          weight: { value: 0, state: 'empty' },
+          reps: { value: 8, state: 'suggested' },
+        },
+        {
+          weight: { value: 70, state: 'user' },
+          reps: { value: 6, state: 'user' },
+        },
+        {
+          weight: { value: 0, state: 'auto' },
+          reps: { value: 8, state: 'auto' },
+        },
       ]
 
       // Edit set index 2 (the 3rd set) to weight 55
-      const { nextSets, propagatedCount } = propagateField(initial, 2, 'weight', 55)
+      const { nextSets, propagatedCount } = propagateField(
+        initial,
+        2,
+        'weight',
+        55,
+      )
 
       // Earlier sets (0 and 1) remain completely untouched
       expect(nextSets[0].weight).toEqual({ value: 40, state: 'done' })
@@ -61,7 +95,12 @@ describe('Set Propagation & Suggestions (Task G5-B2)', () => {
 
     it('3. restores previous snapshot in one step via undoPropagation', () => {
       const initial = createEmptySets(4)
-      const { nextSets, previousSnapshot } = propagateField(initial, 0, 'reps', 12)
+      const { nextSets, previousSnapshot } = propagateField(
+        initial,
+        0,
+        'reps',
+        12,
+      )
 
       expect(nextSets[1].reps.value).toBe(12)
       expect(nextSets[1].reps.state).toBe('auto')
@@ -81,11 +120,19 @@ describe('Set Propagation & Suggestions (Task G5-B2)', () => {
         const numSets = 3 + Math.floor(pseudoRandom() * 4) // 3 to 6 sets
         const sets: TrackedSetItem[] = []
 
-        const statesPool: CellState[] = ['empty', 'suggested', 'auto', 'user', 'done']
+        const statesPool: CellState[] = [
+          'empty',
+          'suggested',
+          'auto',
+          'user',
+          'done',
+        ]
 
         for (let s = 0; s < numSets; s++) {
-          const wState = statesPool[Math.floor(pseudoRandom() * statesPool.length)]
-          const rState = statesPool[Math.floor(pseudoRandom() * statesPool.length)]
+          const wState =
+            statesPool[Math.floor(pseudoRandom() * statesPool.length)]
+          const rState =
+            statesPool[Math.floor(pseudoRandom() * statesPool.length)]
           sets.push({
             weight: { value: Math.floor(pseudoRandom() * 100), state: wState },
             reps: { value: Math.floor(pseudoRandom() * 15), state: rState },
@@ -93,13 +140,15 @@ describe('Set Propagation & Suggestions (Task G5-B2)', () => {
         }
 
         const editSetIndex = Math.floor(pseudoRandom() * numSets)
-        const field: 'weight' | 'reps' = pseudoRandom() > 0.5 ? 'weight' : 'reps'
+        const field: 'weight' | 'reps' =
+          pseudoRandom() > 0.5 ? 'weight' : 'reps'
         const newValue = Math.floor(pseudoRandom() * 120) + 1
 
         // Snapshot existing user and done values before propagation
         const protectedBefore = sets.map((s, idx) => ({
           idx,
-          weightUserOrDone: s.weight.state === 'user' || s.weight.state === 'done',
+          weightUserOrDone:
+            s.weight.state === 'user' || s.weight.state === 'done',
           weightVal: s.weight.value,
           weightState: s.weight.state,
           repsUserOrDone: s.reps.state === 'user' || s.reps.state === 'done',
@@ -151,7 +200,10 @@ describe('Set Propagation & Suggestions (Task G5-B2)', () => {
           ],
         },
       ]
-      const res = computeExerciseSuggestions({ repsMin: 8, repsMax: 12 }, history)
+      const res = computeExerciseSuggestions(
+        { repsMin: 8, repsMax: 12 },
+        history,
+      )
       expect(res.suggestedWeight).toBe(50)
       expect(res.suggestedReps).toBe(10)
       expect(res.hintClaimId).toBeUndefined()
@@ -175,17 +227,19 @@ describe('Set Propagation & Suggestions (Task G5-B2)', () => {
         },
       ]
       // 50 * 1.05 = 52.5 kg
-      const res = computeExerciseSuggestions({ repsMin: 8, repsMax: 12 }, history)
+      const res = computeExerciseSuggestions(
+        { repsMin: 8, repsMax: 12 },
+        history,
+      )
       expect(res.suggestedWeight).toBe(52.5)
       expect(res.hintClaimId).toBe('sugg.progress')
     })
 
     it('4. shows below_range hint if first completed set is below program lower bound', () => {
-      const res = computeExerciseSuggestions(
-        { repsMin: 8, repsMax: 12 },
-        [],
-        { reps: 5, weightKg: 60 },
-      )
+      const res = computeExerciseSuggestions({ repsMin: 8, repsMax: 12 }, [], {
+        reps: 5,
+        weightKg: 60,
+      })
       expect(res.hintClaimId).toBe('sugg.below_range')
     })
   })

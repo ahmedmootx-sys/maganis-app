@@ -141,9 +141,13 @@ describe('VideoPlayer', () => {
 
     expect(screen.getByTestId('video-timeout-hint')).toBeDefined()
     expect(
-      screen.getByText('لو الفيديو مش بيشتغل، صاحب الفيديو ممكن يكون قافل التضمين'),
+      screen.getByText(
+        'لو الفيديو مش بيشتغل، صاحب الفيديو ممكن يكون قافل التضمين',
+      ),
     ).toBeDefined()
-    const link = screen.getByTestId('timeout-fallback-link') as HTMLAnchorElement
+    const link = screen.getByTestId(
+      'timeout-fallback-link',
+    ) as HTMLAnchorElement
     expect(link.href).toBe('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
   })
 })

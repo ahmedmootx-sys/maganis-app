@@ -132,7 +132,7 @@ export const CopyExerciseNameButton: React.FC<CopyExerciseNameButtonProps> = ({
             display: 'flex',
             flexDirection: 'column',
             minWidth: '130px',
-            overflow: 'hidden', /* clip-ok: dropdown menu container */
+            overflow: 'hidden' /* clip-ok: dropdown menu container */,
           }}
         >
           <button

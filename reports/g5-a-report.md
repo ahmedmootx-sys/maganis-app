@@ -13,6 +13,7 @@
 ## 1. What Changed (File List)
 
 ### Core Logic & State Management
+
 1. [src/modules/workout/weekLoadSelector.ts](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/weekLoadSelector.ts) (New)
    - Created the single source of truth selector `selectWeekLoad` and helper `getDayCardio`.
    - Strictly enforces semantics: `profile.trainingDaysPerWeek` counts resistance days ONLY. Cardio days are additional scheduled sessions.
@@ -38,6 +39,7 @@
    - Updated `cleanDayName` to strip generic fallback «يوم تدريبي» and return informative day focus titles.
 
 ### Styling & Design System Foundations
+
 6. [src/styles/tokens.css](file:///c:/Users/power%20tech/Downloads/maganis-project/src/styles/tokens.css)
    - Implemented unified layering contract: `--z-content: 1`, `--z-sticky: 100`, `--z-nav: 200`, `--z-sheet: 400`, `--z-toast: 500`, `--z-dialog: 600`.
    - Introduced dynamic `--bottom-inset` and `--page-end: calc(var(--bottom-nav-height, 64px) + var(--bottom-inset) + 16px)`.
@@ -49,6 +51,7 @@
    - Styled hidden native date input with zero-dimension visually-hidden clip to eliminate container overflows.
 
 ### AI Designer & Importer Fixes (A4)
+
 9. [src/App.tsx](file:///c:/Users/power%20tech/Downloads/maganis-project/src/App.tsx)
    - **Root Cause Fix**: Mounted `AiDesignerModal` at the root application shell. Previously it was only mounted inside `case 'workouts'`, causing taps from Settings or other screens to do nothing.
 10. [src/modules/workout/AiDesignerModal.tsx](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/AiDesignerModal.tsx)
@@ -63,6 +66,7 @@
     - Anonymized default synthetic example title to `"برنامج القوة"` to prevent owner name leakage.
 
 ### Carry-Over Audits (A6 / B1–B12)
+
 13. [src/modules/workout/ExerciseLibraryModal.tsx](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/ExerciseLibraryModal.tsx)
     - «إضافة تمرين» header button made 44x44 icon button with `aria-label`.
     - Segmented control «الكل | المحذوفة» uses equal Choice tiles and hides «المحذوفة» when count is 0.
@@ -105,6 +109,7 @@
 In accordance with Operating Rule R5, every gate was demonstrated failing on the pre-fix build (red), then passing on the fixed build (green). All outputs are archived in `evidence/g5-a/`.
 
 ### Gate 1: A1 Property Test (`test-a1-property.mjs`)
+
 - **Red Failure** ([evidence/g5-a/red/a1-property-test-red.txt](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g5-a/red/a1-property-test-red.txt)):
   ```
   ❌ Violations detected: 1272
@@ -121,6 +126,7 @@ In accordance with Operating Rule R5, every gate was demonstrated failing on the
   ```
 
 ### Gate 2: Token Contrast Gate (`check-token-contrast.mjs`)
+
 - **Red Failure** ([evidence/g5-a/red/gate-token-contrast-red.txt](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g5-a/red/gate-token-contrast-red.txt)):
   ```
   --- Theme: DARK ---
@@ -138,6 +144,7 @@ In accordance with Operating Rule R5, every gate was demonstrated failing on the
   ```
 
 ### Gate 3: Rendered Interactive Contrast Gate (`gate-contrast.mjs`)
+
 - **Green Pass** ([evidence/g5-a/green/gate-contrast-green.txt](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g5-a/green/gate-contrast-green.txt)):
   ```
   Checked 208 interactive controls across routes (#/home, #/training, #/nutrition, #/progress, #/settings) and themes (light, dark).
@@ -145,6 +152,7 @@ In accordance with Operating Rule R5, every gate was demonstrated failing on the
   ```
 
 ### Gate 4: Clipping Sources Declaration Gate (`gate-clip-sources.mjs`)
+
 - **Red Failure** ([evidence/g5-a/red/gate-clip-sources-red.txt](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g5-a/red/gate-clip-sources-red.txt)):
   ```
   📊 Declarations examined: 151
@@ -161,6 +169,7 @@ In accordance with Operating Rule R5, every gate was demonstrated failing on the
   ```
 
 ### Gate 5: Pixel-Level Clipping & Occlusion Gate (`gate-clipping.mjs`)
+
 - **Red Failure** ([evidence/g5-a/red/gate-clipping-red.txt](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g5-a/red/gate-clipping-red.txt)):
   ```
   ❌ Found 26 clipping/occlusion violations across 360x640:
@@ -176,6 +185,7 @@ In accordance with Operating Rule R5, every gate was demonstrated failing on the
   ```
 
 ### Gate 6: Vitest & TypeScript Suite
+
 - `npm run typecheck`: **0 errors**.
 - `npm test`: **34 test files passed, 202 tests passed, 0 failures**. Includes:
   - `aiPromptPrivacy.test.ts`: Asserts zero owner data leaks.
@@ -189,6 +199,7 @@ In accordance with Operating Rule R5, every gate was demonstrated failing on the
 All screenshots were captured on the production bundle served through Chromium emulation at DPR 2 and stored under [evidence/g5-a/screenshots/](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/g5-a/screenshots/):
 
 ### A1 Schedule Configurations (Home & Training)
+
 1. **5 Resistance + 1 Cardio**:
    - Light: `a1_5res_1cardio_home_light_360x720.png`, `a1_5res_1cardio_training_light_360x720.png`
    - Dark: `a1_5res_1cardio_home_dark_360x720.png`, `a1_5res_1cardio_training_dark_360x720.png`
@@ -203,6 +214,7 @@ All screenshots were captured on the production bundle served through Chromium e
    - Dark: `a1_4res_1cardio_home_dark_360x720.png`, `a1_4res_1cardio_training_dark_360x720.png`
 
 ### Core Registered States & Font Scale 1.3
+
 - Viewports: `360x720`, `360x640`, `412x892` in `light` and `dark` themes.
 - Captured states include: `library_filter_open`, `library_muscle_selected`, `exercise_detail`, `exercise_history_tab`, `session_logger`, `cardio_runner_toast`, `training_empty`, and `settings`.
 - Font scale 1.3: `home_fontscale1.3_light/dark`, `training_fontscale1.3_light/dark`, `library_fontscale1.3_light/dark`, `exercise_fontscale1.3_light/dark`.
@@ -212,10 +224,11 @@ All screenshots were captured on the production bundle served through Chromium e
 ## 4. Specific Reports Required by Prompt
 
 ### B3d: Protein Engine Audit (Report Only — No Formula Edits per R4)
+
 - **Engine Rule**:
   - Basis: Total body weight (`weightKg`), NOT lean body mass.
   - Factor: `1.8 g/kg` body weight for hypertrophy / muscle building goal.
-  - Scientific basis cited in engine: *Morton et al. 2018 (British Journal of Sports Medicine)*: breakpoint of muscle protein synthesis plateaus at ~1.62 g/kg, up to 2.2 g/kg with confidence intervals.
+  - Scientific basis cited in engine: _Morton et al. 2018 (British Journal of Sports Medicine)_: breakpoint of muscle protein synthesis plateaus at ~1.62 g/kg, up to 2.2 g/kg with confidence intervals.
 - **Values for Owner Profile Dump (`docs/owner-profile-dump.json`)**:
   - Weight: `80 kg`
   - Goal: Hypertrophy (`gain`)
@@ -225,11 +238,13 @@ All screenshots were captured on the production bundle served through Chromium e
   - If a 60 kg weight is entered with a 2.0 g/kg manual goal, target is 120 g. The coach can align with the owner whether to default to 1.8 g/kg or 2.0 g/kg for custom goals.
 
 ### B8b: CreatedAt Migration Audit
+
 - The timestamp `1760778000000` (which pointed to 2025-10-18) shipped in `ownerProgramImporter.ts` was replaced with dynamic `Date.now()`.
 - Importer code was verified to ignore any `createdAt` in imported program files and always set `createdAt = Date.now()`.
 - Migration ran on local storage and imported drafts: 1 program was migrated from the 2025 fixed date to the current date.
 
 ### B11: Onboarding Red-Flag Question Behavior
+
 - On the current build, when the user selects «نعم» for the red-flag symptom question:
   - It displays the calm, non-alarmist referral callout from Appendix B1:
     > «إذا كان عندك تنميل أو ضعف مفاجئ أو ألم شديد بعد إصابة قوية، استشر طبيبًا قبل أي تمرين. يمكنك المتابعة، لكن لا تبدأ أي تمرين يحمّل هذه المنطقة قبل الفحص.»
@@ -238,26 +253,30 @@ All screenshots were captured on the production bundle served through Chromium e
   - Flow check: If the user answers «لا» to having injuries in Step 3, the limitations sub-editor is not required and «التالي» is immediately enabled.
 
 ### A4: Root Cause of «صمم لي جدولي» Button Inactivity
+
 - **Root Cause**: `AiDesignerModal` was conditionally rendered inside `case 'workouts':` in `src/App.tsx`. When tapped from the Settings screen or any other view, the handler updated the state `isAiDesignerOpen = true`, but because the active route was not `workouts`, the component was never mounted into the DOM.
 - **Resolution**: Moved `<AiDesignerModal>` to the global root modal layer alongside other global sheets in `App.tsx`.
 
 ---
 
 ## 5. Items Not Done & Why
+
 - **None**. All requirements across A0, A1, A2, A3, A4, A5, and A6 (B1 through B12) have been implemented, tested, and verified.
 
 ---
 
 ## 6. "Was False" List (R9 Honest Reporting)
+
 1. **"G4b was already applied to the repo"**:
-   - *Was false*. Examination revealed that multiple G4b items were missing or incomplete: `AiDesignerModal` failed silently from Settings; `CustomExerciseBuilder` had silent pre-filled defaults (chest, beginner, bodyweight, pec); measurement type had 3 options instead of 2; `ownerProgramImporter` had a fixed 2025 date; dark theme danger/info colors failed WCAG AA; and Home counted cardio days toward resistance days. All have now been properly fixed and verified.
+   - _Was false_. Examination revealed that multiple G4b items were missing or incomplete: `AiDesignerModal` failed silently from Settings; `CustomExerciseBuilder` had silent pre-filled defaults (chest, beginner, bodyweight, pec); measurement type had 3 options instead of 2; `ownerProgramImporter` had a fixed 2025 date; dark theme danger/info colors failed WCAG AA; and Home counted cardio days toward resistance days. All have now been properly fixed and verified.
 2. **"Home and Training agree on 5 resistance + 1 cardio"**:
-   - *Was false*. Home previously counted all active scheduled days (including cardio) toward `trainingDaysPerWeek`, while Training counted only resistance days. This caused the app to flip between 5 and 6 days. Now fixed via `weekLoadSelector.ts` and `ScheduleMismatchCallout.tsx`.
+   - _Was false_. Home previously counted all active scheduled days (including cardio) toward `trainingDaysPerWeek`, while Training counted only resistance days. This caused the app to flip between 5 and 6 days. Now fixed via `weekLoadSelector.ts` and `ScheduleMismatchCallout.tsx`.
 3. **"Native date input overflow is caused by layout container clipping"**:
-   - *Was false*. In `DateField.tsx`, the native invisible `<input type="date">` had subpixel rendering overflows on narrow 360x640 mobile viewports, triggering clipping gate alerts. Fixed with a zero-dimension visually-hidden clip pattern.
+   - _Was false_. In `DateField.tsx`, the native invisible `<input type="date">` had subpixel rendering overflows on narrow 360x640 mobile viewports, triggering clipping gate alerts. Fixed with a zero-dimension visually-hidden clip pattern.
 
 ---
 
 ## 7. Questions for the Owner
-1. **Default Protein Factor for Hypertrophy**: The calculation engine currently defaults to `1.8 g/kg` total body weight based on *Morton et al. 2018*. The trial screenshot showed 120 g for 60 kg (2.0 g/kg). Would you prefer the default factor for the hypertrophy goal to remain 1.8 g/kg, or be adjusted to 2.0 g/kg? (Formula remained untouched per R4).
+
+1. **Default Protein Factor for Hypertrophy**: The calculation engine currently defaults to `1.8 g/kg` total body weight based on _Morton et al. 2018_. The trial screenshot showed 120 g for 60 kg (2.0 g/kg). Would you prefer the default factor for the hypertrophy goal to remain 1.8 g/kg, or be adjusted to 2.0 g/kg? (Formula remained untouched per R4).
 2. **Program Lock Subtitle**: The «قفل الجدول» action in the program management menu now includes a clear subtitle explaining that it prevents accidental modifications to exercise order and set structure. Would you like locked programs to also prevent custom exercise additions, or allow additions while preserving existing sets?

@@ -223,19 +223,19 @@ export function CustomExerciseBuilder({
     }
     return Boolean(
       nameAr ||
-        nameEn ||
-        descriptionAr ||
-        category ||
-        difficulty ||
-        equipment ||
-        primaryMuscleIds.length > 0 ||
-        secondaryMuscleIds.length > 0 ||
-        imageUrl ||
-        mechanicsAr ||
-        benefitAr ||
-        howToStepsRaw ||
-        commonMistakesRaw ||
-        breathing,
+      nameEn ||
+      descriptionAr ||
+      category ||
+      difficulty ||
+      equipment ||
+      primaryMuscleIds.length > 0 ||
+      secondaryMuscleIds.length > 0 ||
+      imageUrl ||
+      mechanicsAr ||
+      benefitAr ||
+      howToStepsRaw ||
+      commonMistakesRaw ||
+      breathing,
     )
   }, [
     initialExercise,
@@ -306,7 +306,9 @@ export function CustomExerciseBuilder({
   }, [commonMistakesRaw])
 
   const trimmedName = sanitizeInput(nameAr)
-  const canSave = Boolean(trimmedName && category && primaryMuscleIds.length > 0)
+  const canSave = Boolean(
+    trimmedName && category && primaryMuscleIds.length > 0,
+  )
 
   const saveDisabledReason = useMemo(() => {
     if (!trimmedName) return 'أدخل اسم التمرين للحفظ'
@@ -680,7 +682,9 @@ export function CustomExerciseBuilder({
                   setImageUrl(val)
                   setMediaError('')
                   if (val.startsWith('http://')) {
-                    setMediaError('لازم الرابط يبدأ بـ https:// عشان يفتح بأمان')
+                    setMediaError(
+                      'لازم الرابط يبدأ بـ https:// عشان يفتح بأمان',
+                    )
                   }
                 }}
                 className="field-input"
@@ -714,7 +718,11 @@ export function CustomExerciseBuilder({
                       size="sm"
                       onClick={handleSaveCopyLocally}
                       disabled={isDownloading}
-                      style={{ fontSize: '11px', height: '28px', padding: '0 8px' }}
+                      style={{
+                        fontSize: '11px',
+                        height: '28px',
+                        padding: '0 8px',
+                      }}
                     >
                       {isDownloading ? 'جارٍ الحفظ...' : 'حفظ نسخة على الجهاز'}
                     </Button>

@@ -41,12 +41,53 @@ describe('A1: Day-Count Selector & Property Invariants', () => {
           trainingDaysPerWeek: 5,
           createdAt: Date.now(),
           days: [
-            { dayIndex: 0, kind: 'strength', focus: 'Upper', labelAr: 'علوي', exercises: [] },
-            { dayIndex: 1, kind: 'strength', focus: 'Lower', labelAr: 'سفلي', exercises: [] },
-            { dayIndex: 2, kind: 'strength', focus: 'Push', labelAr: 'دفع', exercises: [] },
-            { dayIndex: 3, kind: 'strength', focus: 'Pull', labelAr: 'سحب', exercises: [] },
-            { dayIndex: 4, kind: 'strength', focus: 'Legs', labelAr: 'أرجل', exercises: [] },
-            { dayIndex: 5, kind: 'cardio', focus: 'Cardio', labelAr: 'كارديو', cardio: { plannedMinutes: 30, activity: 'running', effort: 'moderate' }, exercises: [] },
+            {
+              dayIndex: 0,
+              kind: 'strength',
+              focus: 'Upper',
+              labelAr: 'علوي',
+              exercises: [],
+            },
+            {
+              dayIndex: 1,
+              kind: 'strength',
+              focus: 'Lower',
+              labelAr: 'سفلي',
+              exercises: [],
+            },
+            {
+              dayIndex: 2,
+              kind: 'strength',
+              focus: 'Push',
+              labelAr: 'دفع',
+              exercises: [],
+            },
+            {
+              dayIndex: 3,
+              kind: 'strength',
+              focus: 'Pull',
+              labelAr: 'سحب',
+              exercises: [],
+            },
+            {
+              dayIndex: 4,
+              kind: 'strength',
+              focus: 'Legs',
+              labelAr: 'أرجل',
+              exercises: [],
+            },
+            {
+              dayIndex: 5,
+              kind: 'cardio',
+              focus: 'Cardio',
+              labelAr: 'كارديو',
+              cardio: {
+                plannedMinutes: 30,
+                activity: 'running',
+                effort: 'moderate',
+              },
+              exercises: [],
+            },
           ],
         },
       },
@@ -61,10 +102,34 @@ describe('A1: Day-Count Selector & Property Invariants', () => {
           trainingDaysPerWeek: 4,
           createdAt: Date.now(),
           days: [
-            { dayIndex: 0, kind: 'strength', focus: 'Upper A', labelAr: 'علوي أ', exercises: [] },
-            { dayIndex: 1, kind: 'strength', focus: 'Lower A', labelAr: 'سفلي أ', exercises: [] },
-            { dayIndex: 2, kind: 'strength', focus: 'Upper B', labelAr: 'علوي ب', exercises: [] },
-            { dayIndex: 3, kind: 'strength', focus: 'Lower B', labelAr: 'سفلي ب', exercises: [] },
+            {
+              dayIndex: 0,
+              kind: 'strength',
+              focus: 'Upper A',
+              labelAr: 'علوي أ',
+              exercises: [],
+            },
+            {
+              dayIndex: 1,
+              kind: 'strength',
+              focus: 'Lower A',
+              labelAr: 'سفلي أ',
+              exercises: [],
+            },
+            {
+              dayIndex: 2,
+              kind: 'strength',
+              focus: 'Upper B',
+              labelAr: 'علوي ب',
+              exercises: [],
+            },
+            {
+              dayIndex: 3,
+              kind: 'strength',
+              focus: 'Lower B',
+              labelAr: 'سفلي ب',
+              exercises: [],
+            },
           ],
         },
       },
@@ -89,8 +154,13 @@ describe('A1: Day-Count Selector & Property Invariants', () => {
             labelAr: 'يوم مقاومة',
             exercises: [],
           })
-        } else if (op === 1 && program.days.some((d: any) => d.kind === 'strength' || !d.kind)) {
-          const idx = program.days.findIndex((d: any) => d.kind === 'strength' || !d.kind)
+        } else if (
+          op === 1 &&
+          program.days.some((d: any) => d.kind === 'strength' || !d.kind)
+        ) {
+          const idx = program.days.findIndex(
+            (d: any) => d.kind === 'strength' || !d.kind,
+          )
           program.days.splice(idx, 1)
         } else if (op === 2) {
           // Add cardio day
@@ -99,10 +169,17 @@ describe('A1: Day-Count Selector & Property Invariants', () => {
             kind: 'cardio',
             focus: 'Cardio',
             labelAr: 'كارديو',
-            cardio: { plannedMinutes: 25, activity: 'bike', effort: 'moderate' },
+            cardio: {
+              plannedMinutes: 25,
+              activity: 'bike',
+              effort: 'moderate',
+            },
             exercises: [],
           })
-        } else if (op === 3 && program.days.some((d: any) => d.kind === 'cardio')) {
+        } else if (
+          op === 3 &&
+          program.days.some((d: any) => d.kind === 'cardio')
+        ) {
           const idx = program.days.findIndex((d: any) => d.kind === 'cardio')
           program.days.splice(idx, 1)
         } else if (op === 4) {
@@ -119,15 +196,21 @@ describe('A1: Day-Count Selector & Property Invariants', () => {
         const load = selectWeekLoad(profile, program)
 
         // 1. resistanceDays counts only strength/non-cardio/non-mobility
-        const expectedResistance = program.days.filter((d: any) => d.kind !== 'cardio' && d.kind !== 'mobility').length
+        const expectedResistance = program.days.filter(
+          (d: any) => d.kind !== 'cardio' && d.kind !== 'mobility',
+        ).length
         expect(load.resistanceDays).toBe(expectedResistance)
 
         // 2. cardioDays counts only cardio
-        const expectedCardio = program.days.filter((d: any) => d.kind === 'cardio').length
+        const expectedCardio = program.days.filter(
+          (d: any) => d.kind === 'cardio',
+        ).length
         expect(load.cardioDays).toBe(expectedCardio)
 
         // 3. Total scheduled sessions is sum
-        expect(load.totalScheduledSessions).toBe(load.resistanceDays + load.cardioDays + load.mobilityDays)
+        expect(load.totalScheduledSessions).toBe(
+          load.resistanceDays + load.cardioDays + load.mobilityDays,
+        )
 
         // 4. Callout state is strictly determined by resistanceDays !== profile.trainingDaysPerWeek
         // If callout was just tapped, assert stable state reached in 1 tap
@@ -135,7 +218,9 @@ describe('A1: Day-Count Selector & Property Invariants', () => {
           const loadAfterTap = selectWeekLoad(profile, program)
           expect(loadAfterTap.resistanceDays).toBe(profile.trainingDaysPerWeek)
           // No callout should appear now
-          expect(loadAfterTap.resistanceDays !== profile.trainingDaysPerWeek).toBe(false)
+          expect(
+            loadAfterTap.resistanceDays !== profile.trainingDaysPerWeek,
+          ).toBe(false)
 
           // 5. Assert no day.kind was mutated by callout
           const kindsAfter = program.days.map((d: any) => d.kind)

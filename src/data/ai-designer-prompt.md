@@ -80,6 +80,7 @@ Send two parts in one message.
 PART 1. A short explanation in {{LANG}}: the weekly layout, why this structure, what you excluded or changed because of injuries and why, how to progress, when to deload, and a safety reminder (stop on sharp pain, numbness or dizziness and see a clinician).
 
 PART 2. Exactly ONE JSON code block that follows the SCHEMA below. Rules for the JSON:
+
 - It must be valid JSON: double quotes, no comments, no trailing commas, numbers as numbers, nothing outside the braces.
 - Use an `exerciseId` from the CATALOG whenever the exercise exists there. Never invent an id.
 - If the exercise is not in the CATALOG, set `exerciseId` to null and fill `customName` (Arabic) and `nameEn` (English). The app will ask the person to complete the missing details.

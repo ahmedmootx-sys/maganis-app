@@ -7,13 +7,19 @@ const projectRoot = process.cwd()
 const BANNED_PATTERNS = [
   { name: 'Day letter (يوم A-E)', regex: /يوم\s+[A-Ea-e]\b/ },
   { name: 'Day letter en (Day A-E)', regex: /\bDay\s+[A-Ea-e]\b/i },
-  { name: 'Ordinal program day (اليوم الأول-الخامس)', regex: /اليوم\s+(الأول|الثاني|الثالث|الرابع|الخامس)/ },
+  {
+    name: 'Ordinal program day (اليوم الأول-الخامس)',
+    regex: /اليوم\s+(الأول|الثاني|الثالث|الرابع|الخامس)/,
+  },
   { name: 'Formal muscle name: الدالية', regex: /الدالية/ },
   { name: 'Formal muscle name: الرباعية', regex: /الرباعية/ },
   { name: 'Formal muscle name: اللاتيسيموس', regex: /اللاتيسيموس/ },
   { name: 'Formal muscle name: المسنّنة', regex: /المسنّنة/ },
   { name: 'Formal muscle name: الصدرية الكبرى', regex: /الصدرية\s+الكبرى/ },
-  { name: 'Formal muscle name: المستقيمة الفخذية', regex: /المستقيمة\s+الفخذية/ },
+  {
+    name: 'Formal muscle name: المستقيمة الفخذية',
+    regex: /المستقيمة\s+الفخذية/,
+  },
 ]
 
 // Allowlist for search aliases inside gym_ar_alt or input mapping normalizers
@@ -94,7 +100,7 @@ function checkString(str, relPath) {
       violations.push({
         file: relPath,
         pattern: name,
-        match: str.length > 90 ? str.slice(0, 90) + '...' : str
+        match: str.length > 90 ? str.slice(0, 90) + '...' : str,
       })
     }
   }

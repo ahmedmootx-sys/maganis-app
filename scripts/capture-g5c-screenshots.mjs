@@ -80,19 +80,22 @@ async function run() {
       const page = await context.newPage()
 
       // Set theme and owner profile in localStorage
-      await page.addInitScript(({ t, p }) => {
-        if (p) {
-          localStorage.setItem('maganis:profile.active', JSON.stringify(p))
-        }
-        localStorage.setItem('maganis:theme', t)
-        document.documentElement.setAttribute('data-theme', t)
-      }, { t: theme, p: ownerProfile })
+      await page.addInitScript(
+        ({ t, p }) => {
+          if (p) {
+            localStorage.setItem('maganis:profile.active', JSON.stringify(p))
+          }
+          localStorage.setItem('maganis:theme', t)
+          document.documentElement.setAttribute('data-theme', t)
+        },
+        { t: theme, p: ownerProfile },
+      )
 
       async function dismissSheet(page) {
         await page.keyboard.press('Escape')
         await page.waitForTimeout(400)
         const backdrop = page.locator('[data-testid="sheet-backdrop"]')
-        if (await backdrop.count() > 0) {
+        if ((await backdrop.count()) > 0) {
           try {
             await backdrop.first().click({ timeout: 1000 })
             await page.waitForTimeout(300)
@@ -104,7 +107,7 @@ async function run() {
 
       async function scrollToAtlas(page) {
         const atlas = page.locator('.atlas-container')
-        if (await atlas.count() > 0) {
+        if ((await atlas.count()) > 0) {
           await atlas.first().scrollIntoViewIfNeeded()
           await page.waitForTimeout(300)
         }
@@ -124,25 +127,33 @@ async function run() {
 
       // Derived Approx selection (pec_sternal) on Bench Press
       const pecSternalChip = page.locator('button.chip:has-text("صدر أوسط")')
-      if (await pecSternalChip.count() > 0) {
+      if ((await pecSternalChip.count()) > 0) {
         await pecSternalChip.first().scrollIntoViewIfNeeded()
         await pecSternalChip.first().click()
         await page.waitForTimeout(600)
         await page.screenshot({
-          path: path.join(evidenceDir, `selection_derived_approx_pec_sternal_${theme}.png`),
+          path: path.join(
+            evidenceDir,
+            `selection_derived_approx_pec_sternal_${theme}.png`,
+          ),
         })
-        console.log(`✓ Captured selection_derived_approx_pec_sternal_${theme}.png`)
+        console.log(
+          `✓ Captured selection_derived_approx_pec_sternal_${theme}.png`,
+        )
         await dismissSheet(page)
       }
 
       // Small surface muscle selection (tfl)
       const tflChip = page.locator('button.chip:has-text("جانب الورك")')
-      if (await tflChip.count() > 0) {
+      if ((await tflChip.count()) > 0) {
         await tflChip.first().scrollIntoViewIfNeeded()
         await tflChip.first().click()
         await page.waitForTimeout(600)
         await page.screenshot({
-          path: path.join(evidenceDir, `selection_small_surface_tfl_${theme}.png`),
+          path: path.join(
+            evidenceDir,
+            `selection_small_surface_tfl_${theme}.png`,
+          ),
         })
         console.log(`✓ Captured selection_small_surface_tfl_${theme}.png`)
         await dismissSheet(page)
@@ -155,8 +166,10 @@ async function run() {
       await scrollToAtlas(page)
       await page.waitForTimeout(300)
 
-      const deepToggle = page.locator('button:has-text("إظهار العضلات العميقة")')
-      if (await deepToggle.count() > 0) {
+      const deepToggle = page.locator(
+        'button:has-text("إظهار العضلات العميقة")',
+      )
+      if ((await deepToggle.count()) > 0) {
         await deepToggle.first().click()
         await scrollToAtlas(page)
         await page.waitForTimeout(600)
@@ -166,13 +179,18 @@ async function run() {
         console.log(`✓ Captured front_deep_${theme}_no_selection.png`)
 
         // Select pec_minor (Deep muscle)
-        const pecMinorChip = page.locator('button.chip:has-text("الصدرية الصغرى"), button.chip:has-text("صدرية صغرى")')
-        if (await pecMinorChip.count() > 0) {
+        const pecMinorChip = page.locator(
+          'button.chip:has-text("الصدرية الصغرى"), button.chip:has-text("صدرية صغرى")',
+        )
+        if ((await pecMinorChip.count()) > 0) {
           await pecMinorChip.first().scrollIntoViewIfNeeded()
           await pecMinorChip.first().click()
           await page.waitForTimeout(600)
           await page.screenshot({
-            path: path.join(evidenceDir, `selection_deep_pec_minor_${theme}.png`),
+            path: path.join(
+              evidenceDir,
+              `selection_deep_pec_minor_${theme}.png`,
+            ),
           })
           console.log(`✓ Captured selection_deep_pec_minor_${theme}.png`)
           await dismissSheet(page)
@@ -188,20 +206,23 @@ async function run() {
 
       // Switch to Posterior (خلفي)
       const backViewBtn = page.locator('button:has-text("خلفي")')
-      if (await backViewBtn.count() > 0) {
+      if ((await backViewBtn.count()) > 0) {
         await backViewBtn.first().click()
         await scrollToAtlas(page)
         await page.waitForTimeout(600)
 
         // Back view surface no selection
         await page.screenshot({
-          path: path.join(evidenceDir, `back_surface_${theme}_no_selection.png`),
+          path: path.join(
+            evidenceDir,
+            `back_surface_${theme}_no_selection.png`,
+          ),
         })
         console.log(`✓ Captured back_surface_${theme}_no_selection.png`)
 
         // Selection: Large muscle (lats) via chip
         const latsChip = page.locator('button.chip:has-text("لاتس")')
-        if (await latsChip.count() > 0) {
+        if ((await latsChip.count()) > 0) {
           await latsChip.first().scrollIntoViewIfNeeded()
           await latsChip.first().click()
           await page.waitForTimeout(600)
@@ -213,8 +234,10 @@ async function run() {
         }
 
         // Back Deep Mode
-        const backDeepToggle = page.locator('button:has-text("إظهار العضلات العميقة")')
-        if (await backDeepToggle.count() > 0) {
+        const backDeepToggle = page.locator(
+          'button:has-text("إظهار العضلات العميقة")',
+        )
+        if ((await backDeepToggle.count()) > 0) {
           await backDeepToggle.first().click()
           await scrollToAtlas(page)
           await page.waitForTimeout(600)
@@ -232,19 +255,24 @@ async function run() {
       await page.waitForTimeout(600)
 
       const searchInput = page.locator('input[placeholder*="ابحث عن عضلة"]')
-      if (await searchInput.count() > 0) {
+      if ((await searchInput.count()) > 0) {
         await searchInput.scrollIntoViewIfNeeded()
         await searchInput.fill('بطن علوي')
         await page.waitForTimeout(400)
 
         const noMeshChip = page.locator('button.chip:has-text("بطن علوي")')
-        if (await noMeshChip.count() > 0) {
+        if ((await noMeshChip.count()) > 0) {
           await noMeshChip.first().click()
           await page.waitForTimeout(600)
           await page.screenshot({
-            path: path.join(evidenceDir, `selection_no_mesh_rectus_abdominis_upper_${theme}.png`),
+            path: path.join(
+              evidenceDir,
+              `selection_no_mesh_rectus_abdominis_upper_${theme}.png`,
+            ),
           })
-          console.log(`✓ Captured selection_no_mesh_rectus_abdominis_upper_${theme}.png`)
+          console.log(
+            `✓ Captured selection_no_mesh_rectus_abdominis_upper_${theme}.png`,
+          )
           await dismissSheet(page)
           await searchInput.fill('')
           await page.waitForTimeout(200)
@@ -252,7 +280,7 @@ async function run() {
       }
 
       const chipsSection = page.locator('.atlas-chips-section')
-      if (await chipsSection.count() > 0) {
+      if ((await chipsSection.count()) > 0) {
         await chipsSection.first().scrollIntoViewIfNeeded()
         await page.waitForTimeout(300)
       }
@@ -266,7 +294,7 @@ async function run() {
       await page.waitForTimeout(200)
 
       const zoomInBtn = page.locator('button[aria-label="تكبير"]')
-      if (await zoomInBtn.count() > 0) {
+      if ((await zoomInBtn.count()) > 0) {
         await zoomInBtn.first().click()
         await page.waitForTimeout(200)
         await zoomInBtn.first().click()
@@ -278,7 +306,7 @@ async function run() {
         console.log(`✓ Captured zoomed_2x_with_reset_${theme}.png`)
 
         const resetBtn = page.locator('button[aria-label="إعادة الضبط"]')
-        if (await resetBtn.count() > 0) {
+        if ((await resetBtn.count()) > 0) {
           await resetBtn.first().click()
           await page.waitForTimeout(300)
         }
@@ -287,7 +315,7 @@ async function run() {
       // 7. Labels button ("الأسماء" toggle overlay)
       await scrollToAtlas(page)
       const labelsToggle = page.locator('button:has-text("الأسماء")')
-      if (await labelsToggle.count() > 0) {
+      if ((await labelsToggle.count()) > 0) {
         await labelsToggle.first().click()
         await scrollToAtlas(page)
         await page.waitForTimeout(500)

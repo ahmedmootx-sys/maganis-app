@@ -107,187 +107,223 @@ async function run() {
         })
         const page = await context.newPage()
 
-        await page.addInitScript(({ profile, t }) => {
-          if (profile) {
-            localStorage.setItem('maganis:profile.active', JSON.stringify(profile))
-            localStorage.setItem(
-              'maganis:workout.program',
-              JSON.stringify({
-                id: 'active-prog',
-                title: 'برنامج تجريبي',
-                primaryGoal: 'hypertrophy',
-                trainingDaysPerWeek: 4,
-                splitType: 'upper_lower',
-                days: [
-                  {
-                    dayIndex: 0,
-                    id: 'day-0',
-                    labelAr: 'علوي (أ)',
-                    focus: 'صدر · ظهر',
-                    kind: 'strength',
-                    exercises: [
-                      { exerciseId: 'bench', sets: 3, reps: 10, section: 'primary' },
-                      { exerciseId: 'pullup', sets: 3, reps: 8, section: 'primary' },
-                    ],
-                  },
-                  {
-                    dayIndex: 1,
-                    id: 'day-1',
-                    labelAr: 'سفلي (أ)',
-                    focus: 'أرجل · بطن',
-                    kind: 'strength',
-                    exercises: [
-                      { exerciseId: 'squat', sets: 3, reps: 8, section: 'primary' },
-                    ],
-                  },
-                ],
-              }),
-            )
-          }
-          document.documentElement.setAttribute('data-theme', t)
-          document.body.setAttribute('data-theme', t)
-        }, { profile: ownerProfile, t: theme })
+        await page.addInitScript(
+          ({ profile, t }) => {
+            if (profile) {
+              localStorage.setItem(
+                'maganis:profile.active',
+                JSON.stringify(profile),
+              )
+              localStorage.setItem(
+                'maganis:workout.program',
+                JSON.stringify({
+                  id: 'active-prog',
+                  title: 'برنامج تجريبي',
+                  primaryGoal: 'hypertrophy',
+                  trainingDaysPerWeek: 4,
+                  splitType: 'upper_lower',
+                  days: [
+                    {
+                      dayIndex: 0,
+                      id: 'day-0',
+                      labelAr: 'علوي (أ)',
+                      focus: 'صدر · ظهر',
+                      kind: 'strength',
+                      exercises: [
+                        {
+                          exerciseId: 'bench',
+                          sets: 3,
+                          reps: 10,
+                          section: 'primary',
+                        },
+                        {
+                          exerciseId: 'pullup',
+                          sets: 3,
+                          reps: 8,
+                          section: 'primary',
+                        },
+                      ],
+                    },
+                    {
+                      dayIndex: 1,
+                      id: 'day-1',
+                      labelAr: 'سفلي (أ)',
+                      focus: 'أرجل · بطن',
+                      kind: 'strength',
+                      exercises: [
+                        {
+                          exerciseId: 'squat',
+                          sets: 3,
+                          reps: 8,
+                          section: 'primary',
+                        },
+                      ],
+                    },
+                  ],
+                }),
+              )
+            }
+            document.documentElement.setAttribute('data-theme', t)
+            document.body.setAttribute('data-theme', t)
+          },
+          { profile: ownerProfile, t: theme },
+        )
 
         for (const route of registeredRoutes) {
           totalStatesEvaluated++
           const url = `${baseUrl}${route}`
           try {
-            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 5000 })
+            await page.goto(url, {
+              waitUntil: 'domcontentloaded',
+              timeout: 5000,
+            })
             await page.waitForTimeout(250)
 
             // Evaluate elements in DOM
-            const evalResult = await page.evaluate(({ routeName, vpName, themeName }) => {
-              const elements = Array.from(
-                document.querySelectorAll(
-                  'button, a, input, select, textarea, [role="button"], [role="radio"], [role="tab"], .chip-btn, .badge, .tag, h1, h2, h3, h4, p, span.stat-value, .select-trigger'
-                )
-              ).filter((el) => {
-                const rect = el.getBoundingClientRect()
-                const style = window.getComputedStyle(el)
-                return (
-                  rect.width > 0 &&
-                  rect.height > 0 &&
-                  style.visibility !== 'hidden' &&
-                  style.display !== 'none' &&
-                  style.opacity !== '0' &&
-                  style.pointerEvents !== 'none' &&
-                  !el.hasAttribute('aria-hidden')
-                )
-              })
+            const evalResult = await page.evaluate(
+              ({ routeName, vpName, themeName }) => {
+                const elements = Array.from(
+                  document.querySelectorAll(
+                    'button, a, input, select, textarea, [role="button"], [role="radio"], [role="tab"], .chip-btn, .badge, .tag, h1, h2, h3, h4, p, span.stat-value, .select-trigger',
+                  ),
+                ).filter((el) => {
+                  const rect = el.getBoundingClientRect()
+                  const style = window.getComputedStyle(el)
+                  return (
+                    rect.width > 0 &&
+                    rect.height > 0 &&
+                    style.visibility !== 'hidden' &&
+                    style.display !== 'none' &&
+                    style.opacity !== '0' &&
+                    style.pointerEvents !== 'none' &&
+                    !el.hasAttribute('aria-hidden')
+                  )
+                })
 
-              const stateViolations = []
+                const stateViolations = []
 
-              for (const el of elements) {
-                const rect = el.getBoundingClientRect()
-                const style = window.getComputedStyle(el)
+                for (const el of elements) {
+                  const rect = el.getBoundingClientRect()
+                  const style = window.getComputedStyle(el)
 
-                // 1. Single-line check for badges, pills, buttons, tags
-                const isSingleLine =
-                  el.matches('.badge, .tag, .chip-btn, [role="tab"], [role="radio"], .pill') &&
-                  !el.hasAttribute('data-multiline')
+                  // 1. Single-line check for badges, pills, buttons, tags
+                  const isSingleLine =
+                    el.matches(
+                      '.badge, .tag, .chip-btn, [role="tab"], [role="radio"], .pill',
+                    ) && !el.hasAttribute('data-multiline')
 
-                if (isSingleLine) {
-                  if (el.scrollWidth > el.clientWidth + 1) {
-                    stateViolations.push({
-                      type: 'badge_overflow',
-                      tag: el.tagName,
-                      text: (el.textContent || '').trim().slice(0, 30),
-                      scrollWidth: el.scrollWidth,
-                      clientWidth: el.clientWidth,
-                    })
-                  }
-                }
-
-                // 2. Real scrolling vs clipped content
-                const isScrollContainer =
-                  style.overflow === 'auto' ||
-                  style.overflow === 'scroll' ||
-                  style.overflowX === 'auto' ||
-                  style.overflowX === 'scroll' ||
-                  style.overflowY === 'auto' ||
-                  style.overflowY === 'scroll'
-
-                if (!isScrollContainer) {
-                  const xOver = el.scrollWidth - el.clientWidth
-                  const yOver = el.scrollHeight - el.clientHeight
-                  // Ignore minor subpixel rounding <= 2px
-                  if (xOver > 2 || yOver > 2) {
-                    // Check if it's an inline wrapper or SVG container
-                    if (style.display !== 'inline' && el.tagName !== 'SVG') {
+                  if (isSingleLine) {
+                    if (el.scrollWidth > el.clientWidth + 1) {
                       stateViolations.push({
-                        type: 'uncontained_overflow',
+                        type: 'badge_overflow',
                         tag: el.tagName,
-                        className: el.className,
                         text: (el.textContent || '').trim().slice(0, 30),
-                        xOver,
-                        yOver,
+                        scrollWidth: el.scrollWidth,
+                        clientWidth: el.clientWidth,
+                      })
+                    }
+                  }
+
+                  // 2. Real scrolling vs clipped content
+                  const isScrollContainer =
+                    style.overflow === 'auto' ||
+                    style.overflow === 'scroll' ||
+                    style.overflowX === 'auto' ||
+                    style.overflowX === 'scroll' ||
+                    style.overflowY === 'auto' ||
+                    style.overflowY === 'scroll'
+
+                  if (!isScrollContainer) {
+                    const xOver = el.scrollWidth - el.clientWidth
+                    const yOver = el.scrollHeight - el.clientHeight
+                    // Ignore minor subpixel rounding <= 2px
+                    if (xOver > 2 || yOver > 2) {
+                      // Check if it's an inline wrapper or SVG container
+                      if (style.display !== 'inline' && el.tagName !== 'SVG') {
+                        stateViolations.push({
+                          type: 'uncontained_overflow',
+                          tag: el.tagName,
+                          className: el.className,
+                          text: (el.textContent || '').trim().slice(0, 30),
+                          xOver,
+                          yOver,
+                        })
+                      }
+                    }
+                  }
+
+                  // 3. Occlusion check for primary buttons & interactive controls
+                  // As per A2: assert inside viewport or reachable by scrolling that container
+                  if (
+                    el.matches(
+                      '.button-primary, .btn-primary, [role="button"], input, select',
+                    )
+                  ) {
+                    el.scrollIntoView({ block: 'center', inline: 'nearest' })
+                    const r = el.getBoundingClientRect()
+                    const points = [
+                      [r.left + r.width / 2, r.top + r.height / 2],
+                      [r.left + 2, r.top + 2],
+                      [r.right - 2, r.top + 2],
+                      [r.left + 2, r.bottom - 2],
+                      [r.right - 2, r.bottom - 2],
+                    ]
+                    let occluded = false
+                    let hitEl = null
+                    for (const [px, py] of points) {
+                      if (
+                        px < 0 ||
+                        px >= window.innerWidth ||
+                        py < 0 ||
+                        py >= window.innerHeight
+                      )
+                        continue
+                      const hit = document.elementFromPoint(px, py)
+                      if (hit && !el.contains(hit) && !hit.contains(el)) {
+                        occluded = true
+                        hitEl = hit
+                        break
+                      }
+                    }
+                    if (occluded && hitEl) {
+                      stateViolations.push({
+                        type: 'occluded_interactive',
+                        tag: el.tagName,
+                        text: (el.textContent || '').trim().slice(0, 30),
+                        hitTag: hitEl.tagName,
+                        hitClass: hitEl.className,
+                      })
+                    }
+                  }
+
+                  // 4. Input placeholder fit
+                  if (el.tagName === 'INPUT' && el.placeholder) {
+                    const span = document.createElement('span')
+                    span.style.font = style.font
+                    span.style.visibility = 'hidden'
+                    span.style.position = 'absolute'
+                    span.textContent = el.placeholder
+                    document.body.appendChild(span)
+                    const pWidth = span.offsetWidth
+                    document.body.removeChild(span)
+                    if (pWidth > el.clientWidth - 16) {
+                      stateViolations.push({
+                        type: 'clipped_placeholder',
+                        placeholder: el.placeholder,
+                        placeholderWidth: pWidth,
+                        clientWidth: el.clientWidth,
                       })
                     }
                   }
                 }
 
-                // 3. Occlusion check for primary buttons & interactive controls
-                // As per A2: assert inside viewport or reachable by scrolling that container
-                if (
-                  el.matches('.button-primary, .btn-primary, [role="button"], input, select')
-                ) {
-                  el.scrollIntoView({ block: 'center', inline: 'nearest' })
-                  const r = el.getBoundingClientRect()
-                  const points = [
-                    [r.left + r.width / 2, r.top + r.height / 2],
-                    [r.left + 2, r.top + 2],
-                    [r.right - 2, r.top + 2],
-                    [r.left + 2, r.bottom - 2],
-                    [r.right - 2, r.bottom - 2],
-                  ]
-                  let occluded = false
-                  let hitEl = null
-                  for (const [px, py] of points) {
-                    if (px < 0 || px >= window.innerWidth || py < 0 || py >= window.innerHeight) continue
-                    const hit = document.elementFromPoint(px, py)
-                    if (hit && !el.contains(hit) && !hit.contains(el)) {
-                      occluded = true
-                      hitEl = hit
-                      break
-                    }
-                  }
-                  if (occluded && hitEl) {
-                    stateViolations.push({
-                      type: 'occluded_interactive',
-                      tag: el.tagName,
-                      text: (el.textContent || '').trim().slice(0, 30),
-                      hitTag: hitEl.tagName,
-                      hitClass: hitEl.className,
-                    })
-                  }
+                return {
+                  count: elements.length,
+                  violations: stateViolations,
                 }
-
-                // 4. Input placeholder fit
-                if (el.tagName === 'INPUT' && el.placeholder) {
-                  const span = document.createElement('span')
-                  span.style.font = style.font
-                  span.style.visibility = 'hidden'
-                  span.style.position = 'absolute'
-                  span.textContent = el.placeholder
-                  document.body.appendChild(span)
-                  const pWidth = span.offsetWidth
-                  document.body.removeChild(span)
-                  if (pWidth > el.clientWidth - 16) {
-                    stateViolations.push({
-                      type: 'clipped_placeholder',
-                      placeholder: el.placeholder,
-                      placeholderWidth: pWidth,
-                      clientWidth: el.clientWidth,
-                    })
-                  }
-                }
-              }
-
-              return {
-                count: elements.length,
-                violations: stateViolations,
-              }
-            }, { routeName: route, vpName: vp.name, themeName: theme })
+              },
+              { routeName: route, vpName: vp.name, themeName: theme },
+            )
 
             totalElementsExamined += evalResult.count
             perStateCounts.push({
@@ -330,12 +366,16 @@ async function run() {
 
   // Enforce minimum count of 1,500 elements examined across registry
   if (totalElementsExamined < 1500) {
-    console.error(`❌ Vacuous gate: total elements examined (${totalElementsExamined}) is below required 1,500!`)
+    console.error(
+      `❌ Vacuous gate: total elements examined (${totalElementsExamined}) is below required 1,500!`,
+    )
     process.exit(1)
   }
 
   if (violations.length > 0) {
-    console.error(`\n❌ Gate FAILED: found ${violations.length} clipping/occlusion violations!`)
+    console.error(
+      `\n❌ Gate FAILED: found ${violations.length} clipping/occlusion violations!`,
+    )
     console.log('Sample violations:')
     violations.slice(0, 15).forEach((v, idx) => {
       console.log(`  ${idx + 1}. [${v.state}] ${v.type}: ${JSON.stringify(v)}`)
@@ -343,7 +383,9 @@ async function run() {
     process.exit(1)
   }
 
-  console.log('\n✅ gate-clipping PASSED: 0 clipped or occluded elements across all registered states!')
+  console.log(
+    '\n✅ gate-clipping PASSED: 0 clipped or occluded elements across all registered states!',
+  )
 }
 
 run().catch((err) => {

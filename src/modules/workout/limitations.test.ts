@@ -32,7 +32,9 @@ describe('Limitations & Region Load System (B1.2)', () => {
     if (tags.length > 0) {
       expect(tags[0].regionId).toBe('lower_back')
       expect(tags[0].regionLabel).toBe('أسفل الظهر')
-      expect(['high', 'moderate', 'unreviewed', 'recovered_high']).toContain(tags[0].level)
+      expect(['high', 'moderate', 'unreviewed', 'recovered_high']).toContain(
+        tags[0].level,
+      )
     }
   })
 

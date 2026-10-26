@@ -234,7 +234,8 @@ export function ExercisePickerModal({
                       height: '56px',
                       flexShrink: 0,
                       borderRadius: '8px',
-                      overflow: 'hidden' /* clip-ok: modal sheet scroller boundary */,
+                      overflow:
+                        'hidden' /* clip-ok: modal sheet scroller boundary */,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -304,7 +305,8 @@ export function ExercisePickerModal({
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden' /* clip-ok: modal sheet scroller boundary */,
+                          overflow:
+                            'hidden' /* clip-ok: modal sheet scroller boundary */,
                           lineHeight: 1.25,
                           textAlign: 'right',
                           overflowWrap: 'anywhere',

@@ -226,14 +226,18 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
     expect(screen.queryByRole('columnheader', { name: 'الوزن' })).toBeNull()
 
     // Has reps column
-    expect(screen.getByRole('columnheader', { name: 'التكرارات' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('columnheader', { name: 'التكرارات' }),
+    ).toBeInTheDocument()
 
     // Enter reps for set 1
     const repsInputs = screen.getAllByPlaceholderText('تكرار')
     fireEvent.change(repsInputs[0], { target: { value: '15' } })
 
     // Check button should now be ready and tick cleanly
-    const checkBtns = screen.getAllByRole('button', { name: /تأكيد إنهاء المجموعة/ })
+    const checkBtns = screen.getAllByRole('button', {
+      name: /تأكيد إنهاء المجموعة/,
+    })
     fireEvent.click(checkBtns[0])
 
     // Set 1 is completed (no validation error)

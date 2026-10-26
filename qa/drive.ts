@@ -139,18 +139,24 @@ export async function openState(
     case 'd1':
     case 'd1-library-overlap': {
       await page.goto(`${baseUrl}#/library`, { waitUntil: 'domcontentloaded' })
-      await page.waitForSelector('.exercise-library-content', { timeout: 10000 })
+      await page.waitForSelector('.exercise-library-content', {
+        timeout: 10000,
+      })
       await page.waitForTimeout(500)
       break
     }
 
     case 'd2':
     case 'd2-set-propagation': {
-      await page.goto(`${baseUrl}#/training/day/0`, { waitUntil: 'domcontentloaded' })
+      await page.goto(`${baseUrl}#/training/day/0`, {
+        waitUntil: 'domcontentloaded',
+      })
       await page.waitForTimeout(400)
 
       // Click "ابدأ التمرين" on the day detail screen
-      const startBtn = page.locator('button:has-text("ابدأ التمرين"), button:has-text("بدء التمرين"), button:has-text("بدء الجلسة")')
+      const startBtn = page.locator(
+        'button:has-text("ابدأ التمرين"), button:has-text("بدء التمرين"), button:has-text("بدء الجلسة")',
+      )
       await startBtn.first().click()
 
       await page.waitForSelector('.active-workout-session', { timeout: 10000 })
@@ -197,8 +203,12 @@ export async function openState(
         )
       })
 
-      await page.goto(`${baseUrl}#/exercise/bench`, { waitUntil: 'domcontentloaded' })
-      await page.waitForSelector('[data-testid="video-facade"]', { timeout: 10000 })
+      await page.goto(`${baseUrl}#/exercise/bench`, {
+        waitUntil: 'domcontentloaded',
+      })
+      await page.waitForSelector('[data-testid="video-facade"]', {
+        timeout: 10000,
+      })
       await page.waitForTimeout(400)
 
       // Tap play on the facade video card
@@ -210,7 +220,9 @@ export async function openState(
 
     case 'd4':
     case 'd4-raw-tokens': {
-      await page.goto(`${baseUrl}#/exercise/bench`, { waitUntil: 'domcontentloaded' })
+      await page.goto(`${baseUrl}#/exercise/bench`, {
+        waitUntil: 'domcontentloaded',
+      })
       await page.waitForSelector('.exercise-route-page', { timeout: 10000 })
       await page.waitForTimeout(500)
       break
@@ -246,13 +258,20 @@ export async function openState(
             uiHintAr: 'جري متوسط',
           },
         }
-        localStorage.setItem('maganis:cardio_session_running', JSON.stringify(sessionData))
+        localStorage.setItem(
+          'maganis:cardio_session_running',
+          JSON.stringify(sessionData),
+        )
       })
 
       // Go to day 2 (cardio day) and click start cardio session
-      await page.goto(`${baseUrl}#/training/day/2`, { waitUntil: 'domcontentloaded' })
+      await page.goto(`${baseUrl}#/training/day/2`, {
+        waitUntil: 'domcontentloaded',
+      })
       await page.waitForTimeout(400)
-      const startCardioBtn = page.locator('button:has-text("ابدأ جلسة الكارديو")')
+      const startCardioBtn = page.locator(
+        'button:has-text("ابدأ جلسة الكارديو")',
+      )
       if ((await startCardioBtn.count()) > 0) {
         await startCardioBtn.first().click()
       }
@@ -263,22 +282,33 @@ export async function openState(
 
     case 'd6':
     case 'd6-edit-sheet': {
-      await page.goto(`${baseUrl}#/exercise/bench`, { waitUntil: 'domcontentloaded' })
-      await page.waitForSelector('[data-testid="edit-exercise-btn"]', { timeout: 10000 })
+      await page.goto(`${baseUrl}#/exercise/bench`, {
+        waitUntil: 'domcontentloaded',
+      })
+      await page.waitForSelector('[data-testid="edit-exercise-btn"]', {
+        timeout: 10000,
+      })
       await page.waitForTimeout(300)
 
       const editBtn = page.locator('[data-testid="edit-exercise-btn"]')
       await editBtn.first().click()
-      await page.waitForSelector('[data-testid="exercise-edit-sheet-content"]', { timeout: 10000 })
+      await page.waitForSelector(
+        '[data-testid="exercise-edit-sheet-content"]',
+        { timeout: 10000 },
+      )
       await page.waitForTimeout(500)
       break
     }
 
     case 'd7':
     case 'd7-contrast': {
-      await page.goto(`${baseUrl}#/training/day/0`, { waitUntil: 'domcontentloaded' })
+      await page.goto(`${baseUrl}#/training/day/0`, {
+        waitUntil: 'domcontentloaded',
+      })
       await page.waitForTimeout(400)
-      const startBtn = page.locator('button:has-text("ابدأ التمرين"), button:has-text("بدء التمرين"), button:has-text("بدء الجلسة")')
+      const startBtn = page.locator(
+        'button:has-text("ابدأ التمرين"), button:has-text("بدء التمرين"), button:has-text("بدء الجلسة")',
+      )
       await startBtn.first().click()
       await page.waitForSelector('.active-workout-session', { timeout: 10000 })
       // Complete set 1 to trigger rest timer
@@ -296,10 +326,14 @@ export async function openState(
     case 'd8-training-day-titles': {
       await page.goto(`${baseUrl}#/training`, { waitUntil: 'domcontentloaded' })
       await page.evaluate(() => {
-        const prog = JSON.parse(localStorage.getItem('maganis:workout.program') || '{}')
+        const prog = JSON.parse(
+          localStorage.getItem('maganis:workout.program') || '{}',
+        )
         if (prog && prog.days && prog.days[0]) {
-          prog.days[0].labelAr = 'السبت · علوي (أ) — تركيز صدر وتراي وبنش ثقيل للمستوى المتقدم'
-          prog.days[0].name = 'علوي (أ) — تركيز صدر وتراي وبنش ثقيل للمستوى المتقدم'
+          prog.days[0].labelAr =
+            'السبت · علوي (أ) — تركيز صدر وتراي وبنش ثقيل للمستوى المتقدم'
+          prog.days[0].name =
+            'علوي (أ) — تركيز صدر وتراي وبنش ثقيل للمستوى المتقدم'
           localStorage.setItem('maganis:workout.program', JSON.stringify(prog))
         }
       })
@@ -311,7 +345,9 @@ export async function openState(
 
     case 'd9':
     case 'd9-exercise-page-header': {
-      await page.goto(`${baseUrl}#/exercise/bench`, { waitUntil: 'domcontentloaded' })
+      await page.goto(`${baseUrl}#/exercise/bench`, {
+        waitUntil: 'domcontentloaded',
+      })
       await page.waitForSelector('.exercise-route-page', { timeout: 10000 })
       await page.waitForTimeout(500)
       break
@@ -319,9 +355,12 @@ export async function openState(
 
     default: {
       // Fallback for route/sheet state id from states.ts
-      await page.goto(`${baseUrl}#${stateId.startsWith('/') ? stateId : '/' + stateId}`, {
-        waitUntil: 'domcontentloaded',
-      })
+      await page.goto(
+        `${baseUrl}#${stateId.startsWith('/') ? stateId : '/' + stateId}`,
+        {
+          waitUntil: 'domcontentloaded',
+        },
+      )
       await page.waitForTimeout(500)
     }
   }

@@ -13,14 +13,43 @@ describe('parseVideoUrl', () => {
   const testCases = [
     // 1-9: Hostile / Invalid schemes / Credentials / Formats
     { input: '', valid: false, error: 'الرابط فارغ', desc: 'empty string' },
-    { input: '   ', valid: false, error: 'الرابط فارغ', desc: 'whitespace string' },
-    { input: 'javascript:alert(1)', valid: false, desc: 'javascript: protocol injection' },
-    { input: 'data:text/html,<script>alert(1)</script>', valid: false, desc: 'data: protocol injection' },
+    {
+      input: '   ',
+      valid: false,
+      error: 'الرابط فارغ',
+      desc: 'whitespace string',
+    },
+    {
+      input: 'javascript:alert(1)',
+      valid: false,
+      desc: 'javascript: protocol injection',
+    },
+    {
+      input: 'data:text/html,<script>alert(1)</script>',
+      valid: false,
+      desc: 'data: protocol injection',
+    },
     { input: 'file:///C:/video.mp4', valid: false, desc: 'file: protocol' },
-    { input: 'ftp://server.com/video.mp4', valid: false, desc: 'ftp: protocol' },
-    { input: 'http://youtube.com/watch?v=dQw4w9WgXcQ', valid: false, desc: 'plain http rejected' },
-    { input: 'https://user:pass@youtube.com/watch?v=dQw4w9WgXcQ', valid: false, desc: 'credentials in YouTube URL' },
-    { input: 'https://user@vimeo.com/12345678', valid: false, desc: 'username in Vimeo URL' },
+    {
+      input: 'ftp://server.com/video.mp4',
+      valid: false,
+      desc: 'ftp: protocol',
+    },
+    {
+      input: 'http://youtube.com/watch?v=dQw4w9WgXcQ',
+      valid: false,
+      desc: 'plain http rejected',
+    },
+    {
+      input: 'https://user:pass@youtube.com/watch?v=dQw4w9WgXcQ',
+      valid: false,
+      desc: 'credentials in YouTube URL',
+    },
+    {
+      input: 'https://user@vimeo.com/12345678',
+      valid: false,
+      desc: 'username in Vimeo URL',
+    },
     { input: 'https://', valid: false, desc: 'malformed https URL' },
 
     // 11-17: YouTube Valid Variations
@@ -28,50 +57,72 @@ describe('parseVideoUrl', () => {
       input: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       valid: true,
       sourceType: 'youtube',
-      embed: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
+      embed:
+        'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
       desc: 'standard www.youtube.com watch URL',
     },
     {
       input: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
       valid: true,
       sourceType: 'youtube',
-      embed: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
+      embed:
+        'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
       desc: 'apex youtube.com watch URL',
     },
     {
       input: 'https://m.youtube.com/watch?v=dQw4w9WgXcQ',
       valid: true,
       sourceType: 'youtube',
-      embed: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
+      embed:
+        'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
       desc: 'mobile m.youtube.com URL',
     },
     {
       input: 'https://youtu.be/dQw4w9WgXcQ',
       valid: true,
       sourceType: 'youtube',
-      embed: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
+      embed:
+        'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
       desc: 'short youtu.be URL',
     },
     {
       input: 'https://www.youtube.com/shorts/dQw4w9WgXcQ',
       valid: true,
       sourceType: 'youtube',
-      embed: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
+      embed:
+        'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
       desc: 'youtube shorts URL',
     },
     {
       input: 'https://youtube.com/embed/dQw4w9WgXcQ',
       valid: true,
       sourceType: 'youtube',
-      embed: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
+      embed:
+        'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&playsinline=1',
       desc: 'existing embed URL normalized to youtube-nocookie',
     },
 
     // 18-21: YouTube Invalid IDs
-    { input: 'https://youtube.com/watch?v=short', valid: false, desc: 'youtube ID too short (5 chars)' },
-    { input: 'https://youtube.com/watch?v=toolongidhere123', valid: false, desc: 'youtube ID too long (16 chars)' },
-    { input: 'https://youtube.com/watch?v=dQw4w9WgXc$', valid: false, desc: 'youtube ID with illegal symbol $' },
-    { input: 'https://youtu.be/invalid_id!', valid: false, desc: 'youtu.be ID with exclamation mark' },
+    {
+      input: 'https://youtube.com/watch?v=short',
+      valid: false,
+      desc: 'youtube ID too short (5 chars)',
+    },
+    {
+      input: 'https://youtube.com/watch?v=toolongidhere123',
+      valid: false,
+      desc: 'youtube ID too long (16 chars)',
+    },
+    {
+      input: 'https://youtube.com/watch?v=dQw4w9WgXc$',
+      valid: false,
+      desc: 'youtube ID with illegal symbol $',
+    },
+    {
+      input: 'https://youtu.be/invalid_id!',
+      valid: false,
+      desc: 'youtu.be ID with exclamation mark',
+    },
 
     // 22-25: Vimeo Valid Variations
     {
@@ -97,9 +148,21 @@ describe('parseVideoUrl', () => {
     },
 
     // 26-29: Vimeo Invalid IDs
-    { input: 'https://vimeo.com/12345', valid: false, desc: 'vimeo ID too short (5 digits)' },
-    { input: 'https://vimeo.com/1234567890123', valid: false, desc: 'vimeo ID too long (13 digits)' },
-    { input: 'https://vimeo.com/abcdef', valid: false, desc: 'vimeo non-numeric ID' },
+    {
+      input: 'https://vimeo.com/12345',
+      valid: false,
+      desc: 'vimeo ID too short (5 digits)',
+    },
+    {
+      input: 'https://vimeo.com/1234567890123',
+      valid: false,
+      desc: 'vimeo ID too long (13 digits)',
+    },
+    {
+      input: 'https://vimeo.com/abcdef',
+      valid: false,
+      desc: 'vimeo non-numeric ID',
+    },
 
     // 30-33: Direct Media Files
     {

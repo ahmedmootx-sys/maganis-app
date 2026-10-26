@@ -3906,10 +3906,14 @@ body.with-cardio-mini-bar .training-screen,
 body.with-cardio-mini-bar .nutrition-screen,
 body.with-cardio-mini-bar .progress-screen,
 body.with-cardio-mini-bar .settings-screen {
-  padding-bottom: calc(var(--bottom-nav-height, 64px) + 56px + env(safe-area-inset-bottom, 0px) + 16px) !important;
+  padding-bottom: calc(
+    var(--bottom-nav-height, 64px) + 56px + env(safe-area-inset-bottom, 0px) +
+      16px
+  ) !important;
 }
 
 body.with-cardio-mini-bar .maganis-toast-portal {
-  bottom: calc(var(--bottom-nav-height, 64px) + 56px + 16px + var(--bottom-inset)) !important;
+  bottom: calc(
+    var(--bottom-nav-height, 64px) + 56px + 16px + var(--bottom-inset)
+  ) !important;
 }
-

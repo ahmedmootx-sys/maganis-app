@@ -17,14 +17,14 @@ A time-boxed feasibility study was conducted to evaluate replacing or augmenting
 
 ## 2. Technical Evaluation of 3D Libraries & Approaches
 
-| Metric / Aspect | Three.js (r160+) | Babylon.js (v6+) | Three.js / WebGPU | Custom WebGL Micro-Engine | Current 2D Vector SVG |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Gzipped Bundle Weight** | ~185 kB (core + GLTF + Orbit) | ~420 kB (core + loaders) | ~230 kB (unstable API) | ~35 kB (custom shaders) | **0 kB** (zero library dependency) |
-| **Raw JS Size** | ~640 kB | ~1.65 MB | ~820 kB | ~110 kB | **0 kB** |
-| **PWA Budget Impact** | **+11.4%** of total JS bundle | **+26.1%** of total JS bundle | **+14.2%** of total JS bundle | +2.2% | **0% (Maintains budget)** |
-| **Memory Footprint (VRAM)** | 45–70 MB | 75–120 MB | 60–90 MB | 25–40 MB | **< 3 MB** |
-| **Android Context Loss Risk** | High on mid-range Android | High | Very High (unsupported on many) | Moderate | **None** |
-| **Thermal / Battery Drain** | Moderate to High | High | High | Low to Moderate | **Negligible** |
+| Metric / Aspect               | Three.js (r160+)              | Babylon.js (v6+)              | Three.js / WebGPU               | Custom WebGL Micro-Engine | Current 2D Vector SVG              |
+| :---------------------------- | :---------------------------- | :---------------------------- | :------------------------------ | :------------------------ | :--------------------------------- |
+| **Gzipped Bundle Weight**     | ~185 kB (core + GLTF + Orbit) | ~420 kB (core + loaders)      | ~230 kB (unstable API)          | ~35 kB (custom shaders)   | **0 kB** (zero library dependency) |
+| **Raw JS Size**               | ~640 kB                       | ~1.65 MB                      | ~820 kB                         | ~110 kB                   | **0 kB**                           |
+| **PWA Budget Impact**         | **+11.4%** of total JS bundle | **+26.1%** of total JS bundle | **+14.2%** of total JS bundle   | +2.2%                     | **0% (Maintains budget)**          |
+| **Memory Footprint (VRAM)**   | 45–70 MB                      | 75–120 MB                     | 60–90 MB                        | 25–40 MB                  | **< 3 MB**                         |
+| **Android Context Loss Risk** | High on mid-range Android     | High                          | Very High (unsupported on many) | Moderate                  | **None**                           |
+| **Thermal / Battery Drain**   | Moderate to High              | High                          | High                            | Low to Moderate           | **Negligible**                     |
 
 ---
 
@@ -33,6 +33,7 @@ A time-boxed feasibility study was conducted to evaluate replacing or augmenting
 BodyParts3D Release 4.0 provides detailed meshes for 48 anatomical muscle structures plus skeletal reference landmarks. The raw binary geometry bundle (`geometry_bundle.bin`) is **21.4 MB**.
 
 ### Decimation Scenarios:
+
 1. **Full Fidelity (120,000 triangles)**:
    - Asset size (Draco / Meshopt compressed): ~4.2 MB download.
    - Result: Violates PWA offline caching budget, causes 3–5 second initial download hitch on 3G/4G Egyptian mobile networks.

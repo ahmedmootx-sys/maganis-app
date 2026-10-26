@@ -41,12 +41,78 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
           trainingDaysPerWeek: 5,
           createdAt: Date.now(),
           days: [
-            { dayIndex: 0, kind: 'strength', focus: 'Upper', labelAr: 'علوي', exercises: [{ exerciseId: 'bench_press', sets: 3, reps: 10, restSeconds: 60 }] },
-            { dayIndex: 1, kind: 'strength', focus: 'Lower', labelAr: 'سفلي', exercises: [{ exerciseId: 'squat', sets: 3, reps: 8, restSeconds: 90 }] },
-            { dayIndex: 2, kind: 'strength', focus: 'Push', labelAr: 'دفع', exercises: [{ exerciseId: 'overhead_press', sets: 3, reps: 10, restSeconds: 60 }] },
-            { dayIndex: 3, kind: 'strength', focus: 'Pull', labelAr: 'سحب', exercises: [{ exerciseId: 'lat_pulldown', sets: 3, reps: 12, restSeconds: 60 }] },
-            { dayIndex: 4, kind: 'strength', focus: 'Legs', labelAr: 'أرجل', exercises: [{ exerciseId: 'leg_press', sets: 3, reps: 12, restSeconds: 60 }] },
-            { dayIndex: 5, kind: 'cardio', focus: 'Cardio', labelAr: 'كارديو', cardio: { plannedMinutes: 30, activity: 'running', effort: 'moderate' }, exercises: [] },
+            {
+              dayIndex: 0,
+              kind: 'strength',
+              focus: 'Upper',
+              labelAr: 'علوي',
+              exercises: [
+                {
+                  exerciseId: 'bench_press',
+                  sets: 3,
+                  reps: 10,
+                  restSeconds: 60,
+                },
+              ],
+            },
+            {
+              dayIndex: 1,
+              kind: 'strength',
+              focus: 'Lower',
+              labelAr: 'سفلي',
+              exercises: [
+                { exerciseId: 'squat', sets: 3, reps: 8, restSeconds: 90 },
+              ],
+            },
+            {
+              dayIndex: 2,
+              kind: 'strength',
+              focus: 'Push',
+              labelAr: 'دفع',
+              exercises: [
+                {
+                  exerciseId: 'overhead_press',
+                  sets: 3,
+                  reps: 10,
+                  restSeconds: 60,
+                },
+              ],
+            },
+            {
+              dayIndex: 3,
+              kind: 'strength',
+              focus: 'Pull',
+              labelAr: 'سحب',
+              exercises: [
+                {
+                  exerciseId: 'lat_pulldown',
+                  sets: 3,
+                  reps: 12,
+                  restSeconds: 60,
+                },
+              ],
+            },
+            {
+              dayIndex: 4,
+              kind: 'strength',
+              focus: 'Legs',
+              labelAr: 'أرجل',
+              exercises: [
+                { exerciseId: 'leg_press', sets: 3, reps: 12, restSeconds: 60 },
+              ],
+            },
+            {
+              dayIndex: 5,
+              kind: 'cardio',
+              focus: 'Cardio',
+              labelAr: 'كارديو',
+              cardio: {
+                plannedMinutes: 30,
+                activity: 'running',
+                effort: 'moderate',
+              },
+              exercises: [],
+            },
           ],
         },
       },
@@ -61,10 +127,52 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
           trainingDaysPerWeek: 4,
           createdAt: Date.now(),
           days: [
-            { dayIndex: 0, kind: 'strength', focus: 'Upper A', labelAr: 'علوي أ', exercises: [{ exerciseId: 'bench_press', sets: 4, reps: 8, restSeconds: 90 }] },
-            { dayIndex: 1, kind: 'strength', focus: 'Lower A', labelAr: 'سفلي أ', exercises: [{ exerciseId: 'squat', sets: 4, reps: 8, restSeconds: 120 }] },
-            { dayIndex: 2, kind: 'strength', focus: 'Upper B', labelAr: 'علوي ب', exercises: [{ exerciseId: 'overhead_press', sets: 4, reps: 8, restSeconds: 90 }] },
-            { dayIndex: 3, kind: 'strength', focus: 'Lower B', labelAr: 'سفلي ب', exercises: [{ exerciseId: 'deadlift', sets: 3, reps: 5, restSeconds: 120 }] },
+            {
+              dayIndex: 0,
+              kind: 'strength',
+              focus: 'Upper A',
+              labelAr: 'علوي أ',
+              exercises: [
+                {
+                  exerciseId: 'bench_press',
+                  sets: 4,
+                  reps: 8,
+                  restSeconds: 90,
+                },
+              ],
+            },
+            {
+              dayIndex: 1,
+              kind: 'strength',
+              focus: 'Lower A',
+              labelAr: 'سفلي أ',
+              exercises: [
+                { exerciseId: 'squat', sets: 4, reps: 8, restSeconds: 120 },
+              ],
+            },
+            {
+              dayIndex: 2,
+              kind: 'strength',
+              focus: 'Upper B',
+              labelAr: 'علوي ب',
+              exercises: [
+                {
+                  exerciseId: 'overhead_press',
+                  sets: 4,
+                  reps: 8,
+                  restSeconds: 90,
+                },
+              ],
+            },
+            {
+              dayIndex: 3,
+              kind: 'strength',
+              focus: 'Lower B',
+              labelAr: 'سفلي ب',
+              exercises: [
+                { exerciseId: 'deadlift', sets: 3, reps: 5, restSeconds: 120 },
+              ],
+            },
           ],
         },
       },
@@ -89,7 +197,9 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
               kind: 'strength',
               focus: 'New Strength',
               labelAr: `يوم مقاومة ${program.days.length + 1}`,
-              exercises: [{ exerciseId: 'pushup', sets: 3, reps: 10, restSeconds: 60 }],
+              exercises: [
+                { exerciseId: 'pushup', sets: 3, reps: 10, restSeconds: 60 },
+              ],
             })
           }
         } else if (op === 1) {
@@ -101,7 +211,11 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
               kind: 'cardio',
               focus: 'Cardio',
               labelAr: `يوم كارديو ${program.days.length + 1}`,
-              cardio: { plannedMinutes: 20, activity: 'bike', effort: 'moderate' },
+              cardio: {
+                plannedMinutes: 20,
+                activity: 'bike',
+                effort: 'moderate',
+              },
               exercises: [],
             })
           }
@@ -110,7 +224,8 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
           if (program.days.length > 0 && program.days.length < 7) {
             const srcIdx = Math.floor(rng() * program.days.length)
             const srcDay = program.days[srcIdx]
-            const nextIdx = Math.max(...program.days.map((d: ProgramDay) => d.dayIndex)) + 1
+            const nextIdx =
+              Math.max(...program.days.map((d: ProgramDay) => d.dayIndex)) + 1
             const clonedDay: ProgramDay = {
               ...srcDay,
               id: `day-cloned-${Date.now()}-${opIdx}`,
@@ -119,7 +234,9 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
               labelAr: `${srcDay.name || srcDay.labelAr} (نسخة)`,
               customName: `${srcDay.name || srcDay.labelAr} (نسخة)`,
               exercises: (srcDay.exercises || []).map((pe: any) => ({ ...pe })),
-              cardioConfig: srcDay.cardioConfig ? { ...srcDay.cardioConfig } : undefined,
+              cardioConfig: srcDay.cardioConfig
+                ? { ...srcDay.cardioConfig }
+                : undefined,
               finisher: srcDay.finisher ? { ...srcDay.finisher } : undefined,
             }
             program.days.push(clonedDay)
@@ -132,9 +249,12 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
           }
         } else if (op === 4) {
           // 5. Add or modify cardio finisher on a resistance day (B3.2)
-          const resistanceDays = program.days.filter((d: ProgramDay) => d.kind !== 'cardio')
+          const resistanceDays = program.days.filter(
+            (d: ProgramDay) => d.kind !== 'cardio',
+          )
           if (resistanceDays.length > 0) {
-            const targetDay = resistanceDays[Math.floor(rng() * resistanceDays.length)]
+            const targetDay =
+              resistanceDays[Math.floor(rng() * resistanceDays.length)]
             targetDay.finisher = {
               activity: 'جري خفيف',
               minutes: 15 + Math.floor(rng() * 4) * 5, // 15, 20, 25, 30
@@ -143,7 +263,9 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
           }
         } else if (op === 5) {
           // 6. Remove cardio finisher from a resistance day
-          const withFinisher = program.days.filter((d: ProgramDay) => d.finisher)
+          const withFinisher = program.days.filter(
+            (d: ProgramDay) => d.finisher,
+          )
           if (withFinisher.length > 0) {
             const target = withFinisher[Math.floor(rng() * withFinisher.length)]
             target.finisher = null
@@ -163,15 +285,21 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
         const load = selectWeekLoad(profile, program)
 
         // Invariant 1: resistanceDays counts only strength days (kind !== 'cardio' && kind !== 'mobility')
-        const expectedResistance = program.days.filter((d: ProgramDay) => d.kind !== 'cardio' && d.kind !== 'mobility').length
+        const expectedResistance = program.days.filter(
+          (d: ProgramDay) => d.kind !== 'cardio' && d.kind !== 'mobility',
+        ).length
         expect(load.resistanceDays).toBe(expectedResistance)
 
         // Invariant 2: cardioDays counts only full cardio days (finishers NEVER count as cardio days)
-        const expectedCardio = program.days.filter((d: ProgramDay) => d.kind === 'cardio').length
+        const expectedCardio = program.days.filter(
+          (d: ProgramDay) => d.kind === 'cardio',
+        ).length
         expect(load.cardioDays).toBe(expectedCardio)
 
         // Invariant 3: totalScheduledSessions is strictly the sum of full days
-        expect(load.totalScheduledSessions).toBe(load.resistanceDays + load.cardioDays + load.mobilityDays)
+        expect(load.totalScheduledSessions).toBe(
+          load.resistanceDays + load.cardioDays + load.mobilityDays,
+        )
 
         // Invariant 4: restDays + totalScheduledSessions == 7 (or restDays == 0 if >= 7)
         if (load.totalScheduledSessions <= 7) {
@@ -184,10 +312,11 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
         let expectedCardioMinutes = 0
         for (const d of program.days) {
           if (d.kind === 'cardio') {
-            expectedCardioMinutes += (d.cardio?.plannedMinutes ?? d.cardioConfig?.plannedMinutes ?? 30)
+            expectedCardioMinutes +=
+              d.cardio?.plannedMinutes ?? d.cardioConfig?.plannedMinutes ?? 30
           }
           if (d.finisher) {
-            expectedCardioMinutes += (d.finisher.minutes ?? 0)
+            expectedCardioMinutes += d.finisher.minutes ?? 0
           }
         }
         expect(load.plannedCardioMinutes).toBe(expectedCardioMinutes)

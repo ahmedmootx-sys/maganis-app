@@ -97,7 +97,8 @@ describe('Part E: Atlas controls and states', () => {
       name: /غير مرسومة في الأطلس/,
     })
     expect(unpaintedBtn).toBeDefined()
-    expect(screen.getAllByText(/عضلات غير مرسومة في الأطلس/).length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByText(/عضلات غير مرسومة في الأطلس/).length,
+    ).toBeGreaterThan(0)
   })
 })
-

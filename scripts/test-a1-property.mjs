@@ -65,7 +65,12 @@ async function runTest() {
           { dayIndex: 2, kind: 'strength', focus: 'Push' },
           { dayIndex: 3, kind: 'strength', focus: 'Pull' },
           { dayIndex: 4, kind: 'strength', focus: 'Legs' },
-          { dayIndex: 5, kind: 'cardio', focus: 'Cardio', cardio: { plannedMinutes: 30 } },
+          {
+            dayIndex: 5,
+            kind: 'cardio',
+            focus: 'Cardio',
+            cardio: { plannedMinutes: 30 },
+          },
         ],
       },
     },
@@ -107,9 +112,14 @@ async function runTest() {
           kind: 'strength',
           focus: `Strength ${nextIdx}`,
         })
-      } else if (opChoice === 1 && program.days.some((d) => d.kind === 'strength' || !d.kind)) {
+      } else if (
+        opChoice === 1 &&
+        program.days.some((d) => d.kind === 'strength' || !d.kind)
+      ) {
         // Remove a resistance day
-        const sIdx = program.days.findIndex((d) => d.kind === 'strength' || !d.kind)
+        const sIdx = program.days.findIndex(
+          (d) => d.kind === 'strength' || !d.kind,
+        )
         if (sIdx !== -1) program.days.splice(sIdx, 1)
       } else if (opChoice === 2) {
         // Add cardio day
@@ -120,7 +130,10 @@ async function runTest() {
           focus: 'Cardio',
           cardio: { plannedMinutes: 30 },
         })
-      } else if (opChoice === 3 && program.days.some((d) => d.kind === 'cardio')) {
+      } else if (
+        opChoice === 3 &&
+        program.days.some((d) => d.kind === 'cardio')
+      ) {
         // Remove cardio day
         const cIdx = program.days.findIndex((d) => d.kind === 'cardio')
         if (cIdx !== -1) program.days.splice(cIdx, 1)
@@ -152,7 +165,9 @@ async function runTest() {
           }
         } else {
           // OLD BEHAVIOR
-          const strengthCount = program.days.filter((d) => d.kind !== 'cardio').length
+          const strengthCount = program.days.filter(
+            (d) => d.kind !== 'cardio',
+          ).length
           if (strengthCount !== profile.trainingDaysPerWeek) {
             profile.trainingDaysPerWeek = strengthCount
           }
@@ -179,9 +194,15 @@ async function runTest() {
       } else {
         // Old code simulation from Dashboard.tsx and WeeklyPlanView.tsx
         const oldHomeTotal = program.days.length
-        const oldTrainingStrength = program.days.filter((d) => d.kind !== 'cardio').length
+        const oldTrainingStrength = program.days.filter(
+          (d) => d.kind !== 'cardio',
+        ).length
 
-        homeCounts = { resistance: oldHomeTotal, cardio: 0, total: oldHomeTotal }
+        homeCounts = {
+          resistance: oldHomeTotal,
+          cardio: 0,
+          total: oldHomeTotal,
+        }
         trainingCounts = {
           resistance: oldTrainingStrength,
           cardio: program.days.length - oldTrainingStrength,
@@ -234,14 +255,20 @@ async function runTest() {
   console.log(`📊 Violations detected: ${violations.length}`)
 
   if (violations.length > 0) {
-    console.error(`❌ Property test FAILED with ${violations.length} violations:`)
+    console.error(
+      `❌ Property test FAILED with ${violations.length} violations:`,
+    )
     violations.slice(0, 10).forEach((v, idx) => {
-      console.error(`  ${idx + 1}. [Op ${v.op} in ${v.dataset}] ${v.issue}: ${v.details}`)
+      console.error(
+        `  ${idx + 1}. [Op ${v.op} in ${v.dataset}] ${v.issue}: ${v.details}`,
+      )
     })
     process.exit(1)
   }
 
-  console.log('✅ A1 Property Test PASSED cleanly across all operations and datasets!')
+  console.log(
+    '✅ A1 Property Test PASSED cleanly across all operations and datasets!',
+  )
 }
 
 runTest().catch((err) => {

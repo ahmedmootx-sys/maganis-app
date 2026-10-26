@@ -139,23 +139,45 @@ export function deriveConstraints(
 
   // Pure calisthenics / bodyweight condition:
   // User selected calisthenics without weights, or home location explicitly without weights
-  if (hasCalisthenicsStyle && !hasWeightsStyle && location !== 'gym' && location !== 'both') {
+  if (
+    hasCalisthenicsStyle &&
+    !hasWeightsStyle &&
+    location !== 'gym' &&
+    location !== 'both'
+  ) {
     allowedEquipment = new Set(BODYWEIGHT_ALLOWED_EQUIPMENT)
     allowsLoadedExercises = false
     isCalisthenicsOnly = true
-  } else if (location === 'home' && !styles.includes('weights') && !profile.equipmentAvailable?.includes('barbell')) {
+  } else if (
+    location === 'home' &&
+    !styles.includes('weights') &&
+    !profile.equipmentAvailable?.includes('barbell')
+  ) {
     // Home training with dumbbells / basic setup
     allowedEquipment = new Set(HOME_DUMBBELLS_ALLOWED_EQUIPMENT)
     allowsLoadedExercises = true
     isHomeDumbbellsOnly = true
-  } else if (profile.equipmentAvailable && profile.equipmentAvailable.length > 0) {
+  } else if (
+    profile.equipmentAvailable &&
+    profile.equipmentAvailable.length > 0
+  ) {
     // Explicit equipment list from profile
-    const customAllowed = new Set<string>(['body only', 'bodyweight', 'none', 'other'])
+    const customAllowed = new Set<string>([
+      'body only',
+      'bodyweight',
+      'none',
+      'other',
+    ])
     let hasLoaded = false
 
     for (const eq of profile.equipmentAvailable) {
       const norm = normalizeExerciseEquipment(eq)
-      if (norm === 'barbell' || norm === 'dumbbell' || norm === 'cable' || norm === 'machine') {
+      if (
+        norm === 'barbell' ||
+        norm === 'dumbbell' ||
+        norm === 'cable' ||
+        norm === 'machine'
+      ) {
         customAllowed.add(norm)
         hasLoaded = true
       } else if (norm === 'cables') {
@@ -263,13 +285,21 @@ export function isExerciseAllowed(
     'other'
   const normEq = normalizeExerciseEquipment(rawEq)
 
-  if (!constraints.allowedEquipment.has(normEq) && !constraints.allowedEquipment.has(rawEq.toLowerCase())) {
+  if (
+    !constraints.allowedEquipment.has(normEq) &&
+    !constraints.allowedEquipment.has(rawEq.toLowerCase())
+  ) {
     return false
   }
 
   // If user cannot perform loaded exercises, reject weighted equipment
   if (!constraints.allowsLoadedExercises) {
-    if (normEq === 'barbell' || normEq === 'dumbbell' || normEq === 'cable' || normEq === 'machine') {
+    if (
+      normEq === 'barbell' ||
+      normEq === 'dumbbell' ||
+      normEq === 'cable' ||
+      normEq === 'machine'
+    ) {
       return false
     }
   }

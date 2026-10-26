@@ -199,7 +199,10 @@ export function selectEffectiveExercise(
   base: Exercise,
   overrideParam?: ExerciseOverride,
 ): EffectiveExercise {
-  const override = overrideParam || inMemoryOverrides[base.id] || inMemoryOverrides[base.key || '']
+  const override =
+    overrideParam ||
+    inMemoryOverrides[base.id] ||
+    inMemoryOverrides[base.key || '']
 
   if (!override) {
     return {
@@ -214,13 +217,13 @@ export function selectEffectiveExercise(
   // 1. Arabic Name
   const effectiveNameAr =
     override.nameAr !== undefined && override.nameAr.trim() !== ''
-      ? (isModified = true, override.nameAr.trim())
+      ? ((isModified = true), override.nameAr.trim())
       : base.nameAr
 
   // 2. English Name
   const effectiveNameEn =
     override.nameEn !== undefined
-      ? (isModified = true, override.nameEn.trim())
+      ? ((isModified = true), override.nameEn.trim())
       : base.nameEn || base.name
 
   // 3. Image
@@ -246,23 +249,23 @@ export function selectEffectiveExercise(
   // 4. How to perform
   const benefitAr =
     override.benefitAr !== undefined
-      ? (isModified = true, override.benefitAr)
+      ? ((isModified = true), override.benefitAr)
       : base.benefitAr || base.benefit
 
   const mechanicsAr =
     override.mechanicsAr !== undefined
-      ? (isModified = true, override.mechanicsAr)
+      ? ((isModified = true), override.mechanicsAr)
       : base.mechanicsAr || base.mechanics
 
   const howToStepsAr =
     override.howToStepsAr !== undefined
-      ? (isModified = true, override.howToStepsAr)
+      ? ((isModified = true), override.howToStepsAr)
       : base.howToStepsAr || base.steps || base.steps_ar
 
   // 5. Muscles
   const muscles =
     override.muscles !== undefined
-      ? (isModified = true, override.muscles)
+      ? ((isModified = true), override.muscles)
       : base.muscles
 
   // 6. Personal Note
@@ -413,12 +416,19 @@ export function validateExerciseOverride(obj: unknown): {
       }
       // Check that muscle exists in anatomical atlas
       if (!VALID_MUSCLE_IDS.has(m.id)) {
-        return { valid: false, error: `معرف العضلة "${m.id}" غير موجود في الأطلس` }
+        return {
+          valid: false,
+          error: `معرف العضلة "${m.id}" غير موجود في الأطلس`,
+        }
       }
     }
   }
 
-  if (o.videoUrl !== undefined && typeof o.videoUrl === 'string' && o.videoUrl.trim() !== '') {
+  if (
+    o.videoUrl !== undefined &&
+    typeof o.videoUrl === 'string' &&
+    o.videoUrl.trim() !== ''
+  ) {
     const parsed = parseVideoUrl(o.videoUrl)
     if (!parsed.isValid) {
       return { valid: false, error: `رابط الفيديو غير صالح: ${parsed.error}` }
@@ -435,7 +445,10 @@ export function validateExerciseOverride(obj: unknown): {
     }
   }
 
-  if (o.customImageBlob !== undefined && typeof o.customImageBlob !== 'string') {
+  if (
+    o.customImageBlob !== undefined &&
+    typeof o.customImageBlob !== 'string'
+  ) {
     return { valid: false, error: 'بيانات الصورة المخصصة غير صالحة' }
   }
 

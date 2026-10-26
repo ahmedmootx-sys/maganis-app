@@ -50,7 +50,9 @@ export function ScheduleMismatchCallout({
     }
     onUpdateProfile(updated)
     if (showToast) {
-      showToast(`تم اعتماد ${plural(load.resistanceDays, 'يوم')} في الملف الشخصي`)
+      showToast(
+        `تم اعتماد ${plural(load.resistanceDays, 'يوم')} في الملف الشخصي`,
+      )
     }
   }
 
@@ -68,18 +70,15 @@ export function ScheduleMismatchCallout({
             اعتمد {plural(load.resistanceDays, 'يوم')}
           </Button>
           {onOpenDaysAdjust && (
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={onOpenDaysAdjust}
-            >
+            <Button size="sm" variant="secondary" onClick={onOpenDaysAdjust}>
               تعديل الجدول
             </Button>
           )}
         </div>
       }
     >
-      برنامجك يحتوي على {plural(load.resistanceDays, 'يوم')} مقاومة، بينما اخترت {plural(profileGoal, 'يوم')} في هدفك الأسبوعي.
+      برنامجك يحتوي على {plural(load.resistanceDays, 'يوم')} مقاومة، بينما اخترت{' '}
+      {plural(profileGoal, 'يوم')} في هدفك الأسبوعي.
     </Callout>
   )
 }

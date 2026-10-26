@@ -37,20 +37,22 @@ async function run() {
   if (fs.existsSync(ownerProfilePath)) {
     ownerDump = JSON.parse(fs.readFileSync(ownerProfilePath, 'utf8'))
   }
-  const baseProfile = ownerDump ? ownerDump.profile || ownerDump : {
-    id: 'user_1',
-    name: 'أحمد',
-    sex: 'male',
-    age: 28,
-    weightKg: 80,
-    heightCm: 178,
-    activityLevel: 'moderate',
-    primaryGoal: 'hypertrophy',
-    trainingDaysPerWeek: 4,
-    trainingLocation: 'gym',
-    trainingStyle: 'weights',
-    experienceLevel: 'intermediate',
-  }
+  const baseProfile = ownerDump
+    ? ownerDump.profile || ownerDump
+    : {
+        id: 'user_1',
+        name: 'أحمد',
+        sex: 'male',
+        age: 28,
+        weightKg: 80,
+        heightCm: 178,
+        activityLevel: 'moderate',
+        primaryGoal: 'hypertrophy',
+        trainingDaysPerWeek: 4,
+        trainingLocation: 'gym',
+        trainingStyle: 'weights',
+        experienceLevel: 'intermediate',
+      }
 
   const standardProgram = {
     id: 'prog-g6b',
@@ -103,13 +105,16 @@ async function run() {
 
   // Helper to init storage
   async function setupStorage(customProfile, customProg) {
-    await page.addInitScript(({ p, prog }) => {
-      localStorage.setItem('maganis:profile.active', JSON.stringify(p))
-      localStorage.setItem('maganis:workout.program', JSON.stringify(prog))
-      localStorage.setItem('maganis:theme', 'light')
-      document.documentElement.setAttribute('data-theme', 'light')
-      document.body.setAttribute('data-theme', 'light')
-    }, { p: customProfile, prog: customProg })
+    await page.addInitScript(
+      ({ p, prog }) => {
+        localStorage.setItem('maganis:profile.active', JSON.stringify(p))
+        localStorage.setItem('maganis:workout.program', JSON.stringify(prog))
+        localStorage.setItem('maganis:theme', 'light')
+        document.documentElement.setAttribute('data-theme', 'light')
+        document.body.setAttribute('data-theme', 'light')
+      },
+      { p: customProfile, prog: customProg },
+    )
   }
 
   try {
@@ -125,7 +130,12 @@ async function run() {
     await setupStorage(calisthenicsProfile, standardProgram)
     await page.goto(`${baseUrl}#/library`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(600)
-    await page.screenshot({ path: path.join(rootDir, 'evidence/g6-b/green/b1-calisthenics-library.png') })
+    await page.screenshot({
+      path: path.join(
+        rootDir,
+        'evidence/g6-b/green/b1-calisthenics-library.png',
+      ),
+    })
 
     // -------------------------------------------------------------------------
     // B1: Disallowed Exercises Callout on Training screen
@@ -133,7 +143,9 @@ async function run() {
     console.log('2. Capturing B1 Disallowed Exercises Callout...')
     await page.goto(`${baseUrl}#/training`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(600)
-    await page.screenshot({ path: path.join(rootDir, 'evidence/g6-b/green/b1-disallowed-callout.png') })
+    await page.screenshot({
+      path: path.join(rootDir, 'evidence/g6-b/green/b1-disallowed-callout.png'),
+    })
 
     // -------------------------------------------------------------------------
     // B2: Add Day Sheet (3 options: resistance, cardio, duplicate existing)
@@ -143,31 +155,37 @@ async function run() {
     await page.goto(`${baseUrl}#/training`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(400)
     const addDayBtn = page.locator('button:has-text("إضافة يوم")')
-    if (await addDayBtn.count() > 0) {
+    if ((await addDayBtn.count()) > 0) {
       await addDayBtn.first().click({ force: true })
     }
     await page.waitForTimeout(500)
-    await page.screenshot({ path: path.join(rootDir, 'evidence/g6-b/green/b2-add-day-sheet.png') })
+    await page.screenshot({
+      path: path.join(rootDir, 'evidence/g6-b/green/b2-add-day-sheet.png'),
+    })
 
     // -------------------------------------------------------------------------
     // B2: Duplicate Picker Sheet (listing existing days)
     // -------------------------------------------------------------------------
     console.log('4. Capturing B2 Duplicate Picker Sheet...')
     const dupOption = page.locator('button:has-text("تكرار يوم موجود")')
-    if (await dupOption.count() > 0) {
+    if ((await dupOption.count()) > 0) {
       await dupOption.first().click({ force: true })
     }
     await page.waitForTimeout(500)
-    await page.screenshot({ path: path.join(rootDir, 'evidence/g6-b/green/b2-duplicate-picker.png') })
+    await page.screenshot({
+      path: path.join(rootDir, 'evidence/g6-b/green/b2-duplicate-picker.png'),
+    })
 
     // -------------------------------------------------------------------------
     // B3.1: Cardio Runner Leave Sheet (كمّل الجلسة / صغّر الجلسة / إنهاء الجلسة)
     // -------------------------------------------------------------------------
     console.log('5. Capturing B3.1 Cardio Runner Leave Sheet...')
-    await page.goto(`${baseUrl}#/training/day/2`, { waitUntil: 'domcontentloaded' })
+    await page.goto(`${baseUrl}#/training/day/2`, {
+      waitUntil: 'domcontentloaded',
+    })
     await page.waitForTimeout(400)
     const startCardioBtn = page.locator('button:has-text("ابدأ جلسة الكارديو")')
-    if (await startCardioBtn.count() > 0) {
+    if ((await startCardioBtn.count()) > 0) {
       await startCardioBtn.first().click({ force: true })
     }
     // Wait for countdown
@@ -175,10 +193,14 @@ async function run() {
     await page.waitForSelector('.cardio-runner-screen', { timeout: 6000 })
     await page.waitForTimeout(400)
     // Click "إنهاء الجلسة" inside CardioRunner
-    const endRunnerBtn = page.locator('.cardio-runner-screen button:has-text("إنهاء الجلسة")')
+    const endRunnerBtn = page.locator(
+      '.cardio-runner-screen button:has-text("إنهاء الجلسة")',
+    )
     await endRunnerBtn.first().click({ force: true })
     await page.waitForTimeout(600)
-    await page.screenshot({ path: path.join(rootDir, 'evidence/g6-b/green/b3-cardio-leave-sheet.png') })
+    await page.screenshot({
+      path: path.join(rootDir, 'evidence/g6-b/green/b3-cardio-leave-sheet.png'),
+    })
 
     // -------------------------------------------------------------------------
     // B3.1: Cardio Mini Bar on Training Screen
@@ -201,7 +223,9 @@ async function run() {
       window.dispatchEvent(new Event('cardio-session-sync'))
     })
     await page.waitForTimeout(600)
-    await page.screenshot({ path: path.join(rootDir, 'evidence/g6-b/green/b3-cardio-mini-bar.png') })
+    await page.screenshot({
+      path: path.join(rootDir, 'evidence/g6-b/green/b3-cardio-mini-bar.png'),
+    })
 
     // -------------------------------------------------------------------------
     // B3.2: Cardio Finisher Card on Resistance Day Screen
@@ -211,26 +235,42 @@ async function run() {
       localStorage.removeItem('maganis:cardio_active_session')
       window.dispatchEvent(new Event('cardio-session-sync'))
     })
-    await page.goto(`${baseUrl}#/training/day/0`, { waitUntil: 'domcontentloaded' })
+    await page.goto(`${baseUrl}#/training/day/0`, {
+      waitUntil: 'domcontentloaded',
+    })
     await page.waitForTimeout(600)
     await page.evaluate(() => {
       const el = document.querySelector('.day-screen .screen-content')
       if (el) el.scrollTop = el.scrollHeight
     })
     await page.waitForTimeout(400)
-    await page.screenshot({ path: path.join(rootDir, 'evidence/g6-b/green/b3-cardio-finisher-card.png') })
+    await page.screenshot({
+      path: path.join(
+        rootDir,
+        'evidence/g6-b/green/b3-cardio-finisher-card.png',
+      ),
+    })
 
     // -------------------------------------------------------------------------
     // B3.2: Cardio Finisher Modal with Bulk Apply Switch
     // -------------------------------------------------------------------------
     console.log('8. Capturing B3.2 Cardio Finisher Modal...')
-    const finisherAddBtn = page.locator('button:has-text("إضافة كارديو بعد التمرين")')
+    const finisherAddBtn = page.locator(
+      'button:has-text("إضافة كارديو بعد التمرين")',
+    )
     await finisherAddBtn.scrollIntoViewIfNeeded()
     await finisherAddBtn.click({ force: true })
     await page.waitForTimeout(600)
-    await page.screenshot({ path: path.join(rootDir, 'evidence/g6-b/green/b3-cardio-finisher-modal.png') })
+    await page.screenshot({
+      path: path.join(
+        rootDir,
+        'evidence/g6-b/green/b3-cardio-finisher-modal.png',
+      ),
+    })
 
-    console.log('All G6-B evidence screenshots successfully captured in evidence/g6-b/green/')
+    console.log(
+      'All G6-B evidence screenshots successfully captured in evidence/g6-b/green/',
+    )
   } finally {
     await browser.close()
     await server.close()

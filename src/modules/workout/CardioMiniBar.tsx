@@ -64,7 +64,9 @@ export function CardioMiniBar({
   const isExpired = currentElapsedMs >= totalTargetMs
 
   const grossRate = estimate?.grossRateKcalPerMin || 0
-  const liveGrossKcal = Math.round(calculateLiveEnergy(grossRate, currentElapsedMs))
+  const liveGrossKcal = Math.round(
+    calculateLiveEnergy(grossRate, currentElapsedMs),
+  )
 
   const actDef = getCardioActivity(activityId)
   const actName = actDef?.name_ar || activityId
@@ -93,7 +95,8 @@ export function CardioMiniBar({
       onClick={onOpenRunner}
       style={{
         position: 'fixed',
-        bottom: 'calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px))',
+        bottom:
+          'calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px))',
         insetInline: 0,
         height: '56px',
         zIndex: 'var(--z-cardio-bar, 150)',
@@ -128,7 +131,9 @@ export function CardioMiniBar({
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)' }}>
+          <span
+            style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)' }}
+          >
             {actName.replace(/جرى/g, 'جري')}
           </span>
           <span

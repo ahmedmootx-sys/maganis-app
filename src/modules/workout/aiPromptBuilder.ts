@@ -49,7 +49,12 @@ export function buildAiDesignerPrompt(options: PromptBuildOptions = {}): {
     ).exercises || []
 
   for (const ex of exercises) {
-    if (isExerciseAllowed({ id: ex.key, key: ex.key, equipment: ex.equipment }, constraints)) {
+    if (
+      isExerciseAllowed(
+        { id: ex.key, key: ex.key, equipment: ex.equipment },
+        constraints,
+      )
+    ) {
       catalogLines.push(
         `${ex.key} | ${ex.name_en} | ${ex.name_ar} | ${ex.category} | ${ex.equipment?.ar || ex.equipment?.db || ''}`,
       )
@@ -81,7 +86,9 @@ export function buildAiDesignerPrompt(options: PromptBuildOptions = {}): {
     if (b?.weightKg) parts.push(`- Weight: ${b.weightKg} kg`)
     if (profile.primaryGoal) parts.push(`- Main goal: ${profile.primaryGoal}`)
     if (profile.trainingDaysPerWeek)
-      parts.push(`- Training days per week: ${profile.trainingDaysPerWeek} days`)
+      parts.push(
+        `- Training days per week: ${profile.trainingDaysPerWeek} days`,
+      )
     if (profile.trainingStyle && profile.trainingStyle.length > 0) {
       parts.push(`- Training style: ${profile.trainingStyle.join(', ')}`)
     }
@@ -89,7 +96,9 @@ export function buildAiDesignerPrompt(options: PromptBuildOptions = {}): {
       parts.push(`- Training location: ${profile.trainingLocation}`)
     }
     if (profile.equipmentAvailable && profile.equipmentAvailable.length > 0) {
-      parts.push(`- Available equipment: ${profile.equipmentAvailable.join(', ')}`)
+      parts.push(
+        `- Available equipment: ${profile.equipmentAvailable.join(', ')}`,
+      )
     } else if (constraints.isCalisthenicsOnly) {
       parts.push(`- Available equipment: Bodyweight only (calisthenics)`)
     } else if (constraints.isHomeDumbbellsOnly) {

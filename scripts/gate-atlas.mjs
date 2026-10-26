@@ -3,12 +3,42 @@ import path from 'node:path'
 
 const projectRoot = process.cwd()
 
-const muscleNamesPath = path.join(projectRoot, 'src', 'data', 'muscle-names.json')
-const muscleInfoPath = path.join(projectRoot, 'src', 'content', 'muscle-info-v1.1.json')
-const atlasAnchorsPath = path.join(projectRoot, 'src', 'data', 'atlas-anchors.json')
-const anteriorSvgPath = path.join(projectRoot, 'public', 'atlas', 'anterior.svg')
-const posteriorSvgPath = path.join(projectRoot, 'public', 'atlas', 'posterior.svg')
-const atlasMetaPath = path.join(projectRoot, 'public', 'atlas', 'atlas-meta.json')
+const muscleNamesPath = path.join(
+  projectRoot,
+  'src',
+  'data',
+  'muscle-names.json',
+)
+const muscleInfoPath = path.join(
+  projectRoot,
+  'src',
+  'content',
+  'muscle-info-v1.1.json',
+)
+const atlasAnchorsPath = path.join(
+  projectRoot,
+  'src',
+  'data',
+  'atlas-anchors.json',
+)
+const anteriorSvgPath = path.join(
+  projectRoot,
+  'public',
+  'atlas',
+  'anterior.svg',
+)
+const posteriorSvgPath = path.join(
+  projectRoot,
+  'public',
+  'atlas',
+  'posterior.svg',
+)
+const atlasMetaPath = path.join(
+  projectRoot,
+  'public',
+  'atlas',
+  'atlas-meta.json',
+)
 
 const muscleNamesData = JSON.parse(fs.readFileSync(muscleNamesPath, 'utf8'))
 const muscleInfoData = JSON.parse(fs.readFileSync(muscleInfoPath, 'utf8'))
@@ -46,7 +76,9 @@ for (const m of muscleNamesData.muscles) {
   }
   checksCount++
   if (!info || !info.attaches_ar) {
-    errors.push(`Muscle ${m.id} missing attaches_ar entry in muscle-info-v1.1.json`)
+    errors.push(
+      `Muscle ${m.id} missing attaches_ar entry in muscle-info-v1.1.json`,
+    )
   }
 
   // Check path existence or anchor existence
@@ -57,12 +89,16 @@ for (const m of muscleNamesData.muscles) {
 
   if (m.atlas !== 'no_mesh') {
     if (!inAnt && !inPost) {
-      errors.push(`Muscle ${m.id} has atlas=${m.atlas} but no SVG path in anterior or posterior view`)
+      errors.push(
+        `Muscle ${m.id} has atlas=${m.atlas} but no SVG path in anterior or posterior view`,
+      )
     }
   } else {
     // If no_mesh, MUST have an anchor locator in atlas-anchors.json
     if (!hasAnchor) {
-      errors.push(`Muscle ${m.id} is no_mesh but missing locator in atlas-anchors.json`)
+      errors.push(
+        `Muscle ${m.id} is no_mesh but missing locator in atlas-anchors.json`,
+      )
     }
   }
 
@@ -70,15 +106,16 @@ for (const m of muscleNamesData.muscles) {
   if (m.atlas === 'derived_approx') {
     checksCount++
     if (m.id !== 'pec_sternal' && m.id !== 'pec_costal') {
-      errors.push(`Unexpected derived muscle ${m.id}: only pec_sternal and pec_costal may be derived`)
+      errors.push(
+        `Unexpected derived muscle ${m.id}: only pec_sternal and pec_costal may be derived`,
+      )
     }
   }
 }
 
-
 // 2. Check for orphan paths in SVGs
 console.log('Checking for orphan SVG paths...')
-const knownIds = new Set(muscleNamesData.muscles.map(m => m.id))
+const knownIds = new Set(muscleNamesData.muscles.map((m) => m.id))
 const svgMuscleRegex = /data-muscle="([^"]+)"/g
 
 let match
@@ -94,14 +131,18 @@ while ((match = svgMuscleRegex.exec(posteriorSvg)) !== null) {
 for (const id of antMuscles) {
   checksCount++
   if (!knownIds.has(id)) {
-    errors.push(`Orphan path in anterior.svg: data-muscle="${id}" not found in muscle-names.json`)
+    errors.push(
+      `Orphan path in anterior.svg: data-muscle="${id}" not found in muscle-names.json`,
+    )
   }
 }
 
 for (const id of postMuscles) {
   checksCount++
   if (!knownIds.has(id)) {
-    errors.push(`Orphan path in posterior.svg: data-muscle="${id}" not found in muscle-names.json`)
+    errors.push(
+      `Orphan path in posterior.svg: data-muscle="${id}" not found in muscle-names.json`,
+    )
   }
 }
 
@@ -109,7 +150,9 @@ for (const id of postMuscles) {
 // In our 1024x2048 SVG viewBox displayed at width 360px:
 // 1 CSS px = 1024 / 360 = 2.844 SVG units
 // 24 CSS px = 24 * 2.844 = 68.27 SVG units
-console.log('Checking minimum hit target bounding boxes (24x24 CSS px at 360px viewport)...')
+console.log(
+  'Checking minimum hit target bounding boxes (24x24 CSS px at 360px viewport)...',
+)
 const MIN_HIT_PX_SVG = (1024 / 360) * 24 // ~68.3 SVG units
 
 // Check meta views bounding boxes
@@ -119,12 +162,15 @@ for (const m of muscleNamesData.muscles) {
   checksCount++
   const meta = atlasMeta.muscles[m.id]
   if (!meta) continue
-  
+
   // Check if any view has an anchor or visible area
-  const hasVis = (meta.views?.A?.visible_pixels ?? 0) > 0 || (meta.views?.P?.visible_pixels ?? 0) > 0
+  const hasVis =
+    (meta.views?.A?.visible_pixels ?? 0) > 0 ||
+    (meta.views?.P?.visible_pixels ?? 0) > 0
   if (hasVis) {
     // If the muscle area in pixels is very small, it requires expanded hit target
-    const minPixels = (meta.views?.A?.visible_pixels || meta.views?.P?.visible_pixels || 0)
+    const minPixels =
+      meta.views?.A?.visible_pixels || meta.views?.P?.visible_pixels || 0
     if (minPixels < 400) {
       sub24Count++
     }
@@ -158,14 +204,20 @@ for (const m of muscleNamesData.muscles) {
     }
   }
 }
-console.log(`Muscles located in lower half of screen (occluded if viewBox not shifted): ${occludedWithoutShift}`)
+console.log(
+  `Muscles located in lower half of screen (occluded if viewBox not shifted): ${occludedWithoutShift}`,
+)
 if (occludedWithoutShift > 0) {
   // Enforces that dynamic shift exists
-  console.log(`✓ Verified need for dynamic viewBox shift on ${occludedWithoutShift} lower muscles`)
+  console.log(
+    `✓ Verified need for dynamic viewBox shift on ${occludedWithoutShift} lower muscles`,
+  )
 }
 
 // 5. Leader-line label boxes non-overlapping check
-console.log('Checking precomputed label boxes for overlap and viewport boundary...')
+console.log(
+  'Checking precomputed label boxes for overlap and viewport boundary...',
+)
 const atlasLabelsModule = await import('../src/modules/workout/atlasLabels.ts')
 const { ANTERIOR_LABELS, POSTERIOR_LABELS } = atlasLabelsModule
 
@@ -177,16 +229,20 @@ function checkLabelList(labels, viewName) {
     // Boundary check [x, y, w, h] in 1024x2048
     const [x, y, w, h] = l1.box
     if (x < 10 || y < 10 || x + w > 1014 || y + h > 2038) {
-      errors.push(`[${viewName}] Label for ${l1.id} clips outside viewport: [${x}, ${y}, ${w}, ${h}]`)
+      errors.push(
+        `[${viewName}] Label for ${l1.id} clips outside viewport: [${x}, ${y}, ${w}, ${h}]`,
+      )
     }
 
     // Overlap check with other labels
     for (let j = i + 1; j < labels.length; j++) {
       const l2 = labels[j]
       const [x2, y2, w2, h2] = l2.box
-      const overlaps = (x < x2 + w2) && (x + w > x2) && (y < y2 + h2) && (y + h > y2)
+      const overlaps = x < x2 + w2 && x + w > x2 && y < y2 + h2 && y + h > y2
       if (overlaps) {
-        errors.push(`[${viewName}] Labels overlap: "${l1.gym_ar}" (${l1.id}) and "${l2.gym_ar}" (${l2.id})`)
+        errors.push(
+          `[${viewName}] Labels overlap: "${l1.gym_ar}" (${l1.id}) and "${l2.gym_ar}" (${l2.id})`,
+        )
       }
     }
   }
@@ -194,7 +250,9 @@ function checkLabelList(labels, viewName) {
 
 checkLabelList(ANTERIOR_LABELS, 'Anterior')
 checkLabelList(POSTERIOR_LABELS, 'Posterior')
-console.log(`✓ Verified ${ANTERIOR_LABELS.length} anterior and ${POSTERIOR_LABELS.length} posterior label boxes without any collision or clipping`)
+console.log(
+  `✓ Verified ${ANTERIOR_LABELS.length} anterior and ${POSTERIOR_LABELS.length} posterior label boxes without any collision or clipping`,
+)
 
 console.log(`\nTotal checks performed: ${checksCount}`)
 console.log(`Errors found: ${errors.length}`)
@@ -206,4 +264,3 @@ if (errors.length > 0) {
   console.log('✓ All atlas integrity checks passed!')
   process.exit(0)
 }
-
