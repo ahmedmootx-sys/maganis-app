@@ -24,9 +24,12 @@ async function run() {
   })
   const page = await context.newPage()
 
-  const ownerProfilePath = path.resolve(rootDir, 'docs/owner-profile-dump.json')
-  let ownerDump = JSON.parse(fs.readFileSync(ownerProfilePath, 'utf8'))
-  const ownerProfile = ownerDump.profile || ownerDump
+  const personaProfilePath = path.resolve(
+    rootDir,
+    'fixtures/persona.synthetic.json',
+  )
+  let personaDump = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
+  const personaProfile = personaDump.profile || personaDump
 
   await page.addInitScript((profile) => {
     localStorage.setItem('maganis:profile.active', JSON.stringify(profile))
@@ -69,7 +72,7 @@ async function run() {
         ],
       }),
     )
-  }, ownerProfile)
+  }, personaProfile)
 
   for (const r of ['/training', '/exercise/barbell-bench-press', '/library']) {
     console.log(`\n=== Testing ${r} ===`)

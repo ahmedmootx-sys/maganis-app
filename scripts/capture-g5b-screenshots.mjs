@@ -62,11 +62,14 @@ async function run() {
   const baseUrl = `http://localhost:5195/`
   const browser = await chromium.launch({ channel: 'chrome', headless: true })
 
-  const ownerProfilePath = path.resolve(rootDir, 'docs/owner-profile-dump.json')
-  let ownerProfile = null
-  if (fs.existsSync(ownerProfilePath)) {
-    const dump = JSON.parse(fs.readFileSync(ownerProfilePath, 'utf8'))
-    ownerProfile = dump.profile || dump
+  const personaProfilePath = path.resolve(
+    rootDir,
+    'fixtures/persona.synthetic.json',
+  )
+  let personaProfile = null
+  if (fs.existsSync(personaProfilePath)) {
+    const dump = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
+    personaProfile = dump.profile || dump
   }
 
   try {

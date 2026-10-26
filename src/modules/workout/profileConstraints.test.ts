@@ -92,13 +92,13 @@ describe('deriveConstraints - pure function contract', () => {
     ).toBe(false)
   })
 
-  it('runs cleanly on real owner production dump (docs/owner-profile-dump.json)', () => {
-    const dumpPath = path.join(process.cwd(), 'docs', 'owner-profile-dump.json')
+  it('runs cleanly on synthetic persona dump (fixtures/persona.synthetic.json)', () => {
+    const dumpPath = path.join(process.cwd(), 'fixtures', 'persona.synthetic.json')
     expect(fs.existsSync(dumpPath)).toBe(true)
     const dumpData = JSON.parse(fs.readFileSync(dumpPath, 'utf-8'))
-    const ownerProfile = dumpData.profile as UserProfile
+    const personaProfile = dumpData.profile as UserProfile
 
-    const c = deriveConstraints(ownerProfile)
+    const c = deriveConstraints(personaProfile)
     expect(c.allowsLoadedExercises).toBe(true)
     expect(c.levelCeiling).toBe('intermediate')
     expect(c.allowedEquipment.has('barbell')).toBe(true)

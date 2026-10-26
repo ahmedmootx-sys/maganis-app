@@ -84,10 +84,13 @@ async function runGate() {
   }
 
   // 2. Load profiles
-  const ownerDump = JSON.parse(
-    fs.readFileSync(path.join(rootDir, 'docs/owner-profile-dump.json'), 'utf8'),
+  const personaDump = JSON.parse(
+    fs.readFileSync(
+      path.join(rootDir, 'fixtures/persona.synthetic.json'),
+      'utf8',
+    ),
   )
-  const ownerProfile = ownerDump.profile
+  const personaProfile = personaDump.profile
 
   const fixtureProfile = {
     id: 'fixture-n1',
@@ -143,8 +146,8 @@ async function runGate() {
 
   const testDatasets = [
     {
-      name: 'Owner Profile + Owner Real Program',
-      profile: ownerProfile,
+      name: 'Persona Profile + Persona Program',
+      profile: personaProfile,
       program: ownerProgram,
     },
     {

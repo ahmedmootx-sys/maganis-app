@@ -5,7 +5,7 @@ const BASE = process.env.BASE || 'http://localhost:4173/maganis-app/'
 const EXERCISE = process.env.EXERCISE || 'bench'
 const profile = JSON.parse(
   fs.readFileSync(
-    new URL('../docs/owner-profile-dump.json', import.meta.url),
+    new URL('../fixtures/persona.synthetic.json', import.meta.url),
     'utf8',
   ),
 )

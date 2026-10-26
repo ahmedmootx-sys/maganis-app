@@ -17,13 +17,13 @@ function mulberry32(a: number) {
 
 describe('A1: Day-Count Selector & Property Invariants', () => {
   it('passes 500 random operations across fixture and real owner data', () => {
-    const ownerDump = JSON.parse(
+    const personaDump = JSON.parse(
       fs.readFileSync(
-        path.resolve(process.cwd(), 'docs/owner-profile-dump.json'),
+        path.resolve(process.cwd(), 'fixtures/persona.synthetic.json'),
         'utf8',
       ),
     )
-    const initialProfile: UserProfile = ownerDump.profile
+    const initialProfile: UserProfile = personaDump.profile
 
     const datasets: Array<{
       name: string
@@ -31,7 +31,7 @@ describe('A1: Day-Count Selector & Property Invariants', () => {
       program: WorkoutProgram
     }> = [
       {
-        name: 'Owner Data (5 resistance + 1 cardio)',
+        name: 'Persona Data (5 resistance + 1 cardio)',
         profile: { ...initialProfile, trainingDaysPerWeek: 5 },
         program: {
           id: 'owner-prog',

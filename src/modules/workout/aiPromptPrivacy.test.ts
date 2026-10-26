@@ -8,13 +8,13 @@ import type { UserProfile } from '../onboarding/types.ts'
 
 describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
   const rootDir = process.cwd()
-  const ownerDump = JSON.parse(
+  const personaDump = JSON.parse(
     fs.readFileSync(
-      path.resolve(rootDir, 'docs/owner-profile-dump.json'),
+      path.resolve(rootDir, 'fixtures/persona.synthetic.json'),
       'utf8',
     ),
   )
-  const ownerProfile: UserProfile = ownerDump.profile
+  const personaProfile: UserProfile = personaDump.profile
 
   const fixtureProfile: UserProfile = {
     id: 'fixture-test-user',
@@ -46,10 +46,10 @@ describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
     ],
   }
 
-  // Collect all strings of 4+ characters from owner-profile-dump.json
-  function extractStrings(obj: any): string[] {
+  // Collect all strings of 4+ characters from persona.synthetic.json
+  function extractStrings(obj: unknown): string[] {
     const list: string[] = []
-    function traverse(val: any) {
+    function traverse(val: unknown) {
       if (typeof val === 'string') {
         if (val.trim().length >= 4) {
           list.push(val.trim())
@@ -64,10 +64,10 @@ describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
     return list
   }
 
-  const ownerStrings = extractStrings(ownerDump)
+  const personaStrings = extractStrings(personaDump)
 
-  it('PRIVACY GATE: with switch OFF, prompt contains zero owner data', () => {
-    for (const prof of [ownerProfile, fixtureProfile]) {
+  it('PRIVACY GATE: with switch OFF, prompt contains zero persona data', () => {
+    for (const prof of [personaProfile, fixtureProfile]) {
       const res = buildAiDesignerPrompt({
         profile: prof,
         includeProfileData: false,
@@ -80,8 +80,8 @@ describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
       expect(prompt).toContain('(not provided)')
 
       // Forbidden strings:
-      // Owner's name
-      expect(prompt).not.toContain(ownerProfile.name)
+      // Persona's name
+      expect(prompt).not.toContain(personaProfile.name)
       // Real body numbers
       expect(prompt).not.toContain('56.5')
       expect(prompt).not.toContain('171')
@@ -90,7 +90,7 @@ describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
       expect(prompt).not.toContain('prog-ahmed')
       expect(prompt).not.toContain('ahmed')
 
-      // All strings >= 4 chars from owner dump (excluding generic words like hypertrophy that may appear in template definitions)
+      // All strings >= 4 chars from persona dump (excluding generic words like hypertrophy that may appear in template definitions)
       const allowedGeneric = new Set([
         'hypertrophy',
         'intermediate',
@@ -110,10 +110,10 @@ describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
         'Morton et al. BJSM 2018',
       ])
 
-      for (const s of ownerStrings) {
+      for (const s of personaStrings) {
         if (!allowedGeneric.has(s)) {
           if (prompt.includes(s)) {
-            throw new Error(`FAILING OWNER STRING DETECTED: [${s}]`)
+            throw new Error(`FAILING PERSONA STRING DETECTED: [${s}]`)
           }
           expect(prompt).not.toContain(s)
         }
@@ -123,7 +123,7 @@ describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
 
   it('PRIVACY GATE: with switch ON, only preview fields appear; NO injuries or health data', () => {
     const res = buildAiDesignerPrompt({
-      profile: ownerProfile,
+      profile: personaProfile,
       includeProfileData: true,
       includeInjuryData: false,
     })
@@ -131,18 +131,18 @@ describe('A4: AI Designer Prompt Privacy Gate & Round Trip', () => {
     const prompt = res.prompt
 
     // Preview fields should appear
-    expect(prompt).toContain(`- Age: ${ownerProfile.body.age}`)
+    expect(prompt).toContain(`- Age: ${personaProfile.body.age}`)
     expect(prompt).toContain(`- Sex: Male`)
-    expect(prompt).toContain(`- Height: ${ownerProfile.body.heightCm} cm`)
-    expect(prompt).toContain(`- Weight: ${ownerProfile.body.weightKg} kg`)
-    expect(prompt).toContain(`- Main goal: ${ownerProfile.primaryGoal}`)
+    expect(prompt).toContain(`- Height: ${personaProfile.body.heightCm} cm`)
+    expect(prompt).toContain(`- Weight: ${personaProfile.body.weightKg} kg`)
+    expect(prompt).toContain(`- Main goal: ${personaProfile.primaryGoal}`)
     expect(prompt).toContain(
-      `- Training days per week: ${ownerProfile.trainingDaysPerWeek} days`,
+      `- Training days per week: ${personaProfile.trainingDaysPerWeek} days`,
     )
 
     // Forbidden in prompt even with switch ON:
-    // 1. Owner's name
-    expect(prompt).not.toContain(ownerProfile.name)
+    // 1. Persona's name
+    expect(prompt).not.toContain(personaProfile.name)
     // 2. prog-ahmed
     expect(prompt).not.toContain('prog-ahmed')
     // 3. Injuries, medical notes, limitations

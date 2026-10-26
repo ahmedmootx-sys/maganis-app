@@ -98,9 +98,9 @@ async function runGate() {
     })
     const page = await context.newPage()
 
-    const ownerDump = JSON.parse(
+    const personaDump = JSON.parse(
       fs.readFileSync(
-        path.join(rootDir, 'docs/owner-profile-dump.json'),
+        path.join(rootDir, 'fixtures/persona.synthetic.json'),
         'utf8',
       ),
     )
@@ -124,7 +124,7 @@ async function runGate() {
           JSON.stringify(dump.program),
         )
       }
-    }, ownerDump)
+    }, personaDump)
     await page.reload({ waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(600)
 

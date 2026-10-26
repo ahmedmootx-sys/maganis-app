@@ -5,7 +5,7 @@
  *
  * Verifies:
  * 1. Single source of truth for energy plan: computeEnergyPlan(profile, bodyLog).
- * 2. Perfect agreement on fixture profile and owner real profile (docs/owner-profile-dump.json).
+ * 2. Perfect agreement on fixture profile and persona synthetic profile (fixtures/persona.synthetic.json).
  * 3. Target calculation conforms strictly to goal adjustments:
  *    - hypertrophy / gain: target > tdee
  *    - fat_loss / cut: target < tdee
@@ -70,44 +70,47 @@ async function runGate() {
   const { computeEnergyPlan } =
     await import('../src/modules/nutrition/computeEnergyPlan.ts')
 
-  // Load Owner Profile Dump
-  const ownerDumpPath = path.join(rootDir, 'docs/owner-profile-dump.json')
-  const ownerDump = JSON.parse(fs.readFileSync(ownerDumpPath, 'utf8'))
-  const ownerProfile = ownerDump.profile
+  // Load Persona Profile Dump
+  const personaDumpPath = path.join(
+    rootDir,
+    'fixtures/persona.synthetic.json',
+  )
+  const personaDump = JSON.parse(fs.readFileSync(personaDumpPath, 'utf8'))
+  const personaProfile = personaDump.profile
 
-  const ownerPlan = computeEnergyPlan(ownerProfile)
-  if (!ownerPlan) {
+  const personaPlan = computeEnergyPlan(personaProfile)
+  if (!personaPlan) {
     failures.push({
-      test: 'OWNER_PLAN_NULL',
-      error: 'computeEnergyPlan returned null for owner real profile',
+      test: 'PERSONA_PLAN_NULL',
+      error: 'computeEnergyPlan returned null for persona synthetic profile',
     })
   } else {
     checksPassed++
     console.log(
-      `✓ Owner profile energy plan computed: BMR=${ownerPlan.bmr}, TDEE=${ownerPlan.tdee}, Target=${ownerPlan.target}, Protein=${ownerPlan.proteinGrams}g`,
+      `✓ Persona profile energy plan computed: BMR=${personaPlan.bmr}, TDEE=${personaPlan.tdee}, Target=${personaPlan.target}, Protein=${personaPlan.proteinGrams}g`,
     )
 
-    // Owner has goal hypertrophy, so target must be surplus
-    if (ownerPlan.target > ownerPlan.tdee) {
+    // Persona has goal hypertrophy, so target must be surplus
+    if (personaPlan.target > personaPlan.tdee) {
       checksPassed++
       console.log(
-        `✓ Owner hypertrophy target (${ownerPlan.target} kcal) is in surplus above TDEE (${ownerPlan.tdee} kcal)`,
+        `✓ Persona hypertrophy target (${personaPlan.target} kcal) is in surplus above TDEE (${personaPlan.tdee} kcal)`,
       )
     } else {
       failures.push({
-        test: 'OWNER_SURPLUS_MISMATCH',
-        error: `Owner hypertrophy goal should have target > tdee, but target=${ownerPlan.target}, tdee=${ownerPlan.tdee}`,
+        test: 'PERSONA_SURPLUS_MISMATCH',
+        error: `Persona hypertrophy goal should have target > tdee, but target=${personaPlan.target}, tdee=${personaPlan.tdee}`,
       })
     }
 
-    // Owner weight is 80kg, protein 2.0 g/kg = 160g
-    if (ownerPlan.proteinGrams === 160) {
+    // Persona weight is 80kg, protein 2.0 g/kg = 160g
+    if (personaPlan.proteinGrams === 160) {
       checksPassed++
-      console.log(`✓ Owner protein target is strictly 160g (80kg × 2.0 g/kg)`)
+      console.log(`✓ Persona protein target is strictly 160g (80kg × 2.0 g/kg)`)
     } else {
       failures.push({
-        test: 'OWNER_PROTEIN_MISMATCH',
-        error: `Expected 160g protein for 80kg hypertrophy, got ${ownerPlan.proteinGrams}g`,
+        test: 'PERSONA_PROTEIN_MISMATCH',
+        error: `Expected 160g protein for 80kg hypertrophy, got ${personaPlan.proteinGrams}g`,
       })
     }
   }

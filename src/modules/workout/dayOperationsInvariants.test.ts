@@ -17,13 +17,13 @@ function mulberry32(a: number) {
 
 describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
   it('preserves all G5-A invariants across 350 random day operations on fixture and owner data', () => {
-    const ownerDump = JSON.parse(
+    const personaDump = JSON.parse(
       fs.readFileSync(
-        path.resolve(process.cwd(), 'docs/owner-profile-dump.json'),
+        path.resolve(process.cwd(), 'fixtures/persona.synthetic.json'),
         'utf8',
       ),
     )
-    const initialProfile: UserProfile = ownerDump.profile
+    const initialProfile: UserProfile = personaDump.profile
 
     const datasets: Array<{
       name: string
@@ -31,7 +31,7 @@ describe('B2 & B3.2: Seeded Random-Sequence Invariant Test (300+ ops)', () => {
       program: WorkoutProgram
     }> = [
       {
-        name: 'Owner Data (5 resistance + 1 cardio)',
+        name: 'Persona Data (5 resistance + 1 cardio)',
         profile: { ...initialProfile, trainingDaysPerWeek: 5 },
         program: {
           id: 'owner-prog',

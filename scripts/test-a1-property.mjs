@@ -44,18 +44,21 @@ async function runTest() {
   console.log('🚀 Running A1 Property Test: 500 seeded random operations...')
   const { selectWeekLoad } = await loadModules()
 
-  // Load owner profile dump
-  const ownerDump = JSON.parse(
-    fs.readFileSync(path.join(rootDir, 'docs/owner-profile-dump.json'), 'utf8'),
+  // Load persona profile dump
+  const personaDump = JSON.parse(
+    fs.readFileSync(
+      path.join(rootDir, 'fixtures/persona.synthetic.json'),
+      'utf8',
+    ),
   )
-  const initialProfile = ownerDump.profile
+  const initialProfile = personaDump.profile
 
   const rng = mulberry32(1337)
 
-  // Test both with fixture and owner data
+  // Test both with fixture and persona data
   const datasets = [
     {
-      name: "Owner's Real Data (5-day split + cardio)",
+      name: "Persona's Synthetic Data (5-day split + cardio)",
       profile: { ...initialProfile, trainingDaysPerWeek: 5 },
       program: {
         id: 'owner-prog',

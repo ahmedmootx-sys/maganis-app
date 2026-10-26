@@ -32,16 +32,19 @@ async function run() {
 
   const page = await context.newPage()
 
-  const ownerProfilePath = path.resolve(rootDir, 'docs/owner-profile-dump.json')
-  let ownerDump = null
-  if (fs.existsSync(ownerProfilePath)) {
-    ownerDump = JSON.parse(fs.readFileSync(ownerProfilePath, 'utf8'))
+  const personaProfilePath = path.resolve(
+    rootDir,
+    'fixtures/persona.synthetic.json',
+  )
+  let personaDump = null
+  if (fs.existsSync(personaProfilePath)) {
+    personaDump = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
   }
-  const baseProfile = ownerDump
-    ? ownerDump.profile || ownerDump
+  const baseProfile = personaDump
+    ? personaDump.profile || personaDump
     : {
         id: 'user_1',
-        name: 'أحمد',
+        name: 'كريم',
         sex: 'male',
         age: 28,
         weightKg: 80,

@@ -14,7 +14,11 @@ import path from 'node:path'
 
 const ROOT = process.cwd()
 const DOC_PATH = path.join(ROOT, 'docs', 'PROFILE-EFFECTS.md')
-const OWNER_DUMP_PATH = path.join(ROOT, 'docs', 'owner-profile-dump.json')
+const PERSONA_DUMP_PATH = path.join(
+  ROOT,
+  'fixtures',
+  'persona.synthetic.json',
+)
 const CONSTRAINTS_MODULE = path.join(
   ROOT,
   'src',

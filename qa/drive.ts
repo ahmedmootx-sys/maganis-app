@@ -24,17 +24,20 @@ export async function initStorage(page: Page, options: DriveOptions = {}) {
   const theme = options.theme || 'light'
   const fontScale = options.fontScale || 1.0
 
-  const ownerProfilePath = path.resolve(rootDir, 'docs/owner-profile-dump.json')
-  let ownerProfile = null
-  if (fs.existsSync(ownerProfilePath)) {
-    const dump = JSON.parse(fs.readFileSync(ownerProfilePath, 'utf8'))
-    ownerProfile = dump.profile || dump
+  const personaProfilePath = path.resolve(
+    rootDir,
+    'fixtures/persona.synthetic.json',
+  )
+  let personaProfile = null
+  if (fs.existsSync(personaProfilePath)) {
+    const dump = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
+    personaProfile = dump.profile || dump
   }
 
-  // Load standard owner program with bench press on day 0
-  const ownerProgram = {
-    id: 'owner-prog-g6',
-    name: 'جدول الكابتن أحمد — علوي وسفلي',
+  // Load standard persona program with bench press on day 0
+  const personaProgram = {
+    id: 'persona-prog-g6',
+    name: 'جدول الكابتن — علوي وسفلي',
     primaryGoal: 'hypertrophy',
     trainingDaysPerWeek: 4,
     splitType: 'upper_lower',

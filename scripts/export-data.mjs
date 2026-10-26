@@ -192,9 +192,11 @@ const ownerProfileDump = {
   },
 }
 
+const fixturesDir = path.join(rootDir, 'fixtures')
+if (!fs.existsSync(fixturesDir)) fs.mkdirSync(fixturesDir, { recursive: true })
 fs.writeFileSync(
-  path.join(docsDir, 'owner-profile-dump.json'),
+  path.join(fixturesDir, 'persona.synthetic.json'),
   JSON.stringify(ownerProfileDump, null, 2),
   'utf8',
 )
-console.log(`✓ Exported owner profile dump to docs/owner-profile-dump.json`)
+console.log(`✓ Exported persona synthetic dump to fixtures/persona.synthetic.json`)

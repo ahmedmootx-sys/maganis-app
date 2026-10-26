@@ -61,12 +61,17 @@ async function run() {
   console.log('   GATE-CLIPPING: PIXEL-LEVEL CLIPPING & OCCLUSION')
   console.log('====================================================\n')
 
-  const ownerProfilePath = path.resolve(rootDir, 'docs/owner-profile-dump.json')
-  let ownerDump = null
-  if (fs.existsSync(ownerProfilePath)) {
-    ownerDump = JSON.parse(fs.readFileSync(ownerProfilePath, 'utf8'))
+  const personaProfilePath = path.resolve(
+    rootDir,
+    'fixtures/persona.synthetic.json',
+  )
+  let personaDump = null
+  if (fs.existsSync(personaProfilePath)) {
+    personaDump = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
   }
-  const ownerProfile = ownerDump ? ownerDump.profile || ownerDump : null
+  const personaProfile = personaDump
+    ? personaDump.profile || personaDump
+    : null
 
   let server
   try {

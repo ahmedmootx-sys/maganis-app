@@ -22,3 +22,6 @@ dist/
 maganis-data.json
 *.local.json
 scratch/
+
+docs/owner-profile-dump.json
+*profile-dump*

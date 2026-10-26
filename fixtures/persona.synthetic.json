@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "exportedAt": "2026-10-18T13:11:48.761Z",
+  "exportedAt": "2026-10-26T00:00:00.000Z",
   "profile": {
-    "id": "owner-prod-verified",
-    "name": "أحمد",
+    "id": "persona-synthetic-verified",
+    "name": "كريم",
     "primaryGoal": "hypertrophy",
     "goals": ["hypertrophy"],
     "bodyGoal": "gain",
@@ -20,41 +20,35 @@
     ],
     "body": {
       "sex": "male",
-      "age": 28,
-      "heightCm": 178,
+      "age": 30,
+      "heightCm": 180,
       "weightKg": 80,
       "activityLevel": "moderate",
       "lifestyle": 2,
       "pace": "standard"
     },
     "medical": {
-      "hasIssues": true,
-      "injuryTags": ["الكتف"],
-      "notes": "التهاب أوتار خفيف في الكتف الأيمن، تجنب الأوزان الحرة فوق الرأس بأوزان ثقيلة"
+      "hasIssues": false,
+      "injuryTags": [],
+      "notes": ""
     },
-    "limitations": [
-      {
-        "region": "shoulder",
-        "severity": "moderate",
-        "notes": "التهاب أوتار خفيف، استبدال الضغط الحر خلف الرقبة بضغط دمبل أمامي"
-      }
-    ],
+    "limitations": [],
     "createdAt": 1700000000000,
     "updatedAt": 1700000000000
   },
   "nutritionPlan": {
     "formula": "Mifflin-St Jeor (1990)",
-    "bmr": 1770,
-    "eat": 324,
-    "tdee": 2094,
-    "targetCalories": 2326,
+    "bmr": 1800,
+    "eat": 300,
+    "tdee": 2100,
+    "targetCalories": 2350,
     "adjustmentType": "surplus",
-    "adjustmentAmount": 232,
+    "adjustmentAmount": 250,
     "macros": {
-      "proteinGrams": 144,
-      "proteinPerKg": 1.8,
+      "proteinGrams": 160,
+      "proteinPerKg": 2.0,
       "fatsGrams": 65,
-      "carbsGrams": 292
+      "carbsGrams": 280
     },
     "reference": "Morton et al. BJSM 2018"
   }

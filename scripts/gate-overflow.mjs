@@ -54,10 +54,10 @@ async function runGate() {
     })
     const page = await context.newPage()
 
-    // Seed mock profile and program from owner dump
-    const ownerDump = JSON.parse(
+    // Seed mock profile and program from persona dump
+    const personaDump = JSON.parse(
       fs.readFileSync(
-        path.join(rootDir, 'docs/owner-profile-dump.json'),
+        path.join(rootDir, 'fixtures/persona.synthetic.json'),
         'utf8',
       ),
     )
@@ -81,7 +81,7 @@ async function runGate() {
           JSON.stringify(dump.program),
         )
       }
-    }, ownerDump)
+    }, personaDump)
     await page.reload({ waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(600)
 

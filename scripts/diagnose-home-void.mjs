@@ -24,11 +24,14 @@ async function run() {
   })
   const page = await context.newPage()
 
-  // Load owner profile
-  const ownerProfilePath = path.resolve(rootDir, 'docs/owner-profile-dump.json')
-  let ownerProfile = null
-  if (fs.existsSync(ownerProfilePath)) {
-    ownerProfile = JSON.parse(fs.readFileSync(ownerProfilePath, 'utf8'))
+  // Load persona profile
+  const personaProfilePath = path.resolve(
+    rootDir,
+    'fixtures/persona.synthetic.json',
+  )
+  let personaProfile = null
+  if (fs.existsSync(personaProfilePath)) {
+    personaProfile = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
   }
 
   await page.addInitScript((dump) => {
@@ -42,7 +45,7 @@ async function run() {
         )
       }
     }
-  }, ownerProfile)
+  }, personaProfile)
 
   await page.goto(baseUrl)
   await page.waitForLoadState('networkidle')
