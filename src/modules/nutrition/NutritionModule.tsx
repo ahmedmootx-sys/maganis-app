@@ -674,8 +674,8 @@ export function NutritionModule({
             onClick={() => setSelectedDate((d) => addDays(d, -1))}
             aria-label="اليوم السابق"
             style={{
-              width: '40px',
-              height: '40px',
+              width: '44px',
+              height: '44px',
               borderRadius: '8px',
               border: 'none',
               background: 'var(--card-subtle)',
@@ -707,8 +707,8 @@ export function NutritionModule({
             onClick={() => setSelectedDate((d) => addDays(d, 1))}
             aria-label="اليوم التالي"
             style={{
-              width: '40px',
-              height: '40px',
+              width: '44px',
+              height: '44px',
               borderRadius: '8px',
               border: 'none',
               background: 'var(--card-subtle)',
@@ -840,7 +840,10 @@ export function NutritionModule({
                     border: 'none',
                     cursor: 'pointer',
                     textDecoration: 'underline',
-                    padding: '2px 4px',
+                    padding: '0 8px',
+                    minHeight: '44px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
                   }}
                 >
                   إبقاء الأرقام الحالية
@@ -936,7 +939,12 @@ export function NutritionModule({
                     <span style={{ fontWeight: 700, color: 'var(--ink)' }}>
                       تعديل السعرات للهدف
                     </span>
-                    <span style={{ color: 'var(--brand)', fontWeight: 800 }}>
+                    <span
+                      style={{
+                        color: 'var(--color-accent-text)',
+                        fontWeight: 800,
+                      }}
+                    >
                       {energyExplanation.goalAdjustment.adjustmentKcal >= 0
                         ? `+${energyExplanation.goalAdjustment.adjustmentKcal}`
                         : energyExplanation.goalAdjustment.adjustmentKcal}{' '}
@@ -958,6 +966,11 @@ export function NutritionModule({
                       fontSize: '12px',
                       fontWeight: 700,
                       textDecoration: 'underline',
+                      minHeight: '44px',
+                      minWidth: '44px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}
                   >
                     تعديل
@@ -1301,6 +1314,9 @@ export function NutritionModule({
                   background: 'transparent',
                   border: 'none',
                   cursor: 'pointer',
+                  minHeight: '44px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
                 }}
               >
                 + تصميم وجبة

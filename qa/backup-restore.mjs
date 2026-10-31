@@ -17,8 +17,24 @@
 import { chromium } from 'playwright'
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const BASE = process.env.BASE || 'http://localhost:5194/maganis-app/'
+let BASE = process.env.BASE
+let server = null
+if (!BASE) {
+  const { preview } = await import('vite')
+  const rootDir = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '..',
+  )
+  server = await preview({
+    root: rootDir,
+    preview: { port: 5194, strictPort: false },
+    logLevel: 'error',
+  })
+  const port = server.httpServer.address().port
+  BASE = `http://localhost:${port}/maganis-app/`
+}
 
 const persona = JSON.parse(
   fs.readFileSync(
@@ -208,20 +224,53 @@ const wipedSessions = await page.evaluate(() =>
 check(!wipedProgram, 'Workout program is completely wiped')
 check(!wipedSessions, 'Tracking sessions are completely wiped')
 
-// Step 4: Navigate to Settings and import file
-console.log('\n--- Step 4: Importing backup file via Settings ---')
+// Step 4: Navigate to Settings and test hostile imports, then valid import
+console.log('\n--- Step 4: Testing hostile imports via Settings ---')
 const settingsTab = page.locator('[data-testid="tab-settings"]')
 await settingsTab.waitFor({ state: 'visible', timeout: 5000 })
 await settingsTab.click()
 await page.waitForTimeout(500)
 
-// Prepare temporary backup file for file chooser
+const fileInput = await page.locator('input[type="file"]')
+
+// 4a. Hostile import: invalid types
+console.log('Testing hostile import: import-invalid-types.json')
+const invalidTypesPath = path.resolve('qa/fixtures/import-invalid-types.json')
+await fileInput.setInputFiles(invalidTypesPath)
+await page.waitForTimeout(600)
+
+const sheetVisibleInvalid = await page.locator('.sheet').isVisible()
+check(
+  !sheetVisibleInvalid,
+  'ConfirmSheet is NOT shown for hostile invalid types',
+)
+const errorText1 = await page.locator('.callout--error').innerText()
+check(
+  errorText1.includes('أخطاء في بنية ملف النسخة'),
+  'Error callout lists validation errors for invalid types',
+)
+
+// 4b. Hostile import: garbage
+console.log('Testing hostile import: import-garbage.json')
+const garbagePath = path.resolve('qa/fixtures/import-garbage.json')
+await fileInput.setInputFiles(garbagePath)
+await page.waitForTimeout(600)
+
+const sheetVisibleGarbage = await page.locator('.sheet').isVisible()
+check(!sheetVisibleGarbage, 'ConfirmSheet is NOT shown for garbage import')
+const errorText2 = await page.locator('.callout--error').innerText()
+check(
+  errorText2.includes('رقم إصدار'),
+  'Error callout explains missing exportVersion for garbage import',
+)
+
+// Prepare temporary backup file for valid file import
+console.log('\n--- Step 5: Importing valid backup file ---')
 const tempBackupPath = path.resolve('temp-qa-backup.json')
 fs.writeFileSync(tempBackupPath, JSON.stringify(backupPayload, null, 2), 'utf8')
 
 try {
   // Set file on hidden file input
-  const fileInput = await page.locator('input[type="file"]')
   await fileInput.setInputFiles(tempBackupPath)
 
   // Wait for ConfirmSheet to appear with preview
@@ -282,11 +331,32 @@ try {
     Boolean(restored.snapshot),
     'Automatic pre-import snapshot was saved in localStorage',
   )
+
+  // Step 6: Test click-path restoration via «استعادة نسخة ما قبل التحديث»
+  console.log('\n--- Step 6: Testing restoration of pre-update snapshot ---')
+  page.on('dialog', (dialog) => dialog.accept())
+
+  const restoreSnapshotRow = page.locator('text=استعادة نسخة ما قبل التحديث')
+  await restoreSnapshotRow.waitFor({ state: 'visible', timeout: 5000 })
+  await restoreSnapshotRow.click()
+  await page.waitForTimeout(1000)
+
+  // Verify that the pre-snapshot (which was saved before import) successfully reverted or restored
+  const postSnapshotProfile = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('maganis:profile.active') || 'null'),
+  )
+  check(
+    postSnapshotProfile?.id === 'fresh_install',
+    'Pre-update snapshot successfully reverted state to fresh install baseline',
+  )
 } finally {
   if (fs.existsSync(tempBackupPath)) {
     fs.unlinkSync(tempBackupPath)
   }
   await browser.close()
+  if (server) {
+    await new Promise((res) => server.httpServer.close(res))
+  }
 }
 
 console.log(`\nQA Finished with ${failures.length} failures.`)

@@ -26,8 +26,25 @@
 
 import { chromium } from 'playwright'
 import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const BASE = process.env.BASE || 'http://localhost:5194/maganis-app/'
+let BASE = process.env.BASE
+let server = null
+if (!BASE) {
+  const { preview } = await import('vite')
+  const rootDir = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '..',
+  )
+  server = await preview({
+    root: rootDir,
+    preview: { port: 5194, strictPort: false },
+    logLevel: 'error',
+  })
+  const port = server.httpServer.address().port
+  BASE = `http://localhost:${port}/maganis-app/`
+}
 const EXERCISE_ID = 'deadhang'
 
 const persona = JSON.parse(
@@ -98,6 +115,8 @@ await ctx.route('https://images.example.com/**', (route) => {
 })
 
 const page = await ctx.newPage()
+page.on('console', (msg) => console.log('BROWSER LOG:', msg.text()))
+page.on('pageerror', (err) => console.error('BROWSER ERROR:', err))
 
 // 1-pixel blue PNG for custom image
 const CUSTOM_IMAGE_DATA_URL =
@@ -107,115 +126,127 @@ const CUSTOM_IMAGE_DATA_URL =
 async function seedAppData(overrideObj, mediaItem) {
   await page.evaluate(
     async ({ p, exId, ov, media }) => {
-      localStorage.setItem('maganis:profile.active', JSON.stringify(p))
+      try {
+        localStorage.removeItem('maganis:active_session')
+        localStorage.setItem('maganis:profile.active', JSON.stringify(p))
 
-      const program = {
-        id: 'prog-media-everywhere',
-        title: 'برنامج تجريبي',
-        days: [
+        const program = {
+          id: 'prog-media-everywhere',
+          title: 'برنامج تجريبي',
+          createdAt: Date.now(),
+          primaryGoal: 'hypertrophy',
+          trainingDaysPerWeek: 4,
+          schedule: { 0: '0', 1: '0', 2: '0', 3: '0', 4: '0', 5: '0', 6: '0' },
+          days: [
+            {
+              id: '0',
+              dayIndex: 0,
+              labelAr: 'اليوم الأول',
+              focus: 'عقلة وتعلّق',
+              exercises: [
+                {
+                  exerciseId: exId,
+                  sets: 3,
+                  reps: 30,
+                  restSeconds: 60,
+                  section: 'primary',
+                },
+                {
+                  exerciseId: 'bench',
+                  sets: 3,
+                  reps: 10,
+                  restSeconds: 90,
+                  section: 'primary',
+                },
+              ],
+              warmup: [
+                {
+                  exerciseId: exId,
+                  sets: 1,
+                  reps: 15,
+                  restSeconds: 30,
+                  section: 'warmup',
+                },
+              ],
+              cooldown: [
+                {
+                  exerciseId: exId,
+                  sets: 1,
+                  reps: 20,
+                  restSeconds: 30,
+                  section: 'cooldown',
+                },
+              ],
+            },
+          ],
+        }
+        localStorage.setItem('maganis:workout.program', JSON.stringify(program))
+
+        // Seed tracking session for history
+        const sessions = [
           {
-            id: '0',
+            id: 'sess-1',
+            date: new Date().toISOString(),
             dayIndex: 0,
-            labelAr: 'اليوم الأول',
-            focus: 'عقلة وتعلّق',
+            dayTitle: 'اليوم الأول',
+            durationSeconds: 1800,
             exercises: [
               {
                 exerciseId: exId,
-                sets: 3,
-                reps: 30,
-                restSeconds: 60,
-                section: 'primary',
-              },
-              {
-                exerciseId: 'bench',
-                sets: 3,
-                reps: 10,
-                restSeconds: 90,
-                section: 'primary',
-              },
-            ],
-            warmup: [
-              {
-                exerciseId: exId,
-                sets: 1,
-                reps: 15,
-                restSeconds: 30,
-                section: 'warmup',
-              },
-            ],
-            cooldown: [
-              {
-                exerciseId: exId,
-                sets: 1,
-                reps: 20,
-                restSeconds: 30,
-                section: 'cooldown',
+                exerciseNameAr: 'تعلق حر',
+                sets: [
+                  { setNumber: 1, reps: 30, weightKg: 0, completed: true },
+                ],
               },
             ],
           },
-        ],
+        ]
+        localStorage.setItem(
+          'maganis:tracking.sessions',
+          JSON.stringify(sessions),
+        )
+
+        // Overrides map
+        const overridesMap = ov ? { [exId]: ov } : {}
+        localStorage.setItem(
+          'maganis:exercise_overrides',
+          JSON.stringify(overridesMap),
+        )
+
+        // IndexedDB
+        await new Promise((resolve) => {
+          const req = indexedDB.open('maganis_db', 2)
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result
+            if (!db.objectStoreNames.contains('maganis_kv')) {
+              db.createObjectStore('maganis_kv')
+            }
+            if (!db.objectStoreNames.contains('maganis_media')) {
+              db.createObjectStore('maganis_media')
+            }
+          }
+          req.onsuccess = () => {
+            const db = req.result
+            const tx = db.transaction(
+              ['maganis_kv', 'maganis_media'],
+              'readwrite',
+            )
+            tx.objectStore('maganis_kv').put(overridesMap, 'exercise_overrides')
+            if (media) {
+              tx.objectStore('maganis_media').put(media, exId)
+            } else {
+              tx.objectStore('maganis_media').delete(exId)
+            }
+            tx.oncomplete = () => {
+              db.close()
+              resolve()
+            }
+          }
+        })
+      } catch (err) {
+        console.error('SEED ERROR IN PAGE:', err)
+        throw err
       }
-      localStorage.setItem('maganis:workout.program', JSON.stringify(program))
-
-      // Seed tracking session for history
-      const sessions = [
-        {
-          id: 'sess-1',
-          date: new Date().toISOString(),
-          dayIndex: 0,
-          dayTitle: 'اليوم الأول',
-          durationSeconds: 1800,
-          exercises: [
-            {
-              exerciseId: exId,
-              exerciseNameAr: 'تعلق حر',
-              sets: [{ setNumber: 1, reps: 30, weightKg: 0, completed: true }],
-            },
-          ],
-        },
-      ]
-      localStorage.setItem(
-        'maganis:tracking.sessions',
-        JSON.stringify(sessions),
-      )
-
-      // Overrides map
-      const overridesMap = ov ? { [exId]: ov } : {}
-      localStorage.setItem(
-        'maganis:exercise_overrides',
-        JSON.stringify(overridesMap),
-      )
-
-      // IndexedDB
-      await new Promise((resolve) => {
-        const req = indexedDB.open('maganis_db', 2)
-        req.onupgradeneeded = (e) => {
-          const db = e.target.result
-          if (!db.objectStoreNames.contains('maganis_kv')) {
-            db.createObjectStore('maganis_kv')
-          }
-          if (!db.objectStoreNames.contains('maganis_media')) {
-            db.createObjectStore('maganis_media')
-          }
-        }
-        req.onsuccess = () => {
-          const db = req.result
-          const tx = db.transaction(
-            ['maganis_kv', 'maganis_media'],
-            'readwrite',
-          )
-          tx.objectStore('maganis_kv').put(overridesMap, 'exercise_overrides')
-          if (media) {
-            tx.objectStore('maganis_media').put(media, exId)
-          } else {
-            tx.objectStore('maganis_media').delete(exId)
-          }
-          tx.oncomplete = () => {
-            db.close()
-            resolve()
-          }
-        }
-      })
     },
     { p: profileValue, exId: EXERCISE_ID, ov: overrideObj, media: mediaItem },
   )
@@ -243,13 +274,16 @@ const uploadImageMedia = { dataUrl: CUSTOM_IMAGE_DATA_URL }
 
 await page.goto(`${BASE}#/`, { waitUntil: 'domcontentloaded' })
 await seedAppData(uploadImageOverride, uploadImageMedia)
-await page.reload({ waitUntil: 'domcontentloaded' })
-await page.waitForTimeout(600)
+await page.goto(`${BASE}#/home`, { waitUntil: 'domcontentloaded' })
+await page.reload({ waitUntil: 'networkidle' })
+await page.waitForTimeout(800)
 
 // 1. Surface: Home (Dashboard)
 console.log('Testing Surface: Home')
-await page.goto(`${BASE}#/home`, { waitUntil: 'domcontentloaded' })
-await page.waitForTimeout(600)
+// Allow IndexedDB hydration
+await page.evaluate(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 100))
+})
 const homeThumbImg = await page.evaluate(() => {
   const imgs = Array.from(document.querySelectorAll('img'))
   return imgs.some((img) => img.src.includes('data:image/png;base64'))
@@ -260,6 +294,7 @@ await page.screenshot({ path: 'evidence/h2/green/m1-home.png' })
 // 2. Surface: Day List (WeeklyPlanView at #/training/day/0)
 console.log('Testing Surface: Day List')
 await page.goto(`${BASE}#/training/day/0`, { waitUntil: 'domcontentloaded' })
+await page.reload({ waitUntil: 'networkidle' })
 await page.waitForTimeout(600)
 const dayListImgCount = await page.evaluate(() => {
   const imgs = Array.from(document.querySelectorAll('img'))
@@ -271,11 +306,64 @@ check(
 )
 await page.screenshot({ path: 'evidence/h2/green/m1-day-list.png' })
 
+// 2b. Surface: Add Exercise Picker Modal / Sheet
+console.log('Testing Surface: Add Exercise Picker Sheet')
+const addExerciseBtn = page.locator('button:has-text("+ إضافة")').first()
+if ((await addExerciseBtn.count()) > 0) {
+  await addExerciseBtn.click()
+  await page.waitForTimeout(600)
+  const pickerImg = await page.evaluate(() => {
+    const imgs = Array.from(
+      document.querySelectorAll(
+        '.sheet img, .modal img, .modal-content img, .modal-backdrop img',
+      ),
+    )
+    return imgs.some((img) => img.src.includes('data:image/png;base64'))
+  })
+  check(pickerImg, 'Add exercise picker sheet renders custom uploaded image')
+  // Close sheet
+  const closeBtn = page.locator('.sheet button[aria-label="إغلاق"]').first()
+  if ((await closeBtn.count()) > 0) {
+    await closeBtn.click()
+    await page.waitForTimeout(300)
+  }
+}
+
+// 2c. Surface: Swap / Replace Sheet
+console.log('Testing Surface: Swap / Replace Sheet')
+const moreOptionsBtn = page
+  .locator('button[aria-label="خيارات التمرين"]')
+  .first()
+if ((await moreOptionsBtn.count()) > 0) {
+  await moreOptionsBtn.click()
+  await page.waitForTimeout(500)
+  const swapOption = page
+    .locator('button:has-text("استبدال التمرين"), text="استبدال"')
+    .first()
+  if ((await swapOption.count()) > 0) {
+    await swapOption.click()
+    await page.waitForTimeout(600)
+    const swapImg = await page.evaluate(() => {
+      const imgs = Array.from(
+        document.querySelectorAll('.sheet img, .modal img'),
+      )
+      return imgs.some((img) => img.src.includes('data:image/png;base64'))
+    })
+    check(swapImg, 'Swap exercise sheet renders custom uploaded image')
+    const closeSwap = page.locator('.sheet button[aria-label="إغلاق"]').first()
+    if ((await closeSwap.count()) > 0) {
+      await closeSwap.click()
+      await page.waitForTimeout(300)
+    }
+  }
+}
+
 // 3. Surface: Exercise Page (ExerciseDetailView)
 console.log('Testing Surface: Exercise Detail Page')
 await page.goto(`${BASE}#/exercise/${EXERCISE_ID}`, {
   waitUntil: 'domcontentloaded',
 })
+await page.reload({ waitUntil: 'networkidle' })
 await page.waitForTimeout(600)
 const detailImg = await page.evaluate(() => {
   const imgs = Array.from(document.querySelectorAll('img'))
@@ -296,6 +384,7 @@ await page.screenshot({ path: 'evidence/h2/green/m1-exercise-detail.png' })
 // 4. Surface: Library Modal
 console.log('Testing Surface: Library Modal')
 await page.goto(`${BASE}#/library`, { waitUntil: 'domcontentloaded' })
+await page.reload({ waitUntil: 'networkidle' })
 await page.waitForTimeout(800)
 const libraryImg = await page.evaluate(() => {
   const imgs = Array.from(document.querySelectorAll('img'))
@@ -312,6 +401,7 @@ await page.screenshot({ path: 'evidence/h2/green/m1.png' })
 // 5. Surface: Active Workout
 console.log('Testing Surface: Active Workout')
 await page.goto(`${BASE}#/training/day/0`, { waitUntil: 'domcontentloaded' })
+await page.reload({ waitUntil: 'networkidle' })
 await page.waitForTimeout(600)
 const startBtn = page.locator('button:has-text("ابدأ التمرين")').first()
 if ((await startBtn.count()) > 0) {
@@ -333,6 +423,7 @@ if ((await startBtn.count()) > 0) {
 // 6. Surface: History / Progress
 console.log('Testing Surface: History (Progress)')
 await page.goto(`${BASE}#/progress`, { waitUntil: 'domcontentloaded' })
+await page.reload({ waitUntil: 'networkidle' })
 await page.waitForTimeout(600)
 const historyThumb = await page.evaluate(() => {
   const imgs = Array.from(document.querySelectorAll('img'))
@@ -371,6 +462,26 @@ const gifRendered = await page.evaluate(() => {
   return imgs.some((img) => img.src.includes('data:image/gif'))
 })
 check(gifRendered, 'Exercise detail page displays animated GIF')
+
+// Verify day list thumbnail does NOT play full animated GIF
+console.log(
+  'Testing day list renders static first-frame JPEG instead of full GIF...',
+)
+await page.goto(`${BASE}#/training/day/0`, { waitUntil: 'domcontentloaded' })
+await page.reload({ waitUntil: 'networkidle' })
+await page.waitForTimeout(600)
+const dayListUsesStaticFrame = await page.evaluate(() => {
+  const imgs = Array.from(document.querySelectorAll('.exercise-thumb-box img'))
+  const hasGif = imgs.some((img) => img.src.includes('data:image/gif'))
+  const hasStaticFrame = imgs.some((img) =>
+    img.src.includes('data:image/png;base64'),
+  )
+  return !hasGif && hasStaticFrame
+})
+check(
+  dayListUsesStaticFrame,
+  'Day list exercise thumbnail uses static first-frame JPEG instead of playing animated GIF',
+)
 
 // ==========================================
 // Test Scenario C: External HTTPS Link
@@ -441,6 +552,9 @@ const offlineCustomImg = await page.evaluate(() => {
 check(offlineCustomImg, 'Uploaded image remains visible from IndexedDB cache')
 
 await browser.close()
+if (server) {
+  await new Promise((res) => server.httpServer.close(res))
+}
 
 if (failures.length > 0) {
   console.error(

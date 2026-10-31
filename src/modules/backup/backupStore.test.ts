@@ -49,7 +49,16 @@ describe('backupStore', () => {
     const valid = {
       exportVersion: 1,
       exportedAt: Date.now(),
-      profile: { id: 'p1', name: 'Test' },
+      profile: {
+        id: 'p1',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        name: 'Test',
+        goals: ['hypertrophy'],
+        primaryGoal: 'hypertrophy',
+        trainingDaysPerWeek: 4,
+        body: { weightKg: 80, heightCm: 180 },
+      },
       trackingSessions: [],
       bodyLog: [],
       dayNotes: [],
@@ -61,5 +70,45 @@ describe('backupStore', () => {
     expect(res.ok).toBe(true)
     expect(res.data?.exportVersion).toBe(1)
     expect((res.data?.profile as Record<string, unknown>)?.id).toBe('p1')
+  })
+
+  it('rejects hostile import-invalid-types fixture with top 5 errors and paths', async () => {
+    const store = createBackupStore()
+    const hostile = {
+      exportVersion: 1,
+      profile: { name: 42, body: 'x' },
+      trackingSessions: [null, 5, 'x'],
+    }
+    const file = new File([JSON.stringify(hostile)], 'hostile.json', {
+      type: 'application/json',
+    })
+    const res = await store.importData(file)
+    expect(res.ok).toBe(false)
+    expect(res.error).toContain('أخطاء في بنية ملف النسخة')
+    expect(res.error).toContain('profile.')
+  })
+
+  it('rejects array root fixture (import-array.json)', async () => {
+    const store = createBackupStore()
+    const file = new File(
+      [JSON.stringify([{ exportVersion: 1 }])],
+      'array.json',
+      { type: 'application/json' },
+    )
+    const res = await store.importData(file)
+    expect(res.ok).toBe(false)
+    expect(res.error).toContain('ليس كائناً')
+  })
+
+  it('rejects garbage root fixture (import-garbage.json)', async () => {
+    const store = createBackupStore()
+    const file = new File(
+      [JSON.stringify({ notAValidBackup: true })],
+      'garbage.json',
+      { type: 'application/json' },
+    )
+    const res = await store.importData(file)
+    expect(res.ok).toBe(false)
+    expect(res.error).toContain('رقم إصدار')
   })
 })

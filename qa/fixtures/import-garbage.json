@@ -1,0 +1,5 @@
+{
+  "randomData": "this is not a valid maganis backup",
+  "corrupted": [1, 2, 3],
+  "nested": { "invalid": true }
+}

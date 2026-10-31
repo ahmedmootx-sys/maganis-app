@@ -1,0 +1,10 @@
+=== COVERAGE RATCHET CHECK (Task H4.1) ===
+Baseline file: coverage-baseline.json
+Summary file:  coverage/coverage-summary.json
+
+❌ Coverage ratchet violation: lines measured 42.49% is below baseline floor 49.90% (baseline: 50.00%, tolerance: -0.1%)
+❌ Coverage ratchet violation: statements measured 42.49% is below baseline floor 49.90% (baseline: 50.00%, tolerance: -0.1%)
+❌ Coverage ratchet violation: functions measured 37.00% is below baseline floor 44.90% (baseline: 45.00%, tolerance: -0.1%)
+❌ Coverage ratchet violation: branches measured 62.91% is below baseline floor 69.90% (baseline: 70.00%, tolerance: -0.1%)
+
+❌ Coverage ratchet check FAILED. Coverage has regressed below allowed floor.

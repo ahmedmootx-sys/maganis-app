@@ -12,6 +12,7 @@ import {
   fmtReps,
   fmtDays,
   stripEmoji,
+  toArabicDigits,
 } from './bidi.ts'
 
 const ARABIC_INDIC_DIGITS_REGEX = /[\u0660-\u0669\u06F0-\u06F9]/
@@ -126,5 +127,13 @@ describe('Bidi and Number Helpers (Priority 3.1 & 3.6)', () => {
     for (const out of outputs) {
       expect(out).not.toMatch(ARABIC_INDIC_DIGITS_REGEX)
     }
+  })
+
+  it('converts numbers to Eastern Arabic-Indic numerals via toArabicDigits', () => {
+    expect(toArabicDigits(0)).toBe('٠')
+    expect(toArabicDigits(4)).toBe('٤')
+    expect(toArabicDigits(6)).toBe('٦')
+    expect(toArabicDigits(24)).toBe('٢٤')
+    expect(toArabicDigits(null)).toBe('٠')
   })
 })

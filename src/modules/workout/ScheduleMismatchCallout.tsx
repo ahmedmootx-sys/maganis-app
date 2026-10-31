@@ -35,10 +35,10 @@ export function ScheduleMismatchCallout({
   }
 
   const load = selectWeekLoad(profile, program)
-  const profileGoal = profile.trainingDaysPerWeek ?? 4
+  const profileGoal = profile.trainingDaysPerWeek
 
-  // Only show if resistanceDays differs from the profile target
-  if (load.resistanceDays === profileGoal) {
+  // Only show if a target exists and resistanceDays differs from the profile target
+  if (!profileGoal || load.resistanceDays === profileGoal) {
     return null
   }
 

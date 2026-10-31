@@ -23,10 +23,8 @@ import { ExercisePickerModal } from './ExercisePickerModal.tsx'
 import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
 import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { generateProgram } from './programGenerator.ts'
-import {
-  convertDayToHomeWorkout,
-  parseAndValidateRoutineJson,
-} from './workoutUtils.ts'
+import { convertDayToHomeWorkout } from './homeWorkoutConverter.ts'
+import { parseAndValidateRoutineJson } from './workoutUtils.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import {
   TopBar,
@@ -2115,9 +2113,13 @@ export function WeeklyPlanView({
                     setAddingToDayIndex(selectedDay.dayIndex)
                   }}
                   style={{
-                    height: '36px',
-                    padding: '0 12px',
+                    minHeight: '44px',
+                    height: '44px',
+                    padding: '0 16px',
                     fontSize: '13px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
                   + إضافة
@@ -2314,9 +2316,13 @@ export function WeeklyPlanView({
                     setAddingToDayIndex(selectedDay.dayIndex)
                   }}
                   style={{
-                    height: '36px',
-                    padding: '0 12px',
+                    minHeight: '44px',
+                    height: '44px',
+                    padding: '0 16px',
                     fontSize: '13px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
                   + إضافة

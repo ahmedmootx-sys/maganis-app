@@ -51,7 +51,7 @@ export function getOrDeriveSchedule(
 
   const weekStartDay = profile?.weekStartDay ?? 6
   const ordered = getOrderedWeekdays(weekStartDay)
-  const daysPerWeek = profile?.trainingDaysPerWeek ?? program?.days?.length ?? 4
+  const daysPerWeek = profile?.trainingDaysPerWeek || program.days.length
   const programDays = program?.days ?? []
 
   const derived: Record<number, ScheduleSlotType> = {}

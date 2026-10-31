@@ -147,6 +147,7 @@ if (typeof window !== 'undefined') {
       if (changed) {
         notifyOverridesChanged()
       }
+      sweepOrphanedMedia().catch(() => {})
     })
     .catch(() => {
       // offline or IDB unavailable
@@ -178,9 +179,18 @@ export function getCustomExerciseMedia(
   return inMemoryMedia[exerciseId]
 }
 
+export class StorageSaveError extends Error {
+  constructor(
+    message = 'مقدرناش نحفظ الصورة. المساحة ممتلئة أو المتصفح رفض الحفظ.',
+  ) {
+    super(message)
+    this.name = 'StorageSaveError'
+  }
+}
+
 /**
  * Saves or updates an exercise override.
- * Updates in-memory cache, localStorage, and IndexedDB.
+ * Updates in-memory cache, localStorage, and IndexedDB with strict error handling.
  */
 export async function saveExerciseOverride(
   override: ExerciseOverride,
@@ -191,12 +201,13 @@ export async function saveExerciseOverride(
     throw new Error(validation.error || 'تعديل غير صالح')
   }
 
-  // Quota verification
-  if (
+  const isUpload =
     override.media?.kind === 'upload-image' ||
     override.media?.kind === 'upload-gif' ||
-    (override.imageMode === 'custom' && override.customImageBlob)
-  ) {
+    (override.imageMode === 'custom' && Boolean(override.customImageBlob))
+
+  // Quota verification
+  if (isUpload) {
     const activeMediaExercises = Object.entries(inMemoryOverrides).filter(
       ([id, o]) =>
         id !== override.exerciseId &&
@@ -225,64 +236,104 @@ export async function saveExerciseOverride(
     }
   }
 
+  // 1. Binary Media Storage & Cleanup in IndexedDB
+  let nextMediaPayload: { dataUrl?: string; firstFrameUrl?: string } | null =
+    null
+  if (isUpload) {
+    if (mediaPayload && mediaPayload.dataUrl) {
+      nextMediaPayload = mediaPayload
+      const ok = await setMediaItem(override.exerciseId, mediaPayload)
+      if (!ok) throw new StorageSaveError()
+    } else if (override.customImageBlob) {
+      nextMediaPayload = { dataUrl: override.customImageBlob }
+      const ok = await setMediaItem(override.exerciseId, nextMediaPayload)
+      if (!ok) throw new StorageSaveError()
+    }
+  } else {
+    // If switching to external link, none, or original: remove old media blob from IndexedDB
+    await removeMediaItem(override.exerciseId)
+  }
+
   const updated: ExerciseOverride = {
     ...override,
     updatedAt: Date.now(),
   }
 
-  // Handle binary media storage in IndexedDB (not in localStorage)
-  if (mediaPayload && mediaPayload.dataUrl) {
-    inMemoryMedia[override.exerciseId] = mediaPayload
-    await setMediaItem(override.exerciseId, mediaPayload)
-  } else if (override.customImageBlob) {
-    inMemoryMedia[override.exerciseId] = { dataUrl: override.customImageBlob }
-    await setMediaItem(override.exerciseId, {
-      dataUrl: override.customImageBlob,
-    })
+  const nextOverrides: Record<string, ExerciseOverride> = {
+    ...inMemoryOverrides,
+    [override.exerciseId]: updated,
   }
 
-  // If image mode is original or none, clear custom media
-  if (override.imageMode === 'original' || override.imageMode === 'none') {
-    delete inMemoryMedia[override.exerciseId]
-    await removeMediaItem(override.exerciseId)
+  // 2. Prepare localStorage payload (strip base64 strings > 512 bytes)
+  const storageOverrides: Record<string, ExerciseOverride> = {}
+  for (const [k, v] of Object.entries(nextOverrides)) {
+    const item = { ...v }
+    if (item.customImageBlob && item.customImageBlob.length > 512) {
+      delete item.customImageBlob
+    }
+    storageOverrides[k] = item
   }
 
-  // Keep localStorage lightweight: strip large base64 data URLs from metadata
-  const metadataToStore: ExerciseOverride = {
-    ...updated,
-  }
-  if (
-    metadataToStore.customImageBlob &&
-    metadataToStore.customImageBlob.length > 512
-  ) {
-    delete metadataToStore.customImageBlob
-  }
-
-  inMemoryOverrides[override.exerciseId] = updated
-
-  // Sync to localStorage
-  try {
-    if (typeof localStorage !== 'undefined') {
-      const storageOverrides: Record<string, ExerciseOverride> = {}
-      for (const [k, v] of Object.entries(inMemoryOverrides)) {
-        const item = { ...v }
-        if (item.customImageBlob && item.customImageBlob.length > 512) {
-          delete item.customImageBlob
-        }
-        storageOverrides[k] = item
-      }
+  // 3. Write to localStorage (strict error handling)
+  if (typeof localStorage !== 'undefined') {
+    try {
       localStorage.setItem(
         `maganis:${OVERRIDES_STORAGE_KEY}`,
         JSON.stringify(storageOverrides),
       )
+    } catch {
+      throw new StorageSaveError()
     }
-  } catch (err) {
-    console.warn('[exerciseOverrides] localStorage save failed:', err)
   }
 
-  // Sync to IndexedDB
-  await setIndexedItem(OVERRIDES_STORAGE_KEY, inMemoryOverrides)
+  // 4. Write to IndexedDB KV store (strict error handling)
+  const kvOk = await setIndexedItem(OVERRIDES_STORAGE_KEY, nextOverrides)
+  if (!kvOk) {
+    throw new StorageSaveError()
+  }
+
+  // 5. Only commit to in-memory caches after all persistent writes succeeded
+  inMemoryOverrides = nextOverrides
+  if (isUpload && nextMediaPayload) {
+    inMemoryMedia[override.exerciseId] = nextMediaPayload
+  } else {
+    delete inMemoryMedia[override.exerciseId]
+  }
+
   notifyOverridesChanged()
+}
+
+/**
+ * Sweeps orphaned media from IndexedDB maganis_media at startup.
+ * Deletes any items whose keys are not referenced by an active exercise override
+ * with an uploaded media kind.
+ */
+export async function sweepOrphanedMedia(): Promise<number> {
+  try {
+    const allMedia = await getAllMediaItems()
+    const mediaKeys = Object.keys(allMedia)
+    if (mediaKeys.length === 0) return 0
+
+    let sweptCount = 0
+    for (const key of mediaKeys) {
+      const override = inMemoryOverrides[key]
+      const isReferenced =
+        override &&
+        (override.media?.kind === 'upload-image' ||
+          override.media?.kind === 'upload-gif' ||
+          (override.imageMode === 'custom' &&
+            Boolean(override.customImageBlob)))
+
+      if (!isReferenced) {
+        await removeMediaItem(key)
+        delete inMemoryMedia[key]
+        sweptCount++
+      }
+    }
+    return sweptCount
+  } catch {
+    return 0
+  }
 }
 
 /**
@@ -292,22 +343,34 @@ export async function deleteExerciseOverride(
   exerciseId: string,
 ): Promise<void> {
   if (inMemoryOverrides[exerciseId]) {
-    delete inMemoryOverrides[exerciseId]
-    delete inMemoryMedia[exerciseId]
+    const nextOverrides = { ...inMemoryOverrides }
+    delete nextOverrides[exerciseId]
 
-    try {
-      if (typeof localStorage !== 'undefined') {
+    // Sync to localStorage
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const storageOverrides: Record<string, ExerciseOverride> = {}
+        for (const [k, v] of Object.entries(nextOverrides)) {
+          const item = { ...v }
+          if (item.customImageBlob && item.customImageBlob.length > 512) {
+            delete item.customImageBlob
+          }
+          storageOverrides[k] = item
+        }
         localStorage.setItem(
           `maganis:${OVERRIDES_STORAGE_KEY}`,
-          JSON.stringify(inMemoryOverrides),
+          JSON.stringify(storageOverrides),
         )
+      } catch {
+        // silent
       }
-    } catch {
-      // silent
     }
 
-    await setIndexedItem(OVERRIDES_STORAGE_KEY, inMemoryOverrides)
+    await setIndexedItem(OVERRIDES_STORAGE_KEY, nextOverrides)
     await removeMediaItem(exerciseId)
+
+    inMemoryOverrides = nextOverrides
+    delete inMemoryMedia[exerciseId]
     notifyOverridesChanged()
   }
 }

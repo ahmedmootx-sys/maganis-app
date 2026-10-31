@@ -685,19 +685,59 @@ export function Dashboard({
             gap: '8px',
           }}
         >
-          <Stat
-            label="الجلسات هذا الأسبوع"
-            value={
-              program && program.days.length > 0
-                ? `${sessionsThisWeek} من ${weekLoad.totalScheduledSessions}`
-                : '٠ من ٤'
+          {(() => {
+            const hasProgram = Boolean(
+              program && program.days && program.days.length > 0,
+            )
+            const plannedDays = hasProgram
+              ? weekLoad.totalScheduledSessions
+              : profile?.trainingDaysPerWeek || 0
+
+            if (!plannedDays) {
+              return (
+                <Stat
+                  label="الجلسات هذا الأسبوع"
+                  value="لسه ما اخترتش عدد أيام التمرين"
+                  isText
+                  secondary={
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.location.hash = '#/settings'
+                      }}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: '2px 0',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        color: 'var(--color-primary)',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        minHeight: '44px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      تحديد الأيام
+                    </button>
+                  }
+                />
+              )
             }
-            secondary={
-              program && program.days.length > 0
-                ? `${weekLoad.breakdownAr}${weekLoad.plannedCardioMinutes > 0 ? ` (+ ${plural(weekLoad.plannedCardioMinutes, 'دقيقة')} كارديو)` : ''}`
-                : plural(0, 'جلسة')
-            }
-          />
+
+            return (
+              <Stat
+                label="الجلسات هذا الأسبوع"
+                value={`${sessionsThisWeek} من ${plannedDays}`}
+                secondary={
+                  hasProgram
+                    ? `${weekLoad.breakdownAr}${weekLoad.plannedCardioMinutes > 0 ? ` (+ ${plural(weekLoad.plannedCardioMinutes, 'دقيقة')} كارديو)` : ''}`
+                    : plural(sessionsThisWeek, 'جلسة')
+                }
+              />
+            )
+          })()}
           <Stat
             label="الوزن الحالي"
             value={currentWeight.value}

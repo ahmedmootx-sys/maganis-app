@@ -6,7 +6,7 @@
  * validation on import, and atlas synchronization.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import {
   selectEffectiveExercise,
   saveExerciseOverride,
@@ -14,9 +14,12 @@ import {
   resetAllOverrides,
   getExerciseOverride,
   validateExerciseOverride,
+  sweepOrphanedMedia,
+  StorageSaveError,
   MAX_USER_IMAGES,
   type ExerciseOverride,
 } from './exerciseOverrides'
+import * as indexedStorage from '../../lib/indexedStorage'
 import { resolveMuscles } from './muscleResolver'
 import type { Exercise } from '../shared/types'
 
@@ -211,6 +214,71 @@ describe('exerciseOverrides', () => {
           customImageBlob: 'data:image/jpeg;base64,image_overflow',
         }),
       ).rejects.toThrow(/الحد الأقصى/)
+    })
+  })
+
+  describe('Storage integrity and media cleanup (Task H4.3)', () => {
+    it('removes media blob when switching an exercise from upload to external link', async () => {
+      // 1. Save uploaded image
+      await saveExerciseOverride(
+        {
+          exerciseId: 'bench_press',
+          imageMode: 'custom',
+          media: {
+            kind: 'upload-image',
+            blobKey: 'bench_press',
+            updatedAt: Date.now(),
+          },
+        },
+        { dataUrl: 'data:image/jpeg;base64,sample_blob' },
+      )
+
+      const savedBlob = await indexedStorage.getMediaItem('bench_press')
+      expect(savedBlob).toBeDefined()
+
+      // 2. Switch to external link
+      await saveExerciseOverride({
+        exerciseId: 'bench_press',
+        imageMode: 'custom',
+        media: {
+          kind: 'external-image',
+          url: 'https://example.com/bench.png',
+          updatedAt: Date.now(),
+        },
+      })
+
+      const blobAfterSwitch = await indexedStorage.getMediaItem('bench_press')
+      expect(blobAfterSwitch).toBeNull()
+    })
+
+    it('sweeps orphaned media in maganis_media not referenced by any override', async () => {
+      // Seed orphaned item in media store
+      await indexedStorage.setMediaItem('orphan_exercise_1', {
+        dataUrl: 'data:image/jpeg;base64,orphan',
+      })
+      const initialMedia = await indexedStorage.getAllMediaItems()
+      expect(initialMedia['orphan_exercise_1']).toBeDefined()
+
+      const swept = await sweepOrphanedMedia()
+      expect(swept).toBeGreaterThanOrEqual(1)
+
+      const mediaAfter = await indexedStorage.getAllMediaItems()
+      expect(mediaAfter['orphan_exercise_1']).toBeUndefined()
+    })
+
+    it('throws StorageSaveError without corrupting in-memory state if indexedDB save fails', async () => {
+      vi.spyOn(indexedStorage, 'setIndexedItem').mockResolvedValueOnce(false)
+
+      await expect(
+        saveExerciseOverride({
+          exerciseId: 'bench_press',
+          nameAr: 'اسم غير محفوظ',
+        }),
+      ).rejects.toThrow(StorageSaveError)
+
+      // In-memory state remains untouched
+      const after = getExerciseOverride('bench_press')
+      expect(after?.nameAr).not.toBe('اسم غير محفوظ')
     })
   })
 })

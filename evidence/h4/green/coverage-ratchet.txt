@@ -1,0 +1,10 @@
+=== COVERAGE RATCHET CHECK (Task H4.1) ===
+Baseline file: coverage-baseline.json
+Summary file:  coverage/coverage-summary.json
+
+✓ lines      : measured 42.49% >= floor 42.39% (baseline: 42.49%)
+✓ statements : measured 42.49% >= floor 42.39% (baseline: 42.49%)
+✓ functions  : measured 37.00% >= floor 36.90% (baseline: 37.00%)
+✓ branches   : measured 62.91% >= floor 62.81% (baseline: 62.91%)
+
+✅ All coverage ratchet checks PASSED.

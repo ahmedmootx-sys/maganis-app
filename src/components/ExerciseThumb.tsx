@@ -12,6 +12,8 @@ export interface ExerciseThumbProps {
   customExercises?: Exercise[]
   className?: string
   style?: React.CSSProperties
+  fullAnimation?: boolean
+  isExercisePage?: boolean
 }
 
 /**
@@ -35,6 +37,8 @@ export function ExerciseThumb({
   customExercises = [],
   className = '',
   style = {},
+  fullAnimation,
+  isExercisePage,
 }: ExerciseThumbProps) {
   const targetId = exerciseId || exercise?.id || ''
   const effective = useEffectiveExercise(targetId, customExercises)
@@ -49,7 +53,10 @@ export function ExerciseThumb({
           ? '56px'
           : '72px'
 
-  const resolved = resolveMedia(finalExercise)
+  const resolved = resolveMedia(finalExercise, {
+    fullAnimation,
+    isExercisePage,
+  })
   const name =
     exerciseName || finalExercise?.nameAr || finalExercise?.name || 'تمرين'
 

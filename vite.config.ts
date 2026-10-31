@@ -82,10 +82,12 @@ export default defineConfig(({ mode }) => {
             }
             if (
               id.includes('legacy-exercises.json') ||
-              id.includes('catalog-v1.json') ||
               id.includes('src/modules/workout/exercises.ts')
             ) {
               return 'exercise-catalog'
+            }
+            if (id.includes('catalog-v1.json')) {
+              return 'catalog-data'
             }
           },
         },
@@ -105,7 +107,7 @@ export default defineConfig(({ mode }) => {
       setupFiles: './src/setupTests.ts',
       coverage: {
         provider: 'v8',
-        reporter: ['text', 'html', 'lcov'],
+        reporter: ['text', 'html', 'lcov', 'json-summary'],
         include: ['src/**/*.{ts,tsx}'],
         exclude: [
           'src/main.tsx',

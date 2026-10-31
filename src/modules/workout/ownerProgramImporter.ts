@@ -4,7 +4,7 @@ import type {
   SavedWorkoutProgram,
   WorkoutProgram,
 } from '../shared/types.ts'
-import { EXERCISES } from './exercises.ts'
+import { CATALOG_INDEX as EXERCISES } from './exerciseIndex.ts'
 
 export interface SectionExerciseDef {
   name: string

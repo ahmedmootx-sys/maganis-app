@@ -1,7 +1,10 @@
-name: Deploy to GitHub Pages
+name: CI & Deploy to GitHub Pages
 
 on:
   push:
+    branches:
+      - '**'
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -12,23 +15,112 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: 'deploy-ci-${{ github.ref }}'
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build & Deploy
+  gates:
+    name: Quality Gates & Verification
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Chromium with deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright OS system deps only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: node scripts/gate-no-personal-data.mjs
+        run: node scripts/gate-no-personal-data.mjs
+
+      - name: npm run check:emoji
+        run: npm run check:emoji
+
+      - name: npm run lint
+        run: npm run lint
+
+      - name: npm run format:check
+        run: npm run format:check
+
+      - name: npm run typecheck
+        run: npm run typecheck
+
+      - name: npm run test:coverage
+        run: npm run test:coverage
+
+      - name: node scripts/check-coverage-ratchet.mjs
+        run: node scripts/check-coverage-ratchet.mjs
+
+      - name: npm run build
+        run: npm run build
+
+      - name: node scripts/gate-raw-tokens.mjs
+        run: node scripts/gate-raw-tokens.mjs
+
+      - name: npm run check:ui
+        run: npm run check:ui
+
+      - name: qa/video-flow.mjs
+        run: node qa/video-flow.mjs
+
+      - name: qa/media-everywhere.mjs
+        run: node qa/media-everywhere.mjs
+
+      - name: qa/reset-flow.mjs
+        run: node qa/reset-flow.mjs
+
+      - name: qa/backup-restore.mjs
+        run: node qa/backup-restore.mjs
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: gates
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
-      - id: deployment
+
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4

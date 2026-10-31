@@ -49,7 +49,7 @@ The test script `qa/video-flow.mjs` was executed against the unpatched productio
 
 ### A. Pre-Fix Reproduction (Red Output)
 
-File: [`evidence/h1/red.txt`](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/h1/red.txt)
+File: [`evidence/h1/red.txt`](../evidence/h1/red.txt)
 
 ```
 FAIL  video link field is visible right after tapping "add video link"
@@ -68,7 +68,7 @@ PASS  iframe src is the nocookie embed of the right video
 
 ### B. Post-Fix Verification (Green Output)
 
-File: [`evidence/h1/green.txt`](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/h1/green.txt)
+File: [`evidence/h1/green.txt`](../evidence/h1/green.txt)
 
 ```
 PASS  video link field is visible right after tapping "add video link"
@@ -91,9 +91,9 @@ all checks passed
 
 Two 360x720 screenshots were captured directly from the running production build:
 
-1. **Add Video Sheet**: [`evidence/h1/add-video-sheet.png`](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/h1/add-video-sheet.png)
+1. **Add Video Sheet**: [`evidence/h1/add-video-sheet.png`](../evidence/h1/add-video-sheet.png)
    - _Observation_: The bottom sheet "تعديل بيانات التمرين" opens scrolled directly to the bottom. The video field "رابط فيديو شرح (يوتيوب أو فيميو أو ملف فيديو مباشر)" is centered and prominently displayed with an active focus ring. The "إلغاء" and "حفظ التعديلات" buttons are visible immediately below.
-2. **Player Playing**: [`evidence/h1/player-playing.png`](file:///c:/Users/power%20tech/Downloads/maganis-project/evidence/h1/player-playing.png)
+2. **Player Playing**: [`evidence/h1/player-playing.png`](../evidence/h1/player-playing.png)
    - _Observation_: After tapping play, the exercise card retains its full layout. The video container is expanded to a solid dark player card displaying "STUB PLAYER" at 200px height. It does not disappear or collapse into a 2px sliver line.
 
 ---

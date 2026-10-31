@@ -7,7 +7,7 @@
 
 import { useSyncExternalStore, useMemo } from 'react'
 import type { Exercise } from '../shared/types.ts'
-import { getExerciseById as getRawCatalogExercise } from './exercises.ts'
+import { getExerciseFromIndex as getRawCatalogExercise } from './exerciseIndex.ts'
 import {
   type EffectiveExercise,
   type ExerciseOverride,

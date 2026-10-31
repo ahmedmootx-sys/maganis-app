@@ -33,6 +33,13 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const rootDir = path.resolve(__dirname, '..')
 
+const syntheticPersona = JSON.parse(
+  fs.readFileSync(
+    path.join(rootDir, 'fixtures', 'persona.synthetic.json'),
+    'utf8',
+  ),
+)
+
 const evidenceDir = path.join(rootDir, 'evidence/g5-a/screenshots')
 fs.mkdirSync(evidenceDir, { recursive: true })
 
@@ -160,11 +167,8 @@ async function run() {
   for (const cfg of a1Configs) {
     const prog = makeProgram(cfg.res, cfg.cardio)
     const profile = {
-      id: 'owner-prod',
-      name: 'أحمد',
-      primaryGoal: 'hypertrophy',
+      ...syntheticPersona.profile,
       trainingDaysPerWeek: cfg.profileDays,
-      body: { sex: 'male', age: 28, heightCm: 178, weightKg: 80 },
     }
 
     for (const theme of THEMES) {
@@ -215,11 +219,8 @@ async function run() {
   // 2. Capture Key App Screens across all viewports and themes
   const standardProg = makeProgram(5, true)
   const standardProfile = {
-    id: 'owner-prod',
-    name: 'أحمد',
-    primaryGoal: 'hypertrophy',
+    ...syntheticPersona.profile,
     trainingDaysPerWeek: 5,
-    body: { sex: 'male', age: 28, heightCm: 178, weightKg: 80 },
   }
 
   const routesToCapture = [

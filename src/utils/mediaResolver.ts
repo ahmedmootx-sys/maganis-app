@@ -1,5 +1,4 @@
 import type { Exercise } from '../modules/shared/types.ts'
-import { EXERCISES } from '../modules/workout/exercises.ts'
 import { assetUrl } from './assetUrl.ts'
 import mediaFramesData from '../data/media-frames.json' with { type: 'json' }
 
@@ -31,6 +30,11 @@ const framesDb =
     }
   ).exercises || {}
 
+export interface ResolveMediaOptions {
+  fullAnimation?: boolean
+  isExercisePage?: boolean
+}
+
 /**
  * Single source of truth for resolving exercise media / thumbnails.
  * Task H2.1: Must take an effective exercise only (or custom exercise object).
@@ -45,6 +49,7 @@ const framesDb =
  */
 export function resolveMedia(
   exercise: Exercise | Partial<Exercise> | null | undefined,
+  options?: ResolveMediaOptions,
 ): ResolvedMedia {
   if (!exercise) {
     return { url: null, frame1Url: null, isKeyframed: false }
@@ -60,17 +65,47 @@ export function resolveMedia(
 
   // 1. User's override media first (Task H2.2 precedence)
   if (ex.hasCustomMedia || ex.mediaOverride) {
-    const candidate = ex.gifUrl || ex.imageUrl || ex.thumbnailUrl
-    if (candidate && typeof candidate === 'string' && candidate.trim()) {
-      const isGif =
-        ex.mediaOverride?.kind === 'upload-gif' ||
-        ex.mediaOverride?.kind === 'external-gif' ||
-        candidate.endsWith('.gif') ||
-        candidate.startsWith('data:image/gif')
+    const kind = ex.mediaOverride?.kind
+
+    if (kind === 'upload-gif') {
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const allowFullAnimation =
+        Boolean(options?.fullAnimation) && !prefersReducedMotion
+      const staticThumb = ex.thumbnailUrl || null
+      const animGif = ex.gifUrl || ex.imageUrl || null
 
       return {
+        url: allowFullAnimation ? animGif : staticThumb,
+        frame1Url: staticThumb,
+        isKeyframed: false,
+      }
+    }
+
+    if (kind === 'external-gif') {
+      // Return URL only on exercise page; elsewhere return null (displaying placeholder + mark)
+      if (options?.isExercisePage) {
+        const url = ex.gifUrl || ex.imageUrl || null
+        return {
+          url,
+          frame1Url: null,
+          isKeyframed: false,
+        }
+      }
+      return {
+        url: null,
+        frame1Url: null,
+        isKeyframed: false,
+      }
+    }
+
+    const candidate = ex.imageUrl || ex.thumbnailUrl || ex.gifUrl
+    if (candidate && typeof candidate === 'string' && candidate.trim()) {
+      return {
         url: candidate,
-        frame1Url: isGif && ex.thumbnailUrl ? ex.thumbnailUrl : null,
+        frame1Url: null,
         isKeyframed: false,
       }
     }
@@ -181,7 +216,8 @@ export function resolveMedia(
  */
 export function getNullMediaExercises(
   customExercises: Exercise[] = [],
+  catalogExercises: Exercise[] = [],
 ): Exercise[] {
-  const all = [...EXERCISES, ...customExercises]
+  const all = [...catalogExercises, ...customExercises]
   return all.filter((ex) => resolveMedia(ex).url === null)
 }

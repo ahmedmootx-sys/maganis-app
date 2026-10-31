@@ -13,8 +13,26 @@
  */
 import { chromium } from 'playwright'
 import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const BASE = process.env.BASE || 'http://localhost:4173/maganis-app/'
+let BASE = process.env.BASE
+let server = null
+if (!BASE) {
+  const { preview } = await import('vite')
+  const rootDir = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '..',
+  )
+  server = await preview({
+    root: rootDir,
+    preview: { port: 4173, strictPort: false },
+    logLevel: 'error',
+  })
+  const port = server.httpServer.address().port
+  BASE = `http://localhost:${port}/maganis-app/`
+}
+
 const EXERCISE = process.env.EXERCISE || 'bench'
 const profile = JSON.parse(
   fs.readFileSync(
@@ -30,11 +48,15 @@ const check = (ok, msg) => {
   if (!ok) failures.push(msg)
 }
 
-const browser = await chromium.launch({
-  channel: 'chrome',
-  executablePath: process.env.CHROME || undefined,
+const launchOpts = {
+  headless: true,
   args: ['--no-sandbox'],
-})
+}
+if (process.platform === 'win32' && !process.env.CI) {
+  launchOpts.channel = 'chrome'
+}
+
+const browser = await chromium.launch(launchOpts)
 const ctx = await browser.newContext({
   viewport: { width: 360, height: 720 },
   deviceScaleFactor: 2,
@@ -136,6 +158,9 @@ check(
 )
 
 await browser.close()
+if (server) {
+  await new Promise((res) => server.httpServer.close(res))
+}
 if (failures.length) {
   console.error(`\n${failures.length} check(s) failed`)
   process.exit(1)

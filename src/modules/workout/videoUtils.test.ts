@@ -29,7 +29,7 @@ describe('parseVideoUrl', () => {
       valid: false,
       desc: 'data: protocol injection',
     },
-    { input: 'file:///C:/video.mp4', valid: false, desc: 'file: protocol' },
+    { input: 'file:///media/video.mp4', valid: false, desc: 'file: protocol' },
     {
       input: 'ftp://server.com/video.mp4',
       valid: false,

@@ -42,7 +42,7 @@ describe('Exercise Media Resolver: resolveMedia', () => {
   })
 
   it('audits exercises with null media', () => {
-    const nullExercises = getNullMediaExercises()
+    const nullExercises = getNullMediaExercises([], EXERCISES)
     console.log(
       `Total exercises with null media: ${nullExercises.length} / ${EXERCISES.length}`,
     )

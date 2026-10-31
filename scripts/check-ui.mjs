@@ -38,6 +38,15 @@ if (!fs.existsSync(CONTACT_DIR)) {
 const axePath = path.join(rootDir, 'node_modules', 'axe-core', 'axe.min.js')
 const axeSource = fs.readFileSync(axePath, 'utf8')
 
+const syntheticPersonaPath = path.join(
+  rootDir,
+  'fixtures',
+  'persona.synthetic.json',
+)
+const syntheticPersona = JSON.parse(
+  fs.readFileSync(syntheticPersonaPath, 'utf8'),
+)
+
 async function run() {
   console.log(
     '🚀 Starting Maganis Automated UI Checks on PRODUCTION BUILD (Playwright + Axe-Core)...',
@@ -94,153 +103,131 @@ async function run() {
       deviceScaleFactor: 2,
     })
 
-    // Populate mock user profile in localStorage so all tabs render populated content
-    await context.addInitScript(() => {
-      const mockProfile = {
-        id: 'prof-user-1',
-        name: 'كابتن أحمد',
-        goals: ['hypertrophy'],
-        primaryGoal: 'hypertrophy',
-        trainingDaysPerWeek: 4,
-        splitType: 'upper_lower',
-        experienceLevel: 'intermediate',
-        equipmentAvailable: ['barbell', 'dumbbell', 'machine', 'bodyweight'],
-        body: {
-          weightKg: 80,
-          heightCm: 178,
-          birthDate: '1995-05-15',
-          gender: 'male',
-          activityLevel: 'moderate',
-        },
-        medical: {
-          hasIssues: false,
-          injuryTags: [],
-          notes: '',
-        },
-        createdAt: 1700000000000,
-        updatedAt: 1700000000000,
-      }
+    // Populate synthetic user profile in localStorage so all tabs render populated content
+    await context.addInitScript(
+      ({ mockProfile }) => {
+        const mockProgram = {
+          id: 'prog-1',
+          createdAt: 1700000000000,
+          primaryGoal: 'hypertrophy',
+          trainingDaysPerWeek: 4,
+          splitType: 'upper_lower',
+          days: [
+            {
+              dayIndex: 0,
+              labelAr: 'اليوم 1: علوي (قوة وبناء)',
+              focus: 'صدر، ظهر، كتف، ذراعين',
+              exercises: [
+                {
+                  exerciseId: 'ex-1',
+                  sets: 4,
+                  reps: 8,
+                  restSeconds: 120,
+                  section: 'primary',
+                },
+                {
+                  exerciseId: 'ex-3',
+                  sets: 3,
+                  reps: 10,
+                  restSeconds: 90,
+                  section: 'primary',
+                },
+              ],
+            },
+            {
+              dayIndex: 1,
+              labelAr: 'اليوم 2: سفلي (قوة)',
+              focus: 'أرجل، بطن',
+              exercises: [
+                {
+                  exerciseId: 'ex-2',
+                  sets: 4,
+                  reps: 8,
+                  restSeconds: 180,
+                  section: 'primary',
+                },
+              ],
+            },
+            {
+              dayIndex: 3,
+              labelAr: 'اليوم 3: علوي (حجم تدريبي)',
+              focus: 'ظهر، صدر، ذراعين',
+              exercises: [
+                {
+                  exerciseId: 'ex-3',
+                  sets: 4,
+                  reps: 12,
+                  restSeconds: 90,
+                  section: 'primary',
+                },
+              ],
+            },
+            {
+              dayIndex: 4,
+              labelAr: 'اليوم 4: سفلي وبطن',
+              focus: 'أرجل، سمانة، بطن',
+              exercises: [
+                {
+                  exerciseId: 'ex-2',
+                  sets: 4,
+                  reps: 10,
+                  restSeconds: 120,
+                  section: 'primary',
+                },
+              ],
+            },
+          ],
+        }
 
-      const mockProgram = {
-        id: 'prog-1',
-        createdAt: 1700000000000,
-        primaryGoal: 'hypertrophy',
-        trainingDaysPerWeek: 4,
-        splitType: 'upper_lower',
-        days: [
+        const mockSessions = [
           {
-            dayIndex: 0,
-            labelAr: 'اليوم 1: علوي (قوة وبناء)',
-            focus: 'صدر، ظهر، كتف، ذراعين',
+            id: 'sess-1',
+            date: '2026-10-15',
+            programDayIndex: 0,
             exercises: [
               {
                 exerciseId: 'ex-1',
-                sets: 4,
-                reps: 8,
-                restSeconds: 120,
-                section: 'primary',
-              },
-              {
-                exerciseId: 'ex-3',
-                sets: 3,
-                reps: 10,
-                restSeconds: 90,
-                section: 'primary',
+                sets: [
+                  { reps: 8, weightKg: 80 },
+                  { reps: 8, weightKg: 80 },
+                ],
+                completed: true,
               },
             ],
+            notes: 'جلسة ممتازة',
+            createdAt: 1700000000000,
           },
-          {
-            dayIndex: 1,
-            labelAr: 'اليوم 2: سفلي (قوة)',
-            focus: 'أرجل، بطن',
-            exercises: [
-              {
-                exerciseId: 'ex-2',
-                sets: 4,
-                reps: 8,
-                restSeconds: 180,
-                section: 'primary',
-              },
-            ],
-          },
-          {
-            dayIndex: 3,
-            labelAr: 'اليوم 3: علوي (حجم تدريبي)',
-            focus: 'ظهر، صدر، ذراعين',
-            exercises: [
-              {
-                exerciseId: 'ex-3',
-                sets: 4,
-                reps: 12,
-                restSeconds: 90,
-                section: 'primary',
-              },
-            ],
-          },
-          {
-            dayIndex: 4,
-            labelAr: 'اليوم 4: سفلي وبطن',
-            focus: 'أرجل، سمانة، بطن',
-            exercises: [
-              {
-                exerciseId: 'ex-2',
-                sets: 4,
-                reps: 10,
-                restSeconds: 120,
-                section: 'primary',
-              },
-            ],
-          },
-        ],
-      }
+        ]
 
-      const mockSessions = [
-        {
-          id: 'sess-1',
-          date: '2026-10-15',
-          programDayIndex: 0,
-          exercises: [
-            {
-              exerciseId: 'ex-1',
-              sets: [
-                { reps: 8, weightKg: 80 },
-                { reps: 8, weightKg: 80 },
-              ],
-              completed: true,
-            },
-          ],
-          notes: 'جلسة ممتازة',
-          createdAt: 1700000000000,
-        },
-      ]
+        const mockBodyLog = [
+          { date: '2026-10-01', weightKg: 81.5 },
+          { date: '2026-10-08', weightKg: 80.8 },
+          { date: '2026-10-15', weightKg: 80.0 },
+        ]
 
-      const mockBodyLog = [
-        { date: '2026-10-01', weightKg: 81.5 },
-        { date: '2026-10-08', weightKg: 80.8 },
-        { date: '2026-10-15', weightKg: 80.0 },
-      ]
-
-      try {
-        localStorage.setItem(
-          'maganis:profile.active',
-          JSON.stringify(mockProfile),
-        )
-        localStorage.setItem(
-          'maganis:workout.program',
-          JSON.stringify(mockProgram),
-        )
-        localStorage.setItem(
-          'maganis:tracking.sessions',
-          JSON.stringify(mockSessions),
-        )
-        localStorage.setItem(
-          'maganis:tracking.body-log',
-          JSON.stringify(mockBodyLog),
-        )
-      } catch (e) {
-        console.error(e)
-      }
-    })
+        try {
+          localStorage.setItem(
+            'maganis:profile.active',
+            JSON.stringify(mockProfile),
+          )
+          localStorage.setItem(
+            'maganis:workout.program',
+            JSON.stringify(mockProgram),
+          )
+          localStorage.setItem(
+            'maganis:tracking.sessions',
+            JSON.stringify(mockSessions),
+          )
+          localStorage.setItem(
+            'maganis:tracking.body-log',
+            JSON.stringify(mockBodyLog),
+          )
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      { mockProfile: syntheticPersona.profile },
+    )
 
     const page = await context.newPage()
 
@@ -380,24 +367,85 @@ async function run() {
             )
           }
 
-          // 7. Interactive touch targets >= 44px
+          // 7. Interactive touch targets >= 44px (Honest Task H4.2 Rule)
+          const EXEMPTIONS = [
+            // 1. Inline links inside prose/paragraphs (WCAG 2.5.5 / 2.5.8 exception)
+            (element) =>
+              element.tagName === 'A' &&
+              Boolean(element.closest('p, .claim-text, [data-prose="true"]')),
+            // 2. Hidden or file inputs with 0 bounding box or display none
+            (element) =>
+              element.tagName === 'INPUT' &&
+              element.type === 'file' &&
+              (element.style.display === 'none' ||
+                element.hasAttribute('hidden')),
+            // 3. Inactive/hidden proxy inputs with tabindex="-1" and pointer-events: none / opacity 0
+            (element) =>
+              element.tagName === 'INPUT' &&
+              element.getAttribute('tabindex') === '-1' &&
+              (window.getComputedStyle(element).pointerEvents === 'none' ||
+                window.getComputedStyle(element).opacity === '0'),
+          ]
+
           const interactiveEls = document.querySelectorAll(
-            'button:not([disabled]), a[href], [role="button"]:not([aria-disabled="true"])',
+            'button:not([disabled]), a[href], [role="button"]:not([aria-disabled="true"]), input:not([type="hidden"]):not([disabled]), select:not([disabled]), [role="tab"]:not([aria-disabled="true"]), [role="switch"]:not([aria-disabled="true"])',
           )
+
           for (const el of interactiveEls) {
             const rect = el.getBoundingClientRect()
             if (rect.width === 0 || rect.height === 0) continue
-            if (
-              el.classList.contains('chip') ||
-              el.classList.contains('tiny-badge') ||
-              el.closest('.bottom-nav') ||
-              el.closest('.tabs')
-            )
-              continue
 
-            if (rect.height < 36 && rect.width < 36) {
+            // Check narrow explicit exemptions only
+            if (EXEMPTIONS.some((fn) => fn(el))) {
+              continue
+            }
+
+            // Check effective hit area (element or ::before pseudo-element)
+            let effectiveWidth = rect.width
+            let effectiveHeight = rect.height
+
+            try {
+              const beforeStyle = window.getComputedStyle(el, '::before')
+              if (
+                beforeStyle &&
+                beforeStyle.content !== 'none' &&
+                beforeStyle.content !== '' &&
+                beforeStyle.display !== 'none'
+              ) {
+                const bWidth = parseFloat(beforeStyle.width) || 0
+                const bHeight = parseFloat(beforeStyle.height) || 0
+                const bLeft = parseFloat(beforeStyle.left) || 0
+                const bRight = parseFloat(beforeStyle.right) || 0
+                const bTop = parseFloat(beforeStyle.top) || 0
+                const bBottom = parseFloat(beforeStyle.bottom) || 0
+                const spreadX =
+                  (bLeft < 0 ? -bLeft : 0) + (bRight < 0 ? -bRight : 0)
+                const spreadY =
+                  (bTop < 0 ? -bTop : 0) + (bBottom < 0 ? -bBottom : 0)
+                effectiveWidth = Math.max(
+                  effectiveWidth,
+                  bWidth,
+                  rect.width + spreadX,
+                )
+                effectiveHeight = Math.max(
+                  effectiveHeight,
+                  bHeight,
+                  rect.height + spreadY,
+                )
+              }
+            } catch {
+              // ignore
+            }
+
+            if (effectiveWidth < 44 || effectiveHeight < 44) {
+              const identifier =
+                el.getAttribute('aria-label') ||
+                el.getAttribute('data-testid') ||
+                el.textContent?.trim().slice(0, 20) ||
+                el.id ||
+                el.className
               issues.push(
-                `Interactive target < 44px (${Math.round(rect.width)}x${Math.round(rect.height)}px): "${el.textContent?.trim().slice(0, 20) || el.getAttribute('aria-label')}"`,
+                `Interactive target < 44px (${Math.round(rect.width)}x${Math.round(rect.height)}px): "${identifier}"`,
               )
             }
           }

@@ -77,3 +77,28 @@ git config --global user.email "ID+username@users.noreply.github.com"
 ```bash
 git config user.email "ID+username@users.noreply.github.com"
 ```
+
+---
+
+## 4. تدقيق وتطهير المسارات والبيانات الشخصية (Task H4.7 Audit)
+
+تم إجراء فحص شامل وكامل لجميع الملفات المتتبعة في المستودع (`git ls-files`):
+
+1. **تطهير المسارات المطلقة:** تم فحص وإزالة كافة الروابط والمسارات التي تحتوي على مجلدات المستخدم الشخصية على Windows (مثل مسارات `file:///` ومجلدات المستخدمين المحلية) واستبدالها بروابط نسبية نظيفة (`./` أو `../`) في كافة التقارير والتوثيقات:
+   - `docs/PROJECT_CONTEXT.md`
+   - `docs/STATE.md`
+   - `docs/f-report.md`
+   - `docs/g-report.md`
+   - `docs/g2-evidence/*.txt`
+   - `reports/g5-a-report.md`, `g5-c-report.md`, `g6-b-report.md`, `g6-c-report.md`, `h1-report.md`, `h2-h3-report.md`
+2. **استبدال الملفات الشخصية في السكربتات:** كافة سكربتات الاختبار والتقاط الأدلة (`scripts/check-ui.mjs`, `scripts/capture-g5a-screenshots.mjs`, `scripts/capture-g6b-evidence.mjs`, `qa/drive.ts`) تقرأ الآن حصرياً من النموذج التجريبي المصطنع `fixtures/persona.synthetic.json`.
+3. **تحديث وتفعيل بوابة الخصوصية (`scripts/gate-no-personal-data.mjs`):**
+   - تم تزويد البوابة بـ 6 قواعد صارمة لفحص:
+     - أسماء الملفات المحظورة.
+     - السجلات الطبية والتشخيصات في ملفات JSON.
+     - المسارات المطلقة لنظام التشغيل في كافة الملفات النصية.
+     - عناوين البريد الإلكتروني الحقيقية.
+     - أرقام الهواتف الشخصية والدولية.
+     - المعرفات والأسماء الشخصية المحظورة.
+   - البوابة أظهرت **RED** أولاً (32 انتهاكاً موثقة في `evidence/h4/red/gate-no-personal-data.txt`).
+   - بعد التطهير، البوابة خضراء تماماً (**0 violations**) في `evidence/h4/green/gate-no-personal-data.txt`.

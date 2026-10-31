@@ -1,4 +1,4 @@
-RUN  v3.2.7 C:/Users/power tech/Downloads/maganis-project
+RUN  v3.2.7 /workspace/maganis-project
 
  ✓ src/modules/workout/ActiveWorkoutSession.test.tsx (5 tests) 878ms
    ✓ ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A) > A1: ✓ button is disabled / blocks completion until weight > 0 and reps >= 1  480ms

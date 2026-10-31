@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import type { ProgramDay, TrackingSession, Exercise } from '../shared/types.ts'
-import { EXERCISES } from '../workout/exercises.ts'
+import { CATALOG_INDEX } from '../workout/exerciseIndex.ts'
 import { getEffectiveExercise } from '../workout/exerciseStore.ts'
 import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import { ExerciseDetailModal } from '../workout/ExerciseDetailModal.tsx'
@@ -125,7 +125,7 @@ export function SessionLogger({
   // Filtered exercises for add sheet
   const availableExercises = useMemo(() => {
     const term = exerciseSearchTerm.trim().toLowerCase()
-    const all = [...customExercises, ...EXERCISES]
+    const all = [...customExercises, ...CATALOG_INDEX]
     if (!term) return all.slice(0, 40)
     return all.filter(
       (e) =>

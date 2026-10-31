@@ -185,11 +185,11 @@ _Solution_:
 
 ## 7. Reports & Documentation References
 
-- **Content Inventory**: [`reports/content-inventory.json`](file:///c:/Users/power%20tech/Downloads/maganis-project/reports/content-inventory.json) (71 claims inventoried)
-- **Copy Rewrite Table**: [`reports/g5-c-copy-changes.md`](file:///c:/Users/power%20tech/Downloads/maganis-project/reports/g5-c-copy-changes.md) (50 UI strings mapped)
-- **3D Spike Investigation**: [`docs/spikes/atlas-3d.md`](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/spikes/atlas-3d.md)
-- **State Registry**: [`docs/STATE.md`](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/STATE.md)
-- **Operating Rules**: [`docs/OPERATING-RULES.md`](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/OPERATING-RULES.md)
+- **Content Inventory**: [`reports/content-inventory.json`](../reports/content-inventory.json) (71 claims inventoried)
+- **Copy Rewrite Table**: [`reports/g5-c-copy-changes.md`](../reports/g5-c-copy-changes.md) (50 UI strings mapped)
+- **3D Spike Investigation**: [`docs/spikes/atlas-3d.md`](../docs/spikes/atlas-3d.md)
+- **State Registry**: [`docs/STATE.md`](../docs/STATE.md)
+- **Operating Rules**: [`docs/OPERATING-RULES.md`](../docs/OPERATING-RULES.md)
 
 ---
 

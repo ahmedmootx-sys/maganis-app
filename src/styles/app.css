@@ -370,6 +370,11 @@ button.ghost-danger:hover {
 }
 
 .chip-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   padding: 6px 12px;
   border-radius: 999px;
   border: 1.5px solid var(--chip-border, var(--line));

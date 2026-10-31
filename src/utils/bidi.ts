@@ -197,3 +197,14 @@ export function fmtFactor(factor: number): string {
     : factor.toFixed(2).replace(/0$/, '')
   return `×${str}`
 }
+
+/**
+ * Converts numbers or Latin digits to Eastern Arabic-Indic numerals (٠-٩).
+ */
+export function toArabicDigits(
+  val: number | string | null | undefined,
+): string {
+  if (val === null || val === undefined) return '٠'
+  const digits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+  return String(val).replace(/[0-9]/g, (d) => digits[Number(d)] ?? d)
+}

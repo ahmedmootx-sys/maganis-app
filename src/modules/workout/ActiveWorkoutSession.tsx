@@ -973,6 +973,13 @@ export function ActiveWorkoutSession({
                     exercise={exercise}
                     exerciseId={exState.exerciseId}
                     size={52}
+                    fullAnimation={
+                      typeof window !== 'undefined' &&
+                      typeof window.matchMedia === 'function'
+                        ? !window.matchMedia('(prefers-reduced-motion: reduce)')
+                            .matches
+                        : true
+                    }
                   />
                   <div style={{ minWidth: 0 }}>
                     <h3

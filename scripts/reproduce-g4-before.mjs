@@ -79,8 +79,11 @@ async function main() {
     weeklyPlanContent.includes('صمم لي جدولي الخاص')
   const hasAiDesignerInSettings = settingsContent.includes('صمم لي جدولي الخاص')
 
-  const fixturePath =
-    'c:/Users/power tech/Downloads/maganis-program-prog-ahmed-upper-lower-5d.json'
+  const fixturePath = path.join(
+    rootDir,
+    'fixtures',
+    'synthetic-import-payload.json',
+  )
   let fixtureDefects = []
   if (fs.existsSync(fixturePath)) {
     const fixtureData = JSON.parse(fs.readFileSync(fixturePath, 'utf8'))

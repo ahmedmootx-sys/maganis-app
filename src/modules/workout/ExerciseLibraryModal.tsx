@@ -342,7 +342,7 @@ export function ExerciseLibraryModal({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                minHeight: '36px',
+                minHeight: '44px',
                 padding: '0 12px',
                 borderRadius: 'var(--radius-control, 8px)',
                 border:
@@ -392,7 +392,7 @@ export function ExerciseLibraryModal({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  minHeight: '34px',
+                  minHeight: '44px',
                   padding: '0 12px',
                   borderRadius: '17px',
                   border: filterSuitableOnly
@@ -563,10 +563,10 @@ export function ExerciseLibraryModal({
                         type="button"
                         className="topbar-icon-btn"
                         style={{
-                          width: '38px',
-                          height: '38px',
-                          minWidth: '38px',
-                          minHeight: '38px',
+                          width: '44px',
+                          height: '44px',
+                          minWidth: '44px',
+                          minHeight: '44px',
                           borderRadius: '8px',
                         }}
                         onClick={(e) => {

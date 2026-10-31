@@ -36,30 +36,15 @@ async function run() {
     rootDir,
     'fixtures/persona.synthetic.json',
   )
-  let personaDump = null
-  if (fs.existsSync(personaProfilePath)) {
-    personaDump = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
+  if (!fs.existsSync(personaProfilePath)) {
+    throw new Error('fixtures/persona.synthetic.json not found')
   }
-  const baseProfile = personaDump
-    ? personaDump.profile || personaDump
-    : {
-        id: 'user_1',
-        name: 'كريم',
-        sex: 'male',
-        age: 28,
-        weightKg: 80,
-        heightCm: 178,
-        activityLevel: 'moderate',
-        primaryGoal: 'hypertrophy',
-        trainingDaysPerWeek: 4,
-        trainingLocation: 'gym',
-        trainingStyle: 'weights',
-        experienceLevel: 'intermediate',
-      }
+  const personaDump = JSON.parse(fs.readFileSync(personaProfilePath, 'utf8'))
+  const baseProfile = personaDump.profile || personaDump
 
   const standardProgram = {
     id: 'prog-g6b',
-    title: 'جدول الكابتن أحمد',
+    title: 'جدول الكابتن كريم',
     primaryGoal: 'hypertrophy',
     trainingDaysPerWeek: 4,
     splitType: 'upper_lower',
@@ -216,7 +201,7 @@ async function run() {
         level: 'moderate',
         startTime: Date.now() - 60000,
         durationMinutes: 30,
-        weightKg: 80,
+        weightKg: baseProfile.body?.weightKg ?? 80,
         pausedTotalMs: 0,
         isPaused: false,
         pausedAt: null,

@@ -24,76 +24,195 @@ function readWithFileReader(file: File): Promise<string> {
   })
 }
 
+export const ProfileImportSchema = z
+  .object({
+    id: z.string({ message: 'معرف الملف الشخصي مفقود أو غير صالح' }).min(1),
+    createdAt: z.number({ message: 'تاريخ إنشاء الملف الشخصي غير صالح' }),
+    updatedAt: z.number({ message: 'تاريخ تحديث الملف الشخصي غير صالح' }),
+    name: z.string().optional(),
+    goals: z
+      .array(z.string(), { message: 'أهداف الملف الشخصي يجب أن تكون مصفوفة' })
+      .min(1, 'يجب تحديد هدف واحد على الأقل'),
+    primaryGoal: z.string({ message: 'الهدف الرئيسي للملف الشخصي غير صالح' }),
+    trainingDaysPerWeek: z
+      .number({ message: 'أيام التدريب في الملف الشخصي يجب أن تكون رقماً' })
+      .min(0)
+      .max(7),
+    medical: z
+      .object({
+        hasIssues: z.boolean().optional(),
+        injuryTags: z.array(z.string()).optional(),
+        notes: z.string().optional(),
+      })
+      .passthrough()
+      .optional()
+      .default({ hasIssues: false, injuryTags: [], notes: '' }),
+    body: z
+      .object({
+        sex: z.string().optional(),
+        age: z.number().optional(),
+        heightCm: z.number().optional(),
+        weightKg: z.number().optional(),
+        activityLevel: z.string().optional(),
+      })
+      .passthrough(),
+  })
+  .passthrough()
+
+export const WorkoutProgramImportSchema = z
+  .object({
+    id: z.string({ message: 'معرف البرنامج غير صالح' }).min(1),
+    days: z
+      .array(
+        z
+          .object({
+            id: z.string().optional(),
+            dayIndex: z.number({ message: 'رقم اليوم يجب أن يكون رقماً' }),
+            labelAr: z.string().optional(),
+            focus: z.string().optional(),
+            exercises: z
+              .array(
+                z
+                  .object({
+                    exerciseId: z.string({ message: 'معرف التمرين غير صالح' }),
+                  })
+                  .passthrough(),
+                { message: 'تمارين اليوم يجب أن تكون مصفوفة' },
+              )
+              .optional()
+              .default([]),
+          })
+          .passthrough(),
+        { message: 'أيام البرنامج التدريبي يجب أن تكون مصفوفة' },
+      )
+      .min(1, 'البرنامج التدريبي يجب أن يحتوي على يوم واحد على الأقل'),
+    trainingDaysPerWeek: z.number().optional(),
+    primaryGoal: z.string().optional(),
+  })
+  .passthrough()
+
+export const TrackingSessionImportSchema = z
+  .object({
+    id: z.string({ message: 'معرف الجلسة غير صالح' }),
+    date: z.string({ message: 'تاريخ الجلسة غير صالح' }),
+    exercises: z
+      .array(
+        z
+          .object({
+            exerciseId: z.string({
+              message: 'معرف التمرين في الجلسة غير صالح',
+            }),
+            sets: z
+              .array(
+                z
+                  .object({
+                    reps: z.number({
+                      message: 'عدد التكرارات يجب أن يكون رقماً',
+                    }),
+                    weightKg: z.number({ message: 'الوزن يجب أن يكون رقماً' }),
+                  })
+                  .passthrough(),
+                { message: 'مجموعات التمرين يجب أن تكون مصفوفة' },
+              )
+              .optional()
+              .default([]),
+            completed: z.boolean().optional().default(true),
+          })
+          .passthrough(),
+        { message: 'تمارين الجلسة يجب أن تكون مصفوفة' },
+      )
+      .optional()
+      .default([]),
+    notes: z.string().optional().default(''),
+    createdAt: z.number().optional(),
+  })
+  .passthrough()
+
+export const BodyLogImportSchema = z
+  .object({
+    date: z.string({ message: 'تاريخ تسجيل الوزن غير صالح' }),
+    weightKg: z.number({ message: 'وزن الجسم يجب أن يكون رقماً' }),
+  })
+  .passthrough()
+
+export const DayNotesImportSchema = z
+  .object({
+    date: z.string({ message: 'تاريخ الملاحظة غير صالح' }),
+    note: z.string({ message: 'نص الملاحظة غير صالح' }),
+  })
+  .passthrough()
+
+export const CustomExerciseImportSchema = z
+  .object({
+    id: z.string({ message: 'معرف التمرين المخصص غير صالح' }),
+    nameAr: z.string({ message: 'اسم التمرين المخصص بالعربية مطلوب' }),
+    category: z.string({ message: 'تصنيف العضلة للتمرين المخصص مطلوب' }),
+  })
+  .passthrough()
+
+export const ExerciseOverrideItemSchema = z
+  .object({
+    customImage: z
+      .object({
+        id: z.string().optional(),
+        url: z.string().optional(),
+        mediaId: z.string().optional(),
+        firstFrameUrl: z.string().optional(),
+        kind: z.string().optional(),
+      })
+      .passthrough()
+      .optional(),
+    customVideo: z
+      .object({
+        url: z.string().optional(),
+        platform: z.string().optional(),
+        videoId: z.string().optional(),
+      })
+      .passthrough()
+      .optional(),
+    notes: z.string().optional(),
+  })
+  .passthrough()
+
+export const ExerciseOverrideImportSchema = z.record(
+  z.string(),
+  ExerciseOverrideItemSchema,
+  { message: 'بيانات تعديلات التمارين في النسخة الاحتياطية غير صالحة' },
+)
+
 export const BackupImportSchema = z
   .object({
     exportVersion: z.number({
       message: 'رقم إصدار ملف النسخة الاحتياطية مفقود أو غير صالح',
     }),
     exportedAt: z.number().optional(),
-    profile: z
-      .unknown()
-      .refine(
-        (val) =>
-          val === undefined ||
-          val === null ||
-          (typeof val === 'object' && !Array.isArray(val)),
-        { message: 'بيانات الملف الشخصي في النسخة غير صالحة' },
-      )
-      .optional(),
-    workoutProgram: z
-      .unknown()
-      .refine(
-        (val) =>
-          val === undefined ||
-          val === null ||
-          (typeof val === 'object' && !Array.isArray(val)),
-        { message: 'بيانات البرنامج التدريبي في النسخة غير صالحة' },
-      )
-      .optional(),
+    profile: ProfileImportSchema.nullable().optional(),
+    workoutProgram: WorkoutProgramImportSchema.nullable().optional(),
     customExercises: z
-      .array(z.unknown(), {
+      .array(CustomExerciseImportSchema, {
         message: 'بيانات customExercises في النسخة الاحتياطية غير صالحة',
       })
       .optional()
       .default([]),
     trackingSessions: z
-      .array(z.unknown(), {
+      .array(TrackingSessionImportSchema, {
         message: 'بيانات trackingSessions في النسخة الاحتياطية غير صالحة',
       })
       .optional()
       .default([]),
     bodyLog: z
-      .array(z.unknown(), {
+      .array(BodyLogImportSchema, {
         message: 'بيانات bodyLog في النسخة الاحتياطية غير صالحة',
       })
       .optional()
       .default([]),
     dayNotes: z
-      .array(z.unknown(), {
+      .array(DayNotesImportSchema, {
         message: 'بيانات dayNotes في النسخة الاحتياطية غير صالحة',
       })
       .optional()
       .default([]),
-    exerciseOverrides: z
-      .unknown()
-      .refine(
-        (val) => {
-          if (val === undefined || val === null) return true
-          if (typeof val !== 'object' || Array.isArray(val)) return false
-          for (const [_id, overrideObj] of Object.entries(
-            val as Record<string, unknown>,
-          )) {
-            if (!overrideObj || typeof overrideObj !== 'object') {
-              return false
-            }
-          }
-          return true
-        },
-        {
-          message: 'بيانات تعديلات التمارين في النسخة الاحتياطية غير صالحة',
-        },
-      )
-      .optional(),
+    exerciseOverrides: ExerciseOverrideImportSchema.optional(),
   })
   .passthrough()
 
@@ -228,10 +347,15 @@ export function createBackupStore(): BackupStore {
 
       const zodResult = BackupImportSchema.safeParse(parsed)
       if (!zodResult.success) {
-        const issue = zodResult.error.issues[0]
+        const top5Issues = zodResult.error.issues.slice(0, 5)
+        const formattedErrors = top5Issues.map((issue) => {
+          const pathStr =
+            issue.path.length > 0 ? ` (${issue.path.join('.')})` : ''
+          return `${issue.message}${pathStr}`
+        })
         return {
           ok: false,
-          error: issue?.message || 'ملف النسخة الاحتياطية غير صالح',
+          error: `أخطاء في بنية ملف النسخة:\n• ` + formattedErrors.join('\n• '),
         }
       }
 

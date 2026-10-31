@@ -385,8 +385,10 @@ export function ProgressScreen({
             title="تصدير بيانات التقدم"
             aria-label="تصدير بيانات التقدم"
             style={{
-              width: '40px',
-              height: '40px',
+              width: '44px',
+              height: '44px',
+              minWidth: '44px',
+              minHeight: '44px',
               borderRadius: '8px',
               border: 'none',
               background: 'var(--card-subtle)',
@@ -451,7 +453,8 @@ export function ProgressScreen({
             type="button"
             onClick={() => setActiveTab('log')}
             style={{
-              height: '42px',
+              height: '44px',
+              minHeight: '44px',
               borderRadius: '8px',
               border: 'none',
               background:
@@ -471,7 +474,8 @@ export function ProgressScreen({
             type="button"
             onClick={() => setActiveTab('reports')}
             style={{
-              height: '42px',
+              height: '44px',
+              minHeight: '44px',
               borderRadius: '8px',
               border: 'none',
               background:
@@ -655,8 +659,10 @@ export function ProgressScreen({
                           onClick={() => setWeightToDelete(entry.date)}
                           aria-label={`حذف قياس ${entry.date}`}
                           style={{
-                            width: '36px',
-                            height: '36px',
+                            width: '44px',
+                            height: '44px',
+                            minWidth: '44px',
+                            minHeight: '44px',
                             borderRadius: '8px',
                             border: 'none',
                             background: 'transparent',
@@ -717,8 +723,10 @@ export function ProgressScreen({
                   onClick={prevMonth}
                   aria-label="الشهر السابق"
                   style={{
-                    width: '40px',
-                    height: '40px',
+                    width: '44px',
+                    height: '44px',
+                    minWidth: '44px',
+                    minHeight: '44px',
                     borderRadius: 'var(--radius-control)',
                     border: '1px solid var(--color-divider)',
                     background: 'var(--color-surface-2)',
@@ -746,8 +754,10 @@ export function ProgressScreen({
                   onClick={nextMonth}
                   aria-label="الشهر التالي"
                   style={{
-                    width: '40px',
-                    height: '40px',
+                    width: '44px',
+                    height: '44px',
+                    minWidth: '44px',
+                    minHeight: '44px',
                     borderRadius: 'var(--radius-control)',
                     border: '1px solid var(--color-divider)',
                     background: 'var(--color-surface-2)',
@@ -805,9 +815,11 @@ export function ProgressScreen({
                     <button
                       key={dateStr}
                       type="button"
+                      className="calendar-day-btn"
                       onClick={() => setSelectedCalendarDate(dateStr)}
                       style={{
-                        height: '42px',
+                        minHeight: '44px',
+                        height: '44px',
                         borderRadius: 'var(--radius-control)',
                         border: isCurrentDay
                           ? '2px solid var(--color-primary)'
@@ -1145,6 +1157,9 @@ export function ProgressScreen({
                     background: 'transparent',
                     border: 'none',
                     cursor: 'pointer',
+                    minHeight: '44px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
                   }}
                 >
                   + إضافة ملاحظة
@@ -1207,8 +1222,10 @@ export function ProgressScreen({
                           onClick={() => setNoteToDelete(n)}
                           aria-label="حذف الملاحظة"
                           style={{
-                            width: '36px',
-                            height: '36px',
+                            width: '44px',
+                            height: '44px',
+                            minWidth: '44px',
+                            minHeight: '44px',
                             borderRadius: '8px',
                             border: 'none',
                             background: 'transparent',
@@ -1255,7 +1272,8 @@ export function ProgressScreen({
                   type="button"
                   onClick={() => setRange(r)}
                   style={{
-                    height: '38px',
+                    minHeight: '44px',
+                    height: '44px',
                     borderRadius: '8px',
                     border: 'none',
                     background: range === r ? 'var(--card-bg)' : 'transparent',

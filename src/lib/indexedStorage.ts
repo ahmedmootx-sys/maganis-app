@@ -9,8 +9,16 @@ const DB_VERSION = 2
 const STORE_NAME = 'maganis_kv'
 const MEDIA_STORE_NAME = 'maganis_media'
 
+// In-memory fallback for environments without IndexedDB (e.g. jsdom unit tests)
+const memoryKV: Record<string, unknown> = {}
+const memoryMedia: Record<string, unknown> = {}
+
+export function hasIndexedDB(): boolean {
+  return typeof window !== 'undefined' && Boolean(window.indexedDB)
+}
+
 export async function openMaganisDB(): Promise<IDBDatabase | null> {
-  if (typeof window === 'undefined' || !window.indexedDB) {
+  if (!hasIndexedDB()) {
     return null
   }
 
@@ -37,6 +45,10 @@ export async function openMaganisDB(): Promise<IDBDatabase | null> {
 }
 
 export async function getIndexedItem<T>(key: string): Promise<T | null> {
+  if (!hasIndexedDB()) {
+    const val = memoryKV[key]
+    return val !== undefined ? (val as T) : null
+  }
   const db = await openMaganisDB()
   if (!db) return null
 
@@ -58,6 +70,10 @@ export async function setIndexedItem<T>(
   key: string,
   value: T,
 ): Promise<boolean> {
+  if (!hasIndexedDB()) {
+    memoryKV[key] = value
+    return true
+  }
   const db = await openMaganisDB()
   if (!db) return false
 
@@ -75,6 +91,10 @@ export async function setIndexedItem<T>(
 }
 
 export async function removeIndexedItem(key: string): Promise<boolean> {
+  if (!hasIndexedDB()) {
+    delete memoryKV[key]
+    return true
+  }
   const db = await openMaganisDB()
   if (!db) return false
 
@@ -92,6 +112,10 @@ export async function removeIndexedItem(key: string): Promise<boolean> {
 }
 
 export async function getMediaItem<T>(key: string): Promise<T | null> {
+  if (!hasIndexedDB()) {
+    const val = memoryMedia[key]
+    return val !== undefined ? (val as T) : null
+  }
   const db = await openMaganisDB()
   if (!db) return null
 
@@ -110,6 +134,10 @@ export async function getMediaItem<T>(key: string): Promise<T | null> {
 }
 
 export async function setMediaItem<T>(key: string, value: T): Promise<boolean> {
+  if (!hasIndexedDB()) {
+    memoryMedia[key] = value
+    return true
+  }
   const db = await openMaganisDB()
   if (!db) return false
 
@@ -127,6 +155,10 @@ export async function setMediaItem<T>(key: string, value: T): Promise<boolean> {
 }
 
 export async function removeMediaItem(key: string): Promise<boolean> {
+  if (!hasIndexedDB()) {
+    delete memoryMedia[key]
+    return true
+  }
   const db = await openMaganisDB()
   if (!db) return false
 
@@ -144,6 +176,9 @@ export async function removeMediaItem(key: string): Promise<boolean> {
 }
 
 export async function getAllMediaItems(): Promise<Record<string, string>> {
+  if (!hasIndexedDB()) {
+    return { ...(memoryMedia as Record<string, string>) }
+  }
   const db = await openMaganisDB()
   if (!db) return {}
 
@@ -170,6 +205,9 @@ export async function getAllMediaItems(): Promise<Record<string, string>> {
 }
 
 export async function clearAllMaganisDB(): Promise<void> {
+  for (const k of Object.keys(memoryKV)) delete memoryKV[k]
+  for (const k of Object.keys(memoryMedia)) delete memoryMedia[k]
+
   const db = await openMaganisDB()
   if (!db) return
 

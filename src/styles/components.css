@@ -211,14 +211,14 @@
 .top-bar__actions button,
 .top-bar__start .icon-btn,
 .top-bar__start button {
-  width: 40px !important;
-  height: 40px !important;
-  min-width: 40px !important;
-  min-height: 40px !important;
-  max-width: 40px !important;
-  max-height: 40px !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
   padding: 0 !important;
-  margin-block: 8px;
+  margin-block: 6px;
   border-radius: var(--radius-control);
   display: inline-flex;
   align-items: center;
@@ -865,7 +865,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  min-height: 38px;
+  min-height: 44px;
   padding-inline: 16px;
   padding-block: 8px;
   border-radius: var(--radius-full);
@@ -962,7 +962,7 @@
 
 .segmented__item {
   flex: 1;
-  min-height: 38px;
+  min-height: 44px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: calc(var(--radius-control) - 2px);
@@ -1952,4 +1952,22 @@ input::placeholder {
   text-justify: none !important;
   color: var(--color-placeholder, #52525b) !important;
   opacity: 1 !important;
+}
+
+/* Calendar day button hit target expansion (WCAG 2.5.8 / Task H4.2) */
+.calendar-day-btn {
+  position: relative;
+}
+
+.calendar-day-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: block;
 }

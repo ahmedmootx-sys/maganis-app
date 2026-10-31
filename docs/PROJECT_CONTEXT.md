@@ -295,7 +295,7 @@ export interface AtlasMuscleHead {
    - إضافة زر **`📲 مشاركة`** في هيدر جدول التمارين وفي قسم النسخ الاحتياطي.
    - يفتح قائمة المشاركة الرسمية للهاتف لإرسال الملف مباشرة عبر **واتساب، تليجرام، ماسنجر**، إلخ، مع بقاء زر **`💾 تنزيل`** كخيار للحفظ المحلي.
 3. **دعم زر الرجوع وإيماءات السحب بالهاتف (Hardware Back & Gesture Navigation):**
-   - مكتبة [`navigationHistory.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/utils/navigationHistory.ts) المعتمدة على `window.history.pushState` و `popstate`.
+   - مكتبة [`navigationHistory.ts`](../src/utils/navigationHistory.ts) المعتمدة على `window.history.pushState` و `popstate`.
    - عند فتح أي نافذة منبثقة أو مودال، يؤدي زر الرجوع لإغلاقها والعودة للتطبيق بدلاً من الخروج.
    - عند التواجد في تبويب فرعي، يعود للوحة التحكم الرئيسية.
    - عند التواجد في الشاشة الرئيسية بدون نوافذ، يظهر إشعار: _"اضغط مرة أخرى للخروج من التطبيق"_.

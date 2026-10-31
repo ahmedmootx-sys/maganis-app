@@ -334,6 +334,100 @@ export function ExerciseMediaCard({
       )
     }
 
+    const overrideEx = exercise as {
+      mediaOverride?: { kind?: string }
+      thumbnailUrl?: string
+    }
+    const isGif =
+      overrideEx.mediaOverride?.kind === 'upload-gif' ||
+      overrideEx.mediaOverride?.kind === 'external-gif' ||
+      activeMediaUrl.startsWith('data:image/gif') ||
+      activeMediaUrl.endsWith('.gif')
+
+    const currentSrc =
+      isGif && !isPlaying
+        ? overrideEx.thumbnailUrl || activeMediaUrl
+        : activeMediaUrl
+
+    if (isGif) {
+      return (
+        <div
+          className="card exercise-media-card"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px',
+            background: 'var(--color-surface)',
+            borderRadius: 'var(--radius-card, 16px)',
+            border: '1px solid var(--color-divider)',
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setIsPlaying(!isPlaying)}
+            aria-label={isPlaying ? 'إيقاف الحركة مؤقتاً' : 'تشغيل الحركة'}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <div
+              style={{
+                width: '180px',
+                height: '180px',
+                minWidth: '180px',
+                minHeight: '180px',
+                maxWidth: '180px',
+                maxHeight: '180px',
+                borderRadius: '12px',
+                overflow: 'hidden' /* clip-ok: visual element boundary */,
+                background: 'var(--color-surface-2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              }}
+            >
+              <SafeImage
+                src={currentSrc}
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
+                onError={() => {
+                  if (isExternal) setLoadFailed(true)
+                }}
+                style={{
+                  width: '180px',
+                  height: '180px',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: '8px',
+                fontSize: '12px',
+                color: 'var(--color-text-2)',
+                fontWeight: 600,
+              }}
+            >
+              {isPlaying ? 'انقر للإيقاف المؤقت' : 'انقر للتشغيل'}
+            </div>
+          </button>
+        </div>
+      )
+    }
+
     return (
       <div
         className="card exercise-media-card"

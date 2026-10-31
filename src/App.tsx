@@ -30,9 +30,6 @@ import type { UserProfile } from './modules/onboarding/types.ts'
 import { CustomExerciseBuilder } from './modules/workout/CustomExerciseBuilder.tsx'
 import { takePreUpdateSnapshot } from './modules/backup/preUpdateSnapshot.ts'
 import { executeFactoryReset } from './modules/settings/resetService.ts'
-import { CustomScheduleModal } from './modules/workout/CustomScheduleModal.tsx'
-import { ProgramVaultModal } from './modules/workout/ProgramVaultModal.tsx'
-import { AiDesignerModal } from './modules/workout/AiDesignerModal.tsx'
 import { ActiveWorkoutSession } from './modules/workout/ActiveWorkoutSession.tsx'
 import { CardioMiniBar } from './modules/workout/CardioMiniBar.tsx'
 import type {
@@ -40,7 +37,6 @@ import type {
   CardioEffortLevel,
 } from './modules/workout/cardioEngine.ts'
 import { formatTime } from './modules/workout/workoutUtils.ts'
-import { generateProgram } from './modules/workout/programGenerator.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
 import { Toast } from './components/Toast.tsx'
 import { updateManager } from './utils/updateManager.ts'
@@ -111,6 +107,21 @@ const Styleguide = lazy(() =>
 const ComponentGallery = lazy(() =>
   import('./modules/gallery/ComponentGallery.tsx').then((m) => ({
     default: m.ComponentGallery,
+  })),
+)
+const CustomScheduleModal = lazy(() =>
+  import('./modules/workout/CustomScheduleModal.tsx').then((m) => ({
+    default: m.CustomScheduleModal,
+  })),
+)
+const ProgramVaultModal = lazy(() =>
+  import('./modules/workout/ProgramVaultModal.tsx').then((m) => ({
+    default: m.ProgramVaultModal,
+  })),
+)
+const AiDesignerModal = lazy(() =>
+  import('./modules/workout/AiDesignerModal.tsx').then((m) => ({
+    default: m.AiDesignerModal,
   })),
 )
 
@@ -528,8 +539,10 @@ export function App({ config }: AppProps) {
     [liveSyncManager],
   )
 
-  const doGenerateProgram = useCallback(() => {
+  const doGenerateProgram = useCallback(async () => {
     if (!profile) return
+    const { generateProgram } =
+      await import('./modules/workout/programGenerator.ts')
     const p = generateProgram({
       goal: profile.primaryGoal,
       trainingDaysPerWeek: profile.trainingDaysPerWeek,
@@ -1017,28 +1030,32 @@ export function App({ config }: AppProps) {
             )}
 
             {showCustomScheduleModal && profile && (
-              <CustomScheduleModal
-                primaryGoal={profile.primaryGoal}
-                profileDays={profile.trainingDaysPerWeek}
-                weekStartDay={
-                  (profile as { preferences?: { weekStartDay?: number } })
-                    .preferences?.weekStartDay ?? 6
-                }
-                onSaveSchedule={handleSaveCustomSchedule}
-                onClose={() => setShowCustomScheduleModal(false)}
-              />
+              <Suspense fallback={null}>
+                <CustomScheduleModal
+                  primaryGoal={profile.primaryGoal}
+                  profileDays={profile.trainingDaysPerWeek}
+                  weekStartDay={
+                    (profile as { preferences?: { weekStartDay?: number } })
+                      .preferences?.weekStartDay ?? 6
+                  }
+                  onSaveSchedule={handleSaveCustomSchedule}
+                  onClose={() => setShowCustomScheduleModal(false)}
+                />
+              </Suspense>
             )}
 
             {showProgramVaultModal && (
-              <ProgramVaultModal
-                savedPrograms={savedProgramsList}
-                activeProgram={program}
-                onSaveCurrentProgram={handleSaveCurrentToVault}
-                onApplyProgram={handleApplyProgramFromVault}
-                onDeleteProgram={handleDeleteFromVault}
-                onRenameProgram={handleRenameInVault}
-                onClose={() => setShowProgramVaultModal(false)}
-              />
+              <Suspense fallback={null}>
+                <ProgramVaultModal
+                  savedPrograms={savedProgramsList}
+                  activeProgram={program}
+                  onSaveCurrentProgram={handleSaveCurrentToVault}
+                  onApplyProgram={handleApplyProgramFromVault}
+                  onDeleteProgram={handleDeleteFromVault}
+                  onRenameProgram={handleRenameInVault}
+                  onClose={() => setShowProgramVaultModal(false)}
+                />
+              </Suspense>
             )}
 
             {showLogger && (
@@ -1540,30 +1557,32 @@ export function App({ config }: AppProps) {
         />
 
         {showAiDesignerModal && (
-          <AiDesignerModal
-            isOpen={showAiDesignerModal}
-            onClose={() => setShowAiDesignerModal(false)}
-            profile={profile}
-            limitations={profile?.limitations}
-            onSaveDraft={(prog) => {
-              workoutStore.saveProgramToVault(
-                prog.title || 'مسودة برنامج',
-                prog,
-              )
-              setSavedProgramsList(workoutStore.getSavedPrograms())
-              showToast('تم حفظ البرنامج كمسودة في خزانة البرامج')
-            }}
-            onSaveAndActivate={(prog) => {
-              workoutStore.saveProgram(prog)
-              setProgram(prog)
-              showToast('تم تفعيل البرنامج التدريبي بنجاح')
-            }}
-            onOpenImport={() => {
-              setShowAiDesignerModal(false)
-              setActiveTab('workouts')
-            }}
-            showToast={showToast}
-          />
+          <Suspense fallback={null}>
+            <AiDesignerModal
+              isOpen={showAiDesignerModal}
+              onClose={() => setShowAiDesignerModal(false)}
+              profile={profile}
+              limitations={profile?.limitations}
+              onSaveDraft={(prog) => {
+                workoutStore.saveProgramToVault(
+                  prog.title || 'مسودة برنامج',
+                  prog,
+                )
+                setSavedProgramsList(workoutStore.getSavedPrograms())
+                showToast('تم حفظ البرنامج كمسودة في خزانة البرامج')
+              }}
+              onSaveAndActivate={(prog) => {
+                workoutStore.saveProgram(prog)
+                setProgram(prog)
+                showToast('تم تفعيل البرنامج التدريبي بنجاح')
+              }}
+              onOpenImport={() => {
+                setShowAiDesignerModal(false)
+                setActiveTab('workouts')
+              }}
+              showToast={showToast}
+            />
+          </Suspense>
         )}
 
         <Toast

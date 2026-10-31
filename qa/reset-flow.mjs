@@ -14,8 +14,25 @@
 
 import { chromium } from 'playwright'
 import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const BASE = process.env.BASE || 'http://localhost:5194/maganis-app/'
+let BASE = process.env.BASE
+let server = null
+if (!BASE) {
+  const { preview } = await import('vite')
+  const rootDir = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '..',
+  )
+  server = await preview({
+    root: rootDir,
+    preview: { port: 5194, strictPort: false },
+    logLevel: 'error',
+  })
+  const port = server.httpServer.address().port
+  BASE = `http://localhost:${port}/maganis-app/`
+}
 
 const persona = JSON.parse(
   fs.readFileSync(
@@ -367,6 +384,9 @@ check(
 )
 
 await browser.close()
+if (server) {
+  await new Promise((res) => server.httpServer.close(res))
+}
 
 if (failures.length > 0) {
   console.error(

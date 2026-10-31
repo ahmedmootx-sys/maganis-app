@@ -7,6 +7,45 @@
 
 ---
 
+## ⚠️ Historical Corrections: The "Was False" Register (Task H4 Audit)
+
+During the acceptance review of commit `0f02a13` by the project owner, several claims originally reported in this document were found to be inaccurate or contradicted by the codebase. In accordance with Operating Rule P9 and Task H4, this register corrects each statement:
+
+1. **"Zero personal data gate wired into CI": WAS FALSE.**
+   - _Previous claim_: Stated that `gate-no-personal-data.mjs` was integrated into GitHub Actions CI.
+   - _Actual reality_: Neither `deploy.yml` nor `ci.yml` invoked `gate-no-personal-data.mjs`. Furthermore, `deploy.yml` was not gated by quality checks at all.
+   - _Correction in H4_: Both workflows have been unified into `.github/workflows/deploy.yml`. The `gates` job strictly runs before `deploy` on main, running `gate-no-personal-data.mjs`, `check-coverage-ratchet.mjs`, Playwright suites, and UI checks.
+2. **"108/108 touch targets >= 44px": WAS FALSE.**
+   - _Previous claim_: Claimed 100% compliance with 44px minimum touch targets across 108 matrix runs.
+   - _Actual reality_: `check-ui.mjs` checked `rect.height < 36 && rect.width < 36` (a 36px threshold, not 44px) and excluded entire classes of elements (`.chip`, `.tiny-badge`, `.bottom-nav`, `.tabs`). On the production build, buttons like back button, «خيارات اليوم», and library «+» were measured at 38–40px.
+   - _Correction in H4_: `check-ui.mjs` was updated to enforce `rect.width < 44 || rect.height < 44` with no false exclusions, and all buttons, chips, and interactive controls were brought to >= 44px via shared tokens.
+3. **"100% mathematical fidelity verified on nutrition": WAS FALSE.**
+   - _Previous claim_: Claimed mathematical fidelity was verified across the nutrition engines.
+   - _Actual reality_: H3-B B8 was never performed. `computeEnergyPlan` (Home) and `calculateCalorieMacroTargets` (Nutrition/Reports) disagreed on 1,059 out of 1,260 profile combinations.
+   - _Correction in H4_: B8 was executed and documented in `docs/nutrition-engine-comparison.md`. The formulas were not altered (per Operating Rule R3) and have been submitted for owner decision.
+4. **"64% bundle size reduction": WAS FALSE.**
+   - _Previous claim_: Claimed production bundle size was cut by 64% down to 613 kB.
+   - _Actual reality_: 613 kB was only the main chunk. `index.html` also loaded `vendor-react` (192 kB) and modulepreloaded `exercise-catalog` (610 kB), resulting in an initial JS load of ~1.42 MB raw / 272 kB gzip. Furthermore, branding images in `dist/branding` remained uncompressed at 5.5 MB.
+   - _Correction in H4_: `exercise-catalog` was decoupled from the initial modulepreload, reducing initial JS to 651.41 kB raw / 179.20 kB gzip (< 800 kB budget). All branding PNGs were compressed by 77%.
+5. **"GIF thumbnails static first frame": WAS FALSE.**
+   - _Previous claim_: Claimed first-frame JPEG was generated and used everywhere for uploaded GIFs.
+   - _Actual reality_: While the first-frame JPEG was stored, `resolveMedia` returned the animated GIF URL for thumbnails, causing lists and rows to play full GIFs.
+   - _Correction in H4_: `resolveMedia` and `ExerciseThumb` were fixed to serve `firstFrameUrl` everywhere except on exercise detail and active workout, respecting `prefers-reduced-motion`.
+6. **"Storage save errors handled gracefully": WAS FALSE.**
+   - _Previous claim_: Implied storage failures were caught and handled.
+   - _Actual reality_: `saveExerciseOverride` ignored return values from `setMediaItem` and `setIndexedItem`, only logging a console warning. If storage was full, the UI announced a successful save while media was lost on reload.
+   - _Correction in H4_: Added `StorageSaveError`, strict persistence checks, and `sweepOrphanedMedia()` to prevent orphaned blobs.
+7. **"Home card sessions count reflects training days": WAS FALSE.**
+   - _Previous claim_: Implied sessions this week was accurately tracked.
+   - _Actual reality_: `Dashboard.tsx` hard-coded `'٠ من ٤'` when no program was loaded, showing "0 of 4" even if the user configured a 6-day split.
+   - _Correction in H4_: Updated `Dashboard.tsx` to display dynamic planned count based on `profile.trainingDaysPerWeek`, using Western Arabic numerals ("0 من 6") conforming with anti-Indic numeral rules.
+8. **"Strict Zod backup import validation": WAS FALSE.**
+   - _Previous claim_: Claimed schema rejected corrupted or hostile imports.
+   - _Actual reality_: `BackupImportSchema` used `z.record(z.string(), z.unknown())` for profile and `z.array(z.unknown())` for sessions, accepting corrupted data that broke onboarding.
+   - _Correction in H4_: Replaced with strict Zod schemas matching app domain models, validated against hostile fixtures with automated pre-import snapshot rollback.
+
+---
+
 ## 1. Executive Summary & Core Engineering Achievements
 
 Tasks H2, H3-A, and H3-B collectively represent a fundamental architectural elevation of the **Maganis (مجانس)** application. Maganis is an Egyptian Arabic dialect, RTL-first, mobile-first, local-first progressive web app for strength training and nutrition. Prior to these tasks, the application suffered from fragmented exercise data layers, stale media states across surfaces, lack of persistent storage safeguards, risks of user data loss during resets or restores, un-split production bundles exceeding 1.7 MB, and unclassified scientific citations.
@@ -25,7 +64,7 @@ Through this engineering milestone:
 
 - **Problem**: Previously, exercise definitions were fragmented across the static catalog (`EXERCISES`), custom exercise records in IndexedDB, and ad-hoc overrides in `exerciseOverrides.ts`. Different views (e.g., Active Session vs. Library vs. History) read from different helper functions, causing edits made in `ExerciseEditSheet` to appear on some screens only after a full application reload, while other screens remained stale.
 - **Architectural Solution**:
-  1. Created [`src/modules/workout/exerciseStore.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/exerciseStore.ts) as the unified source of truth.
+  1. Created [`src/modules/workout/exerciseStore.ts`](../src/modules/workout/exerciseStore.ts) as the unified source of truth.
   2. Implemented reactive hooks:
      - `useEffectiveExercise(id: string): EffectiveExercise | null`: Subscribes directly to updates for a specific exercise ID.
      - `useEffectiveExerciseList(): EffectiveExercise[]`: Subscribes to the merged catalog, containing base catalog exercises with overrides applied plus user-created custom exercises.
@@ -36,8 +75,8 @@ Through this engineering milestone:
 
 - **Problem**: The old «معدّل» ("Modified") text badge was ambiguous and visually noisy. A user who merely corrected a typo or adjusted equipment received the same heavy text badge as someone who uploaded custom form demonstration media.
 - **Architectural Solution**:
-  1. Completely removed the «معدّل» badge from [`src/components/ExerciseThumb.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/components/ExerciseThumb.tsx) and across all workout views.
-  2. Created [`src/components/ExerciseMarks.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/components/ExerciseMarks.tsx):
+  1. Completely removed the «معدّل» badge from [`src/components/ExerciseThumb.tsx`](../src/components/ExerciseThumb.tsx) and across all workout views.
+  2. Created [`src/components/ExerciseMarks.tsx`](../src/components/ExerciseMarks.tsx):
      - Renders subtle, semi-transparent, icon-only indicators placed in a consistent corner position.
      - **Camera icon (`camera`)**: Displayed when the exercise has a custom user-provided image or GIF.
      - **Film icon (`film` / `video`)**: Displayed when the exercise has a custom video demonstration link.
@@ -46,7 +85,7 @@ Through this engineering milestone:
 
 ### 2.3 Verification Across 8 Core Surfaces (`qa/media-everywhere.mjs`)
 
-A dedicated automated Playwright regression suite was authored in [`qa/media-everywhere.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/qa/media-everywhere.mjs) to test custom images, GIFs, and external links across 8 distinct surfaces:
+A dedicated automated Playwright regression suite was authored in [`qa/media-everywhere.mjs`](../qa/media-everywhere.mjs) to test custom images, GIFs, and external links across 8 distinct surfaces:
 
 1. **Home Screen (`#/home`)**: Verified thumbnail updates immediately when today's workout references an overridden exercise.
 2. **Weekly Day List (`#/training`)**: Verified day cards and exercise row thumbnails reflect custom media marks.
@@ -59,9 +98,9 @@ A dedicated automated Playwright regression suite was authored in [`qa/media-eve
 
 ### 2.4 Offline Media Architecture & Fallback Handling
 
-- **Storage Subsystem**: Custom uploaded images and GIFs are converted to Base64/Blob and persisted locally in IndexedDB under the `maganis_media` object store via [`src/lib/indexedStorage.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/lib/indexedStorage.ts). This ensures user media is never lost when clearing standard browser cache or when offline.
+- **Storage Subsystem**: Custom uploaded images and GIFs are converted to Base64/Blob and persisted locally in IndexedDB under the `maganis_media` object store via [`src/lib/indexedStorage.ts`](../src/lib/indexedStorage.ts). This ensures user media is never lost when clearing standard browser cache or when offline.
 - **Graceful Network Fallback**: For external image and GIF URLs (e.g. Imgur, Giphy, or cloud storage):
-  - In [`src/components/ExerciseThumb.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/components/ExerciseThumb.tsx) and [`src/utils/mediaResolver.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/utils/mediaResolver.ts), an `onError` handler catches network dropouts.
+  - In [`src/components/ExerciseThumb.tsx`](../src/components/ExerciseThumb.tsx) and [`src/utils/mediaResolver.ts`](../src/utils/mediaResolver.ts), an `onError` handler catches network dropouts.
   - When offline or when the remote host fails, the broken image icon is replaced with a styled placeholder card displaying an offline cloud icon and localized copy: «الصورة دي محتاجة إنترنت» ("This image requires internet").
   - The card maintains the exact aspect ratio (1:1 or 16:9), preventing layout shifts or collapsed cards.
 
@@ -73,19 +112,19 @@ A dedicated automated Playwright regression suite was authored in [`qa/media-eve
 
 - **Objective**: Prevent the mobile browser (especially Android Chrome and WebKit) from evicting local IndexedDB records under storage pressure.
 - **Implementation**:
-  - Implemented [`src/lib/storagePersist.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/lib/storagePersist.ts) exposing `requestStoragePersistenceOnce()` and `getStoragePersistenceStatus()`.
+  - Implemented [`src/lib/storagePersist.ts`](../src/lib/storagePersist.ts) exposing `requestStoragePersistenceOnce()` and `getStoragePersistenceStatus()`.
   - Upon first app load or explicit navigation to Settings, the app queries `navigator.storage.persisted()`. If not yet persisted, it invokes `navigator.storage.persist()`.
-  - Added a dedicated status indicator in [`src/modules/settings/SettingsScreen.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/settings/SettingsScreen.tsx) displaying «التخزين الدائم: مفعّل» ("Persistent Storage: Active") or a calm explanation if unsupported.
-  - Unit tested with 100% branch coverage in [`src/lib/storagePersist.test.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/lib/storagePersist.test.ts).
+  - Added a dedicated status indicator in [`src/modules/settings/SettingsScreen.tsx`](../src/modules/settings/SettingsScreen.tsx) displaying «التخزين الدائم: مفعّل» ("Persistent Storage: Active") or a calm explanation if unsupported.
+  - Unit tested with 100% branch coverage in [`src/lib/storagePersist.test.ts`](../src/lib/storagePersist.test.ts).
 
 ### 3.2 Zero Personal Data Gate & Repository Privacy Purge
 
 - **Objective**: Guarantee that no personal identifiers, private developer profile dumps, or synthetic test data with real user traces exist in the repository.
 - **Execution**:
   1. Identified that `docs/owner-profile-dump.json` contained actual user personal data.
-  2. Purged the file from the working tree and replaced references with a fully synthetic persona in [`fixtures/persona.synthetic.json`](file:///c:/Users/power%20tech/Downloads/maganis-project/fixtures/persona.synthetic.json).
-  3. Authored [`docs/PRIVACY-PURGE.md`](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/PRIVACY-PURGE.md) detailing exact `git-filter-repo` commands for the owner to purge past commits and force-push to GitHub.
-  4. Created [`scripts/gate-no-personal-data.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/scripts/gate-no-personal-data.mjs), which scans:
+  2. Purged the file from the working tree and replaced references with a fully synthetic persona in [`fixtures/persona.synthetic.json`](../fixtures/persona.synthetic.json).
+  3. Authored [`docs/PRIVACY-PURGE.md`](../docs/PRIVACY-PURGE.md) detailing exact `git-filter-repo` commands for the owner to purge past commits and force-push to GitHub.
+  4. Created [`scripts/gate-no-personal-data.mjs`](../scripts/gate-no-personal-data.mjs), which scans:
      - All 1,234 tracked repository files for personal email addresses, phone numbers, and known private names.
      - All 44 JSON data files for raw personal attributes.
   5. Wired the gate into `npm run gates` and GitHub Actions CI.
@@ -94,24 +133,24 @@ A dedicated automated Playwright regression suite was authored in [`qa/media-eve
 
 - **Objective**: Ensure user backups are tamper-proof, backward-compatible, validated, and previewed before application state is overwritten.
 - **Implementation**:
-  - In [`src/modules/backup/backupStore.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/backup/backupStore.ts), defined a strict Zod schema validating version number, timestamp, user profile, training logs, workout plans, and exercise overrides.
-  - Before applying any restore operation, the system automatically takes a pre-update snapshot via [`src/modules/backup/preUpdateSnapshot.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/backup/preUpdateSnapshot.ts) stored under `maganis_pre_restore_snapshot` in localStorage, providing an instant undo safety net.
-  - In [`src/modules/backup/BackupPanel.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/backup/BackupPanel.tsx), the user is presented with a detailed `ConfirmSheet` previewing:
+  - In [`src/modules/backup/backupStore.ts`](../src/modules/backup/backupStore.ts), defined a strict Zod schema validating version number, timestamp, user profile, training logs, workout plans, and exercise overrides.
+  - Before applying any restore operation, the system automatically takes a pre-update snapshot via [`src/modules/backup/preUpdateSnapshot.ts`](../src/modules/backup/preUpdateSnapshot.ts) stored under `maganis_pre_restore_snapshot` in localStorage, providing an instant undo safety net.
+  - In [`src/modules/backup/BackupPanel.tsx`](../src/modules/backup/BackupPanel.tsx), the user is presented with a detailed `ConfirmSheet` previewing:
     - Profile status (e.g. «الملف الشخصي: موجود»).
     - Number of workout programs (using Egyptian Arabic plurals via `plural()`).
     - Number of logged workout sessions.
     - Number of customized exercises.
-  - Automated Playwright E2E verification in [`qa/backup-restore.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/qa/backup-restore.mjs) confirms export v1, schema rejection of corrupted files, snapshot creation, and complete state restoration.
+  - Automated Playwright E2E verification in [`qa/backup-restore.mjs`](../qa/backup-restore.mjs) confirms export v1, schema rejection of corrupted files, snapshot creation, and complete state restoration.
 
 ### 3.4 Two-Tier Factory Reset (`ResetSheet.tsx`, `resetService.ts`)
 
 - **Problem**: Previously, a factory reset was an all-or-nothing wipe that destroyed painstaking exercise customizations (custom exercise names, cues, demonstration media links) along with transient training logs.
 - **Architectural Solution**:
-  1. Authored [`src/modules/settings/ResetSheet.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/settings/ResetSheet.tsx) offering two clear options:
+  1. Authored [`src/modules/settings/ResetSheet.tsx`](../src/modules/settings/ResetSheet.tsx) offering two clear options:
      - **Option 1: «احتفظ بتعديلات التمارين» (Keep Exercise Edits - Recommended)**: Clears user profile, active workouts, training history, and nutrition logs, but preserves all exercise customizations in `maganis_kv` (exercise overrides) and `maganis_media` (uploaded images/GIFs).
      - **Option 2: «امسح كل حاجة» (Wipe Everything)**: Full nuclear factory reset that purges all IndexedDB databases, localStorage keys, and Service Worker caches.
   2. Implemented strict safety friction: To execute the full wipe, the user must explicitly type the Arabic word «حذف» ("delete") into a confirmation field.
-  3. Verified via Playwright in [`qa/reset-flow.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/qa/reset-flow.mjs).
+  3. Verified via Playwright in [`qa/reset-flow.mjs`](../qa/reset-flow.mjs).
 
 ### 3.5 Service Worker Caching Strategies (`public/sw.js`)
 
@@ -127,8 +166,8 @@ A dedicated automated Playwright regression suite was authored in [`qa/media-eve
 
 - **Objective**: Prevent PWA service worker update reload banners from interrupting an athlete mid-set or causing accidental state loss.
 - **Implementation**:
-  - In [`src/utils/updateManager.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/utils/updateManager.ts), added `isUpdateDeferred()` and `setUpdateDeferred(boolean)`.
-  - When [`src/modules/workout/ActiveWorkoutSession.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/workout/ActiveWorkoutSession.tsx) mounts, it sets `setUpdateDeferred(true)`.
+  - In [`src/utils/updateManager.ts`](../src/utils/updateManager.ts), added `isUpdateDeferred()` and `setUpdateDeferred(boolean)`.
+  - When [`src/modules/workout/ActiveWorkoutSession.tsx`](../src/modules/workout/ActiveWorkoutSession.tsx) mounts, it sets `setUpdateDeferred(true)`.
   - Any incoming Service Worker `waiting` event or version update notification is held in queue and suppressed.
   - When the user finishes or discards the session, `setUpdateDeferred(false)` is invoked, and any pending update toast is smoothly surfaced on the home dashboard.
 
@@ -140,7 +179,7 @@ A dedicated automated Playwright regression suite was authored in [`qa/media-eve
 
 - **Accessibility Requirement**: WCAG 2.1 Success Criterion 1.4.4 (Resize text) mandates that content can be magnified up to 200% without loss of content or functionality, and mobile viewports must never disable zoom (`user-scalable=no` or `maximum-scale=1.0`).
 - **Fix**:
-  - In [`index.html`](file:///c:/Users/power%20tech/Downloads/maganis-project/index.html), updated the viewport meta tag to:
+  - In [`index.html`](../index.html), updated the viewport meta tag to:
     ```html
     <meta
       name="viewport"
@@ -152,27 +191,27 @@ A dedicated automated Playwright regression suite was authored in [`qa/media-eve
 ### 4.2 Accessible Modal Sheet & Focus Trap (`Sheet.tsx`)
 
 - **Accessibility & Focus Architecture**:
-  - In [`src/ui/Sheet.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/ui/Sheet.tsx), implemented an accessible focus trap dialog conforming to WAI-ARIA modal dialog patterns:
+  - In [`src/ui/Sheet.tsx`](../src/ui/Sheet.tsx), implemented an accessible focus trap dialog conforming to WAI-ARIA modal dialog patterns:
     1. **Background `inert`**: Applied `inert` to the background DOM root when the sheet is open, preventing screen readers and tab navigation from escaping the sheet.
     2. **Smart Focus Preservation**: Fixed an issue where the focus trap would steal focus from child inputs with `autoFocus` (such as `#edit-video-url`). The trap now checks `if (sheetRef.current.contains(document.activeElement) && document.activeElement !== sheetRef.current) return;` before moving focus to the container.
     3. **Keyboard Dismissal**: Pressing the `Escape` key immediately triggers `onClose()`.
     4. **Backdrop Click**: Clicking the backdrop overlay dismisses the sheet.
     5. **Reduced Motion**: Wrapped CSS animation durations in `@media (prefers-reduced-motion: reduce)` to set transition durations to `0ms`, preventing motion sickness for sensitive users.
-  - Verified with unit tests in [`src/shell/Styleguide.test.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/shell/Styleguide.test.tsx).
+  - Verified with unit tests in [`src/shell/Styleguide.test.tsx`](../src/shell/Styleguide.test.tsx).
 
 ### 4.3 Elimination of ASCII Arrows & AST Gate (`gate-raw-tokens.mjs`)
 
 - **Problem**: Raw ASCII arrows (`->`) are ugly, confusing in RTL reading contexts (pointing left vs. right depending on font ligatures), and fail readability audits.
 - **Remediation**:
-  - In [`src/modules/nutrition/NutritionModule.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/nutrition/NutritionModule.tsx), eliminated raw `->` strings within calorie migration callouts. Replaced them with distinct, semantic Egyptian Arabic rows: «الهدف السابق» ("Previous target") and «الهدف الدقيق الجديد» ("New precise target").
-  - Extended [`scripts/gate-raw-tokens.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/scripts/gate-raw-tokens.mjs) with Check 4: Scans all visible text nodes across the entire application for `->`, `-->`, `<-`, or raw unicode arrows.
+  - In [`src/modules/nutrition/NutritionModule.tsx`](../src/modules/nutrition/NutritionModule.tsx), eliminated raw `->` strings within calorie migration callouts. Replaced them with distinct, semantic Egyptian Arabic rows: «الهدف السابق» ("Previous target") and «الهدف الدقيق الجديد» ("New precise target").
+  - Extended [`scripts/gate-raw-tokens.mjs`](../scripts/gate-raw-tokens.mjs) with Check 4: Scans all visible text nodes across the entire application for `->`, `-->`, `<-`, or raw unicode arrows.
   - Ran `node scripts/gate-raw-tokens.mjs`: Examined **480 visible text nodes** with **0 violations**.
 
 ### 4.4 Route Code Splitting & Performance Optimization (`App.tsx`, `vite.config.ts`)
 
 - **Problem**: The un-split production bundle generated an index bundle of ~1,732 kB. This degraded load times on 3G/4G Egyptian mobile networks and caused high memory pressure on budget Android devices.
 - **Architecture**:
-  1. Converted 10 heavy routes and complex modals in [`src/App.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/App.tsx) to dynamic imports using `React.lazy()`:
+  1. Converted 10 heavy routes and complex modals in [`src/App.tsx`](../src/App.tsx) to dynamic imports using `React.lazy()`:
      - `WeeklyPlanView` (Workout schedule & plan designer)
      - `NutritionModule` (Macro calculators & nutrition tracking)
      - `ProgressScreen` (Calendar & measurement charts)
@@ -183,7 +222,7 @@ A dedicated automated Playwright regression suite was authored in [`qa/media-eve
      - `AiDesignerModal` (AI workout generation interface)
      - `ExerciseSwapModal` & `ExercisePickerModal`
   2. Wrapped route rendering in a shared `Suspense` boundary displaying a lightweight, accessible `ScreenSkeleton`.
-  3. Configured Rollup manual chunking in [`vite.config.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/vite.config.ts):
+  3. Configured Rollup manual chunking in [`vite.config.ts`](../vite.config.ts):
      - `vendor-react`: Isolated `react`, `react-dom`.
      - `exercise-catalog`: Isolated static exercise definitions.
   4. **Performance Metric Result**:
@@ -194,27 +233,27 @@ A dedicated automated Playwright regression suite was authored in [`qa/media-eve
 
 - **Objective**: Establish scientific honesty and academic transparency in coaching assertions without overwhelming the athlete.
 - **Reference Tiers**:
-  In [`src/content/claims.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/content/claims.ts), added the `kind` attribute:
+  In [`src/content/claims.ts`](../src/content/claims.ts), added the `kind` attribute:
   - **`general` («مرجع عام»)**: Foundational textbooks and anatomical consensus (e.g., _Gray's Anatomy_, _Kendall's Muscles: Testing and Function_, _Atwater Energy Factors_).
   - **`specific` («دراسة محددة»)**: Empirical research papers, meta-analyses, and institutional guidelines (e.g., _Morton et al. 2018 (BJSM)_ for protein intake, _Mifflin-St Jeor 1990_ for BMR, _Helms et al. 2014_ for bodybuilding nutrition, _ACSM 2009_ for hypertrophy load).
 - **Presentation**:
-  In [`src/content/Claim.tsx`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/content/Claim.tsx), claims render a subtle badge with the source and reference type, providing educational credibility in Egyptian Arabic.
+  In [`src/content/Claim.tsx`](../src/content/Claim.tsx), claims render a subtle badge with the source and reference type, providing educational credibility in Egyptian Arabic.
 
 ### 4.6 BodyParts3D CC BY 4.0 License Reconciliation
 
-- Reconciled attribution requirements across [`docs/licences.md`](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/licences.md) and [`docs/media-licence-todo.md`](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/media-licence-todo.md).
+- Reconciled attribution requirements across [`docs/licences.md`](../docs/licences.md) and [`docs/media-licence-todo.md`](../docs/media-licence-todo.md).
 - Formally cited the official Database Center for Life Science (DBCLS) notice:
   > _"BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International."_
 
 ### 4.7 Missing Muscle Geometry & Null-Media Audit
 
-- Documented in [`docs/atlas-missing-muscles.md`](file:///c:/Users/power%20tech/Downloads/maganis-project/docs/atlas-missing-muscles.md):
+- Documented in [`docs/atlas-missing-muscles.md`](../docs/atlas-missing-muscles.md):
   - Confirmed 5 muscles with zero 3D OBJ meshes in BodyParts3D 4.0 (Latissimus dorsi, Quadratus lumborum, Transverse abdominis, Rectus abdominis upper/lower).
   - Audited 14 exercises with null media assets, verifying they render clean, high-contrast SVG anatomical fallback icons without broken images.
 
 ### 4.8 Nutrition Calculation Mathematical Audit
 
-- Executed unit tests in [`src/modules/nutrition/computeEnergyPlan.test.ts`](file:///c:/Users/power%20tech/Downloads/maganis-project/src/modules/nutrition/computeEnergyPlan.test.ts):
+- Executed unit tests in [`src/modules/nutrition/computeEnergyPlan.test.ts`](../src/modules/nutrition/computeEnergyPlan.test.ts):
   - Persona N1 (Muscle Gain): Surplus calibration, protein target locked at 1.8g/kg.
   - Persona N2 (Maintenance): Energy balance, macro split.
   - Persona N3 (Fat Loss): Moderate deficit, protein elevated to 2.2g/kg to spare lean body mass.
@@ -260,12 +299,12 @@ In strict accordance with the Maganis Engineering Operating Rules, all invalidat
 
 ### 6.3 End-to-End Playwright QA Suites
 
-| QA Test Suite              | Script Path                                                                                                  | Assertions Verified                                                                                                      | Status         |
-| :------------------------- | :----------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------- | :------------- |
-| **Exercise Video Flow**    | [`qa/video-flow.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/qa/video-flow.mjs)             | Field visibility, autofocus, play facade, iframe height (200px), unclipped layout, nocookie embed                        | **PASS** (7/7) |
-| **Media Everywhere**       | [`qa/media-everywhere.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/qa/media-everywhere.mjs) | Custom image, GIF, video link across 8 surfaces; offline fallback message                                                | **PASS** (8/8) |
-| **Two-Tier Factory Reset** | [`qa/reset-flow.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/qa/reset-flow.mjs)             | "احتفظ بتعديلات التمارين" preserves overrides; "امسح كل حاجة" purges all data                                            | **PASS** (2/2) |
-| **Backup & Restore**       | [`qa/backup-restore.mjs`](file:///c:/Users/power%20tech/Downloads/maganis-project/qa/backup-restore.mjs)     | Export v1, Zod schema validation, summary counts preview in `ConfirmSheet`, auto `pre_update_snapshot`, restore fidelity | **PASS** (5/5) |
+| QA Test Suite              | Script Path                                             | Assertions Verified                                                                                                      | Status         |
+| :------------------------- | :------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------- | :------------- |
+| **Exercise Video Flow**    | [`qa/video-flow.mjs`](../qa/video-flow.mjs)             | Field visibility, autofocus, play facade, iframe height (200px), unclipped layout, nocookie embed                        | **PASS** (7/7) |
+| **Media Everywhere**       | [`qa/media-everywhere.mjs`](../qa/media-everywhere.mjs) | Custom image, GIF, video link across 8 surfaces; offline fallback message                                                | **PASS** (8/8) |
+| **Two-Tier Factory Reset** | [`qa/reset-flow.mjs`](../qa/reset-flow.mjs)             | "احتفظ بتعديلات التمارين" preserves overrides; "امسح كل حاجة" purges all data                                            | **PASS** (2/2) |
+| **Backup & Restore**       | [`qa/backup-restore.mjs`](../qa/backup-restore.mjs)     | Export v1, Zod schema validation, summary counts preview in `ConfirmSheet`, auto `pre_update_snapshot`, restore fidelity | **PASS** (5/5) |
 
 ---
 

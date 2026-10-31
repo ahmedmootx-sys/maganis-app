@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 /**
  * scripts/gate-no-personal-data.mjs
- * Gate to prevent committing personal data or real medical profiles into the repository.
+ * Gate to prevent committing personal data, developer local paths, or private traces into the repository.
  *
  * Rules:
- * 1. No tracked files matching *profile-dump* or *backup*.json outside fixtures/.
+ * 1. Banned filename patterns (*profile-dump* or *backup*.json outside fixtures/ and qa/fixtures/).
  * 2. Any tracked JSON with medical.notes or limitations must only contain allowed synthetic values.
- * 3. Enforces counts and minimums (P4).
+ * 3. No absolute local filesystem paths (e.g., C:/Users, /Users/, /home/).
+ * 4. No personal email addresses (except noreply@ and example.).
+ * 5. No phone number sequences (e.g. +20..., 010/011/012/015 Egyptian mobile numbers).
+ * 6. No private user identifiers ("power tech", "power%20tech", "ahmedmo").
  */
 
 import fs from 'node:fs'
@@ -31,7 +34,7 @@ const ALLOWED_SYNTHETIC_LIMITATION_NOTES = new Set([
 ])
 
 function run() {
-  console.log('=== GATE: NO PERSONAL DATA (Task H3-A A2) ===\n')
+  console.log('=== GATE: NO PERSONAL DATA & PRIVACY CHECK (Task H4.7) ===\n')
 
   let trackedFiles = []
   try {
@@ -46,36 +49,51 @@ function run() {
   }
 
   const failures = []
-  let filesExamined = 0
-  let jsonFilesExamined = 0
+  let rule1Count = 0
+  let rule2Count = 0
+  let rule3Count = 0
+  let rule4Count = 0
+  let rule5Count = 0
+  let rule6Count = 0
+
+  const ABSOLUTE_PATH_REGEX =
+    /(?:file:\/\/\/[a-zA-Z]:\/|[a-zA-Z]:\\Users\\|[a-zA-Z]:\/Users\/|\/Users\/|\/home\/)/i
+  const EMAIL_REGEX = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g
+  const PHONE_REGEX = /(?:\+20\s?1[0125]\d{8}\b|(?<!\d)01[0125]\d{8}\b)/g
+  const FORBIDDEN_STRINGS = ['power tech', 'power%20tech', 'ahmedmo']
 
   for (const file of trackedFiles) {
-    filesExamined++
+    const filePath = path.join(rootDir, file)
+    if (!fs.existsSync(filePath)) continue
+
     const lower = file.toLowerCase()
     const baseName = path.basename(lower)
 
-    // Check Rule 1: Banned filename patterns outside fixtures/
-    if (!file.startsWith('fixtures/')) {
+    // Check Rule 1: Banned filename patterns
+    rule1Count++
+    if (!file.startsWith('fixtures/') && !file.startsWith('qa/fixtures/')) {
       if (
         baseName.includes('profile-dump') ||
         (baseName.includes('backup') && baseName.endsWith('.json'))
       ) {
         failures.push(
-          `Tracked file "${file}" violates rule: no *profile-dump* or *backup*.json outside fixtures/`,
+          `[Rule 1] Tracked file "${file}" violates rule: no *profile-dump* or *backup*.json outside fixtures/`,
         )
       }
     }
 
-    // Check Rule 2: JSON inspection for medical notes and limitations
-    if (file.endsWith('.json') && fs.existsSync(path.join(rootDir, file))) {
-      jsonFilesExamined++
+    // Skip binary files for text scanning
+    const isBinary = /\.(png|jpg|jpeg|gif|webp|bin|ico|wasm|zip)$/i.test(file)
+
+    // Check Rule 2: JSON medical & limitations
+    if (file.endsWith('.json')) {
+      rule2Count++
       try {
-        const content = fs.readFileSync(path.join(rootDir, file), 'utf8')
+        const content = fs.readFileSync(filePath, 'utf8')
         const data = JSON.parse(content)
 
-        // Check top-level or nested profile medical
         const checkProfile = (prof, source) => {
-          if (!prof) return
+          if (!prof || typeof prof !== 'object') return
           if (
             prof.medical?.notes &&
             typeof prof.medical.notes === 'string' &&
@@ -85,7 +103,7 @@ function run() {
               !ALLOWED_SYNTHETIC_MEDICAL_NOTES.has(prof.medical.notes.trim())
             ) {
               failures.push(
-                `Tracked JSON "${file}" (${source}) has real/non-allowlisted medical.notes: "${prof.medical.notes.slice(0, 30)}..."`,
+                `[Rule 2] Tracked JSON "${file}" (${source}) has non-allowlisted medical.notes: "${prof.medical.notes.slice(0, 30)}..."`,
               )
             }
           }
@@ -98,7 +116,7 @@ function run() {
               ) {
                 if (!ALLOWED_SYNTHETIC_LIMITATION_NOTES.has(lim.notes.trim())) {
                   failures.push(
-                    `Tracked JSON "${file}" (${source}) has real/non-allowlisted limitations.notes: "${lim.notes.slice(0, 30)}..."`,
+                    `[Rule 2] Tracked JSON "${file}" (${source}) has non-allowlisted limitations.notes: "${lim.notes.slice(0, 30)}..."`,
                   )
                 }
               }
@@ -109,23 +127,82 @@ function run() {
         checkProfile(data.profile, 'data.profile')
         checkProfile(data, 'root')
       } catch {
-        // Not all json are objects or parseable, skip
+        // Not a JSON object or parse error
+      }
+    }
+
+    if (!isBinary) {
+      let content = ''
+      try {
+        content = fs.readFileSync(filePath, 'utf8')
+      } catch {
+        continue
+      }
+
+      // Check Rule 3: Absolute local filesystem paths
+      // Exclude the gate script itself from failing on its own regex pattern definition
+      if (file !== 'scripts/gate-no-personal-data.mjs') {
+        rule3Count++
+        if (ABSOLUTE_PATH_REGEX.test(content)) {
+          failures.push(
+            `[Rule 3] Absolute path found in tracked file: "${file}"`,
+          )
+        }
+
+        // Check Rule 4: Personal email addresses
+        if (file !== 'package-lock.json') {
+          rule4Count++
+          const emails = content.match(EMAIL_REGEX) || []
+          for (const email of emails) {
+            const eLower = email.toLowerCase()
+            if (
+              !eLower.includes('noreply') &&
+              !eLower.includes('example.com') &&
+              !eLower.includes('domain.com') &&
+              !eLower.includes('w3.org') &&
+              !eLower.includes('youtube.com') &&
+              !eLower.includes('vimeo.com')
+            ) {
+              failures.push(
+                `[Rule 4] Disallowed email address found in "${file}": ${email}`,
+              )
+            }
+          }
+        }
+
+        // Check Rule 5: Phone numbers
+        rule5Count++
+        const phones = content.match(PHONE_REGEX) || []
+        if (phones.length > 0) {
+          failures.push(
+            `[Rule 5] Phone number sequence found in "${file}": ${phones.join(', ')}`,
+          )
+        }
+
+        // Check Rule 6: Private user identifiers
+        rule6Count++
+        const contentLower = content.toLowerCase()
+        for (const term of FORBIDDEN_STRINGS) {
+          if (contentLower.includes(term)) {
+            failures.push(
+              `[Rule 6] Forbidden private identifier "${term}" found in "${file}"`,
+            )
+          }
+        }
       }
     }
   }
 
-  console.log(`Tracked files examined: ${filesExamined}`)
-  console.log(`JSON files scanned for personal data: ${jsonFilesExamined}`)
+  console.log(`[Rule 1] Files checked for banned name patterns: ${rule1Count}`)
+  console.log(`[Rule 2] JSON files inspected for medical notes: ${rule2Count}`)
+  console.log(`[Rule 3] Text files scanned for absolute paths: ${rule3Count}`)
+  console.log(`[Rule 4] Text files scanned for email addresses: ${rule4Count}`)
+  console.log(`[Rule 5] Text files scanned for phone numbers: ${rule5Count}`)
+  console.log(`[Rule 6] Text files scanned for private terms: ${rule6Count}`)
 
   // Minimum checks enforcement (P4)
-  if (filesExamined < 100) {
-    console.error(`FAIL: Gate examined too few files (${filesExamined} < 100).`)
-    process.exit(1)
-  }
-  if (jsonFilesExamined < 5) {
-    console.error(
-      `FAIL: Gate examined too few JSON files (${jsonFilesExamined} < 5).`,
-    )
+  if (rule1Count < 100 || rule3Count < 100) {
+    console.error(`FAIL: Gate examined too few files (${rule1Count} < 100).`)
     process.exit(1)
   }
 
@@ -135,7 +212,7 @@ function run() {
     process.exit(1)
   }
 
-  console.log('\n✅ Gate passed: No personal data found in tracked files.')
+  console.log('\n✅ Gate passed: No personal data or absolute paths found.')
 }
 
 run()
