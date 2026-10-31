@@ -278,16 +278,26 @@ await page.goto(`${BASE}#/home`, { waitUntil: 'domcontentloaded' })
 await page.reload({ waitUntil: 'networkidle' })
 await page.waitForTimeout(800)
 
+// Helper to wait for custom uploaded image to appear in DOM
+async function waitForCustomImage(selector = 'img') {
+  return page
+    .waitForFunction(
+      (sel) => {
+        const imgs = Array.from(document.querySelectorAll(sel))
+        return imgs.some(
+          (img) => img.src && img.src.includes('data:image/png;base64'),
+        )
+      },
+      selector,
+      { timeout: 6000 },
+    )
+    .then(() => true)
+    .catch(() => false)
+}
+
 // 1. Surface: Home (Dashboard)
 console.log('Testing Surface: Home')
-// Allow IndexedDB hydration
-await page.evaluate(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 100))
-})
-const homeThumbImg = await page.evaluate(() => {
-  const imgs = Array.from(document.querySelectorAll('img'))
-  return imgs.some((img) => img.src.includes('data:image/png;base64'))
-})
+const homeThumbImg = await waitForCustomImage('img')
 check(homeThumbImg, 'Home screen renders custom uploaded image')
 await page.screenshot({ path: 'evidence/h2/green/m1-home.png' })
 
@@ -295,15 +305,8 @@ await page.screenshot({ path: 'evidence/h2/green/m1-home.png' })
 console.log('Testing Surface: Day List')
 await page.goto(`${BASE}#/training/day/0`, { waitUntil: 'domcontentloaded' })
 await page.reload({ waitUntil: 'networkidle' })
-await page.waitForTimeout(600)
-const dayListImgCount = await page.evaluate(() => {
-  const imgs = Array.from(document.querySelectorAll('img'))
-  return imgs.filter((img) => img.src.includes('data:image/png;base64')).length
-})
-check(
-  dayListImgCount >= 1,
-  `Day list renders custom uploaded image across sections (found ${dayListImgCount})`,
-)
+const dayListImg = await waitForCustomImage('img')
+check(dayListImg, 'Day list renders custom uploaded image across sections')
 await page.screenshot({ path: 'evidence/h2/green/m1-day-list.png' })
 
 // 2b. Surface: Add Exercise Picker Modal / Sheet
@@ -311,15 +314,9 @@ console.log('Testing Surface: Add Exercise Picker Sheet')
 const addExerciseBtn = page.locator('button:has-text("+ إضافة")').first()
 if ((await addExerciseBtn.count()) > 0) {
   await addExerciseBtn.click()
-  await page.waitForTimeout(600)
-  const pickerImg = await page.evaluate(() => {
-    const imgs = Array.from(
-      document.querySelectorAll(
-        '.sheet img, .modal img, .modal-content img, .modal-backdrop img',
-      ),
-    )
-    return imgs.some((img) => img.src.includes('data:image/png;base64'))
-  })
+  const pickerImg = await waitForCustomImage(
+    '.sheet img, .modal img, .modal-content img, .modal-backdrop img',
+  )
   check(pickerImg, 'Add exercise picker sheet renders custom uploaded image')
   // Close sheet
   const closeBtn = page.locator('.sheet button[aria-label="إغلاق"]').first()
@@ -342,13 +339,7 @@ if ((await moreOptionsBtn.count()) > 0) {
     .first()
   if ((await swapOption.count()) > 0) {
     await swapOption.click()
-    await page.waitForTimeout(600)
-    const swapImg = await page.evaluate(() => {
-      const imgs = Array.from(
-        document.querySelectorAll('.sheet img, .modal img'),
-      )
-      return imgs.some((img) => img.src.includes('data:image/png;base64'))
-    })
+    const swapImg = await waitForCustomImage('.sheet img, .modal img')
     check(swapImg, 'Swap exercise sheet renders custom uploaded image')
     const closeSwap = page.locator('.sheet button[aria-label="إغلاق"]').first()
     if ((await closeSwap.count()) > 0) {
@@ -364,11 +355,7 @@ await page.goto(`${BASE}#/exercise/${EXERCISE_ID}`, {
   waitUntil: 'domcontentloaded',
 })
 await page.reload({ waitUntil: 'networkidle' })
-await page.waitForTimeout(600)
-const detailImg = await page.evaluate(() => {
-  const imgs = Array.from(document.querySelectorAll('img'))
-  return imgs.some((img) => img.src.includes('data:image/png;base64'))
-})
+const detailImg = await waitForCustomImage('img')
 check(detailImg, 'Exercise Detail page renders custom uploaded image')
 
 // Verify ExerciseMarks (and absence of «معدّل» badge)
@@ -385,11 +372,7 @@ await page.screenshot({ path: 'evidence/h2/green/m1-exercise-detail.png' })
 console.log('Testing Surface: Library Modal')
 await page.goto(`${BASE}#/library`, { waitUntil: 'domcontentloaded' })
 await page.reload({ waitUntil: 'networkidle' })
-await page.waitForTimeout(800)
-const libraryImg = await page.evaluate(() => {
-  const imgs = Array.from(document.querySelectorAll('img'))
-  return imgs.some((img) => img.src.includes('data:image/png;base64'))
-})
+const libraryImg = await waitForCustomImage('img')
 check(
   libraryImg,
   'Exercise Library renders custom uploaded image in exercise row',
@@ -402,15 +385,10 @@ await page.screenshot({ path: 'evidence/h2/green/m1.png' })
 console.log('Testing Surface: Active Workout')
 await page.goto(`${BASE}#/training/day/0`, { waitUntil: 'domcontentloaded' })
 await page.reload({ waitUntil: 'networkidle' })
-await page.waitForTimeout(600)
 const startBtn = page.locator('button:has-text("ابدأ التمرين")').first()
 if ((await startBtn.count()) > 0) {
   await startBtn.click()
-  await page.waitForTimeout(800)
-  const activeImg = await page.evaluate(() => {
-    const imgs = Array.from(document.querySelectorAll('img'))
-    return imgs.some((img) => img.src.includes('data:image/png;base64'))
-  })
+  const activeImg = await waitForCustomImage('img')
   check(activeImg, 'Active Workout session renders custom uploaded image')
   // Exit session
   const finishOrCancel = page.locator('button:has-text("إنهاء")').first()
@@ -424,11 +402,7 @@ if ((await startBtn.count()) > 0) {
 console.log('Testing Surface: History (Progress)')
 await page.goto(`${BASE}#/progress`, { waitUntil: 'domcontentloaded' })
 await page.reload({ waitUntil: 'networkidle' })
-await page.waitForTimeout(600)
-const historyThumb = await page.evaluate(() => {
-  const imgs = Array.from(document.querySelectorAll('img'))
-  return imgs.some((img) => img.src.includes('data:image/png;base64'))
-})
+const historyThumb = await waitForCustomImage('img')
 check(historyThumb, 'History / Progress screen renders custom uploaded image')
 
 // ==========================================
@@ -469,17 +443,30 @@ console.log(
 )
 await page.goto(`${BASE}#/training/day/0`, { waitUntil: 'domcontentloaded' })
 await page.reload({ waitUntil: 'networkidle' })
-await page.waitForTimeout(600)
-const dayListUsesStaticFrame = await page.evaluate(() => {
-  const imgs = Array.from(document.querySelectorAll('.exercise-thumb-box img'))
-  const hasGif = imgs.some((img) => img.src.includes('data:image/gif'))
-  const hasStaticFrame = imgs.some((img) =>
-    img.src.includes('data:image/png;base64'),
+const dayListUsesStaticFrame = await page
+  .waitForFunction(
+    () => {
+      const imgs = Array.from(
+        document.querySelectorAll('.list-row__leading img'),
+      )
+      if (imgs.length === 0) return false
+      const srcs = imgs.map((img) => img.src)
+      const hasGif = srcs.some((src) => src.includes('data:image/gif'))
+      const hasStaticFrame = srcs.some((src) =>
+        src.includes('data:image/png;base64'),
+      )
+      if (hasGif) return { pass: false, error: 'found GIF on day list', srcs }
+      if (hasStaticFrame) return { pass: true, srcs }
+      return false
+    },
+    null,
+    { timeout: 6000 },
   )
-  return !hasGif && hasStaticFrame
-})
+  .then((handle) => handle.jsonValue())
+  .catch((err) => ({ pass: false, error: err.message }))
+
 check(
-  dayListUsesStaticFrame,
+  dayListUsesStaticFrame.pass,
   'Day list exercise thumbnail uses static first-frame JPEG instead of playing animated GIF',
 )
 

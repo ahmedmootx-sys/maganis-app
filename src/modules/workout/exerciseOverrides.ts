@@ -314,9 +314,23 @@ export async function sweepOrphanedMedia(): Promise<number> {
     const mediaKeys = Object.keys(allMedia)
     if (mediaKeys.length === 0) return 0
 
+    // Check in-memory overrides, fallback to localStorage to prevent race conditions during boot
+    let overrides = inMemoryOverrides
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const raw = localStorage.getItem(`maganis:${OVERRIDES_STORAGE_KEY}`)
+        if (raw) {
+          const parsed = JSON.parse(raw)
+          overrides = { ...parsed, ...inMemoryOverrides }
+        }
+      } catch {
+        // ignore
+      }
+    }
+
     let sweptCount = 0
     for (const key of mediaKeys) {
-      const override = inMemoryOverrides[key]
+      const override = overrides[key]
       const isReferenced =
         override &&
         (override.media?.kind === 'upload-image' ||
