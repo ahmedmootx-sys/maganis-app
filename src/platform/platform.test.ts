@@ -34,20 +34,55 @@ describe('Platform Runtime and Skeleton (Task N1)', () => {
     await expect(platform.media.saveMedia('test', new Blob())).rejects.toThrow(
       /unsupported.*Task N2/,
     )
+    await expect(platform.media.getMedia('test')).rejects.toThrow(
+      /unsupported.*Task N2/,
+    )
+    await expect(platform.media.deleteMedia('test')).rejects.toThrow(
+      /unsupported.*Task N2/,
+    )
+
+    // KV storage (N2)
+    await expect(platform.kv.remove('test')).rejects.toThrow(
+      /unsupported.*Task N2/,
+    )
+    await expect(platform.kv.clear()).rejects.toThrow(/unsupported.*Task N2/)
 
     // Files (N3)
     const fileResult = await platform.files.saveFile('test.json', '{}')
     expect(fileResult.success).toBe(false)
     expect(fileResult.error).toContain('unsupported: Task N3')
 
+    const readResult = await platform.files.readFile('test.json')
+    expect(readResult.error).toContain('unsupported: Task N3')
+
     // Notifications (N4)
     const notifResult = await platform.notifications.schedule({})
     expect(notifResult.supported).toBe(false)
     expect(notifResult.error).toContain('unsupported: Task N4')
 
+    const cancelResult = await platform.notifications.cancel('id-1')
+    expect(cancelResult.supported).toBe(false)
+    expect(cancelResult.error).toContain('unsupported: Task N4')
+
     // Haptics & KeepAwake (N4)
     expect((await platform.haptics.vibrate()).supported).toBe(false)
     expect((await platform.keepAwake.keepAwake()).supported).toBe(false)
+    expect((await platform.keepAwake.allowSleep()).supported).toBe(false)
+
+    // App lifecycle & back handlers
+    const unregPause = platform.app.onPause(() => {})
+    expect(typeof unregPause).toBe('function')
+    unregPause()
+
+    const unregResume = platform.app.onResume(() => {})
+    expect(typeof unregResume).toBe('function')
+    unregResume()
+
+    const unregBack = platform.app.registerBackHandler(() => true, 10)
+    expect(typeof unregBack).toBe('function')
+    unregBack()
+
+    expect(() => platform.app.exit()).not.toThrow()
   })
 
   it('supports injecting a mock platform via setPlatformForTesting', async () => {

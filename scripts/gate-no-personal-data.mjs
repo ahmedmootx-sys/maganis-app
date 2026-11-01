@@ -98,7 +98,9 @@ function run() {
     }
 
     // Skip binary files for text scanning
-    const isBinary = /\.(png|jpg|jpeg|gif|webp|bin|ico|wasm|zip)$/i.test(file)
+    const isBinary = /\.(png|jpg|jpeg|gif|webp|bin|ico|wasm|zip|jar)$/i.test(
+      file,
+    )
 
     // Check Rule 2: JSON medical & limitations
     if (file.endsWith('.json')) {

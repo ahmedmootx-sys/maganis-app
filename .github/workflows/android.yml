@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@v4
 
       - name: Setup Node 22
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Cache Playwright Chromium
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        uses: actions/cache@v4
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -88,13 +88,13 @@ jobs:
         run: node qa/native-web-smoke.mjs
 
       - name: Setup Java 21 (Temurin)
-        uses: actions/setup-java@8df1039502a140fb607b34f70404645981fb7e17 # v4.5.0
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@0db8704bb39956c00f86c23f11a478791bd0b5fa # v4.2.0
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Assemble Debug APK
         run: |
@@ -109,7 +109,7 @@ jobs:
           cp android/app/build/outputs/apk/debug/app-debug.apk "dist-apk/maganis-DEBUG-NOT-FOR-REAL-DATA-${SHORT_SHA}.apk"
 
       - name: Upload Debug APK Artifact
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@v4
         with:
           name: maganis-debug-apk
           path: dist-apk/*.apk
@@ -122,16 +122,16 @@ jobs:
     continue-on-error: true # Non-blocking per prompt guidance
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@v4
 
       - name: Download Debug APK
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@v4
         with:
           name: maganis-debug-apk
           path: debug-apk
 
       - name: Setup Java 21
-        uses: actions/setup-java@8df1039502a140fb607b34f70404645981fb7e17 # v4.5.0
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
@@ -143,7 +143,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Emulator & Smoke Test
-        uses: reactivecircus/android-emulator-runner@6b0e1153835616f73e7d58eb09cf904f4a30e70a # v2.33.0
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           target: google_apis
@@ -179,7 +179,7 @@ jobs:
 
       - name: Upload Emulator Screenshots & Logs
         if: always()
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@v4
         with:
           name: emulator-smoke-artifacts
           path: emulator-artifacts/
@@ -194,10 +194,10 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@v4
 
       - name: Setup Node 22
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
@@ -209,13 +209,13 @@ jobs:
         run: npm run build:native
 
       - name: Setup Java 21 (Temurin)
-        uses: actions/setup-java@8df1039502a140fb607b34f70404645981fb7e17 # v4.5.0
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@0db8704bb39956c00f86c23f11a478791bd0b5fa # v4.2.0
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Decode Release Keystore & Verify Environment
         id: prepare-keystore
