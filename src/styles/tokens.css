@@ -108,7 +108,7 @@
   --inset: 12px 16px;
 
   /* Radii */
-  --radius-card: 16px;
+  --radius-card: 24px;
   --radius-control: 10px;
   --radius-full: 999px;
 
@@ -118,6 +118,7 @@
   --top-bar-height: 56px;
   --nav-h: 64px;
   --bottom-nav-height: 64px;
+  --nav-float-bottom: calc(12px + var(--safe-area-bottom, 0px));
   --btn-primary-height: 52px;
   --button-height-primary: 52px;
   --button-height-sm: 44px;
@@ -132,12 +133,23 @@
 
   /* Layout Shell Contract Tokens (G3 Part 1) */
   --bottom-nav-height: 64px;
-  --page-end: calc(var(--bottom-nav-height, 64px) + var(--bottom-inset) + 16px);
+  --page-end: calc(
+    var(--bottom-nav-height, 64px) + var(--nav-float-bottom, 12px) + 16px
+  );
   --footer-max-height: 72px;
 
-  /* Shadows: Borders over shadows; subtle elevation for bottom sheets */
+  /* Shadows: Modern minimalist elevation & cards */
   --shadow-sheet: 0 -4px 20px rgba(0, 0, 0, 0.25);
   --shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --shadow-card:
+    0 4px 20px -2px rgba(0, 0, 0, 0.03), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  --shadow-floating-nav:
+    0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+
+  /* Translucent & Tactile Tokens */
+  --nav-floating-bg: rgba(255, 255, 255, 0.85);
+  --topbar-translucent-bg: rgba(255, 255, 255, 0.85);
+  --transition-tactile: transform 150ms cubic-bezier(0, 0, 0.2, 1);
 
   /* Reserved Muscle Map Colors (Strictly Isolated to Anatomy Visuals, Delta E > 80) */
   --atlas-primary: #e53935;
@@ -287,6 +299,14 @@
   --color-text: #f2f3f5;
   --color-text-2: #a3a8b1;
   --color-divider: #2b2f35;
+
+  /* Card and Floating Nav Shadows & Backgrounds in Dark Mode */
+  --shadow-card:
+    0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+  --shadow-floating-nav:
+    0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 4px 12px -2px rgba(0, 0, 0, 0.3);
+  --nav-floating-bg: rgba(22, 24, 27, 0.85);
+  --topbar-translucent-bg: rgba(11, 12, 14, 0.85);
 
   /* Brand Accent in Dark: #ff6b1a */
   --color-accent: #ff6b1a;
