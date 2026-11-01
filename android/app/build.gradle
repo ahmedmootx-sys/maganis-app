@@ -1,0 +1,132 @@
+apply plugin: 'com.android.application'
+import groovy.json.JsonSlurper
+
+def getPackageVersionName() {
+    def packageJsonFile = rootProject.file('../package.json')
+    if (packageJsonFile.exists()) {
+        def parsedJson = new JsonSlurper().parseText(packageJsonFile.text)
+        return parsedJson.version ?: "0.1.0"
+    }
+    return "0.1.0"
+}
+
+def getAppVersionCode() {
+    def codeStr = System.getenv("ANDROID_VERSION_CODE") ?: System.getenv("BUILD_NUMBER") ?: System.getenv("GITHUB_RUN_NUMBER")
+    if (codeStr && codeStr.isInteger()) {
+        return codeStr.toInteger() + 1000
+    }
+    return 1
+}
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+def releaseKeystorePath = System.getenv("ANDROID_KEYSTORE_PATH") ?: keystoreProperties.getProperty('storeFile')
+def releaseKeystorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: keystoreProperties.getProperty('storePassword')
+def releaseKeyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: keystoreProperties.getProperty('keyAlias')
+def releaseKeyPassword = System.getenv("ANDROID_KEY_PASSWORD") ?: keystoreProperties.getProperty('keyPassword')
+
+android {
+    namespace = "app.maganis.coach"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "app.maganis.coach"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode getAppVersionCode()
+        versionName getPackageVersionName()
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+
+    signingConfigs {
+        debug {
+            // Standard Android debug keystore
+        }
+        release {
+            if (releaseKeystorePath && file(releaseKeystorePath).exists()) {
+                storeFile file(releaseKeystorePath)
+                storePassword releaseKeystorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            manifestPlaceholders = [
+                appName: "@string/app_name_debug"
+            ]
+            signingConfig signingConfigs.debug
+        }
+        release {
+            manifestPlaceholders = [
+                appName: "@string/app_name"
+            ]
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (releaseKeystorePath && file(releaseKeystorePath).exists() && releaseKeystorePassword && releaseKeyAlias && releaseKeyPassword) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig null
+            }
+        }
+    }
+}
+
+// Fail release build immediately if release signing credentials are missing (Security S4)
+gradle.taskGraph.whenReady { taskGraph ->
+    def isReleaseBuild = taskGraph.allTasks.any { task ->
+        task.name.toLowerCase().contains("release") && !task.name.toLowerCase().contains("test")
+    }
+    if (isReleaseBuild) {
+        def hasPath = releaseKeystorePath && file(releaseKeystorePath).exists()
+        def hasPass = releaseKeystorePassword != null && !releaseKeystorePassword.trim().isEmpty()
+        def hasAlias = releaseKeyAlias != null && !releaseKeyAlias.trim().isEmpty()
+        def hasKeyPass = releaseKeyPassword != null && !releaseKeyPassword.trim().isEmpty()
+        if (!hasPath || !hasPass || !hasAlias || !hasKeyPass) {
+            throw new GradleException(
+                "❌ Release build failed: Release signing credentials missing!\n" +
+                "Expected ANDROID_KEYSTORE_PATH, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD.\n" +
+                "Falling back to the debug key is strictly prohibited (Security Rule S4)."
+            )
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

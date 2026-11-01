@@ -9,6 +9,8 @@ export default tseslint.config(
   {
     ignores: [
       '**/dist/**',
+      '**/dist-native/**',
+      '**/android/**',
       '**/coverage/**',
       '**/node_modules/**',
       '**/scripts/**',

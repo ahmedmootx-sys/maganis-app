@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">مجانس</string>
+    <string name="app_name_debug">مجانس (تجريبي)</string>
+    <string name="title_activity_main">مجانس</string>
+    <string name="package_name">app.maganis.coach</string>
+    <string name="custom_url_scheme">app.maganis.coach</string>
+</resources>
+

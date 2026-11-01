@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { IconButton } from './Button.tsx'
+import { backButtonManager } from '../platform/backStack.ts'
 
 export interface SheetProps {
   isOpen: boolean
@@ -31,6 +32,12 @@ export const Sheet: React.FC<SheetProps> = ({
     if (!isOpen) return
 
     triggerRef.current = document.activeElement as HTMLElement | null
+
+    // Register with native back-button stack so back press dismisses open sheet first
+    const unregisterBack = backButtonManager.register(() => {
+      onClose()
+      return true
+    }, 100)
 
     // Mark background inert & aria-hidden
     const rootEl = document.getElementById('root')
@@ -94,6 +101,7 @@ export const Sheet: React.FC<SheetProps> = ({
     }, 50)
 
     return () => {
+      unregisterBack()
       clearTimeout(focusTimer)
       document.body.style.overflow = prevOverflow
       delete document.body.dataset.sheetOpen

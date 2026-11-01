@@ -3,6 +3,8 @@
  * Manages Service Worker updates and version checking against version.json.
  */
 
+import { isNative } from '../platform/runtime.ts'
+
 type UpdateListener = (hasUpdate: boolean) => void
 
 class UpdateManager {
@@ -13,6 +15,7 @@ class UpdateManager {
   private isChecking = false
 
   init(registration: ServiceWorkerRegistration) {
+    if (isNative()) return
     this.registration = registration
 
     // Check if there is already a waiting worker
@@ -48,7 +51,7 @@ class UpdateManager {
   }
 
   async checkForUpdate() {
-    if (this.isChecking) return
+    if (isNative() || this.isChecking) return
     this.isChecking = true
 
     try {

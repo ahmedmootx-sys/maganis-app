@@ -1,11 +1,11 @@
 /**
  * Returns the correct path to a public asset, respecting Vite's base URL.
- * This ensures paths work both in development (/) and on GitHub Pages (/maganis-app/).
+ * This ensures paths work in development (/), native (/), and on GitHub Pages subpaths.
  *
  * @example
  * assetUrl('branding/maganis-mascot-inner.png')
  * // dev:  '/branding/maganis-mascot-inner.png'
- * // prod: '/maganis-app/branding/maganis-mascot-inner.png'
+ * // hosted subpath: `${BASE_URL}branding/maganis-mascot-inner.png`
  */
 export function assetUrl(path: string): string {
   const base =

@@ -40,6 +40,8 @@ import { formatTime } from './modules/workout/workoutUtils.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
 import { Toast } from './components/Toast.tsx'
 import { updateManager } from './utils/updateManager.ts'
+import { isNative } from './platform/runtime.ts'
+import { backButtonManager } from './platform/backStack.ts'
 import {
   IconUser,
   IconDumbbell,
@@ -428,7 +430,8 @@ export function App({ config }: AppProps) {
       setBackToastMessage(msg)
       setTimeout(() => setBackToastMessage(null), 3000)
     })
-  }, [])
+    backButtonManager.setOnShowToast(showToast)
+  }, [showToast])
 
   useEffect(() => {
     if (activeTab !== 'dashboard') {
@@ -1298,7 +1301,7 @@ export function App({ config }: AppProps) {
           </div>
         )}
 
-        {hasAppUpdate && !activeWorkoutDay && (
+        {hasAppUpdate && !activeWorkoutDay && !isNative() && (
           <div
             role="status"
             aria-live="polite"

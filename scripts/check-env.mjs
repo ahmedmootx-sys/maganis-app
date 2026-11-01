@@ -69,8 +69,10 @@ function isPortFree(port) {
 }
 
 const mode = process.argv[2]
-if (mode !== 'development' && mode !== 'production') {
-  console.error('Usage: node scripts/check-env.mjs <development|production>')
+if (mode !== 'development' && mode !== 'production' && mode !== 'native') {
+  console.error(
+    'Usage: node scripts/check-env.mjs <development|production|native>',
+  )
   process.exit(2)
 }
 
@@ -82,22 +84,24 @@ parseEnvFile(path.join(root, '.env.' + mode + '.local'), values)
 const problems = []
 
 const appEnv = values.VITE_APP_ENV
+const allowedEnvForMode =
+  mode === 'native' ? ['production', 'development'] : [mode]
 if (appEnv === undefined) {
   problems.push(
     '- VITE_APP_ENV: missing. Fix: set VITE_APP_ENV=' +
-      mode +
+      (mode === 'native' ? 'production' : mode) +
       ' (file: .env.' +
       mode +
       ')',
   )
-} else if (appEnv !== mode) {
+} else if (!allowedEnvForMode.includes(appEnv)) {
   problems.push(
     '- VITE_APP_ENV: is "' +
       appEnv +
       '" but this run targets "' +
       mode +
       '". Fix: set VITE_APP_ENV=' +
-      mode +
+      (mode === 'native' ? 'production' : mode) +
       ' (file: .env.' +
       mode +
       ')',

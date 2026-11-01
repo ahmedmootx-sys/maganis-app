@@ -4,6 +4,7 @@ import { App } from './App.tsx'
 import { ConfigError, loadConfig } from './config/appConfig.ts'
 import { ConfigErrorView } from './components/ConfigError.tsx'
 import { updateManager } from './utils/updateManager.ts'
+import { isNative } from './platform/runtime.ts'
 import './styles/app.css'
 
 const container = document.getElementById('root')
@@ -19,8 +20,8 @@ try {
     </StrictMode>,
   )
 
-  // Service worker registration
-  if ('serviceWorker' in navigator) {
+  // Service worker registration (Web PWA only; never in native Capacitor shell)
+  if (!isNative() && 'serviceWorker' in navigator) {
     if (import.meta.env.DEV) {
       // In development mode, unregister active service workers to prevent stale caching
       navigator.serviceWorker.getRegistrations().then((registrations) => {
@@ -44,6 +45,26 @@ try {
           })
       })
     }
+  }
+  // In native mode, ensure external web links open in the system browser
+  if (isNative() && typeof window !== 'undefined') {
+    document.addEventListener(
+      'click',
+      (e) => {
+        const anchor = (e.target as HTMLElement)?.closest('a')
+        if (anchor && anchor.href) {
+          const href = anchor.href
+          if (
+            (href.startsWith('http://') || href.startsWith('https://')) &&
+            !href.startsWith(window.location.origin)
+          ) {
+            e.preventDefault()
+            window.open(href, '_system')
+          }
+        }
+      },
+      { capture: true },
+    )
   }
 } catch (error) {
   if (error instanceof ConfigError) {

@@ -26,3 +26,19 @@ scratch/
 
 docs/owner-profile-dump.json
 *profile-dump*
+
+# Native build and Capacitor artifacts
+dist-native/
+android/**/build/
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/app/src/main/assets/public/
+
+# Android Keystores and secrets (Security S1)
+*.jks
+*.keystore
+keystore.properties
+**/keystore.properties
+maganis-keystore-secrets.txt

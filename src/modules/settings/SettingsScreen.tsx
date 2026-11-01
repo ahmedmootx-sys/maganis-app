@@ -30,6 +30,7 @@ import { LimitationsEditor } from '../workout/LimitationsEditor.tsx'
 import { getRegionLabel, type UserLimitation } from '../workout/limitations.ts'
 import type { CustomExercise } from '../shared/types.ts'
 import { isStoragePersisted } from '../../lib/storagePersist.ts'
+import { platform, type PlatformInfo } from '../../platform/index.ts'
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
 
@@ -109,10 +110,24 @@ export function SettingsScreen({
 
   const [issueCopied, setIssueCopied] = useState(false)
   const [storageProtected, setStorageProtected] = useState<boolean | null>(null)
+  const [platformInfo, setPlatformInfo] = useState<PlatformInfo | null>(null)
 
   useEffect(() => {
     isStoragePersisted().then((persisted) => setStorageProtected(persisted))
+    platform.info
+      .getInfo()
+      .then(setPlatformInfo)
+      .catch(() => {})
   }, [])
+
+  function formatFingerprint(sha?: string): string {
+    if (!sha || sha === 'web-unsigned' || sha.length < 16) {
+      return sha || 'غير متوفر'
+    }
+    const clean = sha.replace(/[^a-fA-F0-9]/g, '')
+    if (clean.length < 16) return clean
+    return `${clean.slice(0, 8)}...${clean.slice(-8)}`
+  }
 
   function handleReportIssue() {
     const report = [
@@ -550,17 +565,57 @@ export function SettingsScreen({
           />
         </Section>
 
-        {/* Section 5: حول التطبيق وحقوق الملكية */}
+        {/* Section 5: حول التطبيق (عن التطبيق) */}
         <Section title="حول التطبيق">
           <Card padding="md">
+            <div
+              style={{
+                marginBottom: '12px',
+                fontWeight: 700,
+                fontSize: '15px',
+              }}
+            >
+              عن التطبيق
+            </div>
             <KeyValueList
               items={[
                 {
                   key: 'الإصدار',
                   value:
-                    typeof __BUILD_ID__ !== 'undefined'
+                    platformInfo?.versionName ||
+                    (typeof __BUILD_ID__ !== 'undefined'
                       ? __BUILD_ID__
-                      : '0.2.0',
+                      : '0.1.0'),
+                  bdi: true,
+                  stacked: true,
+                },
+                {
+                  key: 'البناء',
+                  value: platformInfo
+                    ? `${platformInfo.versionCode} (${platformInfo.buildType})`
+                    : typeof __BUILD_ID__ !== 'undefined'
+                      ? __BUILD_ID__
+                      : '1',
+                  bdi: true,
+                  stacked: true,
+                },
+                {
+                  key: 'القناة',
+                  value:
+                    platformInfo?.buildType === 'debug' ? 'تجريبي' : 'رسمي',
+                  stacked: true,
+                },
+                {
+                  key: 'بصمة التوقيع',
+                  value: formatFingerprint(platformInfo?.signingSha256),
+                  bdi: true,
+                  stacked: true,
+                },
+                {
+                  key: 'نظام التشغيل',
+                  value: platformInfo?.isNative
+                    ? `Android ${platformInfo.sdkInt} (${platformInfo.deviceModel})`
+                    : 'Web Browser',
                   bdi: true,
                   stacked: true,
                 },

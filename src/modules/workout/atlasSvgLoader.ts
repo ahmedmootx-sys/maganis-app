@@ -26,7 +26,6 @@ export async function loadAtlasSvg(
       assetUrl(`atlas/${fileName}`),
       `./atlas/${fileName}`,
       `/atlas/${fileName}`,
-      `/maganis-app/atlas/${fileName}`,
     ]
     const uniqueCandidates = Array.from(new Set(candidates.filter(Boolean)))
 

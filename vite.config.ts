@@ -14,10 +14,11 @@ try {
 const buildTime = new Date().toISOString()
 const buildId = `${gitHash}-${buildTime}`
 
-function versionPlugin() {
+function versionPlugin(isNativeBuild: boolean) {
   return {
     name: 'maganis-version-plugin',
     buildStart() {
+      if (isNativeBuild) return
       const v = { buildId, gitHash, builtAt: buildTime }
       const pubDir = path.resolve(__dirname, 'public')
       if (!fs.existsSync(pubDir)) fs.mkdirSync(pubDir, { recursive: true })
@@ -28,6 +29,7 @@ function versionPlugin() {
       )
     },
     closeBundle() {
+      if (isNativeBuild) return
       const v = { buildId, gitHash, builtAt: buildTime }
       const distDir = path.resolve(__dirname, 'dist')
       if (fs.existsSync(distDir)) {
@@ -59,18 +61,48 @@ function versionPlugin() {
   }
 }
 
+function nativeCleanPlugin() {
+  return {
+    name: 'maganis-native-clean-plugin',
+    transformIndexHtml(html: string) {
+      // In native mode: do NOT link the PWA manifest
+      return html.replace(/<link\s+rel="manifest"\s+href="[^"]*"\s*\/?>/i, '')
+    },
+    closeBundle() {
+      const nativeDir = path.resolve(__dirname, 'dist-native')
+      if (fs.existsSync(nativeDir)) {
+        // In native mode: do NOT ship sw.js, version.json, or PWA manifest
+        const forbidden = [
+          'sw.js',
+          'version.json',
+          'manifest.webmanifest',
+          'manifest.json',
+        ]
+        for (const file of forbidden) {
+          const target = path.join(nativeDir, file)
+          if (fs.existsSync(target)) {
+            fs.unlinkSync(target)
+          }
+        }
+      }
+    },
+  }
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const devPort = Number(env.VITE_DEV_PORT || 5173)
 
+  const isNative = mode === 'native'
   const isProd = mode === 'production'
 
   return {
-    base: isProd ? '/maganis-app/' : './',
+    base: isNative ? '/' : isProd ? '/maganis-app/' : './',
     define: {
       __BUILD_ID__: JSON.stringify(buildId),
     },
     build: {
+      outDir: isNative ? 'dist-native' : 'dist',
       rollupOptions: {
         output: {
           manualChunks(id) {
@@ -93,7 +125,11 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    plugins: [react(), versionPlugin()],
+    plugins: [
+      react(),
+      versionPlugin(isNative),
+      ...(isNative ? [nativeCleanPlugin()] : []),
+    ],
     server: {
       port: devPort,
       strictPort: true,

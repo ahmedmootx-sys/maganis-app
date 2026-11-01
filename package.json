@@ -10,10 +10,12 @@
     "dev": "vite",
     "predev": "node scripts/check-env.mjs development",
     "build": "tsc -b && vite build",
+    "build:native": "node scripts/check-env.mjs native && npm run typecheck && vite build --mode native && cap sync android",
     "build:atlas": "node tools/atlas/build_atlas.mjs",
     "prebuild": "node scripts/check-env.mjs production",
     "preview": "vite preview",
     "qa:video": "node scripts/run-qa-video.mjs",
+    "qa:native-smoke": "node qa/native-web-smoke.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -25,8 +27,10 @@
     "check:emoji": "node scripts/check-emoji.mjs",
     "check:ui": "node scripts/check-ui.mjs",
     "catalog:check": "node scripts/check-catalog.mjs",
+    "android:keystore": "node scripts/android-keystore.mjs",
+    "gate:base-path": "node scripts/gate-base-path.mjs",
     "verify": "node scripts/verify.mjs",
-    "gates": "node scripts/gate-no-personal-data.mjs && npm run check:emoji && npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && node scripts/check-coverage-ratchet.mjs && npm run build && node scripts/gate-raw-tokens.mjs && npm run check:ui && node qa/video-flow.mjs && node qa/media-everywhere.mjs && node qa/reset-flow.mjs && node qa/backup-restore.mjs",
+    "gates": "node scripts/gate-no-personal-data.mjs && node scripts/gate-base-path.mjs && npm run check:emoji && npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && node scripts/check-coverage-ratchet.mjs && npm run build && node scripts/gate-raw-tokens.mjs && npm run check:ui && node qa/video-flow.mjs && node qa/media-everywhere.mjs && node qa/reset-flow.mjs && node qa/backup-restore.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -39,11 +43,16 @@
     ]
   },
   "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.6.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@capacitor/assets": "4.0.0",
+    "@capacitor/cli": "8.6.0",
     "@eslint/js": "^9.30.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.0",

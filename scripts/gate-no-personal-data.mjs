@@ -10,6 +10,7 @@
  * 4. No personal email addresses (except noreply@ and example.).
  * 5. No phone number sequences (e.g. +20..., 010/011/012/015 Egyptian mobile numbers).
  * 6. No private user identifiers ("power tech", "power%20tech", "ahmedmo").
+ * 7. Security Rule S1: Never commit keystores (*.jks, *.keystore), keystore.properties, passwords or tokens.
  */
 
 import fs from 'node:fs'
@@ -55,6 +56,7 @@ function run() {
   let rule4Count = 0
   let rule5Count = 0
   let rule6Count = 0
+  let rule7Count = 0
 
   const ABSOLUTE_PATH_REGEX =
     /(?:file:\/\/\/[a-zA-Z]:\/|[a-zA-Z]:\\Users\\|[a-zA-Z]:\/Users\/|\/Users\/|\/home\/)/i
@@ -80,6 +82,19 @@ function run() {
           `[Rule 1] Tracked file "${file}" violates rule: no *profile-dump* or *backup*.json outside fixtures/`,
         )
       }
+    }
+
+    // Check Rule 7 (Security S1): Keystores & sensitive keystore configurations
+    rule7Count++
+    if (
+      baseName.endsWith('.jks') ||
+      baseName.endsWith('.keystore') ||
+      baseName === 'keystore.properties' ||
+      baseName.endsWith('.p12')
+    ) {
+      failures.push(
+        `[Rule 7] Banned keystore artifact tracked by git: "${file}". Keystores and keystore.properties must NEVER be committed (Security S1)!`,
+      )
     }
 
     // Skip binary files for text scanning
@@ -189,6 +204,17 @@ function run() {
             )
           }
         }
+
+        // Check Rule 7 (Security S1): Private key headers or plaintext passwords
+        if (
+          content.includes('BEGIN PRIVATE KEY') ||
+          content.includes('BEGIN RSA PRIVATE KEY') ||
+          content.includes('BEGIN ENCRYPTED PRIVATE KEY')
+        ) {
+          failures.push(
+            `[Rule 7] Disallowed private key block found in "${file}" (Security S1)`,
+          )
+        }
       }
     }
   }
@@ -199,6 +225,9 @@ function run() {
   console.log(`[Rule 4] Text files scanned for email addresses: ${rule4Count}`)
   console.log(`[Rule 5] Text files scanned for phone numbers: ${rule5Count}`)
   console.log(`[Rule 6] Text files scanned for private terms: ${rule6Count}`)
+  console.log(
+    `[Rule 7] Files checked for keystore and credential leaks: ${rule7Count}`,
+  )
 
   // Minimum checks enforcement (P4)
   if (rule1Count < 100 || rule3Count < 100) {

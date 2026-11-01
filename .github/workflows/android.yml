@@ -1,0 +1,323 @@
+name: Android Native CI & Release
+
+on:
+  push:
+    branches:
+      - main
+      - 'native/**'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 'android-${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  build-debug:
+    name: Build & Verify Debug APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node 22
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Chromium with deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright OS system deps only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Gate - Privacy and no personal data
+        run: node scripts/gate-no-personal-data.mjs
+
+      - name: Gate - Base path purge
+        run: node scripts/gate-base-path.mjs
+
+      - name: Check Emoji
+        run: npm run check:emoji
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check code formatting
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit test suite
+        run: npm run test:coverage
+
+      - name: Coverage ratchet
+        run: node scripts/check-coverage-ratchet.mjs
+
+      - name: Web production build
+        run: npm run build
+
+      - name: Gate - Raw tokens
+        run: node scripts/gate-raw-tokens.mjs
+
+      - name: Build native web bundle & sync Capacitor
+        run: npm run build:native
+
+      - name: QA - Native root-base web smoke
+        run: node qa/native-web-smoke.mjs
+
+      - name: Setup Java 21 (Temurin)
+        uses: actions/setup-java@8df1039502a140fb607b34f70404645981fb7e17 # v4.5.0
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@0db8704bb39956c00f86c23f11a478791bd0b5fa # v4.2.0
+
+      - name: Assemble Debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Prepare Debug Artifact
+        run: |
+          mkdir -p dist-apk
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          cp android/app/build/outputs/apk/debug/app-debug.apk "dist-apk/maganis-DEBUG-NOT-FOR-REAL-DATA-${SHORT_SHA}.apk"
+
+      - name: Upload Debug APK Artifact
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: maganis-debug-apk
+          path: dist-apk/*.apk
+          retention-days: 14
+
+  emulator-smoke:
+    name: Android 34 Emulator Smoke Test
+    needs: build-debug
+    runs-on: ubuntu-latest
+    continue-on-error: true # Non-blocking per prompt guidance
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Download Debug APK
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: maganis-debug-apk
+          path: debug-apk
+
+      - name: Setup Java 21
+        uses: actions/setup-java@8df1039502a140fb607b34f70404645981fb7e17 # v4.5.0
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Enable KVM on Ubuntu runner
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run Emulator & Smoke Test
+        uses: reactivecircus/android-emulator-runner@6b0e1153835616f73e7d58eb09cf904f4a30e70a # v2.33.0
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: 720x1440 320dpi
+          script: |
+            APK=$(ls debug-apk/maganis-DEBUG-*.apk | head -n 1)
+            echo "Installing $APK..."
+            adb install -r "$APK"
+            echo "Launching main activity..."
+            adb shell am start -n app.maganis.coach.debug/app.maganis.coach.MainActivity
+            sleep 8
+            mkdir -p emulator-artifacts
+            # 1. Capture Light Mode
+            adb shell cmd uimode night no
+            sleep 2
+            adb exec-out screencap -p > emulator-artifacts/01-home-light.png
+            # 2. Capture Dark Mode
+            adb shell cmd uimode night yes
+            sleep 2
+            adb exec-out screencap -p > emulator-artifacts/01-home-dark.png
+            # 3. Test Back Button response
+            adb shell input keyevent 4
+            sleep 1
+            adb exec-out screencap -p > emulator-artifacts/02-back-toast.png
+            # 4. Dump logcat and check for crashes
+            adb logcat -d > emulator-artifacts/logcat.txt
+            if grep -E "FATAL EXCEPTION" emulator-artifacts/logcat.txt; then
+              echo "Fatal exception detected in logcat!"
+              exit 1
+            fi
+            echo "Emulator smoke test finished successfully."
+
+      - name: Upload Emulator Screenshots & Logs
+        if: always()
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: emulator-smoke-artifacts
+          path: emulator-artifacts/
+          retention-days: 7
+
+  release:
+    name: Build & Publish Release APK
+    needs: build-debug
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node 22
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build native web bundle & sync Capacitor
+        run: npm run build:native
+
+      - name: Setup Java 21 (Temurin)
+        uses: actions/setup-java@8df1039502a140fb607b34f70404645981fb7e17 # v4.5.0
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@0db8704bb39956c00f86c23f11a478791bd0b5fa # v4.2.0
+
+      - name: Decode Release Keystore & Verify Environment
+        id: prepare-keystore
+        run: |
+          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "::error::Release secret ANDROID_KEYSTORE_BASE64 is missing! Please configure it per docs/ANDROID-RELEASE.ar.md."
+            exit 1
+          fi
+          if [ -z "${{ vars.ANDROID_CERT_SHA256 }}" ]; then
+            echo "::error::Repository variable ANDROID_CERT_SHA256 is missing! Please configure it per docs/ANDROID-RELEASE.ar.md."
+            exit 1
+          fi
+
+          KEYSTORE_FILE="$RUNNER_TEMP/release.keystore"
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$KEYSTORE_FILE"
+          echo "KEYSTORE_PATH=$KEYSTORE_FILE" >> $GITHUB_ENV
+
+      - name: Assemble Release APK
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_VERSION_CODE: ${{ github.run_number }}
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease
+
+      - name: Verify Signing Identity and Integrity
+        run: |
+          RELEASE_APK="android/app/build/outputs/apk/release/app-release.apk"
+          if [ ! -f "$RELEASE_APK" ]; then
+            echo "::error::Release APK was not generated at $RELEASE_APK"
+            exit 1
+          fi
+
+          echo "Verifying APK signature with apksigner..."
+          CERT_OUTPUT=$(apksigner verify --print-certs "$RELEASE_APK")
+          echo "$CERT_OUTPUT"
+
+          CERT_SHA256=$(echo "$CERT_OUTPUT" | grep -i "SHA-256 digest:" | head -n 1 | awk '{print $NF}' | tr -d ':' | tr '[:lower:]' '[:upper:]')
+          EXPECTED_SHA256=$(echo "${{ vars.ANDROID_CERT_SHA256 }}" | tr -d ':' | tr '[:lower:]' '[:upper:]')
+
+          echo "Certificate SHA-256: $CERT_SHA256"
+          echo "Expected SHA-256:    $EXPECTED_SHA256"
+
+          if [ "$CERT_SHA256" != "$EXPECTED_SHA256" ]; then
+            echo "::error::Release verification FAILED: Certificate SHA-256 does not match ANDROID_CERT_SHA256!"
+            exit 1
+          fi
+          echo "✅ Certificate identity verified successfully."
+
+      - name: Extract Release Notes from CHANGELOG.md
+        id: changelog
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          echo "Extracting release notes for version $VERSION from CHANGELOG.md..."
+
+          # Extract notes between ## [$VERSION] and the next ## [
+          python3 -c "
+          import re, sys
+          tag = '$VERSION'
+          with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
+              content = f.read()
+          pattern = r'## \[' + re.escape(tag) + r'\][^\n]*\n(.*?)(?=\n## \[|\Z)'
+          match = re.search(pattern, content, re.DOTALL)
+          if not match:
+              print(f'::error::No changelog section found in CHANGELOG.md for version {tag}!')
+              sys.exit(1)
+          notes = match.group(1).strip()
+          with open('$RUNNER_TEMP/release_notes.md', 'w', encoding='utf-8') as out:
+              out.write(notes + '\n')
+          "
+
+      - name: Package Release APK & Checksum
+        id: package
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          OUT_APK="maganis-${VERSION}.apk"
+          cp android/app/build/outputs/apk/release/app-release.apk "$OUT_APK"
+          sha256sum "$OUT_APK" > "${OUT_APK}.sha256"
+          echo "apk_name=$OUT_APK" >> $GITHUB_OUTPUT
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          APK_NAME="${{ steps.package.outputs.apk_name }}"
+          gh release create "$TAG" \
+            "$APK_NAME" \
+            "${APK_NAME}.sha256" \
+            --title "Maganis $TAG" \
+            --notes-file "$RUNNER_TEMP/release_notes.md"
+
+      - name: Secure Cleanup of Keystore
+        if: always()
+        run: |
+          if [ -n "$KEYSTORE_PATH" ] && [ -f "$KEYSTORE_PATH" ]; then
+            rm -f "$KEYSTORE_PATH"
+            echo "Securely removed release keystore from runner temp."
+          fi

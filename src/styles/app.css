@@ -59,11 +59,23 @@ body {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden /* clip-ok: prevent horizontal drift */;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   font-family: var(--font-sans);
   color: var(--color-text);
   background: var(--color-bg);
   line-height: var(--line-height-body);
+}
+
+button,
+[role='button'],
+.btn,
+.icon-btn,
+.nav-item {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 #root {

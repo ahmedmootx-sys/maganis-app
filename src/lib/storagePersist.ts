@@ -4,13 +4,20 @@
  * Ensures data safety on mobile devices (A3).
  */
 
+import { isNative } from '../platform/runtime.ts'
+
 export const STORAGE_PERSIST_KEY = 'maganis:storage_persist_requested'
 
 /**
  * Requests persistent storage once per install.
  * Safe to call on each program save or session log.
+ * In native Capacitor builds, app storage is already permanent and this is a no-op.
  */
 export async function requestStoragePersistenceOnce(): Promise<boolean> {
+  if (isNative()) {
+    return true
+  }
+
   if (typeof window === 'undefined' || !navigator?.storage?.persist) {
     return false
   }
@@ -30,8 +37,13 @@ export async function requestStoragePersistenceOnce(): Promise<boolean> {
 
 /**
  * Checks whether persistent storage has been granted.
+ * In native Capacitor builds, returns true immediately.
  */
 export async function isStoragePersisted(): Promise<boolean> {
+  if (isNative()) {
+    return true
+  }
+
   if (typeof window === 'undefined' || !navigator?.storage?.persisted) {
     return false
   }

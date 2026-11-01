@@ -1,0 +1,92 @@
+import { describe, it, expect, afterEach } from 'vitest'
+import { isNative, platformName, isDebugBuild } from './runtime.ts'
+import { platform, setPlatformForTesting, type Platform } from './index.ts'
+
+describe('Platform Runtime and Skeleton (Task N1)', () => {
+  afterEach(() => {
+    setPlatformForTesting(null)
+  })
+
+  it('detects default web runtime environment in test runner', () => {
+    expect(isNative()).toBe(false)
+    expect(platformName()).toBe('web')
+    expect(isDebugBuild()).toBe(true) // vitest runs in dev/test mode
+  })
+
+  it('platform.info.getInfo() returns default web info in test runner', async () => {
+    const info = await platform.info.getInfo()
+    expect(info.isNative).toBe(false)
+    expect(info.platform).toBe('web')
+    expect(info.applicationId).toBe('app.maganis.coach.web')
+    expect(info.signingSha256).toBe('web-unsigned')
+  })
+
+  it('unimplemented future platform modules return honest unsupported responses', async () => {
+    // KV storage (N2)
+    await expect(platform.kv.get('test')).rejects.toThrow(
+      /unsupported.*Task N2/,
+    )
+    await expect(platform.kv.set('test', '1')).rejects.toThrow(
+      /unsupported.*Task N2/,
+    )
+
+    // Media storage (N2)
+    await expect(platform.media.saveMedia('test', new Blob())).rejects.toThrow(
+      /unsupported.*Task N2/,
+    )
+
+    // Files (N3)
+    const fileResult = await platform.files.saveFile('test.json', '{}')
+    expect(fileResult.success).toBe(false)
+    expect(fileResult.error).toContain('unsupported: Task N3')
+
+    // Notifications (N4)
+    const notifResult = await platform.notifications.schedule({})
+    expect(notifResult.supported).toBe(false)
+    expect(notifResult.error).toContain('unsupported: Task N4')
+
+    // Haptics & KeepAwake (N4)
+    expect((await platform.haptics.vibrate()).supported).toBe(false)
+    expect((await platform.keepAwake.keepAwake()).supported).toBe(false)
+  })
+
+  it('supports injecting a mock platform via setPlatformForTesting', async () => {
+    const mockPlatform: Platform = {
+      info: {
+        getInfo: async () => ({
+          applicationId: 'app.maganis.coach.debug',
+          versionName: '0.1.0-debug',
+          versionCode: 1042,
+          buildType: 'debug',
+          sdkInt: 34,
+          deviceModel: 'Pixel 8',
+          debuggable: true,
+          signingSha256:
+            '0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF',
+          isNative: true,
+          platform: 'android',
+        }),
+      },
+      app: {
+        onPause: () => () => {},
+        onResume: () => () => {},
+        exit: () => {},
+        registerBackHandler: () => () => {},
+      },
+      kv: {} as unknown as Platform['kv'],
+      media: {} as unknown as Platform['media'],
+      files: {} as unknown as Platform['files'],
+      notifications: {} as unknown as Platform['notifications'],
+      haptics: {} as unknown as Platform['haptics'],
+      keepAwake: {} as unknown as Platform['keepAwake'],
+    }
+
+    setPlatformForTesting(mockPlatform)
+
+    const info = await platform.info.getInfo()
+    expect(info.isNative).toBe(true)
+    expect(info.applicationId).toBe('app.maganis.coach.debug')
+    expect(info.versionCode).toBe(1042)
+    expect(info.deviceModel).toBe('Pixel 8')
+  })
+})
