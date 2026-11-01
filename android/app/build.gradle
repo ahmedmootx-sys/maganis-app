@@ -84,9 +84,9 @@ android {
 
 // Fail release build immediately if release signing credentials are missing (Security S4)
 gradle.taskGraph.whenReady { taskGraph ->
-    def isReleaseBuild = taskGraph.allTasks.any { task ->
-        task.name.toLowerCase().contains("release") && !task.name.toLowerCase().contains("test")
-    }
+    def isReleaseBuild = taskGraph.hasTask(':app:assembleRelease') || 
+                         taskGraph.hasTask(':app:bundleRelease') ||
+                         gradle.startParameter.taskNames.any { it.toLowerCase().contains("release") }
     if (isReleaseBuild) {
         def hasPath = releaseKeystorePath && file(releaseKeystorePath).exists()
         def hasPass = releaseKeystorePassword != null && !releaseKeystorePassword.trim().isEmpty()
