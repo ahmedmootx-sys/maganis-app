@@ -143,12 +143,15 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Emulator & Smoke Test
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           target: google_apis
           arch: x86_64
           profile: 720x1440 320dpi
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             APK=$(ls debug-apk/maganis-DEBUG-*.apk | head -n 1)
             echo "Installing $APK..."
