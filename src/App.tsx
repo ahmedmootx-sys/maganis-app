@@ -1458,7 +1458,16 @@ export function App({ config }: AppProps) {
           className="bottom-nav"
           data-testid="bottom-nav"
           data-overlay="true"
+          style={
+            {
+              '--active-index': Math.max(
+                0,
+                TABS.findIndex((t) => t.id === activeTab),
+              ),
+            } as React.CSSProperties
+          }
         >
+          <div className="bottom-nav__pill" aria-hidden="true" />
           {TABS.map((tab) => (
             <button
               key={tab.id}

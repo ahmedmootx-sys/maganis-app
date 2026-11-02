@@ -56,6 +56,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
   if (hidden) return null
 
+  const activeIndex = Math.max(
+    0,
+    BOTTOM_NAV_TABS.findIndex((tab) => tab.id === activeTab),
+  )
+
   return (
     <nav
       ref={navRef}
@@ -63,7 +68,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
       aria-label="التنقل الرئيسي"
       data-testid="bottom-nav"
       data-overlay="true"
+      style={{ '--active-index': activeIndex } as React.CSSProperties}
     >
+      <div className="bottom-nav__pill" aria-hidden="true" />
       <div className="bottom-nav__inner">
         {BOTTOM_NAV_TABS.map((tab) => {
           const isActive = activeTab === tab.id

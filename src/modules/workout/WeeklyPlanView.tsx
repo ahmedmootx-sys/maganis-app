@@ -2149,6 +2149,7 @@ export function WeeklyPlanView({
                   return (
                     <ListRow
                       key={`warmup-${idx}`}
+                      className={`animate-stagger-${Math.min(idx + 1, 6)}`}
                       onClick={
                         !isEditMode
                           ? () => handleOpenDetail(pe.exerciseId)
@@ -2352,6 +2353,7 @@ export function WeeklyPlanView({
                   return (
                     <ListRow
                       key={`primary-${idx}`}
+                      className={`animate-stagger-${Math.min(idx + 1, 6)}`}
                       onClick={
                         !isEditMode
                           ? () => handleOpenDetail(pe.exerciseId)
@@ -2510,6 +2512,7 @@ export function WeeklyPlanView({
                   return (
                     <ListRow
                       key={`cooldown-${idx}`}
+                      className={`animate-stagger-${Math.min(idx + 1, 6)}`}
                       onClick={
                         !isEditMode
                           ? () => handleOpenDetail(pe.exerciseId)

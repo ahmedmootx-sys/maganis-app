@@ -81,6 +81,7 @@ export const Sheet: React.FC<SheetProps> = ({
 
     // Focus first interactive element inside sheet if not already focused
     const focusTimer = setTimeout(() => {
+      if (typeof document === 'undefined') return
       if (sheetRef.current) {
         if (
           document.activeElement &&
@@ -103,8 +104,10 @@ export const Sheet: React.FC<SheetProps> = ({
     return () => {
       unregisterBack()
       clearTimeout(focusTimer)
-      document.body.style.overflow = prevOverflow
-      delete document.body.dataset.sheetOpen
+      if (typeof document !== 'undefined' && document.body) {
+        document.body.style.overflow = prevOverflow
+        delete document.body.dataset.sheetOpen
+      }
       window.removeEventListener('keydown', handleKeyDown)
 
       // Restore background
