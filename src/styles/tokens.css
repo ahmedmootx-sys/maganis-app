@@ -116,9 +116,9 @@
   --touch-target-min: 44px;
   --control-height: 44px;
   --top-bar-height: 56px;
-  --nav-h: 64px;
-  --bottom-nav-height: 64px;
-  --nav-float-bottom: calc(12px + var(--safe-area-bottom, 0px));
+  --nav-h: 68px;
+  --bottom-nav-height: 68px;
+  --nav-float-bottom: 0px;
   --btn-primary-height: 52px;
   --button-height-primary: 52px;
   --button-height-sm: 44px;
@@ -133,9 +133,9 @@
   --safe-right: env(safe-area-inset-right, 0px);
 
   /* Layout Shell Contract Tokens (G3 Part 1) */
-  --bottom-nav-height: 64px;
+  --bottom-nav-height: 68px;
   --page-end: calc(
-    var(--bottom-nav-height, 64px) + var(--nav-float-bottom, 12px) + 16px
+    var(--bottom-nav-height, 68px) + var(--safe-area-bottom, 0px) + 24px
   );
   --footer-max-height: 72px;
 
@@ -146,12 +146,11 @@
     0 8px 30px -4px rgba(0, 0, 0, 0.04), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
   --shadow-card-hover:
     0 16px 40px -4px rgba(0, 0, 0, 0.08), 0 6px 16px -2px rgba(0, 0, 0, 0.03);
-  --shadow-floating-nav:
-    0 12px 32px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+  --shadow-floating-nav: 0 -4px 24px rgba(0, 0, 0, 0.06);
   --shadow-primary-cta:
-    0 4px 14px rgba(249, 87, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.04);
+    0 4px 12px rgba(249, 87, 0, 0.14), 0 2px 4px rgba(0, 0, 0, 0.04);
   --shadow-primary-cta-hover:
-    0 6px 18px rgba(249, 87, 0, 0.22), 0 3px 8px rgba(0, 0, 0, 0.06);
+    0 6px 16px rgba(249, 87, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.05);
   --shadow-nav-bubble:
     0 0 0 5px var(--color-bg), 0 6px 18px rgba(0, 0, 0, 0.1),
     0 2px 6px rgba(249, 87, 0, 0.15);
@@ -325,12 +324,11 @@
     0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
   --shadow-card-hover:
     0 16px 44px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  --shadow-floating-nav:
-    0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-floating-nav: 0 -4px 24px rgba(0, 0, 0, 0.4);
   --shadow-primary-cta:
-    0 4px 16px rgba(255, 107, 26, 0.18), 0 2px 6px rgba(0, 0, 0, 0.2);
+    0 4px 12px rgba(255, 107, 26, 0.16), 0 2px 4px rgba(0, 0, 0, 0.2);
   --shadow-primary-cta-hover:
-    0 6px 20px rgba(255, 107, 26, 0.24), 0 3px 8px rgba(0, 0, 0, 0.25);
+    0 6px 16px rgba(255, 107, 26, 0.22), 0 2px 6px rgba(0, 0, 0, 0.25);
   --shadow-nav-bubble:
     0 4px 14px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(255, 107, 26, 0.18);
   --nav-floating-bg: #16181b;

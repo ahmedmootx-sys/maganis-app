@@ -73,12 +73,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     >
       <div className="bottom-nav__indicator" aria-hidden="true">
         <div className="bottom-nav__wave">
-          <svg viewBox="0 0 60 20" fill="none" preserveAspectRatio="none">
-            <path d="M0 20 C14 20 17 0 30 0 C43 0 46 20 60 20 L60 22 L0 22 Z" />
+          <svg viewBox="0 0 96 26" fill="none" preserveAspectRatio="none">
+            <path d="M0 26 C16 26 24 16 34 8 C40 3 44 0 48 0 C52 0 56 3 62 8 C72 16 80 26 96 26 L96 28 L0 28 Z" />
           </svg>
         </div>
         <div className="bottom-nav__circle">
-          <Icon name={currentTab.icon} size={22} />
+          <Icon name={currentTab.icon} size={24} />
         </div>
       </div>
       <div className="bottom-nav__inner">
