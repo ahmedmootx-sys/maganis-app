@@ -1467,7 +1467,9 @@ export function App({ config }: AppProps) {
             } as React.CSSProperties
           }
         >
-          <div className="bottom-nav__pill" aria-hidden="true" />
+          <div className="bottom-nav__indicator" aria-hidden="true">
+            <div className="bottom-nav__indicator-bubble" />
+          </div>
           {TABS.map((tab) => (
             <button
               key={tab.id}

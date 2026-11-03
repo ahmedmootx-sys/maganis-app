@@ -70,7 +70,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
       data-overlay="true"
       style={{ '--active-index': activeIndex } as React.CSSProperties}
     >
-      <div className="bottom-nav__pill" aria-hidden="true" />
+      <div className="bottom-nav__indicator" aria-hidden="true">
+        <div className="bottom-nav__indicator-bubble" />
+      </div>
       <div className="bottom-nav__inner">
         {BOTTOM_NAV_TABS.map((tab) => {
           const isActive = activeTab === tab.id

@@ -148,10 +148,19 @@
     0 16px 40px -4px rgba(0, 0, 0, 0.08), 0 6px 16px -2px rgba(0, 0, 0, 0.03);
   --shadow-floating-nav:
     0 16px 40px -6px rgba(0, 0, 0, 0.08), 0 4px 14px -2px rgba(0, 0, 0, 0.03);
-  --shadow-primary-cta: 0 10px 24px rgba(249, 87, 0, 0.32);
+  --shadow-primary-cta:
+    0 4px 14px rgba(249, 87, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-primary-cta-hover:
+    0 6px 18px rgba(249, 87, 0, 0.22), 0 3px 8px rgba(0, 0, 0, 0.06);
+  --shadow-nav-bubble:
+    0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(249, 87, 0, 0.12);
 
   /* Translucent & Tactile Tokens */
-  --nav-floating-bg: rgba(255, 255, 255, 0.82);
+  --nav-floating-bg: rgba(255, 255, 255, 0.88);
+  --nav-floating-bg-solid: #ffffff;
+  --nav-bubble-bg: #ffffff;
+  --nav-bubble-border: rgba(249, 87, 0, 0.2);
+  --nav-notch-color: #ffffff;
   --nav-pill-bg: rgba(249, 87, 0, 0.08);
   --nav-pill-border: rgba(249, 87, 0, 0.15);
   --topbar-translucent-bg: rgba(255, 255, 255, 0.85);
@@ -319,8 +328,17 @@
     0 16px 44px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
   --shadow-floating-nav:
     0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --shadow-primary-cta: 0 10px 24px rgba(255, 107, 26, 0.35);
-  --nav-floating-bg: rgba(22, 24, 27, 0.85);
+  --shadow-primary-cta:
+    0 4px 16px rgba(255, 107, 26, 0.18), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-primary-cta-hover:
+    0 6px 20px rgba(255, 107, 26, 0.24), 0 3px 8px rgba(0, 0, 0, 0.25);
+  --shadow-nav-bubble:
+    0 4px 14px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(255, 107, 26, 0.18);
+  --nav-floating-bg: rgba(22, 24, 27, 0.88);
+  --nav-floating-bg-solid: #16181b;
+  --nav-bubble-bg: #1e2024;
+  --nav-bubble-border: rgba(255, 107, 26, 0.35);
+  --nav-notch-color: #16181b;
   --nav-pill-bg: rgba(255, 107, 26, 0.16);
   --nav-pill-border: rgba(255, 107, 26, 0.28);
   --topbar-translucent-bg: rgba(11, 12, 14, 0.85);
