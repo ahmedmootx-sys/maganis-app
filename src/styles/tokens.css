@@ -332,8 +332,7 @@
   --shadow-primary-cta-hover:
     0 6px 20px rgba(255, 107, 26, 0.24), 0 3px 8px rgba(0, 0, 0, 0.25);
   --shadow-nav-bubble:
-    0 0 0 5px var(--color-bg), 0 6px 18px rgba(0, 0, 0, 0.7),
-    0 2px 6px rgba(255, 107, 26, 0.25);
+    0 4px 14px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(255, 107, 26, 0.18);
   --nav-floating-bg: #16181b;
   --nav-floating-bg-solid: #16181b;
   --nav-bubble-bg: #1e2024;

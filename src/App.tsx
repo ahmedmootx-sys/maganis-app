@@ -1454,37 +1454,50 @@ export function App({ config }: AppProps) {
           </div>
         )}
 
-        <nav
-          className="bottom-nav"
-          data-testid="bottom-nav"
-          data-overlay="true"
-          style={
-            {
-              '--active-index': Math.max(
-                0,
-                TABS.findIndex((t) => t.id === activeTab),
-              ),
-            } as React.CSSProperties
-          }
-        >
-          <div className="bottom-nav__indicator" aria-hidden="true">
-            <div className="bottom-nav__indicator-bubble" />
-          </div>
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              data-testid={`tab-${tab.id}`}
-              className={`bottom-nav__item bottom-nav__tab${activeTab === tab.id ? ' bottom-nav__item--active bottom-nav__tab--active' : ''}`}
-              onClick={() => handleTabChange(tab.id)}
+        {(() => {
+          const activeIndex = Math.max(
+            0,
+            TABS.findIndex((t) => t.id === activeTab),
+          )
+          const currentTab = TABS[activeIndex] || TABS[0]
+          return (
+            <nav
+              className="bottom-nav"
+              data-testid="bottom-nav"
+              data-overlay="true"
+              style={{ '--active-index': activeIndex } as React.CSSProperties}
             >
-              <span className="bottom-nav__icon">{tab.icon}</span>
-              <span className="bottom-nav__label bottom-nav__tab-label">
-                {tab.label}
-              </span>
-            </button>
-          ))}
-        </nav>
+              <div className="bottom-nav__indicator" aria-hidden="true">
+                <div className="bottom-nav__wave">
+                  <svg
+                    viewBox="0 0 60 20"
+                    fill="none"
+                    preserveAspectRatio="none"
+                  >
+                    <path d="M0 20 C14 20 17 0 30 0 C43 0 46 20 60 20 L60 22 L0 22 Z" />
+                  </svg>
+                </div>
+                <div className="bottom-nav__circle">{currentTab.icon}</div>
+              </div>
+              <div className="bottom-nav__inner">
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    data-testid={`tab-${tab.id}`}
+                    className={`bottom-nav__item bottom-nav__tab${activeTab === tab.id ? ' bottom-nav__item--active bottom-nav__tab--active' : ''}`}
+                    onClick={() => handleTabChange(tab.id)}
+                  >
+                    <span className="bottom-nav__icon">{tab.icon}</span>
+                    <span className="bottom-nav__label bottom-nav__tab-label">
+                      {tab.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </nav>
+          )
+        })()}
 
         {showAtlasDebugModal && (
           <div

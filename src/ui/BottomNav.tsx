@@ -60,6 +60,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     0,
     BOTTOM_NAV_TABS.findIndex((tab) => tab.id === activeTab),
   )
+  const currentTab = BOTTOM_NAV_TABS[activeIndex] || BOTTOM_NAV_TABS[0]
 
   return (
     <nav
@@ -71,7 +72,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({
       style={{ '--active-index': activeIndex } as React.CSSProperties}
     >
       <div className="bottom-nav__indicator" aria-hidden="true">
-        <div className="bottom-nav__indicator-bubble" />
+        <div className="bottom-nav__wave">
+          <svg viewBox="0 0 60 20" fill="none" preserveAspectRatio="none">
+            <path d="M0 20 C14 20 17 0 30 0 C43 0 46 20 60 20 L60 22 L0 22 Z" />
+          </svg>
+        </div>
+        <div className="bottom-nav__circle">
+          <Icon name={currentTab.icon} size={22} />
+        </div>
       </div>
       <div className="bottom-nav__inner">
         {BOTTOM_NAV_TABS.map((tab) => {
