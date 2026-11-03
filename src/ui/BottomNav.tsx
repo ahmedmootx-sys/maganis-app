@@ -91,7 +91,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                 }
               }}
             >
-              <Icon name={tab.icon} size={24} />
+              <span className="bottom-nav__icon">
+                <Icon name={tab.icon} size={24} />
+              </span>
               <span className="bottom-nav__tab-label">{tab.label}</span>
             </button>
           )

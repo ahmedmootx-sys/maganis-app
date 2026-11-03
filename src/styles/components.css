@@ -243,11 +243,9 @@
   );
   margin-top: 14px;
   z-index: var(--z-index-sticky, 100);
-  background: var(--nav-floating-bg, rgba(255, 255, 255, 0.88));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--nav-floating-bg, #ffffff);
   border-radius: 9999px;
-  border: 1px solid var(--color-divider);
+  border: none;
   box-shadow: var(--shadow-floating-nav);
   padding: 0;
   box-sizing: border-box;
@@ -271,17 +269,18 @@
   transition: transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Floating circular bubble centered horizontally and elevated above the bar */
-.bottom-nav__indicator-bubble {
+/* Floating circular bubble centered horizontally and elevated above the bar with background cutout ring */
+.bottom-nav__indicator-bubble,
+.bottom-nav__bubble {
   position: absolute;
-  top: -14px;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: var(--nav-bubble-bg, #ffffff);
-  border: 1.5px solid var(--nav-bubble-border, rgba(249, 87, 0, 0.22));
+  border: 1.5px solid var(--nav-bubble-border, rgba(249, 87, 0, 0.25));
   box-shadow: var(--shadow-nav-bubble);
   box-sizing: border-box;
   transition:
@@ -306,7 +305,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  gap: 3px;
   height: 100%;
   min-height: var(--touch-target-min, 44px);
   min-width: var(--touch-target-min, 44px);
@@ -331,33 +331,38 @@
   color: var(--color-text);
 }
 
-.bottom-nav__tab svg,
-.bottom-nav__item svg,
-.bottom-nav__icon {
+.bottom-nav__icon,
+.bottom-nav__tab > svg,
+.bottom-nav__item > svg {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
+  width: 24px;
+  height: 24px;
+  margin: 0;
   transition:
     transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
     color var(--transition-fast);
 }
 
+.bottom-nav__icon > svg {
+  display: block;
+  margin: 0;
+}
+
 .bottom-nav__tab-label,
 .bottom-nav__label {
-  position: absolute;
-  bottom: 8px;
-  left: 0;
-  right: 0;
+  position: static;
   text-align: center;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: 1.1;
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1;
   white-space: nowrap;
   overflow: visible;
   transition:
     color var(--transition-fast),
-    font-weight 200ms ease;
+    font-weight 200ms ease,
+    transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Active Tab: Icon lifts into the floating circular bubble, label highlighted below */
@@ -366,18 +371,19 @@
   color: var(--color-accent-text);
 }
 
-.bottom-nav__tab--active svg,
-.bottom-nav__item--active svg,
 .bottom-nav__tab--active .bottom-nav__icon,
-.bottom-nav__item--active .bottom-nav__icon {
+.bottom-nav__item--active .bottom-nav__icon,
+.bottom-nav__tab--active > svg,
+.bottom-nav__item--active > svg {
   color: var(--color-accent-text);
-  transform: translateY(-13px) scale(1.1);
+  transform: translateY(-20px) scale(1.05);
 }
 
 .bottom-nav__tab--active .bottom-nav__tab-label,
 .bottom-nav__item--active .bottom-nav__label {
   color: var(--color-accent-text);
   font-weight: var(--font-weight-bold);
+  transform: translateY(6px);
 }
 
 /* ==========================================================================
