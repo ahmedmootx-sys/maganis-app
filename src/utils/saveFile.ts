@@ -7,6 +7,9 @@
  * 3. Else: anchor download with Blob URL, returning notice to show Callout.
  */
 
+import { isNative } from '../platform/runtime.ts'
+import { MaganisNative } from '../platform/native/maganisNative.ts'
+
 export interface SaveFileResult {
   method: 'picker' | 'share' | 'download'
   downloadNoticeNeeded?: boolean
@@ -29,6 +32,32 @@ export async function saveFile(
   filename: string,
   mime: string,
 ): Promise<SaveFileResult> {
+  // 0. Native Platform (Capacitor 8 Android): route to real system Save As (ACTION_CREATE_DOCUMENT)
+  if (isNative()) {
+    try {
+      await MaganisNative.saveAs({
+        name: filename,
+        mime,
+      })
+      return {
+        method: 'picker',
+        downloadNoticeNeeded: false,
+      }
+    } catch (err: unknown) {
+      if (
+        err instanceof Error &&
+        err.message.toLowerCase().includes('cancel')
+      ) {
+        return { method: 'picker', downloadNoticeNeeded: false }
+      }
+      return {
+        method: 'download',
+        downloadNoticeNeeded: false,
+        error: String(err),
+      }
+    }
+  }
+
   // 1. showSaveFilePicker (Desktop Chromium)
   if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
     try {

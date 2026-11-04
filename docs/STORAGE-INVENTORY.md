@@ -1,6 +1,6 @@
 # Maganis Storage Inventory & Snapshot Classification
 
-Generated: 2026-11-03T21:11:38.282Z
+Generated: 2026-11-04T04:48:02.879Z
 
 This document is the authoritative inventory of all storage call sites, keys, databases, and session storage uses in Maganis.
 It defines which keys are included in the complete v2 snapshot and provides the exact architectural justification for exclusions.
@@ -44,6 +44,9 @@ Every key in this table is user-authored and guaranteed to be preserved across b
 | `maganis:g4_snapshot_taken`         | localStorage                          | `src/modules/backup/preUpdateSnapshot.ts`      | `derived`   | `exclude` | Internal migration one-time flag.                                                                                                                              |
 | `maganis:storage_persist_requested` | localStorage                          | `src/lib/storagePersist.ts`                    | `device`    | `exclude` | Browser-specific flag indicating navigator.storage.persist() was requested on this device.                                                                     |
 | `backup.last-export`                | localStorage                          | `src/modules/backup/backupStore.ts`            | `device`    | `exclude` | Timestamp of last backup export performed on this specific device.                                                                                             |
+| `maganis:backup.status`             | localStorage                          | `src/modules/backup/backupEngine.ts`           | `device`    | `exclude` | Device-specific backup execution and read-back verification status record.                                                                                     |
+| `maganis:backup.settings`           | localStorage                          | `src/modules/backup/backupEngine.ts`           | `device`    | `exclude` | Device-specific automatic backup configuration and destination choices.                                                                                        |
+| `maganis:backup.snooze`             | localStorage                          | `src/modules/backup/backupEngine.ts`           | `device`    | `exclude` | Device-specific snooze timestamp for failing backup reminders.                                                                                                 |
 | `idb:maganis_file_sync`             | IndexedDB (db: maganis_file_sync)     | `src/lib/liveFileSync.ts`                      | `device`    | `exclude` | Web-only device directory handle; cannot be transferred across devices or to Android.                                                                          |
 | `sessionStorage (all)*`             | sessionStorage                        | `src/modules/settings/resetService.ts`         | `transient` | `exclude` | Ephemeral browser session memory; cleared on factory reset.                                                                                                    |
 
@@ -67,6 +70,6 @@ During the inventory audit, the following key discrepancies were identified in t
 
 ## 4. Summary Counts
 
-- **Total Inventory Entries**: 30
+- **Total Inventory Entries**: 33
 - **Included in Snapshot**: 18
-- **Excluded from Snapshot**: 12
+- **Excluded from Snapshot**: 15

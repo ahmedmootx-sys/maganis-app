@@ -28,6 +28,7 @@ import {
 import { Ratio } from '../../ui/Ratio'
 import { computeEnergyPlan } from '../nutrition/computeEnergyPlan'
 import { ExerciseThumb } from '../../components/ExerciseThumb'
+import { BackupHealthBanner } from '../backup/BackupHealthBanner.tsx'
 import { resolveSession, formatPrescription } from '../workout/sessionResolver'
 import {
   getOrDeriveSchedule,
@@ -144,7 +145,6 @@ export function Dashboard({
   onOpenAiDesigner,
   onImportProgram,
   onCreateManualProgram,
-  onSaveBackup,
 }: DashboardProps) {
   const weekStartDay = profile?.weekStartDay ?? 6
   const greeting = getGreeting(profile?.name)
@@ -152,38 +152,6 @@ export function Dashboard({
   const sessionsThisWeek = getSessionsThisWeek(recentSessions, weekStartDay)
   const currentWeight = getCurrentWeightDisplay(bodyLog, profile)
   const goalLabel = getGoalLabel(profile)
-
-  const [backupDismissed, setBackupDismissed] = useState<boolean>(() => {
-    try {
-      const raw = appStorage.getItem('maganis:backup_reminder_dismissed')
-      if (!raw) return false
-      const ts = Number(raw)
-      return Number.isFinite(ts) && Date.now() - ts < 3 * 24 * 60 * 60 * 1000
-    } catch (err) {
-      recordStorageError('maganis:backup_reminder_dismissed', err)
-      return false
-    }
-  })
-
-  const lastBackupAt = useMemo<number | null>(() => {
-    try {
-      const raw = appStorage.getItem('backup.last-export')
-      if (!raw) return null
-      const ts = Number(JSON.parse(raw))
-      return Number.isFinite(ts) ? ts : null
-    } catch (err) {
-      recordStorageError('backup.last-export', err)
-      return null
-    }
-  }, [])
-
-  const hasData = Boolean(
-    program || recentSessions.length > 0 || bodyLog.length > 0 || profile,
-  )
-
-  const isBackupOverdue =
-    !lastBackupAt || Date.now() - lastBackupAt > 7 * 24 * 60 * 60 * 1000
-  const showBackupReminder = hasData && !backupDismissed && isBackupOverdue
 
   // Schedule decoupled from program definition
   const schedule = useMemo(
@@ -363,105 +331,8 @@ export function Dashboard({
           }
         />
 
-        {/* Calm Backup Reminder Card */}
-        {showBackupReminder && (
-          <div
-            style={{
-              background: 'var(--color-surface)',
-              border: '1px solid var(--color-divider)',
-              borderRadius: 'var(--radius-md)',
-              padding: '12px 14px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
-                gap: '8px',
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 700,
-                    color: 'var(--color-text)',
-                  }}
-                >
-                  {lastBackupAt
-                    ? `آخر نسخة احتياطية من ${formatArabicDate(new Date(lastBackupAt).toISOString().slice(0, 10))}`
-                    : 'آخر نسخة احتياطية: لم يتم أخذ نسخة بعد'}
-                </div>
-                <div
-                  style={{
-                    fontSize: '12px',
-                    color: 'var(--color-text-2)',
-                    marginTop: '2px',
-                  }}
-                >
-                  احفظ نسخة من بياناتك لضمان عدم ضياع تمارينك وسجلاتك.
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  try {
-                    appStorage.setItem(
-                      'maganis:backup_reminder_dismissed',
-                      String(Date.now()),
-                    )
-                  } catch (err) {
-                    recordStorageError('maganis:backup_reminder_dismissed', err)
-                  }
-                  setBackupDismissed(true)
-                }}
-                aria-label="إغلاق التنبيه"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: 'var(--color-text-2)',
-                  fontSize: '20px',
-                  minWidth: '44px',
-                  minHeight: '44px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '0',
-                  lineHeight: 1,
-                }}
-              >
-                ×
-              </button>
-            </div>
-            <div>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={async () => {
-                  if (onSaveBackup) {
-                    await onSaveBackup()
-                  }
-                  try {
-                    appStorage.setItem(
-                      'maganis:backup_reminder_dismissed',
-                      String(Date.now()),
-                    )
-                  } catch (err) {
-                    recordStorageError('maganis:backup_reminder_dismissed', err)
-                  }
-                  setBackupDismissed(true)
-                }}
-              >
-                احفظ نسخة دلوقتي
-              </Button>
-            </div>
-          </div>
-        )}
+        {/* Backup Health Banner / First-run Nudge */}
+        <BackupHealthBanner recentSessionsCount={recentSessions.length} />
 
         {/* Card تمرين اليوم أو ابدأ برنامجك عند عدم وجود جدول */}
         <Section

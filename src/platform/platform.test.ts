@@ -37,15 +37,14 @@ describe('Platform Runtime and Skeleton (Task N1)', () => {
     await platform.media.deleteMedia('test_media')
   })
 
+  it('platform.files implements native file save and read (Task N3)', async () => {
+    // Web returns web-specific routing notice
+    const webResult = await platform.files.saveFile('test.json', '{}')
+    expect(webResult.success).toBe(false)
+    expect(webResult.error).toContain('Web uses universal saveFile directly')
+  })
+
   it('unimplemented future platform modules return honest unsupported responses', async () => {
-    // Files (N3)
-    const fileResult = await platform.files.saveFile('test.json', '{}')
-    expect(fileResult.success).toBe(false)
-    expect(fileResult.error).toContain('unsupported: Task N3')
-
-    const readResult = await platform.files.readFile('test.json')
-    expect(readResult.error).toContain('unsupported: Task N3')
-
     // Notifications (N4)
     const notifResult = await platform.notifications.schedule({})
     expect(notifResult.supported).toBe(false)

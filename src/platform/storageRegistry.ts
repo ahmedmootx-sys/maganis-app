@@ -370,6 +370,32 @@ export const STORAGE_REGISTRY: readonly StorageRegistryEntry[] = [
     owner: 'src/modules/backup/backupStore.ts',
   },
   {
+    key: 'maganis:backup.status',
+    store: 'localStorage',
+    kind: 'device',
+    snapshot: 'exclude',
+    reason:
+      'Device-specific backup execution and read-back verification status record.',
+    owner: 'src/modules/backup/backupEngine.ts',
+  },
+  {
+    key: 'maganis:backup.settings',
+    store: 'localStorage',
+    kind: 'device',
+    snapshot: 'exclude',
+    reason:
+      'Device-specific automatic backup configuration and destination choices.',
+    owner: 'src/modules/backup/backupEngine.ts',
+  },
+  {
+    key: 'maganis:backup.snooze',
+    store: 'localStorage',
+    kind: 'device',
+    snapshot: 'exclude',
+    reason: 'Device-specific snooze timestamp for failing backup reminders.',
+    owner: 'src/modules/backup/backupEngine.ts',
+  },
+  {
     key: 'idb:maganis_file_sync',
     store: 'indexedDB',
     kind: 'device',
@@ -386,6 +412,7 @@ export const STORAGE_REGISTRY: readonly StorageRegistryEntry[] = [
 export function findRegistryEntry(
   key: string,
 ): StorageRegistryEntry | undefined {
+  if (typeof key !== 'string') return undefined
   for (const entry of STORAGE_REGISTRY) {
     if (entry.key && entry.key === key) {
       return entry

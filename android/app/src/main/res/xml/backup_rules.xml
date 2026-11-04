@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Include ONLY lightweight KV durable files -->
+    <include domain="file" path="maganis/kv" />
+    <!-- Exclude heavy media uploads, snapshots, logs, and caches to stay under Google Cloud quota -->
+    <exclude domain="file" path="maganis/media" />
+    <exclude domain="file" path="maganis/snapshots" />
+    <exclude domain="file" path="maganis/logs" />
+    <exclude domain="root" />
+    <exclude domain="database" />
+    <exclude domain="sharedpref" />
+</full-backup-content>
+

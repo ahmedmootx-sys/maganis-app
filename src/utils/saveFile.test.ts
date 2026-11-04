@@ -1,15 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { saveFile } from './saveFile.ts'
+import { setNativeForTesting } from '../platform/runtime.ts'
+import { webMockImplementation } from '../platform/native/maganisNative.ts'
 
 describe('saveFile capability ladder', () => {
   const originalNavigator = globalThis.navigator
 
   beforeEach(() => {
     vi.restoreAllMocks()
+    setNativeForTesting(null)
   })
 
   afterEach(() => {
     vi.restoreAllMocks()
+    setNativeForTesting(null)
   })
 
   it('Branch 1: Uses showSaveFilePicker when available', async () => {
@@ -82,5 +86,26 @@ describe('saveFile capability ladder', () => {
     expect(res.method).toBe('download')
     expect(res.downloadNoticeNeeded).toBe(true)
     expect(shareMock).not.toHaveBeenCalled()
+  })
+
+  it('Branch 0: Routes natively to MaganisNative.saveAs with downloadNoticeNeeded: false', async () => {
+    setNativeForTesting(true)
+    const saveAsSpy = vi
+      .spyOn(webMockImplementation, 'saveAs')
+      .mockResolvedValue({
+        success: true,
+        bytes: 1024,
+        uri: 'content://doc/1',
+      })
+
+    const blob = new Blob(['{"test":1}'], { type: 'application/json' })
+    const res = await saveFile(blob, 'backup.json', 'application/json')
+
+    expect(res.method).toBe('picker')
+    expect(res.downloadNoticeNeeded).toBe(false)
+    expect(saveAsSpy).toHaveBeenCalledWith({
+      name: 'backup.json',
+      mime: 'application/json',
+    })
   })
 })

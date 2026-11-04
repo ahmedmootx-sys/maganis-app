@@ -23,3 +23,11 @@
 | `@capacitor/app`     | `8.1.2` | MIT     | Native application lifecycle, system back-button handling, and app state events.     |
 | `@capacitor/cli`     | `8.6.0` | MIT     | (Dev) Capacitor CLI for synchronization, config validation, and platform management. |
 | `@capacitor/assets`  | `4.0.0` | MIT     | (Dev) Asset generation tool for adaptive launcher icons and native splash screens.   |
+
+---
+
+## 3. Native Android Libraries (Gradle)
+
+| Dependency                           | Version | Licence    | Purpose                                                                                  |
+| :----------------------------------- | :------ | :--------- | :--------------------------------------------------------------------------------------- |
+| `androidx.documentfile:documentfile` | `1.0.1` | Apache 2.0 | Storage Access Framework (SAF) tree manipulation and document management (L5 & Save As). |

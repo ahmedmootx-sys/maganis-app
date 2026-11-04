@@ -1,0 +1,16 @@
+=== PROBE: N3 BACKUP GUARANTEE PRE-FIX AUDIT ===
+| ID | Description | Status |
+|:---|:------------|:-------|
+| N3.1.streamingJava | MaganisNative.java implements streaming write/read/verify/list/delete/share methods | PASS |
+| N3.1.backupStorageManager | Plain Java BackupStorageManager exists for JVM unit testing | PASS |
+| N3.1.streamingTs | src/platform/native/maganisNative.ts declares streaming and folder methods | PASS |
+| N3.2.backupEngine | src/modules/backup/backupEngine.ts exists with verified pipeline and triggers | PASS |
+| N3.2.registryKeys | storageRegistry.ts contains maganis:backup.status and maganis:backup.settings | PASS |
+| N3.3.backupUiStatus | Settings Backup card renders verified status states and manifest counts | PASS |
+| N3.3.dashboardBanner | Dashboard renders backup status banner (never/stale/failing) instead of weekly timer | PASS |
+| N3.4.autoBackupRules | Android Auto Backup XML rules exist and allowBackup is true | PASS |
+| N3.5.restoreFlow | Restore flow supports preview comparison, safety snapshot rollback, and newer version block | PASS |
+| N3.6.saveFileNative | src/utils/saveFile.ts routes to native Save As / share sheet without web notice | PASS |
+
+Audit complete: 10 passed, 0 failed (total: 10)
+

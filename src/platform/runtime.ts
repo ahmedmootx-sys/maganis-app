@@ -5,7 +5,14 @@ import { Capacitor } from '@capacitor/core'
  * This is the ONLY file in src that imports @capacitor/core for platform detection.
  */
 
+let nativeOverrideForTesting: boolean | null = null
+
+export function setNativeForTesting(val: boolean | null): void {
+  nativeOverrideForTesting = val
+}
+
 export function isNative(): boolean {
+  if (nativeOverrideForTesting !== null) return nativeOverrideForTesting
   return Capacitor.isNativePlatform()
 }
 

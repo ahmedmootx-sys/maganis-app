@@ -202,17 +202,53 @@ function createLivePlatform(): Platform {
       },
     },
 
-    // Task N3 stand-in: typed honest "unsupported"
+    // Task N3: Native Backup and Durable Files
     files: {
-      async saveFile(): Promise<{ success: boolean; error: string }> {
-        return {
-          success: false,
-          error: 'unsupported: Task N3 backup files not implemented yet',
+      async saveFile(
+        filename: string,
+        data: Blob | string,
+      ): Promise<{ success: boolean; error?: string }> {
+        if (!isNative()) {
+          return {
+            success: false,
+            error: 'Web uses universal saveFile directly',
+          }
+        }
+        try {
+          const res = await MaganisNative.saveAs({
+            name: filename,
+            mime:
+              typeof data === 'string'
+                ? 'application/json'
+                : data.type || 'application/octet-stream',
+          })
+          return { success: res.success }
+        } catch (err) {
+          return { success: false, error: String(err) }
         }
       },
-      async readFile(): Promise<{ error: string }> {
-        return {
-          error: 'unsupported: Task N3 backup files not implemented yet',
+      async readFile(
+        filename: string,
+      ): Promise<{ data?: Blob | string; error?: string }> {
+        try {
+          const res = await MaganisNative.openRead({ name: filename })
+          let content = ''
+          let eof = false
+          while (!eof) {
+            const chunk = await MaganisNative.readChunk({ handle: res.handle })
+            if (chunk.chunkBase64) {
+              try {
+                content += atob(chunk.chunkBase64)
+              } catch {
+                content += chunk.chunkBase64
+              }
+            }
+            eof = chunk.eof
+          }
+          await MaganisNative.closeRead({ handle: res.handle })
+          return { data: content }
+        } catch (err) {
+          return { error: String(err) }
         }
       },
     },
