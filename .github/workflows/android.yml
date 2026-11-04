@@ -75,14 +75,14 @@ jobs:
       - name: Coverage ratchet
         run: node scripts/check-coverage-ratchet.mjs
 
+      - name: Web production build
+        run: npm run build
+
       - name: Gate - Check bundle ratchet
         run: node scripts/check-bundle-ratchet.mjs
 
       - name: Gate - Network privacy and zero telemetry
         run: node scripts/audit-network-privacy.mjs
-
-      - name: Web production build
-        run: npm run build
 
       - name: Gate - Raw tokens
         run: node scripts/gate-raw-tokens.mjs
