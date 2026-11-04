@@ -1,5 +1,5 @@
 ﻿
-[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/power tech/Downloads/maganis-project[39m
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90m.[39m
 
 [90mstdout[2m | src/platform/logRedaction.test.ts[2m > [22m[2mPrivacy-Safe Logger & Synthetic Persona Redaction (Task N5.2)[2m > [22m[2mguarantees ZERO leakage of synthetic persona data across log outputs
 [22m[39m[2026-11-04T13:24:44.341Z] [INFO] [PROFILE] [LOAD] Loaded profile for user "[REDACTED_TEXT]" id=[REDACTED_TOKEN]
@@ -11,4 +11,5 @@
 [2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
 [2m   Start at [22m 15:24:41
 [2m   Duration [22m 2.48s[2m (transform 111ms, setup 320ms, collect 105ms, tests 11ms, environment 1.47s, prepare 168ms)[22m
+
 

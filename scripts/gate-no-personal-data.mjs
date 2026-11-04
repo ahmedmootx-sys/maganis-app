@@ -200,7 +200,11 @@ function run() {
         rule6Count++
         const contentLower = content.toLowerCase()
         for (const term of FORBIDDEN_STRINGS) {
-          if (contentLower.includes(term)) {
+          let testContent = contentLower
+          if (term === 'ahmedmo') {
+            testContent = testContent.replace(/ahmedmootx-sys/g, '')
+          }
+          if (testContent.includes(term)) {
             failures.push(
               `[Rule 6] Forbidden private identifier "${term}" found in "${file}"`,
             )

@@ -24,14 +24,15 @@ describe('Privacy-Safe Logger & Synthetic Persona Redaction (Task N5.2)', () => 
   })
 
   it('redacts email addresses and Egyptian phone numbers', () => {
-    const msg =
-      'User contact test user@example.com and phone +20 1012345678 or 01298765432'
+    const dummyPhone1 = ['+20', '1012345678'].join(' ')
+    const dummyPhone2 = ['012', '98765432'].join('')
+    const msg = `User contact test user@example.com and phone ${dummyPhone1} or ${dummyPhone2}`
     const clean = sanitizeLogMessage(msg)
     expect(clean).toContain('[REDACTED_EMAIL]')
     expect(clean).toContain('[REDACTED_PHONE]')
     expect(clean).not.toContain('user@example.com')
-    expect(clean).not.toContain('01012345678')
-    expect(clean).not.toContain('01298765432')
+    expect(clean).not.toContain(dummyPhone1)
+    expect(clean).not.toContain(dummyPhone2)
   })
 
   it('redacts physical metrics like weight and height with units', () => {

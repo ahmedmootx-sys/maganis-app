@@ -243,23 +243,20 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Decode Release Keystore & Verify Environment
-        id: prepare-keystore
+      - name: Check Keystore Configuration
+        id: check-keystore
         run: |
-          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
-            echo "::error::Release secret ANDROID_KEYSTORE_BASE64 is missing! Please configure it per docs/ANDROID-RELEASE.ar.md."
-            exit 1
-          fi
-          if [ -z "${{ vars.ANDROID_CERT_SHA256 }}" ]; then
-            echo "::error::Repository variable ANDROID_CERT_SHA256 is missing! Please configure it per docs/ANDROID-RELEASE.ar.md."
-            exit 1
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ] && [ -n "${{ vars.ANDROID_CERT_SHA256 }}" ]; then
+            echo "has_release_secrets=true" >> $GITHUB_OUTPUT
+            KEYSTORE_FILE="$RUNNER_TEMP/release.keystore"
+            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$KEYSTORE_FILE"
+            echo "KEYSTORE_PATH=$KEYSTORE_FILE" >> $GITHUB_ENV
+          else
+            echo "has_release_secrets=false" >> $GITHUB_OUTPUT
+            echo "::warning::Release secrets missing. Packaging Debug APK for GitHub Releases."
           fi
 
-          KEYSTORE_FILE="$RUNNER_TEMP/release.keystore"
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$KEYSTORE_FILE"
-          echo "KEYSTORE_PATH=$KEYSTORE_FILE" >> $GITHUB_ENV
-
-      - name: Assemble Release APK
+      - name: Assemble APK
         env:
           ANDROID_KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -269,9 +266,14 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleRelease
+          if [ "${{ steps.check-keystore.outputs.has_release_secrets }}" = "true" ]; then
+            ./gradlew assembleRelease
+          else
+            ./gradlew assembleDebug
+          fi
 
       - name: Verify Signing Identity and Integrity
+        if: steps.check-keystore.outputs.has_release_secrets == 'true'
         run: |
           RELEASE_APK="android/app/build/outputs/apk/release/app-release.apk"
           if [ ! -f "$RELEASE_APK" ]; then
@@ -324,8 +326,13 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           VERSION="${TAG#v}"
           VERSION_CODE="${{ github.run_number }}"
-          OUT_APK="maganis-${VERSION}-${VERSION_CODE}.apk"
-          cp android/app/build/outputs/apk/release/app-release.apk "$OUT_APK"
+          if [ "${{ steps.check-keystore.outputs.has_release_secrets }}" = "true" ]; then
+            OUT_APK="maganis-${VERSION}-${VERSION_CODE}.apk"
+            cp android/app/build/outputs/apk/release/app-release.apk "$OUT_APK"
+          else
+            OUT_APK="maganis-${VERSION}-debug.apk"
+            cp android/app/build/outputs/apk/debug/app-debug.apk "$OUT_APK"
+          fi
           sha256sum "$OUT_APK" > "${OUT_APK}.sha256"
           sha256sum "$OUT_APK" > "SHA256SUMS"
           echo "apk_name=$OUT_APK" >> $GITHUB_OUTPUT
@@ -336,12 +343,24 @@ jobs:
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
           APK_NAME="${{ steps.package.outputs.apk_name }}"
-          gh release create "$TAG" \
-            "$APK_NAME" \
-            "${APK_NAME}.sha256" \
-            "SHA256SUMS" \
-            --title "Maganis $TAG" \
-            --notes-file "$RUNNER_TEMP/release_notes.md"
+          if [ "${{ steps.check-keystore.outputs.has_release_secrets }}" != "true" ]; then
+            TITLE="Maganis $TAG (Debug Build)"
+            gh release create "$TAG" \
+              "$APK_NAME" \
+              "${APK_NAME}.sha256" \
+              "SHA256SUMS" \
+              --title "$TITLE" \
+              --notes-file "$RUNNER_TEMP/release_notes.md" \
+              --prerelease
+          else
+            TITLE="Maganis $TAG"
+            gh release create "$TAG" \
+              "$APK_NAME" \
+              "${APK_NAME}.sha256" \
+              "SHA256SUMS" \
+              --title "$TITLE" \
+              --notes-file "$RUNNER_TEMP/release_notes.md"
+          fi
 
       - name: Secure Cleanup of Keystore
         if: always()

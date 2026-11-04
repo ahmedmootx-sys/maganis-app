@@ -1,5 +1,5 @@
 ﻿
-[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/power tech/Downloads/maganis-project[39m
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90m.[39m
 
 [90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2mdebug build: blocks update check with Arabic message
 [22m[39m[2026-11-04T13:56:11.243Z] [INFO] [UPDATE] [CHECK_START] Checking updates for current=0.1.0-debug channel=debug
@@ -31,4 +31,5 @@
 [2m      Tests [22m [1m[32m8 passed[39m[22m[90m (8)[39m
 [2m   Start at [22m 15:56:08
 [2m   Duration [22m 2.76s[2m (transform 150ms, setup 355ms, collect 325ms, tests 23ms, environment 1.47s, prepare 169ms)[22m
+
 
