@@ -106,15 +106,14 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace 2>&1 | tee ../gradle-build.log
-
-      - name: Report Gradle Failure
-        if: failure()
-        run: |
-          echo "### Gradle Build Log" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -n 100 gradle-build.log >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          if ! ./gradlew assembleDebug --stacktrace > ../gradle-build.log 2>&1; then
+            echo "### Gradle Build Failure" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -n 80 ../gradle-build.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat ../gradle-build.log
+            exit 1
+          fi
 
       - name: Prepare Debug Artifact
         run: |
