@@ -76,3 +76,4 @@ Before bumping versions or tagging:
 - [ ] Confirm in-app Version badge shows `v0.x.y`.
 - [ ] Confirm all previously saved data, workouts, and settings are intact.
 - [ ] Check Diagnostics sheet: storage health is `ok`, no crash logs generated.
+
