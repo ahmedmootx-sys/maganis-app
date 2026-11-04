@@ -1,0 +1,38 @@
+﻿=== WEB BUNDLE SIZE RATCHET AUDIT (Task N5.6) ===
+
+Examined 27 JavaScript chunks:
+  - index-0qTFT4Lk.js                          631.26 kB |   170.29 kB gzip [INITIAL]
+  - exercise-catalog-BF_ZLm8u.js               487.39 kB |    27.71 kB gzip [INITIAL]
+  - vendor-react-DQC8vhiG.js                   187.98 kB |    58.93 kB gzip [INITIAL]
+  - catalog-data-C6V9Crzb.js                   108.41 kB |    17.68 kB gzip
+  - NutritionModule-Bw62O3OH.js                 91.67 kB |    20.09 kB gzip
+  - WeeklyPlanView-BreJxaOc.js                  82.52 kB |    18.74 kB gzip
+  - SettingsScreen-Zx7VS6z4.js                  66.72 kB |    16.83 kB gzip
+  - ExerciseDetailView-DPw6uETK.js              60.62 kB |    14.97 kB gzip
+  - AiDesignerModal-DkRVIEY6.js                 39.01 kB |    13.52 kB gzip
+  - ExerciseEditSheet-ET1zDVVg.js               37.76 kB |     8.94 kB gzip
+  - ProgressScreen-BETVCwfY.js                  27.56 kB |     7.19 kB gzip
+  - Styleguide-DtdS_oe6.js                      14.57 kB |     4.83 kB gzip
+  - ExerciseLibraryModal-Cp6D9SFz.js            13.04 kB |     4.26 kB gzip
+  - CardioRunner-BfOcz0-P.js                    11.44 kB |     3.49 kB gzip
+  - CustomScheduleModal-BUrimWOn.js             10.17 kB |     3.62 kB gzip
+  - ComponentGallery-Dd05zUQa.js                10.09 kB |     3.20 kB gzip
+  - Select-KSq3GWqp.js                           8.09 kB |     2.85 kB gzip
+  - ProgramVaultModal-CVkwAKIm.js                5.71 kB |     2.12 kB gzip
+  - programGenerator-SLf_dKGZ.js                 5.56 kB |     2.27 kB gzip
+  - web-_KG3p0WJ.js                              4.51 kB |     1.37 kB gzip
+  - MuscleAtlasDebug-DK0rAwM5.js                 3.40 kB |     1.38 kB gzip
+  - constraints-D0gpXKLh.js                      2.41 kB |     0.97 kB gzip
+  - Chips-CHGjOW7h.js                            1.54 kB |     0.70 kB gzip
+  - web-SawmUX8p.js                              0.95 kB |     0.49 kB gzip
+  - web-DQ2d-h-q.js                              0.89 kB |     0.43 kB gzip
+  - Toggle-DiE7F1pR.js                           0.75 kB |     0.45 kB gzip
+  - Callout-BSndo2LX.js                          0.65 kB |     0.34 kB gzip
+
+--- MEASURED INITIAL BUNDLE ---
+  Initial Raw:   1306.63 kB (1337987 bytes) [Baseline: 1416.02 kB]
+  Initial Gzip:  256.93 kB (263096 bytes) [Baseline: 271.97 kB]
+  Raw Delta:     -7.73% (Cap: +5%)
+  Gzip Delta:    -5.53% (Cap: +5%)
+
+Γ£à Web bundle size ratchet PASSED: Bundle growth is strictly within the +5% budget.

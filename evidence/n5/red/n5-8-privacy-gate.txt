@@ -1,0 +1,12 @@
+﻿=== GATE: NO PERSONAL DATA & PRIVACY CHECK (Task H4.7) ===
+
+[Rule 1] Files checked for banned name patterns: 1469
+[Rule 2] JSON files inspected for medical notes: 48
+[Rule 3] Text files scanned for absolute paths: 682
+[Rule 4] Text files scanned for email addresses: 681
+[Rule 5] Text files scanned for phone numbers: 682
+[Rule 6] Text files scanned for private terms: 682
+[Rule 7] Files checked for keystore and credential leaks: 1469
+System.Management.Automation.RemoteException
+Γ¥î Gate failed with 1 violation(s):
+  - [Rule 7] Disallowed plaintext secret/credential pattern found in "dummy-planted-keystore.keystore.properties" (Security S1)

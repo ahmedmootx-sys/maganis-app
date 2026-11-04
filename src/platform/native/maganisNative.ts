@@ -158,6 +158,37 @@ export interface MaganisNativePlugin {
   keepScreenOn(options: {
     enabled: boolean
   }): Promise<{ success: boolean; enabled: boolean }>
+
+  // Task N5: Logging, Diagnostics & Safe Mode
+  appendLog(options: { line: string }): Promise<void>
+  getLogs(options?: {
+    limit?: number
+  }): Promise<{ lines: string[]; totalLines: number }>
+  clearLogs(): Promise<{ success: boolean }>
+  getNativeCrashLogs(): Promise<{
+    crashes: Array<{ filename: string; timestamp: number; content: string }>
+  }>
+  getExitReasons(): Promise<{
+    reasons: Array<{
+      reasonCode: number
+      reasonAr: string
+      timestamp: number
+      importance: number
+      pssKb: number
+      rssKb: number
+      description: string
+    }>
+    supported: boolean
+  }>
+  isSafeMode(): Promise<{ safeMode: boolean; launchCount: number }>
+  resetCrashLoop(): Promise<{ success: boolean }>
+  clearWebViewCache(): Promise<{ success: boolean }>
+  exportRawSnapshot(): Promise<{
+    success: boolean
+    filePath: string
+    fileName: string
+    fileSizeBytes: number
+  }>
 }
 
 // In-memory web mock store for tests running without Capacitor
@@ -511,6 +542,104 @@ export const webMockImplementation: MaganisNativePlugin = {
     mockScreenKeepOn = options.enabled
     return { success: true, enabled: options.enabled }
   },
+
+  // Task N5 Mocks
+  async appendLog(options: { line: string }) {
+    mockLogBuffer.push(options.line)
+    if (mockLogBuffer.length > 500) {
+      mockLogBuffer.shift()
+    }
+  },
+  async getLogs(options?: { limit?: number }) {
+    const limit = options?.limit ?? 200
+    const start = Math.max(0, mockLogBuffer.length - limit)
+    return {
+      lines: mockLogBuffer.slice(start),
+      totalLines: mockLogBuffer.length,
+    }
+  },
+  async clearLogs() {
+    mockLogBuffer = []
+    mockNativeCrashes = []
+    return { success: true }
+  },
+  async getNativeCrashLogs() {
+    return { crashes: [...mockNativeCrashes] }
+  },
+  async getExitReasons() {
+    return {
+      reasons: [...mockExitReasons],
+      supported: true,
+    }
+  },
+  async isSafeMode() {
+    return {
+      safeMode: mockSafeModeState,
+      launchCount: mockLaunchCount,
+    }
+  },
+  async resetCrashLoop() {
+    mockSafeModeState = false
+    mockLaunchCount = 0
+    return { success: true }
+  },
+  async clearWebViewCache() {
+    return { success: true }
+  },
+  async exportRawSnapshot() {
+    return {
+      success: true,
+      filePath: '/mock/snapshots/maganis-raw-export.json',
+      fileName: 'maganis-raw-export.json',
+      fileSizeBytes: 4096,
+    }
+  },
+}
+
+let mockLogBuffer: string[] = []
+let mockNativeCrashes: Array<{
+  filename: string
+  timestamp: number
+  content: string
+}> = []
+let mockExitReasons: Array<{
+  reasonCode: number
+  reasonAr: string
+  timestamp: number
+  importance: number
+  pssKb: number
+  rssKb: number
+  description: string
+}> = []
+let mockSafeModeState = false
+let mockLaunchCount = 0
+
+export function setMockSafeModeForTesting(
+  safeMode: boolean,
+  launchCount = 3,
+): void {
+  mockSafeModeState = safeMode
+  mockLaunchCount = launchCount
+}
+
+export function setMockCrashLogsForTesting(
+  crashes: Array<{ filename: string; timestamp: number; content: string }>,
+): void {
+  mockNativeCrashes = crashes
+}
+
+export function setMockExitReasonsForTesting(
+  reasons: Array<{
+    reasonCode: number
+    reasonAr: string
+    timestamp: number
+    importance: number
+    pssKb: number
+    rssKb: number
+    description: string
+  }>,
+): void {
+  mockExitReasons = reasons
 }
 
 let mockPowerIgnoring = false

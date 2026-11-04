@@ -1,12 +1,15 @@
 package app.maganis.coach;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ApplicationExitInfo;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.UriPermission;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -35,13 +38,17 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1356,5 +1363,309 @@ public class MaganisNative extends Plugin {
         ret.put("success", true);
         ret.put("enabled", enabled);
         call.resolve(ret);
+    }
+
+    // =========================================================================
+    // TASK N5: LOGS, DIAGNOSTICS, SAFE MODE & STABILITY
+    // =========================================================================
+
+    private static final long LOG_ROTATION_THRESHOLD_BYTES = 256 * 1024L; // 256 KB per log file
+    private final Object logLock = new Object();
+
+    @PluginMethod
+    public void appendLog(PluginCall call) {
+        String line = call.getString("line");
+        if (line == null) {
+            call.resolve();
+            return;
+        }
+
+        writeExecutor.execute(() -> {
+            synchronized (logLock) {
+                try {
+                    File logsDir = new File(getContext().getFilesDir(), "maganis/logs");
+                    if (!logsDir.exists()) logsDir.mkdirs();
+
+                    File currentLog = new File(logsDir, "app.log");
+                    if (currentLog.exists() && currentLog.length() >= LOG_ROTATION_THRESHOLD_BYTES) {
+                        File rotatedLog = new File(logsDir, "app.1.log");
+                        if (rotatedLog.exists()) rotatedLog.delete();
+                        currentLog.renameTo(rotatedLog);
+                        currentLog = new File(logsDir, "app.log");
+                    }
+
+                    try (FileWriter fw = new FileWriter(currentLog, true)) {
+                        fw.write(line + "\n");
+                    }
+                } catch (Exception e) {
+                    Log.e("MaganisNative", "Failed to append log", e);
+                }
+            }
+        });
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void getLogs(PluginCall call) {
+        int limit = call.getInt("limit", 200);
+        writeExecutor.execute(() -> {
+            synchronized (logLock) {
+                try {
+                    File logsDir = new File(getContext().getFilesDir(), "maganis/logs");
+                    List<String> allLines = new ArrayList<>();
+
+                    File rotatedLog = new File(logsDir, "app.1.log");
+                    if (rotatedLog.exists()) {
+                        readLinesFromFile(rotatedLog, allLines);
+                    }
+
+                    File currentLog = new File(logsDir, "app.log");
+                    if (currentLog.exists()) {
+                        readLinesFromFile(currentLog, allLines);
+                    }
+
+                    int total = allLines.size();
+                    int start = Math.max(0, total - limit);
+                    JSArray arr = new JSArray();
+                    for (int i = start; i < total; i++) {
+                        arr.put(allLines.get(i));
+                    }
+
+                    JSObject ret = new JSObject();
+                    ret.put("lines", arr);
+                    ret.put("totalLines", total);
+                    call.resolve(ret);
+                } catch (Exception e) {
+                    call.reject("Failed to read logs: " + e.getMessage(), e);
+                }
+            }
+        });
+    }
+
+    private void readLinesFromFile(File file, List<String> target) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String l;
+            while ((l = br.readLine()) != null) {
+                target.add(l);
+            }
+        } catch (Exception ignored) {}
+    }
+
+    @PluginMethod
+    public void clearLogs(PluginCall call) {
+        writeExecutor.execute(() -> {
+            synchronized (logLock) {
+                try {
+                    File logsDir = new File(getContext().getFilesDir(), "maganis/logs");
+                    if (logsDir.exists() && logsDir.isDirectory()) {
+                        File[] files = logsDir.listFiles();
+                        if (files != null) {
+                            for (File f : files) {
+                                f.delete();
+                            }
+                        }
+                    }
+                    JSObject ret = new JSObject();
+                    ret.put("success", true);
+                    call.resolve(ret);
+                } catch (Exception e) {
+                    call.reject("Failed to clear logs: " + e.getMessage(), e);
+                }
+            }
+        });
+    }
+
+    @PluginMethod
+    public void getNativeCrashLogs(PluginCall call) {
+        writeExecutor.execute(() -> {
+            try {
+                File logsDir = new File(getContext().getFilesDir(), "maganis/logs");
+                JSArray crashes = new JSArray();
+                if (logsDir.exists() && logsDir.isDirectory()) {
+                    File[] crashFiles = logsDir.listFiles((dir, name) -> name.startsWith("native-crash-") && name.endsWith(".txt"));
+                    if (crashFiles != null) {
+                        Arrays.sort(crashFiles, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
+                        for (File f : crashFiles) {
+                            JSObject crashObj = new JSObject();
+                            crashObj.put("filename", f.getName());
+                            crashObj.put("timestamp", f.lastModified());
+                            StringBuilder sb = new StringBuilder();
+                            try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+                                String line;
+                                while ((line = br.readLine()) != null) {
+                                    sb.append(line).append("\n");
+                                }
+                            }
+                            crashObj.put("content", sb.toString());
+                            crashes.put(crashObj);
+                        }
+                    }
+                }
+                JSObject ret = new JSObject();
+                ret.put("crashes", crashes);
+                call.resolve(ret);
+            } catch (Exception e) {
+                call.reject("Failed to get native crash logs: " + e.getMessage(), e);
+            }
+        });
+    }
+
+    @PluginMethod
+    public void getExitReasons(PluginCall call) {
+        JSArray arr = new JSArray();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                ActivityManager am = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+                if (am != null) {
+                    List<ApplicationExitInfo> exitInfos = am.getHistoricalProcessExitReasons(getContext().getPackageName(), 0, 5);
+                    for (ApplicationExitInfo info : exitInfos) {
+                        JSObject obj = new JSObject();
+                        int reason = info.getReason();
+                        obj.put("reasonCode", reason);
+                        obj.put("timestamp", info.getTimestamp());
+                        obj.put("importance", info.getImportance());
+                        obj.put("pssKb", info.getPss());
+                        obj.put("rssKb", info.getRss());
+                        obj.put("description", info.getDescription() != null ? info.getDescription() : "");
+
+                        String reasonAr = "إيقاف من نظام أندرويد (System Stop)";
+                        switch (reason) {
+                            case ApplicationExitInfo.REASON_CRASH:
+                            case ApplicationExitInfo.REASON_CRASH_NATIVE:
+                                reasonAr = "انهيار برمجي (Crash)";
+                                break;
+                            case ApplicationExitInfo.REASON_ANR:
+                                reasonAr = "توقف عن الاستجابة (ANR)";
+                                break;
+                            case ApplicationExitInfo.REASON_LOW_MEMORY:
+                                reasonAr = "ذاكرة الجهاز ممتلئة (Low Memory)";
+                                break;
+                            case ApplicationExitInfo.REASON_USER_REQUESTED:
+                            case ApplicationExitInfo.REASON_USER_STOPPED:
+                                reasonAr = "إغلاق بواسطة المستخدم (User Stop)";
+                                break;
+                            case ApplicationExitInfo.REASON_SIGNALED:
+                                reasonAr = "إشارة إيقاف من النظام (Signaled)";
+                                break;
+                            case ApplicationExitInfo.REASON_DEPENDENCY_DIED:
+                                reasonAr = "توقف خدمة تابعة (Dependency Died)";
+                                break;
+                            case ApplicationExitInfo.REASON_EXCESSIVE_RESOURCE_USAGE:
+                                reasonAr = "استهلاك مفرط للموارد (Excessive Resources)";
+                                break;
+                        }
+                        obj.put("reasonAr", reasonAr);
+                        arr.put(obj);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("MaganisNative", "Failed to retrieve historical exit reasons", e);
+            }
+        }
+        JSObject ret = new JSObject();
+        ret.put("reasons", arr);
+        ret.put("supported", Build.VERSION.SDK_INT >= Build.VERSION_CODES.R);
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void isSafeMode(PluginCall call) {
+        SharedPreferences prefs = getContext().getSharedPreferences(MainActivity.PREFS_CRASH, Context.MODE_PRIVATE);
+        boolean isSafe = prefs.getBoolean(MainActivity.KEY_SAFE_MODE, false);
+        String raw = prefs.getString(MainActivity.KEY_LAUNCH_TIMESTAMPS, "");
+        int launchCount = raw.isEmpty() ? 0 : raw.split(",").length;
+
+        JSObject ret = new JSObject();
+        ret.put("safeMode", isSafe);
+        ret.put("launchCount", launchCount);
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void resetCrashLoop(PluginCall call) {
+        SharedPreferences prefs = getContext().getSharedPreferences(MainActivity.PREFS_CRASH, Context.MODE_PRIVATE);
+        prefs.edit()
+            .remove(MainActivity.KEY_LAUNCH_TIMESTAMPS)
+            .putBoolean(MainActivity.KEY_SAFE_MODE, false)
+            .apply();
+
+        JSObject ret = new JSObject();
+        ret.put("success", true);
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void clearWebViewCache(PluginCall call) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
+                try {
+                    if (getBridge() != null && getBridge().getWebView() != null) {
+                        getBridge().getWebView().clearCache(true);
+                    }
+                    JSObject ret = new JSObject();
+                    ret.put("success", true);
+                    call.resolve(ret);
+                } catch (Exception e) {
+                    call.reject("Failed to clear webview cache: " + e.getMessage(), e);
+                }
+            });
+        } else {
+            JSObject ret = new JSObject();
+            ret.put("success", true);
+            call.resolve(ret);
+        }
+    }
+
+    @PluginMethod
+    public void exportRawSnapshot(PluginCall call) {
+        writeExecutor.execute(() -> {
+            try {
+                Context ctx = getContext();
+                File snapshotsDir = new File(ctx.getFilesDir(), "maganis/snapshots");
+                if (!snapshotsDir.exists()) snapshotsDir.mkdirs();
+
+                long epoch = System.currentTimeMillis();
+                File dumpFile = new File(snapshotsDir, "maganis-raw-export-" + epoch + ".json");
+
+                // Read all keys directly from kvStore without app code
+                List<String> keys = kvStore.listAllKeys();
+                JSObject kvMap = new JSObject();
+                for (String key : keys) {
+                    String val = kvStore.read(key);
+                    if (val != null) {
+                        try {
+                            kvMap.put(key, new JSObject(val));
+                        } catch (Exception notObj) {
+                            try {
+                                kvMap.put(key, new JSArray(val));
+                            } catch (Exception notArr) {
+                                kvMap.put(key, val);
+                            }
+                        }
+                    }
+                }
+
+                JSObject root = new JSObject();
+                root.put("format", "maganis-snapshot-raw-dump");
+                root.put("version", 2);
+                root.put("exportedAt", epoch);
+                root.put("source", "native-safe-mode-dump");
+                root.put("kv", kvMap);
+
+                try (FileWriter fw = new FileWriter(dumpFile)) {
+                    fw.write(root.toString());
+                }
+
+                JSObject ret = new JSObject();
+                ret.put("success", true);
+                ret.put("filePath", dumpFile.getAbsolutePath());
+                ret.put("fileName", dumpFile.getName());
+                ret.put("fileSizeBytes", dumpFile.length());
+                call.resolve(ret);
+            } catch (Exception e) {
+                call.reject("Failed to export raw snapshot: " + e.getMessage(), e);
+            }
+        });
     }
 }

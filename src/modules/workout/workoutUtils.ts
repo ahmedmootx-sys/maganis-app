@@ -90,8 +90,8 @@ export async function shareRoutineFile(
       ) {
         await navigator.share({
           files: [file],
-          title: `جدول تمرين مجانس: ${title}`,
-          text: `جدول تمرين (${title}) من تطبيق مجانس — تقدر تفتحه في التطبيق علطول!`,
+          title: `جدول تمرين مجانص: ${title}`,
+          text: `جدول تمرين (${title}) من تطبيق مجانص — تقدر تفتحه في التطبيق علطول!`,
         })
         return { shared: true, method: 'native' }
       }

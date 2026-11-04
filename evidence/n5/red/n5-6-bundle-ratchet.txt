@@ -1,0 +1,4 @@
+=== PROBE N5.6: BUNDLE RATCHET & PERF BASELINE ===
+scripts/check-bundle-ratchet.mjs exists: false
+docs/perf-baseline-native.json exists: false
+STATUS: RED (Fails N5.6 requirements)

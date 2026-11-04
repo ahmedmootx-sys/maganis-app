@@ -43,3 +43,14 @@
 3. **Exact Alarms**: Android 12+ (API 31+) restricts `SCHEDULE_EXACT_ALARM`. Required only for `rest_end` and `cardio_end`. If revoked or not permitted, timers automatically fall back to inexact alarms (`isExactNotification: true, isExactMandatory: false`) with user-visible UI warning.
 4. **Doze Mode & Allow-While-Idle Rate Limits**: Alarms firing while device is in deep Doze use `allowWhileIdle: true`. Android limits `setExactAndAllowWhileIdle` to approximately 1 alarm every 9 minutes per app in Doze. This is completely safe for workout rest timers (1 to 3 minutes duration, scheduled once per rest during active sessions when screen may briefly lock).
 5. **Reboot & Update Recovery**: Android OS wipes pending `AlarmManager` alarms on device reboot, app update (`MY_PACKAGE_REPLACED`), time changes, and time-zone shifts. These are re-armed via `AlarmRestoreReceiver` reading persisted atomic schedule.
+
+---
+
+## 5. Stability, Recovery & Release Dependencies (Task N5)
+
+- **New NPM Dependencies**: 0 (zero new packages; all capabilities implemented via existing packages and standard platform APIs).
+- **Native Android APIs Leveraged**:
+  - `android.app.ApplicationExitInfo` (Android 11+ / API 30+): Real OS exit reasons (ANR, low memory killer, crash, user request) queried at startup and surfaced in Egyptian Arabic diagnostics.
+  - `android.webkit.WebViewClient.onRenderProcessGone` (Android 8.0+ / API 26+): Native hook to intercept renderer process crashes and recover Activity state without host application termination.
+  - `java.lang.Thread.UncaughtExceptionHandler`: Native JVM top-level crash hook persisting structured crash reports to `maganis/logs/native-crash-<timestamp>.txt`.
+- **Zero Third-Party SDKs**: No analytics (GA, Firebase Analytics, Mixpanel), no remote telemetry (Sentry, Datadog), no ad networks. All diagnostic logs remain strictly local on-device with explicit user-initiated sharing.

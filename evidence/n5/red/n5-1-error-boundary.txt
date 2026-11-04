@@ -1,0 +1,7 @@
+=== PROBE N5.1: ERROR BOUNDARY & RECOVERY SCREEN ===
+src/platform/ErrorBoundary.tsx exists: false
+Top-level React ErrorBoundary in App.tsx: MISSING
+Per-route ErrorBoundary in App.tsx: MISSING
+Loop-detection (2 hits in 10s): MISSING
+Global window.onerror & unhandledrejection logging: MISSING
+STATUS: RED (Fails N5.1 requirements)

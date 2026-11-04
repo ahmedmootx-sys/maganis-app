@@ -5,17 +5,18 @@ All notable changes to Maganis will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.0] - 2026-11-04
 
-### Added
+### ar
 
-- **Capacitor 8 Native Android Shell (Task N1):**
-  - Offline-first Android native application shell wrapping Vite + React + TypeScript web app.
-  - Pinned Capacitor 8 suite (`@capacitor/core`, `@capacitor/android`, `@capacitor/app`, `@capacitor/cli`, `@capacitor/assets`).
-  - Distinct application variants: Debug (`app.maganis.coach.debug` / «مجانس (تجريبي)») and Release (`app.maganis.coach` / «مجانس»).
-  - Native platform layer `src/platform/` with runtime detection, platform info, and LIFO back-button stack.
-  - Native Capacitor plugin `MaganisNative` providing device model, SDK version, and signing certificate fingerprint.
-  - Adaptive launcher icons and dark/light splash screens generated from brand assets.
-  - Edge-to-edge system bars integration respecting dynamic navigation and status bar themes.
-  - GitHub Actions workflow `.github/workflows/android.yml` for automated debug APK artifacts, emulator testing, and release APK publishing.
-  - Owner keystore generation tooling (`scripts/android-keystore.mjs`) and Arabic owner release guide (`docs/ANDROID-RELEASE.ar.md`).
+- إطلاق النسخة الأولى من تطبيق «مجانص» لأندرويد مع حفظ بيانات دائم ومحمي.
+- نظام تنبيهات موثوق لانتهاء فترات الراحة وجلسات التمرين بدون استهلاك بطارية.
+- وضع آمن وحماية كاملة ضد تكرار الأعطال وفقدان البيانات.
+
+### en
+
+- Initial release of Maganis native Android shell (Capacitor 8).
+- Atomic DurableFileStore with SHA-256 validation and .bak rotation (Task N2).
+- Multi-layer streaming backup engine and verified restore (Task N3).
+- Monotonic timestamp timers and rolling-window notification scheduler (Task N4).
+- React error boundaries, safe mode crash-loop protection, and release gating (Task N5).

@@ -1,0 +1,7 @@
+=== PROBE N5.2: PRIVACY-SAFE LOGGER & DIAGNOSTICS ===
+src/platform/logger.ts exists: false
+Rotating ring-buffer file log under maganis/logs/: MISSING
+Strict redaction helper: MISSING
+Native crash handler in MainActivity: MISSING
+ApplicationExitInfo bridge: MISSING
+STATUS: RED (Fails N5.2 requirements)

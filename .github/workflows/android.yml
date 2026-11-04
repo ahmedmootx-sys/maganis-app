@@ -75,6 +75,12 @@ jobs:
       - name: Coverage ratchet
         run: node scripts/check-coverage-ratchet.mjs
 
+      - name: Gate - Check bundle ratchet
+        run: node scripts/check-bundle-ratchet.mjs
+
+      - name: Gate - Network privacy and zero telemetry
+        run: node scripts/audit-network-privacy.mjs
+
       - name: Web production build
         run: npm run build
 
@@ -121,14 +127,25 @@ jobs:
           path: dist-apk/*.apk
           retention-days: 14
 
-  emulator-smoke:
-    name: Android 34 Emulator Smoke Test
+  emulator-e2e:
+    name: Android 34 Emulator E2E Suite
     needs: build-debug
     runs-on: ubuntu-latest
-    continue-on-error: true # Non-blocking per prompt guidance
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Consolidated Native E2E Test Suite
+        run: node scripts/native-e2e/index.mjs
 
       - name: Download Debug APK
         uses: actions/download-artifact@v4
@@ -190,13 +207,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: emulator-smoke-artifacts
+          name: emulator-e2e-artifacts
           path: emulator-artifacts/
           retention-days: 7
 
   release:
     name: Build & Publish Release APK
-    needs: build-debug
+    needs: [build-debug, emulator-e2e]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -306,9 +323,11 @@ jobs:
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
           VERSION="${TAG#v}"
-          OUT_APK="maganis-${VERSION}.apk"
+          VERSION_CODE="${{ github.run_number }}"
+          OUT_APK="maganis-${VERSION}-${VERSION_CODE}.apk"
           cp android/app/build/outputs/apk/release/app-release.apk "$OUT_APK"
           sha256sum "$OUT_APK" > "${OUT_APK}.sha256"
+          sha256sum "$OUT_APK" > "SHA256SUMS"
           echo "apk_name=$OUT_APK" >> $GITHUB_OUTPUT
 
       - name: Publish GitHub Release
@@ -320,6 +339,7 @@ jobs:
           gh release create "$TAG" \
             "$APK_NAME" \
             "${APK_NAME}.sha256" \
+            "SHA256SUMS" \
             --title "Maganis $TAG" \
             --notes-file "$RUNNER_TEMP/release_notes.md"
 

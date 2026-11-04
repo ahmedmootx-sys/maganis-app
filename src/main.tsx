@@ -1,6 +1,5 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { App } from './App.tsx'
 import { ConfigError, loadConfig } from './config/appConfig.ts'
 import { ConfigErrorView } from './components/ConfigError.tsx'
 import { updateManager } from './utils/updateManager.ts'
@@ -8,7 +7,12 @@ import { isNative } from './platform/runtime.ts'
 import { bootstrapPlatform } from './platform/bootstrap.ts'
 import { storageHealth } from './platform/storageHealth.ts'
 import { RecoveryModeScreen } from './components/RecoveryModeScreen.tsx'
+import { initGlobalErrorHandlers } from './platform/globalErrorHandlers.ts'
+import { checkSafeModeStatus } from './platform/safeMode.ts'
 import './styles/app.css'
+
+// 1. Initialize global window.onerror & unhandledrejection handlers immediately
+initGlobalErrorHandlers()
 
 async function init() {
   const container = document.getElementById('root')
@@ -17,6 +21,18 @@ async function init() {
   }
 
   try {
+    // 2. Task N5.3: Crash-loop safe mode check BEFORE importing the main app bundle
+    const safeModeStatus = await checkSafeModeStatus()
+    if (safeModeStatus.safeMode) {
+      const { SafeModeScreen } = await import('./components/SafeModeScreen.tsx')
+      createRoot(container).render(
+        <StrictMode>
+          <SafeModeScreen launchCount={safeModeStatus.launchCount} />
+        </StrictMode>,
+      )
+      return
+    }
+
     const config = loadConfig(import.meta.env)
 
     // Await platform hydration & migrations before rendering
@@ -31,6 +47,9 @@ async function init() {
       )
       return
     }
+
+    // 3. Dynamic import of the main App bundle only after safe mode & storage verification pass
+    const { App } = await import('./App.tsx')
 
     createRoot(container).render(
       <StrictMode>

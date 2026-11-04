@@ -1,0 +1,17 @@
+﻿=================================================================
+       MAGANIS ZERO THIRD-PARTY NETWORK PRIVACY AUDIT (Task N5.8) 
+=================================================================
+
+Auditing 309 source and configuration files...
+Audit examined 309 files.
+Detected violations: 1
+node : 
+At line:1 char:1
++ node scripts/audit-network-privacy.mjs 2>&1 | Out-File -FilePath evid ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Γ¥î PRIVACY AUDIT FAILED:
+  - [UNAUTHORIZED_FETCH_CALL] in src\platform\test-leak-probe.ts: External URL not in allowlist: 
+https://analytics.example.com/track

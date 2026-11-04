@@ -1,0 +1,7 @@
+[
+  {
+    "id": "T2-snapshot-v2-roundtrip",
+    "ok": false,
+    "error": "Snapshot invalid: فشل التحقق من صحة بعض البيانات:\n• maganis:profile.active: تاريخ إنشاء الملف الشخصي غير صالح, تاريخ تحديث الملف الشخصي غير صالح, أهداف الملف الشخصي يجب أن تكون مصفوفة, الهدف الرئيسي للملف الشخصي غير صالح, أيام التدريب في الملف الشخصي يجب أن تكون رقماً, Invalid input: expected object, received undefined"
+  }
+]

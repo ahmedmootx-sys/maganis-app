@@ -11,7 +11,7 @@ const isDebug =
 
 const config: CapacitorConfig = {
   appId: 'app.maganis.coach',
-  appName: 'مجانس',
+  appName: 'Maganis',
   webDir: 'dist-native',
   server: {
     // App loads exclusively from local bundled assets

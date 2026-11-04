@@ -1,0 +1,7 @@
+=== PROBE N5.5: UPDATE CHECKER & INSTALL GUIDANCE ===
+src/platform/updateChecker.ts exists: false
+GitHub Releases API validator with Zod schema: MISSING
+Plain-text Arabic release notes parser: MISSING
+Pre-download verified backup trigger: MISSING
+Install guidance sheet in Settings: MISSING
+STATUS: RED (Fails N5.5 requirements)

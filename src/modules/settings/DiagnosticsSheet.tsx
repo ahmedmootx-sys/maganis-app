@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Sheet } from '../../ui/Sheet.tsx'
 import { Button } from '../../ui/Button.tsx'
 import { KeyValueList, Icon } from '../../ui/index.ts'
+import { shareDiagnosticsReport } from '../../platform/diagnosticsReport.ts'
+import { logger } from '../../platform/logger.ts'
+import { MaganisNative } from '../../platform/native/maganisNative.ts'
+import { isNative } from '../../platform/runtime.ts'
 
 interface DiagnosticsSheetProps {
   isOpen: boolean
@@ -32,6 +36,10 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
   onClose,
 }) => {
   const [copied, setCopied] = useState(false)
+  const [isSharingReport, setIsSharingReport] = useState(false)
+  const [logActionMsg, setLogActionMsg] = useState<string | null>(null)
+  const [exitReasonsStr, setExitReasonsStr] = useState<string>('لا يوجد')
+  const [nativeCrashesStr, setNativeCrashesStr] = useState<string>('لا يوجد')
   const [info, setInfo] = useState<DiagnosticInfo>({
     buildId: typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'dev',
     displayMode: 'browser',
@@ -136,10 +144,62 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
         storagePersisted: persisted,
         userAgent: navigator.userAgent.slice(0, 120),
       })
+
+      if (isNative() && typeof MaganisNative.getExitReasons === 'function') {
+        try {
+          const res = await MaganisNative.getExitReasons()
+          if (res && res.reasons && res.reasons.length > 0) {
+            setExitReasonsStr(res.reasons.map((r) => r.reasonAr).join('، '))
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      if (
+        isNative() &&
+        typeof MaganisNative.getNativeCrashLogs === 'function'
+      ) {
+        try {
+          const cRes = await MaganisNative.getNativeCrashLogs()
+          if (cRes && cRes.crashes && cRes.crashes.length > 0) {
+            setNativeCrashesStr(`${cRes.crashes.length} ملف انهيار مسجل`)
+          }
+        } catch {
+          // ignore
+        }
+      }
     }
 
     gatherDiagnostics()
   }, [isOpen])
+
+  async function handleShareReport() {
+    setIsSharingReport(true)
+    setLogActionMsg(null)
+    try {
+      const ok = await shareDiagnosticsReport()
+      if (ok) {
+        setLogActionMsg('تم إرسال تقرير التشخيص بنجاح.')
+      } else {
+        setLogActionMsg('لم تكتمل مشاركة التقرير.')
+      }
+    } catch (err) {
+      setLogActionMsg(`فشل إرسال التقرير: ${String(err)}`)
+    } finally {
+      setIsSharingReport(false)
+    }
+  }
+
+  async function handleClearLogs() {
+    setLogActionMsg('جاري مسح السجل...')
+    try {
+      await logger.clearLogs()
+      setLogActionMsg('تم مسح السجل بنجاح.')
+    } catch (err) {
+      setLogActionMsg(`فشل مسح السجل: ${String(err)}`)
+    }
+  }
 
   function handleCopy() {
     const textLines = [
@@ -206,6 +266,17 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
       bdi: true,
       stacked: true,
     },
+    {
+      key: 'أسباب الإغلاق السابقة (Exit Reasons)',
+      value: exitReasonsStr,
+      bdi: true,
+      stacked: true,
+    },
+    {
+      key: 'سجلات الانهيار الأصلية (Crash Logs)',
+      value: nativeCrashesStr,
+      bdi: true,
+    },
   ]
 
   return (
@@ -215,18 +286,62 @@ export const DiagnosticsSheet: React.FC<DiagnosticsSheetProps> = ({
       title="معلومات تقنية"
       subtitle="بيانات تشغيل التطبيق على هذا الجهاز"
       footer={
-        <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-          <Button variant="primary" onClick={handleCopy} style={{ flex: 1 }}>
-            <Icon name={copied ? 'check' : 'copy'} size={18} />
-            <span>{copied ? 'تم النسخ' : 'نسخ المعلومات'}</span>
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={onClose}
-            style={{ minWidth: '90px' }}
-          >
-            إغلاق
-          </Button>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            width: '100%',
+          }}
+        >
+          {logActionMsg && (
+            <div
+              style={{
+                fontSize: '0.8rem',
+                color: '#93c5fd',
+                textAlign: 'center',
+                padding: '4px',
+              }}
+            >
+              {logActionMsg}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+            <Button
+              variant="primary"
+              onClick={handleShareReport}
+              disabled={isSharingReport}
+              style={{ flex: 1 }}
+            >
+              <Icon name="share-2" size={18} />
+              <span>{isSharingReport ? 'جاري التجهيز...' : 'ابعت تقرير'}</span>
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={handleClearLogs}
+              style={{ flex: 1 }}
+            >
+              <Icon name="trash-2" size={18} />
+              <span>امسح السجل</span>
+            </Button>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+            <Button
+              variant="secondary"
+              onClick={handleCopy}
+              style={{ flex: 1 }}
+            >
+              <Icon name={copied ? 'check' : 'copy'} size={18} />
+              <span>{copied ? 'تم النسخ' : 'نسخ المعلومات'}</span>
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={onClose}
+              style={{ minWidth: '90px' }}
+            >
+              إغلاق
+            </Button>
+          </div>
         </div>
       }
     >

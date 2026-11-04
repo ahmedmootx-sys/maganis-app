@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "measuredAt": "2026-11-04T13:45:00.000Z",
+  "environment": {
+    "device": "Android Emulator API 34 (x86_64, 720x1440 320dpi)",
+    "dataset": "Heavy synthetic (400 workout sessions, 365 days nutrition, 40 MB media)"
+  },
+  "coldStart": {
+    "unit": "ms",
+    "launches": 10,
+    "totalTimeP50": 612,
+    "totalTimeP90": 845,
+    "hydrationTimeP50": 38,
+    "hydrationTimeP90": 54,
+    "interactiveP50": 680,
+    "interactiveP90": 920,
+    "ciWarningThresholdPercent": 25,
+    "notes": "Emulator cold start variance observed: +/- 85ms across runs due to KVM host CPU scheduler."
+  },
+  "memorySoak": {
+    "durationMinutes": 30,
+    "samples": [
+      {
+        "minute": 0,
+        "totalPssKb": 84520,
+        "nativeHeapKb": 24100,
+        "dalvikHeapKb": 18200
+      },
+      {
+        "minute": 10,
+        "totalPssKb": 89400,
+        "nativeHeapKb": 26400,
+        "dalvikHeapKb": 19100
+      },
+      {
+        "minute": 20,
+        "totalPssKb": 91800,
+        "nativeHeapKb": 27200,
+        "dalvikHeapKb": 19500
+      },
+      {
+        "minute": 30,
+        "totalPssKb": 92400,
+        "nativeHeapKb": 27600,
+        "dalvikHeapKb": 19600
+      }
+    ],
+    "netGrowthPercent": 9.32,
+    "status": "stable_bounded",
+    "notes": "Memory plateaus after 15 minutes of accelerated screen navigation and workout/cardio sessions. Zero object URL or listener leaks."
+  },
+  "bundleSizes": {
+    "initialRawBytes": 1337987,
+    "initialGzipBytes": 263096,
+    "baselineRawBytes": 1450000,
+    "baselineGzipBytes": 278500,
+    "rawGrowthTolerancePercent": 5.0,
+    "gzipGrowthTolerancePercent": 5.0,
+    "apkBaselineBytes": 6815744,
+    "apkGrowthTolerancePercent": 10.0
+  }
+}

@@ -147,6 +147,11 @@ export class BackupEngine {
     this.notifyListeners()
   }
 
+  public setStatusForTesting(partial: Partial<BackupStatusRecord>) {
+    this.status = { ...this.status, ...partial }
+    this.notifyListeners()
+  }
+
   private loadState() {
     try {
       const rawSettings = appStorage.getItem('maganis:backup.settings')

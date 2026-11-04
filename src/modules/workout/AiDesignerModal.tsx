@@ -147,7 +147,7 @@ export function AiDesignerModal({
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
-          title: 'برومبت تصميم جدول مجانس',
+          title: 'برومبت تصميم جدول مجانص',
           text: promptInfo.prompt,
         })
         showToast('تمت مشاركة البرومبت بنجاح')

@@ -1,0 +1,6 @@
+=== PROBE N5.3: CRASH-LOOP SAFE MODE ===
+src/platform/safeMode.ts exists: false
+Crash loop tracking (3 starts in 3 min): MISSING
+Dynamic App import check in main.tsx: MISSING
+Self-contained SafeModeScreen component: MISSING
+STATUS: RED (Fails N5.3 requirements)

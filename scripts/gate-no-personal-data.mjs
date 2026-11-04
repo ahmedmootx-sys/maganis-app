@@ -207,15 +207,37 @@ function run() {
           }
         }
 
-        // Check Rule 7 (Security S1): Private key headers or plaintext passwords
+        // Check Rule 7 (Security S1): Private key headers, keystore configs or plaintext secrets
         if (
-          content.includes('BEGIN PRIVATE KEY') ||
-          content.includes('BEGIN RSA PRIVATE KEY') ||
-          content.includes('BEGIN ENCRYPTED PRIVATE KEY')
+          file !== 'scripts/gate-no-personal-data.mjs' &&
+          file !== 'scripts/android-keystore.mjs'
         ) {
-          failures.push(
-            `[Rule 7] Disallowed private key block found in "${file}" (Security S1)`,
-          )
+          if (
+            content.includes('BEGIN PRIVATE KEY') ||
+            content.includes('BEGIN RSA PRIVATE KEY') ||
+            content.includes('BEGIN ENCRYPTED PRIVATE KEY') ||
+            content.includes('BEGIN EC PRIVATE KEY') ||
+            content.includes('BEGIN OPENSSH PRIVATE KEY')
+          ) {
+            failures.push(
+              `[Rule 7] Disallowed private key block found in "${file}" (Security S1)`,
+            )
+          }
+
+          if (
+            /ANDROID_KEYSTORE_PASSWORD\s*=\s*['"]?[a-zA-Z0-9_\-!@#$%^&*]{4,}['"]?/i.test(
+              content,
+            ) ||
+            /ANDROID_KEY_PASSWORD\s*=\s*['"]?[a-zA-Z0-9_\-!@#$%^&*]{4,}['"]?/i.test(
+              content,
+            ) ||
+            /ghp_[a-zA-Z0-9]{25,}/.test(content) ||
+            /github_pat_[a-zA-Z0-9_]{25,}/.test(content)
+          ) {
+            failures.push(
+              `[Rule 7] Disallowed plaintext secret/credential pattern found in "${file}" (Security S1)`,
+            )
+          }
         }
       }
     }

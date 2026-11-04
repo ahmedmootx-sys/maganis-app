@@ -67,6 +67,7 @@ import { getAllExerciseOverrides } from './modules/workout/exerciseOverrides.ts'
 import { ConfirmSheet, Icon, Skeleton } from './ui/index.ts'
 import { IconSprite } from './ui/IconSprite.tsx'
 import { useRouter } from './shell/router.ts'
+import { ErrorBoundary } from './platform/ErrorBoundary.tsx'
 import './styles/app.css'
 
 // Lazy-loaded routes and heavy surfaces
@@ -1211,7 +1212,7 @@ export function App({ config }: AppProps) {
   }
 
   return (
-    <>
+    <ErrorBoundary route="root" onGoHome={() => setActiveTab('dashboard')}>
       {activeWorkoutDay && (
         <div
           className="app app--workout-active"
@@ -1396,7 +1397,13 @@ export function App({ config }: AppProps) {
         )}
 
         <main className="app-main">
-          <Suspense fallback={<ScreenSkeleton />}>{renderContent()}</Suspense>
+          <ErrorBoundary
+            route={activeTab}
+            fallbackTitle={`حصلت مشكلة في قسم (${activeTab === 'dashboard' ? 'الرئيسية' : activeTab === 'workouts' ? 'التمارين' : activeTab === 'nutrition' ? 'التغذية' : activeTab === 'tracking' || activeTab === 'reports' ? 'التقدم' : 'الإعدادات'})`}
+            onGoHome={() => setActiveTab('dashboard')}
+          >
+            <Suspense fallback={<ScreenSkeleton />}>{renderContent()}</Suspense>
+          </ErrorBoundary>
         </main>
 
         {activeCardioSession &&
@@ -1660,6 +1667,6 @@ export function App({ config }: AppProps) {
           onDismiss={() => setBackToastMessage(null)}
         />
       </div>
-    </>
+    </ErrorBoundary>
   )
 }

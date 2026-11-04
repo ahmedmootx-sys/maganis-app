@@ -1,0 +1,34 @@
+﻿
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/power tech/Downloads/maganis-project[39m
+
+[90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2mdebug build: blocks update check with Arabic message
+[22m[39m[2026-11-04T13:56:11.243Z] [INFO] [UPDATE] [CHECK_START] Checking updates for current=0.1.0-debug channel=debug
+
+[90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2moffline case: returns status offline when fetch throws network error
+[22m[39m[2026-11-04T13:56:11.246Z] [INFO] [UPDATE] [CHECK_START] Checking updates for current=0.1.0 channel=release
+
+[90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2mrate limited case: returns rate_limited when HTTP status is 403 or 429
+[22m[39m[2026-11-04T13:56:11.248Z] [INFO] [UPDATE] [CHECK_START] Checking updates for current=0.1.0 channel=release
+
+[90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2mmalformed response: rejects untrusted schema or hostile download URL
+[22m[39m[2026-11-04T13:56:11.249Z] [INFO] [UPDATE] [CHECK_START] Checking updates for current=0.1.0 channel=release
+
+[90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2mupdate available: parses valid release with trusted GitHub download URL
+[22m[39m[2026-11-04T13:56:11.256Z] [INFO] [UPDATE] [CHECK_START] Checking updates for current=0.1.0 channel=release
+
+[90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2mupdate available: parses valid release with trusted GitHub download URL
+[22m[39m[2026-11-04T13:56:11.258Z] [INFO] [UPDATE] [AVAILABLE] New version available: 0.2.0 url=https://github.com/ahmedmootx-sys/maganis-app/releases/download/v0.2.0/maganis-0.2.0-2.apk
+
+[90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2mup to date: detects when current version matches or exceeds latest release
+[22m[39m[2026-11-04T13:56:11.259Z] [INFO] [UPDATE] [CHECK_START] Checking updates for current=0.1.0 channel=release
+
+[90mstdout[2m | src/platform/updateChecker.test.ts[2m > [22m[2mUpdate Checker & Sideload Guidance (Task N5.5)[2m > [22m[2mup to date: detects when current version matches or exceeds latest release
+[22m[39m[2026-11-04T13:56:11.260Z] [INFO] [UPDATE] [UP_TO_DATE] App is up to date: current=0.1.0 latest=0.1.0
+
+ [32mΓ£ô[39m src/platform/updateChecker.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 15:56:08
+[2m   Duration [22m 2.76s[2m (transform 150ms, setup 355ms, collect 325ms, tests 23ms, environment 1.47s, prepare 169ms)[22m
+

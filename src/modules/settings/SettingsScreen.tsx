@@ -26,6 +26,7 @@ import {
 import { BackupPanel } from '../backup/BackupPanel.tsx'
 import { PwaTransferSection } from '../backup/PwaTransferSection.tsx'
 import { NotificationSettingsPanel } from './NotificationSettingsPanel.tsx'
+import { UpdateSettingsPanel } from './UpdateSettingsPanel.tsx'
 import { fmtFactor } from '../../utils/bidi.ts'
 import { DiagnosticsSheet } from './DiagnosticsSheet.tsx'
 import { ResetSheet } from './ResetSheet.tsx'
@@ -574,6 +575,11 @@ export function SettingsScreen({
               onRestore={onRestore}
             />
           </div>
+        </Section>
+
+        {/* Section: التحديثات (Task N5.5) */}
+        <Section title="التحديثات">
+          <UpdateSettingsPanel />
         </Section>
 
         {/* Section 5: حول التطبيق (عن التطبيق) */}

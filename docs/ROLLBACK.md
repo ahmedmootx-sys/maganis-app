@@ -26,6 +26,26 @@ Only if the bad commits were never pushed and nobody else built on them:
 
 Then re-apply the good work as new commits.
 
+---
+
+## Android Native Sideload Rollback Protocol
+
+> [!CAUTION]
+> **Android OS Version Downgrade Restriction:**
+> Android Package Manager strictly rejects installing an APK with a lower or equal `versionCode` (`INSTALL_FAILED_VERSION_DOWNGRADE`).
+> Never ask a user to uninstall the app to install an older version — uninstallation irreversibly deletes the app's internal storage and all on-device database files!
+
+### Safe Rollback Procedure for Android:
+
+1. Revert the code change via `git revert`.
+2. **Increment `versionCode`** in `android/app/build.gradle` (e.g. from `10001` to `10002`).
+3. Bump patch version in `package.json` (e.g. `0.1.1`).
+4. Update `CHANGELOG.md` with a clear explanation in Egyptian Arabic explaining the fix/rollback.
+5. Push commit and tag `v0.1.1` to trigger the CI release pipeline.
+6. The user installs the new APK update directly over the existing one without data loss.
+
+---
+
 ## Hotfix from a tag (rare)
 
     git checkout -b hotfix v0.1.0

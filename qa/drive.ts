@@ -110,6 +110,7 @@ export async function initStorage(page: Page, options: DriveOptions = {}) {
 
   await page.addInitScript(
     ({ profile, prog, t, fsScale }) => {
+      localStorage.removeItem('maganis:crash_loop_launches')
       if (profile) {
         localStorage.setItem('maganis:profile.active', JSON.stringify(profile))
       }
