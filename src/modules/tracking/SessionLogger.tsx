@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { appStorage } from '../../platform/storage.ts'
 import type { ProgramDay, TrackingSession, Exercise } from '../shared/types.ts'
 import { CATALOG_INDEX } from '../workout/exerciseIndex.ts'
 import { getEffectiveExercise } from '../workout/exerciseStore.ts'
@@ -51,8 +52,7 @@ export function SessionLogger({
   // Load past sessions for suggestions
   const pastSessions = useMemo<TrackingSession[]>(() => {
     try {
-      if (typeof localStorage === 'undefined') return []
-      const raw = localStorage.getItem('maganis:tracking.sessions')
+      const raw = appStorage.getItem('maganis:tracking.sessions')
       return raw ? JSON.parse(raw) : []
     } catch {
       return []

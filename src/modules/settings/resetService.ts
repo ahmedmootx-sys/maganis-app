@@ -1,11 +1,11 @@
 /**
  * src/modules/settings/resetService.ts
  *
- * Implements Task H2.4: Reset with a keep-edits option.
+ * Implements reset with a keep-edits option and delete-all.
  * Provides statistics on user exercise edits and handles safe atomic factory resets:
  * - 'keep-edits': Preserves exercise overrides, media blobs, custom exercises, and deleted exercises list.
- *   Follows strict order of operations: read -> write to temp IDB -> wipe all -> restore -> verify -> delete temp -> reload.
- * - 'delete-all': Truly wipes everything (localStorage, sessionStorage, maganis_db, caches, in-memory state).
+ * - 'delete-all': Truly wipes everything (appStorage, native KV, native media, caches, in-memory state).
+ * - Notifies registered reset hooks (used by N4 to cancel scheduled notifications).
  */
 
 import {
@@ -21,6 +21,22 @@ import {
 import { parseVideoUrl } from '../workout/videoUtils.ts'
 import { plural } from '../../utils/plural.ts'
 import type { CustomExercise } from '../shared/types.ts'
+import { appStorage } from '../../platform/storage.ts'
+import { isNative } from '../../platform/runtime.ts'
+import { MaganisNative } from '../../platform/native/maganisNative.ts'
+
+export type ResetHook = () => void | Promise<void>
+const resetHooks: Set<ResetHook> = new Set()
+
+/**
+ * Registers a hook to run on factory reset (e.g. N4 notification cancellation).
+ */
+export function registerResetHook(hook: ResetHook): () => void {
+  resetHooks.add(hook)
+  return () => {
+    resetHooks.delete(hook)
+  }
+}
 
 export interface ExerciseEditsStats {
   modifiedCount: number
@@ -88,25 +104,33 @@ export function getExerciseEditsStats(
 export async function executeFactoryReset(
   mode: 'keep-edits' | 'delete-all',
 ): Promise<void> {
+  // Execute all registered reset hooks (e.g. notifications cleanup)
+  for (const hook of resetHooks) {
+    try {
+      await hook()
+    } catch (err) {
+      console.warn('Reset hook threw error:', err)
+    }
+  }
+
   if (mode === 'delete-all') {
     // 1. Wipe in-memory state
     await resetAllOverrides()
 
-    // 2. Wipe localStorage
-    if (typeof localStorage !== 'undefined') {
-      try {
-        localStorage.clear()
-      } catch {
-        // ignore
-      }
-    }
+    // 2. Wipe appStorage
+    appStorage.clear()
+    await appStorage.flush()
 
-    // 3. Wipe sessionStorage
-    if (typeof sessionStorage !== 'undefined') {
+    // 3. Wipe native stores if on native platform
+    if (isNative()) {
       try {
-        sessionStorage.clear()
-      } catch {
-        // ignore
+        await MaganisNative.kvClear()
+        const allMedia = await MaganisNative.mediaGetAll()
+        for (const id of Object.keys(allMedia.items || {})) {
+          await MaganisNative.mediaRemove({ id })
+        }
+      } catch (err) {
+        console.warn('Native storage clear error:', err)
       }
     }
 
@@ -127,7 +151,7 @@ export async function executeFactoryReset(
       }
     }
 
-    // 6. Reload page to ensure clean state
+    // 6. Reload page to ensure clean initial state
     if (typeof window !== 'undefined') {
       window.location.reload()
     }
@@ -135,67 +159,24 @@ export async function executeFactoryReset(
   }
 
   // mode === 'keep-edits'
-  // Step 1: Read data to keep
+  // Step 1: Read all edits data to keep (bridging modern and legacy keys)
   const overridesToKeep = getAllExerciseOverrides()
   const mediaToKeep = await getAllMediaItems()
-  let customExercisesToKeep: string | null = null
-  let deletedExercisesToKeep: string | null = null
 
-  if (typeof localStorage !== 'undefined') {
-    customExercisesToKeep = localStorage.getItem('maganis:custom_exercises')
-    deletedExercisesToKeep = localStorage.getItem('maganis:deleted_exercises')
-  }
+  const customExercisesToKeep =
+    appStorage.getItem('maganis:workout.custom-exercises') ||
+    appStorage.getItem('maganis:custom_exercises')
+  const deletedExercisesToKeep =
+    appStorage.getItem('maganis:workout.deleted-exercises') ||
+    appStorage.getItem('maganis:deleted_exercises')
 
-  // Step 2: Write to temporary IndexedDB store
-  const TEMP_DB_NAME = 'maganis_temp_restore'
-  const TEMP_STORE_NAME = 'temp_keep'
+  // Step 2: Wipe all app state
+  appStorage.clear()
+  await appStorage.flush()
 
-  await new Promise<void>((resolve, reject) => {
+  if (isNative()) {
     try {
-      const req = indexedDB.open(TEMP_DB_NAME, 1)
-      req.onupgradeneeded = (e) => {
-        const db = (e.target as IDBOpenDBRequest).result
-        if (!db.objectStoreNames.contains(TEMP_STORE_NAME)) {
-          db.createObjectStore(TEMP_STORE_NAME)
-        }
-      }
-      req.onsuccess = () => {
-        const db = req.result
-        const tx = db.transaction(TEMP_STORE_NAME, 'readwrite')
-        const store = tx.objectStore(TEMP_STORE_NAME)
-        store.put(overridesToKeep, 'overrides')
-        store.put(mediaToKeep, 'media')
-        store.put(customExercisesToKeep, 'custom_exercises')
-        store.put(deletedExercisesToKeep, 'deleted_exercises')
-        tx.oncomplete = () => {
-          db.close()
-          resolve()
-        }
-        tx.onerror = () => {
-          db.close()
-          reject(new Error('فشل في حفظ البيانات المؤقتة قبل المسح'))
-        }
-      }
-      req.onerror = () => {
-        reject(new Error('تعذر فتح قاعدة البيانات المؤقتة'))
-      }
-    } catch (err) {
-      reject(err)
-    }
-  })
-
-  // Step 3: Wipe all app state
-  if (typeof localStorage !== 'undefined') {
-    try {
-      localStorage.clear()
-    } catch {
-      // ignore
-    }
-  }
-
-  if (typeof sessionStorage !== 'undefined') {
-    try {
-      sessionStorage.clear()
+      await MaganisNative.kvClear()
     } catch {
       // ignore
     }
@@ -216,91 +197,45 @@ export async function executeFactoryReset(
     }
   }
 
-  // Step 4: Restore from temporary store
-  const restored = await new Promise<{
-    overrides: Record<string, unknown>
-    media: Record<string, unknown>
-    custom_exercises: string | null
-    deleted_exercises: string | null
-  }>((resolve, reject) => {
-    try {
-      const req = indexedDB.open(TEMP_DB_NAME, 1)
-      req.onsuccess = () => {
-        const db = req.result
-        const tx = db.transaction(TEMP_STORE_NAME, 'readonly')
-        const store = tx.objectStore(TEMP_STORE_NAME)
+  // Step 3: Restore kept edits back into appStorage and stores
+  appStorage.setItem(
+    'maganis:exercise_overrides',
+    JSON.stringify(overridesToKeep),
+  )
 
-        const getOverrides = store.get('overrides')
-        const getMedia = store.get('media')
-        const getCustom = store.get('custom_exercises')
-        const getDeleted = store.get('deleted_exercises')
-
-        tx.oncomplete = () => {
-          db.close()
-          resolve({
-            overrides: (getOverrides.result || {}) as Record<string, unknown>,
-            media: (getMedia.result || {}) as Record<string, unknown>,
-            custom_exercises: getCustom.result as string | null,
-            deleted_exercises: getDeleted.result as string | null,
-          })
-        }
-        tx.onerror = () => {
-          db.close()
-          reject(new Error('فشل في قراءة البيانات من النسخة المؤقتة'))
-        }
-      }
-      req.onerror = () => {
-        reject(new Error('تعذر فتح النسخة المؤقتة للاسترجاع'))
-      }
-    } catch (err) {
-      reject(err)
-    }
-  })
-
-  // Restore into target stores
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(
-      'maganis:exercise_overrides',
-      JSON.stringify(restored.overrides),
+  if (customExercisesToKeep) {
+    appStorage.setItem(
+      'maganis:workout.custom-exercises',
+      customExercisesToKeep,
     )
-    if (restored.custom_exercises) {
-      localStorage.setItem(
-        'maganis:custom_exercises',
-        restored.custom_exercises,
-      )
-    }
-    if (restored.deleted_exercises) {
-      localStorage.setItem(
-        'maganis:deleted_exercises',
-        restored.deleted_exercises,
-      )
-    }
+    appStorage.setItem('maganis:custom_exercises', customExercisesToKeep)
   }
 
-  // Restore into IndexedDB maganis_kv and maganis_media
-  await setIndexedItem('exercise_overrides', restored.overrides)
-  for (const [k, v] of Object.entries(restored.media)) {
+  if (deletedExercisesToKeep) {
+    appStorage.setItem(
+      'maganis:workout.deleted-exercises',
+      deletedExercisesToKeep,
+    )
+    appStorage.setItem('maganis:deleted_exercises', deletedExercisesToKeep)
+  }
+
+  // Restore into IndexedDB / native media
+  await setIndexedItem('exercise_overrides', overridesToKeep)
+  for (const [k, v] of Object.entries(mediaToKeep)) {
     if (v) {
       await setMediaItem(k, v)
     }
   }
 
-  // Step 5: Verify restored items
-  if (typeof localStorage !== 'undefined') {
-    const checkOv = localStorage.getItem('maganis:exercise_overrides')
-    if (!checkOv) {
-      throw new Error('فشل التحقق من استعادة تعديلات التمارين')
-    }
+  await appStorage.flush()
+
+  // Step 4: Verify restored items
+  const checkOv = appStorage.getItem('maganis:exercise_overrides')
+  if (!checkOv) {
+    throw new Error('فشل التحقق من استعادة تعديلات التمارين')
   }
 
-  // Step 6: Delete temporary DB
-  try {
-    indexedDB.deleteDatabase(TEMP_DB_NAME)
-  } catch {
-    // ignore
-  }
-
-  // Step 7: Reload page
+  // Step 5: Reload page
   if (typeof window !== 'undefined') {
     window.location.reload()
   }

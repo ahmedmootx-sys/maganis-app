@@ -2,6 +2,12 @@ import { App } from '@capacitor/app'
 import { isNative, platformName } from './runtime.ts'
 import { MaganisNative } from './native/maganisNative.ts'
 import { backButtonManager, type BackHandler } from './backStack.ts'
+import { appStorage } from './storage.ts'
+import {
+  setMediaItem,
+  getMediaItem,
+  removeMediaItem,
+} from '../lib/indexedStorage.ts'
 
 export interface PlatformInfo {
   applicationId: string
@@ -144,46 +150,55 @@ function createLivePlatform(): Platform {
       },
     },
 
-    // Task N2 stand-in: typed honest "unsupported"
+    // Task N2: Durable KV and Media Storage
     kv: {
-      async get(): Promise<string | null> {
-        throw new Error(
-          'unsupported: Task N2 native durable storage not implemented yet',
-        )
+      async get(key: string): Promise<string | null> {
+        return appStorage.getItem(key)
       },
-      async set(): Promise<void> {
-        throw new Error(
-          'unsupported: Task N2 native durable storage not implemented yet',
-        )
+      async set(key: string, value: string): Promise<void> {
+        appStorage.setItem(key, value)
+        await appStorage.flush()
       },
-      async remove(): Promise<void> {
-        throw new Error(
-          'unsupported: Task N2 native durable storage not implemented yet',
-        )
+      async remove(key: string): Promise<void> {
+        appStorage.removeItem(key)
+        await appStorage.flush()
       },
       async clear(): Promise<void> {
-        throw new Error(
-          'unsupported: Task N2 native durable storage not implemented yet',
-        )
+        appStorage.clear()
+        await appStorage.flush()
       },
     },
 
-    // Task N2 stand-in: typed honest "unsupported"
     media: {
-      async saveMedia(): Promise<string> {
-        throw new Error(
-          'unsupported: Task N2 native media storage not implemented yet',
-        )
+      async saveMedia(id: string, data: Blob | ArrayBuffer): Promise<string> {
+        let dataUrl: string
+        if (data instanceof Blob) {
+          dataUrl = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(String(reader.result))
+            reader.onerror = reject
+            reader.readAsDataURL(data)
+          })
+        } else {
+          const blob = new Blob([data])
+          dataUrl = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(String(reader.result))
+            reader.onerror = reject
+            reader.readAsDataURL(blob)
+          })
+        }
+        await setMediaItem(id, { mime: 'image/jpeg', dataUrl })
+        return id
       },
-      async getMedia(): Promise<Blob | null> {
-        throw new Error(
-          'unsupported: Task N2 native media storage not implemented yet',
-        )
+      async getMedia(id: string): Promise<Blob | null> {
+        const item = await getMediaItem<{ mime?: string; dataUrl?: string }>(id)
+        if (!item || !item.dataUrl) return null
+        const res = await fetch(item.dataUrl)
+        return res.blob()
       },
-      async deleteMedia(): Promise<void> {
-        throw new Error(
-          'unsupported: Task N2 native media storage not implemented yet',
-        )
+      async deleteMedia(id: string): Promise<void> {
+        await removeMediaItem(id)
       },
     },
 

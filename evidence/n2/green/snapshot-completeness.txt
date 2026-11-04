@@ -1,0 +1,7 @@
+--- Snapshot Completeness Audit (Mode: V2 COMPLETE) ---
+Populated test store with 19 items across all include categories.
+
+Preserved keys: 19 / 19
+Lost / omitted keys: 0 / 19
+
+[SUCCESS] 100% of user-authored keys and media were fully preserved byte-for-byte in round trip!

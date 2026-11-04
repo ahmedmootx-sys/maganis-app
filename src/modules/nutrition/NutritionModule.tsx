@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { appStorage } from '../../platform/storage.ts'
+import { recordStorageError } from '../../platform/storageHealth.ts'
 import type { Goal, Sex, UserProfile } from '../onboarding/types.ts'
 import { ACTIVITY_LEVELS, GOALS } from '../onboarding/types.ts'
 import type { BodyLogEntry } from '../shared/types.ts'
@@ -102,10 +104,10 @@ export function NutritionModule({
   // Custom Meals State
   const [customMeals, setCustomMeals] = useState<CustomMeal[]>(() => {
     try {
-      const raw = localStorage.getItem('maganis:custom_meals')
+      const raw = appStorage.getItem('maganis:custom_meals')
       if (raw) return JSON.parse(raw) as CustomMeal[]
-    } catch {
-      // ignore
+    } catch (err) {
+      recordStorageError('maganis:custom_meals', err)
     }
     return []
   })
@@ -194,9 +196,9 @@ export function NutritionModule({
 
   useEffect(() => {
     try {
-      localStorage.setItem('maganis:custom_meals', JSON.stringify(customMeals))
-    } catch {
-      // ignore
+      appStorage.setItem('maganis:custom_meals', JSON.stringify(customMeals))
+    } catch (err) {
+      recordStorageError('maganis:custom_meals', err)
     }
   }, [customMeals])
 
@@ -206,12 +208,12 @@ export function NutritionModule({
   // Daily tracker state
   const [dailyLog, setDailyLog] = useState<DailyNutritionLog>(() => {
     try {
-      const raw = localStorage.getItem(storageKey)
+      const raw = appStorage.getItem(storageKey)
       if (raw) {
         return JSON.parse(raw) as DailyNutritionLog
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      recordStorageError(storageKey, err)
     }
     return {
       date: selectedDate,
@@ -226,13 +228,13 @@ export function NutritionModule({
   // Re-read dailyLog when selectedDate changes
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(storageKey)
+      const raw = appStorage.getItem(storageKey)
       if (raw) {
         setDailyLog(JSON.parse(raw) as DailyNutritionLog)
         return
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      recordStorageError(storageKey, err)
     }
     setDailyLog({
       date: selectedDate,
@@ -246,9 +248,9 @@ export function NutritionModule({
 
   useEffect(() => {
     try {
-      localStorage.setItem(storageKey, JSON.stringify(dailyLog))
-    } catch {
-      // ignore
+      appStorage.setItem(storageKey, JSON.stringify(dailyLog))
+    } catch (err) {
+      recordStorageError(storageKey, err)
     }
   }, [dailyLog, storageKey])
 
@@ -429,10 +431,10 @@ export function NutritionModule({
     if (!targets || !bodyLog || bodyLog.length < 8) return null
     const intakeLogs: { date: string; calories: number }[] = []
     try {
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
+      for (let i = 0; i < appStorage.length; i++) {
+        const k = appStorage.key(i)
         if (k && k.startsWith('maganis:daily_nutrition_')) {
-          const raw = localStorage.getItem(k)
+          const raw = appStorage.getItem(k)
           if (raw) {
             const parsed = JSON.parse(raw)
             if (parsed.date && parsed.consumedCalories > 0) {
@@ -444,8 +446,8 @@ export function NutritionModule({
           }
         }
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      recordStorageError('maganis:daily_nutrition_*', err)
     }
 
     const plannedAdj = targets.engineResult
@@ -569,9 +571,9 @@ export function NutritionModule({
     }
     setDailyLog(resetState)
     try {
-      localStorage.setItem(storageKey, JSON.stringify(resetState))
-    } catch {
-      // ignore
+      appStorage.setItem(storageKey, JSON.stringify(resetState))
+    } catch (err) {
+      recordStorageError(storageKey, err)
     }
     setShowResetDailyConfirm(false)
   }

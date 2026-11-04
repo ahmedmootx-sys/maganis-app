@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { appStorage } from '../../platform/storage.ts'
+import { platform } from '../../platform/index.ts'
 import type {
   Exercise,
   ProgramDay,
@@ -134,7 +136,7 @@ export function ActiveWorkoutSession({
   const [exercisesState, setExercisesState] = useState<ActiveExerciseState[]>(
     () => {
       try {
-        const raw = localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
+        const raw = appStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
         if (raw) {
           const parsed = JSON.parse(raw) as SavedSessionState
           if (
@@ -206,7 +208,7 @@ export function ActiveWorkoutSession({
   // --- Session Stopwatch (Elapsed Time) with Refresh Recovery ---
   const [elapsedSeconds, setElapsedSeconds] = useState(() => {
     try {
-      const raw = localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
+      const raw = appStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as SavedSessionState
         if (
@@ -258,23 +260,33 @@ export function ActiveWorkoutSession({
         elapsedSeconds,
         savedAt: Date.now(),
       }
-      localStorage.setItem(
-        ACTIVE_SESSION_STORAGE_KEY,
-        JSON.stringify(dataToSave),
-      )
+      appStorage.setItem(ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(dataToSave))
     } catch {
       // ignore
     }
   }, [programDay, exercisesState, elapsedSeconds])
 
-  // Prevent accidental back/refresh during active workout
+  // Prevent accidental back/refresh during active workout & flush on native pause
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault()
       e.returnValue = ''
     }
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', handleBeforeUnload)
+    }
+
+    // On native, flush session storage when backgrounded/paused
+    const unpause = platform.app.onPause(() => {
+      void appStorage.flush()
+    })
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('beforeunload', handleBeforeUnload)
+      }
+      unpause()
+    }
   }, [])
 
   // --- Smart Rest Timer ---
@@ -590,7 +602,7 @@ export function ActiveWorkoutSession({
     let allSessions: TrackingSession[] = previousSessions || []
     if (allSessions.length === 0) {
       try {
-        const raw = localStorage.getItem('tracking.sessions')
+        const raw = appStorage.getItem('tracking.sessions')
         if (raw) {
           allSessions = JSON.parse(raw)
         }
@@ -704,7 +716,7 @@ export function ActiveWorkoutSession({
     }
 
     try {
-      localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
+      appStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
     } catch {
       // ignore
     }
@@ -1613,7 +1625,7 @@ export function ActiveWorkoutSession({
           onClose={() => setShowConfirmCancel(false)}
           onConfirm={() => {
             try {
-              localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
+              appStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
             } catch {
               // ignore
             }

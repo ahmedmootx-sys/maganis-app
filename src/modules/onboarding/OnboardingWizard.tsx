@@ -1,5 +1,8 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { appStorage } from '../../platform/storage.ts'
+import { recordStorageError } from '../../platform/storageHealth.ts'
 import { assetUrl } from '../../utils/assetUrl.ts'
+import { validateSnapshot, applySnapshot } from '../backup/snapshot.ts'
 import type { ProfileStore } from './profileStore'
 import { BODY_GOALS, TRAINING_STYLES } from './types'
 import type {
@@ -99,7 +102,7 @@ export function OnboardingWizard({
   const [currentStep, setCurrentStep] = useState<number>(() => {
     if (initialProfile) return 1
     try {
-      const raw = localStorage.getItem(DRAFT_STORAGE_KEY)
+      const raw = appStorage.getItem(DRAFT_STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw)
         if (
@@ -110,8 +113,8 @@ export function OnboardingWizard({
           return parsed.step
         }
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      recordStorageError(DRAFT_STORAGE_KEY, err)
     }
     return 1
   })
@@ -161,29 +164,64 @@ export function OnboardingWizard({
       }
     }
     try {
-      const raw = localStorage.getItem(DRAFT_STORAGE_KEY)
+      const raw = appStorage.getItem(DRAFT_STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw)
         if (parsed?.form) {
           return { ...DEFAULT_FORM, ...parsed.form }
         }
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      recordStorageError(DRAFT_STORAGE_KEY, err)
     }
     return DEFAULT_FORM
   })
+
+  const importFileRef = useRef<HTMLInputElement>(null)
+  const [importStatus, setImportStatus] = useState<string | null>(null)
+  const [importError, setImportError] = useState<string | null>(null)
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImportError(null)
+    setImportStatus('جاري فحص ملف النسخة الاحتياطية...')
+    try {
+      const text = await file.text()
+      const parsed = JSON.parse(text)
+      const validation = await validateSnapshot(parsed)
+      if (!validation.ok || !validation.snapshot) {
+        setImportError(validation.errorAr || 'الملف غير صالح أو تالف.')
+        setImportStatus(null)
+        return
+      }
+      setImportStatus('جاري استعادة البيانات...')
+      const result = await applySnapshot(validation.snapshot)
+      if (result.success) {
+        setImportStatus('تمت الاستعادة بنجاح! جاري تحميل التطبيق...')
+        setTimeout(() => {
+          window.location.reload()
+        }, 600)
+      } else {
+        setImportError(result.errorAr || 'فشلت عملية استعادة النسخة.')
+        setImportStatus(null)
+      }
+    } catch (err) {
+      setImportError(`فشل استيراد الملف: ${String(err)}`)
+      setImportStatus(null)
+    }
+  }
 
   // Persist draft on changes
   useEffect(() => {
     if (!initialProfile) {
       try {
-        localStorage.setItem(
+        appStorage.setItem(
           DRAFT_STORAGE_KEY,
           JSON.stringify({ step: currentStep, form }),
         )
-      } catch {
-        // ignore
+      } catch (err) {
+        recordStorageError(DRAFT_STORAGE_KEY, err)
       }
     }
   }, [currentStep, form, initialProfile])
@@ -374,9 +412,9 @@ export function OnboardingWizard({
 
     const saved = store.saveProfile(core)
     try {
-      localStorage.removeItem(DRAFT_STORAGE_KEY)
-    } catch {
-      // ignore
+      appStorage.removeItem(DRAFT_STORAGE_KEY)
+    } catch (err) {
+      recordStorageError(DRAFT_STORAGE_KEY, err)
     }
     onSaved(saved)
   }
@@ -1330,17 +1368,60 @@ export function OnboardingWizard({
           </Button>
         </div>
 
-        {/* Clean Arabic-only offline note ONLY on Step 1 */}
+        {/* Clean Arabic-only offline note and restore option ONLY on Step 1 */}
         {currentStep === 1 && (
           <div
             style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '6px',
               textAlign: 'center',
               fontSize: '11px',
               color: 'var(--color-text-2)',
-              lineHeight: '1.2',
+              lineHeight: '1.4',
             }}
           >
-            يعمل بدون إنترنت، وبياناتك محفوظة على جهازك فقط.
+            <div>يعمل بدون إنترنت، وبياناتك محفوظة على جهازك فقط.</div>
+            <div>
+              <button
+                type="button"
+                onClick={() => importFileRef.current?.click()}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--color-primary, #F95700)',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  fontSize: '12px',
+                  padding: '4px 8px',
+                }}
+              >
+                عندك نسخة احتياطية سابقة؟ استرجع بياناتك من هنا
+              </button>
+            </div>
+            <input
+              ref={importFileRef}
+              type="file"
+              accept=".json,application/json"
+              style={{ display: 'none' }}
+              onChange={handleImportFile}
+            />
+            {importError && (
+              <div
+                style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}
+              >
+                {importError}
+              </div>
+            )}
+            {importStatus && (
+              <div
+                style={{ color: '#22c55e', fontSize: '11px', marginTop: '4px' }}
+              >
+                {importStatus}
+              </div>
+            )}
           </div>
         )}
       </div>

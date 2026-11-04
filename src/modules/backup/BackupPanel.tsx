@@ -20,6 +20,7 @@ import {
   takePreUpdateSnapshot,
   type PreUpdateSnapshotMeta,
 } from './preUpdateSnapshot.ts'
+import { applySnapshot } from './snapshot.ts'
 import { ConfirmSheet } from '../../ui/ConfirmSheet.tsx'
 import { plural } from '../../utils/plural.ts'
 
@@ -66,7 +67,10 @@ export function BackupPanel({
     setError('')
     setStatus('جاري استعادة نسخة ما قبل التحديث...')
     try {
-      if (onRestore) {
+      if (preSnapshot.snapshot) {
+        await applySnapshot(preSnapshot.snapshot)
+        onImported?.()
+      } else if (preSnapshot.data && onRestore) {
         onRestore(preSnapshot.data)
       } else {
         onImported?.()

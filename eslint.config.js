@@ -44,6 +44,44 @@ export default tseslint.config(
     },
   },
   {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: [
+      'src/platform/**',
+      'src/lib/indexedStorage.ts',
+      '**/*.test.{ts,tsx}',
+    ],
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        {
+          name: 'localStorage',
+          message:
+            'Direct localStorage is banned. Use appStorage from src/platform/storage.ts instead.',
+        },
+        {
+          name: 'indexedDB',
+          message:
+            'Direct indexedDB is banned. Use src/lib/indexedStorage.ts or platform instead.',
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "MemberExpression[object.name='window'][property.name='localStorage']",
+          message:
+            'Direct window.localStorage is banned. Use appStorage from src/platform/storage.ts instead.',
+        },
+        {
+          selector:
+            "MemberExpression[object.name='window'][property.name='indexedDB']",
+          message:
+            'Direct window.indexedDB is banned. Use src/lib/indexedStorage.ts instead.',
+        },
+      ],
+    },
+  },
+  {
     files: ['qa/**/*.{ts,js,mjs}'],
     languageOptions: {
       ecmaVersion: 2022,

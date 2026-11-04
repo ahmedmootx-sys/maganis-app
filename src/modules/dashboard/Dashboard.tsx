@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { appStorage } from '../../platform/storage.ts'
+import { recordStorageError } from '../../platform/storageHealth.ts'
 import { assetUrl } from '../../utils/assetUrl'
 import { formatArabicDate } from '../../lib/dateUtils'
 import type {
@@ -153,22 +155,24 @@ export function Dashboard({
 
   const [backupDismissed, setBackupDismissed] = useState<boolean>(() => {
     try {
-      const raw = localStorage.getItem('maganis:backup_reminder_dismissed')
+      const raw = appStorage.getItem('maganis:backup_reminder_dismissed')
       if (!raw) return false
       const ts = Number(raw)
       return Number.isFinite(ts) && Date.now() - ts < 3 * 24 * 60 * 60 * 1000
-    } catch {
+    } catch (err) {
+      recordStorageError('maganis:backup_reminder_dismissed', err)
       return false
     }
   })
 
   const lastBackupAt = useMemo<number | null>(() => {
     try {
-      const raw = localStorage.getItem('backup.last-export')
+      const raw = appStorage.getItem('backup.last-export')
       if (!raw) return null
       const ts = Number(JSON.parse(raw))
       return Number.isFinite(ts) ? ts : null
-    } catch {
+    } catch (err) {
+      recordStorageError('backup.last-export', err)
       return null
     }
   }, [])
@@ -208,8 +212,9 @@ export function Dashboard({
   // Red Flag state & confirmation
   const [redFlagDismissed, setRedFlagDismissed] = useState(() => {
     try {
-      return localStorage.getItem('maganis:redflag_dismissed') === 'true'
-    } catch {
+      return appStorage.getItem('maganis:redflag_dismissed') === 'true'
+    } catch (err) {
+      recordStorageError('maganis:redflag_dismissed', err)
       return false
     }
   })
@@ -238,10 +243,10 @@ export function Dashboard({
   const todayKey = useMemo(() => new Date().toISOString().split('T')[0], [])
   const dailyNutrition = useMemo(() => {
     try {
-      const raw = localStorage.getItem(`maganis:daily_nutrition_${todayKey}`)
+      const raw = appStorage.getItem(`maganis:daily_nutrition_${todayKey}`)
       if (raw) return JSON.parse(raw)
-    } catch {
-      // ignore
+    } catch (err) {
+      recordStorageError(`maganis:daily_nutrition_${todayKey}`, err)
     }
     return {
       consumedCalories: 0,
@@ -405,12 +410,12 @@ export function Dashboard({
                 type="button"
                 onClick={() => {
                   try {
-                    localStorage.setItem(
+                    appStorage.setItem(
                       'maganis:backup_reminder_dismissed',
                       String(Date.now()),
                     )
-                  } catch {
-                    // ignore
+                  } catch (err) {
+                    recordStorageError('maganis:backup_reminder_dismissed', err)
                   }
                   setBackupDismissed(true)
                 }}
@@ -442,12 +447,12 @@ export function Dashboard({
                     await onSaveBackup()
                   }
                   try {
-                    localStorage.setItem(
+                    appStorage.setItem(
                       'maganis:backup_reminder_dismissed',
                       String(Date.now()),
                     )
-                  } catch {
-                    // ignore
+                  } catch (err) {
+                    recordStorageError('maganis:backup_reminder_dismissed', err)
                   }
                   setBackupDismissed(true)
                 }}
@@ -1020,9 +1025,9 @@ export function Dashboard({
         cancelLabel="إلغاء"
         onConfirm={() => {
           try {
-            localStorage.setItem('maganis:redflag_dismissed', 'true')
-          } catch {
-            // ignore
+            appStorage.setItem('maganis:redflag_dismissed', 'true')
+          } catch (err) {
+            recordStorageError('maganis:redflag_dismissed', err)
           }
           setRedFlagDismissed(true)
           setShowRedFlagConfirm(false)

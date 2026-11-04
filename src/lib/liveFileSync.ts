@@ -4,45 +4,22 @@
  * whenever changes occur, eliminating the need for repetitive manual exports.
  */
 import type { BackupData } from '../modules/shared/types.ts'
+import { isNative } from '../platform/runtime.ts'
+import {
+  getIndexedItem,
+  setIndexedItem,
+  removeIndexedItem,
+} from './indexedStorage.ts'
 
-const DB_NAME = 'maganis_sync_db'
-const STORE_NAME = 'sync_handles'
 const HANDLE_KEY = 'live_file_handle'
 
-function openDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    if (typeof indexedDB === 'undefined') {
-      return reject(new Error('IndexedDB not supported'))
-    }
-    const req = indexedDB.open(DB_NAME, 1)
-    req.onupgradeneeded = () => {
-      req.result.createObjectStore(STORE_NAME)
-    }
-    req.onsuccess = () => resolve(req.result)
-    req.onerror = () => reject(req.error)
-  })
-}
-
 async function saveHandle(handle: FileSystemFileHandle): Promise<void> {
-  const db = await openDB()
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite')
-    tx.objectStore(STORE_NAME).put(handle, HANDLE_KEY)
-    tx.oncomplete = () => resolve()
-    tx.onerror = () => reject(tx.error)
-  })
+  await setIndexedItem(HANDLE_KEY, handle)
 }
 
 async function loadSavedHandle(): Promise<FileSystemFileHandle | null> {
   try {
-    const db = await openDB()
-    return new Promise((resolve) => {
-      const tx = db.transaction(STORE_NAME, 'readonly')
-      const req = tx.objectStore(STORE_NAME).get(HANDLE_KEY)
-      req.onsuccess = () =>
-        resolve((req.result as FileSystemFileHandle) || null)
-      req.onerror = () => resolve(null)
-    })
+    return await getIndexedItem<FileSystemFileHandle>(HANDLE_KEY)
   } catch {
     return null
   }
@@ -50,13 +27,7 @@ async function loadSavedHandle(): Promise<FileSystemFileHandle | null> {
 
 async function deleteSavedHandle(): Promise<void> {
   try {
-    const db = await openDB()
-    return new Promise((resolve) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite')
-      tx.objectStore(STORE_NAME).delete(HANDLE_KEY)
-      tx.oncomplete = () => resolve()
-      tx.onerror = () => resolve()
-    })
+    await removeIndexedItem(HANDLE_KEY)
   } catch {
     // silent
   }
@@ -91,6 +62,7 @@ export function createLiveFileSyncManager(): LiveFileSyncManager {
   }
 
   function isSupported(): boolean {
+    if (isNative()) return false
     return typeof window !== 'undefined' && 'showSaveFilePicker' in window
   }
 

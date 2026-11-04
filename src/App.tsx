@@ -9,6 +9,14 @@ import {
 import type { AppConfig } from './config/appConfig.ts'
 import { assetUrl } from './utils/assetUrl.ts'
 import { createStorage } from './lib/storage.ts'
+import { appStorage } from './platform/storage.ts'
+import { StorageHealthBanner } from './components/StorageHealthBanner.tsx'
+import {
+  applySnapshot,
+  validateSnapshot,
+  type MaganisSnapshotV2,
+} from './modules/backup/snapshot.ts'
+import { recordStorageError } from './platform/storageHealth.ts'
 import { navigationHistory } from './utils/navigationHistory.ts'
 import { createLiveFileSyncManager } from './lib/liveFileSync.ts'
 import { createProfileStore } from './modules/onboarding/profileStore.ts'
@@ -50,11 +58,7 @@ import {
   IconSettings,
   IconClose,
 } from './components/Icons.tsx'
-import {
-  getAllExerciseOverrides,
-  saveExerciseOverride,
-  type ExerciseOverride,
-} from './modules/workout/exerciseOverrides.ts'
+import { getAllExerciseOverrides } from './modules/workout/exerciseOverrides.ts'
 import { ConfirmSheet, Icon, Skeleton } from './ui/index.ts'
 import { IconSprite } from './ui/IconSprite.tsx'
 import { useRouter } from './shell/router.ts'
@@ -296,7 +300,7 @@ export function App({ config }: AppProps) {
   const [activeWorkoutDay, setActiveWorkoutDay] = useState<ProgramDay | null>(
     () => {
       try {
-        const raw = localStorage.getItem('maganis:active_session')
+        const raw = appStorage.getItem('maganis:active_session')
         if (raw) {
           const parsed = JSON.parse(raw)
           if (
@@ -307,8 +311,8 @@ export function App({ config }: AppProps) {
             return parsed.programDay as ProgramDay
           }
         }
-      } catch {
-        // ignore
+      } catch (err) {
+        recordStorageError('maganis:active_session', err)
       }
       return null
     },
@@ -340,7 +344,7 @@ export function App({ config }: AppProps) {
     minimized?: boolean
   } | null>(() => {
     try {
-      const raw = localStorage.getItem('maganis:cardio_active_session')
+      const raw = appStorage.getItem('maganis:cardio_active_session')
       return raw ? JSON.parse(raw) : null
     } catch {
       return null
@@ -351,7 +355,7 @@ export function App({ config }: AppProps) {
   useEffect(() => {
     const syncCardioSession = () => {
       try {
-        const raw = localStorage.getItem('maganis:cardio_active_session')
+        const raw = appStorage.getItem('maganis:cardio_active_session')
         const parsed = raw ? JSON.parse(raw) : null
         setActiveCardioSession(parsed)
       } catch {
@@ -359,12 +363,16 @@ export function App({ config }: AppProps) {
       }
     }
 
-    window.addEventListener('storage', syncCardioSession)
+    const unsubStorage = appStorage.subscribe((e) => {
+      if (e.key === null || e.key === 'maganis:cardio_active_session') {
+        syncCardioSession()
+      }
+    })
     window.addEventListener('cardio-session-sync', syncCardioSession)
     const interval = setInterval(syncCardioSession, 1000)
 
     return () => {
-      window.removeEventListener('storage', syncCardioSession)
+      unsubStorage()
       window.removeEventListener('cardio-session-sync', syncCardioSession)
       clearInterval(interval)
     }
@@ -384,7 +392,7 @@ export function App({ config }: AppProps) {
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     try {
-      const stored = localStorage.getItem('maganis:theme')
+      const stored = appStorage.getItem('maganis:theme')
       if (stored === 'dark' || stored === 'light') return stored
       return window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
@@ -397,9 +405,9 @@ export function App({ config }: AppProps) {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     try {
-      localStorage.setItem('maganis:theme', theme)
-    } catch {
-      // ignore
+      appStorage.setItem('maganis:theme', theme)
+    } catch (err) {
+      recordStorageError('maganis:theme', err)
     }
   }, [theme])
 
@@ -631,7 +639,7 @@ export function App({ config }: AppProps) {
       setShowLogger(false)
       setActiveWorkoutDay(null)
       try {
-        localStorage.removeItem('maganis:active_session')
+        appStorage.removeItem('maganis:active_session')
       } catch {
         // ignore
       }
@@ -749,9 +757,10 @@ export function App({ config }: AppProps) {
     liveSyncManager,
   ])
 
+  // Throttled pre-update snapshot: runs once per day on boot, not on every set
   useEffect(() => {
-    takePreUpdateSnapshot(handleBackupData)
-  }, [handleBackupData])
+    void takePreUpdateSnapshot()
+  }, [])
 
   const handleImported = useCallback(() => {
     setProfile(profileStore.loadProfile())
@@ -762,38 +771,24 @@ export function App({ config }: AppProps) {
   }, [profileStore, workoutStore, trackingStore])
 
   const handleRestoreBackup = useCallback(
-    (data: BackupData) => {
-      if (data.profile && typeof data.profile === 'object') {
-        profileStore.saveProfile(data.profile as UserProfile)
-      }
-      if (data.workoutProgram) {
-        workoutStore.saveProgram(data.workoutProgram)
-      }
-      if (Array.isArray(data.customExercises)) {
-        storage.set('workout.custom-exercises', data.customExercises)
-      }
-      if (Array.isArray(data.trackingSessions)) {
-        storage.set('tracking.sessions', data.trackingSessions)
-      }
-      if (Array.isArray(data.bodyLog)) {
-        storage.set('tracking.body-log', data.bodyLog)
-      }
-      if (Array.isArray(data.dayNotes)) {
-        storage.set('tracking.notes', data.dayNotes)
-      }
-      if (
-        data.exerciseOverrides &&
-        typeof data.exerciseOverrides === 'object'
-      ) {
-        for (const ov of Object.values(data.exerciseOverrides)) {
-          if (ov && typeof ov === 'object') {
-            saveExerciseOverride(ov as ExerciseOverride).catch(() => {})
+    async (data: BackupData | MaganisSnapshotV2) => {
+      if ((data as MaganisSnapshotV2).format === 'maganis-snapshot') {
+        const res = await applySnapshot(data as MaganisSnapshotV2)
+        if (!res.success) {
+          throw new Error(res.errorAr || 'فشلت استعادة النسخة الاحتياطية')
+        }
+      } else {
+        const validation = await validateSnapshot(data)
+        if (validation.ok && validation.snapshot) {
+          const res = await applySnapshot(validation.snapshot)
+          if (!res.success) {
+            throw new Error(res.errorAr || 'فشلت استعادة النسخة الاحتياطية')
           }
         }
       }
       handleImported()
     },
-    [profileStore, workoutStore, storage, handleImported],
+    [handleImported],
   )
 
   // --- Styleguide dev route ---
@@ -801,6 +796,7 @@ export function App({ config }: AppProps) {
     return (
       <div className="maganis-shell">
         <IconSprite />
+        <StorageHealthBanner />
         <Suspense fallback={<ScreenSkeleton />}>
           <Styleguide />
         </Suspense>
@@ -813,6 +809,7 @@ export function App({ config }: AppProps) {
     return (
       <div className="maganis-shell">
         <IconSprite />
+        <StorageHealthBanner />
         <Suspense fallback={<ScreenSkeleton />}>
           <ComponentGallery />
         </Suspense>
@@ -825,6 +822,8 @@ export function App({ config }: AppProps) {
     return (
       <div className="maganis-shell app app--fullscreen" dir="rtl">
         <IconSprite />
+        <StorageHealthBanner />
+        <StorageHealthBanner />
         <h1 data-testid="app-title" style={{ display: 'none' }}>
           {config.appName}
         </h1>
@@ -1188,7 +1187,7 @@ export function App({ config }: AppProps) {
               setActiveWorkoutDay(null)
               setIsWorkoutSessionExpanded(false)
               try {
-                localStorage.removeItem('maganis:active_session')
+                appStorage.removeItem('maganis:active_session')
               } catch {
                 // ignore
               }
@@ -1204,6 +1203,7 @@ export function App({ config }: AppProps) {
         style={{ display: isWorkoutSessionExpanded ? 'none' : 'grid' }}
       >
         <IconSprite />
+        <StorageHealthBanner />
         <header className="app-header" style={{ display: 'none' }}>
           <div className="maganis-header-brand">
             <img
@@ -1391,7 +1391,7 @@ export function App({ config }: AppProps) {
                     pausedAt: now,
                   }
                 }
-                localStorage.setItem(
+                appStorage.setItem(
                   'maganis:cardio_active_session',
                   JSON.stringify(updated),
                 )
@@ -1417,14 +1417,14 @@ export function App({ config }: AppProps) {
                 weightKg={activeCardioSession.weightKg}
                 onCancel={() => {
                   setIsCardioRunnerOpen(false)
-                  localStorage.removeItem('maganis:cardio_active_session')
+                  appStorage.removeItem('maganis:cardio_active_session')
                   setActiveCardioSession(null)
                   window.dispatchEvent(new Event('cardio-session-sync'))
                 }}
                 onMinimize={() => {
                   setIsCardioRunnerOpen(false)
                   try {
-                    const raw = localStorage.getItem(
+                    const raw = appStorage.getItem(
                       'maganis:cardio_active_session',
                     )
                     setActiveCardioSession(raw ? JSON.parse(raw) : null)
@@ -1434,7 +1434,7 @@ export function App({ config }: AppProps) {
                 }}
                 onFinish={(sessionData) => {
                   setIsCardioRunnerOpen(false)
-                  localStorage.removeItem('maganis:cardio_active_session')
+                  appStorage.removeItem('maganis:cardio_active_session')
                   setActiveCardioSession(null)
                   window.dispatchEvent(new Event('cardio-session-sync'))
                   const nowStr = new Date().toISOString().slice(0, 10)
@@ -1568,7 +1568,7 @@ export function App({ config }: AppProps) {
             setActiveWorkoutDay(null)
             setIsWorkoutSessionExpanded(false)
             try {
-              localStorage.removeItem('maganis:active_session')
+              appStorage.removeItem('maganis:active_session')
             } catch {
               // ignore
             }

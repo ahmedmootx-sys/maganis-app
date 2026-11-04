@@ -16,6 +16,14 @@ export interface SaveFileResult {
 export const DOWNLOAD_NOTICE_CALLOUT_AR =
   'سيُحفظ الملف في مجلد التنزيلات. لاختيار المكان في كل مرة، فعّل «اسأل عن مكان حفظ الملفات» من إعدادات Chrome ← التنزيلات'
 
+export async function saveBlobAsFile(
+  blob: Blob,
+  filename: string,
+): Promise<SaveFileResult> {
+  const mime = blob.type || 'application/octet-stream'
+  return saveFile(blob, filename, mime)
+}
+
 export async function saveFile(
   blob: Blob,
   filename: string,

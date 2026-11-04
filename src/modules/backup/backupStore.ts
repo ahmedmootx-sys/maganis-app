@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { appStorage } from '../../platform/storage.ts'
 import type { BackupData } from '../shared/types.ts'
 
 export interface BackupStore {
@@ -219,7 +220,7 @@ export const BackupImportSchema = z
 export function createBackupStore(): BackupStore {
   function getLastExport(): number | null {
     try {
-      const raw = localStorage.getItem(LAST_EXPORT_KEY)
+      const raw = appStorage.getItem(LAST_EXPORT_KEY)
       if (!raw) return null
       const ts = Number(JSON.parse(raw))
       return Number.isFinite(ts) ? ts : null
@@ -235,7 +236,7 @@ export function createBackupStore(): BackupStore {
 
   function recordExport(): void {
     try {
-      localStorage.setItem(LAST_EXPORT_KEY, JSON.stringify(Date.now()))
+      appStorage.setItem(LAST_EXPORT_KEY, JSON.stringify(Date.now()))
     } catch {
       // silent
     }

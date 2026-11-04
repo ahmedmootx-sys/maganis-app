@@ -21,32 +21,23 @@ describe('Platform Runtime and Skeleton (Task N1)', () => {
     expect(info.signingSha256).toBe('web-unsigned')
   })
 
-  it('unimplemented future platform modules return honest unsupported responses', async () => {
+  it('implements platform.kv and platform.media in Task N2', async () => {
     // KV storage (N2)
-    await expect(platform.kv.get('test')).rejects.toThrow(
-      /unsupported.*Task N2/,
-    )
-    await expect(platform.kv.set('test', '1')).rejects.toThrow(
-      /unsupported.*Task N2/,
-    )
+    await platform.kv.set('test_k', 'test_v')
+    expect(await platform.kv.get('test_k')).toBe('test_v')
+    await platform.kv.remove('test_k')
+    expect(await platform.kv.get('test_k')).toBeNull()
 
     // Media storage (N2)
-    await expect(platform.media.saveMedia('test', new Blob())).rejects.toThrow(
-      /unsupported.*Task N2/,
-    )
-    await expect(platform.media.getMedia('test')).rejects.toThrow(
-      /unsupported.*Task N2/,
-    )
-    await expect(platform.media.deleteMedia('test')).rejects.toThrow(
-      /unsupported.*Task N2/,
-    )
+    const blob = new Blob(['media-bytes'], { type: 'text/plain' })
+    const savedId = await platform.media.saveMedia('test_media', blob)
+    expect(savedId).toBe('test_media')
+    const media = await platform.media.getMedia('test_media')
+    expect(media).not.toBeNull()
+    await platform.media.deleteMedia('test_media')
+  })
 
-    // KV storage (N2)
-    await expect(platform.kv.remove('test')).rejects.toThrow(
-      /unsupported.*Task N2/,
-    )
-    await expect(platform.kv.clear()).rejects.toThrow(/unsupported.*Task N2/)
-
+  it('unimplemented future platform modules return honest unsupported responses', async () => {
     // Files (N3)
     const fileResult = await platform.files.saveFile('test.json', '{}')
     expect(fileResult.success).toBe(false)

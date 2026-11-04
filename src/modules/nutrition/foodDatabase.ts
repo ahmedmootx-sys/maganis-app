@@ -1,3 +1,6 @@
+import { appStorage } from '../../platform/storage.ts'
+import { recordStorageError } from '../../platform/storageHealth.ts'
+
 export interface FoodItem {
   id: string
   nameAr: string
@@ -359,10 +362,10 @@ export const FOOD_DATABASE: FoodItem[] = [
 
 export function getCustomFoodItems(): FoodItem[] {
   try {
-    const raw = localStorage.getItem('maganis:custom_food_items')
+    const raw = appStorage.getItem('maganis:custom_food_items')
     if (raw) return JSON.parse(raw) as FoodItem[]
-  } catch {
-    // ignore
+  } catch (err) {
+    recordStorageError('maganis:custom_food_items', err)
   }
   return []
 }
@@ -371,9 +374,9 @@ export function saveCustomFoodItem(item: FoodItem): void {
   try {
     const existing = getCustomFoodItems()
     const updated = [item, ...existing.filter((f) => f.id !== item.id)]
-    localStorage.setItem('maganis:custom_food_items', JSON.stringify(updated))
-  } catch {
-    // ignore
+    appStorage.setItem('maganis:custom_food_items', JSON.stringify(updated))
+  } catch (err) {
+    recordStorageError('maganis:custom_food_items', err)
   }
 }
 

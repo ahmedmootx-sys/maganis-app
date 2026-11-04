@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { appStorage } from '../../platform/storage.ts'
 import {
   calculateCardioEnergy,
   calculateLiveEnergy,
@@ -127,7 +128,7 @@ export function CardioRunner({
   // Restore existing session on mount if valid
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY)
+      const saved = appStorage.getItem(STORAGE_KEY)
       if (saved) {
         const data: CardioSessionPersistence = JSON.parse(saved)
         if (
@@ -234,12 +235,12 @@ export function CardioRunner({
           // ignore
         }
       }
-      localStorage.removeItem(STORAGE_KEY)
+      appStorage.removeItem(STORAGE_KEY)
       setPhase('finished')
     }
   }, [phase, currentElapsedMs, totalTargetMs])
 
-  // Persist session to localStorage on running state changes
+  // Persist session to appStorage on running state changes
   useEffect(() => {
     if (phase === 'running' && estimate) {
       const sessionData: CardioSessionPersistence = {
@@ -254,7 +255,7 @@ export function CardioRunner({
         pausedAt: lastPauseTime,
         estimate,
       }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
+      appStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
     }
   }, [
     phase,
@@ -292,7 +293,7 @@ export function CardioRunner({
   function handleSaveFinal() {
     if (isSaved || !estimate) return
     setIsSaved(true)
-    localStorage.removeItem(STORAGE_KEY)
+    appStorage.removeItem(STORAGE_KEY)
 
     const finalMinutes = Math.max(1, Math.round(elapsedMinutes))
     const finalGrossKcal = Math.round(grossRate * finalMinutes)
@@ -848,7 +849,7 @@ export function CardioRunner({
                   estimate,
                   minimized: true,
                 }
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
+                appStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
               }
               if (onMinimize) {
                 onMinimize()
@@ -910,7 +911,7 @@ export function CardioRunner({
               }}
               onClick={() => {
                 setShowSaveDiscardSheet(false)
-                localStorage.removeItem(STORAGE_KEY)
+                appStorage.removeItem(STORAGE_KEY)
                 onCancel()
               }}
             >

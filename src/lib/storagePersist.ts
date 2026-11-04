@@ -5,6 +5,7 @@
  */
 
 import { isNative } from '../platform/runtime.ts'
+import { appStorage } from '../platform/storage.ts'
 
 export const STORAGE_PERSIST_KEY = 'maganis:storage_persist_requested'
 
@@ -23,12 +24,12 @@ export async function requestStoragePersistenceOnce(): Promise<boolean> {
   }
 
   try {
-    if (localStorage.getItem(STORAGE_PERSIST_KEY)) {
+    if (appStorage.getItem(STORAGE_PERSIST_KEY)) {
       return (await navigator.storage?.persisted?.()) ?? false
     }
 
     const persisted = await navigator.storage.persist()
-    localStorage.setItem(STORAGE_PERSIST_KEY, 'true')
+    appStorage.setItem(STORAGE_PERSIST_KEY, 'true')
     return persisted
   } catch {
     return false

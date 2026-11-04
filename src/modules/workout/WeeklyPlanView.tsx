@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { appStorage } from '../../platform/storage.ts'
 import type {
   CustomExercise,
   Exercise,
@@ -216,7 +217,7 @@ export function CardioDayScreen({
   // Check for active in-progress session to resume
   const [isRunnerActive, setIsRunnerActive] = useState<boolean>(() => {
     try {
-      return !!localStorage.getItem('maganis:cardio_active_session')
+      return !!appStorage.getItem('maganis:cardio_active_session')
     } catch {
       return false
     }

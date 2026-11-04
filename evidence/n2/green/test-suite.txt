@@ -1,0 +1,10 @@
+Test Files  60 passed (60)
+Tests       563 passed (563)
+Duration    43.27s
+
+Included new Task N2 tests:
+- src/platform/snapshotCompleteness.test.ts (2 tests passed)
+- src/platform/durableKv.test.ts (3 tests passed)
+- src/platform/migrations.test.ts (2 tests passed)
+- src/modules/workout/exerciseOverridesStorageFailure.test.ts (2 tests passed)
+- android/app/src/test/java/app/maganis/coach/DurableFileStoreTest.java (14 tests wired into CI)

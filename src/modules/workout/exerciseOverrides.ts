@@ -10,6 +10,8 @@
  */
 
 import type { Exercise, ExerciseMuscleTarget } from '../shared/types.ts'
+import { appStorage } from '../../platform/storage.ts'
+import { recordStorageError } from '../../platform/storageHealth.ts'
 import {
   getIndexedItem,
   setIndexedItem,
@@ -94,27 +96,26 @@ export function notifyOverridesChanged(): void {
   })
 }
 
-// Synchronous bootstrap of metadata from localStorage
-if (typeof localStorage !== 'undefined') {
-  try {
-    const raw = localStorage.getItem(`maganis:${OVERRIDES_STORAGE_KEY}`)
-    if (raw) {
-      inMemoryOverrides = JSON.parse(raw)
-      // Normalize legacy overrides
-      for (const [id, ov] of Object.entries(inMemoryOverrides)) {
-        if (!ov.media && ov.imageMode === 'custom' && ov.customImageBlob) {
-          ov.media = {
-            kind: 'upload-image',
-            blobKey: id,
-            updatedAt: ov.updatedAt || Date.now(),
-          }
-          inMemoryMedia[id] = { dataUrl: ov.customImageBlob }
+// Synchronous bootstrap of metadata from appStorage
+try {
+  const raw = appStorage.getItem(`maganis:${OVERRIDES_STORAGE_KEY}`)
+  if (raw) {
+    inMemoryOverrides = JSON.parse(raw)
+    // Normalize legacy overrides
+    for (const [id, ov] of Object.entries(inMemoryOverrides)) {
+      if (!ov.media && ov.imageMode === 'custom' && ov.customImageBlob) {
+        ov.media = {
+          kind: 'upload-image',
+          blobKey: id,
+          updatedAt: ov.updatedAt || Date.now(),
         }
+        inMemoryMedia[id] = { dataUrl: ov.customImageBlob }
       }
     }
-  } catch {
-    inMemoryOverrides = {}
   }
+} catch (err) {
+  recordStorageError(`maganis:${OVERRIDES_STORAGE_KEY}`, err)
+  inMemoryOverrides = {}
 }
 
 // Asynchronous background hydration from IndexedDB
@@ -274,21 +275,24 @@ export async function saveExerciseOverride(
     storageOverrides[k] = item
   }
 
-  // 3. Write to localStorage (strict error handling)
-  if (typeof localStorage !== 'undefined') {
-    try {
-      localStorage.setItem(
-        `maganis:${OVERRIDES_STORAGE_KEY}`,
-        JSON.stringify(storageOverrides),
-      )
-    } catch {
-      throw new StorageSaveError()
-    }
+  // 3. Write to appStorage (strict error handling)
+  try {
+    appStorage.setItem(
+      `maganis:${OVERRIDES_STORAGE_KEY}`,
+      JSON.stringify(storageOverrides),
+    )
+  } catch (err) {
+    recordStorageError(`maganis:${OVERRIDES_STORAGE_KEY}`, err)
+    throw new StorageSaveError()
   }
 
-  // 4. Write to IndexedDB KV store (strict error handling)
+  // 4. Write to IndexedDB / native KV store (strict error handling)
   const kvOk = await setIndexedItem(OVERRIDES_STORAGE_KEY, nextOverrides)
   if (!kvOk) {
+    recordStorageError(
+      OVERRIDES_STORAGE_KEY,
+      new Error('Failed to set indexed item for overrides'),
+    )
     throw new StorageSaveError()
   }
 
@@ -316,16 +320,14 @@ export async function sweepOrphanedMedia(): Promise<number> {
 
     // Check in-memory overrides, fallback to localStorage to prevent race conditions during boot
     let overrides = inMemoryOverrides
-    if (typeof localStorage !== 'undefined') {
-      try {
-        const raw = localStorage.getItem(`maganis:${OVERRIDES_STORAGE_KEY}`)
-        if (raw) {
-          const parsed = JSON.parse(raw)
-          overrides = { ...parsed, ...inMemoryOverrides }
-        }
-      } catch {
-        // ignore
+    try {
+      const raw = appStorage.getItem(`maganis:${OVERRIDES_STORAGE_KEY}`)
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        overrides = { ...parsed, ...inMemoryOverrides }
       }
+    } catch (err) {
+      recordStorageError(`maganis:${OVERRIDES_STORAGE_KEY}`, err)
     }
 
     let sweptCount = 0
@@ -360,27 +362,29 @@ export async function deleteExerciseOverride(
     const nextOverrides = { ...inMemoryOverrides }
     delete nextOverrides[exerciseId]
 
-    // Sync to localStorage
-    if (typeof localStorage !== 'undefined') {
-      try {
-        const storageOverrides: Record<string, ExerciseOverride> = {}
-        for (const [k, v] of Object.entries(nextOverrides)) {
-          const item = { ...v }
-          if (item.customImageBlob && item.customImageBlob.length > 512) {
-            delete item.customImageBlob
-          }
-          storageOverrides[k] = item
+    // Sync to appStorage
+    try {
+      const storageOverrides: Record<string, ExerciseOverride> = {}
+      for (const [k, v] of Object.entries(nextOverrides)) {
+        const item = { ...v }
+        if (item.customImageBlob && item.customImageBlob.length > 512) {
+          delete item.customImageBlob
         }
-        localStorage.setItem(
-          `maganis:${OVERRIDES_STORAGE_KEY}`,
-          JSON.stringify(storageOverrides),
-        )
-      } catch {
-        // silent
+        storageOverrides[k] = item
       }
+      appStorage.setItem(
+        `maganis:${OVERRIDES_STORAGE_KEY}`,
+        JSON.stringify(storageOverrides),
+      )
+    } catch (err) {
+      recordStorageError(`maganis:${OVERRIDES_STORAGE_KEY}`, err)
+      throw new StorageSaveError()
     }
 
-    await setIndexedItem(OVERRIDES_STORAGE_KEY, nextOverrides)
+    const kvOk = await setIndexedItem(OVERRIDES_STORAGE_KEY, nextOverrides)
+    if (!kvOk) {
+      throw new StorageSaveError()
+    }
     await removeMediaItem(exerciseId)
 
     inMemoryOverrides = nextOverrides
@@ -396,11 +400,9 @@ export async function resetAllOverrides(): Promise<void> {
   inMemoryOverrides = {}
   inMemoryMedia = {}
   try {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(`maganis:${OVERRIDES_STORAGE_KEY}`)
-    }
-  } catch {
-    // silent
+    appStorage.removeItem(`maganis:${OVERRIDES_STORAGE_KEY}`)
+  } catch (err) {
+    recordStorageError(`maganis:${OVERRIDES_STORAGE_KEY}`, err)
   }
   await setIndexedItem(OVERRIDES_STORAGE_KEY, {})
   notifyOverridesChanged()

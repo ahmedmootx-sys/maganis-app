@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { appStorage } from '../../platform/storage.ts'
 import type { UserProfile, Goal } from '../onboarding/types.ts'
 import { GOALS } from '../onboarding/types.ts'
 import {
@@ -23,6 +24,7 @@ import {
   Callout,
 } from '../../ui'
 import { BackupPanel } from '../backup/BackupPanel.tsx'
+import { PwaTransferSection } from '../backup/PwaTransferSection.tsx'
 import { fmtFactor } from '../../utils/bidi.ts'
 import { DiagnosticsSheet } from './DiagnosticsSheet.tsx'
 import { ResetSheet } from './ResetSheet.tsx'
@@ -99,11 +101,11 @@ export function SettingsScreen({
   const [currentThemeMode, setCurrentThemeMode] = useState<ThemeMode>(() => {
     if (propThemeMode) return propThemeMode
     try {
-      const saved = localStorage.getItem('maganis:theme_mode')
+      const saved = appStorage.getItem('maganis:theme_mode')
       if (saved === 'auto' || saved === 'light' || saved === 'dark')
         return saved
-    } catch {
-      // ignore
+    } catch (err) {
+      console.warn('Failed to read theme_mode from storage:', err)
     }
     return 'auto'
   })
@@ -162,9 +164,9 @@ export function SettingsScreen({
   function handleThemeChange(mode: ThemeMode) {
     setCurrentThemeMode(mode)
     try {
-      localStorage.setItem('maganis:theme_mode', mode)
-    } catch {
-      // ignore
+      appStorage.setItem('maganis:theme_mode', mode)
+    } catch (err) {
+      console.warn('Failed to write theme_mode to storage:', err)
     }
     onChangeThemeMode?.(mode)
 
@@ -558,11 +560,14 @@ export function SettingsScreen({
 
         {/* Section 4: البيانات والمزامنة */}
         <Section title="البيانات والمزامنة">
-          <BackupPanel
-            backupData={backupData}
-            onImported={onImported}
-            onRestore={onRestore}
-          />
+          <PwaTransferSection onImportComplete={onImported} />
+          <div style={{ marginTop: '16px' }}>
+            <BackupPanel
+              backupData={backupData}
+              onImported={onImported}
+              onRestore={onRestore}
+            />
+          </div>
         </Section>
 
         {/* Section 5: حول التطبيق (عن التطبيق) */}

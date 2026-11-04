@@ -1,3 +1,5 @@
+import { appStorage } from '../platform/storage.ts'
+
 export class StorageError extends Error {
   constructor(message: string) {
     super(message)
@@ -13,18 +15,11 @@ export interface Storage {
 }
 
 /**
- * Creates a namespaced JSON wrapper around window.localStorage.
+ * Creates a namespaced JSON wrapper around appStorage.
  * All keys are stored as "<prefix>:<key>" so different apps (and dev vs
  * production environments) never collide on the same origin.
  */
 export function createStorage(prefix: string): Storage {
-  if (typeof localStorage === 'undefined') {
-    throw new StorageError(
-      'localStorage is not available in this environment. ' +
-        'Maganis stores all data on-device, so a browser context is required.',
-    )
-  }
-
   function fullKey(key: string): string {
     return prefix + ':' + key
   }
@@ -33,13 +28,10 @@ export function createStorage(prefix: string): Storage {
     const keyWithPrefix = fullKey(key)
     let raw: string | null
     try {
-      raw = localStorage.getItem(keyWithPrefix)
+      raw = appStorage.getItem(keyWithPrefix)
     } catch (error) {
       throw new StorageError(
-        'Failed to read "' +
-          keyWithPrefix +
-          '" from localStorage: ' +
-          String(error),
+        'Failed to read "' + keyWithPrefix + '" from storage: ' + String(error),
       )
     }
     if (raw === null) return fallback
@@ -69,25 +61,25 @@ export function createStorage(prefix: string): Storage {
       )
     }
     try {
-      localStorage.setItem(keyWithPrefix, serialized)
+      appStorage.setItem(keyWithPrefix, serialized)
     } catch (error) {
       throw new StorageError(
         'Failed to save "' +
           keyWithPrefix +
-          '" to localStorage (storage full or blocked?). Free up space or unblock site data, then retry. Details: ' +
+          '" to storage (storage full or blocked?). Free up space or unblock site data, then retry. Details: ' +
           String(error),
       )
     }
   }
 
   function remove(key: string): void {
-    localStorage.removeItem(fullKey(key))
+    appStorage.removeItem(fullKey(key))
   }
 
   function keys(): string[] {
     const result: string[] = []
-    for (let i = 0; i < localStorage.length; i += 1) {
-      const storedKey = localStorage.key(i)
+    for (let i = 0; i < appStorage.length; i += 1) {
+      const storedKey = appStorage.key(i)
       if (storedKey !== null && storedKey.startsWith(prefix + ':')) {
         result.push(storedKey.slice(prefix.length + 1))
       }

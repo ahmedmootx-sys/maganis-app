@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { appStorage } from '../../platform/storage.ts'
 import type { TrackingSession, BodyLogEntry } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { getEffectiveExercise } from '../workout/exerciseStore.ts'
@@ -64,10 +65,10 @@ export function Reports({
   function handleExportReports() {
     try {
       const allNutritionLogs: { key: string; value: unknown }[] = []
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
+      for (let i = 0; i < appStorage.length; i++) {
+        const k = appStorage.key(i)
         if (k && k.startsWith('maganis:daily_nutrition_')) {
-          const raw = localStorage.getItem(k)
+          const raw = appStorage.getItem(k)
           if (raw) {
             allNutritionLogs.push({ key: k, value: JSON.parse(raw) })
           }
@@ -130,7 +131,7 @@ export function Reports({
         if (Array.isArray(parsed.nutritionLogs)) {
           for (const item of parsed.nutritionLogs) {
             if (item.key && item.value) {
-              localStorage.setItem(item.key, JSON.stringify(item.value))
+              appStorage.setItem(item.key, JSON.stringify(item.value))
             }
           }
         }
@@ -155,13 +156,13 @@ export function Reports({
       if (onUpdateBodyLog) onUpdateBodyLog([])
 
       const keysToRemove: string[] = []
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
+      for (let i = 0; i < appStorage.length; i++) {
+        const k = appStorage.key(i)
         if (k && k.startsWith('maganis:daily_nutrition_')) {
           keysToRemove.push(k)
         }
       }
-      keysToRemove.forEach((k) => localStorage.removeItem(k))
+      keysToRemove.forEach((k) => appStorage.removeItem(k))
 
       setResetNonce((p) => p + 1)
       showMessage('تم تصفير سجلات التقارير بنجاح.')
@@ -203,10 +204,10 @@ export function Reports({
     void resetNonce
 
     try {
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
+      for (let i = 0; i < appStorage.length; i++) {
+        const k = appStorage.key(i)
         if (k && k.startsWith('maganis:daily_nutrition_')) {
-          const raw = localStorage.getItem(k)
+          const raw = appStorage.getItem(k)
           if (raw) {
             const parsed = JSON.parse(raw)
             if (parsed.date) {

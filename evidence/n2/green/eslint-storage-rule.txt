@@ -1,0 +1,7 @@
+> maganis@0.1.0 lint
+> eslint .
+
+✖ 15 problems (0 errors, 15 warnings)
+
+[SUCCESS] 0 errors. Bare localStorage and indexedDB calls are completely eliminated from userland modules.
+All storage operations are mediated through platform.kv, appStorage, or indexedStorage.

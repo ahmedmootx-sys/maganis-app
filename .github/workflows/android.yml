@@ -96,6 +96,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Run JVM Unit Tests
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew testDebugUnitTest --stacktrace
+
       - name: Assemble Debug APK
         run: |
           cd android
