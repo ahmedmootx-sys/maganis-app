@@ -1,6 +1,8 @@
 package app.maganis.coach;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,9 +16,12 @@ import android.content.pm.SigningInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Base64;
+import android.view.WindowManager;
 
 import androidx.activity.result.ActivityResult;
 import androidx.core.content.FileProvider;
@@ -1233,5 +1238,123 @@ public class MaganisNative extends Plugin {
             }
         }
         call.reject("Save As was cancelled by user");
+    }
+
+    @PluginMethod
+    public void openSettings(PluginCall call) {
+        String kind = call.getString("kind", "appNotifications");
+        Intent intent;
+        Context ctx = getContext();
+        String pkg = ctx.getPackageName();
+
+        if ("channel".equals(kind)) {
+            String channelId = call.getString("channelId");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && channelId != null) {
+                intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, pkg);
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channelId);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, pkg);
+            } else {
+                intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + pkg));
+            }
+        } else if ("exactAlarm".equals(kind)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                intent.setData(Uri.parse("package:" + pkg));
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, pkg);
+            } else {
+                intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + pkg));
+            }
+        } else if ("batteryOptimization".equals(kind)) {
+            intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        } else {
+            // "appNotifications" default
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, pkg);
+            } else {
+                intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + pkg));
+            }
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            ctx.startActivity(intent);
+            JSObject ret = new JSObject();
+            ret.put("success", true);
+            call.resolve(ret);
+        } catch (Exception e) {
+            call.reject("Could not open settings: " + e.getMessage(), e);
+        }
+    }
+
+    @PluginMethod
+    public void getPowerStatus(PluginCall call) {
+        PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
+        boolean ignoring = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && pm != null) {
+            ignoring = pm.isIgnoringBatteryOptimizations(getContext().getPackageName());
+        }
+        JSObject ret = new JSObject();
+        ret.put("ignoringBatteryOptimizations", ignoring);
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void getChannelStatus(PluginCall call) {
+        String channelId = call.getString("channelId");
+        JSObject ret = new JSObject();
+        if (channelId == null || channelId.isEmpty()) {
+            call.reject("channelId is required");
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager nm = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = nm != null ? nm.getNotificationChannel(channelId) : null;
+            if (channel != null) {
+                int importance = channel.getImportance();
+                ret.put("exists", true);
+                ret.put("enabled", importance != NotificationManager.IMPORTANCE_NONE);
+                ret.put("importance", importance);
+            } else {
+                ret.put("exists", false);
+                ret.put("enabled", false);
+                ret.put("importance", 0);
+            }
+        } else {
+            ret.put("exists", true);
+            ret.put("enabled", true);
+            ret.put("importance", 3);
+        }
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void keepScreenOn(PluginCall call) {
+        boolean enabled = Boolean.TRUE.equals(call.getBoolean("enabled", true));
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
+                if (activity.getWindow() != null) {
+                    if (enabled) {
+                        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    } else {
+                        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    }
+                }
+            });
+        }
+        JSObject ret = new JSObject();
+        ret.put("success", true);
+        ret.put("enabled", enabled);
+        call.resolve(ret);
     }
 }

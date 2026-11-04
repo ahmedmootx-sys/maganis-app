@@ -811,7 +811,9 @@ async function run() {
 
     try {
       const prettier = await import('prettier')
+      const config = await prettier.resolveConfig(process.cwd())
       contactReadme = await prettier.format(contactReadme, {
+        ...config,
         parser: 'markdown',
       })
     } catch {

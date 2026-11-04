@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
+import { haptics } from '../../platform/haptics.ts'
 import {
   calculateCardioEnergy,
   calculateLiveEnergy,
@@ -75,13 +76,7 @@ export function CardioMiniBar({
   useEffect(() => {
     if (isExpired && !expiryToastShown) {
       setExpiryToastShown(true)
-      if ('vibrate' in navigator) {
-        try {
-          navigator.vibrate([100, 50, 100, 50, 200])
-        } catch {
-          // ignore
-        }
-      }
+      void haptics.notifyWarning()
     }
   }, [isExpired, expiryToastShown])
 

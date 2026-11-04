@@ -1,6 +1,6 @@
 # Maganis Storage Inventory & Snapshot Classification
 
-Generated: 2026-11-04T04:48:02.879Z
+Generated: 2026-11-04T07:53:01.029Z
 
 This document is the authoritative inventory of all storage call sites, keys, databases, and session storage uses in Maganis.
 It defines which keys are included in the complete v2 snapshot and provides the exact architectural justification for exclusions.

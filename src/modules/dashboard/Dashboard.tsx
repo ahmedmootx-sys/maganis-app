@@ -153,6 +153,21 @@ export function Dashboard({
   const currentWeight = getCurrentWeightDisplay(bodyLog, profile)
   const goalLabel = getGoalLabel(profile)
 
+  const activeWorkoutSession = useMemo(() => {
+    try {
+      const raw = appStorage.getItem('maganis:active_session')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed.programDay && Array.isArray(parsed.exercisesState)) {
+          return parsed
+        }
+      }
+    } catch {
+      return null
+    }
+    return null
+  }, [])
+
   // Schedule decoupled from program definition
   const schedule = useMemo(
     () => getOrDeriveSchedule(profile, program),
@@ -333,6 +348,67 @@ export function Dashboard({
 
         {/* Backup Health Banner / First-run Nudge */}
         <BackupHealthBanner recentSessionsCount={recentSessions.length} />
+
+        {/* Active Workout Resume Card (Task N4.5) */}
+        {activeWorkoutSession && (
+          <Card
+            padding="md"
+            style={{
+              border: '2px solid var(--color-accent, #10B981)',
+              background: 'var(--card-subtle)',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px',
+                flexWrap: 'wrap',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    color: 'var(--color-accent, #10B981)',
+                  }}
+                >
+                  تمرين قيد التقدم الآن
+                </span>
+                <span
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 800,
+                    color: 'var(--ink)',
+                  }}
+                >
+                  {activeWorkoutSession.programDay.name ||
+                    activeWorkoutSession.programDay.labelAr}
+                </span>
+                <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
+                  جلستك ومجموعاتك محفوظة بأمان. يمكنك المتابعة في أي وقت.
+                </span>
+              </div>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() =>
+                  onStartWorkout?.(activeWorkoutSession.programDay)
+                }
+              >
+                استكمال التمرين
+              </Button>
+            </div>
+          </Card>
+        )}
 
         {/* Card تمرين اليوم أو ابدأ برنامجك عند عدم وجود جدول */}
         <Section

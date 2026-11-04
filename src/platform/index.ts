@@ -8,6 +8,12 @@ import {
   getMediaItem,
   removeMediaItem,
 } from '../lib/indexedStorage.ts'
+import { haptics } from './haptics.ts'
+import { setKeepScreenOn, isKeepAwakeSupported } from './keepAwake.ts'
+import {
+  syncSchedule,
+  cancelAllNotifications,
+} from './notifications/notificationEngine.ts'
 
 export interface PlatformInfo {
   applicationId: string
@@ -51,12 +57,15 @@ export interface PlatformFiles {
 }
 
 export interface PlatformNotifications {
-  schedule(options: unknown): Promise<{ supported: boolean; error?: string }>
-  cancel(id: string): Promise<{ supported: boolean; error?: string }>
+  schedule(): Promise<{ supported: boolean; error?: string }>
+  cancelAll(): Promise<{ supported: boolean; error?: string }>
 }
 
 export interface PlatformHaptics {
-  vibrate(): Promise<{ supported: boolean }>
+  vibrate(duration?: number): Promise<{ supported: boolean }>
+  impactLight(): Promise<void>
+  notifySuccess(): Promise<void>
+  notifyWarning(): Promise<void>
 }
 
 export interface PlatformKeepAwake {
@@ -253,36 +262,55 @@ function createLivePlatform(): Platform {
       },
     },
 
-    // Task N4 stand-in: typed honest "unsupported"
     notifications: {
-      async schedule(): Promise<{ supported: boolean; error: string }> {
-        return {
-          supported: false,
-          error: 'unsupported: Task N4 notifications not implemented yet',
+      async schedule(): Promise<{ supported: boolean; error?: string }> {
+        try {
+          await syncSchedule()
+          return { supported: true }
+        } catch (err) {
+          return { supported: false, error: String(err) }
         }
       },
-      async cancel(): Promise<{ supported: boolean; error: string }> {
-        return {
-          supported: false,
-          error: 'unsupported: Task N4 notifications not implemented yet',
+      async cancelAll(): Promise<{ supported: boolean; error?: string }> {
+        try {
+          await cancelAllNotifications()
+          return { supported: true }
+        } catch (err) {
+          return { supported: false, error: String(err) }
         }
       },
     },
 
-    // Task N4 stand-in: typed honest "unsupported"
     haptics: {
-      async vibrate(): Promise<{ supported: boolean }> {
-        return { supported: false }
+      async vibrate(duration?: number): Promise<{ supported: boolean }> {
+        await haptics.vibrate(duration)
+        return { supported: true }
+      },
+      async impactLight(): Promise<void> {
+        await haptics.impactLight()
+      },
+      async notifySuccess(): Promise<void> {
+        await haptics.notifySuccess()
+      },
+      async notifyWarning(): Promise<void> {
+        await haptics.notifyWarning()
       },
     },
 
-    // Task N4 stand-in: typed honest "unsupported"
     keepAwake: {
       async keepAwake(): Promise<{ supported: boolean }> {
-        return { supported: false }
+        if (!isKeepAwakeSupported()) {
+          return { supported: false }
+        }
+        const ok = await setKeepScreenOn(true)
+        return { supported: ok }
       },
       async allowSleep(): Promise<{ supported: boolean }> {
-        return { supported: false }
+        if (!isKeepAwakeSupported()) {
+          return { supported: false }
+        }
+        await setKeepScreenOn(false)
+        return { supported: true }
       },
     },
   }

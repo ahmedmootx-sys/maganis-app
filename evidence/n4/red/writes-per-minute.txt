@@ -1,0 +1,6 @@
+Baseline ActiveWorkoutSession Write Rate Measurement:
+- Dependency array: [programDay, exercisesState, elapsedSeconds]
+- Elapsed seconds update interval: 1000 ms (1 Hz)
+- Writes per minute without user interaction: 60 writes/minute
+- Payload per write: full session JSON serialization
+- Error handling: silent catch { // ignore } (violates Rule D3)

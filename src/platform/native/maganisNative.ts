@@ -145,6 +145,19 @@ export interface MaganisNativePlugin {
     mime?: string
     sourceName?: string
   }): Promise<{ success: boolean; bytes?: number; uri?: string }>
+
+  // Task N4: Notifications & Device Integration Methods
+  openSettings(options?: {
+    kind: 'appNotifications' | 'channel' | 'exactAlarm' | 'batteryOptimization'
+    channelId?: string
+  }): Promise<{ success: boolean }>
+  getPowerStatus(): Promise<{ ignoringBatteryOptimizations: boolean }>
+  getChannelStatus(options: {
+    channelId: string
+  }): Promise<{ exists: boolean; enabled: boolean; importance: number }>
+  keepScreenOn(options: {
+    enabled: boolean
+  }): Promise<{ success: boolean; enabled: boolean }>
 }
 
 // In-memory web mock store for tests running without Capacitor
@@ -480,6 +493,46 @@ export const webMockImplementation: MaganisNativePlugin = {
   async saveAs() {
     return { success: true, bytes: 1024, uri: 'mock://saved/doc.json' }
   },
+
+  // Task N4 Mocks
+  async openSettings() {
+    return { success: true }
+  },
+  async getPowerStatus() {
+    return { ignoringBatteryOptimizations: mockPowerIgnoring }
+  },
+  async getChannelStatus(options: { channelId: string }) {
+    if (mockChannelStatuses[options.channelId]) {
+      return mockChannelStatuses[options.channelId]
+    }
+    return { exists: true, enabled: true, importance: 3 }
+  },
+  async keepScreenOn(options: { enabled: boolean }) {
+    mockScreenKeepOn = options.enabled
+    return { success: true, enabled: options.enabled }
+  },
+}
+
+let mockPowerIgnoring = false
+let mockScreenKeepOn = false
+const mockChannelStatuses: Record<
+  string,
+  { exists: boolean; enabled: boolean; importance: number }
+> = {}
+
+export function setMockPowerStatusForTesting(ignoring: boolean): void {
+  mockPowerIgnoring = ignoring
+}
+
+export function setMockChannelStatusForTesting(
+  channelId: string,
+  status: { exists: boolean; enabled: boolean; importance: number },
+): void {
+  mockChannelStatuses[channelId] = status
+}
+
+export function getMockScreenKeepOnForTesting(): boolean {
+  return mockScreenKeepOn
 }
 
 export const MaganisNative = registerPlugin<MaganisNativePlugin>(

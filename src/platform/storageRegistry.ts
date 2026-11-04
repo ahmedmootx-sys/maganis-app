@@ -276,6 +276,27 @@ export const STORAGE_REGISTRY: readonly StorageRegistryEntry[] = [
       dataUrl: z.string(),
     }),
   },
+  {
+    key: 'maganis:notify.settings',
+    store: 'localStorage',
+    kind: 'authored',
+    snapshot: 'include',
+    reason:
+      'User notification preferences, reminder schedules, keep-awake, and haptics preferences.',
+    owner: 'src/platform/notifications/notificationStore.ts',
+    schema: z.object({
+      masterEnabled: z.boolean(),
+      workoutReminderEnabled: z.boolean(),
+      workoutReminderTime: z.string(),
+      nutritionReminderEnabled: z.boolean(),
+      nutritionReminderTime: z.string(),
+      restEndEnabled: z.boolean(),
+      cardioEndEnabled: z.boolean(),
+      backupAlertEnabled: z.boolean(),
+      keepScreenOnEnabled: z.boolean(),
+      hapticsEnabled: z.boolean(),
+    }),
+  },
 
   // --- Transient Data (Snapshot: exclude) ---
   {
@@ -394,6 +415,15 @@ export const STORAGE_REGISTRY: readonly StorageRegistryEntry[] = [
     snapshot: 'exclude',
     reason: 'Device-specific snooze timestamp for failing backup reminders.',
     owner: 'src/modules/backup/backupEngine.ts',
+  },
+  {
+    key: 'maganis:notify.lastSync',
+    store: 'localStorage',
+    kind: 'device',
+    snapshot: 'exclude',
+    reason:
+      'Device-specific notification schedule synchronization diagnostics and permission states.',
+    owner: 'src/platform/notifications/notificationEngine.ts',
   },
   {
     key: 'idb:maganis_file_sync',

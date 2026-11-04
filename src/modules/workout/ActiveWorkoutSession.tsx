@@ -1,6 +1,17 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { appStorage } from '../../platform/storage.ts'
 import { platform } from '../../platform/index.ts'
+import {
+  computeElapsedSeconds,
+  computeRestSecondsLeft,
+  isSessionStale,
+  useNow,
+} from '../../platform/timerEngine.ts'
+import { haptics } from '../../platform/haptics.ts'
+import { useKeepAwake } from '../../platform/keepAwake.ts'
+import { onAppPause } from '../../platform/lifecycle.ts'
+import { syncSchedule } from '../../platform/notifications/notificationEngine.ts'
+import { storageHealth } from '../../platform/storageHealth.ts'
 import type {
   Exercise,
   ProgramDay,
@@ -115,11 +126,16 @@ function uniqueId(): string {
 
 const ACTIVE_SESSION_STORAGE_KEY = 'maganis:active_session'
 
-interface SavedSessionState {
+export interface SavedSessionState {
   programDay: ProgramDay
   dayIndex: number
   exercisesState: ActiveExerciseState[]
-  elapsedSeconds: number
+  startedAt: number
+  pausedMs?: number
+  pausedAt?: number | null
+  restEndsAt?: number | null
+  lastSeenAt: number
+  elapsedSeconds?: number
   savedAt: number
 }
 
@@ -132,23 +148,106 @@ export function ActiveWorkoutSession({
   onMinimize,
   onElapsedSecondsUpdate,
 }: ActiveWorkoutSessionProps) {
+  // --- Load Initial Saved Session State (if matching & within 12 hours) ---
+  const [initialSavedState] = useState<SavedSessionState | null>(() => {
+    try {
+      const raw = appStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw) as SavedSessionState
+        if (
+          parsed.dayIndex === programDay.dayIndex &&
+          Array.isArray(parsed.exercisesState) &&
+          Date.now() - parsed.savedAt < 1000 * 60 * 60 * 12
+        ) {
+          return parsed
+        }
+      }
+    } catch {
+      // fallback
+    }
+    return null
+  })
+
+  // Stale-session prompt state (> 3 hours gap)
+  const [showStalePrompt, setShowStalePrompt] = useState(() => {
+    if (initialSavedState?.lastSeenAt) {
+      return isSessionStale(initialSavedState.lastSeenAt, Date.now())
+    }
+    return false
+  })
+
+  // Timestamp tracking states
+  const [startedAt] = useState<number>(() => {
+    if (initialSavedState?.startedAt) return initialSavedState.startedAt
+    if (typeof initialSavedState?.elapsedSeconds === 'number') {
+      return Date.now() - initialSavedState.elapsedSeconds * 1000
+    }
+    return Date.now()
+  })
+  const [pausedMs, setPausedMs] = useState<number>(
+    () => initialSavedState?.pausedMs || 0,
+  )
+  const [pausedAt] = useState<number | null>(
+    () => initialSavedState?.pausedAt || null,
+  )
+  const [restEndsAt, setRestEndsAt] = useState<number | null>(() => {
+    if (
+      initialSavedState?.restEndsAt &&
+      initialSavedState.restEndsAt > Date.now()
+    ) {
+      return initialSavedState.restEndsAt
+    }
+    return null
+  })
+  const [lastSeenAt, setLastSeenAt] = useState<number>(
+    () => initialSavedState?.lastSeenAt || Date.now(),
+  )
+
+  // Keep screen awake during workouts
+  useKeepAwake(true)
+
+  // 1 Hz Clock ticker (forces re-render without accumulating state)
+  const now = useNow(1000)
+
+  // Derived elapsed time strictly computed from timestamps
+  const elapsedSeconds = useMemo(() => {
+    return computeElapsedSeconds({
+      startedAt,
+      pausedMs,
+      pausedAt,
+      now,
+      lastSeenAt,
+    })
+  }, [startedAt, pausedMs, pausedAt, now, lastSeenAt])
+
+  // Derived rest seconds left from restEndsAt timestamp
+  const restSecondsLeft = useMemo(() => {
+    return computeRestSecondsLeft(restEndsAt, now)
+  }, [restEndsAt, now])
+
+  // Notify parent component of elapsed seconds updates
+  useEffect(() => {
+    onElapsedSecondsUpdate?.(elapsedSeconds)
+  }, [elapsedSeconds, onElapsedSecondsUpdate])
+
+  // Rest timer completion alert in foreground
+  const restAlertFiredRef = useRef<number | null>(null)
+  useEffect(() => {
+    if (restEndsAt !== null && now >= restEndsAt) {
+      if (restAlertFiredRef.current !== restEndsAt) {
+        restAlertFiredRef.current = restEndsAt
+        void haptics.notifySuccess()
+        setRestEndsAt(null)
+        void syncSchedule()
+      }
+    }
+  }, [restEndsAt, now])
+
   // --- Initialize Exercises & Sets with Refresh Recovery ---
   const [exercisesState, setExercisesState] = useState<ActiveExerciseState[]>(
     () => {
-      try {
-        const raw = appStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
-        if (raw) {
-          const parsed = JSON.parse(raw) as SavedSessionState
-          if (
-            parsed.dayIndex === programDay.dayIndex &&
-            Array.isArray(parsed.exercisesState) &&
-            Date.now() - parsed.savedAt < 1000 * 60 * 60 * 12
-          ) {
-            return parsed.exercisesState
-          }
-        }
-      } catch {
-        // fallback
+      if (initialSavedState?.exercisesState) {
+        return initialSavedState.exercisesState
       }
       return programDay.exercises.map((pe) => {
         const defaultSetsCount = Math.max(1, pe.sets || 3)
@@ -205,26 +304,6 @@ export function ActiveWorkoutSession({
     },
   )
 
-  // --- Session Stopwatch (Elapsed Time) with Refresh Recovery ---
-  const [elapsedSeconds, setElapsedSeconds] = useState(() => {
-    try {
-      const raw = appStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
-      if (raw) {
-        const parsed = JSON.parse(raw) as SavedSessionState
-        if (
-          parsed.dayIndex === programDay.dayIndex &&
-          typeof parsed.elapsedSeconds === 'number' &&
-          Date.now() - parsed.savedAt < 1000 * 60 * 60 * 12
-        ) {
-          return parsed.elapsedSeconds
-        }
-      }
-    } catch {
-      // fallback
-    }
-    return 0
-  })
-
   // Start mascot toast message, auto disappears after 3.5s
   const [toastMessage, setToastMessage] = useState<string | null>(
     'عاش يا بطل! ركّز في الأداء والتكنيك وتدرب بعزيمة.',
@@ -238,35 +317,62 @@ export function ActiveWorkoutSession({
     return () => clearTimeout(timer)
   }, [toastMessage])
 
-  // Stopwatch interval
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setElapsedSeconds((prev) => prev + 1)
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
-
-  useEffect(() => {
-    onElapsedSecondsUpdate?.(elapsedSeconds)
-  }, [elapsedSeconds, onElapsedSecondsUpdate])
-
-  // Auto-persist active session state on every update
-  useEffect(() => {
-    try {
-      const dataToSave: SavedSessionState = {
-        programDay,
-        dayIndex: programDay.dayIndex,
-        exercisesState,
-        elapsedSeconds,
-        savedAt: Date.now(),
+  // --- Persistent Storage Management (Heartbeat + Event-driven, Task N4.5) ---
+  const persistSession = useCallback(
+    (overrides?: Partial<SavedSessionState>) => {
+      try {
+        const nowTs = Date.now()
+        setLastSeenAt(nowTs)
+        const dataToSave: SavedSessionState = {
+          programDay,
+          dayIndex: programDay.dayIndex,
+          exercisesState,
+          startedAt,
+          pausedMs,
+          pausedAt,
+          restEndsAt,
+          lastSeenAt: nowTs,
+          elapsedSeconds,
+          savedAt: nowTs,
+          ...overrides,
+        }
+        appStorage.setItem(
+          ACTIVE_SESSION_STORAGE_KEY,
+          JSON.stringify(dataToSave),
+        )
+        storageHealth.recordWriteSuccess()
+      } catch (err) {
+        storageHealth.recordError(ACTIVE_SESSION_STORAGE_KEY, err)
       }
-      appStorage.setItem(ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(dataToSave))
-    } catch {
-      // ignore
-    }
-  }, [programDay, exercisesState, elapsedSeconds])
+    },
+    [
+      programDay,
+      exercisesState,
+      startedAt,
+      pausedMs,
+      pausedAt,
+      restEndsAt,
+      elapsedSeconds,
+    ],
+  )
 
-  // Prevent accidental back/refresh during active workout & flush on native pause
+  // 15-second heartbeat auto-save (replaces 1-second auto-save loop)
+  useEffect(() => {
+    const heartbeat = setInterval(() => {
+      persistSession()
+    }, 15000)
+    return () => clearInterval(heartbeat)
+  }, [persistSession])
+
+  // Save on native pause / backgrounding
+  useEffect(() => {
+    const unpause = onAppPause(() => {
+      persistSession()
+    })
+    return () => unpause()
+  }, [persistSession])
+
+  // Prevent accidental web back/refresh during active workout
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault()
@@ -276,35 +382,18 @@ export function ActiveWorkoutSession({
       window.addEventListener('beforeunload', handleBeforeUnload)
     }
 
-    // On native, flush session storage when backgrounded/paused
-    const unpause = platform.app.onPause(() => {
-      void appStorage.flush()
-    })
-
     return () => {
       if (typeof window !== 'undefined') {
         window.removeEventListener('beforeunload', handleBeforeUnload)
       }
-      unpause()
     }
   }, [])
 
-  // --- Smart Rest Timer ---
-  const [restSecondsLeft, setRestSecondsLeft] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (restSecondsLeft === null || restSecondsLeft <= 0) return
-    const interval = setInterval(() => {
-      setRestSecondsLeft((prev) => {
-        if (prev === null || prev <= 1) return null
-        return prev - 1
-      })
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [restSecondsLeft])
-
   function triggerRestTimer(seconds = 60) {
-    setRestSecondsLeft(seconds)
+    const endsAt = Date.now() + seconds * 1000
+    setRestEndsAt(endsAt)
+    persistSession({ restEndsAt: endsAt })
+    void syncSchedule()
   }
 
   // --- Exercise Detail Modal ---
@@ -347,8 +436,9 @@ export function ActiveWorkoutSession({
       currentEx.sets = nextSets
       next[exerciseIndex] = currentEx
 
-      // If marked completed, start rest timer
+      // If marked completed, trigger haptic and start rest timer
       if (newStatus) {
+        void haptics.impactLight()
         const pe = programDay.exercises[exerciseIndex]
         const rest = pe?.restSeconds > 0 ? pe.restSeconds : 60
         triggerRestTimer(rest)
@@ -669,8 +759,45 @@ export function ActiveWorkoutSession({
     }, 0)
   }, [exercisesState, customExercises])
 
-  function handleSaveAndFinish() {
+  const [showBackSheet, setShowBackSheet] = useState(false)
+
+  // Hardware back button integration (N1 back-stack & N4.5)
+  useEffect(() => {
+    const unregister = platform.app.registerBackHandler(() => {
+      if (selectedExerciseForDetail) {
+        setSelectedExerciseForDetail(null)
+        return true
+      }
+      if (showConfirmFinish) {
+        setShowConfirmFinish(false)
+        return true
+      }
+      if (showConfirmCancel) {
+        setShowConfirmCancel(false)
+        return true
+      }
+      if (showBackSheet) {
+        setShowBackSheet(false)
+        return true
+      }
+      setShowBackSheet(true)
+      return true
+    }, 100)
+
+    return () => unregister()
+  }, [
+    selectedExerciseForDetail,
+    showConfirmFinish,
+    showConfirmCancel,
+    showBackSheet,
+  ])
+
+  function handleSaveAndFinish(overrideElapsedSeconds?: number) {
     const todayStr = new Date().toISOString().split('T')[0]
+    const finalElapsed =
+      typeof overrideElapsedSeconds === 'number'
+        ? overrideElapsedSeconds
+        : elapsedSeconds
 
     const sessionExercises: SessionExercise[] = exercisesState.map(
       (exState) => {
@@ -711,16 +838,18 @@ export function ActiveWorkoutSession({
       date: todayStr,
       programDayIndex: programDay.dayIndex,
       exercises: sessionExercises,
-      notes: `جلسة تدريب مكتملة في ${formatTime(elapsedSeconds)} — إجمالي الحمل المرفوع: ${totalVolumeKg > 0 ? `${totalVolumeKg} كجم` : '—'}`,
+      notes: `جلسة تدريب مكتملة في ${formatTime(finalElapsed)} — إجمالي الحمل المرفوع: ${totalVolumeKg > 0 ? `${totalVolumeKg} كجم` : '—'}`,
       createdAt: Date.now(),
     }
 
     try {
       appStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
-    } catch {
-      // ignore
+    } catch (err) {
+      storageHealth.recordError(ACTIVE_SESSION_STORAGE_KEY, err)
     }
 
+    void haptics.notifySuccess()
+    void syncSchedule()
     onFinish(newSession)
   }
 
@@ -736,11 +865,11 @@ export function ActiveWorkoutSession({
         paddingBottom: '88px',
       }}
     >
-      {/* TopBar with Timer, Overflow and Cancel Confirmation */}
+      {/* TopBar with Timer, Overflow and Back Sheet */}
       <TopBar
         title={programDay.labelAr}
         subtitle={programDay.focus}
-        onBack={() => setShowConfirmCancel(true)}
+        onBack={() => setShowBackSheet(true)}
         actions={
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <div
@@ -892,9 +1021,16 @@ export function ActiveWorkoutSession({
             <button
               type="button"
               className="btn-ghost"
-              onClick={() =>
-                setRestSecondsLeft((prev) => (prev ? prev + 30 : 30))
-              }
+              onClick={() => {
+                const currentEnds =
+                  restEndsAt && restEndsAt > Date.now()
+                    ? restEndsAt
+                    : Date.now()
+                const nextEnds = currentEnds + 30 * 1000
+                setRestEndsAt(nextEnds)
+                persistSession({ restEndsAt: nextEnds })
+                void syncSchedule()
+              }}
               style={{
                 padding: '6px 10px',
                 fontSize: '12.5px',
@@ -909,7 +1045,11 @@ export function ActiveWorkoutSession({
             <button
               type="button"
               className="btn-ghost"
-              onClick={() => setRestSecondsLeft(null)}
+              onClick={() => {
+                setRestEndsAt(null)
+                persistSession({ restEndsAt: null })
+                void syncSchedule()
+              }}
               aria-label="تخطي الراحة"
               style={{
                 padding: '6px 10px',
@@ -1618,6 +1758,150 @@ export function ActiveWorkoutSession({
         </div>
       )}
 
+      {/* 3-Option Back Sheet (Task N4.5) */}
+      {showBackSheet && (
+        <Sheet
+          isOpen={showBackSheet}
+          onClose={() => setShowBackSheet(false)}
+          title="مغادرة التمرين؟"
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+              padding: '16px',
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: '14px',
+                color: 'var(--muted)',
+                lineHeight: 1.5,
+              }}
+            >
+              بيانات تمرينك ومجموعاتك محفوظة تلقائياً بأمان. اختر الإجراء اللي
+              يناسبك:
+            </p>
+
+            <button
+              type="button"
+              className="primary full-width"
+              style={{ height: '48px', fontSize: '15px', fontWeight: 700 }}
+              onClick={() => setShowBackSheet(false)}
+            >
+              كمّل التمرين
+            </button>
+
+            <button
+              type="button"
+              className="secondary full-width"
+              style={{ height: '48px', fontSize: '15px', fontWeight: 600 }}
+              onClick={() => {
+                setShowBackSheet(false)
+                if (onMinimize) {
+                  onMinimize()
+                } else {
+                  onCancel()
+                }
+              }}
+            >
+              اخرج وسيبه شغال
+            </button>
+
+            <button
+              type="button"
+              className="ghost full-width"
+              style={{
+                height: '44px',
+                fontSize: '14px',
+                color: 'var(--color-danger, #ef4444)',
+                fontWeight: 600,
+              }}
+              onClick={() => {
+                setShowBackSheet(false)
+                handleSaveAndFinish()
+              }}
+            >
+              إنهاء التمرين
+            </button>
+          </div>
+        </Sheet>
+      )}
+
+      {/* Stale Session Guard Sheet (Task N4.5) */}
+      {showStalePrompt && (
+        <Sheet
+          isOpen={showStalePrompt}
+          onClose={() => {}}
+          title="استكمال التمرين؟"
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+              padding: '16px',
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: '14px',
+                color: 'var(--muted)',
+                lineHeight: 1.5,
+              }}
+            >
+              التمرين كان متوقف من فترة كبيرة (أكتر من 3 ساعات). تحب تكمّل
+              التمرين من مكان ما وقفت، ولا تنهي الجلسة وتسجل مدتها الفعلية؟
+            </p>
+
+            <button
+              type="button"
+              className="primary full-width"
+              style={{ height: '48px', fontSize: '15px', fontWeight: 700 }}
+              onClick={() => {
+                if (initialSavedState?.lastSeenAt) {
+                  const idleGap = Date.now() - initialSavedState.lastSeenAt
+                  setPausedMs((prev) => prev + idleGap)
+                }
+                setShowStalePrompt(false)
+                persistSession()
+              }}
+            >
+              كمّل التمرين
+            </button>
+
+            <button
+              type="button"
+              className="ghost full-width"
+              style={{
+                height: '44px',
+                fontSize: '14px',
+                color: 'var(--color-danger, #ef4444)',
+                fontWeight: 600,
+              }}
+              onClick={() => {
+                setShowStalePrompt(false)
+                const effectiveElapsed = initialSavedState?.lastSeenAt
+                  ? computeElapsedSeconds({
+                      startedAt,
+                      pausedMs,
+                      pausedAt,
+                      now: initialSavedState.lastSeenAt,
+                      lastSeenAt: initialSavedState.lastSeenAt,
+                    })
+                  : elapsedSeconds
+                handleSaveAndFinish(effectiveElapsed)
+              }}
+            >
+              إنهاء التمرين
+            </button>
+          </div>
+        </Sheet>
+      )}
+
       {/* Confirm Cancel Modal / ConfirmSheet */}
       {showConfirmCancel && (
         <ConfirmSheet
@@ -1626,8 +1910,8 @@ export function ActiveWorkoutSession({
           onConfirm={() => {
             try {
               appStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY)
-            } catch {
-              // ignore
+            } catch (err) {
+              storageHealth.recordError(ACTIVE_SESSION_STORAGE_KEY, err)
             }
             setShowConfirmCancel(false)
             onCancel()

@@ -25,6 +25,7 @@ import {
 } from '../../ui'
 import { BackupPanel } from '../backup/BackupPanel.tsx'
 import { PwaTransferSection } from '../backup/PwaTransferSection.tsx'
+import { NotificationSettingsPanel } from './NotificationSettingsPanel.tsx'
 import { fmtFactor } from '../../utils/bidi.ts'
 import { DiagnosticsSheet } from './DiagnosticsSheet.tsx'
 import { ResetSheet } from './ResetSheet.tsx'
@@ -556,6 +557,11 @@ export function SettingsScreen({
               </Button>
             </div>
           </Card>
+        </Section>
+
+        {/* Section: التنبيهات (Task N4) */}
+        <Section title="التنبيهات">
+          <NotificationSettingsPanel />
         </Section>
 
         {/* Section 4: البيانات والمزامنة */}

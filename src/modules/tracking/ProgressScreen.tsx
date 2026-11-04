@@ -9,6 +9,7 @@ import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { getEffectiveExercise } from '../workout/exerciseStore.ts'
 import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
+import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { SvgLineChart } from '../reports/SvgLineChart.tsx'
 import { formatArabicDate } from '../../components/DateField.tsx'
 import {
@@ -222,10 +223,16 @@ export function ProgressScreen({
     [dayNotes],
   )
 
+  const effectiveDisplayDate = useMemo(() => {
+    if (selectedCalendarDate) return selectedCalendarDate
+    if (sessions.length > 0) return sessions[0].date
+    return null
+  }, [selectedCalendarDate, sessions])
+
   const selectedDateSessions = useMemo(() => {
-    if (!selectedCalendarDate) return []
-    return sessions.filter((s) => s.date === selectedCalendarDate)
-  }, [sessions, selectedCalendarDate])
+    if (!effectiveDisplayDate) return []
+    return sessions.filter((s) => s.date === effectiveDisplayDate)
+  }, [sessions, effectiveDisplayDate])
 
   // --- Reports Filtering & Metrics ---
   const cutoff = useMemo(() => {
@@ -929,7 +936,7 @@ export function ProgressScreen({
             </div>
 
             {/* Selected Date Session History List */}
-            {selectedCalendarDate && (
+            {effectiveDisplayDate && (
               <div
                 className="card section-selected-sessions"
                 style={{
@@ -957,7 +964,9 @@ export function ProgressScreen({
                       color: 'var(--color-text)',
                     }}
                   >
-                    جلسات {formatArabicDate(selectedCalendarDate)}
+                    {selectedCalendarDate
+                      ? `جلسات ${formatArabicDate(selectedCalendarDate)}`
+                      : `آخر جلسة مسجلة (${formatArabicDate(effectiveDisplayDate)})`}
                   </h3>
                   <span
                     style={{
@@ -1099,6 +1108,40 @@ export function ProgressScreen({
                         >
                           إجمالي المجموعات: {plural(totalSets, 'set')}
                         </div>
+                        {s.exercises && s.exercises.length > 0 && (
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '6px',
+                              marginTop: '6px',
+                              paddingTop: '6px',
+                              borderTop: '1px solid var(--color-divider)',
+                            }}
+                          >
+                            {s.exercises.map((ex, exIdx) => (
+                              <div
+                                key={exIdx}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                }}
+                              >
+                                <ExerciseThumb
+                                  exerciseId={ex.exerciseId}
+                                  size={32}
+                                />
+                                <span
+                                  style={{ fontSize: '13px', fontWeight: 600 }}
+                                >
+                                  {getEffectiveExercise(ex.exerciseId)
+                                    ?.nameAr ?? ex.exerciseId}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                         {s.notes && (
                           <div
                             style={{
@@ -1595,6 +1638,40 @@ export function ProgressScreen({
                           })}
                         </span>
                       </div>
+                      {s.exercises && s.exercises.length > 0 && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '6px',
+                            marginTop: '6px',
+                            paddingTop: '6px',
+                            borderTop: '1px solid var(--color-divider)',
+                          }}
+                        >
+                          {s.exercises.map((ex, exIdx) => (
+                            <div
+                              key={exIdx}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                              }}
+                            >
+                              <ExerciseThumb
+                                exerciseId={ex.exerciseId}
+                                size={28}
+                              />
+                              <span
+                                style={{ fontSize: '13px', fontWeight: 600 }}
+                              >
+                                {getEffectiveExercise(ex.exerciseId)?.nameAr ??
+                                  ex.exerciseId}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {s.notes && (
                         <p
                           style={{

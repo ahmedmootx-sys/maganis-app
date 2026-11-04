@@ -50,6 +50,11 @@ import { Toast } from './components/Toast.tsx'
 import { updateManager } from './utils/updateManager.ts'
 import { isNative } from './platform/runtime.ts'
 import { backButtonManager } from './platform/backStack.ts'
+import { initLifecycleCoordinator } from './platform/lifecycle.ts'
+import {
+  initNotificationRouter,
+  onNotificationAction,
+} from './platform/notifications/notificationEngine.ts'
 import {
   IconUser,
   IconDumbbell,
@@ -440,6 +445,44 @@ export function App({ config }: AppProps) {
     })
     backButtonManager.setOnShowToast(showToast)
   }, [showToast])
+
+  // Lifecycle & Notification Router Wiring (Task N4)
+  useEffect(() => {
+    const cleanupLifecycle = initLifecycleCoordinator()
+    const cleanupRouter = initNotificationRouter()
+
+    const unlistenAction = onNotificationAction((target) => {
+      if (target.route === 'workout_active') {
+        try {
+          const raw = appStorage.getItem('maganis:active_session')
+          if (raw) {
+            const parsed = JSON.parse(raw)
+            if (parsed.programDay) {
+              setActiveWorkoutDay(parsed.programDay)
+              return
+            }
+          }
+        } catch {
+          // fallback
+        }
+        setActiveTab('workouts')
+      } else if (target.route === 'cardio_runner') {
+        setIsCardioRunnerOpen(true)
+      } else if (target.route === 'weekly_plan') {
+        setActiveTab('workouts')
+      } else if (target.route === 'nutrition') {
+        setActiveTab('nutrition')
+      } else if (target.route === 'settings_backup') {
+        setActiveTab('settings')
+      }
+    })
+
+    return () => {
+      cleanupLifecycle()
+      cleanupRouter()
+      unlistenAction()
+    }
+  }, [])
 
   useEffect(() => {
     if (activeTab !== 'dashboard') {

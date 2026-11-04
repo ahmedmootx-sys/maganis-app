@@ -1,5 +1,8 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { appStorage } from '../../platform/storage.ts'
+import { haptics } from '../../platform/haptics.ts'
+import { useKeepAwake } from '../../platform/keepAwake.ts'
+import { syncSchedule } from '../../platform/notifications/notificationEngine.ts'
 import {
   calculateCardioEnergy,
   calculateLiveEnergy,
@@ -24,6 +27,7 @@ export interface CardioSessionPersistence {
   pausedAt: number | null
   estimate: CardioEstimateResult
   minimized?: boolean
+  targetEndsAt?: number
 }
 
 export interface CardioRunnerProps {
@@ -73,8 +77,8 @@ export function CardioRunner({
   const [now, setNow] = useState<number>(() => Date.now())
   const [showLeaveSheet, setShowLeaveSheet] = useState(false)
   const [showSaveDiscardSheet, setShowSaveDiscardSheet] = useState(false)
-  const [wakeLockActive, setWakeLockActive] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
+  const { isKeepAwakeActive } = useKeepAwake(phase === 'running' && !isPaused)
 
   // System back / router popstate interception
   useEffect(() => {
@@ -90,40 +94,6 @@ export function CardioRunner({
       window.removeEventListener('popstate', onPop)
     }
   }, [phase])
-
-  const wakeLockRef = useRef<WakeLockSentinel | null>(null)
-
-  // Screen Wake Lock API
-  const requestWakeLock = useCallback(async () => {
-    if ('wakeLock' in navigator && phase === 'running' && !isPaused) {
-      try {
-        const lock = await navigator.wakeLock.request('screen')
-        wakeLockRef.current = lock
-        setWakeLockActive(true)
-        lock.addEventListener('release', () => {
-          setWakeLockActive(false)
-        })
-      } catch {
-        setWakeLockActive(false)
-      }
-    }
-  }, [phase, isPaused])
-
-  useEffect(() => {
-    requestWakeLock()
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        requestWakeLock()
-      }
-    }
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      if (wakeLockRef.current) {
-        wakeLockRef.current.release().catch(() => {})
-      }
-    }
-  }, [requestWakeLock])
 
   // Restore existing session on mount if valid
   useEffect(() => {
@@ -151,13 +121,7 @@ export function CardioRunner({
   useEffect(() => {
     if (phase !== 'countdown') return
 
-    if ('vibrate' in navigator) {
-      try {
-        navigator.vibrate(50)
-      } catch {
-        // ignore
-      }
-    }
+    void haptics.impactLight()
 
     const timer = setInterval(() => {
       setCountdown((prev) => {
@@ -167,13 +131,7 @@ export function CardioRunner({
           setPhase('running')
           return 0
         }
-        if ('vibrate' in navigator) {
-          try {
-            navigator.vibrate(50)
-          } catch {
-            // ignore
-          }
-        }
+        void haptics.impactLight()
         return prev - 1
       })
     }, 1000)
@@ -228,14 +186,9 @@ export function CardioRunner({
   // Auto-finish when duration is reached
   useEffect(() => {
     if (phase === 'running' && currentElapsedMs >= totalTargetMs) {
-      if ('vibrate' in navigator) {
-        try {
-          navigator.vibrate([100, 50, 100, 50, 200])
-        } catch {
-          // ignore
-        }
-      }
+      void haptics.notifyWarning()
       appStorage.removeItem(STORAGE_KEY)
+      void syncSchedule()
       setPhase('finished')
     }
   }, [phase, currentElapsedMs, totalTargetMs])
@@ -254,8 +207,12 @@ export function CardioRunner({
         isPaused,
         pausedAt: lastPauseTime,
         estimate,
+        targetEndsAt: !isPaused
+          ? startTime + totalTargetMs + pausedTotalMs
+          : undefined,
       }
       appStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
+      void syncSchedule()
     }
   }, [
     phase,
@@ -268,6 +225,7 @@ export function CardioRunner({
     isPaused,
     lastPauseTime,
     estimate,
+    totalTargetMs,
   ])
 
   function handleTogglePause() {
@@ -279,14 +237,10 @@ export function CardioRunner({
       }
       setLastPauseTime(null)
       setIsPaused(false)
-      requestWakeLock()
     } else {
       // Pause
       setLastPauseTime(Date.now())
       setIsPaused(true)
-      if (wakeLockRef.current) {
-        wakeLockRef.current.release().catch(() => {})
-      }
     }
   }
 
@@ -294,6 +248,7 @@ export function CardioRunner({
     if (isSaved || !estimate) return
     setIsSaved(true)
     appStorage.removeItem(STORAGE_KEY)
+    void syncSchedule()
 
     const finalMinutes = Math.max(1, Math.round(elapsedMinutes))
     const finalGrossKcal = Math.round(grossRate * finalMinutes)
@@ -735,7 +690,7 @@ export function CardioRunner({
         </div>
 
         {/* Screen Wake Lock Info */}
-        {!wakeLockActive && (
+        {!isKeepAwakeActive && (
           <div
             style={{
               fontSize: '11.5px',
@@ -912,6 +867,7 @@ export function CardioRunner({
               onClick={() => {
                 setShowSaveDiscardSheet(false)
                 appStorage.removeItem(STORAGE_KEY)
+                void syncSchedule()
                 onCancel()
               }}
             >

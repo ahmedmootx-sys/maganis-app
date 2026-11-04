@@ -1,5 +1,10 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { isNative, platformName, isDebugBuild } from './runtime.ts'
+import {
+  isNative,
+  platformName,
+  isDebugBuild,
+  setNativeForTesting,
+} from './runtime.ts'
 import { platform, setPlatformForTesting, type Platform } from './index.ts'
 
 describe('Platform Runtime and Skeleton (Task N1)', () => {
@@ -44,20 +49,29 @@ describe('Platform Runtime and Skeleton (Task N1)', () => {
     expect(webResult.error).toContain('Web uses universal saveFile directly')
   })
 
-  it('unimplemented future platform modules return honest unsupported responses', async () => {
+  it('implements Task N4 notifications, haptics, and keepAwake', async () => {
     // Notifications (N4)
-    const notifResult = await platform.notifications.schedule({})
-    expect(notifResult.supported).toBe(false)
-    expect(notifResult.error).toContain('unsupported: Task N4')
+    const notifResult = await platform.notifications.schedule()
+    expect(notifResult.supported).toBe(true)
 
-    const cancelResult = await platform.notifications.cancel('id-1')
-    expect(cancelResult.supported).toBe(false)
-    expect(cancelResult.error).toContain('unsupported: Task N4')
+    const cancelResult = await platform.notifications.cancelAll()
+    expect(cancelResult.supported).toBe(true)
 
     // Haptics & KeepAwake (N4)
-    expect((await platform.haptics.vibrate()).supported).toBe(false)
+    expect((await platform.haptics.vibrate(50)).supported).toBe(true)
+    await expect(platform.haptics.impactLight()).resolves.toBeUndefined()
+    await expect(platform.haptics.notifySuccess()).resolves.toBeUndefined()
+    await expect(platform.haptics.notifyWarning()).resolves.toBeUndefined()
+
+    // Web test runner without wakeLock honestly returns supported: false
     expect((await platform.keepAwake.keepAwake()).supported).toBe(false)
     expect((await platform.keepAwake.allowSleep()).supported).toBe(false)
+
+    // On native, keepAwake is fully supported
+    setNativeForTesting(true)
+    expect((await platform.keepAwake.keepAwake()).supported).toBe(true)
+    expect((await platform.keepAwake.allowSleep()).supported).toBe(true)
+    setNativeForTesting(false)
 
     // App lifecycle & back handlers
     const unregPause = platform.app.onPause(() => {})
