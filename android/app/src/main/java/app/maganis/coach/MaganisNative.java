@@ -24,6 +24,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.activity.result.ActivityResult;

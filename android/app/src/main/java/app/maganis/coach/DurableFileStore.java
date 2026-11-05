@@ -493,6 +493,11 @@ public class DurableFileStore {
         return new StoreStats(count, bytes, free);
     }
 
+    public List<String> listAllKeys() {
+        ReadResult res = readAll();
+        return new ArrayList<>(res.data.keySet());
+    }
+
     public List<RecoveryEvent> getAndClearRecoveryEvents() {
         synchronized (recordedRecoveryEvents) {
             List<RecoveryEvent> copy = new ArrayList<>(recordedRecoveryEvents);
