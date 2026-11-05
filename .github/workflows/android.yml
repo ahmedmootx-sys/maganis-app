@@ -23,6 +23,8 @@ jobs:
   build-debug:
     name: Build & Verify Debug APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -116,6 +118,18 @@ jobs:
           name: gradle-build-log
           path: gradle-build.log
           retention-days: 7
+
+      - name: Push Failure Log
+        if: failure()
+        run: |
+          if [ -f gradle-build.log ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git checkout -B ci-log
+            git add gradle-build.log
+            git commit -m "ci: debug gradle log [skip ci]" || true
+            git push origin ci-log --force || true
+          fi
 
       - name: Prepare Debug Artifact
         run: |
