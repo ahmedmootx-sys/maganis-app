@@ -29,6 +29,11 @@ def releaseKeystorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: keys
 def releaseKeyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: keystoreProperties.getProperty('keyAlias')
 def releaseKeyPassword = System.getenv("ANDROID_KEY_PASSWORD") ?: keystoreProperties.getProperty('keyPassword')
 
+def debugKeystorePath = System.getenv("ANDROID_DEBUG_KEYSTORE_PATH")
+def debugKeystorePassword = System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
+def debugKeyAlias = System.getenv("ANDROID_DEBUG_KEY_ALIAS")
+def debugKeyPassword = System.getenv("ANDROID_DEBUG_KEY_PASSWORD")
+
 android {
     namespace = "app.maganis.coach"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -46,7 +51,12 @@ android {
 
     signingConfigs {
         debug {
-            // Standard Android debug keystore
+            if (debugKeystorePath && file(debugKeystorePath).exists() && debugKeystorePassword && debugKeyAlias && debugKeyPassword) {
+                storeFile file(debugKeystorePath)
+                storePassword debugKeystorePassword
+                keyAlias debugKeyAlias
+                keyPassword debugKeyPassword
+            }
         }
         release {
             if (releaseKeystorePath && file(releaseKeystorePath).exists()) {
