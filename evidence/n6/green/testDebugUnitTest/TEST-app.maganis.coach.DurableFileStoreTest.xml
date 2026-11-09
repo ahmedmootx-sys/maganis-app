@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.maganis.coach.DurableFileStoreTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-09T09:56:27.397Z" hostname="DESKTOP-SKS1VCV" time="54.947">
+  <properties/>
+  <testcase name="testZeroByteFileDetectionAndRecovery" classname="app.maganis.coach.DurableFileStoreTest" time="0.028"/>
+  <testcase name="testKeyEncodingIsReversibleAndCollisionFree" classname="app.maganis.coach.DurableFileStoreTest" time="0.006"/>
+  <testcase name="testDiskFullFaultInjectionPreservesData" classname="app.maganis.coach.DurableFileStoreTest" time="0.019"/>
+  <testcase name="testRecoveryFromCorruptJsonUsingBak" classname="app.maganis.coach.DurableFileStoreTest" time="0.034"/>
+  <testcase name="testConcurrentWritersNeverCorruptStore" classname="app.maganis.coach.DurableFileStoreTest" time="1.465"/>
+  <testcase name="testFaultInjectionAtEveryWriteStepPreservesDataIntegrity" classname="app.maganis.coach.DurableFileStoreTest" time="0.091"/>
+  <testcase name="testTruncatedEnvelopeRecovery" classname="app.maganis.coach.DurableFileStoreTest" time="0.036"/>
+  <testcase name="testBasicWriteReadRemoveClear" classname="app.maganis.coach.DurableFileStoreTest" time="0.038"/>
+  <testcase name="testSequential5000Writes" classname="app.maganis.coach.DurableFileStoreTest" time="53.226"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

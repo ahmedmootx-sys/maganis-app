@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.maganis.coach.BackupStorageManagerTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-09T09:43:16.980Z" hostname="DESKTOP-SKS1VCV" time="0.048">
+  <properties/>
+  <testcase name="testDigestCalculationAndIncrementalHasher" classname="app.maganis.coach.BackupStorageManagerTest" time="0.016"/>
+  <testcase name="testRetentionNeverPrunesForeignOrUnverifiedFiles" classname="app.maganis.coach.BackupStorageManagerTest" time="0.003"/>
+  <testcase name="testValidBackupFileName" classname="app.maganis.coach.BackupStorageManagerTest" time="0.001"/>
+  <testcase name="testRetentionRuleEnforces200MbCapWhileRespectingMinimumFloor" classname="app.maganis.coach.BackupStorageManagerTest" time="0.002"/>
+  <testcase name="testRetentionRulePrunesOldestWhenOverTenFiles" classname="app.maganis.coach.BackupStorageManagerTest" time="0.002"/>
+  <testcase name="testSnapshotMarkerDetection" classname="app.maganis.coach.BackupStorageManagerTest" time="0.019"/>
+  <testcase name="testRetentionRuleNeverPrunesWhenThreeOrFewer" classname="app.maganis.coach.BackupStorageManagerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
