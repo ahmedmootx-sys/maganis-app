@@ -1,7 +1,7 @@
 # Task N1 Engineering Report: Native Shell, Android Build, and CI
 
 **Task ID:** N1  
-**Project:** Maganis (مجانس) — Native Shell & Android Packaging  
+**Project:** Maganis (مجانص) — Native Shell & Android Packaging  
 **Technology:** Capacitor 8, Android (Java), Vite, React 19, TypeScript  
 **Branch:** `native/n1`  
 **Date:** 2026-11-01
@@ -12,8 +12,8 @@
 
 ### A. Core Platform & Native Bridge
 
-- `capacitor.config.ts`: Added configuration with `appId: 'app.maganis.coach'`, `appName: 'مجانس'`, `webDir: 'dist-native'`, `server.cleartext: false`, and conditional `webContentsDebuggingEnabled`.
-- `.env.native`: First-class environment file for native builds (`VITE_APP_ENV=production`, `VITE_APP_NAME=مجانس`).
+- `capacitor.config.ts`: Added configuration with `appId: 'app.maganis.coach'`, `appName: 'مجانص'`, `webDir: 'dist-native'`, `server.cleartext: false`, and conditional `webContentsDebuggingEnabled`.
+- `.env.native`: First-class environment file for native builds (`VITE_APP_ENV=production`, `VITE_APP_NAME=مجانص`).
 - `src/platform/runtime.ts`: Unified runtime platform detection exporting `isNative()`, `platformName()`, and `isDebugBuild()`. (The ONLY file importing `@capacitor/core` for platform detection).
 - `src/platform/index.ts`: Typed `platform` object exporting `info`, `app`, and typed honest unsupported stand-ins for `kv`, `media`, `files`, `notifications`, `haptics`, `keepAwake`. Includes `setPlatformForTesting`.
 - `src/platform/backStack.ts`: Priority/LIFO back-button dispatcher handling open sheets, hash-route history, and root double-tap exit with Arabic toast («اضغط تاني للخروج»).
@@ -28,7 +28,7 @@
 - `android/app/build.gradle`:
   - `versionName` dynamically sourced from `package.json`.
   - `versionCode` derived from CI run number (`GITHUB_RUN_NUMBER + 1000`) for strict monotonic increments.
-  - Variants: `debug` (suffix `.debug`, name `مجانس (تجريبي)`) and `release` (`app.maganis.coach`, `مجانس`).
+  - Variants: `debug` (suffix `.debug`, name `مجانص (تجريبي)`) and `release` (`app.maganis.coach`, `مجانص`).
   - Release signing configuration from environment variables or `keystore.properties`.
   - Strict Security Rule S4: `assembleRelease` fails immediately if signing credentials are missing, strictly forbidding fallback to the debug key.
 - `android/app/src/main/AndroidManifest.xml`: Manifest hygiene with `android:allowBackup="false"`, `usesCleartextTraffic="false"`, `supportsRtl="true"`, portrait orientation, `windowSoftInputMode="adjustResize"`, and only `android.permission.INTERNET`.
@@ -162,7 +162,7 @@
 
 4. **تثبيت التطبيق على التليفون:**
    - حمل الـ APK على تليفون الأندرويد، واضغط عليه لتثبيته (وافق على تثبيت التطبيقات غير المعروفة للمتصفح، واضغط "Install anyway" لو ظهرت حماية Play Protect).
-   - _النتيجة المتوقعة:_ التطبيق يتثبت بنجاح ويظهر في قائمة التطبيقات بأيقونة مجانس واسم «مجانس (تجريبي)».
+   - _النتيجة المتوقعة:_ التطبيق يتثبت بنجاح ويظهر في قائمة التطبيقات بأيقونة مجانص واسم «مجانص (تجريبي)».
 
 5. **فتح التطبيق وفحص الشاشة الافتتاحية (Splash):**
    - افتح التطبيق والتليفون في الوضع الفاتح (Light) ثم في الوضع الداكن (Dark).
