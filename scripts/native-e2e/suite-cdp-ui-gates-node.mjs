@@ -1,13 +1,14 @@
 /**
- * scripts/native-e2e/suite-cdp-ui-gates.mjs
- * Real-WebView UI Gates via DevTools / CDP connection (Task N5.7).
+ * scripts/native-e2e/suite-cdp-ui-gates-node.mjs
+ * UI Gates Threshold Check (Mocked metrics validation).
+ * Label: node test (platform layer, mocked)
  *
- * Runs overlap, clipping, contrast, and raw-token gates against WebView pages.
- * Enforces minimum element counts (Rule P4).
+ * Checks threshold constraints for overlap, clipping, contrast, and raw-token metrics.
+ * Note: Real WebView UI checks are driven through Playwright / emulator.
  */
 
 export async function runCdpUiGatesSuite() {
-  console.log('--- RUNNING REAL-WEBVIEW UI GATES SUITE (N5.7) ---')
+  console.log('--- RUNNING UI GATES SUITE [NODE (platform layer, mocked)] ---')
   const results = []
 
   // Check 1: Overlap gate enforcement

@@ -1,6 +1,7 @@
 /**
- * scripts/native-e2e/suite-safemode-renderer.mjs
- * E2E Test Suite for Safe Mode & WebView Renderer Resilience (Task N5).
+ * scripts/native-e2e/suite-safemode-renderer-node.mjs
+ * Test Suite for Safe Mode & WebView Renderer Resilience (Task N5).
+ * Label: node test (platform layer, mocked)
  */
 
 import {
@@ -16,7 +17,9 @@ import {
 } from '../../src/platform/native/maganisNative.ts'
 
 export async function runSafeModeAndRendererSuite() {
-  console.log('--- RUNNING SAFE MODE & RENDERER SUITE (N5) ---')
+  console.log(
+    '--- RUNNING SAFE MODE & RENDERER SUITE [NODE (platform layer, mocked)] ---',
+  )
   const results = []
 
   // Test S1: Safe Mode Trigger

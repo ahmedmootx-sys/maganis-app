@@ -1,6 +1,7 @@
 /**
- * scripts/native-e2e/suite-backup.mjs
- * E2E Suite for Task N3: Backup Engine, Retention, Quotas & Restore.
+ * scripts/native-e2e/suite-backup-node.mjs
+ * Test Suite for Task N3: Backup Engine, Retention, Quotas & Restore.
+ * Label: node test (platform layer, mocked)
  */
 
 import {
@@ -10,7 +11,7 @@ import {
 } from '../../src/modules/backup/backupEngine.ts'
 
 export async function runBackupSuite() {
-  console.log('--- RUNNING BACKUP SUITE (N3) ---')
+  console.log('--- RUNNING BACKUP SUITE [NODE (platform layer, mocked)] ---')
   const results = []
 
   // B1: Filename formatting and validation

@@ -42,6 +42,9 @@ public class MainActivity extends BridgeActivity {
 
         registerPlugin(MaganisNative.class);
         super.onCreate(savedInstanceState);
+        if (BuildConfig.DEBUG) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
         updateSystemBarsForTheme();
 
         // Step 3: Install WebViewClient for onRenderProcessGone recovery

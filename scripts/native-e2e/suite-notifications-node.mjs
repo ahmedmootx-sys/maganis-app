@@ -1,6 +1,7 @@
 /**
- * scripts/native-e2e/suite-notifications.mjs
- * E2E Suite for Task N4: Idempotent Scheduler, Timers & Device Integration.
+ * scripts/native-e2e/suite-notifications-node.mjs
+ * Test Suite for Task N4: Idempotent Scheduler, Timers & Device Integration.
+ * Label: node test (platform layer, mocked)
  */
 
 import {
@@ -15,7 +16,9 @@ import {
 } from '../../src/platform/timerEngine.ts'
 
 export async function runNotificationsSuite() {
-  console.log('--- RUNNING NOTIFICATIONS SUITE (N4) ---')
+  console.log(
+    '--- RUNNING NOTIFICATIONS SUITE [NODE (platform layer, mocked)] ---',
+  )
   const results = []
 
   // E1: Deterministic positive 31-bit IDs

@@ -1,6 +1,7 @@
 /**
- * scripts/native-e2e/suite-persistence.mjs
- * E2E Suite for Task N2: DurableFileStore, Snapshot V2, Migrations & Recovery.
+ * scripts/native-e2e/suite-persistence-node.mjs
+ * Test Suite for Task N2: DurableFileStore, Snapshot V2, Migrations & Recovery.
+ * Label: node test (platform layer, mocked)
  */
 
 import { appStorage } from '../../src/platform/storage.ts'
@@ -13,7 +14,9 @@ import {
 import { STORAGE_REGISTRY } from '../../src/platform/storageRegistry.ts'
 
 export async function runPersistenceSuite() {
-  console.log('--- RUNNING PERSISTENCE SUITE (N2) ---')
+  console.log(
+    '--- RUNNING PERSISTENCE SUITE [NODE (platform layer, mocked)] ---',
+  )
   const results = []
 
   // T1: Storage Registry Complete
