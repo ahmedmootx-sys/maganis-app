@@ -23,8 +23,6 @@ jobs:
   build-debug:
     name: Build & Verify Debug APK
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -52,6 +50,9 @@ jobs:
       - name: Install Playwright OS system deps only
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
+
+      - name: Gate - Brand name & app label
+        run: node scripts/gate-brand-name.mjs
 
       - name: Gate - Privacy and no personal data
         run: node scripts/gate-no-personal-data.mjs
@@ -104,7 +105,41 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Run JVM Unit Tests
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Gate - Check JVM Unit Test Results
+        run: node scripts/check-jvm-tests.mjs --min-tests 14
+
+      - name: Configure Debug Signing Key
+        id: check-debug-keystore
+        run: |
+          if [ -n "${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}" ]; then
+            echo "has_debug_secrets=true" >> $GITHUB_OUTPUT
+            KEYSTORE_FILE="$RUNNER_TEMP/debug.keystore"
+            echo "${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}" | base64 -d > "$KEYSTORE_FILE"
+            chmod 600 "$KEYSTORE_FILE"
+            echo "DEBUG_KEYSTORE_PATH=$KEYSTORE_FILE" >> $GITHUB_ENV
+            echo "DEBUG_KEY_ALIAS=${{ secrets.ANDROID_DEBUG_KEY_ALIAS }}" >> $GITHUB_ENV
+            echo "::add-mask::${{ secrets.ANDROID_DEBUG_KEYSTORE_PASSWORD }}"
+            echo "::add-mask::${{ secrets.ANDROID_DEBUG_KEY_PASSWORD }}"
+          else
+            echo "has_debug_secrets=false" >> $GITHUB_OUTPUT
+            echo "::warning::debug APK signed with a throwaway key: installing it over an older debug APK will fail; uninstall first"
+            echo "### ⚠️ Debug Signing Key Notice" >> $GITHUB_STEP_SUMMARY
+            echo "debug APK signed with a throwaway key: installing it over an older debug APK will fail; uninstall first." >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Assemble Debug APK
+        env:
+          ANDROID_DEBUG_KEYSTORE_PATH: ${{ env.DEBUG_KEYSTORE_PATH }}
+          ANDROID_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_DEBUG_KEYSTORE_PASSWORD }}
+          ANDROID_DEBUG_KEY_ALIAS: ${{ env.DEBUG_KEY_ALIAS }}
+          ANDROID_DEBUG_KEY_PASSWORD: ${{ secrets.ANDROID_DEBUG_KEY_PASSWORD }}
+          ANDROID_VERSION_CODE: ${{ github.run_number }}
         run: |
           cd android
           chmod +x gradlew
@@ -119,16 +154,38 @@ jobs:
           path: gradle-build.log
           retention-days: 7
 
-      - name: Push Failure Log
-        if: failure()
+      - name: Verify Debug APK Certificate and Badging
         run: |
-          if [ -f gradle-build.log ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git checkout -B ci-log
-            git add gradle-build.log
-            git commit -m "ci: debug gradle log [skip ci]" || true
-            git push origin ci-log --force || true
+          DEBUG_APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          if [ ! -f "$DEBUG_APK" ]; then
+            echo "::error::Debug APK was not found at $DEBUG_APK"
+            exit 1
+          fi
+
+          echo "Extracting debug certificate SHA-256 fingerprint..."
+          CERT_OUTPUT=$(apksigner verify --print-certs "$DEBUG_APK")
+          DEBUG_SHA256=$(echo "$CERT_OUTPUT" | grep -i "SHA-256 digest:" | head -n 1 | awk '{print $NF}' | tr -d ':' | tr '[:lower:]' '[:upper:]')
+          echo "Debug Certificate SHA-256: $DEBUG_SHA256"
+
+          echo "### 📱 Debug APK Certificate SHA-256" >> $GITHUB_STEP_SUMMARY
+          echo "- **Fingerprint:** \`$DEBUG_SHA256\`" >> $GITHUB_STEP_SUMMARY
+
+          # Fail if debug certificate equals release certificate (Security S4)
+          EXPECTED_RELEASE_SHA256=$(echo "${{ vars.ANDROID_CERT_SHA256 }}" | tr -d ':' | tr '[:lower:]' '[:upper:]')
+          if [ -n "$EXPECTED_RELEASE_SHA256" ] && [ "$DEBUG_SHA256" = "$EXPECTED_RELEASE_SHA256" ]; then
+            echo "::error::Security violation: Debug APK was signed with the release certificate!"
+            exit 1
+          fi
+
+          echo "Checking APK badging (package ID and labels)..."
+          node scripts/check-apk-badging.mjs --apk "$DEBUG_APK" --package app.maganis.coach.debug --label "Maganis (Debug)"
+
+      - name: Secure Cleanup of Debug Keystore
+        if: always()
+        run: |
+          if [ -n "$DEBUG_KEYSTORE_PATH" ] && [ -f "$DEBUG_KEYSTORE_PATH" ]; then
+            rm -f "$DEBUG_KEYSTORE_PATH"
+            echo "Securely removed debug keystore from runner temp."
           fi
 
       - name: Prepare Debug Artifact
@@ -148,7 +205,6 @@ jobs:
     name: Android 34 Emulator E2E Suite
     needs: build-debug
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -162,7 +218,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Consolidated Native E2E Test Suite
+      - name: Run Node Subsystems Test Suite (Mocked Platform Layer)
         run: node scripts/native-e2e/index.mjs
 
       - name: Download Debug APK
@@ -184,7 +240,6 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Emulator & Smoke Test
-        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -195,31 +250,74 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             APK=$(ls debug-apk/maganis-DEBUG-*.apk | head -n 1)
-            echo "Installing $APK..."
-            adb install -r "$APK"
-            echo "Launching main activity..."
-            adb shell am start -n app.maganis.coach.debug/app.maganis.coach.MainActivity
-            sleep 8
-            mkdir -p emulator-artifacts
-            # 1. Capture Light Mode
-            adb shell cmd uimode night no
-            sleep 2
-            adb exec-out screencap -p > emulator-artifacts/01-home-light.png
-            # 2. Capture Dark Mode
-            adb shell cmd uimode night yes
-            sleep 2
-            adb exec-out screencap -p > emulator-artifacts/01-home-dark.png
-            # 3. Test Back Button response
-            adb shell input keyevent 4
-            sleep 1
-            adb exec-out screencap -p > emulator-artifacts/02-back-toast.png
-            # 4. Dump logcat and check for crashes
-            adb logcat -d > emulator-artifacts/logcat.txt
-            if grep -E "FATAL EXCEPTION" emulator-artifacts/logcat.txt; then
-              echo "Fatal exception detected in logcat!"
-              exit 1
+
+            run_smoke_and_storage() {
+              echo "=== Starting Emulator Test Run (Attempt $1) ==="
+              mkdir -p emulator-artifacts
+              echo "Installing $APK..."
+              adb install -r "$APK"
+              echo "Launching main activity..."
+              adb shell am start -n app.maganis.coach.debug/app.maganis.coach.MainActivity
+
+              echo "Waiting 10 seconds for process startup..."
+              sleep 10
+              PID=$(adb shell pidof app.maganis.coach.debug)
+              if [ -z "$PID" ]; then
+                echo "::error::Liveness check failed: app.maganis.coach.debug is not running 10s after launch!"
+                adb logcat -d > emulator-artifacts/startup-failure-logcat.txt
+                return 1
+              fi
+              echo "Process confirmed alive (PID: $PID)."
+
+              # 1. Capture Light Mode
+              adb shell cmd uimode night no
+              sleep 2
+              adb exec-out screencap -p > emulator-artifacts/01-home-light.png
+
+              # 2. Capture Dark Mode
+              adb shell cmd uimode night yes
+              sleep 2
+              adb exec-out screencap -p > emulator-artifacts/01-home-dark.png
+
+              # 3. Test Back Button response
+              adb shell input keyevent 4
+              sleep 1
+              adb exec-out screencap -p > emulator-artifacts/02-back-toast.png
+
+              # 4. Dump logcat and check for crashes and ANRs
+              adb logcat -d > emulator-artifacts/logcat.txt
+              if grep -E "FATAL EXCEPTION|ANR in " emulator-artifacts/logcat.txt; then
+                echo "::error::Fatal exception or ANR detected in logcat!"
+                return 1
+              fi
+
+              # 5. Check screenshot non-blankness
+              echo "Validating non-blank screenshots..."
+              node scripts/check-screenshots-not-blank.mjs emulator-artifacts || return 1
+
+              # 6. Run real device-level storage tests (T1, T3, T4, T7)
+              echo "Running real device-level storage tests (T1, T3, T4, T7)..."
+              node scripts/emulator-storage-tests.mjs || return 1
+
+              # 7. Run monkey stress test on real emulator
+              echo "Running monkey stress tests on emulator..."
+              node scripts/native-e2e/suite-monkey.mjs || return 1
+
+              echo "=== Emulator test run passed cleanly ==="
+              return 0
+            }
+
+            if ! run_smoke_and_storage 1; then
+              echo "::warning::First emulator attempt failed. Retrying once per flake policy..."
+              echo "### ⚠️ Emulator Flake Policy: Attempt 1 Failed, Retrying..." >> $GITHUB_STEP_SUMMARY
+              sleep 5
+              adb shell am force-stop app.maganis.coach.debug || true
+              if ! run_smoke_and_storage 2; then
+                echo "::error::Second emulator attempt also failed. Failing job."
+                echo "### ❌ Emulator Run Failed After 1 Retry" >> $GITHUB_STEP_SUMMARY
+                exit 1
+              fi
             fi
-            echo "Emulator smoke test finished successfully."
 
       - name: Upload Emulator Screenshots & Logs
         if: always()
@@ -231,7 +329,7 @@ jobs:
 
   release:
     name: Build & Publish Release APK
-    needs: build-debug
+    needs: [build-debug, emulator-e2e]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
@@ -314,6 +412,9 @@ jobs:
             exit 1
           fi
           echo "✅ Certificate identity verified successfully."
+
+          echo "Checking release APK badging (package ID, labels and absence of debug hooks)..."
+          node scripts/check-apk-badging.mjs --apk "$RELEASE_APK" --package app.maganis.coach --label "Maganis"
 
       - name: Extract Release Notes from CHANGELOG.md
         id: changelog
