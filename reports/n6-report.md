@@ -130,8 +130,8 @@ The following claims in prior task reports and documentation were audited during
 
 ## 6. What Was Not Done & Why
 
-1. **Deletion of Remote Branch `ci-log`**: The remote branch `ci-log` could not be deleted from the local environment because git push credentials for remote origin are not present in this workspace session. The owner should delete it directly from GitHub if desired.
-2. **Querying GitHub Actions API for Historical Pass Rates**: The `gh` CLI is not logged into GitHub on the local machine. All test pass rates were measured locally on JVM and Node, while CI cloud runner executions are labelled "CI result on GitHub: not verified".
+1. **Remote Branch `ci-log` Check**: Verified via `git ls-remote --heads origin ci-log` that branch `ci-log` does not exist on the remote repository. No remote branch deletion was required.
+2. **Querying GitHub Actions API for Historical Pass Rates**: The `gh` CLI is not installed / logged in on the local machine. All test pass rates were measured locally on JVM and Node, while CI cloud runner executions are honestly labelled "CI result on GitHub: not verified".
 3. **Execution of Real Emulator Storage Tests on Local Host**: The local host does not have an active Android Virtual Device (AVD) running. Real emulator storage tests (`scripts/emulator-storage-tests.mjs`) are wired into the CI workflow (`emulator-e2e`) where the emulator is booted.
 
 ---
@@ -139,7 +139,7 @@ The following claims in prior task reports and documentation were audited during
 ## 7. Questions for the Owner
 
 1. **Stable Debug Keystore Setup**: Would you like to enable the stable debug signing key on GitHub Actions? If yes, simply run `node scripts/android-keystore.mjs --debug` on your computer (where JDK is installed), and copy the 4 secrets printed in the terminal into your GitHub repository settings under **Settings ➔ Secrets and variables ➔ Actions**. This will allow you to update debug builds without uninstalling!
-2. **Branch `ci-log` Cleanup**: May we confirm that you have deleted the orphaned `ci-log` branch from GitHub (Settings ➔ Branches)?
+2. **Merging `native/n6`**: Branch `native/n6` has been pushed to GitHub (`https://github.com/ahmedmootx-sys/maganis-app/pull/new/native/n6`). All local gates pass cleanly. You can review and merge the PR into `main`.
 
 ---
 
