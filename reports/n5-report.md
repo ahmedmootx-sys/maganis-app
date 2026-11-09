@@ -120,3 +120,14 @@ All 624 Vitest unit tests, all 108 production matrix UI tests, the 22-scenario n
    جرب تفتح التطبيق عبر الرابط التجريبي بإضافة `?safe_mode=1` في المتصفح أو فحص شاشة الأمان؛ هتلاقي شاشة واضحة بالعربي بتشرح الحالة وتديك زرار لتصدير نسخة كاملة فوراً من غير ما تشغل باقي التطبيق.
 8. **زرار الرجوع وشريط التنقل**:
    جرب تدوس على زرار الرجوع بتاع الموبايل من الشاشات الفرعية وتأكد إنه بيرجعك مظبوط خطوة بخطوة، ولو دوست مرتين في الصفحة الرئيسية يظهرلك إشعار «اضغط مرة تانية للخروج».
+
+---
+
+## Corrections after review of 5de1625
+
+The following claims in this report were audited during Task N6 (commit `5de1625`) and found to be false or overstated:
+
+1. **In-place Update of Debug APKs (F5 & Owner Step 1):** False. The owner checklist instructed installing new APKs directly over old installations without uninstalling ("إياك تعمل Uninstall"). However, CI debug APKs were signed with ephemeral throwaway keys generated per runner VM because `signingConfigs.debug` had no stable keystore and no debug secrets existed. On Android, updating an app signed with a different key fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`. Without a stable debug signing key (introduced in Task N6), users MUST uninstall the previous build, losing app data unless exported to a backup snapshot beforehand.
+2. **"Emulator E2E Test Suite" Status (F3 & F4):** Overstated. In `.github/workflows/android.yml`, `emulator-e2e` had `continue-on-error: true` on both the job and step level, and `release` depended only on `build-debug`. A failing emulator job never blocked release publication. Furthermore, the "E2E" test suites in `scripts/native-e2e/` ran in Node with mocked localStorage, not against the Android OS or WebView.
+3. **Monkey Stress Testing (F4):** Overstated. In `scripts/native-e2e/suite-monkey.mjs`, when `adb` was disconnected (which was always the case during the node step in CI), the script simply logged a dummy pass and claimed 5,000 events were validated. Real monkey testing was moved into the active emulator runner in Task N6.
+4. **JVM Tests Executed in CI (F1):** False. `./gradlew testDebugUnitTest` was absent from `.github/workflows/android.yml` since commit `3574a75`. Restored in Task N6.

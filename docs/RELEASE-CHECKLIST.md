@@ -72,7 +72,21 @@ Before bumping versions or tagging:
 ## 5. Post-Release Integrity & Sideload Verification
 
 - [ ] Download release APK on a physical test device.
-- [ ] Verify update installs smoothly over previous version without requiring uninstallation.
+- [ ] Verify update installs smoothly over previous version without requiring uninstallation (when signing keys match).
 - [ ] Confirm in-app Version badge shows `v0.x.y`.
 - [ ] Confirm all previously saved data, workouts, and settings are intact.
 - [ ] Check Diagnostics sheet: storage health is `ok`, no crash logs generated.
+
+---
+
+## 6. Android Signing Key Mismatches & Data Safety
+
+Android enforces strict signature matching across updates. If an incoming APK was signed with a different key than the installed APK (e.g., updating from a throwaway CI debug APK to a release APK, or across builds with different debug keystores):
+
+1. **Android Rejection**: Android will refuse to install the update with `INSTALL_FAILED_UPDATE_INCOMPATIBLE` ("App not installed as package conflicts with an existing package").
+2. **Consequence of Uninstallation**: Uninstalling the existing app causes Android to delete `/data/data/app.maganis.coach*/`, destroying all internally stored workouts, nutrition logs, and local databases.
+3. **Mandatory Recovery Protocol**:
+   - **Step 1 (Export Snapshot)**: Open the old app -> Settings -> Backup -> Tap "أخذ نسخة متأكد منها الآن" (Take Verified Backup Now) and export the JSON snapshot to public `Download/Maganis/` or share via WhatsApp/Drive.
+   - **Step 2 (Uninstall Old App)**: Once the backup file is confirmed safe, uninstall the old app.
+   - **Step 3 (Install New APK)**: Install the new APK.
+   - **Step 4 (Restore Snapshot)**: Launch the new app -> in the Onboarding screen or Settings -> Backup -> Tap "استعادة البيانات" (Restore Data), select the exported snapshot, and confirm. All personal data is 100% restored.

@@ -218,3 +218,12 @@ Under realistic synthetic heavy testing (Rule D5), a payload comprising 400 comp
 6. **فحص تنبيه الداشبورد عند الغياب (Snooze):**
    - لو التطبيق بقاله فترة معملش نسخة، هيظهر بانر تنبيهي هادي في الداشبورد بدون أي إيموجي ومريح للعين.
    - اتأكد إن زرار «تأجيل 24 ساعة» بيخفي التنبيه فوراً لمدة يوم كامل.
+
+---
+
+## Corrections after review of 5de1625
+
+The following claims in this report were audited during Task N6 (commit `5de1625`) and found to be false or overstated:
+
+1. **JVM Tests "wired into .github/workflows/android.yml" and "executed in GitHub Actions CI" (F1):** False. Commit `3574a75` stripped `./gradlew testDebugUnitTest` from `build-debug`. At commit `5de1625`, no JVM unit tests were executing in CI. Task N6 restored the step with an automated test-count enforcement gate.
+2. **E2E Test Suites:** Overstated. The backup test scenarios in `scripts/native-e2e/suite-backup.mjs` ran exclusively in Node against mocked storage, not on a physical Android device or emulator. The suite has been renamed to `suite-backup-node.mjs` with honest labelling `[node test (platform layer, mocked)]`.

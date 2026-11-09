@@ -171,3 +171,14 @@ A comprehensive Snapshot V2 format was engineered that captures 100% of user-aut
    - بعد إعادة التشغيل، ادخل على التمارين وتأكد إن تمارينك المخصصة وفيديوهاتك لسه موجودة زي ما هي ومطارتش.
 8. **التأكد من عدم وجود لاج أو تهنيج:**
    - اتنقل بين الأيام والتغذية ومكتبة التمارين، وتأكد إن التنقل سريع وسلس بدون أي وقفة أو شاشة بيضاء.
+
+---
+
+## Corrections after review of 5de1625
+
+The following claims in this report were audited during Task N6 (commit `5de1625`) and found to be false or overstated:
+
+1. **JVM Tests "wired into CI" (F1):** False. Commit `3574a75` removed `./gradlew testDebugUnitTest` from `.github/workflows/android.yml`. From that commit until Task N6, JVM tests were never executed in CI builds.
+2. **JVM Test Suite Passing 14/14 (F2):** Overstated. Running the 14 JVM tests under JDK 21 yielded 1 failure (`DurableFileStoreTest.testRecoveryFromCorruptJsonUsingBak`, line 160: expected `bak` but was `corrupt` for `events.get(0).recoveredFrom`). The contract records a `corrupt` event first and a `bak` recovery event second.
+3. **Sequential 5,000 Writes (N2 Prompt):** Overstated. `testSequential5000Writes` was named 5,000 writes but the loop only executed 500 writes (`i < 500`) to shorten execution time.
+4. **Emulator Tests T1-T8 (F4):** False/Overstated. The tests labeled as native emulator tests were actually executed in Node against an in-memory mock of `localStorage` (`suite-persistence.mjs`). Real device-level tests (force-stop, kill -9, `run-as` corruption) were not implemented on the emulator until Task N6.
