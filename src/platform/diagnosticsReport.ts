@@ -17,7 +17,7 @@ export interface DiagnosticsReportData {
 
 export async function buildDiagnosticsReport(): Promise<DiagnosticsReportData> {
   const timestamp = new Date().toISOString()
-  let appVersion = '0.1.0'
+  let appVersion = '0.2.0'
   let versionCode = 1
   let buildType = 'release'
   let signingSha256Short = 'unknown'
