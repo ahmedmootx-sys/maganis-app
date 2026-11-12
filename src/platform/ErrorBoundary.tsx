@@ -179,8 +179,8 @@ export class ErrorBoundary extends Component<
           justifyContent: 'center',
           minHeight: '100vh',
           padding: '24px',
-          backgroundColor: 'var(--color-bg-base, #12171f)',
-          color: 'var(--color-text-primary, #ffffff)',
+          backgroundColor: 'var(--color-bg, #121110)',
+          color: 'var(--color-text, #f6f2ea)',
           textAlign: 'center',
           boxSizing: 'border-box',
         }}
@@ -189,11 +189,11 @@ export class ErrorBoundary extends Component<
           style={{
             maxWidth: '460px',
             width: '100%',
-            backgroundColor: 'var(--color-bg-surface, #1b222d)',
+            backgroundColor: 'var(--color-surface, #1b1917)',
             borderRadius: '16px',
             padding: '28px 20px',
-            border: '1px solid var(--color-border-subtle, #2b3545)',
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+            border: '1px solid var(--color-divider, #35302a)',
+            boxShadow: 'var(--shadow-card, 0 8px 24px rgba(0, 0, 0, 0.4))',
             display: 'flex',
             flexDirection: 'column',
             gap: '16px',
@@ -205,7 +205,7 @@ export class ErrorBoundary extends Component<
               margin: '0',
               fontSize: '1.25rem',
               fontWeight: '700',
-              color: 'var(--color-text-primary, #ffffff)',
+              color: 'var(--color-text, #f6f2ea)',
             }}
           >
             {this.props.fallbackTitle || 'حصلت مشكلة في الشاشة دي'}
@@ -215,7 +215,7 @@ export class ErrorBoundary extends Component<
             style={{
               margin: '0',
               fontSize: '0.95rem',
-              color: 'var(--color-text-secondary, #94a3b8)',
+              color: 'var(--color-text-2, #b4aca0)',
               lineHeight: '1.5',
             }}
           >
@@ -232,10 +232,16 @@ export class ErrorBoundary extends Component<
               fontSize: '0.9rem',
               fontWeight: '600',
               backgroundColor: isDataFullySafe
-                ? 'rgba(16, 185, 129, 0.12)'
-                : 'rgba(245, 158, 11, 0.12)',
-              color: isDataFullySafe ? '#10b981' : '#f59e0b',
-              border: `1px solid ${isDataFullySafe ? '#10b981' : '#f59e0b'}`,
+                ? 'var(--color-success-bg, rgba(16, 185, 129, 0.12))'
+                : 'var(--color-warning-bg, rgba(245, 158, 11, 0.12))',
+              color: isDataFullySafe
+                ? 'var(--color-success, #22c55e)'
+                : 'var(--color-warning, #f59e0b)',
+              border: `1px solid ${
+                isDataFullySafe
+                  ? 'var(--color-success-border, #14532d)'
+                  : 'var(--color-warning-border, #78350f)'
+              }`,
             }}
           >
             {isDataFullySafe
@@ -249,9 +255,10 @@ export class ErrorBoundary extends Component<
             <div
               style={{
                 fontSize: '0.85rem',
-                color: 'var(--color-text-secondary, #94a3b8)',
+                color: 'var(--color-text-2, #b4aca0)',
                 padding: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                backgroundColor:
+                  'var(--color-surface-2, rgba(255, 255, 255, 0.05))',
                 borderRadius: '6px',
               }}
             >
@@ -265,9 +272,12 @@ export class ErrorBoundary extends Component<
               data-testid="loop-blocked-warning"
               style={{
                 fontSize: '0.85rem',
-                color: '#ef4444',
+                color: 'var(--color-danger, #f87171)',
                 padding: '8px 12px',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                backgroundColor:
+                  'var(--color-danger-bg, rgba(239, 68, 68, 0.1))',
+                border:
+                  '1px solid var(--color-danger-border, rgba(239, 68, 68, 0.3))',
                 borderRadius: '6px',
               }}
             >
@@ -291,13 +301,17 @@ export class ErrorBoundary extends Component<
               onClick={this.handleRetry}
               disabled={isLoopBlocked}
               style={{
-                height: '44px',
+                minHeight: '44px',
+                height: 'auto',
+                padding: '10px 14px',
                 borderRadius: '8px',
                 border: 'none',
                 backgroundColor: isLoopBlocked
-                  ? '#334155'
-                  : 'var(--color-primary, #3b82f6)',
-                color: '#ffffff',
+                  ? 'var(--btn-primary-disabled-bg, #35302a)'
+                  : 'var(--btn-primary-bg, #ea6a15)',
+                color: isLoopBlocked
+                  ? 'var(--btn-primary-disabled-fg, #b4aca0)'
+                  : 'var(--btn-primary-fg, #14110e)',
                 fontWeight: '600',
                 fontSize: '0.95rem',
                 cursor: isLoopBlocked ? 'not-allowed' : 'pointer',
@@ -311,11 +325,13 @@ export class ErrorBoundary extends Component<
               type="button"
               onClick={this.handleGoHome}
               style={{
-                height: '44px',
+                minHeight: '44px',
+                height: 'auto',
+                padding: '10px 14px',
                 borderRadius: '8px',
-                border: '1px solid var(--color-border-subtle, #334155)',
+                border: '1px solid var(--color-divider, #35302a)',
                 backgroundColor: 'transparent',
-                color: 'var(--color-text-primary, #ffffff)',
+                color: 'var(--color-text, #f6f2ea)',
                 fontWeight: '600',
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -329,11 +345,14 @@ export class ErrorBoundary extends Component<
               type="button"
               onClick={this.handleSendReport}
               style={{
-                height: '44px',
+                minHeight: '44px',
+                height: 'auto',
+                padding: '10px 14px',
                 borderRadius: '8px',
-                border: '1px solid var(--color-border-subtle, #334155)',
-                backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                color: 'var(--color-text-secondary, #cbd5e1)',
+                border: '1px solid var(--color-divider, #35302a)',
+                backgroundColor:
+                  'var(--color-surface-2, rgba(255, 255, 255, 0.04))',
+                color: 'var(--color-text-2, #b4aca0)',
                 fontWeight: '600',
                 fontSize: '0.95rem',
                 cursor: 'pointer',
@@ -348,11 +367,14 @@ export class ErrorBoundary extends Component<
               onClick={this.handleMakeBackupNow}
               disabled={isBackingUp}
               style={{
-                height: '44px',
+                minHeight: '44px',
+                height: 'auto',
+                padding: '10px 14px',
                 borderRadius: '8px',
-                border: '1px solid var(--color-border-subtle, #334155)',
-                backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                color: '#10b981',
+                border: '1px solid var(--color-success-border, #14532d)',
+                backgroundColor:
+                  'var(--color-success-bg, rgba(16, 185, 129, 0.08))',
+                color: 'var(--color-success, #22c55e)',
                 fontWeight: '600',
                 fontSize: '0.95rem',
                 cursor: isBackingUp ? 'wait' : 'pointer',

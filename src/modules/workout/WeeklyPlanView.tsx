@@ -911,7 +911,7 @@ export function WeeklyPlanView({
   onUpdateProgram,
   onDeleteProgram,
   onStartRoutine,
-  onOpenScheduleModal: _onOpenScheduleModal,
+  onOpenScheduleModal,
   onOpenVaultModal,
   onOpenLibrary,
   onOpenCustomBuilder,
@@ -1763,7 +1763,7 @@ export function WeeklyPlanView({
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
       const res = await saveFile(
         blob,
-        `maganis-program-${program.id || 'export'}.csv`,
+        `bunyan-program-${program.id || 'export'}.csv`,
         'text/csv',
       )
       setIsExportSheetOpen(false)
@@ -2818,7 +2818,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -2835,7 +2837,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -2851,7 +2855,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3174,13 +3180,31 @@ export function WeeklyPlanView({
                 {program.days.length} أيام
               </span>
             </div>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setIsAddDaySheetOpen(true)}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                flexWrap: 'wrap',
+              }}
             >
-              + إضافة يوم
-            </Button>
+              {onOpenScheduleModal && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => onOpenScheduleModal()}
+                >
+                  تعديل الجدول/الأيام
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setIsAddDaySheetOpen(true)}
+              >
+                + إضافة يوم
+              </Button>
+            </div>
           </div>
 
           <div
@@ -3548,7 +3572,29 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                if (onOpenScheduleModal) {
+                  onOpenScheduleModal()
+                } else {
+                  setIsDaysAdjustSheetOpen(true)
+                }
+              }}
+            >
+              <IconCalendar size={18} />
+              <span>تعديل الجدول/الأيام</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                minHeight: '48px',
+                height: 'auto',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3557,14 +3603,16 @@ export function WeeklyPlanView({
               }}
             >
               <IconCalendar size={18} />
-              <span>تعديل أيام الجدول</span>
+              <span>ضبط عدد أيام التدريب</span>
             </button>
             <button
               type="button"
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3636,7 +3684,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3652,7 +3702,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3668,7 +3720,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => fileInputRef.current?.click()}
@@ -3681,7 +3735,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -4046,9 +4102,10 @@ export function WeeklyPlanView({
             disabled={allWeekdaysTaken}
             style={{
               justifyContent: 'flex-start',
-              height: '52px',
+              minHeight: '52px',
+              height: 'auto',
               gap: '12px',
-              padding: '0 16px',
+              padding: '10px 16px',
               opacity: allWeekdaysTaken ? 0.5 : 1,
               cursor: allWeekdaysTaken ? 'not-allowed' : 'pointer',
             }}
@@ -4070,9 +4127,10 @@ export function WeeklyPlanView({
             disabled={allWeekdaysTaken}
             style={{
               justifyContent: 'flex-start',
-              height: '52px',
+              minHeight: '52px',
+              height: 'auto',
               gap: '12px',
-              padding: '0 16px',
+              padding: '10px 16px',
               opacity: allWeekdaysTaken ? 0.5 : 1,
               cursor: allWeekdaysTaken ? 'not-allowed' : 'pointer',
             }}
@@ -4094,9 +4152,10 @@ export function WeeklyPlanView({
             disabled={allWeekdaysTaken || !program || program.days.length === 0}
             style={{
               justifyContent: 'flex-start',
-              height: '52px',
+              minHeight: '52px',
+              height: 'auto',
               gap: '12px',
-              padding: '0 16px',
+              padding: '10px 16px',
               opacity:
                 allWeekdaysTaken || !program || program.days.length === 0
                   ? 0.5
@@ -4141,7 +4200,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -4182,7 +4243,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => handleToggleDayKind(dayMenuTarget.dayIndex)}

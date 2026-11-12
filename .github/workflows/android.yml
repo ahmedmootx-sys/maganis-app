@@ -178,7 +178,7 @@ jobs:
           fi
 
           echo "Checking APK badging (package ID and labels)..."
-          node scripts/check-apk-badging.mjs --apk "$DEBUG_APK" --package app.maganis.coach.debug --label "Maganis (Debug)"
+          node scripts/check-apk-badging.mjs --apk "$DEBUG_APK" --package app.maganis.coach.debug --label "Bunyan"
 
       - name: Secure Cleanup of Debug Keystore
         if: always()
@@ -414,7 +414,7 @@ jobs:
           echo "✅ Certificate identity verified successfully."
 
           echo "Checking release APK badging (package ID, labels and absence of debug hooks)..."
-          node scripts/check-apk-badging.mjs --apk "$RELEASE_APK" --package app.maganis.coach --label "Maganis"
+          node scripts/check-apk-badging.mjs --apk "$RELEASE_APK" --package app.maganis.coach --label "Bunyan"
 
       - name: Extract Release Notes from CHANGELOG.md
         id: changelog
@@ -463,7 +463,7 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           APK_NAME="${{ steps.package.outputs.apk_name }}"
           if [ "${{ steps.check-keystore.outputs.has_release_secrets }}" != "true" ]; then
-            TITLE="Maganis $TAG (Debug Build)"
+            TITLE="Bunyan $TAG (Debug Build)"
             gh release create "$TAG" \
               "$APK_NAME" \
               "${APK_NAME}.sha256" \
@@ -472,7 +472,7 @@ jobs:
               --notes-file "$RUNNER_TEMP/release_notes.md" \
               --prerelease
           else
-            TITLE="Maganis $TAG"
+            TITLE="Bunyan $TAG"
             gh release create "$TAG" \
               "$APK_NAME" \
               "${APK_NAME}.sha256" \

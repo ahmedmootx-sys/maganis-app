@@ -39,6 +39,19 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
 
+        <activity
+            android:name=".SnoozePickerActivity"
+            android:theme="@style/BunyanSnoozeDialogTheme"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:noHistory="true"
+            android:launchMode="singleInstance" />
+
+        <receiver
+            android:name=".NotificationSnoozeReceiver"
+            android:exported="false" />
+
         <!-- Task N4.8: Native alarm and notification re-arm receiver for reboot, update & time changes -->
         <receiver
             android:name=".AlarmRestoreReceiver"

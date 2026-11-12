@@ -57,7 +57,8 @@ async function run() {
     logLevel: 'error',
   })
   const port = server.httpServer.address().port
-  const baseUrl = `http://localhost:${port}/`
+  const baseUrl =
+    server.resolvedUrls?.local?.[0] || `http://localhost:${port}/maganis-app/`
 
   const browser = await chromium.launch({
     channel: 'chrome',

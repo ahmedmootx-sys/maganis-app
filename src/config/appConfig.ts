@@ -58,7 +58,7 @@ export function loadConfig(env: Record<string, string | undefined>): AppConfig {
   const appName = readValue(env, 'VITE_APP_NAME')
   if (appName === undefined) {
     problems.push(
-      '- VITE_APP_NAME: missing or empty. Fix: set a non-empty name, e.g. VITE_APP_NAME=Maganis (file: .env.development or .env.production).',
+      '- VITE_APP_NAME: missing or empty. Fix: set a non-empty name, e.g. VITE_APP_NAME=Bunyan (file: .env.development or .env.production).',
     )
   }
 

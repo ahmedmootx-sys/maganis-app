@@ -58,7 +58,7 @@ body {
   padding: 0;
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden /* clip-ok: prevent horizontal drift */;
+  overflow-x: clip;
   overscroll-behavior-y: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
@@ -81,7 +81,7 @@ button,
 #root {
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden /* clip-ok: prevent horizontal drift */;
+  overflow-x: clip;
 }
 
 .app {
@@ -1621,20 +1621,26 @@ button.ghost-danger:hover {
 .app--workout-active {
   max-width: 760px;
   margin: 0 auto;
-  padding: 0 0 100px 0;
+  padding: 0;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow-y: auto;
+  overflow-x: clip;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 
 .active-workout-session {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 .active-workout-header {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-nav, 50);
   background: var(--card-bg);
   color: var(--ink);
   backdrop-filter: blur(10px);
@@ -1648,7 +1654,7 @@ button.ghost-danger:hover {
 }
 
 [data-theme='dark'] .active-workout-header {
-  background: rgba(21, 30, 46, 0.98);
+  background: rgba(27, 25, 23, 0.96);
   border-bottom-color: var(--line);
 }
 
@@ -1704,10 +1710,10 @@ button.ghost-danger:hover {
 .active-workout-sticky-banner {
   position: sticky;
   top: 0;
-  z-index: 950;
+  z-index: 48;
   background: linear-gradient(
     135deg,
-    rgba(249, 87, 0, 0.12) 0%,
+    rgba(234, 106, 21, 0.14) 0%,
     var(--card-bg) 100%
   );
   border: 1.5px solid var(--accent);
@@ -1719,18 +1725,18 @@ button.ghost-danger:hover {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  box-shadow: 0 4px 16px rgba(249, 87, 0, 0.16);
+  box-shadow: 0 4px 16px rgba(234, 106, 21, 0.16);
   animation: slideDown 0.25s ease-out;
 }
 
 [data-theme='dark'] .active-workout-sticky-banner {
   background: linear-gradient(
     135deg,
-    rgba(255, 107, 26, 0.18) 0%,
-    #151e2e 100%
+    rgba(245, 133, 36, 0.18) 0%,
+    var(--color-surface, #1b1917) 100%
   );
   border-color: var(--accent);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
 }
 
 .banner-info-section {
@@ -1818,12 +1824,29 @@ button.ghost-danger:hover {
 
 /* Floating Rest Timer */
 
+.active-workout-sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav, 50);
+  background: var(--bg);
+}
+
+.active-workout-sticky-header .top-bar {
+  position: static;
+}
+
+.active-workout-sticky-header .rest-timer-banner {
+  position: static;
+  margin: 8px 16px 6px;
+}
+
 .rest-timer-banner {
   position: sticky;
   top: 60px;
-  z-index: 990;
-  background: #1e293b;
-  color: #f8fafc;
+  z-index: 45;
+  background: var(--color-toast-bg, #181614);
+  color: var(--color-toast-text, #ffffff);
+  border: 1px solid var(--color-toast-border, rgba(246, 176, 94, 0.25));
   padding: 10px 16px;
   display: flex;
   justify-content: space-between;
@@ -2132,30 +2155,31 @@ button.ghost-danger:hover {
   position: fixed;
   bottom: 0;
   inset-inline: 0;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.95);
+  padding: 12px 16px calc(12px + var(--safe-area-bottom, 0px));
+  background: var(--topbar-translucent-bg, var(--color-surface));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-top: 1px solid var(--line);
-  z-index: 1000;
+  z-index: var(--z-nav, 50);
   display: flex;
   justify-content: center;
 }
 
 .finish-workout-large-btn {
   max-width: 500px;
-  background: #10b981;
+  background: var(--btn-primary-bg);
   font-size: 15px;
   font-weight: 700;
   padding: 12px 20px;
   border-radius: 10px;
   border: none;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  color: var(--btn-primary-fg);
+  box-shadow: var(--shadow-primary-cta);
 }
 
 .finish-workout-large-btn:hover {
-  background: #059669;
+  background: var(--btn-primary-hover-bg);
+  color: var(--btn-primary-hover-fg);
 }
 
 /* ===== Exercise Visual Circular Avatars (Hevy Style) ===== */
@@ -2700,7 +2724,7 @@ button.ghost-danger:hover {
   border: 1px solid #e2e8f0 !important;
 }
 
-/* ===== Dr. Maganis (د. مجانص) Character Visual Identity ===== */
+/* ===== Bunyan (بُنْيَان) Visual Identity ===== */
 
 .maganis-header-brand {
   display: flex;
@@ -2715,7 +2739,7 @@ button.ghost-danger:hover {
   object-fit: contain;
   border: none;
   background: transparent;
-  box-shadow: 0 4px 14px rgba(249, 87, 0, 0.25);
+  box-shadow: 0 4px 14px rgba(234, 106, 21, 0.28);
   transition: transform 0.2s ease-in-out;
 }
 
@@ -2736,13 +2760,13 @@ button.ghost-danger:hover {
 }
 
 [data-theme='dark'] .maganis-brand-title h1 {
-  color: #f8fafc;
+  color: var(--color-text, #f6f2ea);
 }
 
 .maganis-brand-subtitle {
   font-size: 11px;
   font-weight: 700;
-  color: #f95700;
+  color: var(--color-accent-text);
 }
 
 .maganis-transparent-mascot {
@@ -2750,7 +2774,7 @@ button.ghost-danger:hover {
   height: 96px;
   object-fit: contain;
   border-radius: 18px;
-  filter: drop-shadow(0 6px 16px rgba(249, 87, 0, 0.25));
+  filter: drop-shadow(0 6px 16px rgba(234, 106, 21, 0.26));
   transition: transform 0.2s ease-in-out;
 }
 
@@ -2759,23 +2783,23 @@ button.ghost-danger:hover {
 }
 
 .maganis-coach-card {
-  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
-  border: 2px solid #fdba74;
+  background: linear-gradient(135deg, #fdf6eb 0%, #ffffff 100%);
+  border: 2px solid rgba(201, 138, 44, 0.45);
   border-radius: 16px;
   padding: 16px;
   display: flex;
   gap: 16px;
   align-items: center;
-  box-shadow: 0 8px 24px rgba(249, 87, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(234, 106, 21, 0.08);
 }
 
 [data-theme='dark'] .maganis-coach-card {
   background: linear-gradient(
     135deg,
-    rgba(39, 26, 14, 0.7) 0%,
+    rgba(245, 133, 36, 0.14) 0%,
     var(--card-bg) 100%
   );
-  border-color: #9a3412;
+  border-color: rgba(246, 176, 94, 0.4);
 }
 
 .maganis-coach-avatar-wrapper {
@@ -2809,7 +2833,7 @@ button.ghost-danger:hover {
 .maganis-coach-title {
   font-size: 15px;
   font-weight: 800;
-  color: #c2410c;
+  color: var(--color-accent-text);
   margin: 0 0 6px 0;
   display: flex;
   align-items: center;
@@ -2817,12 +2841,12 @@ button.ghost-danger:hover {
 }
 
 [data-theme='dark'] .maganis-coach-title {
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 
 .maganis-speech-bubble {
-  background: var(--bubble-bg);
-  border: 1px solid var(--bubble-border);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
   border-radius: 12px;
   padding: 12px 16px;
   font-size: 14px;
@@ -2833,13 +2857,13 @@ button.ghost-danger:hover {
 }
 
 [data-theme='dark'] .maganis-speech-bubble {
-  background: #151e2e;
-  border-color: #9a3412;
-  color: #f8fafc;
+  background: var(--color-surface-2, #262320);
+  border-color: rgba(246, 176, 94, 0.3);
+  color: var(--color-text, #f6f2ea);
 }
 
 .maganis-speech-bubble strong {
-  color: #ea580c;
+  color: var(--color-accent-text);
 }
 
 /* Theme Toggle Switch in Settings */
@@ -2893,15 +2917,15 @@ button.ghost-danger:hover {
 }
 
 .maganis-callout-toast {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #262320 0%, #181614 100%);
   color: #ffffff;
-  border: 1px solid #f95700;
+  border: 1px solid var(--color-accent, #ea6a15);
   border-radius: 12px;
   padding: 10px 14px;
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24);
 }
 
 .maganis-mini-avatar {
@@ -2909,7 +2933,7 @@ button.ghost-danger:hover {
   height: 40px;
   object-fit: contain;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 6px rgba(249, 87, 0, 0.4));
+  filter: drop-shadow(0 2px 6px rgba(245, 133, 36, 0.4));
 }
 
 /* Live Device File Sync UI */
@@ -3320,18 +3344,18 @@ input[type='url'],
   font-size: 18px;
   font-weight: 800;
   color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden /* clip-ok: text ellipsis truncation */;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
   letter-spacing: -0.01em;
 }
 
 .topbar__subtitle {
   font-size: 12px;
   color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden /* clip-ok: text ellipsis truncation */;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
   font-weight: 500;
 }
 
@@ -3901,8 +3925,10 @@ input[type='url'],
   display: flex;
   flex-direction: column;
   gap: 8px;
-  z-index: 90;
-  margin: 0 -16px;
+  z-index: 40;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
   box-shadow: none;
 }
 
@@ -3916,9 +3942,14 @@ input[type='url'],
 .sticky-bottom-bar button,
 .sticky-bottom-bar .btn {
   width: 100%;
-  height: 48px;
+  min-height: 48px;
+  height: auto;
+  padding: 10px 14px;
   font-size: 15px;
   font-weight: 700;
+  white-space: normal;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .sticky-bottom-bar--row button,
@@ -3937,14 +3968,14 @@ body.with-cardio-mini-bar .nutrition-screen,
 body.with-cardio-mini-bar .progress-screen,
 body.with-cardio-mini-bar .settings-screen {
   padding-bottom: calc(
-    var(--bottom-nav-height, 64px) + 56px + env(safe-area-inset-bottom, 0px) +
+    var(--bottom-nav-height, 68px) + 96px + env(safe-area-inset-bottom, 0px) +
       16px
   ) !important;
 }
 
 body.with-cardio-mini-bar .maganis-toast-portal {
   bottom: calc(
-    var(--bottom-nav-height, 64px) + 56px + 16px + var(--bottom-inset)
+    var(--bottom-nav-height, 68px) + 96px + 12px + var(--bottom-inset)
   ) !important;
 }
 

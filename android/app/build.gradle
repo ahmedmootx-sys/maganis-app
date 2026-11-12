@@ -49,6 +49,10 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     signingConfigs {
         debug {
             if (debugKeystorePath && file(debugKeystorePath).exists() && debugKeystorePassword && debugKeyAlias && debugKeyPassword) {

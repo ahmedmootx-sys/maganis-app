@@ -44,6 +44,7 @@ import type {
   CardioActivityId,
   CardioEffortLevel,
 } from './modules/workout/cardioEngine.ts'
+import { resolveSession } from './modules/workout/sessionResolver.ts'
 import { formatTime } from './modules/workout/workoutUtils.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
 import { Toast } from './components/Toast.tsx'
@@ -243,10 +244,10 @@ export function App({ config }: AppProps) {
   const handleTabChange = useCallback(
     (tabId: TabId) => {
       if (activeTab === tabId) {
-        // Tapping the already-active tab scrolls to top
+        // Tapping the already-active tab scrolls the active screen scroller to top
         const scroller =
-          document.querySelector('.app-main') ||
           document.querySelector('.screen-content') ||
+          document.querySelector('.app-main') ||
           window
         scroller.scrollTo({ top: 0, behavior: 'smooth' })
         return
@@ -883,10 +884,10 @@ export function App({ config }: AppProps) {
     )
   }
 
-  // --- Today's program day ---
+  // --- Today's resolved session ---
   const todayDayIndex = new Date().getDay()
-  const todayProgramDay =
-    program?.days.find((d) => d.dayIndex === todayDayIndex) ?? null
+  const todaySession = resolveSession(new Date(), { profile, program })
+  const todayProgramDay = todaySession.programDay
 
   // --- Render active tab content ---
   function renderContent() {
@@ -973,6 +974,54 @@ export function App({ config }: AppProps) {
             onStartWorkout={(day) => {
               setActiveWorkoutDay(day)
               setIsWorkoutSessionExpanded(true)
+            }}
+            onStartCardio={(day) => {
+              const weightKg =
+                bodyLog?.[0]?.weightKg ?? profile?.body?.weightKg ?? 70
+              const rawActivity =
+                day?.cardio?.activity ?? day?.cardioConfig?.activity ?? 'walk'
+              const activityAliasMap: Record<string, CardioActivityId> = {
+                walking: 'walk',
+                walk: 'walk',
+                running: 'run',
+                run: 'run',
+                cycling: 'bike',
+                bike: 'bike',
+                swimming: 'swim',
+                swim: 'swim',
+                jumprope: 'jumprope',
+                jump_rope: 'jumprope',
+                rowing: 'rowing',
+                row: 'rowing',
+              }
+              const activityId: CardioActivityId =
+                activityAliasMap[String(rawActivity).toLowerCase()] ?? 'walk'
+              const level: CardioEffortLevel =
+                (day?.cardio?.effort as CardioEffortLevel) ?? 'moderate'
+              const durationMinutes =
+                day?.cardio?.plannedMinutes ??
+                day?.cardioConfig?.plannedMinutes ??
+                25
+              const nextCardio = {
+                activityId,
+                level,
+                durationMinutes,
+                weightKg,
+                startTime: Date.now(),
+                pausedTotalMs: 0,
+                isPaused: false,
+                pausedAt: null,
+              }
+              try {
+                appStorage.setItem(
+                  'maganis:cardio_active_session',
+                  JSON.stringify(nextCardio),
+                )
+              } catch {
+                // ignore storage write failure
+              }
+              setActiveCardioSession(nextCardio)
+              setIsCardioRunnerOpen(true)
             }}
             onViewDay={() => {
               setActiveTab('workouts')
@@ -1080,10 +1129,7 @@ export function App({ config }: AppProps) {
                 <CustomScheduleModal
                   primaryGoal={profile.primaryGoal}
                   profileDays={profile.trainingDaysPerWeek}
-                  weekStartDay={
-                    (profile as { preferences?: { weekStartDay?: number } })
-                      .preferences?.weekStartDay ?? 6
-                  }
+                  weekStartDay={profile.weekStartDay ?? 6}
                   onSaveSchedule={handleSaveCustomSchedule}
                   onClose={() => setShowCustomScheduleModal(false)}
                 />
@@ -1251,8 +1297,8 @@ export function App({ config }: AppProps) {
         <header className="app-header" style={{ display: 'none' }}>
           <div className="maganis-header-brand">
             <img
-              src={assetUrl('branding/maganis-mascot-inner.png')}
-              alt="د. مجانص"
+              src={assetUrl('branding/bunyan-logo.png')}
+              alt="بُنْيَان"
               className="maganis-header-mascot"
             />
             <div className="maganis-brand-title">
@@ -1262,10 +1308,10 @@ export function App({ config }: AppProps) {
                 dir="ltr"
                 style={{ fontWeight: 600 }}
               >
-                Maganis
+                Bunyan
               </h1>
               <span className="maganis-brand-subtitle">
-                الطبيب والمدرب الرياضي الشخصي
+                مدربك الرياضي والتغذوي الشخصي
               </span>
             </div>
           </div>
@@ -1455,8 +1501,8 @@ export function App({ config }: AppProps) {
             style={{
               position: 'fixed',
               inset: 0,
-              zIndex: 'var(--z-modal, 200)',
-              background: 'var(--color-bg, #09090b)',
+              zIndex: 'var(--z-dialog, 1400)',
+              background: 'var(--color-bg, #121110)',
             }}
           >
             <Suspense fallback={<ScreenSkeleton />}>
@@ -1477,7 +1523,17 @@ export function App({ config }: AppProps) {
                     const raw = appStorage.getItem(
                       'maganis:cardio_active_session',
                     )
-                    setActiveCardioSession(raw ? JSON.parse(raw) : null)
+                    if (raw) {
+                      const parsed = JSON.parse(raw)
+                      const next = { ...parsed, minimized: true }
+                      appStorage.setItem(
+                        'maganis:cardio_active_session',
+                        JSON.stringify(next),
+                      )
+                      setActiveCardioSession(next)
+                    } else {
+                      setActiveCardioSession(null)
+                    }
                   } catch {
                     // ignore
                   }
@@ -1498,6 +1554,7 @@ export function App({ config }: AppProps) {
                     cardioDetails: sessionData,
                   }
                   trackingStore.saveSession(session)
+                  setSessions(trackingStore.loadSessions())
                 }}
               />
             </Suspense>

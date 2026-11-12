@@ -7,7 +7,7 @@ export function ConfigErrorView({ message }: ConfigErrorProps) {
     <div className="config-error" role="alert">
       <h1>Configuration error</h1>
       <p>
-        Maganis cannot start because the environment configuration is invalid.
+        Bunyan cannot start because the environment configuration is invalid.
       </p>
       <pre>{message}</pre>
       <p>

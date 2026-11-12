@@ -96,7 +96,7 @@ export async function buildDiagnosticsReport(): Promise<DiagnosticsReportData> {
 
   const report = [
     '=================================================================',
-    '              MAGANIS DIAGNOSTICS & STABILITY REPORT             ',
+    '              BUNYAN DIAGNOSTICS & STABILITY REPORT              ',
     '=================================================================',
     `Generated At:        ${timestamp}`,
     `App Version:         ${appVersion} (${versionCode})`,
@@ -125,10 +125,10 @@ export async function buildDiagnosticsReport(): Promise<DiagnosticsReportData> {
     '--- LAST 200 SANITIZED APP LOG LINES ---',
     logsText,
     '=================================================================',
-    'End of Maganis Diagnostics Report.',
+    'End of Bunyan Diagnostics Report.',
   ].join('\n')
 
-  const fileName = `maganis-diagnostics-${Date.now()}.txt`
+  const fileName = `bunyan-diagnostics-${Date.now()}.txt`
 
   return { reportText: report, fileName }
 }

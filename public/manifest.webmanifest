@@ -1,12 +1,12 @@
 {
-  "name": "Maganis",
-  "short_name": "Maganis",
-  "description": "مدربك وطبيبك الرياضي — كل بياناتك تُحفظ على جهازك فقط.",
+  "name": "Bunyan",
+  "short_name": "Bunyan",
+  "description": "بُنْيَان — مدربك الرياضي وخبير التغذية، كل بياناتك تُحفظ على جهازك فقط.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#F95700",
+  "background_color": "#181818",
+  "theme_color": "#EA6A15",
   "icons": [
     {
       "src": "branding/app-icon.png",

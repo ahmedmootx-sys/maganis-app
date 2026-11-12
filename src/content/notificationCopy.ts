@@ -1,5 +1,5 @@
 /**
- * Notification copy catalogue and channel definitions for Maganis (مجانص).
+ * Notification copy catalogue and channel definitions for Bunyan (بُنْيَان).
  * Short Egyptian Arabic UI strings with NO health, medical, training, or nutrition claims (Rules R1/R2).
  */
 
@@ -32,7 +32,7 @@ export const NOTIFICATION_CHANNELS: Record<
     vibration: true,
     visibility: 1,
     lights: true,
-    lightColor: '#10B981',
+    lightColor: '#EA6A15',
   },
   timer_v1: {
     id: 'timer_v1',
@@ -42,7 +42,7 @@ export const NOTIFICATION_CHANNELS: Record<
     vibration: true,
     visibility: 1,
     lights: true,
-    lightColor: '#10B981',
+    lightColor: '#EA6A15',
   },
   backup_v1: {
     id: 'backup_v1',
@@ -60,7 +60,7 @@ export const NOTIFICATION_CHANNELS: Record<
     vibration: true,
     visibility: 1,
     lights: true,
-    lightColor: '#10B981',
+    lightColor: '#EA6A15',
   },
 }
 
@@ -92,12 +92,12 @@ export const NOTIFICATION_COPY = {
   },
   test: {
     channelId: 'timer_v1' as const,
-    title: 'تنبيه تجريبي من مجانص',
+    title: 'تنبيه تجريبي من بُنْيَان',
     body: 'التنبيهات شغالة عندك ومضبوطة تمام!',
   },
 } as const
 
 export const NOTIFICATION_CONFIG = {
-  smallIcon: 'ic_stat_maganis',
-  accentColor: '#10B981',
+  smallIcon: 'ic_stat_bunyan',
+  accentColor: '#EA6A15',
 } as const

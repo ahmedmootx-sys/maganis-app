@@ -186,22 +186,22 @@ function runFixtureTests() {
   // Fixture 1: Valid debug badging
   const fixtureDebug = `
 package: name='app.maganis.coach.debug' versionCode='1005' versionName='0.1.0-debug'
-application-label:'Maganis (Debug)'
-application-label-ar:'Maganis (Debug)'
+application-label:'Bunyan'
+application-label-ar:'Bunyan'
 application-icon-640:'res/mipmap-xxxhdpi/ic_launcher.png'
 `
   const p1 = parseBadgingOutput(fixtureDebug)
-  const v1 = validateBadging(p1, 'app.maganis.coach.debug', 'Maganis (Debug)')
+  const v1 = validateBadging(p1, 'app.maganis.coach.debug', 'Bunyan')
   assertTest('Valid debug fixture passes', v1.valid, v1.errors.join('; '))
 
   // Fixture 2: Arabic locale label differs (MUST FAIL)
   const fixtureArabicMismatch = `
 package: name='app.maganis.coach' versionCode='1005' versionName='0.1.0'
-application-label:'Maganis'
-application-label-ar:'مجانص'
+application-label:'Bunyan'
+application-label-ar:'بنيان'
 `
   const p2 = parseBadgingOutput(fixtureArabicMismatch)
-  const v2 = validateBadging(p2, 'app.maganis.coach', 'Maganis')
+  const v2 = validateBadging(p2, 'app.maganis.coach', 'Bunyan')
   assertTest(
     'Arabic locale label mismatch fails',
     !v2.valid &&
@@ -212,10 +212,10 @@ application-label-ar:'مجانص'
   // Fixture 3: Package mismatch (MUST FAIL)
   const fixturePkgMismatch = `
 package: name='com.wrong.app' versionCode='1' versionName='1.0'
-application-label:'Maganis'
+application-label:'Bunyan'
 `
   const p3 = parseBadgingOutput(fixturePkgMismatch)
-  const v3 = validateBadging(p3, 'app.maganis.coach', 'Maganis')
+  const v3 = validateBadging(p3, 'app.maganis.coach', 'Bunyan')
   assertTest(
     'Package name mismatch fails',
     !v3.valid && v3.errors.some((e) => e.includes('Package name mismatch')),
@@ -228,7 +228,7 @@ package: name='app.maganis.coach' versionCode='1' versionName='1.0'
 sdkVersion:'24'
 `
   const p4 = parseBadgingOutput(fixtureZeroLabels)
-  const v4 = validateBadging(p4, 'app.maganis.coach', 'Maganis')
+  const v4 = validateBadging(p4, 'app.maganis.coach', 'Bunyan')
   assertTest(
     'Zero labels found fails',
     !v4.valid &&

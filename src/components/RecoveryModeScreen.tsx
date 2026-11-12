@@ -76,7 +76,7 @@ export function RecoveryModeScreen() {
 
   return (
     <div
-      className="maganis-shell recovery-screen"
+      className="recovery-screen"
       dir="rtl"
       style={{
         display: 'flex',
@@ -85,8 +85,9 @@ export function RecoveryModeScreen() {
         justifyContent: 'center',
         minHeight: '100vh',
         padding: '24px',
-        backgroundColor: 'var(--color-bg-base, #12171f)',
-        color: 'var(--color-text-primary, #ffffff)',
+        boxSizing: 'border-box',
+        backgroundColor: 'var(--color-bg, #121110)',
+        color: 'var(--color-text, #f6f2ea)',
         textAlign: 'center',
       }}
     >
@@ -94,11 +95,11 @@ export function RecoveryModeScreen() {
         style={{
           maxWidth: '480px',
           width: '100%',
-          backgroundColor: 'var(--color-bg-surface, #1b222d)',
+          backgroundColor: 'var(--color-surface, #1b1917)',
           borderRadius: '16px',
           padding: '32px 24px',
-          border: '1px solid var(--color-border-subtle, #2b3545)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+          border: '1px solid var(--color-divider, #35302a)',
+          boxShadow: 'var(--shadow-card, 0 8px 32px rgba(0, 0, 0, 0.4))',
         }}
       >
         <div
@@ -106,8 +107,9 @@ export function RecoveryModeScreen() {
             width: '48px',
             height: '48px',
             borderRadius: '50%',
-            backgroundColor: 'rgba(249, 87, 0, 0.15)',
-            color: 'var(--color-primary, #F95700)',
+            backgroundColor:
+              'var(--color-accent-tint, rgba(234, 106, 21, 0.14))',
+            color: 'var(--color-accent, #ea6a15)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -134,7 +136,7 @@ export function RecoveryModeScreen() {
             fontSize: '20px',
             fontWeight: 'bold',
             marginBottom: '12px',
-            color: 'var(--color-text-primary, #ffffff)',
+            color: 'var(--color-text, #f6f2ea)',
           }}
         >
           مش قادر أقرأ بياناتك. بياناتك لسه موجودة ومتمسحتش
@@ -144,7 +146,7 @@ export function RecoveryModeScreen() {
           style={{
             fontSize: '14px',
             lineHeight: '1.6',
-            color: 'var(--color-text-secondary, #9ba3af)',
+            color: 'var(--color-text-2, #b4aca0)',
             marginBottom: '24px',
           }}
         >
@@ -158,9 +160,10 @@ export function RecoveryModeScreen() {
             style={{
               padding: '12px',
               borderRadius: '8px',
-              backgroundColor: 'rgba(249, 87, 0, 0.15)',
-              border: '1px solid var(--color-brand-primary, #F95700)',
-              color: 'var(--color-text-primary, #ffffff)',
+              backgroundColor:
+                'var(--color-accent-tint, rgba(234, 106, 21, 0.14))',
+              border: '1px solid var(--color-accent, #ea6a15)',
+              color: 'var(--color-text, #f6f2ea)',
               fontSize: '13px',
               marginBottom: '20px',
               textAlign: 'right',
@@ -174,7 +177,12 @@ export function RecoveryModeScreen() {
           <button
             type="button"
             className="btn btn--primary"
-            style={{ minHeight: '44px', width: '100%' }}
+            style={{
+              minHeight: '44px',
+              height: 'auto',
+              padding: '10px 14px',
+              width: '100%',
+            }}
             onClick={handleRetry}
             disabled={isProcessing}
           >
@@ -184,7 +192,12 @@ export function RecoveryModeScreen() {
           <button
             type="button"
             className="btn btn--secondary"
-            style={{ minHeight: '44px', width: '100%' }}
+            style={{
+              minHeight: '44px',
+              height: 'auto',
+              padding: '10px 14px',
+              width: '100%',
+            }}
             onClick={handleOpenFilePicker}
             disabled={isProcessing}
           >
@@ -193,8 +206,13 @@ export function RecoveryModeScreen() {
 
           <button
             type="button"
-            className="btn btn--ghost"
-            style={{ minHeight: '44px', width: '100%' }}
+            className="btn btn--tertiary"
+            style={{
+              minHeight: '44px',
+              height: 'auto',
+              padding: '10px 14px',
+              width: '100%',
+            }}
             onClick={handleExportRawFiles}
             disabled={isProcessing}
           >

@@ -320,9 +320,46 @@ export async function syncSchedule(
   const state = gatherCurrentScheduleState(stateOverride)
   const now = new Date()
   const desired = computeDesiredSchedule(state, now)
+  const capacitorDesired = desired.filter((d) => d.type !== 'workout_day')
+  const workoutDesired = desired.filter((d) => d.type === 'workout_day')
+  const workoutRemindersActive =
+    state.settings.masterEnabled && state.settings.workoutReminderEnabled
 
   let pendingList: PendingNotificationSummary[] = []
+  let existingWorkoutIds: number[] = []
+  let activeSnoozes: Array<(typeof desired)[number] & { isSnooze?: boolean }> =
+    []
+
   if (isNative()) {
+    try {
+      const kvAll = await MaganisNative.kvReadAll()
+      const rawExisting = kvAll.data?.['maganis:notify.schedule']
+      if (rawExisting) {
+        const parsed = JSON.parse(rawExisting) as Array<
+          (typeof desired)[number] & { isSnooze?: boolean }
+        >
+        if (Array.isArray(parsed)) {
+          const nowMs = Date.now()
+          existingWorkoutIds = parsed
+            .filter(
+              (item) =>
+                item.type === 'workout_day' && typeof item.id === 'number',
+            )
+            .map((item) => item.id)
+          activeSnoozes = workoutRemindersActive
+            ? parsed.filter(
+                (item) =>
+                  item.isSnooze === true &&
+                  typeof item.triggerAt === 'number' &&
+                  item.triggerAt > nowMs,
+              )
+            : []
+        }
+      }
+    } catch {
+      // ignore missing/corrupt persisted schedule
+    }
+
     try {
       const res = await LocalNotifications.getPending()
       pendingList = (res.notifications || []).map((n) => {
@@ -342,10 +379,10 @@ export async function syncSchedule(
     }
   }
 
-  const diff = diffSchedule(desired, pendingList)
+  const diff = diffSchedule(capacitorDesired, pendingList)
 
   if (isNative()) {
-    // 1. Cancel obsoleted items
+    // 1. Cancel obsoleted Capacitor items
     if (diff.toCancel.length > 0) {
       try {
         await LocalNotifications.cancel({
@@ -356,7 +393,7 @@ export async function syncSchedule(
       }
     }
 
-    // 2. Schedule new/changed items
+    // 2. Schedule non-workout Capacitor items
     if (diff.toSchedule.length > 0) {
       try {
         const notifsToSchedule: ScheduleOptions['notifications'] =
@@ -381,9 +418,54 @@ export async function syncSchedule(
       }
     }
 
-    // 3. Atomically persist desired schedule for reboot & package replacement recovery (N4.8)
+    // 3. Schedule workout notifications natively with BroadcastReceiver Snooze Actions
+    const desiredWorkoutIds = new Set(workoutDesired.map((w) => w.id))
+    const snoozeIds = new Set(activeSnoozes.map((s) => s.id))
+    const droppedWorkoutIds = existingWorkoutIds.filter(
+      (id) => !desiredWorkoutIds.has(id) && !snoozeIds.has(id),
+    )
+    if (droppedWorkoutIds.length > 0) {
+      try {
+        await MaganisNative.cancelWorkoutAlarms({ ids: droppedWorkoutIds })
+      } catch (err) {
+        console.warn('Failed to cancel dropped workout alarms:', err)
+      }
+    }
+    const workoutAlarmsToSchedule = workoutDesired.filter(
+      (d) => !snoozeIds.has(d.id),
+    )
+    if (workoutAlarmsToSchedule.length > 0) {
+      try {
+        await MaganisNative.scheduleWorkoutAlarms({
+          notifications: workoutAlarmsToSchedule.map((d) => ({
+            id: d.id,
+            triggerAt: d.triggerAt,
+            channelId: d.channelId,
+            title: d.title,
+            body: d.body,
+            route: d.extra.route || 'weekly_plan',
+            targetDate: d.extra.targetDate || '',
+            isExactNotification: d.isExactNotification,
+          })),
+        })
+      } catch (err) {
+        console.warn('Failed to schedule native workout alarms:', err)
+      }
+    }
+
+    // 4. Atomically persist desired schedule + active future snoozes for reboot & snooze safety (N4.8)
     try {
-      const scheduleJson = JSON.stringify(desired)
+      const mergedById = new Map<number, Record<string, unknown>>()
+      for (const item of desired) {
+        mergedById.set(item.id, item as unknown as Record<string, unknown>)
+      }
+      for (const snoozeItem of activeSnoozes) {
+        mergedById.set(
+          snoozeItem.id,
+          snoozeItem as unknown as Record<string, unknown>,
+        )
+      }
+      const scheduleJson = JSON.stringify(Array.from(mergedById.values()))
       await MaganisNative.kvWrite({
         key: 'maganis:notify.schedule',
         value: scheduleJson,
@@ -399,7 +481,9 @@ export async function syncSchedule(
   const diagnostics: SyncDiagnostics = {
     at: Date.now(),
     desiredCount: desired.length,
-    pendingCount: desired.length,
+    pendingCount:
+      desired.length +
+      activeSnoozes.filter((s) => !desired.some((d) => d.id === s.id)).length,
     permission: perm,
     exactAllowed: exact,
     channelsOk: true,
@@ -419,6 +503,23 @@ export async function syncSchedule(
  */
 export async function cancelAllNotifications(): Promise<void> {
   if (isNative()) {
+    try {
+      const kvAll = await MaganisNative.kvReadAll()
+      const rawExisting = kvAll.data?.['maganis:notify.schedule']
+      if (rawExisting) {
+        const parsed = JSON.parse(rawExisting) as Array<{ id?: number }>
+        if (Array.isArray(parsed)) {
+          const ids = parsed
+            .map((p) => p.id)
+            .filter((id): id is number => typeof id === 'number')
+          if (ids.length > 0) {
+            await MaganisNative.cancelWorkoutAlarms({ ids })
+          }
+        }
+      }
+    } catch {
+      // Non-fatal
+    }
     try {
       await LocalNotifications.cancelAll()
       await MaganisNative.kvRemove({ key: 'maganis:notify.schedule' })

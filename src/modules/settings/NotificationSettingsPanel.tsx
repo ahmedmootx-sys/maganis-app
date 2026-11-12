@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Card, Button, Toggle, Callout } from '../../ui/index.ts'
+import { Card, Button, Toggle, Callout, Segmented } from '../../ui/index.ts'
 import {
   getNotificationSettings,
   saveNotificationSettings,
 } from '../../platform/notifications/notificationStore.ts'
-import type { NotificationSettings } from '../../platform/notifications/schedule.ts'
+import type {
+  NotificationSettings,
+  WorkoutReminderMode,
+} from '../../platform/notifications/schedule.ts'
 import {
   getLiveDiagnostics,
   openSettingsScreen,
@@ -136,42 +139,40 @@ export function NotificationSettingsPanel() {
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '8px',
+                flexDirection: 'column',
+                gap: '10px',
               }}
             >
               <div
-                style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '8px',
+                  flexWrap: 'wrap',
+                }}
               >
-                <span style={{ fontSize: '14px', fontWeight: 600 }}>
-                  تذكير أيام التمرين
-                </span>
-                <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
-                  تنبيه بأيام التمرين المحددة في جدولك
-                </span>
-              </div>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-              >
-                {settings.workoutReminderEnabled && (
-                  <input
-                    type="time"
-                    value={settings.workoutReminderTime}
-                    onChange={(e) =>
-                      updateSetting('workoutReminderTime', e.target.value)
-                    }
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                    flex: '1 1 180px',
+                    minWidth: 0,
+                  }}
+                >
+                  <span style={{ fontSize: '14px', fontWeight: 600 }}>
+                    تذكير أيام التمرين
+                  </span>
+                  <span
                     style={{
-                      padding: '4px 6px',
-                      borderRadius: '6px',
-                      border: '1px solid var(--border)',
-                      fontSize: '13px',
-                      background: 'var(--bg)',
-                      color: 'var(--ink)',
+                      fontSize: '12px',
+                      color: 'var(--color-text-2, var(--muted))',
                     }}
-                    aria-label="وقت تذكير التمرين"
-                  />
-                )}
+                  >
+                    تنبيه بأيام التمرين مع دعم التأجيل السريع من الإشعار
+                  </span>
+                </div>
                 <Toggle
                   checked={settings.workoutReminderEnabled}
                   onChange={(checked) =>
@@ -180,6 +181,290 @@ export function NotificationSettingsPanel() {
                   aria-label="تفعيل تذكير أيام التمرين"
                 />
               </div>
+
+              {settings.workoutReminderEnabled && (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                    padding: '10px 12px',
+                    borderRadius: '10px',
+                    background: 'var(--color-surface-2, var(--card-subtle))',
+                    border: '1px solid var(--color-divider)',
+                  }}
+                >
+                  <Segmented
+                    options={[
+                      { value: 'fixed', label: 'وقت ثابت' },
+                      { value: 'custom_times', label: 'أوقات مخصصة' },
+                      { value: 'random', label: 'أوقات عشوائية' },
+                    ]}
+                    value={settings.workoutReminderMode || 'fixed'}
+                    onChange={(val) =>
+                      updateSetting(
+                        'workoutReminderMode',
+                        val as WorkoutReminderMode,
+                      )
+                    }
+                  />
+
+                  {(settings.workoutReminderMode || 'fixed') === 'fixed' && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '8px',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          color: 'var(--color-text)',
+                        }}
+                      >
+                        ميعاد التذكير اليومي
+                      </span>
+                      <input
+                        type="time"
+                        value={settings.workoutReminderTime}
+                        onChange={(e) =>
+                          updateSetting('workoutReminderTime', e.target.value)
+                        }
+                        style={{
+                          minHeight: '44px',
+                          padding: '6px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid var(--color-divider)',
+                          fontSize: '13.5px',
+                          background: 'var(--color-surface)',
+                          color: 'var(--color-text)',
+                        }}
+                        aria-label="وقت تذكير التمرين"
+                      />
+                    </div>
+                  )}
+
+                  {settings.workoutReminderMode === 'custom_times' && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '8px',
+                      }}
+                    >
+                      {(settings.workoutReminderCustomTimes &&
+                      settings.workoutReminderCustomTimes.length > 0
+                        ? settings.workoutReminderCustomTimes
+                        : [settings.workoutReminderTime]
+                      ).map((timeVal, idx, arr) => (
+                        <div
+                          key={`custom-time-${idx}`}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '8px',
+                          }}
+                        >
+                          <input
+                            type="time"
+                            value={timeVal}
+                            onChange={(e) => {
+                              const next = [...arr]
+                              next[idx] = e.target.value
+                              updateSetting('workoutReminderCustomTimes', next)
+                            }}
+                            style={{
+                              flex: 1,
+                              minHeight: '44px',
+                              padding: '6px 10px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--color-divider)',
+                              fontSize: '13.5px',
+                              background: 'var(--color-surface)',
+                              color: 'var(--color-text)',
+                            }}
+                            aria-label={`وقت تذكير مخصص ${idx + 1}`}
+                          />
+                          {arr.length > 1 && (
+                            <Button
+                              size="sm"
+                              variant="subtle"
+                              onClick={() => {
+                                const next = arr.filter((_, i) => i !== idx)
+                                updateSetting(
+                                  'workoutReminderCustomTimes',
+                                  next,
+                                )
+                              }}
+                              aria-label={`حذف الوقت ${idx + 1}`}
+                              style={{
+                                minWidth: '44px',
+                                minHeight: '44px',
+                                height: 'auto',
+                              }}
+                            >
+                              حذف
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+
+                      {(settings.workoutReminderCustomTimes?.length ?? 1) <
+                        5 && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => {
+                            const current = settings.workoutReminderCustomTimes
+                              ?.length
+                              ? settings.workoutReminderCustomTimes
+                              : [settings.workoutReminderTime]
+                            const presets = [
+                              '09:00',
+                              '13:00',
+                              '18:00',
+                              '20:30',
+                              '21:30',
+                            ]
+                            const nextSlot =
+                              presets.find((p) => !current.includes(p)) ||
+                              '16:00'
+                            updateSetting('workoutReminderCustomTimes', [
+                              ...current,
+                              nextSlot,
+                            ])
+                          }}
+                          style={{
+                            minHeight: '44px',
+                            height: 'auto',
+                            padding: '8px 12px',
+                          }}
+                        >
+                          + إضافة وقت جديد
+                        </Button>
+                      )}
+                    </div>
+                  )}
+
+                  {settings.workoutReminderMode === 'random' && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: '8px',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}
+                        >
+                          <span style={{ fontSize: '13px', fontWeight: 600 }}>
+                            من
+                          </span>
+                          <input
+                            type="time"
+                            value={
+                              settings.workoutReminderRandomStart || '09:00'
+                            }
+                            onChange={(e) =>
+                              updateSetting(
+                                'workoutReminderRandomStart',
+                                e.target.value,
+                              )
+                            }
+                            style={{
+                              minHeight: '44px',
+                              padding: '6px 8px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--color-divider)',
+                              fontSize: '13px',
+                              background: 'var(--color-surface)',
+                              color: 'var(--color-text)',
+                            }}
+                            aria-label="بداية نافذة التنبيه العشوائي"
+                          />
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}
+                        >
+                          <span style={{ fontSize: '13px', fontWeight: 600 }}>
+                            إلى
+                          </span>
+                          <input
+                            type="time"
+                            value={settings.workoutReminderRandomEnd || '21:00'}
+                            onChange={(e) =>
+                              updateSetting(
+                                'workoutReminderRandomEnd',
+                                e.target.value,
+                              )
+                            }
+                            style={{
+                              minHeight: '44px',
+                              padding: '6px 8px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--color-divider)',
+                              fontSize: '13px',
+                              background: 'var(--color-surface)',
+                              color: 'var(--color-text)',
+                            }}
+                            aria-label="نهاية نافذة التنبيه العشوائي"
+                          />
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '6px',
+                        }}
+                      >
+                        <span style={{ fontSize: '13px', fontWeight: 600 }}>
+                          عدد التنبيهات اليومية في أيام التمرين
+                        </span>
+                        <Segmented
+                          options={[
+                            { value: '1', label: 'تنبيه واحد' },
+                            { value: '2', label: 'تنبيهان' },
+                            { value: '3', label: '3 تنبيهات' },
+                          ]}
+                          value={String(
+                            settings.workoutReminderRandomCount ?? 2,
+                          )}
+                          onChange={(val) =>
+                            updateSetting(
+                              'workoutReminderRandomCount',
+                              Number(val),
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* 2. Rest Timer End */}
@@ -254,7 +539,12 @@ export function NotificationSettingsPanel() {
                 </span>
               </div>
               <div
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  flexWrap: 'wrap',
+                }}
               >
                 {settings.nutritionReminderEnabled && (
                   <input
@@ -264,12 +554,13 @@ export function NotificationSettingsPanel() {
                       updateSetting('nutritionReminderTime', e.target.value)
                     }
                     style={{
-                      padding: '4px 6px',
-                      borderRadius: '6px',
-                      border: '1px solid var(--border)',
+                      minHeight: '44px',
+                      padding: '6px 10px',
+                      borderRadius: '8px',
+                      border: '1px solid var(--color-divider)',
                       fontSize: '13px',
-                      background: 'var(--bg)',
-                      color: 'var(--ink)',
+                      background: 'var(--color-surface)',
+                      color: 'var(--color-text)',
                     }}
                     aria-label="وقت تذكير الوجبات"
                   />
@@ -524,7 +815,13 @@ export function NotificationSettingsPanel() {
             size="large"
             onClick={handleRunTest}
             disabled={testState === 'running'}
-            style={{ width: '100%', height: '44px' }}
+            style={{
+              width: '100%',
+              minHeight: '44px',
+              height: 'auto',
+              padding: '10px 14px',
+              whiteSpace: 'normal',
+            }}
           >
             {testState === 'running'
               ? 'جاري إرسال تنبيه تجريبي خلال 5 ثوانٍ...'

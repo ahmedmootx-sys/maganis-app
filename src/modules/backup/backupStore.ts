@@ -303,8 +303,8 @@ export function createBackupStore(): BackupStore {
         ) {
           await navigator.share({
             files: [file],
-            title: 'نسخة احتياطية من تطبيق Maganis',
-            text: 'إليك ملف النسخة الاحتياطية لبياناتك من تطبيق Maganis.',
+            title: 'نسخة احتياطية من تطبيق Bunyan',
+            text: 'إليك ملف النسخة الاحتياطية لبياناتك من تطبيق بُنْيَان (Bunyan).',
           })
           recordExport()
           return true

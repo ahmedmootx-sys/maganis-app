@@ -7,6 +7,7 @@ export interface ToggleProps {
   label?: React.ReactNode
   disabled?: boolean
   className?: string
+  'aria-label'?: string
 }
 
 export const Toggle: React.FC<ToggleProps> = ({
@@ -16,6 +17,7 @@ export const Toggle: React.FC<ToggleProps> = ({
   label,
   disabled = false,
   className = '',
+  'aria-label': ariaLabel,
 }) => {
   return (
     <label
@@ -23,6 +25,7 @@ export const Toggle: React.FC<ToggleProps> = ({
       className={`toggle-switch ${disabled ? 'toggle-switch--disabled' : ''} ${className}`.trim()}
       role="switch"
       aria-checked={checked}
+      aria-label={ariaLabel}
       style={{
         opacity: disabled ? 0.5 : 1,
         cursor: disabled ? 'not-allowed' : 'pointer',
@@ -33,6 +36,7 @@ export const Toggle: React.FC<ToggleProps> = ({
         id={id}
         checked={checked}
         disabled={disabled}
+        aria-label={ariaLabel}
         onChange={(e) => onChange(e.target.checked)}
         style={{
           position: 'absolute',

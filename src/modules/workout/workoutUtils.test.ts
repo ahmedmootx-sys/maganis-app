@@ -56,7 +56,7 @@ describe('workoutUtils', () => {
     }
 
     const exportedJson = exportRoutineToJson(sampleProgram, 'جدول اختبار')
-    expect(exportedJson).toContain('maganis')
+    expect(exportedJson).toContain('bunyan')
     expect(exportedJson).toContain('workout_routine')
 
     const parsed = parseAndValidateRoutineJson(exportedJson)

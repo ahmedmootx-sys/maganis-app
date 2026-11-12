@@ -209,8 +209,10 @@ export function BackupPanel({
     setErrorMsg(null)
     try {
       // Find latest verified internal or downloads file
-      const latestFile = deviceFiles.find((f) =>
-        f.name.startsWith('maganis-backup-'),
+      const latestFile = deviceFiles.find(
+        (f) =>
+          f.name.startsWith('maganis-backup-') ||
+          f.name.startsWith('bunyan-backup-'),
       )
       if (latestFile) {
         const target =
@@ -511,10 +513,12 @@ export function BackupPanel({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '6px',
             }}
           >
             <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
-              ذاكرة الهاتف الداخلية:
+              ذاكرة الهاتف الداخلية
             </span>
             <span style={{ color: 'var(--color-text-2)' }}>
               {status.destinations.internal.lastVerifiedAt
@@ -529,10 +533,12 @@ export function BackupPanel({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '6px',
             }}
           >
             <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
-              مجلد التنزيلات (Download/Maganis):
+              مجلد التنزيلات (<bdi dir="ltr">Download/Bunyan</bdi>)
             </span>
             <span style={{ color: 'var(--color-text-2)' }}>
               {status.destinations.downloads.lastVerifiedAt
@@ -549,14 +555,16 @@ export function BackupPanel({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '6px',
             }}
           >
             <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
-              مجلد مخصص إضافي:
+              مجلد مخصص إضافي
             </span>
             <span>
               {settings.folderDisplayName ? (
-                <span style={{ color: '#10b981' }}>
+                <span style={{ color: 'var(--color-success)' }}>
                   {settings.folderDisplayName}
                 </span>
               ) : (
@@ -589,7 +597,7 @@ export function BackupPanel({
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))',
           gap: '8px',
         }}
       >
@@ -681,9 +689,11 @@ export function BackupPanel({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '10px',
           }}
         >
-          <div>
+          <div style={{ minWidth: 0, flex: '1 1 180px' }}>
             <div
               style={{
                 fontSize: '14px',
@@ -705,17 +715,31 @@ export function BackupPanel({
                 : 'يمكنك اختيار مجلد في الذاكرة الخارجية أو بطاقة SD لحفظ نسخة إضافية تلقائياً.'}
             </div>
           </div>
-          <div>
+          <div style={{ flexShrink: 0 }}>
             {settings.folderDisplayName ? (
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleReleaseFolder}
+                style={{
+                  minHeight: '44px',
+                  height: 'auto',
+                  padding: '8px 14px',
+                }}
               >
                 إلغاء المجلد
               </Button>
             ) : (
-              <Button variant="secondary" size="sm" onClick={handlePickFolder}>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handlePickFolder}
+                style={{
+                  minHeight: '44px',
+                  height: 'auto',
+                  padding: '8px 14px',
+                }}
+              >
                 اختار مجلد
               </Button>
             )}
@@ -786,6 +810,8 @@ export function BackupPanel({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '8px',
           }}
         >
           <div
@@ -797,11 +823,12 @@ export function BackupPanel({
           >
             النسخ الاحتياطية المتوفرة على الجهاز
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <Button
               variant="secondary"
               size="sm"
               onClick={() => hiddenFileInputRef.current?.click()}
+              style={{ minHeight: '44px', height: 'auto', padding: '8px 12px' }}
             >
               استيراد من ملف
             </Button>
@@ -810,6 +837,7 @@ export function BackupPanel({
               size="sm"
               onClick={reloadFiles}
               disabled={isLoadingFiles}
+              style={{ minHeight: '44px', height: 'auto', padding: '8px 12px' }}
             >
               تحديث القائمة
             </Button>
@@ -853,7 +881,8 @@ export function BackupPanel({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  gap: '8px',
+                  flexWrap: 'wrap',
+                  gap: '10px',
                 }}
               >
                 <div
@@ -862,6 +891,7 @@ export function BackupPanel({
                     flexDirection: 'column',
                     gap: '2px',
                     minWidth: 0,
+                    flex: '1 1 160px',
                   }}
                 >
                   <div
@@ -914,6 +944,12 @@ export function BackupPanel({
                   variant="secondary"
                   size="sm"
                   onClick={() => openRestoreForFile(file)}
+                  style={{
+                    flexShrink: 0,
+                    minHeight: '44px',
+                    height: 'auto',
+                    padding: '8px 14px',
+                  }}
                 >
                   استعادة
                 </Button>

@@ -513,7 +513,7 @@ export function ExerciseDetailView({
     return (
       <div
         className="card"
-        style={{ padding: '24px', textAlign: 'center' }}
+        style={{ margin: '16px', padding: '24px', textAlign: 'center' }}
         dir="rtl"
       >
         <p className="muted">التمرين غير موجود في قاعدة البيانات.</p>
@@ -736,7 +736,12 @@ export function ExerciseDetailView({
                   variant="secondary"
                   size="sm"
                   onClick={() => setShowSwapModal(true)}
-                  style={{ height: '26px', padding: '0 8px', fontSize: '11px' }}
+                  style={{
+                    minHeight: '32px',
+                    height: 'auto',
+                    padding: '4px 10px',
+                    fontSize: '12px',
+                  }}
                 >
                   استبدل
                 </Button>

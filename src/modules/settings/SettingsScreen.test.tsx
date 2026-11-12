@@ -220,4 +220,30 @@ describe('SettingsScreen', () => {
       screen.getByText('أداة فحص الرؤوس العضلية (Muscle Atlas Inspector)'),
     ).toBeDefined()
   })
+
+  it('opens sub-sheets for notifications, backup, preferences, and about', () => {
+    render(
+      <SettingsScreen
+        profile={mockProfile}
+        onUpdateProfile={vi.fn()}
+        onEditProfile={vi.fn()}
+        theme="light"
+        onToggleTheme={vi.fn()}
+        backupData={() => mockBackupData}
+        onOpenAtlasDebug={vi.fn()}
+        onFactoryReset={vi.fn()}
+      />,
+    )
+
+    fireEvent.click(screen.getByTestId('settings-open-notifications'))
+    expect(screen.getByText('تفعيل التنبيهات')).toBeDefined()
+
+    fireEvent.click(screen.getByTestId('settings-open-backup'))
+    expect(
+      screen.getByText('النسخ الاحتياطية المتوفرة على الجهاز'),
+    ).toBeDefined()
+
+    fireEvent.click(screen.getByTestId('settings-open-about'))
+    expect(screen.getByText('التحديثات')).toBeDefined()
+  })
 })

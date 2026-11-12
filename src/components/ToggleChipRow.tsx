@@ -105,7 +105,8 @@ export function ToggleChipRow<T = string | number>({
               className={`toggle-chip-button ${isSelected ? 'selected' : ''}`}
               style={{
                 minHeight: '44px',
-                padding: '4px 2px',
+                height: 'auto',
+                padding: '6px 2px',
                 borderRadius: '8px',
                 fontWeight: isSelected ? 700 : 600,
                 fontSize: '11.5px',
@@ -113,15 +114,22 @@ export function ToggleChipRow<T = string | number>({
                 border: isSelected
                   ? '2px solid var(--accent)'
                   : '1px solid var(--line)',
-                background: isSelected ? 'var(--accent)' : 'var(--card-subtle)',
-                color: isSelected ? '#ffffff' : 'var(--ink)',
+                background: isOptionDisabled
+                  ? 'var(--color-surface-2)'
+                  : isSelected
+                    ? 'var(--accent)'
+                    : 'var(--card-subtle)',
+                color: isOptionDisabled
+                  ? 'var(--color-text-2)'
+                  : isSelected
+                    ? 'var(--on-accent, #14110e)'
+                    : 'var(--ink)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '2px',
                 transition: 'all 0.15s ease',
-                opacity: isOptionDisabled ? 0.45 : 1,
                 boxSizing: 'border-box',
                 outline: 'none',
                 minWidth: 0,
@@ -130,11 +138,12 @@ export function ToggleChipRow<T = string | number>({
             >
               <span
                 style={{
-                  lineHeight: 1.15,
+                  lineHeight: 1.2,
                   textAlign: 'center',
                   fontSize: '11px',
                   whiteSpace: 'normal',
-                  wordBreak: 'keep-all',
+                  overflowWrap: 'anywhere',
+                  wordBreak: 'break-word',
                 }}
               >
                 {option.label}

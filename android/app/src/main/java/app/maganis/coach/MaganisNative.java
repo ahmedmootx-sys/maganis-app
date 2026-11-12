@@ -61,6 +61,7 @@ import java.util.concurrent.Executors;
 @CapacitorPlugin(name = "MaganisNative")
 public class MaganisNative extends Plugin {
 
+    private static final String TAG = "MaganisNative";
     private DurableFileStore kvStore;
     private DurableFileStore mediaStore;
     private final ExecutorService writeExecutor = Executors.newSingleThreadExecutor();
@@ -108,8 +109,8 @@ public class MaganisNative extends Plugin {
         Context ctx = getContext();
         File baseKvDir = new File(ctx.getFilesDir(), "maganis/kv");
         File baseMediaDir = new File(ctx.getFilesDir(), "maganis/media");
-        kvStore = new DurableFileStore(baseKvDir);
-        mediaStore = new DurableFileStore(baseMediaDir);
+        kvStore = WorkoutAlarmHelper.getSharedKvStore(baseKvDir);
+        mediaStore = WorkoutAlarmHelper.getSharedKvStore(baseMediaDir);
 
         File snapshotsDir = new File(ctx.getFilesDir(), "maganis/snapshots/auto");
         if (!snapshotsDir.exists()) {
@@ -503,12 +504,12 @@ public class MaganisNative extends Plugin {
                     ContentValues values = new ContentValues();
                     values.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
                     values.put(MediaStore.MediaColumns.MIME_TYPE, mime);
-                    values.put(MediaStore.MediaColumns.RELATIVE_PATH, "Download/Maganis/");
+                    values.put(MediaStore.MediaColumns.RELATIVE_PATH, "Download/Bunyan/");
                     values.put(MediaStore.MediaColumns.IS_PENDING, 1);
 
                     Uri uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
                     if (uri == null) {
-                        call.reject("Failed to create MediaStore entry in Download/Maganis/");
+                        call.reject("Failed to create MediaStore entry in Download/Bunyan/");
                         return;
                     }
 
@@ -734,9 +735,10 @@ public class MaganisNative extends Plugin {
                     if (Build.VERSION.SDK_INT >= 29) {
                         ContentResolver resolver = ctx.getContentResolver();
                         Uri contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
-                        String selection = MediaStore.MediaColumns.DISPLAY_NAME + " = ? AND " +
-                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?";
-                        String[] selectionArgs = new String[]{name, "Download/Maganis%"};
+                        String selection = MediaStore.MediaColumns.DISPLAY_NAME + " = ? AND (" +
+                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ? OR " +
+                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?)";
+                        String[] selectionArgs = new String[]{name, "Download/Bunyan%", "Download/Maganis%"};
                         try (Cursor cursor = resolver.query(contentUri, null, selection, selectionArgs, null)) {
                             if (cursor != null && cursor.moveToFirst()) {
                                 int idIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
@@ -864,9 +866,10 @@ public class MaganisNative extends Plugin {
                     if (Build.VERSION.SDK_INT >= 29) {
                         ContentResolver resolver = ctx.getContentResolver();
                         Uri contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
-                        String selection = MediaStore.MediaColumns.DISPLAY_NAME + " = ? AND " +
-                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?";
-                        String[] selectionArgs = new String[]{name, "Download/Maganis%"};
+                        String selection = MediaStore.MediaColumns.DISPLAY_NAME + " = ? AND (" +
+                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ? OR " +
+                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?)";
+                        String[] selectionArgs = new String[]{name, "Download/Bunyan%", "Download/Maganis%"};
                         try (Cursor cursor = resolver.query(contentUri, null, selection, selectionArgs, null)) {
                             if (cursor != null && cursor.moveToFirst()) {
                                 int idIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
@@ -927,8 +930,9 @@ public class MaganisNative extends Plugin {
                     if (Build.VERSION.SDK_INT >= 29) {
                         ContentResolver resolver = ctx.getContentResolver();
                         Uri contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
-                        String selection = MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?";
-                        String[] selectionArgs = new String[]{"Download/Maganis%"};
+                        String selection = MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ? OR " +
+                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?";
+                        String[] selectionArgs = new String[]{"Download/Bunyan%", "Download/Maganis%"};
                         try (Cursor cursor = resolver.query(contentUri, null, selection, selectionArgs, MediaStore.MediaColumns.DATE_MODIFIED + " DESC")) {
                             if (cursor != null) {
                                 int nameIdx = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
@@ -1029,9 +1033,10 @@ public class MaganisNative extends Plugin {
                     if (Build.VERSION.SDK_INT >= 29) {
                         ContentResolver resolver = ctx.getContentResolver();
                         Uri contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
-                        String selection = MediaStore.MediaColumns.DISPLAY_NAME + " = ? AND " +
-                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?";
-                        String[] selectionArgs = new String[]{name, "Download/Maganis%"};
+                        String selection = MediaStore.MediaColumns.DISPLAY_NAME + " = ? AND (" +
+                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ? OR " +
+                                MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?)";
+                        String[] selectionArgs = new String[]{name, "Download/Bunyan%", "Download/Maganis%"};
                         int rows = resolver.delete(contentUri, selection, selectionArgs);
                         deleted = rows > 0;
                     }
@@ -1668,5 +1673,66 @@ public class MaganisNative extends Plugin {
                 call.reject("Failed to export raw snapshot: " + e.getMessage(), e);
             }
         });
+    }
+
+    @PluginMethod
+    public void scheduleWorkoutAlarms(PluginCall call) {
+        JSArray notifications = call.getArray("notifications");
+        if (notifications == null) {
+            JSObject ret = new JSObject();
+            ret.put("success", true);
+            ret.put("scheduledCount", 0);
+            call.resolve(ret);
+            return;
+        }
+
+        Context ctx = getContext();
+        int count = 0;
+        long now = System.currentTimeMillis();
+        for (int i = 0; i < notifications.length(); i++) {
+            try {
+                org.json.JSONObject item = notifications.getJSONObject(i);
+                int id = item.optInt("id", 0);
+                long triggerAt = item.optLong("triggerAt", 0);
+                if (id <= 0 || triggerAt <= now) continue;
+                String channelId = item.optString("channelId", WorkoutAlarmHelper.DEFAULT_CHANNEL_ID);
+                String title = item.optString("title", "تمرين اليوم جاهز");
+                String body = item.optString("body", "");
+                String route = item.optString("route", "weekly_plan");
+                String targetDate = item.optString("targetDate", "");
+                boolean isExact = item.optBoolean("isExactNotification", false);
+                WorkoutAlarmHelper.scheduleWorkoutAlarm(
+                        ctx, id, triggerAt, channelId, title, body, route, targetDate, isExact
+                );
+                count++;
+            } catch (Exception e) {
+                Log.w(TAG, "Skipping malformed workout notification item: " + e.getMessage());
+            }
+        }
+
+        JSObject ret = new JSObject();
+        ret.put("success", true);
+        ret.put("scheduledCount", count);
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void cancelWorkoutAlarms(PluginCall call) {
+        JSArray ids = call.getArray("ids");
+        Context ctx = getContext();
+        if (ids != null) {
+            for (int i = 0; i < ids.length(); i++) {
+                try {
+                    int id = ids.getInt(i);
+                    if (id > 0) {
+                        WorkoutAlarmHelper.cancelWorkoutAlarm(ctx, id);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        JSObject ret = new JSObject();
+        ret.put("success", true);
+        call.resolve(ret);
     }
 }

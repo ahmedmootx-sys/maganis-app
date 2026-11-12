@@ -80,7 +80,7 @@ export function getScheduledSessionsCount(
   schedule: Record<number, ScheduleSlotType>,
 ): number {
   return Object.values(schedule).filter(
-    (slot) => slot !== 'rest' && slot !== 'cardio',
+    (slot) => Boolean(slot) && slot !== 'rest',
   ).length
 }
 
@@ -105,7 +105,32 @@ export function getNextSession(
   for (let i = 0; i < 7; i++) {
     const w = ordered[(todayIdx + i) % 7]
     const slot = schedule[w.weekday]
-    if (slot && slot !== 'rest' && slot !== 'cardio') {
+    if (slot && slot !== 'rest') {
+      if (slot === 'cardio') {
+        const existingCardio = program.days.find((d) => d.kind === 'cardio')
+        const cardioDay: ProgramDay = existingCardio ?? {
+          id: 'cardio',
+          dayIndex: w.weekday,
+          name: 'كارديو واستشفاء نشط',
+          labelAr: 'كارديو واستشفاء نشط',
+          focus: '20–25 دقيقة مجهود معتدل',
+          focusAr: '20–25 دقيقة مجهود معتدل',
+          kind: 'cardio',
+          exercises: [],
+          cardio: {
+            activity: 'walk',
+            plannedMinutes: 25,
+            effort: 'moderate',
+          },
+        }
+        return {
+          day: cardioDay,
+          weekday: w.weekday,
+          isToday: i === 0,
+          nameAr: w.nameAr,
+        }
+      }
+
       const foundDay = program.days.find(
         (d) => (d.id && d.id === slot) || String(d.dayIndex) === slot,
       )

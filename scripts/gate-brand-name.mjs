@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 /**
  * scripts/gate-brand-name.mjs
- * Gate: Enforces correct brand spelling and app name consistency across locales (Task N6.5).
+ * Gate: Enforces Bunyan brand consistency & app name across locales (Task N6.5 + Rebrand).
  *
  * Rules:
- * - Brand spelling must be «مجانص» (ending with sad, \u0645\u062c\u0627\u0646\u0635).
- * - The wrong spelling ending with seen (\u0645\u062c\u0627\u0646\u0633) is strictly forbidden
- *   in all tracked text files (excluding binaries, evidence/, package-lock.json).
- * - No res/values-xxx/strings.xml may override app_name or app_name_debug (app name must be
- *   the English "Maganis" / "Maganis (Debug)" in every locale).
- * - Prints number of files scanned and enforces minimum.
+ * - Forbidden misspelled brand ending with seen (\u0645\u062c\u0627\u0646\u0633) is strictly banned across repo.
+ * - Legacy mascot "د. مجانص" is strictly banned across UI & resources.
+ * - Base strings.xml must declare app_name and app_name_debug as "Bunyan" (no "(Debug)" suffix).
+ * - No res/values-xxx/strings.xml may override app_name or app_name_debug.
  */
 
 import fs from 'node:fs'
@@ -89,6 +87,27 @@ function checkAppNameOverrides() {
   const resDir = path.join(rootDir, 'android', 'app', 'src', 'main', 'res')
   if (!fs.existsSync(resDir)) return violations
 
+  const baseStringsFile = path.join(resDir, 'values', 'strings.xml')
+  if (fs.existsSync(baseStringsFile)) {
+    const baseContent = fs.readFileSync(baseStringsFile, 'utf8')
+    const appNameMatch = baseContent.match(
+      /<string\s+name=["']app_name["']>([^<]*)<\/string>/i,
+    )
+    const debugNameMatch = baseContent.match(
+      /<string\s+name=["']app_name_debug["']>([^<]*)<\/string>/i,
+    )
+    if (!appNameMatch || appNameMatch[1].trim() !== 'Bunyan') {
+      violations.push(
+        `values/strings.xml app_name must be "Bunyan" (found: "${appNameMatch?.[1] ?? 'missing'}")`,
+      )
+    }
+    if (!debugNameMatch || debugNameMatch[1].trim() !== 'Bunyan') {
+      violations.push(
+        `values/strings.xml app_name_debug must be "Bunyan" (found: "${debugNameMatch?.[1] ?? 'missing'}")`,
+      )
+    }
+  }
+
   const subdirs = fs.readdirSync(resDir, { withFileTypes: true })
   for (const dirent of subdirs) {
     if (dirent.isDirectory() && dirent.name.startsWith('values-')) {
@@ -97,12 +116,12 @@ function checkAppNameOverrides() {
         const content = fs.readFileSync(stringsFile, 'utf8')
         if (/<string\s+name=["']app_name["']/i.test(content)) {
           violations.push(
-            `${dirent.name}/strings.xml illegally overrides 'app_name' (must remain English across all locales)`,
+            `${dirent.name}/strings.xml illegally overrides 'app_name' (must remain "Bunyan" across all locales)`,
           )
         }
         if (/<string\s+name=["']app_name_debug["']/i.test(content)) {
           violations.push(
-            `${dirent.name}/strings.xml illegally overrides 'app_name_debug' (must remain English across all locales)`,
+            `${dirent.name}/strings.xml illegally overrides 'app_name_debug' (must remain "Bunyan" across all locales)`,
           )
         }
       }

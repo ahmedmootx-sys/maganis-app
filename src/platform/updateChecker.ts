@@ -254,7 +254,7 @@ export async function checkForUpdates(
       status: 'up_to_date',
       currentVersion: currentVersionName,
       latestVersion,
-      messageAr: 'أنت بتستخدم أحدث إصدار بالفعل («مجانص» مستقر).',
+      messageAr: 'أنت بتستخدم أحدث إصدار بالفعل («بُنْيَان» مستقر).',
     }
   }
 

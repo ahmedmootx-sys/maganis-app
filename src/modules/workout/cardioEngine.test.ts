@@ -3,6 +3,8 @@ import {
   calculateCardioEnergy,
   calculateLiveEnergy,
   CARDIO_ACTIVITIES,
+  getCardioActivity,
+  normalizeCardioActivityId,
   type CardioActivityId,
   type CardioEffortLevel,
 } from './cardioEngine.ts'
@@ -110,5 +112,23 @@ describe('cardioEngine (B1.1 Data and Formulas)', () => {
     expect(calculateLiveEnergy(rate, 0)).toBe(0)
     expect(calculateLiveEnergy(rate, 60000)).toBe(8.0) // 1 minute
     expect(calculateLiveEnergy(rate, 150000)).toBe(20.0) // 2.5 minutes
+  })
+
+  it('7. normalizes legacy cardio activity aliases like walking/running cleanly', () => {
+    expect(normalizeCardioActivityId('walking')).toBe('walk')
+    expect(normalizeCardioActivityId('running')).toBe('run')
+    expect(normalizeCardioActivityId('cycling')).toBe('bike')
+    expect(normalizeCardioActivityId('swimming')).toBe('swim')
+    expect(normalizeCardioActivityId(undefined)).toBe('walk')
+    expect(getCardioActivity('walking')?.id).toBe('walk')
+    const est = calculateCardioEnergy(
+      'walking' as CardioActivityId,
+      'moderate',
+      25,
+      80,
+    )
+    expect(est).not.toBeNull()
+    expect(est!.activityId).toBe('walk')
+    expect(est!.grossSessionKcal).toBeGreaterThan(0)
   })
 })

@@ -12,10 +12,17 @@ import {
 import type { WorkoutProgram } from '../../modules/shared/types.ts'
 import type { UserProfile } from '../../modules/onboarding/types.ts'
 
+export type WorkoutReminderMode = 'fixed' | 'custom_times' | 'random'
+
 export interface NotificationSettings {
   masterEnabled: boolean
   workoutReminderEnabled: boolean
   workoutReminderTime: string // "HH:mm", default "18:00"
+  workoutReminderMode?: WorkoutReminderMode
+  workoutReminderCustomTimes?: string[]
+  workoutReminderRandomStart?: string // "HH:mm", default "09:00"
+  workoutReminderRandomEnd?: string // "HH:mm", default "21:00"
+  workoutReminderRandomCount?: number // 1..3, default 2
   nutritionReminderEnabled: boolean
   nutritionReminderTime: string // "HH:mm", default "21:00"
   restEndEnabled: boolean
@@ -29,6 +36,11 @@ export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   masterEnabled: true,
   workoutReminderEnabled: false, // Starts OFF per owner decision
   workoutReminderTime: '18:00',
+  workoutReminderMode: 'fixed',
+  workoutReminderCustomTimes: ['10:00', '18:00'],
+  workoutReminderRandomStart: '09:00',
+  workoutReminderRandomEnd: '21:00',
+  workoutReminderRandomCount: 2,
   nutritionReminderEnabled: false, // Starts OFF per owner decision
   nutritionReminderTime: '21:00',
   restEndEnabled: true, // ON once permission exists
@@ -120,6 +132,117 @@ export function parseTimeHHmm(timeStr: string): {
   const hour = Math.max(0, Math.min(23, Number(hStr) || 0))
   const minute = Math.max(0, Math.min(59, Number(mStr) || 0))
   return { hour, minute }
+}
+
+export function minutesToHHmm(totalMinutes: number): string {
+  const clamped = Math.max(0, Math.min(23 * 60 + 59, Math.round(totalMinutes)))
+  const h = Math.floor(clamped / 60)
+  const m = clamped % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+}
+
+function seededUnitFloat(seedInput: string): number {
+  let h = 2166136261
+  for (let i = 0; i < seedInput.length; i++) {
+    h ^= seedInput.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  let t = (h >>> 0) + 0x6d2b79f5
+  t = Math.imul(t ^ (t >>> 15), t | 1)
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+}
+
+/**
+ * Generates deterministic daily random workout reminder times within [startHHmm, endHHmm].
+ * Partitioned into balanced sub-windows so multi-alert days don't cluster together.
+ */
+export function computeRandomTimesForDate(
+  dateStr: string,
+  startHHmm = '09:00',
+  endHHmm = '21:00',
+  count = 2,
+): string[] {
+  const s = parseTimeHHmm(startHHmm)
+  const e = parseTimeHHmm(endHHmm)
+  let lo = s.hour * 60 + s.minute
+  let hi = e.hour * 60 + e.minute
+  if (hi < lo) {
+    const tmp = lo
+    lo = hi
+    hi = tmp
+  }
+  const safeCount = Math.max(1, Math.min(3, Math.round(count || 1)))
+  if (hi === lo) {
+    return [minutesToHHmm(lo)]
+  }
+
+  const totalSpan = hi - lo
+  const results: number[] = []
+  for (let i = 0; i < safeCount; i++) {
+    const bucketStart = lo + Math.floor((totalSpan * i) / safeCount)
+    const bucketEnd =
+      i === safeCount - 1
+        ? hi
+        : lo + Math.floor((totalSpan * (i + 1)) / safeCount) - 1
+    const safeEnd = Math.max(bucketStart, bucketEnd)
+    const u = seededUnitFloat(`rand|${dateStr}|${lo}|${hi}|${safeCount}|${i}`)
+    let picked = bucketStart + Math.floor(u * (safeEnd - bucketStart + 1))
+    if (results.length > 0 && picked <= results[results.length - 1]) {
+      picked = Math.min(hi, results[results.length - 1] + 1)
+    }
+    if (!results.includes(picked)) {
+      results.push(picked)
+    }
+  }
+  return results.map(minutesToHHmm)
+}
+
+export function resolveWorkoutReminderSlotsForDate(
+  settings: NotificationSettings,
+  dateStr: string,
+): Array<{ time: string; idKeySuffix: string }> {
+  const mode: WorkoutReminderMode = settings.workoutReminderMode || 'fixed'
+  if (mode === 'custom_times') {
+    const rawList = Array.isArray(settings.workoutReminderCustomTimes)
+      ? settings.workoutReminderCustomTimes
+      : []
+    const normalized = Array.from(
+      new Set(
+        rawList
+          .filter(
+            (t) => typeof t === 'string' && /^\d{1,2}:\d{2}$/.test(t.trim()),
+          )
+          .map((t) => {
+            const p = parseTimeHHmm(t.trim())
+            return minutesToHHmm(p.hour * 60 + p.minute)
+          }),
+      ),
+    ).sort()
+    const finalTimes =
+      normalized.length > 0
+        ? normalized
+        : [settings.workoutReminderTime || '18:00']
+    return finalTimes.map((time, idx) => ({
+      time,
+      idKeySuffix: idx === 0 ? '' : `#c${idx}`,
+    }))
+  }
+
+  if (mode === 'random') {
+    const times = computeRandomTimesForDate(
+      dateStr,
+      settings.workoutReminderRandomStart || '09:00',
+      settings.workoutReminderRandomEnd || '21:00',
+      settings.workoutReminderRandomCount ?? 2,
+    )
+    return times.map((time, idx) => ({
+      time,
+      idKeySuffix: `#r${idx}`,
+    }))
+  }
+
+  return [{ time: settings.workoutReminderTime || '18:00', idKeySuffix: '' }]
 }
 
 /**
@@ -230,44 +353,47 @@ export function computeDesiredSchedule(
       const slot = programSchedule[weekday]
       const isTrainingDay = slot && slot !== 'rest'
       if (isTrainingDay) {
-        const triggerDate = getLocalTriggerDate(
-          targetDate,
-          settings.workoutReminderTime,
-        )
-        const triggerMs = triggerDate.getTime()
-        // Only schedule if trigger time is in the future
-        if (triggerMs > nowMs) {
-          // Resolve program day title or fallback to weekday name
-          let dayLabel = weekdayName
-          if (typeof slot === 'string' && slot !== 'cardio') {
-            const foundDay = state.program.days.find((d) => d.id === slot)
-            if (foundDay?.name) {
-              dayLabel = `${weekdayName} (${foundDay.name})`
-            }
+        // Resolve program day title or fallback to weekday name
+        let dayLabel = weekdayName
+        if (typeof slot === 'string' && slot !== 'cardio') {
+          const foundDay = state.program.days.find((d) => d.id === slot)
+          if (foundDay?.name) {
+            dayLabel = `${weekdayName} (${foundDay.name})`
           }
-          const id = generateNotificationId(
-            'workout_day',
-            String(weekday),
-            dateStr,
-          )
-          desired.push({
-            id,
-            type: 'workout_day',
-            title: NOTIFICATION_COPY.workout_day.title,
-            body: NOTIFICATION_COPY.workout_day.getBody(dayLabel),
-            channelId: NOTIFICATION_CHANNELS.workout_v1.id,
-            triggerAt: triggerMs,
-            extra: {
+        } else if (slot === 'cardio') {
+          dayLabel = `${weekdayName} (كارديو)`
+        }
+
+        const timeSlots = resolveWorkoutReminderSlotsForDate(settings, dateStr)
+        for (const timeSlot of timeSlots) {
+          const triggerDate = getLocalTriggerDate(targetDate, timeSlot.time)
+          const triggerMs = triggerDate.getTime()
+          // Only schedule if trigger time is in the future
+          if (triggerMs > nowMs) {
+            const id = generateNotificationId(
+              'workout_day',
+              `${weekday}${timeSlot.idKeySuffix}`,
+              dateStr,
+            )
+            desired.push({
+              id,
               type: 'workout_day',
-              targetDate: dateStr,
-              route: 'weekly_plan',
-              payload: { weekday, slot },
-            },
-            isExactNotification: false,
-            isExactMandatory: false,
-            smallIcon: NOTIFICATION_CONFIG.smallIcon,
-            iconColor: NOTIFICATION_CONFIG.accentColor,
-          })
+              title: NOTIFICATION_COPY.workout_day.title,
+              body: NOTIFICATION_COPY.workout_day.getBody(dayLabel),
+              channelId: NOTIFICATION_CHANNELS.workout_v1.id,
+              triggerAt: triggerMs,
+              extra: {
+                type: 'workout_day',
+                targetDate: dateStr,
+                route: 'weekly_plan',
+                payload: { weekday, slot, reminderTime: timeSlot.time },
+              },
+              isExactNotification: false,
+              isExactMandatory: false,
+              smallIcon: NOTIFICATION_CONFIG.smallIcon,
+              iconColor: NOTIFICATION_CONFIG.accentColor,
+            })
+          }
         }
       }
     }

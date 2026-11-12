@@ -461,8 +461,8 @@ export function OnboardingWizard({
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
               <img
-                src={assetUrl('branding/maganis-mascot-inner.png')}
-                alt="د. مجانص"
+                src={assetUrl('branding/bunyan-logo.png')}
+                alt="بُنْيَان"
                 style={{
                   width: '72px',
                   height: '72px',
@@ -480,7 +480,7 @@ export function OnboardingWizard({
                   color: 'var(--color-text-2)',
                 }}
               >
-                يا هلا بالوحش! د. مجانص معاك على الخط.. هنظبط جسمك ونبنيلك
+                يا هلا بالوحش! معاك تطبيق بُنْيَان على الخط.. هنظبط جسمك ونبنيلك
                 برنامج تدريبي وتغذية علمية تفجّر بيها فورمة أحلامك!
               </div>
             </div>
@@ -959,8 +959,8 @@ export function OnboardingWizard({
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
               <img
-                src={assetUrl('branding/maganis-mascot-inner.png')}
-                alt="د. مجانص"
+                src={assetUrl('branding/bunyan-logo.png')}
+                alt="بُنْيَان"
                 style={{
                   width: '72px',
                   height: '72px',

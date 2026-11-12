@@ -89,7 +89,8 @@ async function run() {
     await server.listen()
   }
 
-  const baseUrl = `http://localhost:5192/`
+  const baseUrl =
+    server.resolvedUrls?.local?.[0] || 'http://localhost:5192/maganis-app/'
   const browser = await chromium.launch({ channel: 'chrome', headless: true })
 
   let totalElementsExamined = 0
@@ -169,7 +170,7 @@ async function run() {
             document.documentElement.setAttribute('data-theme', t)
             document.body.setAttribute('data-theme', t)
           },
-          { profile: ownerProfile, t: theme },
+          { profile: personaProfile, t: theme },
         )
 
         for (const route of registeredRoutes) {
@@ -180,7 +181,13 @@ async function run() {
               waitUntil: 'domcontentloaded',
               timeout: 5000,
             })
-            await page.waitForTimeout(250)
+            await page
+              .waitForFunction(
+                () => !document.querySelector('[aria-busy="true"]'),
+                { timeout: 3000 },
+              )
+              .catch(() => {})
+            await page.waitForTimeout(200)
 
             // Evaluate elements in DOM
             const evalResult = await page.evaluate(

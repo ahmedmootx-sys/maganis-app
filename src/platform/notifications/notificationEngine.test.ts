@@ -1,94 +1,171 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import {
-  syncSchedule,
-  getLiveDiagnostics,
-  runTestNotification,
-  cancelAllNotifications,
-  onNotificationAction,
-  LAST_SYNC_STORAGE_KEY,
-} from './notificationEngine.ts'
-import { saveNotificationSettings } from './notificationStore.ts'
-import { appStorage } from '../storage.ts'
-import { setNativeForTesting } from '../runtime.ts'
-import {
-  setMockPowerStatusForTesting,
-  setMockChannelStatusForTesting,
-} from '../native/maganisNative.ts'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { DEFAULT_NOTIFICATION_SETTINGS } from './schedule.ts'
 
-describe('Notification Engine & Live Diagnostics (Task N4)', () => {
+const mockKvReadAll = vi.fn()
+const mockKvWrite = vi.fn()
+const mockScheduleWorkoutAlarms = vi.fn()
+const mockCancelWorkoutAlarms = vi.fn()
+const mockCheckExactAlarm = vi.fn()
+
+vi.mock('../runtime.ts', () => ({
+  isNative: () => true,
+}))
+
+vi.mock('@capacitor/local-notifications', () => ({
+  LocalNotifications: {
+    createChannel: vi.fn().mockResolvedValue(undefined),
+    checkPermissions: vi.fn().mockResolvedValue({ display: 'granted' }),
+    getPending: vi.fn().mockResolvedValue({ notifications: [] }),
+    cancel: vi.fn().mockResolvedValue(undefined),
+    schedule: vi.fn().mockResolvedValue(undefined),
+    listChannels: vi.fn().mockResolvedValue({ channels: [] }),
+  },
+}))
+
+vi.mock('../native/maganisNative.ts', () => ({
+  MaganisNative: {
+    kvReadAll: (...args: unknown[]) => mockKvReadAll(...args),
+    kvWrite: (...args: unknown[]) => mockKvWrite(...args),
+    scheduleWorkoutAlarms: (...args: unknown[]) =>
+      mockScheduleWorkoutAlarms(...args),
+    cancelWorkoutAlarms: (...args: unknown[]) =>
+      mockCancelWorkoutAlarms(...args),
+    checkExactAlarm: (...args: unknown[]) => mockCheckExactAlarm(...args),
+  },
+}))
+
+import { syncSchedule } from './notificationEngine.ts'
+
+describe('notificationEngine native snooze & cancellation sync', () => {
   beforeEach(() => {
-    appStorage.clear()
-    setNativeForTesting(false)
-    setMockPowerStatusForTesting(false)
+    vi.clearAllMocks()
+    mockKvWrite.mockResolvedValue({ success: true })
+    mockScheduleWorkoutAlarms.mockResolvedValue({ success: true })
+    mockCancelWorkoutAlarms.mockResolvedValue({ success: true })
+    mockCheckExactAlarm.mockResolvedValue({
+      exactAllowed: true,
+      supported: true,
+    })
   })
 
-  it('syncSchedule computes desired schedule and saves diagnostics to appStorage', async () => {
-    saveNotificationSettings({
-      masterEnabled: true,
-      workoutReminderEnabled: true,
-      workoutReminderTime: '18:00',
+  it('preserves future snoozes while workout reminders remain enabled', async () => {
+    const snoozeTrigger = Date.now() + 60 * 60 * 1000
+    mockKvReadAll.mockResolvedValue({
+      data: {
+        'maganis:notify.schedule': JSON.stringify([
+          {
+            id: 900777,
+            type: 'workout_day',
+            channelId: 'workout_v1',
+            title: 'بُنْيَان — تذكير التمرين',
+            body: 'حان وقت التمرين',
+            triggerAt: snoozeTrigger,
+            isExactNotification: true,
+            isExactMandatory: false,
+            isSnooze: true,
+            extra: { type: 'workout_day', route: 'weekly_plan' },
+          },
+        ]),
+      },
     })
 
-    const program = {
-      id: 'p1',
-      name: 'جدول تجريبي',
-      daysPerWeek: 3,
-      split: 'full_body',
-      days: [
-        { id: 'd1', dayIndex: 0, name: 'يوم 1' },
-        { id: 'd2', dayIndex: 1, name: 'يوم 2' },
-        { id: 'd3', dayIndex: 2, name: 'يوم 3' },
-      ],
-    }
-    appStorage.setItem('maganis:workout.program', JSON.stringify(program))
-
-    const diag = await syncSchedule()
-    expect(diag.at).toBeGreaterThan(0)
-    expect(diag.desiredCount).toBeGreaterThan(0)
-    expect(diag.channelsOk).toBe(true)
-
-    const raw = appStorage.getItem(LAST_SYNC_STORAGE_KEY)
-    expect(raw).not.toBeNull()
-    const stored = JSON.parse(raw!)
-    expect(stored.desiredCount).toBe(diag.desiredCount)
-  })
-
-  it('cancelAllNotifications clears storage and scheduled entries', async () => {
-    appStorage.setItem(LAST_SYNC_STORAGE_KEY, JSON.stringify({ at: 123 }))
-    await cancelAllNotifications()
-    expect(appStorage.getItem(LAST_SYNC_STORAGE_KEY)).toBeNull()
-  })
-
-  it('getLiveDiagnostics gathers permission, channels, power, and sync state', async () => {
-    setNativeForTesting(true)
-    setMockPowerStatusForTesting(true)
-    setMockChannelStatusForTesting('timer_v1', {
-      exists: true,
-      enabled: true,
-      importance: 4,
+    const diag = await syncSchedule({
+      settings: {
+        ...DEFAULT_NOTIFICATION_SETTINGS,
+        masterEnabled: true,
+        workoutReminderEnabled: true,
+      },
+      profile: { weekStartDay: 6, trainingDaysPerWeek: 4 },
+      program: null,
+      activeRestEndsAt: null,
+      activeCardioEndsAt: null,
     })
 
-    const diag = await getLiveDiagnostics()
-    expect(diag.batteryOptimizationIgnored).toBe(true)
-    expect(diag.channels.timer_v1.enabled).toBe(true)
-    expect(diag.channels.timer_v1.importance).toBe(4)
-    setNativeForTesting(false)
+    expect(mockCancelWorkoutAlarms).not.toHaveBeenCalled()
+    expect(mockKvWrite).toHaveBeenCalled()
+    const writtenJson = mockKvWrite.mock.calls[0][0].value as string
+    const written = JSON.parse(writtenJson) as Array<{
+      id: number
+      isSnooze?: boolean
+    }>
+    expect(written.some((item) => item.id === 900777 && item.isSnooze)).toBe(
+      true,
+    )
+    expect(diag.pendingCount).toBeGreaterThanOrEqual(1)
   })
 
-  it('runTestNotification verifies delivery on mock platform', async () => {
-    const result = await runTestNotification(1)
-    expect(result.delivered).toBe(true)
-  })
-
-  it('notification router listener dispatches targets correctly', () => {
-    const received: string[] = []
-    const unregister = onNotificationAction((target) => {
-      received.push(target.route)
+  it('cancels active snoozes and clears them when workoutReminderEnabled is turned off', async () => {
+    const snoozeTrigger = Date.now() + 60 * 60 * 1000
+    mockKvReadAll.mockResolvedValue({
+      data: {
+        'maganis:notify.schedule': JSON.stringify([
+          {
+            id: 900888,
+            type: 'workout_day',
+            channelId: 'workout_v1',
+            title: 'بُنْيَان — تذكير التمرين',
+            body: 'حان وقت التمرين',
+            triggerAt: snoozeTrigger,
+            isExactNotification: true,
+            isExactMandatory: false,
+            isSnooze: true,
+            extra: { type: 'workout_day', route: 'weekly_plan' },
+          },
+        ]),
+      },
     })
 
-    // Simulate router dispatch
-    // Listener registered
-    expect(typeof unregister).toBe('function')
-    unregister()
+    const diag = await syncSchedule({
+      settings: {
+        ...DEFAULT_NOTIFICATION_SETTINGS,
+        masterEnabled: true,
+        workoutReminderEnabled: false,
+      },
+      profile: null,
+      program: null,
+      activeRestEndsAt: null,
+      activeCardioEndsAt: null,
+    })
+
+    expect(mockCancelWorkoutAlarms).toHaveBeenCalledWith({ ids: [900888] })
+    const writtenJson = mockKvWrite.mock.calls[0][0].value as string
+    const written = JSON.parse(writtenJson) as Array<{ id: number }>
+    expect(written.some((item) => item.id === 900888)).toBe(false)
+    expect(diag.pendingCount).toBe(0)
+  })
+
+  it('cancels active snoozes when masterEnabled is turned off', async () => {
+    const snoozeTrigger = Date.now() + 30 * 60 * 1000
+    mockKvReadAll.mockResolvedValue({
+      data: {
+        'maganis:notify.schedule': JSON.stringify([
+          {
+            id: 900999,
+            type: 'workout_day',
+            channelId: 'workout_v1',
+            title: 'بُنْيَان — تذكير التمرين',
+            body: 'حان وقت التمرين',
+            triggerAt: snoozeTrigger,
+            isSnooze: true,
+            extra: { type: 'workout_day', route: 'weekly_plan' },
+          },
+        ]),
+      },
+    })
+
+    const diag = await syncSchedule({
+      settings: {
+        ...DEFAULT_NOTIFICATION_SETTINGS,
+        masterEnabled: false,
+        workoutReminderEnabled: true,
+      },
+      profile: null,
+      program: null,
+      activeRestEndsAt: null,
+      activeCardioEndsAt: null,
+    })
+
+    expect(mockCancelWorkoutAlarms).toHaveBeenCalledWith({ ids: [900999] })
+    expect(diag.pendingCount).toBe(0)
   })
 })

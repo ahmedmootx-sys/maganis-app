@@ -51,10 +51,45 @@ export interface CardioEstimateResult {
 
 export const CARDIO_ACTIVITIES = cardioMetData.activities as CardioActivityDef[]
 
+const ACTIVITY_ALIASES: Record<string, CardioActivityId> = {
+  run: 'run',
+  running: 'run',
+  jog: 'run',
+  jogging: 'run',
+  walk: 'walk',
+  walking: 'walk',
+  bike: 'bike',
+  biking: 'bike',
+  cycling: 'bike',
+  bicycle: 'bike',
+  swim: 'swim',
+  swimming: 'swim',
+  jumprope: 'jumprope',
+  jump_rope: 'jumprope',
+  rope: 'jumprope',
+  rowing: 'rowing',
+  row: 'rowing',
+  erg: 'rowing',
+}
+
+export function normalizeCardioActivityId(
+  raw?: string | null,
+): CardioActivityId {
+  if (!raw) return 'walk'
+  const key = raw.trim().toLowerCase()
+  return ACTIVITY_ALIASES[key] ?? 'walk'
+}
+
 export function getCardioActivity(
-  activityId: CardioActivityId,
+  activityId: CardioActivityId | string,
 ): CardioActivityDef | undefined {
-  return CARDIO_ACTIVITIES.find((a) => a.id === activityId)
+  const canonical =
+    ACTIVITY_ALIASES[
+      String(activityId || '')
+        .trim()
+        .toLowerCase()
+    ] ?? activityId
+  return CARDIO_ACTIVITIES.find((a) => a.id === canonical)
 }
 
 /**
@@ -93,7 +128,7 @@ export function calculateCardioEnergy(
   const netSessionKcal = netRateKcalPerMin * durationMinutes
 
   return {
-    activityId,
+    activityId: activity.id,
     activityNameAr: activity.name_ar,
     level,
     met,

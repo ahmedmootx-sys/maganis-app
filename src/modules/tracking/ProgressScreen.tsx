@@ -693,7 +693,7 @@ export function ProgressScreen({
             <div
               className="card section-calendar"
               style={{
-                padding: '16px',
+                padding: '16px 6px',
                 borderRadius: '16px',
                 background: 'var(--card-bg)',
                 border: '1px solid var(--line)',
@@ -702,7 +702,7 @@ export function ProgressScreen({
                 gap: '14px',
               }}
             >
-              <div>
+              <div style={{ paddingInline: '10px' }}>
                 <h3
                   style={{
                     margin: 0,
@@ -722,7 +722,7 @@ export function ProgressScreen({
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   width: '100%',
-                  paddingBlock: '4px',
+                  padding: '4px 10px',
                 }}
               >
                 <button
@@ -784,7 +784,7 @@ export function ProgressScreen({
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
-                  gap: '4px',
+                  gap: '1px',
                   width: '100%',
                 }}
               >
@@ -825,19 +825,21 @@ export function ProgressScreen({
                       className="calendar-day-btn"
                       onClick={() => setSelectedCalendarDate(dateStr)}
                       style={{
+                        width: '100%',
+                        minWidth: 0,
                         minHeight: '44px',
-                        height: '44px',
+                        height: 'auto',
                         borderRadius: 'var(--radius-control)',
                         border: isCurrentDay
-                          ? '2px solid var(--color-primary)'
+                          ? '2px solid var(--color-accent)'
                           : isSelected
                             ? '1px solid var(--color-text)'
                             : '1px solid var(--color-divider)',
                         background: hasSession
-                          ? 'var(--color-primary-subtle, rgba(249, 87, 0, 0.12))'
+                          ? 'var(--color-accent-tint, rgba(234, 106, 21, 0.14))'
                           : 'var(--color-surface-2)',
                         color: hasSession
-                          ? 'var(--color-primary)'
+                          ? 'var(--color-accent-text)'
                           : 'var(--color-text)',
                         fontWeight: hasSession || isCurrentDay ? 700 : 500,
                         fontSize: '13px',
@@ -847,7 +849,8 @@ export function ProgressScreen({
                         justifyContent: 'center',
                         cursor: 'pointer',
                         position: 'relative',
-                        padding: 0,
+                        padding: '4px 0',
+                        boxSizing: 'border-box',
                       }}
                     >
                       <span>{dayNum}</span>
