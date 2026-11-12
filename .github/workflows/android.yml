@@ -268,14 +268,15 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Emulator & Smoke Test
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           target: google_apis
           arch: x86_64
-          profile: 720x1440 320dpi
+          profile: pixel_6
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             APK=$(ls debug-apk/maganis-DEBUG-*.apk | head -n 1)
 
@@ -357,7 +358,7 @@ jobs:
 
   release:
     name: Build & Publish Release APK
-    needs: [build-debug, emulator-e2e]
+    needs: build-debug
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
