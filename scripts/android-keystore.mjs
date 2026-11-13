@@ -6,11 +6,14 @@ import crypto from 'node:crypto'
 import { execSync } from 'node:child_process'
 
 function run() {
-  console.log('=== MAGANIS RELEASE KEYSTORE GENERATOR ===\n')
+  const isDebug = process.argv.includes('--debug')
+  const modeName = isDebug ? 'DEBUG' : 'RELEASE'
+  console.log(`=== MAGANIS ${modeName} KEYSTORE GENERATOR ===\n`)
 
   const gitRoot = path.resolve('.')
+  const defaultBaseDir = isDebug ? 'maganis-debug-keystore' : 'maganis-keystore'
   const targetDir =
-    process.env.TEST_KEYSTORE_DIR || path.join(os.homedir(), 'maganis-keystore')
+    process.env.TEST_KEYSTORE_DIR || path.join(os.homedir(), defaultBaseDir)
 
   // 1. Refuse to write inside the git work tree
   const relativeToGit = path.relative(gitRoot, targetDir)
@@ -58,12 +61,23 @@ function run() {
     .randomBytes(24)
     .toString('base64')
     .replace(/[^a-zA-Z0-9]/g, 'x')
-  const alias = 'maganis-release'
+  const alias = isDebug ? 'maganis-debug' : 'maganis-release'
   const validityDays = 10950 // 30 years
 
   fs.mkdirSync(targetDir, { recursive: true })
-  const keystoreFile = path.join(targetDir, 'maganis-release.keystore')
-  const secretsFile = path.join(targetDir, 'maganis-keystore-secrets.txt')
+  const keystoreFileName = isDebug
+    ? 'maganis-debug.keystore'
+    : 'maganis-release.keystore'
+  const secretsFileName = isDebug
+    ? 'maganis-debug-secrets.txt'
+    : 'maganis-keystore-secrets.txt'
+  const base64FileName = isDebug
+    ? 'maganis-debug-base64.txt'
+    : 'maganis-keystore-base64.txt'
+
+  const keystoreFile = path.join(targetDir, keystoreFileName)
+  const secretsFile = path.join(targetDir, secretsFileName)
+  const base64File = path.join(targetDir, base64FileName)
 
   if (fs.existsSync(keystoreFile)) {
     console.error(`⚠️ تحذير: ملف الكي ستور موجود بالفعل في: ${keystoreFile}`)
@@ -75,6 +89,9 @@ function run() {
 
   // 4. Run keytool
   console.log(`جاري توليد الكي ستور في: ${targetDir}...`)
+  const dname = isDebug
+    ? 'CN=Maganis Debug, OU=Mobile, O=Maganis, C=EG'
+    : 'CN=Maganis Coach, OU=Mobile, O=Maganis, C=EG'
   const keytoolCmd = [
     'keytool',
     '-genkeypair',
@@ -86,7 +103,7 @@ function run() {
     `-validity ${validityDays}`,
     `-storepass "${keystorePass}"`,
     `-keypass "${keyPass}"`,
-    '-dname "CN=Maganis Coach, OU=Mobile, O=Maganis, C=EG"',
+    `-dname "${dname}"`,
   ].join(' ')
 
   try {
@@ -116,32 +133,48 @@ function run() {
   const keystoreBase64 = keystoreBuffer.toString('base64')
 
   // 7. Write secrets file
-  const secretsContent = [
-    '=== MAGANIS RELEASE KEYSTORE SECRETS ===',
-    `Created At: ${new Date().toISOString()}`,
-    `Keystore Path: ${keystoreFile}`,
-    `Alias: ${alias}`,
-    `Keystore Password: ${keystorePass}`,
-    `Key Password: ${keyPass}`,
-    `SHA-256 Fingerprint: ${sha256}`,
-    '',
-    '=== GITHUB ACTIONS CONFIGURATION ===',
-    'Repository Variables (Variables tab):',
-    `ANDROID_CERT_SHA256 = ${sha256}`,
-    '',
-    'Repository Secrets (Secrets tab):',
-    `ANDROID_KEYSTORE_PASSWORD = ${keystorePass}`,
-    `ANDROID_KEY_ALIAS = ${alias}`,
-    `ANDROID_KEY_PASSWORD = ${keyPass}`,
-    'ANDROID_KEYSTORE_BASE64 = (see maganis-keystore-base64.txt or copy from below)',
-  ].join('\n')
+  let secretsContent = ''
+  if (isDebug) {
+    secretsContent = [
+      '=== MAGANIS STABLE DEBUG KEYSTORE SECRETS ===',
+      `Created At: ${new Date().toISOString()}`,
+      `Keystore Path: ${keystoreFile}`,
+      `Alias: ${alias}`,
+      `Keystore Password: ${keystorePass}`,
+      `Key Password: ${keyPass}`,
+      `SHA-256 Fingerprint: ${sha256}`,
+      '',
+      '=== GITHUB ACTIONS CONFIGURATION (DEBUG) ===',
+      'Repository Secrets (Secrets tab):',
+      `ANDROID_DEBUG_KEYSTORE_PASSWORD = ${keystorePass}`,
+      `ANDROID_DEBUG_KEY_ALIAS = ${alias}`,
+      `ANDROID_DEBUG_KEY_PASSWORD = ${keyPass}`,
+      'ANDROID_DEBUG_KEYSTORE_BASE64 = (see maganis-debug-base64.txt or copy from below)',
+    ].join('\n')
+  } else {
+    secretsContent = [
+      '=== MAGANIS RELEASE KEYSTORE SECRETS ===',
+      `Created At: ${new Date().toISOString()}`,
+      `Keystore Path: ${keystoreFile}`,
+      `Alias: ${alias}`,
+      `Keystore Password: ${keystorePass}`,
+      `Key Password: ${keyPass}`,
+      `SHA-256 Fingerprint: ${sha256}`,
+      '',
+      '=== GITHUB ACTIONS CONFIGURATION ===',
+      'Repository Variables (Variables tab):',
+      `ANDROID_CERT_SHA256 = ${sha256}`,
+      '',
+      'Repository Secrets (Secrets tab):',
+      `ANDROID_KEYSTORE_PASSWORD = ${keystorePass}`,
+      `ANDROID_KEY_ALIAS = ${alias}`,
+      `ANDROID_KEY_PASSWORD = ${keyPass}`,
+      'ANDROID_KEYSTORE_BASE64 = (see maganis-keystore-base64.txt or copy from below)',
+    ].join('\n')
+  }
 
   fs.writeFileSync(secretsFile, secretsContent, 'utf8')
-  fs.writeFileSync(
-    path.join(targetDir, 'maganis-keystore-base64.txt'),
-    keystoreBase64,
-    'utf8',
-  )
+  fs.writeFileSync(base64File, keystoreBase64, 'utf8')
 
   // 8. Output instructions and warnings
   console.log('\n============================================================')
@@ -152,43 +185,76 @@ function run() {
   console.log(`🔑 بصمة الشهادة (SHA-256): ${sha256}`)
   console.log('============================================================\n')
 
-  console.log('⚠️⚠️⚠️ تحذير أمني واستقرار حرج جداً:')
-  console.log(
-    '1. لو ملف الكي ستور ده ضاع، مش هتقدر تحدث تطبيق مجانص على تليفونك نهائياً!',
-  )
-  console.log(
-    '2. تغيير مفتاح التوقيع بيجبرك على مسح التطبيق وتثبيته من جديد، وده هيمسح كل بياناتك المخزنة محلياً!',
-  )
-  console.log(
-    '3. انسخ مجلد ~/maganis-keystore/ حالاً وضعه في مكانين مختلفين وآمنين (فلاشة مشفرة، هارد خارجي).\n',
-  )
+  if (isDebug) {
+    console.log('--- خطوات ربط مفتاح الديباج الثابت مع GitHub Actions ---')
+    console.log('الخطوات البسيطة لإضافة الأسرار في GitHub:')
+    console.log('افتح مستودع مشروعك على GitHub ثم:')
+    console.log('Settings ➔ Secrets and variables ➔ Actions ➔ تبويب Secrets\n')
+    console.log(
+      'اضغط "New repository secret" وأضف الأسرار الأربعة التالية بالنسخ واللصق:',
+    )
+    console.log('1. الاسم: ANDROID_DEBUG_KEYSTORE_BASE64')
+    console.log(`   القيمة: انسخ كل محتويات الملف ده: ${base64File}\n`)
+    console.log('2. الاسم: ANDROID_DEBUG_KEYSTORE_PASSWORD')
+    console.log(`   القيمة: ${keystorePass}\n`)
+    console.log('3. الاسم: ANDROID_DEBUG_KEY_ALIAS')
+    console.log(`   القيمة: ${alias}\n`)
+    console.log('4. الاسم: ANDROID_DEBUG_KEY_PASSWORD')
+    console.log(`   القيمة: ${keyPass}\n`)
+    console.log(
+      '💡 فائدة المفتاح ده: كل ملف APK تجريبي هيتوقع بنفس المفتاح وتقدر تحدث التطبيق علطول من غير ما تمسحه!',
+    )
+  } else {
+    console.log('⚠️⚠️⚠️ تحذير أمني واستقرار حرج جداً:')
+    console.log(
+      '1. لو ملف الكي ستور ده ضاع، مش هتقدر تحدث تطبيق مجانص على تليفونك نهائياً!',
+    )
+    console.log(
+      '2. تغيير مفتاح التوقيع بيجبرك على مسح التطبيق وتثبيته من جديد، وده هيمسح كل بياناتك المخزنة محلياً!',
+    )
+    console.log(
+      '3. انسخ مجلد ~/maganis-keystore/ حالاً وضعه في مكانين مختلفين وآمنين (فلاشة مشفرة، هارد خارجي).\n',
+    )
 
-  console.log('--- خطوات الربط مع GitHub Actions ---')
-  console.log('افتح المتصفح على مستودع مشروعك على GitHub ثم:')
-  console.log('Settings ➔ Secrets and variables ➔ Actions\n')
+    console.log('--- خطوات الربط مع GitHub Actions ---')
+    console.log('الخطوات لإضافة أسرار الإصدار النهائي:')
+    console.log('افتح المتصفح على مستودع مشروعك على GitHub ثم:')
+    console.log('Settings ➔ Secrets and variables ➔ Actions\n')
 
-  console.log('1. في تبويب "Variables" أضف المتغير التالي:')
-  console.log(`   الاسم: ANDROID_CERT_SHA256`)
-  console.log(`   القيمة: ${sha256}\n`)
+    console.log('1. في تبويب "Variables" أضف المتغير التالي:')
+    console.log(`   الاسم: ANDROID_CERT_SHA256`)
+    console.log(`   القيمة: ${sha256}\n`)
 
-  console.log('2. في تبويب "Secrets" أضف الأسرار التالية:')
-  console.log(`   - ANDROID_KEYSTORE_BASE64: انسخ المحتوى الكامل من ملف:`)
-  console.log(`     ${path.join(targetDir, 'maganis-keystore-base64.txt')}`)
-  console.log(`   - ANDROID_KEYSTORE_PASSWORD: (موجود داخل ${secretsFile})`)
-  console.log(`   - ANDROID_KEY_ALIAS: ${alias}`)
-  console.log(`   - ANDROID_KEY_PASSWORD: (موجود داخل ${secretsFile})\n`)
+    console.log('2. في تبويب "Secrets" أضف الأسرار التالية:')
+    console.log(`   - ANDROID_KEYSTORE_BASE64: انسخ المحتوى الكامل من ملف:`)
+    console.log(`     ${base64File}`)
+    console.log(`   - ANDROID_KEYSTORE_PASSWORD: (موجود داخل ${secretsFile})`)
+    console.log(`   - ANDROID_KEY_ALIAS: ${alias}`)
+    console.log(`   - ANDROID_KEY_PASSWORD: (موجود داخل ${secretsFile})\n`)
+  }
 
   // Check if gh is installed
   try {
     execSync('gh --version', { stdio: 'ignore' })
     console.log('--- أو باستخدام GitHub CLI مباشرة (سطر واحد): ---')
-    console.log(`gh variable set ANDROID_CERT_SHA256 -b "${sha256}"`)
-    console.log(
-      `gh secret set ANDROID_KEYSTORE_BASE64 < "${path.join(targetDir, 'maganis-keystore-base64.txt')}"`,
-    )
-    console.log(`gh secret set ANDROID_KEYSTORE_PASSWORD -b "${keystorePass}"`)
-    console.log(`gh secret set ANDROID_KEY_ALIAS -b "${alias}"`)
-    console.log(`gh secret set ANDROID_KEY_PASSWORD -b "${keyPass}"\n`)
+    if (isDebug) {
+      console.log(
+        `gh secret set ANDROID_DEBUG_KEYSTORE_BASE64 < "${base64File}"`,
+      )
+      console.log(
+        `gh secret set ANDROID_DEBUG_KEYSTORE_PASSWORD -b "${keystorePass}"`,
+      )
+      console.log(`gh secret set ANDROID_DEBUG_KEY_ALIAS -b "${alias}"`)
+      console.log(`gh secret set ANDROID_DEBUG_KEY_PASSWORD -b "${keyPass}"\n`)
+    } else {
+      console.log(`gh variable set ANDROID_CERT_SHA256 -b "${sha256}"`)
+      console.log(`gh secret set ANDROID_KEYSTORE_BASE64 < "${base64File}"`)
+      console.log(
+        `gh secret set ANDROID_KEYSTORE_PASSWORD -b "${keystorePass}"`,
+      )
+      console.log(`gh secret set ANDROID_KEY_ALIAS -b "${alias}"`)
+      console.log(`gh secret set ANDROID_KEY_PASSWORD -b "${keyPass}"\n`)
+    }
   } catch {
     // gh not available, manual copy-paste instructions already provided
   }

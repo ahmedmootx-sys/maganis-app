@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import type {
   Exercise,
   WorkoutProgram,
+  ProgramDay,
   TrackingSession,
 } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
@@ -26,6 +27,7 @@ import {
   Segmented,
   ConfirmSheet,
   Sheet,
+  Icon,
 } from '../../ui/index.ts'
 import { fmtRange, fmtSets, fmtReps } from '../../utils/bidi.ts'
 import {
@@ -69,6 +71,7 @@ export interface ExerciseDetailViewProps {
   onBack?: () => void
   profile?: UserProfile | null
   program?: WorkoutProgram | null
+  programDay?: ProgramDay | null
   sessions?: TrackingSession[]
   onSwapExercise?: (oldExerciseId: string, newExerciseId: string) => void
   onNavigateSettings?: () => void
@@ -134,6 +137,7 @@ export function ExerciseDetailView({
   onBack,
   profile,
   program,
+  programDay,
   sessions = [],
   onSwapExercise,
   onNavigateSettings,
@@ -156,9 +160,20 @@ export function ExerciseDetailView({
 
   // Find exercise in unified library or use passed object
   const hookedEffective = useEffectiveExercise(exerciseId)
-  const exercise = passedExercise
-    ? selectEffectiveExercise(passedExercise as Exercise)
-    : hookedEffective
+  const isRealCatalog = Boolean(
+    hookedEffective ||
+    (passedExercise &&
+      (passedExercise.steps_ar ||
+        (passedExercise as { stepsAr?: string[] }).stepsAr ||
+        passedExercise.targetMusclesAr ||
+        (passedExercise.category &&
+          passedExercise.equipment &&
+          !passedExercise.id?.startsWith('custom-') &&
+          passedExercise.descriptionAr !== 'تمرين مضاف عبر الذكاء الاصطناعي'))),
+  )
+  const exercise = isRealCatalog
+    ? hookedEffective || selectEffectiveExercise(passedExercise as Exercise)
+    : null
 
   const [refreshKey, setRefreshKey] = useState(0)
   const [showEditSheet, setShowEditSheet] = useState(false)
@@ -509,18 +524,530 @@ export function ExerciseDetailView({
     }
   }, [exercise, rules])
 
+  // Search for the exercise in active program days or passed programDay
+  const programExerciseInfo = useMemo(() => {
+    if (programDay) {
+      const allItems = [
+        ...(programDay.exercises || []),
+        ...(programDay.warmup || []),
+        ...(programDay.cooldown || []),
+        ...(programDay.pullPrep || []),
+        ...(programDay.controlBlock || []),
+      ]
+      const found = allItems.find(
+        (i) =>
+          i.exerciseId === exerciseId ||
+          (i.customName &&
+            (i.customName === exerciseId ||
+              exerciseId.includes(i.customName))) ||
+          (i.nameEn &&
+            (i.nameEn === exerciseId || exerciseId.includes(i.nameEn))),
+      )
+      if (found) {
+        return {
+          item: found,
+          dayName: programDay.labelAr || programDay.name || 'اليوم التدريبي',
+        }
+      }
+    }
+
+    if (program?.days) {
+      for (const day of program.days) {
+        const allItems = [
+          ...(day.exercises || []),
+          ...(day.warmup || []),
+          ...(day.cooldown || []),
+          ...(day.pullPrep || []),
+          ...(day.controlBlock || []),
+        ]
+        const found = allItems.find(
+          (i) =>
+            i.exerciseId === exerciseId ||
+            (i.customName &&
+              (i.customName === exerciseId ||
+                exerciseId.includes(i.customName))) ||
+            (i.nameEn &&
+              (i.nameEn === exerciseId || exerciseId.includes(i.nameEn))),
+        )
+        if (found) {
+          return {
+            item: found,
+            dayName: day.labelAr || day.name || 'اليوم التدريبي',
+          }
+        }
+      }
+    }
+    return null
+  }, [program, programDay, exerciseId])
+
+  const aiExercise = useMemo(() => {
+    const item = programExerciseInfo?.item
+    const rawPassed = passedExercise as
+      | (Partial<Exercise> & {
+          customName?: string
+          notes?: string
+          repsMin?: number
+          repsMax?: number
+          sets?: number
+          reps?: number
+          restSeconds?: number
+          targetSubMuscleAr?: string
+        })
+      | undefined
+
+    let nameAr =
+      item?.customName || rawPassed?.nameAr || rawPassed?.customName || ''
+
+    const nameEn = item?.nameEn || rawPassed?.name || rawPassed?.nameEn || ''
+
+    if (!nameAr && !nameEn) {
+      if (exerciseId.startsWith('custom-')) {
+        nameAr = 'تمرين مضاف عبر الذكاء الاصطناعي'
+      } else {
+        nameAr = exerciseId.replace(/[-_]/g, ' ')
+      }
+    }
+
+    const sets = item?.sets ?? rawPassed?.sets
+    const reps = item?.reps ?? rawPassed?.reps
+    const repsMin = item?.repsMin ?? rawPassed?.repsMin
+    const repsMax = item?.repsMax ?? rawPassed?.repsMax
+    const restSeconds = item?.restSeconds ?? rawPassed?.restSeconds
+    let targetMuscle: string | undefined = undefined
+    if (typeof item?.targetSubMuscleAr === 'string') {
+      targetMuscle = item.targetSubMuscleAr
+    } else if (typeof rawPassed?.target_ar === 'string') {
+      targetMuscle = rawPassed.target_ar
+    } else if (
+      typeof (rawPassed as Record<string, unknown> | undefined)?.target ===
+      'string'
+    ) {
+      targetMuscle = (rawPassed as Record<string, unknown>).target as string
+    } else if (rawPassed?.muscles?.[0]?.id) {
+      targetMuscle = rawPassed.muscles[0].id
+    }
+
+    const notes =
+      item?.notes ??
+      rawPassed?.notes ??
+      rawPassed?.descriptionAr ??
+      ((rawPassed as Record<string, unknown> | undefined)?.description as
+        string | undefined)
+
+    return {
+      nameAr,
+      nameEn,
+      sets,
+      reps,
+      repsMin,
+      repsMax,
+      restSeconds,
+      targetMuscle,
+      notes,
+      dayName: programExerciseInfo?.dayName,
+    }
+  }, [programExerciseInfo, passedExercise, exerciseId])
+
   if (!exercise) {
+    const cleanAr = aiExercise.nameAr.trim()
+    const cleanEn = aiExercise.nameEn.trim()
+    const effectiveSearchName =
+      cleanEn ||
+      (cleanAr !== 'تمرين مضاف عبر الذكاء الاصطناعي' ? cleanAr : '') ||
+      (exerciseId.startsWith('custom-') ? '' : exerciseId.replace(/[-_]/g, ' '))
+    const searchTarget = effectiveSearchName || 'تمرين رياضي'
+    const googleQuery = encodeURIComponent(
+      searchTarget + ' exercise form technique',
+    )
+    const youtubeQuery = encodeURIComponent(
+      searchTarget + ' exercise form tutorial',
+    )
+    const pinterestQuery = encodeURIComponent(
+      searchTarget + ' workout exercise',
+    )
+
     return (
       <div
-        className="card"
-        style={{ padding: '24px', textAlign: 'center' }}
+        className="exercise-detail-page screen-container"
         dir="rtl"
+        style={{
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}
       >
-        <p className="muted">التمرين غير موجود في قاعدة البيانات.</p>
-        {onBack && (
-          <Button variant="ghost" onClick={onBack}>
-            رجوع
-          </Button>
+        {/* Header / Top bar */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '8px',
+          }}
+        >
+          {onBack && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                minHeight: '38px',
+                height: 'auto',
+                padding: '6px 12px',
+              }}
+            >
+              <Icon name="arrow-right" size={16} />
+              <span>رجوع</span>
+            </Button>
+          )}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 10px',
+              borderRadius: '999px',
+              backgroundColor: 'var(--color-surface-2)',
+              border: '1px solid var(--color-divider)',
+              fontSize: '12px',
+              fontWeight: 600,
+              color: 'var(--color-primary, #2563eb)',
+            }}
+          >
+            <Icon name="sparkles" size={14} />
+            <span>تمرين مضاف عبر الذكاء الاصطناعي / مخصص</span>
+          </div>
+        </div>
+
+        {/* Title Card */}
+        <Card padding="md">
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+          >
+            <div>
+              <h1
+                style={{
+                  margin: '0 0 4px 0',
+                  fontSize: '1.25rem',
+                  fontWeight: 700,
+                  color: 'var(--color-text)',
+                  lineHeight: 1.4,
+                }}
+              >
+                {cleanAr || cleanEn || 'تمرين تدريبي'}
+              </h1>
+              {cleanEn && cleanEn !== cleanAr && (
+                <div
+                  style={{
+                    fontSize: '0.85rem',
+                    color: 'var(--color-text-2)',
+                    direction: 'ltr',
+                    textAlign: 'right',
+                  }}
+                >
+                  <bdi dir="ltr">{cleanEn}</bdi>
+                </div>
+              )}
+            </div>
+
+            {/* Copy button */}
+            <div>
+              <CopyExerciseNameButton
+                nameAr={cleanAr}
+                nameEn={cleanEn}
+                onToast={(msg) => setToastMsg(msg)}
+              />
+            </div>
+          </div>
+        </Card>
+
+        {/* Quick Search Section */}
+        <Card padding="md">
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon name="search" size={18} />
+              <div
+                style={{
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  color: 'var(--color-text)',
+                }}
+              >
+                البحث عن التمرين ومعرفة طريقة الأداء
+              </div>
+            </div>
+            <div
+              style={{
+                fontSize: '0.82rem',
+                color: 'var(--color-text-2)',
+                lineHeight: 1.5,
+              }}
+            >
+              اضغط على أي منصة للبحث المباشر عن صور التمرين، فيديوهات الشرح،
+              والعضلات المستهدفة:
+            </div>
+
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
+              <a
+                href={`https://www.google.com/search?q=${googleQuery}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--secondary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  borderRadius: 'var(--radius-control)',
+                  textDecoration: 'none',
+                  minHeight: '44px',
+                  color: 'var(--color-text)',
+                  backgroundColor: 'var(--color-surface)',
+                  border: '1px solid var(--color-divider)',
+                }}
+              >
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <Icon name="search" size={16} />
+                  <span>بحث Google (شرح، صور، عضلات)</span>
+                </div>
+                <Icon name="external-link" size={14} />
+              </a>
+
+              <a
+                href={`https://www.youtube.com/results?search_query=${youtubeQuery}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--secondary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  borderRadius: 'var(--radius-control)',
+                  textDecoration: 'none',
+                  minHeight: '44px',
+                  color: 'var(--color-text)',
+                  backgroundColor: 'var(--color-surface)',
+                  border: '1px solid var(--color-divider)',
+                }}
+              >
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <Icon name="play" size={16} />
+                  <span>فيديوهات YouTube (طريقة الأداء بالتفصيل)</span>
+                </div>
+                <Icon name="external-link" size={14} />
+              </a>
+
+              <a
+                href={`https://www.pinterest.com/search/pins/?q=${pinterestQuery}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--secondary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  borderRadius: 'var(--radius-control)',
+                  textDecoration: 'none',
+                  minHeight: '44px',
+                  color: 'var(--color-text)',
+                  backgroundColor: 'var(--color-surface)',
+                  border: '1px solid var(--color-divider)',
+                }}
+              >
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <Icon name="external-link" size={16} />
+                  <span>بحث Pinterest (تمارين ومقاطع سريعة)</span>
+                </div>
+                <Icon name="external-link" size={14} />
+              </a>
+            </div>
+          </div>
+        </Card>
+
+        {/* Prescription Details (if available) */}
+        {(aiExercise.sets || aiExercise.reps || aiExercise.targetMuscle) && (
+          <Card padding="md">
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+            >
+              <div
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  color: 'var(--color-text)',
+                }}
+              >
+                تفاصيل التمرين المقررة في جدولك
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: '8px',
+                }}
+              >
+                {aiExercise.sets && (
+                  <div
+                    style={{
+                      padding: '8px 10px',
+                      borderRadius: 'var(--radius-control)',
+                      backgroundColor: 'var(--color-surface-2)',
+                      fontSize: '0.82rem',
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: 'var(--color-text-2)',
+                        marginBottom: '2px',
+                      }}
+                    >
+                      المجموعات
+                    </div>
+                    <div style={{ fontWeight: 700 }}>
+                      {aiExercise.sets} مجموعات
+                    </div>
+                  </div>
+                )}
+                {(aiExercise.reps ||
+                  (aiExercise.repsMin && aiExercise.repsMax)) && (
+                  <div
+                    style={{
+                      padding: '8px 10px',
+                      borderRadius: 'var(--radius-control)',
+                      backgroundColor: 'var(--color-surface-2)',
+                      fontSize: '0.82rem',
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: 'var(--color-text-2)',
+                        marginBottom: '2px',
+                      }}
+                    >
+                      التكرارات
+                    </div>
+                    <div style={{ fontWeight: 700 }}>
+                      {aiExercise.repsMin && aiExercise.repsMax
+                        ? `${aiExercise.repsMin} - ${aiExercise.repsMax} تكرار`
+                        : `${aiExercise.reps} تكرار`}
+                    </div>
+                  </div>
+                )}
+                {aiExercise.restSeconds && (
+                  <div
+                    style={{
+                      padding: '8px 10px',
+                      borderRadius: 'var(--radius-control)',
+                      backgroundColor: 'var(--color-surface-2)',
+                      fontSize: '0.82rem',
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: 'var(--color-text-2)',
+                        marginBottom: '2px',
+                      }}
+                    >
+                      فترة الراحة
+                    </div>
+                    <div style={{ fontWeight: 700 }}>
+                      {aiExercise.restSeconds} ثانية
+                    </div>
+                  </div>
+                )}
+                {aiExercise.targetMuscle && (
+                  <div
+                    style={{
+                      padding: '8px 10px',
+                      borderRadius: 'var(--radius-control)',
+                      backgroundColor: 'var(--color-surface-2)',
+                      fontSize: '0.82rem',
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: 'var(--color-text-2)',
+                        marginBottom: '2px',
+                      }}
+                    >
+                      العضلة المستهدفة
+                    </div>
+                    <div style={{ fontWeight: 700 }}>
+                      {aiExercise.targetMuscle}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Coach notes (if available) */}
+        {aiExercise.notes && (
+          <Card padding="md">
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
+              <div
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  color: 'var(--color-text)',
+                }}
+              >
+                توجيهات المدرب الذكي وملاحظات الأداء:
+              </div>
+              <div
+                style={{
+                  fontSize: '0.85rem',
+                  lineHeight: 1.6,
+                  color: 'var(--color-text)',
+                  backgroundColor: 'var(--color-surface-2)',
+                  padding: '10px 12px',
+                  borderRadius: 'var(--radius-control)',
+                }}
+              >
+                {aiExercise.notes}
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Informative Note */}
+        <div
+          style={{
+            fontSize: '0.8rem',
+            color: 'var(--color-text-2)',
+            lineHeight: 1.5,
+            padding: '10px 12px',
+            borderRadius: 'var(--radius-control)',
+            backgroundColor: 'var(--color-surface)',
+            border: '1px solid var(--color-divider)',
+          }}
+        >
+          هذا التمرين مضاف عبر الذكاء الاصطناعي أو مخصص لجدولك وغير مسجل في
+          مكتبة التمارين الافتراضية. يمكنك دائماً البحث عن تفاصيله بالروابط
+          المباشرة أعلاه أو استبداله بأي تمرين آخر من الجدول.
+        </div>
+
+        {toastMsg && (
+          <Toast message={toastMsg} onDismiss={() => setToastMsg('')} />
         )}
       </div>
     )
@@ -736,7 +1263,12 @@ export function ExerciseDetailView({
                   variant="secondary"
                   size="sm"
                   onClick={() => setShowSwapModal(true)}
-                  style={{ height: '26px', padding: '0 8px', fontSize: '11px' }}
+                  style={{
+                    minHeight: '32px',
+                    height: 'auto',
+                    padding: '4px 10px',
+                    fontSize: '12px',
+                  }}
                 >
                   استبدل
                 </Button>

@@ -16,8 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Task N4.8: Native Alarm & Notification Gap-Closing Receiver.
@@ -59,17 +57,9 @@ public class AlarmRestoreReceiver extends BroadcastReceiver {
     private void rearmFutureAlarmsFromStore(Context context) {
         try {
             File kvDir = new File(context.getFilesDir(), "maganis/kv");
-            File scheduleFile = new File(kvDir, "maganis:notify.schedule");
-            if (!scheduleFile.exists()) {
+            String content = WorkoutAlarmHelper.readScheduleJson(kvDir);
+            if (content == null || content.trim().isEmpty()) {
                 return;
-            }
-
-            String content;
-            try (FileInputStream in = new FileInputStream(scheduleFile)) {
-                byte[] bytes = new byte[(int) scheduleFile.length()];
-                int read = in.read(bytes);
-                if (read <= 0) return;
-                content = new String(bytes, 0, read, StandardCharsets.UTF_8);
             }
 
             JSONArray items = new JSONArray(content);
@@ -82,26 +72,45 @@ public class AlarmRestoreReceiver extends BroadcastReceiver {
                 JSONObject item = items.getJSONObject(i);
                 int id = item.optInt("id", 0);
                 long triggerAt = item.optLong("triggerAt", 0);
+                String type = item.optString("type", "");
                 String channelId = item.optString("channelId", "timer_v1");
-                String title = item.optString("title", "مجانص");
+                String title = item.optString("title", "بُنْيَان");
                 String body = item.optString("body", "");
                 boolean isExact = item.optBoolean("isExactNotification", false);
+                boolean isSnooze = item.optBoolean("isSnooze", false);
+                JSONObject extra = item.optJSONObject("extra");
+                String route = extra != null ? extra.optString("route", "weekly_plan") : "weekly_plan";
+                String targetDate = extra != null ? extra.optString("targetDate", "") : "";
 
                 // Strictly drop expired past alarms
                 if (triggerAt <= now || id <= 0) {
                     continue;
                 }
 
-                // Intent targeting TimedNotificationPublisher with Notification payload
+                // Workout reminders & snoozed workout reminders re-arm natively with full Snooze actions
+                if ("workout_day".equals(type) || isSnooze) {
+                    WorkoutAlarmHelper.scheduleWorkoutAlarm(
+                            context, id, triggerAt, channelId, title, body, route, targetDate, isExact
+                    );
+                    rearmedCount++;
+                    continue;
+                }
+
+                // Other notification channels target Capacitor's TimedNotificationPublisher with exact contract keys
                 Intent fireIntent = new Intent(context, com.capacitorjs.plugins.localnotifications.TimedNotificationPublisher.class);
-                fireIntent.putExtra("LocalNotificationManager.NOTIFICATION_INTENT_KEY", id);
+                fireIntent.putExtra("LocalNotificationId", id);
+
+                int iconRes = context.getResources().getIdentifier("ic_stat_bunyan", "drawable", context.getPackageName());
+                if (iconRes == 0) {
+                    iconRes = android.R.drawable.ic_popup_reminder;
+                }
 
                 // Build standard system notification
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                         .setContentTitle(title)
                         .setContentText(body)
-                        .setSmallIcon(context.getResources().getIdentifier("ic_stat_maganis", "drawable", context.getPackageName()))
-                        .setColor(0xFF10B981)
+                        .setSmallIcon(iconRes)
+                        .setColor(0xFFEA6A15)
                         .setAutoCancel(true);
 
                 // Open MainActivity on tap
@@ -113,13 +122,13 @@ public class AlarmRestoreReceiver extends BroadcastReceiver {
                 tapIntent.putExtra("channelId", channelId);
 
                 int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     flags |= PendingIntent.FLAG_IMMUTABLE;
                 }
                 PendingIntent tapPending = PendingIntent.getActivity(context, id, tapIntent, flags);
                 builder.setContentIntent(tapPending);
 
-                fireIntent.putExtra("LocalNotificationManager.NOTIFICATION_KEY", builder.build());
+                fireIntent.putExtra("NotificationPublisher.notification", builder.build());
 
                 PendingIntent alarmPending = PendingIntent.getBroadcast(context, id, fireIntent, flags);
 

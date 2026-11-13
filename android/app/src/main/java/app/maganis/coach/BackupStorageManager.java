@@ -35,7 +35,7 @@ public class BackupStorageManager {
     public static final int MIN_BACKUP_RETENTION = 3;
 
     private static final Pattern BACKUP_FILENAME_PATTERN =
-            Pattern.compile("^maganis-backup-\\d{4}-\\d{2}-\\d{2}-\\d{4}(\\d{2})?\\.json$");
+            Pattern.compile("^(?:maganis|bunyan)-backup-\\d{4}-\\d{2}-\\d{2}-\\d{4}(\\d{2})?\\.json$");
 
     private static final String SNAPSHOT_MARKER = "\"format\":\"maganis-snapshot\"";
     private static final String SNAPSHOT_MARKER_SPACED = "\"format\": \"maganis-snapshot\"";

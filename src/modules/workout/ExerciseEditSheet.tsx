@@ -18,7 +18,11 @@
  */
 
 import React, { useState, useMemo, useEffect } from 'react'
-import type { Exercise, ExerciseMuscleTarget } from '../shared/types.ts'
+import type {
+  Exercise,
+  ExerciseMuscleTarget,
+  MeasurementType,
+} from '../shared/types.ts'
 import {
   getExerciseOverride,
   saveExerciseOverride,
@@ -36,8 +40,11 @@ import { Sheet } from '../../ui/Sheet.tsx'
 import { Button } from '../../ui/Button.tsx'
 import { ConfirmSheet } from '../../ui/ConfirmSheet.tsx'
 import { Icon } from '../../ui/Icon.tsx'
+import { Segmented } from '../../ui/Segmented.tsx'
 import { useToast } from '../../ui/Toast.tsx'
 import { getMuscleInfo } from '../../utils/labels.ts'
+import { MEASUREMENT_SEGMENTED_OPTIONS } from './CustomExerciseBuilder.tsx'
+import { resolvePinterestUrl } from './videoUtils.ts'
 import muscleNamesData from '../../data/muscle-names.json'
 
 export type EditSectionKey =
@@ -96,6 +103,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   // Form State: Data
   const [nameAr, setNameAr] = useState('')
   const [nameEn, setNameEn] = useState('')
+  const [measurementType, setMeasurementType] =
+    useState<MeasurementType>('weight')
 
   // Form State: Media
   // Mode: 'original' | 'none' | 'custom' | 'external'
@@ -144,6 +153,9 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
       const ov = existingOverride
       setNameAr(ov?.nameAr ?? exercise.nameAr ?? '')
       setNameEn(ov?.nameEn ?? exercise.nameEn ?? exercise.name ?? '')
+      setMeasurementType(
+        ov?.measurementType || exercise.measurementType || 'weight',
+      )
 
       // Sync media mode
       const cachedMedia = getCustomExerciseMedia(exercise.id)
@@ -459,6 +471,7 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
         exerciseId: exercise.id,
         nameAr: nameAr.trim() || undefined,
         nameEn: nameEn.trim() || undefined,
+        measurementType,
         imageMode: imageModeValue,
         media: mediaOverrideObj,
         benefitAr: benefitAr.trim() || undefined,
@@ -475,6 +488,7 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
         ...exercise,
         nameAr: overrideData.nameAr || exercise.nameAr,
         nameEn: overrideData.nameEn || exercise.nameEn,
+        measurementType,
         benefitAr: overrideData.benefitAr || exercise.benefitAr,
         mechanicsAr: overrideData.mechanicsAr || exercise.mechanicsAr,
         howToStepsAr: overrideData.howToStepsAr || exercise.howToStepsAr,
@@ -513,6 +527,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                 ...exercise,
                 nameAr: prevOverride.nameAr || exercise.nameAr,
                 nameEn: prevOverride.nameEn || exercise.nameEn,
+                measurementType:
+                  prevOverride.measurementType || exercise.measurementType,
                 benefitAr: prevOverride.benefitAr || exercise.benefitAr,
                 mechanicsAr: prevOverride.mechanicsAr || exercise.mechanicsAr,
                 howToStepsAr:
@@ -540,8 +556,23 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
     el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
   }
 
+  const handleVideoUrlBlur = async () => {
+    if (videoUrl.includes('pin.it')) {
+      const resolved = await resolvePinterestUrl(videoUrl)
+      if (resolved && resolved !== videoUrl) {
+        setVideoUrl(resolved)
+      }
+    }
+  }
+
   // Summaries for collapsed section headers
-  const dataSummary = nameAr.trim() || exercise.nameAr
+  const dataSummary = useMemo(() => {
+    const baseName = nameAr.trim() || exercise.nameAr
+    const opt = MEASUREMENT_SEGMENTED_OPTIONS.find(
+      (m) => m.value === measurementType,
+    )
+    return opt ? `${baseName} • ${opt.labelAr}` : baseName
+  }, [nameAr, exercise.nameAr, measurementType])
   const mediaSummary = useMemo(() => {
     if (mediaMode === 'none') return 'من غير صورة'
     if (mediaMode === 'custom') {
@@ -913,6 +944,65 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                           fontSize: 'var(--font-size-md)',
                         }}
                       />
+                    </div>
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 'var(--space-1)',
+                      }}
+                    >
+                      <label
+                        style={{
+                          fontSize: 'var(--font-size-sm)',
+                          fontWeight: 'var(--font-weight-semibold)',
+                        }}
+                      >
+                        نوع القياس
+                      </label>
+                      <div
+                        style={{
+                          overflowX: 'auto',
+                          scrollbarWidth: 'none',
+                          borderRadius: 'var(--radius-control)',
+                        }}
+                      >
+                        <Segmented
+                          className="segmented--scrollable"
+                          style={{
+                            width: 'max-content',
+                            minWidth: '100%',
+                            display: 'inline-flex',
+                          }}
+                          options={MEASUREMENT_SEGMENTED_OPTIONS.map((opt) => ({
+                            value: opt.value,
+                            label: opt.labelAr,
+                          }))}
+                          value={measurementType}
+                          onChange={(val) =>
+                            setMeasurementType(val as MeasurementType)
+                          }
+                        />
+                      </div>
+                      {MEASUREMENT_SEGMENTED_OPTIONS.find(
+                        (m) => m.value === measurementType,
+                      ) && (
+                        <div
+                          style={{
+                            fontSize: '12px',
+                            color: 'var(--color-text-2)',
+                            marginTop: '2px',
+                            lineHeight: '1.4',
+                          }}
+                        >
+                          {
+                            MEASUREMENT_SEGMENTED_OPTIONS.find(
+                              (m) => m.value === measurementType,
+                            )?.helperAr
+                          }
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -1993,7 +2083,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                           fontWeight: 'var(--font-weight-semibold)',
                         }}
                       >
-                        رابط فيديو شرح (يوتيوب أو فيميو أو رابط مباشر)
+                        رابط فيديو شرح (يوتيوب أو فيميو أو بينترست أو رابط
+                        مباشر)
                       </label>
                       <input
                         id="edit-video-url"
@@ -2001,9 +2092,10 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                         type="url"
                         dir="ltr"
                         autoFocus={focusField === 'video'}
-                        placeholder="https://youtu.be/..."
+                        placeholder="https://youtu.be/... أو https://pin.it/..."
                         value={videoUrl}
                         onChange={(e) => setVideoUrl(e.target.value)}
+                        onBlur={handleVideoUrlBlur}
                         style={{
                           height: 'var(--control-height)',
                           padding: '0 var(--space-3)',

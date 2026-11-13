@@ -61,20 +61,23 @@ async function runGate() {
     })
   }
 
-  // 3. Check bars: radius 0 & full-bleed
+  // 3. Check bars: radius 0 & bounded full-width (no negative-margin overflow)
   const appCssPath = path.join(rootDir, 'src/styles/app.css')
   const appCssSrc = fs.readFileSync(appCssPath, 'utf8')
   if (
     appCssSrc.includes('.sticky-bottom-bar {') &&
-    appCssSrc.includes('margin: 0 -16px;')
+    appCssSrc.includes('width: 100%;') &&
+    !appCssSrc.includes('margin: 0 -16px;')
   ) {
     checksPassed++
-    console.log('✓ .sticky-bottom-bar has full-bleed margin')
+    console.log(
+      '✓ .sticky-bottom-bar uses bounded full-width without negative margin overflow',
+    )
   } else {
     failures.push({
       test: 'CSS_BAR_FULLBLEED',
       error:
-        '.sticky-bottom-bar in app.css is missing full-bleed negative margin',
+        '.sticky-bottom-bar in app.css must be width: 100% without negative horizontal margin overflow',
     })
   }
 
@@ -125,8 +128,9 @@ async function runGate() {
         )
       }
     }, personaDump)
-    await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(600)
+    await page.reload({ waitUntil: 'load' })
+    await page.waitForSelector('.card', { timeout: 5000 }).catch(() => null)
+    await page.waitForTimeout(200)
 
     // Inspect .card elements
     const cardMetrics = await page.evaluate(() => {

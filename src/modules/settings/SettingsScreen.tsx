@@ -27,11 +27,10 @@ import { BackupPanel } from '../backup/BackupPanel.tsx'
 import { PwaTransferSection } from '../backup/PwaTransferSection.tsx'
 import { NotificationSettingsPanel } from './NotificationSettingsPanel.tsx'
 import { UpdateSettingsPanel } from './UpdateSettingsPanel.tsx'
-import { fmtFactor } from '../../utils/bidi.ts'
 import { DiagnosticsSheet } from './DiagnosticsSheet.tsx'
 import { ResetSheet } from './ResetSheet.tsx'
 import { LimitationsEditor } from '../workout/LimitationsEditor.tsx'
-import { getRegionLabel, type UserLimitation } from '../workout/limitations.ts'
+import type { UserLimitation } from '../workout/limitations.ts'
 import type { CustomExercise } from '../shared/types.ts'
 import { isStoragePersisted } from '../../lib/storagePersist.ts'
 import { platform, type PlatformInfo } from '../../platform/index.ts'
@@ -135,7 +134,7 @@ export function SettingsScreen({
 
   function handleReportIssue() {
     const report = [
-      '=== تقرير مشكلة Maganis ===',
+      '=== تقرير مشكلة Bunyan ===',
       `المسار الحالي: ${window.location.hash || '#/'}`,
       `معرف البناء: ${typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'dev'}`,
       `أبعاد الشاشة: ${window.innerWidth} × ${window.innerHeight}`,
@@ -183,7 +182,11 @@ export function SettingsScreen({
     }
   }
 
-  // --- Profile Edit State ---
+  // --- Sub-Sheets & Profile Edit State ---
+  const [showPreferencesSheet, setShowPreferencesSheet] = useState(false)
+  const [showNotificationsSheet, setShowNotificationsSheet] = useState(false)
+  const [showBackupSheet, setShowBackupSheet] = useState(false)
+  const [showAboutSheet, setShowAboutSheet] = useState(false)
   const [showDiagnostics, setShowDiagnostics] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editName, setEditName] = useState(profile?.name ?? '')
@@ -321,13 +324,6 @@ export function SettingsScreen({
 
   const goalObj = GOALS.find((g) => g.value === profile?.primaryGoal)
 
-  const currentLifestyle =
-    profile?.body?.lifestyle ??
-    mapLegacyActivityToLifestyle(profile?.body?.activityLevel)
-  const lifestyleObj = LIFESTYLE_OPTIONS.find(
-    (l) => l.level === currentLifestyle,
-  )
-
   const hasTrainingDaysMismatch =
     Boolean(profile?.body?.hasCustomWorkoutBlocks) &&
     Boolean(profile?.body?.workoutBlocks?.length) &&
@@ -376,7 +372,7 @@ export function SettingsScreen({
           />
         )}
 
-        {/* Section 1: الملف الشخصي */}
+        {/* Section 1: الملف الشخصي (Compact Summary) */}
         <Section
           title="الملف الشخصي"
           trailing={
@@ -397,41 +393,6 @@ export function SettingsScreen({
                 onClick: () => setShowEditModal(true),
               },
               {
-                key: 'الهدف الأساسي',
-                value: goalObj?.labelAr || '—',
-                onClick: () => setShowEditModal(true),
-              },
-              {
-                key: 'جلسات التمرين',
-                value: `${profile?.trainingDaysPerWeek ?? 4} أيام أسبوعياً`,
-                onClick: () => setShowEditModal(true),
-              },
-              {
-                key: 'الخبرة',
-                value:
-                  profile?.experienceLevel === 'beginner'
-                    ? 'مبتدئ'
-                    : profile?.experienceLevel === 'intermediate'
-                      ? 'متوسط'
-                      : 'متقدم',
-                onClick: () => setShowEditModal(true),
-              },
-              {
-                key: 'مكان التمرين',
-                value:
-                  profile?.trainingLocation === 'gym'
-                    ? 'جيم'
-                    : profile?.trainingLocation === 'home'
-                      ? 'منزل'
-                      : 'جيم ومنزل',
-                onClick: () => setShowEditModal(true),
-              },
-              {
-                key: 'الجنس',
-                value: profile?.body?.sex === 'female' ? 'أنثى' : 'ذكر',
-                onClick: () => setShowEditModal(true),
-              },
-              {
                 key: 'الوزن',
                 value: `${profile?.body?.weightKg ?? '—'} كجم`,
                 onClick: () => setShowEditModal(true),
@@ -447,27 +408,134 @@ export function SettingsScreen({
                 onClick: () => setShowEditModal(true),
               },
               {
-                key: 'نمط النشاط اليومي',
-                value: `${lifestyleObj?.titleAr || '—'} (معامل ${fmtFactor(lifestyleObj?.factor ?? 1.35)})`,
-                onClick: () => setShowEditModal(true),
-              },
-              {
-                key: 'الصحة والإصابات',
-                value: profile?.medical?.hasIssues
-                  ? profile?.limitations && profile.limitations.length > 0
-                    ? profile.limitations
-                        .map((l) => getRegionLabel(l.region))
-                        .join('، ')
-                    : profile.medical.notes || 'يوجد إصابة'
-                  : 'سليم ولا توجد إصابات',
+                key: 'الهدف والتدريب',
+                value: `${goalObj?.labelAr || '—'} · ${profile?.trainingDaysPerWeek ?? 4} أيام أسبوعياً`,
                 onClick: () => setShowEditModal(true),
               },
             ]}
           />
         </Section>
 
-        {/* Section 2: التفضيلات */}
+        {/* Section 2: التفضيلات والمظهر */}
         <Section title="التفضيلات">
+          <Card padding="md">
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+            >
+              <Segmented
+                options={[
+                  { value: 'auto', label: 'تلقائي' },
+                  { value: 'light', label: 'فاتح' },
+                  { value: 'dark', label: 'داكن' },
+                ]}
+                value={currentThemeMode}
+                onChange={(val) => handleThemeChange(val as ThemeMode)}
+              />
+              <div
+                style={{
+                  borderTop: '1px solid var(--color-divider)',
+                  paddingTop: '6px',
+                }}
+              >
+                <ListRow
+                  title="إعدادات التدريب وبداية الأسبوع"
+                  subtitle="بداية الأسبوع، الوحدات، ومصمم الجدول الذكي"
+                  onClick={() => setShowPreferencesSheet(true)}
+                  trailing={<Icon name="chevron-left" size={16} />}
+                />
+              </div>
+            </div>
+          </Card>
+        </Section>
+
+        {/* Section 3: التنبيهات والبيانات وحول التطبيق (Sheets) */}
+        <Section title="الإعدادات المتقدمة">
+          <Card padding="sm">
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <ListRow
+                data-testid="settings-open-notifications"
+                title="التنبيهات"
+                subtitle="تنبيهات التمرين المرنة والتأجيل وتذكيرات الوزن والمياه"
+                onClick={() => setShowNotificationsSheet(true)}
+                trailing={<Icon name="chevron-left" size={16} />}
+              />
+              <div
+                style={{
+                  borderTop: '1px solid var(--color-divider)',
+                }}
+              >
+                <ListRow
+                  data-testid="settings-open-backup"
+                  title="البيانات والمزامنة"
+                  subtitle="النسخ الاحتياطي، الاستعادة، ونقل بيانات المتصفح"
+                  onClick={() => setShowBackupSheet(true)}
+                  trailing={<Icon name="chevron-left" size={16} />}
+                />
+              </div>
+              <div
+                style={{
+                  borderTop: '1px solid var(--color-divider)',
+                }}
+              >
+                <ListRow
+                  data-testid="settings-open-about"
+                  title="حول التطبيق"
+                  subtitle={`التحديثات، الإصدار ${
+                    platformInfo?.versionName ||
+                    (typeof __BUILD_ID__ !== 'undefined'
+                      ? __BUILD_ID__
+                      : '0.2.2')
+                  }، والتشخيص والدعم الفني`}
+                  onClick={() => setShowAboutSheet(true)}
+                  trailing={<Icon name="chevron-left" size={16} />}
+                />
+              </div>
+            </div>
+          </Card>
+        </Section>
+
+        {/* Developer debug only if ?debug=1 */}
+        {isDebugMode && (
+          <Section title="أدوات المطور والتصحيح">
+            <Card padding="sm">
+              <ListRow
+                title="أداة فحص الرؤوس العضلية (Muscle Atlas Inspector)"
+                subtitle="فحص الرؤوس العضلية الـ 53"
+                onClick={onOpenAtlasDebug}
+                trailing={<Icon name="chevron-left" size={16} />}
+              />
+            </Card>
+          </Section>
+        )}
+
+        {/* Section 4: منطقة الخطر (Danger Zone) */}
+        <Section title="منطقة الخطر">
+          <Card padding="md">
+            <ListRow
+              data-testid="btn-trigger-reset"
+              title="إعادة ضبط التطبيق"
+              subtitle="حذف الحساب والبيانات والبدء من جديد"
+              onClick={() => setShowConfirmReset(true)}
+              trailing={<Icon name="chevron-left" size={16} />}
+            />
+          </Card>
+        </Section>
+      </div>
+
+      {/* Sheet: Preferences & Training */}
+      <Sheet
+        isOpen={showPreferencesSheet}
+        onClose={() => setShowPreferencesSheet(false)}
+        title="إعدادات التدريب والتفضيلات"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            paddingBottom: '20px',
+          }}
+        >
           <Card padding="md">
             <div
               style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
@@ -519,29 +587,20 @@ export function SettingsScreen({
               </div>
             </div>
           </Card>
-        </Section>
 
-        {/* Section 3: المظهر (ONE Segmented Row) */}
-        <Section title="المظهر">
-          <Card padding="md">
-            <Segmented
-              options={[
-                { value: 'auto', label: 'تلقائي' },
-                { value: 'light', label: 'فاتح' },
-                { value: 'dark', label: 'داكن' },
-              ]}
-              value={currentThemeMode}
-              onChange={(val) => handleThemeChange(val as ThemeMode)}
-            />
-          </Card>
-        </Section>
-
-        {/* Section: البرنامج التدريبي */}
-        <Section title="البرنامج التدريبي">
           <Card padding="md">
             <div
               style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
             >
+              <div
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: 'var(--color-text)',
+                }}
+              >
+                البرنامج التدريبي
+              </div>
               <div
                 style={{
                   fontSize: '13px',
@@ -552,38 +611,72 @@ export function SettingsScreen({
                 تقدر تصمم برنامج تمرين علمي مخصص لحالتك وإصاباتك بمساعدة مرشد
                 الذكاء الاصطناعي، أو تنزل جدول جاهز.
               </div>
-              <Button variant="secondary" onClick={onOpenAiDesigner} fullWidth>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowPreferencesSheet(false)
+                  onOpenAiDesigner?.()
+                }}
+                fullWidth
+              >
                 <Icon name="sparkles" size={16} />
                 <span>صمم لي جدولي الخاص (مرشد الذكاء الاصطناعي)</span>
               </Button>
             </div>
           </Card>
-        </Section>
+        </div>
+      </Sheet>
 
-        {/* Section: التنبيهات (Task N4) */}
-        <Section title="التنبيهات">
+      {/* Sheet: Notifications */}
+      <Sheet
+        isOpen={showNotificationsSheet}
+        onClose={() => setShowNotificationsSheet(false)}
+        title="التنبيهات"
+      >
+        <div style={{ paddingBottom: '20px' }}>
           <NotificationSettingsPanel />
-        </Section>
+        </div>
+      </Sheet>
 
-        {/* Section 4: البيانات والمزامنة */}
-        <Section title="البيانات والمزامنة">
+      {/* Sheet: Data & Backup */}
+      <Sheet
+        isOpen={showBackupSheet}
+        onClose={() => setShowBackupSheet(false)}
+        title="البيانات والمزامنة"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            paddingBottom: '20px',
+          }}
+        >
           <PwaTransferSection onImportComplete={onImported} />
-          <div style={{ marginTop: '16px' }}>
-            <BackupPanel
-              backupData={backupData}
-              onImported={onImported}
-              onRestore={onRestore}
-            />
-          </div>
-        </Section>
+          <BackupPanel
+            backupData={backupData}
+            onImported={onImported}
+            onRestore={onRestore}
+          />
+        </div>
+      </Sheet>
 
-        {/* Section: التحديثات (Task N5.5) */}
-        <Section title="التحديثات">
+      {/* Sheet: Updates & About */}
+      <Sheet
+        isOpen={showAboutSheet}
+        onClose={() => setShowAboutSheet(false)}
+        title="حول التطبيق والتحديثات"
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            paddingBottom: '20px',
+          }}
+        >
           <UpdateSettingsPanel />
-        </Section>
 
-        {/* Section 5: حول التطبيق (عن التطبيق) */}
-        <Section title="حول التطبيق">
           <Card padding="md">
             <div
               style={{
@@ -602,7 +695,7 @@ export function SettingsScreen({
                     platformInfo?.versionName ||
                     (typeof __BUILD_ID__ !== 'undefined'
                       ? __BUILD_ID__
-                      : '0.1.0'),
+                      : '0.2.2'),
                   bdi: true,
                   stacked: true,
                 },
@@ -727,7 +820,10 @@ export function SettingsScreen({
             >
               <Button
                 variant="secondary"
-                onClick={() => setShowDiagnostics(true)}
+                onClick={() => {
+                  setShowAboutSheet(false)
+                  setShowDiagnostics(true)
+                }}
                 style={{ width: '100%' }}
               >
                 <Icon name="info" size={16} />
@@ -747,35 +843,8 @@ export function SettingsScreen({
               </Button>
             </div>
           </Card>
-        </Section>
-
-        {/* Developer debug only if ?debug=1 */}
-        {isDebugMode && (
-          <Section title="أدوات المطور والتصحيح">
-            <Card padding="sm">
-              <ListRow
-                title="أداة فحص الرؤوس العضلية (Muscle Atlas Inspector)"
-                subtitle="فحص الرؤوس العضلية الـ 53"
-                onClick={onOpenAtlasDebug}
-                trailing={<Icon name="chevron-left" size={16} />}
-              />
-            </Card>
-          </Section>
-        )}
-
-        {/* Section 6: منطقة الخطر (Danger Zone) */}
-        <Section title="منطقة الخطر">
-          <Card padding="md">
-            <ListRow
-              data-testid="btn-trigger-reset"
-              title="إعادة ضبط التطبيق"
-              subtitle="حذف الحساب والبيانات والبدء من جديد"
-              onClick={() => setShowConfirmReset(true)}
-              trailing={<Icon name="chevron-left" size={16} />}
-            />
-          </Card>
-        </Section>
-      </div>
+        </div>
+      </Sheet>
 
       {/* Edit Profile Sheet */}
       <Sheet

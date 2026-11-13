@@ -19,7 +19,7 @@ export function formatTime(totalSeconds: number): string {
 }
 
 export interface ExportedRoutinePayload {
-  app: 'maganis'
+  app: 'bunyan' | 'maganis'
   version: string
   type: 'workout_routine'
   exportedAt: number
@@ -32,10 +32,10 @@ export interface ExportedRoutinePayload {
  */
 export function exportRoutineToJson(
   program: WorkoutProgram,
-  title = 'جدول تمارين Maganis',
+  title = 'جدول تمارين بُنْيَان',
 ): string {
   const payload: ExportedRoutinePayload = {
-    app: 'maganis',
+    app: 'bunyan',
     version: '1.0',
     type: 'workout_routine',
     exportedAt: Date.now(),
@@ -50,7 +50,7 @@ export function exportRoutineToJson(
  */
 export function downloadRoutineFile(
   program: WorkoutProgram,
-  title = 'جدول تمارين Maganis',
+  title = 'جدول تمارين بُنْيَان',
 ): void {
   const json = exportRoutineToJson(program, title)
   const blob = new Blob([json], { type: 'application/json;charset=utf-8' })
@@ -58,7 +58,7 @@ export function downloadRoutineFile(
   const a = document.createElement('a')
   const safeTitle = title.replace(/[^\w\u0600-\u06FF-]/g, '_')
   a.href = url
-  a.download = `maganis-routine-${safeTitle}-${new Date().toISOString().split('T')[0]}.json`
+  a.download = `bunyan-routine-${safeTitle}-${new Date().toISOString().split('T')[0]}.json`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
@@ -71,11 +71,11 @@ export function downloadRoutineFile(
  */
 export async function shareRoutineFile(
   program: WorkoutProgram,
-  title = 'جدول تمارين Maganis',
+  title = 'جدول تمارين بُنْيَان',
 ): Promise<{ shared: boolean; method: 'native' | 'download' }> {
   const json = exportRoutineToJson(program, title)
   const safeTitle = title.replace(/[^\w\u0600-\u06FF-]/g, '_')
-  const fileName = `maganis-routine-${safeTitle}-${new Date().toISOString().split('T')[0]}.json`
+  const fileName = `bunyan-routine-${safeTitle}-${new Date().toISOString().split('T')[0]}.json`
   const blob = new Blob([json], { type: 'application/json' })
 
   if (
@@ -90,8 +90,8 @@ export async function shareRoutineFile(
       ) {
         await navigator.share({
           files: [file],
-          title: `جدول تمرين مجانص: ${title}`,
-          text: `جدول تمرين (${title}) من تطبيق مجانص — تقدر تفتحه في التطبيق علطول!`,
+          title: `جدول تمرين بُنْيَان: ${title}`,
+          text: `جدول تمرين (${title}) من تطبيق بُنْيَان — تقدر تفتحه في التطبيق علطول!`,
         })
         return { shared: true, method: 'native' }
       }

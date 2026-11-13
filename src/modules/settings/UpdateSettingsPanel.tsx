@@ -18,7 +18,7 @@ import { Button } from '../../ui/Button.tsx'
 import { Icon } from '../../ui/Icon.tsx'
 
 export const UpdateSettingsPanel: React.FC = () => {
-  const [currentVersion, setCurrentVersion] = useState('0.1.0')
+  const [currentVersion, setCurrentVersion] = useState('0.2.2')
   const [buildType, setBuildType] = useState<'debug' | 'release'>('release')
   const [autoCheck, setAutoCheck] = useState(() => getAutoUpdateSetting())
   const [isChecking, setIsChecking] = useState(false)
@@ -31,7 +31,7 @@ export const UpdateSettingsPanel: React.FC = () => {
       if (isNative() && typeof MaganisNative.getInfo === 'function') {
         try {
           const info = await MaganisNative.getInfo()
-          setCurrentVersion(info.versionName || '0.1.0')
+          setCurrentVersion(info.versionName || '0.2.2')
           setBuildType(info.buildType === 'debug' ? 'debug' : 'release')
         } catch {
           // Fallback
@@ -50,7 +50,24 @@ export const UpdateSettingsPanel: React.FC = () => {
     setIsChecking(true)
     setBackupWarning(null)
     try {
-      const res = await checkForUpdates(currentVersion, buildType)
+      let ver = currentVersion
+      let bType = buildType
+      if (isNative() && typeof MaganisNative.getInfo === 'function') {
+        try {
+          const info = await MaganisNative.getInfo()
+          if (info.versionName) {
+            ver = info.versionName
+            setCurrentVersion(info.versionName)
+          }
+          if (info.buildType) {
+            bType = info.buildType === 'debug' ? 'debug' : 'release'
+            setBuildType(bType)
+          }
+        } catch {
+          // ignore
+        }
+      }
+      const res = await checkForUpdates(ver, bType)
       setResult(res)
     } finally {
       setIsChecking(false)
@@ -95,8 +112,9 @@ export const UpdateSettingsPanel: React.FC = () => {
         gap: '14px',
         padding: '16px',
         borderRadius: '12px',
-        backgroundColor: 'var(--color-bg-surface, #1e293b)',
-        border: '1px solid var(--color-border-subtle, #334155)',
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-divider)',
+        color: 'var(--color-text)',
       }}
     >
       <div
@@ -104,15 +122,17 @@ export const UpdateSettingsPanel: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '10px',
         }}
       >
-        <div>
+        <div style={{ minWidth: 0, flex: '1 1 160px' }}>
           <h3
             style={{
               margin: '0',
               fontSize: '1rem',
               fontWeight: '700',
-              color: 'var(--color-text-primary, #ffffff)',
+              color: 'var(--color-text)',
             }}
           >
             التحديثات
@@ -121,7 +141,7 @@ export const UpdateSettingsPanel: React.FC = () => {
             style={{
               margin: '2px 0 0 0',
               fontSize: '0.85rem',
-              color: 'var(--color-text-secondary, #94a3b8)',
+              color: 'var(--color-text-2)',
             }}
           >
             الإصدار الحالي: <bdi dir="ltr">{currentVersion}</bdi> (
@@ -132,7 +152,13 @@ export const UpdateSettingsPanel: React.FC = () => {
           variant="secondary"
           onClick={handleCheck}
           disabled={isChecking}
-          style={{ minHeight: '44px', padding: '0 14px' }}
+          style={{
+            minHeight: '44px',
+            height: 'auto',
+            padding: '8px 14px',
+            whiteSpace: 'normal',
+            flexShrink: 0,
+          }}
         >
           <Icon name="refresh-cw" size={16} />
           <span>{isChecking ? 'جاري الفحص...' : 'دوّر على تحديث'}</span>
@@ -145,16 +171,17 @@ export const UpdateSettingsPanel: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: '10px',
           padding: '10px 0',
-          borderTop: '1px solid var(--color-border-subtle, #334155)',
+          borderTop: '1px solid var(--color-divider)',
         }}
       >
-        <div>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <div
             style={{
               fontSize: '0.9rem',
               fontWeight: '600',
-              color: 'var(--color-text-primary, #ffffff)',
+              color: 'var(--color-text)',
             }}
           >
             فحص تلقائي يومي
@@ -162,10 +189,11 @@ export const UpdateSettingsPanel: React.FC = () => {
           <div
             style={{
               fontSize: '0.8rem',
-              color: 'var(--color-text-secondary, #94a3b8)',
+              color: 'var(--color-text-2)',
             }}
           >
-            تنبيهك لو فيه إصدار أحدث نزل على GitHub (معطل افتراضياً)
+            تنبيهك عند توفر إصدار أحدث على <bdi dir="ltr">GitHub</bdi> (معطل
+            افتراضياً)
           </div>
         </div>
         <Toggle
@@ -186,20 +214,23 @@ export const UpdateSettingsPanel: React.FC = () => {
             lineHeight: '1.5',
             backgroundColor:
               result.status === 'update_available'
-                ? 'rgba(16, 185, 129, 0.1)'
-                : 'rgba(255, 255, 255, 0.04)',
+                ? 'var(--color-success-bg, #f0fdf4)'
+                : 'var(--color-surface-2)',
             border: `1px solid ${
               result.status === 'update_available'
-                ? 'rgba(16, 185, 129, 0.3)'
-                : 'var(--color-border-subtle, #334155)'
+                ? 'var(--color-success-border, #bbf7d0)'
+                : 'var(--color-divider)'
             }`,
+            color: 'var(--color-text)',
           }}
         >
           <div
             style={{
               fontWeight: '600',
               color:
-                result.status === 'update_available' ? '#10b981' : 'inherit',
+                result.status === 'update_available'
+                  ? 'var(--color-success)'
+                  : 'var(--color-text)',
             }}
           >
             {result.messageAr}
@@ -218,7 +249,7 @@ export const UpdateSettingsPanel: React.FC = () => {
                 <div
                   style={{
                     fontSize: '0.8rem',
-                    color: 'var(--color-text-secondary, #94a3b8)',
+                    color: 'var(--color-text-2)',
                   }}
                 >
                   تاريخ الصدور: {result.releaseDate}{' '}
@@ -236,16 +267,17 @@ export const UpdateSettingsPanel: React.FC = () => {
                       fontSize: '0.82rem',
                       fontWeight: '600',
                       marginBottom: '4px',
+                      color: 'var(--color-text)',
                     }}
                   >
-                    الجديد في هذا الإصدار:
+                    الجديد في هذا الإصدار
                   </div>
                   <ul
                     style={{
                       margin: '0',
                       paddingInlineStart: '20px',
                       fontSize: '0.82rem',
-                      color: '#cbd5e1',
+                      color: 'var(--color-text-2)',
                     }}
                   >
                     {result.releaseNotesAr.map((bullet, idx) => (
@@ -262,8 +294,9 @@ export const UpdateSettingsPanel: React.FC = () => {
                   style={{
                     padding: '8px 10px',
                     borderRadius: '6px',
-                    backgroundColor: 'rgba(245, 158, 11, 0.15)',
-                    color: '#f59e0b',
+                    backgroundColor: 'var(--color-warning-bg)',
+                    border: '1px solid var(--color-warning-border)',
+                    color: 'var(--color-warning)',
                     fontSize: '0.8rem',
                   }}
                 >
@@ -279,9 +312,13 @@ export const UpdateSettingsPanel: React.FC = () => {
               >
                 <Icon name="download" size={16} />
                 <span>
-                  {isDownloading
-                    ? 'جاري التحقق من النسخ...'
-                    : 'تنزيل التحديث (APK)'}
+                  {isDownloading ? (
+                    'جاري التحقق من النسخ...'
+                  ) : (
+                    <>
+                      تنزيل التحديث (<bdi dir="ltr">APK</bdi>)
+                    </>
+                  )}
                 </span>
               </Button>
 
@@ -289,21 +326,22 @@ export const UpdateSettingsPanel: React.FC = () => {
               <div
                 style={{
                   padding: '10px',
-                  backgroundColor: 'rgba(0, 0, 0, 0.25)',
+                  backgroundColor: 'var(--color-surface)',
+                  border: '1px solid var(--color-divider)',
                   borderRadius: '6px',
                   fontSize: '0.8rem',
-                  color: 'var(--color-text-secondary, #94a3b8)',
+                  color: 'var(--color-text-2)',
                   lineHeight: '1.6',
                 }}
               >
                 <div
                   style={{
                     fontWeight: '600',
-                    color: '#ffffff',
+                    color: 'var(--color-text)',
                     marginBottom: '4px',
                   }}
                 >
-                  طريقة التثبيت:
+                  طريقة التثبيت
                 </div>
                 1. اضغط على ملف <bdi dir="ltr">.apk</bdi> بعد ما يخلص تحميله من
                 المتصفح.
@@ -313,8 +351,10 @@ export const UpdateSettingsPanel: React.FC = () => {
                 3. ثبّت التطبيق فوق النسخة الحالية؛ بياناتك وتمارينك هتفضل
                 موجودة ومحفوظة لأن التوقيع متطابق.
                 <br />
-                <span style={{ color: '#ef4444', fontWeight: '600' }}>
-                  قاعدة هامة: لو الموبايل قال إنه مش قادر يثبت التطبيق، اوعى
+                <span
+                  style={{ color: 'var(--color-danger)', fontWeight: '600' }}
+                >
+                  قاعدة هامة — لو الموبايل قال إنه مش قادر يثبت التطبيق، اوعى
                   تمسح التطبيق القديم؛ خد نسخة احتياطية الأول وابعتلنا لقطة
                   شاشة.
                 </span>

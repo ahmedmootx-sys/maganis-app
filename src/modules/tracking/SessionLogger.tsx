@@ -489,7 +489,13 @@ export function SessionLogger({
                           type="button"
                           className="btn-icon"
                           onClick={() =>
-                            setSelectedExerciseForDetail(exInfo || null)
+                            setSelectedExerciseForDetail(
+                              exInfo ||
+                                ({
+                                  id: se.exerciseId,
+                                  nameAr: se.exerciseId,
+                                } as Exercise),
+                            )
                           }
                           aria-label={`شرح تمرين ${exInfo?.nameAr ?? ''}`}
                           style={{
@@ -957,7 +963,9 @@ export function SessionLogger({
       {/* Exercise Detail Modal */}
       {selectedExerciseForDetail && (
         <ExerciseDetailModal
+          exerciseId={selectedExerciseForDetail.id}
           exercise={selectedExerciseForDetail}
+          programDay={programDay}
           onClose={() => setSelectedExerciseForDetail(null)}
         />
       )}

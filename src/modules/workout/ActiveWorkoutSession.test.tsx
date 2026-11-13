@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { ActiveWorkoutSession } from './ActiveWorkoutSession.tsx'
+import {
+  ActiveWorkoutSession,
+  getExerciseMeasureType,
+} from './ActiveWorkoutSession.tsx'
 import type { Exercise, ProgramDay, TrackingSession } from '../shared/types.ts'
 
 const mockDay: ProgramDay = {
@@ -242,5 +245,41 @@ describe('ActiveWorkoutSession Data Integrity & Completion Rules (TASK G2 Part A
 
     // Set 1 is completed (no validation error)
     expect(checkBtns[0].getAttribute('aria-pressed')).toBe('true')
+  })
+
+  it('correctly maps isometric/duration exercises to timed measurement type', () => {
+    // Deadhang and wallsit isometric exercises
+    const deadhang: Partial<Exercise> = {
+      id: 'deadhang',
+      name: 'Dead Hang',
+      nameAr: 'تعليق حر',
+      category: 'back',
+      kind: 'isometric',
+      measurementType: 'duration',
+      equipment: 'bodyweight',
+    }
+    const wallsit: Partial<Exercise> = {
+      id: 'wallsit',
+      name: 'Wall Sit',
+      nameAr: 'جلوس الحائط',
+      category: 'legs',
+      kind: 'isometric',
+      measurementType: 'duration',
+      equipment: 'bodyweight',
+    }
+
+    expect(getExerciseMeasureType(deadhang as Exercise)).toBe('timed')
+    expect(getExerciseMeasureType(wallsit as Exercise)).toBe('timed')
+
+    // Cardio exercise
+    const cardioEx: Partial<Exercise> = {
+      id: 'running',
+      name: 'Running',
+      nameAr: 'جري',
+      category: 'legs',
+      measurementType: 'cardio',
+      equipment: 'bodyweight',
+    }
+    expect(getExerciseMeasureType(cardioEx as Exercise)).toBe('timed')
   })
 })

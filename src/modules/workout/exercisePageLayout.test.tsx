@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { ExerciseDetailView } from './ExerciseDetailView.tsx'
 import type { Exercise } from '../shared/types.ts'
 
@@ -99,5 +99,145 @@ describe('Part D: Exercise Page Layout', () => {
     )
 
     expect(chipsIdx).toBeLessThan(tabsIdx)
+  })
+
+  it('renders rich AI/Custom Exercise view with search links and copy button when exercise is missing from DB', () => {
+    const mockProgram = {
+      id: 'ai-prog-1',
+      createdAt: Date.now(),
+      title: 'جدول الذكاء الاصطناعي',
+      primaryGoal: 'hypertrophy' as const,
+      trainingDaysPerWeek: 3,
+      days: [
+        {
+          id: 'day-1',
+          dayIndex: 0,
+          labelAr: 'اليوم الأول',
+          focus: 'صدر',
+          kind: 'strength' as const,
+          exercises: [
+            {
+              exerciseId: 'custom-ai-ex-1',
+              customName: 'تمرين سحب مخصص بالكابل',
+              nameEn: 'Custom Cable Pull',
+              sets: 3,
+              reps: 10,
+              repsMin: 8,
+              repsMax: 12,
+              restSeconds: 90,
+              targetSubMuscleAr: 'عضلة الظهر العريضة',
+              notes: 'سحب بطيء مع اعتصار لوحي الكتف',
+            },
+          ],
+        },
+      ],
+    }
+
+    const { container } = render(
+      <ExerciseDetailView
+        exerciseId="custom-ai-ex-1"
+        program={mockProgram}
+        onBack={() => {}}
+      />,
+    )
+
+    // Check title and English name
+    expect(screen.getByText('تمرين سحب مخصص بالكابل')).toBeDefined()
+    expect(screen.getByText('Custom Cable Pull')).toBeDefined()
+
+    // Check badge
+    expect(
+      screen.getByText('تمرين مضاف عبر الذكاء الاصطناعي / مخصص'),
+    ).toBeDefined()
+
+    // Check Copy button exists
+    expect(
+      within(container).getByTestId('copy-exercise-name-btn'),
+    ).toBeDefined()
+
+    // Check Search platform links
+    const googleLink = screen.getByRole('link', {
+      name: /بحث Google/i,
+    }) as HTMLAnchorElement
+    expect(googleLink.href).toContain('google.com/search?q=')
+    expect(googleLink.href).toContain('Custom%20Cable%20Pull')
+
+    const youtubeLink = screen.getByRole('link', {
+      name: /فيديوهات YouTube/i,
+    }) as HTMLAnchorElement
+    expect(youtubeLink.href).toContain('youtube.com/results?search_query=')
+
+    const pinterestLink = screen.getByRole('link', {
+      name: /بحث Pinterest/i,
+    }) as HTMLAnchorElement
+    expect(pinterestLink.href).toContain('pinterest.com/search/pins/?q=')
+
+    // Check prescription & notes
+    expect(screen.getByText('3 مجموعات')).toBeDefined()
+    expect(screen.getByText('8 - 12 تكرار')).toBeDefined()
+    expect(screen.getByText('90 ثانية')).toBeDefined()
+    expect(screen.getByText('سحب بطيء مع اعتصار لوحي الكتف')).toBeDefined()
+  })
+
+  it('renders AI view when opened from session with programDay and synthetic exercise object', () => {
+    const mockProgramDay = {
+      id: 'day-active-1',
+      dayIndex: 0,
+      labelAr: 'يوم الصدر المباشر',
+      focus: 'صدر',
+      exercises: [
+        {
+          exerciseId: 'custom-session-ex',
+          customName: 'تمرين تجميع بالدمبل على أرضية',
+          nameEn: 'Floor Dumbbell Flyes',
+          sets: 4,
+          reps: 12,
+          restSeconds: 60,
+          targetSubMuscleAr: 'الصدر الداخلي',
+          notes: 'حركة تركيزية مع ثبات الكوعين',
+        },
+      ],
+    }
+
+    const syntheticExercise: Partial<Exercise> = {
+      id: 'custom-session-ex',
+      name: 'Floor Dumbbell Flyes',
+      nameAr: 'تمرين تجميع بالدمبل على أرضية',
+      nameEn: 'Floor Dumbbell Flyes',
+      category: 'core',
+      equipment: 'bodyweight',
+      difficulty: 'intermediate',
+      descriptionAr: 'تمرين مضاف عبر الذكاء الاصطناعي',
+    }
+
+    const { container } = render(
+      <ExerciseDetailView
+        exerciseId="custom-session-ex"
+        exercise={syntheticExercise as Exercise}
+        programDay={mockProgramDay}
+        onBack={() => {}}
+      />,
+    )
+
+    // Should detect that it is an AI/custom exercise and render the search & copy view
+    expect(
+      within(container).getByText('تمرين مضاف عبر الذكاء الاصطناعي / مخصص'),
+    ).toBeDefined()
+    expect(
+      within(container).getByText('تمرين تجميع بالدمبل على أرضية'),
+    ).toBeDefined()
+    expect(within(container).getByText('Floor Dumbbell Flyes')).toBeDefined()
+    expect(within(container).getByText('4 مجموعات')).toBeDefined()
+    expect(within(container).getByText('12 تكرار')).toBeDefined()
+    expect(within(container).getByText('60 ثانية')).toBeDefined()
+    expect(within(container).getByText('الصدر الداخلي')).toBeDefined()
+    expect(
+      within(container).getByText('حركة تركيزية مع ثبات الكوعين'),
+    ).toBeDefined()
+
+    const googleLink = within(container).getByRole('link', {
+      name: /بحث Google/i,
+    }) as HTMLAnchorElement
+    expect(googleLink.href).toContain('Floor%20Dumbbell%20Flyes')
   })
 })

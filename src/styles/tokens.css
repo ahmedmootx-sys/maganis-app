@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Maganis Design System – Tokens (tokens.css)
+   Bunyan (بُنْيَان) Design System – Tokens (tokens.css)
    Light + Dark + prefers-color-scheme + Manual Override
    WCAG AA Compliant • Mobile-First • RTL-First
    ========================================================================== */
@@ -108,7 +108,7 @@
   --inset: 12px 16px;
 
   /* Radii */
-  --radius-card: 24px;
+  --radius-card: 16px;
   --radius-control: 10px;
   --radius-full: 999px;
 
@@ -148,26 +148,26 @@
     0 16px 40px -4px rgba(0, 0, 0, 0.08), 0 6px 16px -2px rgba(0, 0, 0, 0.03);
   --shadow-floating-nav: 0 -4px 24px rgba(0, 0, 0, 0.06);
   --shadow-primary-cta:
-    0 4px 12px rgba(249, 87, 0, 0.14), 0 2px 4px rgba(0, 0, 0, 0.04);
+    0 4px 12px rgba(234, 106, 21, 0.16), 0 2px 4px rgba(20, 17, 14, 0.05);
   --shadow-primary-cta-hover:
-    0 6px 16px rgba(249, 87, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.05);
+    0 6px 16px rgba(234, 106, 21, 0.24), 0 2px 6px rgba(20, 17, 14, 0.08);
   --shadow-nav-bubble:
     0 0 0 5px var(--color-bg), 0 6px 18px rgba(0, 0, 0, 0.1),
-    0 2px 6px rgba(249, 87, 0, 0.15);
+    0 2px 6px rgba(234, 106, 21, 0.18);
 
   /* Translucent & Tactile Tokens */
   --nav-floating-bg: #ffffff;
   --nav-bubble-bg: #ffffff;
-  --nav-bubble-border: rgba(249, 87, 0, 0.25);
-  --nav-pill-bg: rgba(249, 87, 0, 0.08);
-  --nav-pill-border: rgba(249, 87, 0, 0.15);
-  --topbar-translucent-bg: rgba(255, 255, 255, 0.85);
+  --nav-bubble-border: rgba(234, 106, 21, 0.28);
+  --nav-pill-bg: rgba(234, 106, 21, 0.1);
+  --nav-pill-border: rgba(234, 106, 21, 0.2);
+  --topbar-translucent-bg: rgba(255, 255, 255, 0.88);
   --transition-tactile: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  --btn-primary-gradient: linear-gradient(135deg, #f95700 0%, #ff7714 100%);
+  --btn-primary-gradient: linear-gradient(135deg, #ea6a15 0%, #f6a03d 100%);
   --btn-primary-hover-gradient: linear-gradient(
     135deg,
-    #ea580c 0%,
-    #f95700 100%
+    #d45a0c 0%,
+    #ea6a15 100%
   );
 
   /* Reserved Muscle Map Colors (Strictly Isolated to Anatomy Visuals, Delta E > 80) */
@@ -181,42 +181,43 @@
   --color-muscle-secondary: var(--atlas-secondary);
   --color-muscle-secondary-border: var(--atlas-secondary-stroke);
 
-  /* Default Light Theme Colors */
-  --color-bg: #f4f5f7;
+  /* Default Light Theme Colors (Bunyan Warm Ivory & Warrior Charcoal) */
+  --color-bg: #f7f4ee;
   --color-surface: #ffffff;
-  --color-surface-2: #eef0f3;
-  --color-text: #14161a;
-  --color-text-2: #5b616b;
-  --color-divider: #e2e5ea;
+  --color-surface-2: #eee8de;
+  --color-text: #181614;
+  --color-text-2: #595147;
+  --color-divider: #e2dad0;
 
-  /* Brand Accent: Original orange #f95700 */
-  --color-accent: #f95700;
-  --color-accent-hover: #ea580c;
-  --color-accent-pressed: #d04300;
-  --color-accent-disabled: #e2e5ea;
-  --color-accent-text: #b83a00; /* WCAG AA >= 5:1 on light backgrounds */
-  --color-accent-contrast: #0b0c0e;
+  /* Brand Accent: Warrior Flame Orange #ea6a15 & Burnished Gold */
+  --color-accent: #ea6a15;
+  --color-accent-hover: #d45a0c;
+  --color-accent-pressed: #b84905;
+  --color-accent-disabled: #e2dad0;
+  --color-accent-text: #9e3e04; /* WCAG AA > 5.4:1 on light backgrounds */
+  --color-accent-contrast: #14110e;
+  --color-accent-gold: #c98a2c;
   --color-accent-tint: rgba(
-    249,
-    87,
-    0,
+    234,
+    106,
+    21,
     0.14
   ); /* 14% accent tint over surface for selected chips/cards */
-  --color-focus-ring: rgba(249, 87, 0, 0.35);
+  --color-focus-ring: rgba(234, 106, 21, 0.35);
 
-  --on-accent: #0b0c0e;
-  --on-accent-disabled: #6b7280;
+  --on-accent: #14110e;
+  --on-accent-disabled: #595147;
 
   /* Primary Button Tokens (Light Mode: WCAG AA >= 4.5:1) */
-  --btn-primary-bg: #f95700;
-  --btn-primary-fg: #0b0c0e;
-  --btn-primary-hover-bg: #ea580c;
-  --btn-primary-hover-fg: #0b0c0e;
-  --btn-primary-active-bg: #d04300;
-  --btn-primary-active-fg: #0b0c0e;
-  --btn-primary-focus-ring: rgba(249, 87, 0, 0.4);
-  --btn-primary-disabled-bg: #e2e5ea;
-  --btn-primary-disabled-fg: #6b7280;
+  --btn-primary-bg: #ea6a15;
+  --btn-primary-fg: #14110e;
+  --btn-primary-hover-bg: #d45a0c;
+  --btn-primary-hover-fg: #14110e;
+  --btn-primary-active-bg: #b84905;
+  --btn-primary-active-fg: #ffffff;
+  --btn-primary-focus-ring: rgba(234, 106, 21, 0.4);
+  --btn-primary-disabled-bg: #e2dad0;
+  --btn-primary-disabled-fg: #595147;
 
   /* Anatomical Atlas Tokens (Light Mode) */
   --atlas-muscle: #d8dde4;
@@ -233,6 +234,7 @@
   --color-success: #15803d;
   --color-success-bg: #f0fdf4;
   --color-success-border: #bbf7d0;
+  --color-success-contrast: #ffffff;
 
   --color-warning: #b45309;
   --color-warning-bg: #fffbeb;
@@ -261,9 +263,9 @@
   --macro-fats-border: #ddd6fe;
 
   /* Toast Tokens (Light Mode: High-contrast floating pill) */
-  --color-toast-bg: #14161a;
+  --color-toast-bg: #181614;
   --color-toast-text: #ffffff;
-  --color-toast-border: rgba(255, 255, 255, 0.15);
+  --color-toast-border: rgba(246, 176, 94, 0.25);
 
   /* Chip State Tokens (Light Mode: WCAG AA Compliant) */
   --chip-bg: var(--color-surface);
@@ -279,9 +281,9 @@
   --z-content: 1;
   --z-sticky: 10;
   --z-nav: 50;
-  --z-sheet: 100;
-  --z-toast: 200;
-  --z-dialog: 300;
+  --z-sheet: 1200;
+  --z-toast: 1300;
+  --z-dialog: 1400;
 
   /* Aliases for backwards compatibility */
   --z-index-sticky: var(--z-sticky);
@@ -312,63 +314,64 @@
    3. Dark Theme Specification
    -------------------------------------------------------------------------- */
 [data-theme='dark'] {
-  --color-bg: #0b0c0e;
-  --color-surface: #16181b;
-  --color-surface-2: #212429;
-  --color-text: #f2f3f5;
-  --color-text-2: #a3a8b1;
-  --color-divider: #2b2f35;
+  --color-bg: #121110;
+  --color-surface: #1b1917;
+  --color-surface-2: #262320;
+  --color-text: #f6f2ea;
+  --color-text-2: #b4aca0;
+  --color-divider: #35302a;
 
   /* Card and Floating Nav Shadows & Backgrounds in Dark Mode */
   --shadow-card:
-    0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(246, 176, 94, 0.08);
   --shadow-card-hover:
-    0 16px 44px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  --shadow-floating-nav: 0 -4px 24px rgba(0, 0, 0, 0.4);
+    0 16px 44px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(246, 176, 94, 0.15);
+  --shadow-floating-nav: 0 -4px 24px rgba(0, 0, 0, 0.45);
   --shadow-primary-cta:
-    0 4px 12px rgba(255, 107, 26, 0.16), 0 2px 4px rgba(0, 0, 0, 0.2);
+    0 4px 12px rgba(245, 133, 36, 0.2), 0 2px 4px rgba(0, 0, 0, 0.25);
   --shadow-primary-cta-hover:
-    0 6px 16px rgba(255, 107, 26, 0.22), 0 2px 6px rgba(0, 0, 0, 0.25);
+    0 6px 16px rgba(245, 133, 36, 0.28), 0 2px 6px rgba(0, 0, 0, 0.3);
   --shadow-nav-bubble:
-    0 4px 14px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(255, 107, 26, 0.18);
-  --nav-floating-bg: #16181b;
-  --nav-floating-bg-solid: #16181b;
-  --nav-bubble-bg: #1e2024;
-  --nav-bubble-border: rgba(255, 107, 26, 0.35);
-  --nav-notch-color: #16181b;
-  --nav-pill-bg: rgba(255, 107, 26, 0.16);
-  --nav-pill-border: rgba(255, 107, 26, 0.28);
-  --topbar-translucent-bg: rgba(11, 12, 14, 0.85);
-  --btn-primary-gradient: linear-gradient(135deg, #ff6b1a 0%, #ff8833 100%);
+    0 4px 14px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(245, 133, 36, 0.22);
+  --nav-floating-bg: #1b1917;
+  --nav-floating-bg-solid: #1b1917;
+  --nav-bubble-bg: #262320;
+  --nav-bubble-border: rgba(246, 176, 94, 0.35);
+  --nav-notch-color: #1b1917;
+  --nav-pill-bg: rgba(245, 133, 36, 0.16);
+  --nav-pill-border: rgba(246, 176, 94, 0.28);
+  --topbar-translucent-bg: rgba(18, 17, 16, 0.88);
+  --btn-primary-gradient: linear-gradient(135deg, #f0731b 0%, #f6b05e 100%);
   --btn-primary-hover-gradient: linear-gradient(
     135deg,
-    #e04f00 0%,
-    #ff6b1a 100%
+    #d95f0d 0%,
+    #f58524 100%
   );
 
-  /* Brand Accent in Dark: #ff6b1a */
-  --color-accent: #ff6b1a;
-  --color-accent-hover: #ff853f;
-  --color-accent-pressed: #e04f00;
-  --color-accent-disabled: #2d3139;
-  --color-accent-text: #ff853f; /* WCAG AA > 8:1 on #0B0C0E */
-  --color-accent-contrast: #0b0c0e;
-  --color-accent-tint: rgba(255, 107, 26, 0.14);
-  --color-focus-ring: rgba(255, 107, 26, 0.35);
+  /* Brand Accent in Dark: Warrior Flame & Burnished Gold */
+  --color-accent: #f58524;
+  --color-accent-hover: #f6b05e;
+  --color-accent-pressed: #d45a0c;
+  --color-accent-disabled: #35302a;
+  --color-accent-text: #f6b05e; /* WCAG AA > 9:1 on #1B1917 */
+  --color-accent-contrast: #14110e;
+  --color-accent-gold: #f6b05e;
+  --color-accent-tint: rgba(245, 133, 36, 0.16);
+  --color-focus-ring: rgba(246, 176, 94, 0.35);
 
-  --on-accent: #0b0c0e;
-  --on-accent-disabled: #9ca3af;
+  --on-accent: #14110e;
+  --on-accent-disabled: #b4aca0;
 
   /* Primary Button Tokens (Dark Mode: WCAG AA >= 4.5:1) */
-  --btn-primary-bg: #ff6b1a;
-  --btn-primary-fg: #0b0c0e;
-  --btn-primary-hover-bg: #ff853f;
-  --btn-primary-hover-fg: #0b0c0e;
-  --btn-primary-active-bg: #e04f00;
-  --btn-primary-active-fg: #0b0c0e;
-  --btn-primary-focus-ring: rgba(255, 107, 26, 0.4);
-  --btn-primary-disabled-bg: #2d3139;
-  --btn-primary-disabled-fg: #9ca3af;
+  --btn-primary-bg: #f58524;
+  --btn-primary-fg: #14110e;
+  --btn-primary-hover-bg: #f6b05e;
+  --btn-primary-hover-fg: #14110e;
+  --btn-primary-active-bg: #d45a0c;
+  --btn-primary-active-fg: #ffffff;
+  --btn-primary-focus-ring: rgba(246, 176, 94, 0.4);
+  --btn-primary-disabled-bg: #35302a;
+  --btn-primary-disabled-fg: #b4aca0;
 
   /* Anatomical Atlas Tokens (Dark Mode) */
   --atlas-muscle: #2d323a;
@@ -379,7 +382,7 @@
   --atlas-silhouette-stroke: rgba(180, 185, 195, 0.35);
   --atlas-ghost-fill: rgba(100, 105, 115, 0.15);
   --atlas-ghost-stroke: rgba(120, 125, 135, 0.25);
-  --atlas-accent-outline: var(--color-accent, #ff6b1a);
+  --atlas-accent-outline: var(--color-accent, #f58524);
   --atlas-primary: #ef5350;
   --atlas-primary-stroke: #b71c1c;
   --atlas-secondary: #ffee58;
@@ -387,9 +390,10 @@
   --atlas-approx-stroke: #ef5350;
   --atlas-dimmed: rgba(180, 185, 195, 0.2);
 
-  --color-success: #15803d;
+  --color-success: #22c55e;
   --color-success-bg: #052e16;
   --color-success-border: #14532d;
+  --color-success-contrast: #14110e;
 
   --color-warning: #f59e0b;
   --color-warning-bg: #451a03;
@@ -418,9 +422,9 @@
   --macro-fats-border: rgba(167, 139, 250, 0.35);
 
   /* Toast Tokens (Dark Mode: High-contrast floating pill) */
-  --color-toast-bg: #212429;
+  --color-toast-bg: #262320;
   --color-toast-text: #ffffff;
-  --color-toast-border: #3a3f47;
+  --color-toast-border: #3d3730;
 
   /* Chip State Tokens (Dark Mode: WCAG AA Compliant) */
   --chip-bg: var(--color-surface-2);
@@ -434,7 +438,7 @@
 
   --shadow-sheet: 0 -4px 24px rgba(0, 0, 0, 0.6);
   --shadow-dropdown: 0 4px 20px rgba(0, 0, 0, 0.5);
-  --color-placeholder: #a3a8b1;
+  --color-placeholder: #b4aca0;
 }
 
 /* --------------------------------------------------------------------------
@@ -442,28 +446,28 @@
    -------------------------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #0b0c0e;
-    --color-surface: #16181b;
-    --color-surface-2: #212429;
-    --color-text: #f2f3f5;
-    --color-text-2: #a3a8b1;
-    --color-divider: #2b2f35;
+    --color-bg: #121110;
+    --color-surface: #1b1917;
+    --color-surface-2: #262320;
+    --color-text: #f6f2ea;
+    --color-text-2: #b4aca0;
+    --color-divider: #35302a;
 
-    --color-accent: #ff6b1a;
-    --color-accent-hover: #ff853f;
-    --color-accent-text: #ff853f;
-    --color-accent-contrast: #0b0c0e;
-    --color-focus-ring: rgba(255, 107, 26, 0.35);
+    --color-accent: #f58524;
+    --color-accent-hover: #f6b05e;
+    --color-accent-text: #f6b05e;
+    --color-accent-contrast: #14110e;
+    --color-focus-ring: rgba(246, 176, 94, 0.35);
 
-    --btn-primary-bg: #ff6b1a;
-    --btn-primary-fg: #0b0c0e;
-    --btn-primary-hover-bg: #ff853f;
-    --btn-primary-hover-fg: #0b0c0e;
-    --btn-primary-active-bg: #ff9b5f;
-    --btn-primary-active-fg: #0b0c0e;
-    --btn-primary-focus-ring: rgba(255, 107, 26, 0.4);
-    --btn-primary-disabled-bg: #212429;
-    --btn-primary-disabled-fg: #9ca3af;
+    --btn-primary-bg: #f58524;
+    --btn-primary-fg: #14110e;
+    --btn-primary-hover-bg: #f6b05e;
+    --btn-primary-hover-fg: #14110e;
+    --btn-primary-active-bg: #d45a0c;
+    --btn-primary-active-fg: #ffffff;
+    --btn-primary-focus-ring: rgba(246, 176, 94, 0.4);
+    --btn-primary-disabled-bg: #262320;
+    --btn-primary-disabled-fg: #b4aca0;
 
     --atlas-muscle: #2d323a;
     --atlas-muscle-highlight: #3a404c;
@@ -473,11 +477,12 @@
     --atlas-silhouette-stroke: rgba(180, 185, 195, 0.35);
     --atlas-ghost-fill: rgba(100, 105, 115, 0.15);
     --atlas-ghost-stroke: rgba(120, 125, 135, 0.25);
-    --atlas-accent-outline: var(--color-accent, #ff6b1a);
+    --atlas-accent-outline: var(--color-accent, #f58524);
 
-    --color-success: #15803d;
+    --color-success: #22c55e;
     --color-success-bg: #052e16;
     --color-success-border: #14532d;
+    --color-success-contrast: #14110e;
 
     --color-warning: #f59e0b;
     --color-warning-bg: #451a03;

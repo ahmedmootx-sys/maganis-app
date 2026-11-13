@@ -94,7 +94,9 @@ export function formatBackupFileName(date: Date = new Date()): string {
 
 export function isValidBackupFileName(name: string): boolean {
   if (!name) return false
-  return /^maganis-backup-\d{4}-\d{2}-\d{2}-\d{4}(\d{2})?\.json$/.test(name)
+  return /^(?:maganis|bunyan)-backup-\d{4}-\d{2}-\d{2}-\d{4}(\d{2})?\.json$/.test(
+    name,
+  )
 }
 
 /**
@@ -503,7 +505,7 @@ export class BackupEngine {
         }
       }
 
-      // Step 3: Layer 2 - Downloads/Maganis (Android 10+ / API 29+)
+      // Step 3: Layer 2 - Downloads/Bunyan (Android 10+ / API 29+)
       if (this.settings.destinations.downloads) {
         try {
           await this.streamWriteFile('downloads', fileName, jsonString)
@@ -543,7 +545,7 @@ export class BackupEngine {
               'النسخ التلقائي لمجلد التنزيلات غير مدعوم على إصدار أندرويد 9 أو أقدم.'
           } else {
             this.status.destinations.downloads.errorAr =
-              'فشل النسخ إلى مجلد Download/Maganis: ' + errMsg
+              'فشل النسخ إلى مجلد Download/Bunyan: ' + errMsg
           }
         }
       }

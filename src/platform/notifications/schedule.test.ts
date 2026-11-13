@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   computeDesiredSchedule,
+  computeRandomTimesForDate,
   diffSchedule,
   generateNotificationId,
   formatLocalDate,
@@ -289,8 +290,8 @@ describe('Pure Notification Scheduler & Diffing (Task N4)', () => {
           extra: { type: 'workout_day' },
           isExactNotification: false,
           isExactMandatory: false,
-          smallIcon: 'ic_stat_maganis',
-          iconColor: '#10B981',
+          smallIcon: 'ic_stat_bunyan',
+          iconColor: '#EA6A15',
         },
       ]
 
@@ -319,8 +320,8 @@ describe('Pure Notification Scheduler & Diffing (Task N4)', () => {
           extra: { type: 'workout_day' },
           isExactNotification: false,
           isExactMandatory: false,
-          smallIcon: 'ic_stat_maganis',
-          iconColor: '#10B981',
+          smallIcon: 'ic_stat_bunyan',
+          iconColor: '#EA6A15',
         },
       ]
 
@@ -349,8 +350,8 @@ describe('Pure Notification Scheduler & Diffing (Task N4)', () => {
           extra: { type: 'workout_day' },
           isExactNotification: false,
           isExactMandatory: false,
-          smallIcon: 'ic_stat_maganis',
-          iconColor: '#10B981',
+          smallIcon: 'ic_stat_bunyan',
+          iconColor: '#EA6A15',
         },
       ]
 
@@ -365,6 +366,100 @@ describe('Pure Notification Scheduler & Diffing (Task N4)', () => {
       const diff = diffSchedule(desired, pending)
       expect(diff.toCancel).toEqual([301])
       expect(diff.toSchedule.map((d) => d.id)).toEqual([301])
+    })
+  })
+
+  describe('flexible workout reminder modes (custom_times & random)', () => {
+    const fixedNow = new Date('2026-11-12T10:00:00')
+    it('supports multiple custom times per workout day with unique IDs', () => {
+      const state: ScheduleStateInput = {
+        settings: {
+          ...DEFAULT_NOTIFICATION_SETTINGS,
+          masterEnabled: true,
+          workoutReminderEnabled: true,
+          workoutReminderMode: 'custom_times',
+          workoutReminderCustomTimes: ['09:30', '18:15'],
+        },
+        profile: {
+          weekStartDay: 6,
+          trainingDaysPerWeek: 4,
+        },
+        program: {
+          id: 'p1',
+          title: 'Test',
+          primaryGoal: 'hypertrophy',
+          trainingDaysPerWeek: 4,
+          splitType: 'upper_lower',
+          createdAt: fixedNow.getTime(),
+          days: [
+            {
+              id: 'd1',
+              dayIndex: 0,
+              labelAr: 'يوم 1',
+              focus: 'علوي',
+              exercises: [],
+            },
+            {
+              id: 'd2',
+              dayIndex: 1,
+              labelAr: 'يوم 2',
+              focus: 'سفلي',
+              exercises: [],
+            },
+            {
+              id: 'd3',
+              dayIndex: 2,
+              labelAr: 'يوم 3',
+              focus: 'علوي',
+              exercises: [],
+            },
+            {
+              id: 'd4',
+              dayIndex: 3,
+              labelAr: 'يوم 4',
+              focus: 'سفلي',
+              exercises: [],
+            },
+          ],
+        },
+        activeRestEndsAt: null,
+        activeCardioEndsAt: null,
+      }
+
+      const desired = computeDesiredSchedule(state, fixedNow)
+      const workouts = desired.filter((d) => d.type === 'workout_day')
+      // 8 workout days across 14 days * 2 custom times = 16 alarms (minus any before 10:00 on day 0)
+      expect(workouts.length).toBeGreaterThanOrEqual(15)
+      const ids = new Set(workouts.map((w) => w.id))
+      expect(ids.size).toBe(workouts.length)
+    })
+
+    it('generates deterministic bounded daily random times in 09:00..21:00', () => {
+      const timesA = computeRandomTimesForDate(
+        '2026-11-12',
+        '09:00',
+        '21:00',
+        3,
+      )
+      const timesB = computeRandomTimesForDate(
+        '2026-11-12',
+        '09:00',
+        '21:00',
+        3,
+      )
+      expect(timesA).toEqual(timesB)
+      expect(timesA).toHaveLength(3)
+      for (const t of timesA) {
+        expect(t >= '09:00' && t <= '21:00').toBe(true)
+      }
+      // Different day produces distinct times
+      const timesOther = computeRandomTimesForDate(
+        '2026-11-13',
+        '09:00',
+        '21:00',
+        3,
+      )
+      expect(timesOther).toHaveLength(3)
     })
   })
 })

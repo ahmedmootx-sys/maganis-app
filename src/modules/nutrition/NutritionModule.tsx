@@ -800,12 +800,12 @@ export function NutritionModule({
                     }}
                   >
                     <div>
-                      <span>الهدف السابق: </span>
+                      <span>الهدف السابق </span>
                       <bdi dir="ltr">{legacyCalorieTarget}</bdi>
                       <span> سعرة</span>
                     </div>
                     <div>
-                      <span>الهدف الدقيق الجديد: </span>
+                      <span>الهدف الدقيق الجديد </span>
                       <bdi dir="ltr">{proposedTargets.targetCalories}</bdi>
                       <span> سعرة (</span>
                       <bdi dir="ltr">{proposedTargets.proteinGrams}</bdi>

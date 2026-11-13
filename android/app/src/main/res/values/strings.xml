@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Maganis</string>
-    <string name="app_name_debug">Maganis (Debug)</string>
-    <string name="title_activity_main">Maganis</string>
+    <string name="app_name">Bunyan</string>
+    <string name="app_name_debug">Bunyan</string>
+    <string name="title_activity_main">Bunyan</string>
     <string name="package_name">app.maganis.coach</string>
     <string name="custom_url_scheme">app.maganis.coach</string>
 </resources>

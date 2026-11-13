@@ -25,7 +25,7 @@ import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
 import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { generateProgram } from './programGenerator.ts'
 import { convertDayToHomeWorkout } from './homeWorkoutConverter.ts'
-import { parseAndValidateRoutineJson } from './workoutUtils.ts'
+import { importProgramFromJson } from './programImporter.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import {
   TopBar,
@@ -911,7 +911,7 @@ export function WeeklyPlanView({
   onUpdateProgram,
   onDeleteProgram,
   onStartRoutine,
-  onOpenScheduleModal: _onOpenScheduleModal,
+  onOpenScheduleModal,
   onOpenVaultModal,
   onOpenLibrary,
   onOpenCustomBuilder,
@@ -1714,7 +1714,7 @@ export function WeeklyPlanView({
         rows.push([
           d.labelAr,
           d.focus,
-          def?.nameAr || ex.exerciseId,
+          def?.nameAr || ex.customName || ex.exerciseId,
           String(ex.sets),
           String(ex.reps),
           String(ex.restSeconds),
@@ -1763,7 +1763,7 @@ export function WeeklyPlanView({
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
       const res = await saveFile(
         blob,
-        `maganis-program-${program.id || 'export'}.csv`,
+        `bunyan-program-${program.id || 'export'}.csv`,
         'text/csv',
       )
       setIsExportSheetOpen(false)
@@ -1793,18 +1793,51 @@ export function WeeklyPlanView({
     }
   }
 
+  async function handleCopyProgramCode() {
+    if (!program) return
+    try {
+      const json = JSON.stringify(program, null, 2)
+      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(json)
+        showToast('تم نسخ كود الجدول إلى الحافظة')
+      } else {
+        showToast('تعذر النسخ التلقائي')
+      }
+    } catch {
+      showToast('تعذر نسخ كود الجدول')
+    }
+  }
+
+  async function handleShareProgram() {
+    if (!program) return
+    const json = JSON.stringify(program, null, 2)
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: program.title || 'جدول تدريبي — بُنْيَان',
+          text: json,
+        })
+        showToast('تمت مشاركة الجدول بنجاح')
+      } catch {
+        // User cancelled share
+      }
+    } else {
+      await handleCopyProgramCode()
+    }
+  }
+
   function handleImportFile(file: File) {
     const reader = new FileReader()
     reader.onload = (e) => {
       try {
         const text = e.target?.result as string
-        const parsed = parseAndValidateRoutineJson(text)
-        if (parsed.success) {
+        const parsed = importProgramFromJson(text)
+        if (parsed.success && parsed.program) {
           const imported = parsed.program
           setReplaceConfirm({
             isOpen: true,
             title: 'تأكيد استيراد الجدول',
-            message: `سيتم استبدال جدولك الحالي بالجدول المستورد: "${parsed.title || (imported as WorkoutProgram & { title?: string }).title || 'جدول تمارين'}" (${imported.days.length} أيام). هل أنت متأكد؟`,
+            message: `سيتم استبدال جدولك الحالي بالجدول المستورد: "${imported.title || 'جدول تمارين'}" (${imported.days.length} أيام). هل أنت متأكد؟`,
             action: () => {
               onUpdateProgram?.(imported)
               setIsManageSheetOpen(false)
@@ -1812,7 +1845,9 @@ export function WeeklyPlanView({
             },
           })
         } else {
-          showToast(`خطأ في استيراد الملف: ${parsed.error}`)
+          showToast(
+            `خطأ في استيراد الملف: ${parsed.errors[0] || 'كود الجدول غير صالح'}`,
+          )
         }
       } catch {
         showToast('تعذر قراءة ملف الجدول التدريبي')
@@ -2015,7 +2050,7 @@ export function WeeklyPlanView({
       (e) => !e.section || e.section === 'primary',
     )
     const cooldownExercises = selectedDay.exercises.filter(
-      (e) => e.section === 'cooldown',
+      (e) => e.section === 'cooldown' || e.section === 'flexibility_core',
     )
 
     return (
@@ -2140,10 +2175,12 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName = ex?.nameAr ?? pe.exerciseId
+                  const arabicName =
+                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
+                    pe.nameEn ||
                     ''
                   const setsReps = formatPrescription(pe)
 
@@ -2344,10 +2381,12 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName = ex?.nameAr ?? pe.exerciseId
+                  const arabicName =
+                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
+                    pe.nameEn ||
                     ''
                   const setsReps = formatPrescription(pe)
 
@@ -2503,10 +2542,12 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName = ex?.nameAr ?? pe.exerciseId
+                  const arabicName =
+                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
+                    pe.nameEn ||
                     ''
                   const setsReps = formatPrescription(pe)
 
@@ -2818,7 +2859,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -2835,7 +2878,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -2851,7 +2896,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3174,13 +3221,31 @@ export function WeeklyPlanView({
                 {program.days.length} أيام
               </span>
             </div>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setIsAddDaySheetOpen(true)}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                flexWrap: 'wrap',
+              }}
             >
-              + إضافة يوم
-            </Button>
+              {onOpenScheduleModal && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => onOpenScheduleModal()}
+                >
+                  تعديل الجدول/الأيام
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setIsAddDaySheetOpen(true)}
+              >
+                + إضافة يوم
+              </Button>
+            </div>
           </div>
 
           <div
@@ -3548,7 +3613,29 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                if (onOpenScheduleModal) {
+                  onOpenScheduleModal()
+                } else {
+                  setIsDaysAdjustSheetOpen(true)
+                }
+              }}
+            >
+              <IconCalendar size={18} />
+              <span>تعديل الجدول/الأيام</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                minHeight: '48px',
+                height: 'auto',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3557,14 +3644,16 @@ export function WeeklyPlanView({
               }}
             >
               <IconCalendar size={18} />
-              <span>تعديل أيام الجدول</span>
+              <span>ضبط عدد أيام التدريب</span>
             </button>
             <button
               type="button"
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3636,7 +3725,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3652,7 +3743,45 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                void handleShareProgram()
+              }}
+            >
+              <Icon name="share-2" size={18} />
+              <span>مشاركة الجدول التدريبي</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                void handleCopyProgramCode()
+              }}
+            >
+              <Icon name="copy" size={18} />
+              <span>نسخ كود الجدول</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3668,7 +3797,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => fileInputRef.current?.click()}
@@ -3681,7 +3812,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -3984,7 +4117,7 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  return ex?.nameAr || pe.exerciseId
+                  return ex?.nameAr || pe.customName || pe.exerciseId
                 })
                 .join('، ')}). هل تود إكمال الجلسة بحذر؟`
             : '',
@@ -4046,9 +4179,10 @@ export function WeeklyPlanView({
             disabled={allWeekdaysTaken}
             style={{
               justifyContent: 'flex-start',
-              height: '52px',
+              minHeight: '52px',
+              height: 'auto',
               gap: '12px',
-              padding: '0 16px',
+              padding: '10px 16px',
               opacity: allWeekdaysTaken ? 0.5 : 1,
               cursor: allWeekdaysTaken ? 'not-allowed' : 'pointer',
             }}
@@ -4070,9 +4204,10 @@ export function WeeklyPlanView({
             disabled={allWeekdaysTaken}
             style={{
               justifyContent: 'flex-start',
-              height: '52px',
+              minHeight: '52px',
+              height: 'auto',
               gap: '12px',
-              padding: '0 16px',
+              padding: '10px 16px',
               opacity: allWeekdaysTaken ? 0.5 : 1,
               cursor: allWeekdaysTaken ? 'not-allowed' : 'pointer',
             }}
@@ -4094,9 +4229,10 @@ export function WeeklyPlanView({
             disabled={allWeekdaysTaken || !program || program.days.length === 0}
             style={{
               justifyContent: 'flex-start',
-              height: '52px',
+              minHeight: '52px',
+              height: 'auto',
               gap: '12px',
-              padding: '0 16px',
+              padding: '10px 16px',
               opacity:
                 allWeekdaysTaken || !program || program.days.length === 0
                   ? 0.5
@@ -4141,7 +4277,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => {
@@ -4182,7 +4320,9 @@ export function WeeklyPlanView({
               className="ghost-secondary full-width"
               style={{
                 justifyContent: 'flex-start',
-                height: '48px',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
                 gap: '10px',
               }}
               onClick={() => handleToggleDayKind(dayMenuTarget.dayIndex)}

@@ -120,9 +120,9 @@ export function PwaTransferSection({
             dir="rtl"
           >
             <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6' }}>
-              جاهز تنقل كل بياناتك لتطبيق مجانص المثبت على جهازك الأندرويد؟ اضغط
-              على الزر لتحميل ملف شامل (Snapshot v2) يضم تمارينك وسجلاتك وتغذيتك
-              وصورك.
+              جاهز تنقل كل بياناتك لتطبيق بُنْيَان المثبت على جهازك الأندرويد؟
+              اضغط على الزر لتحميل ملف شامل (Snapshot v2) يضم تمارينك وسجلاتك
+              وتغذيتك وصورك.
             </p>
 
             <Callout variant="warning">
@@ -136,15 +136,15 @@ export function PwaTransferSection({
                 style={{
                   padding: '12px',
                   borderRadius: '8px',
-                  backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  backgroundColor: 'var(--color-success-bg)',
+                  border: '1px solid var(--color-success-border)',
                   fontSize: '13px',
                 }}
               >
                 <div
                   style={{
                     fontWeight: 'bold',
-                    color: '#22c55e',
+                    color: 'var(--color-success)',
                     marginBottom: '8px',
                   }}
                 >
@@ -171,7 +171,7 @@ export function PwaTransferSection({
             )}
 
             {errorMessage && (
-              <div style={{ color: '#ef4444', fontSize: '13px' }}>
+              <div style={{ color: 'var(--color-danger)', fontSize: '13px' }}>
                 {errorMessage}
               </div>
             )}
@@ -201,8 +201,8 @@ export function PwaTransferSection({
           dir="rtl"
         >
           <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6' }}>
-            لو كنت بتستخدم موقع أو تطبيق مجانص على المتصفح سابقاً، تقدر تستورد
-            كل بياناتك وتمارينك وسجلاتك وتغذيتك هنا بضغطة واحدة.
+            لو كنت بتستخدم موقع أو تطبيق بُنْيَان على المتصفح سابقاً، تقدر
+            تستورد كل بياناتك وتمارينك وسجلاتك وتغذيتك هنا بضغطة واحدة.
           </p>
 
           {errorMessage && (
@@ -210,9 +210,9 @@ export function PwaTransferSection({
               style={{
                 padding: '12px',
                 borderRadius: '8px',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid #ef4444',
-                color: '#ef4444',
+                backgroundColor: 'var(--color-danger-bg)',
+                border: '1px solid var(--color-danger-border)',
+                color: 'var(--color-danger)',
                 fontSize: '13px',
                 whiteSpace: 'pre-line',
               }}
@@ -230,8 +230,8 @@ export function PwaTransferSection({
               style={{
                 padding: '14px',
                 borderRadius: '8px',
-                backgroundColor: 'var(--color-bg-base, #12171f)',
-                border: '1px solid var(--color-border-subtle, #2b3545)',
+                backgroundColor: 'var(--color-surface-2)',
+                border: '1px solid var(--color-divider)',
               }}
             >
               <div
@@ -306,15 +306,15 @@ export function PwaTransferSection({
               style={{
                 padding: '14px',
                 borderRadius: '8px',
-                backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                border: '1px solid #22c55e',
+                backgroundColor: 'var(--color-success-bg)',
+                border: '1px solid var(--color-success-border)',
                 fontSize: '13px',
               }}
             >
               <div
                 style={{
                   fontWeight: 'bold',
-                  color: '#22c55e',
+                  color: 'var(--color-success)',
                   marginBottom: '8px',
                   fontSize: '14px',
                 }}
@@ -331,7 +331,7 @@ export function PwaTransferSection({
               >
                 <thead>
                   <tr
-                    style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+                    style={{ borderBottom: '1px solid var(--color-divider)' }}
                   >
                     <th style={{ padding: '4px' }}>البيان</th>
                     <th style={{ padding: '4px' }}>في الملف</th>

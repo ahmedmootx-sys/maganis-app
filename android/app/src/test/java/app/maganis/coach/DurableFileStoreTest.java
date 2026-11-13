@@ -156,8 +156,68 @@ public class DurableFileStoreTest {
         assertEquals("Must recover val1 from .bak", val1, recovered);
 
         List<DurableFileStore.RecoveryEvent> events = fresh.getAndClearRecoveryEvents();
-        assertFalse("Recovery event must be recorded", events.isEmpty());
-        assertEquals("bak", events.get(0).recoveredFrom);
+        assertEquals("Expected corruption event followed by bak recovery event", 2, events.size());
+        assertEquals("corrupt", events.get(0).recoveredFrom);
+        assertEquals("bak", events.get(1).recoveredFrom);
+    }
+
+    @Test
+    public void testTruncatedEnvelopeRecovery() throws Exception {
+        String key = "maganis:truncated_key";
+        String val1 = "{\"version\":1,\"name\":\"stable_backup\"}";
+        String val2 = "{\"version\":2,\"name\":\"corrupted_after_truncation\"}";
+
+        store.write(key, val1);
+        store.write(key, val2);
+
+        // Truncate the active .json file halfway through (e.g. 15 bytes)
+        String encoded = DurableFileStore.encodeKey(key);
+        File jsonFile = new File(tempDir, encoded + ".json");
+        assertTrue(jsonFile.exists());
+        byte[] originalBytes = Files.readAllBytes(jsonFile.toPath());
+        assertTrue("File must be larger than 15 bytes", originalBytes.length > 15);
+
+        try (FileOutputStream fos = new FileOutputStream(jsonFile)) {
+            fos.write(originalBytes, 0, 15); // truncated partial envelope
+        }
+
+        DurableFileStore fresh = new DurableFileStore(tempDir);
+        String recovered = fresh.read(key);
+        assertEquals("Must recover val1 from .bak after .json truncation", val1, recovered);
+
+        List<DurableFileStore.RecoveryEvent> events = fresh.getAndClearRecoveryEvents();
+        assertEquals("Expected corruption event followed by bak recovery event", 2, events.size());
+        assertEquals("corrupt", events.get(0).recoveredFrom);
+        assertEquals("bak", events.get(1).recoveredFrom);
+    }
+
+    @Test
+    public void testDiskFullFaultInjectionPreservesData() throws Exception {
+        String key = "maganis:disk_full_key";
+        String initialValue = "{\"status\":\"healthy\",\"points\":100}";
+        store.write(key, initialValue);
+        assertEquals(initialValue, store.read(key));
+
+        // Inject disk-full exception (ENOSPC) during write
+        store.setFaultInjector(step -> {
+            if (step == DurableFileStore.WriteStep.BEFORE_WRITE_TMP || step == DurableFileStore.WriteStep.BEFORE_FSYNC_TMP) {
+                throw new IOException("No space left on device (ENOSPC)");
+            }
+        });
+
+        boolean caught = false;
+        try {
+            store.write(key, "{\"status\":\"new_attempt_failed\"}");
+        } catch (IOException e) {
+            caught = true;
+            assertTrue(e.getMessage().contains("No space left on device"));
+        }
+        assertTrue("Expected disk full IOException", caught);
+
+        // Verify data was not corrupted by failed write attempt
+        DurableFileStore fresh = new DurableFileStore(tempDir);
+        String recovered = fresh.read(key);
+        assertEquals("Original data must remain intact after disk full failure", initialValue, recovered);
     }
 
     @Test
@@ -195,12 +255,12 @@ public class DurableFileStoreTest {
     public void testSequential5000Writes() throws Exception {
         String key = "maganis:sequential_perf";
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 500; i++) { // 500 writes for fast JVM test run
+        for (int i = 0; i < 5000; i++) { // Full 5,000 sequential writes per requirement
             store.write(key, "{\"seq\":" + i + "}");
         }
         long duration = System.currentTimeMillis() - start;
-        assertEquals("{\"seq\":499}", store.read(key));
-        assertTrue("Writes should complete reasonably fast", duration < 30000);
+        assertEquals("{\"seq\":4999}", store.read(key));
+        assertTrue("5000 sequential writes should complete within 60s (took " + duration + "ms)", duration < 60000);
     }
 
     @Test

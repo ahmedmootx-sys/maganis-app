@@ -9,32 +9,35 @@ import { z } from 'zod'
 export const ItemSchema = z.object({
   exerciseId: z.string().nullable().default(null),
   customName: z.string().max(200).optional(),
+  name: z.string().max(200).optional(),
   nameEn: z.string().max(200).optional(),
-  sets: z.number().int().min(1).max(10),
-  reps: z.number().int().min(1).max(100).nullable().optional(),
-  repsMin: z.number().int().min(1).max(100).optional(),
-  repsMax: z.number().int().min(1).max(100).optional(),
+  sets: z.number().int().min(1).max(20),
+  reps: z.number().int().min(1).max(200).nullable().optional(),
+  repsMin: z.number().int().min(1).max(200).optional(),
+  repsMax: z.number().int().min(1).max(200).optional(),
   unit: z.enum(['reps', 'seconds']).default('reps'),
   perSide: z.boolean().optional(),
   amrap: z.boolean().optional(),
   rpe: z.number().min(1).max(10).optional(),
   restSeconds: z.number().int().min(0).max(600).optional(),
-  notesAr: z.string().max(200).optional(),
+  notesAr: z.string().max(1000).optional(),
+  notes: z.string().max(1000).optional(),
   targetSubMuscleAr: z.string().max(200).optional(),
   needsReview: z.boolean().optional(),
+  section: z.string().optional(),
 })
 
 export const CardioConfigSchema = z.object({
   activity: z.string().max(200).default('جري'),
   plannedMinutes: z.number().int().min(5).max(600).default(30),
-  effort: z.enum(['light', 'moderate', 'hard']).default('moderate'),
+  effort: z.string().max(100).default('moderate'),
 })
 
 export const DaySchema = z.object({
   id: z.string().optional(),
   dayIndex: z.number().int().optional(),
-  name: z.string().min(1).max(200),
-  labelAr: z.string().min(1).max(200).optional(),
+  name: z.string().max(200).optional(),
+  labelAr: z.string().max(200).optional(),
   focus: z.string().max(200).default(''),
   kind: z
     .enum(['strength', 'cardio', 'mobility', 'custom'])
@@ -52,11 +55,12 @@ export const DaySchema = z.object({
 export const ProgramImportSchema = z.object({
   id: z.string().optional(),
   createdAt: z.number().optional(),
-  title: z.string().min(1).max(200),
+  title: z.string().min(1).max(200).optional(),
+  name: z.string().min(1).max(200).optional(),
   primaryGoal: z.string().max(200).default('hypertrophy'),
-  trainingDaysPerWeek: z.number().int().min(1).max(14),
+  trainingDaysPerWeek: z.number().int().min(1).max(14).optional(),
   splitType: z.string().max(200).default('custom'),
-  notes: z.string().max(500).optional(),
+  notes: z.string().max(2000).optional(),
   days: z.array(DaySchema).min(1).max(14),
 })
 
@@ -270,6 +274,19 @@ export const PROMPT_EXAMPLE_JSON = `{
           "rpe": 7,
           "restSeconds": 90,
           "notesAr": "سحب بالدمبل مع تثبيت الجذع"
+        },
+        {
+          "exerciseId": null,
+          "customName": "تمرين دفع بالدمبل على بنش مائل",
+          "nameEn": "Incline Dumbbell Press",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 8,
+          "repsMax": 12,
+          "unit": "reps",
+          "rpe": 8,
+          "restSeconds": 90,
+          "notesAr": "النزول ببطء مع فتح الصدر للأعلى"
         }
       ],
       "cooldown": [

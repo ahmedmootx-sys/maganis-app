@@ -150,4 +150,28 @@ describe('VideoPlayer', () => {
     ) as HTMLAnchorElement
     expect(link.href).toBe('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
   })
+
+  it('mounts Pinterest player with 9:16 vertical ratio and audio unmute guidance', () => {
+    render(
+      <VideoPlayer
+        videoUrl="https://www.pinterest.com/pin/1036320439281729013/"
+        exerciseName="تمرين بطن"
+      />,
+    )
+
+    const playBtn = screen.getByTestId('play-facade-btn')
+    fireEvent.click(playBtn)
+
+    const iframe = screen.getByTestId('video-iframe-el') as HTMLIFrameElement
+    expect(iframe).toBeDefined()
+    expect(iframe.src).toBe(
+      'https://assets.pinterest.com/ext/embed.html?id=1036320439281729013',
+    )
+    expect(iframe.getAttribute('allow')).toContain('encrypted-media')
+
+    // Unmute audio notice should be visible
+    expect(
+      screen.getByText('اضغط على أيقونة الصوت داخل مشغل بينترست لتشغيل الصوت'),
+    ).toBeDefined()
+  })
 })

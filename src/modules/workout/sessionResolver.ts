@@ -137,6 +137,12 @@ export function resolveSession(
   }
 
   if (slot === 'cardio') {
+    const existingCardio =
+      program?.days?.find((pd) => pd.kind === 'cardio') ?? null
+    const cardioMinutes =
+      existingCardio?.cardio?.plannedMinutes ??
+      existingCardio?.cardioConfig?.plannedMinutes ??
+      25
     return {
       date: dateStr,
       weekday,
@@ -145,11 +151,12 @@ export function resolveSession(
       isToday,
       isRest: false,
       isCardio: true,
-      programDay: null,
-      dayId: 'cardio',
-      dayTitle: 'كارديو واستشفاء نشط',
-      daySubtitle: '20–25 دقيقة مجهود معتدل',
-      estimatedMinutes: 25,
+      programDay: existingCardio,
+      dayId: existingCardio?.id ?? 'cardio',
+      dayTitle: existingCardio?.labelAr || 'كارديو واستشفاء نشط',
+      daySubtitle:
+        existingCardio?.focus || `${cardioMinutes} دقيقة مجهود معتدل`,
+      estimatedMinutes: cardioMinutes,
     }
   }
 
@@ -177,10 +184,20 @@ export function resolveSession(
     }
   }
 
+  const isCardioDay = foundDay.kind === 'cardio'
   const cleanName = cleanDayName(foundDay.name || foundDay.labelAr)
-  const dayTitle = `${weekdayInfo.nameAr} · ${cleanName}`
-  const daySubtitle = foundDay.focus || 'تمارين متنوعة'
-  const estimatedMinutes = Math.max(20, (foundDay.exercises?.length ?? 5) * 5)
+  const dayTitle = cleanName
+    ? `${weekdayInfo.nameAr} · ${cleanName}`
+    : isCardioDay
+      ? `${weekdayInfo.nameAr} · كارديو`
+      : weekdayInfo.nameAr
+  const daySubtitle =
+    foundDay.focus || (isCardioDay ? 'جلسة كارديو ولياقة' : 'تمارين متنوعة')
+  const estimatedMinutes = isCardioDay
+    ? (foundDay.cardio?.plannedMinutes ??
+      foundDay.cardioConfig?.plannedMinutes ??
+      25)
+    : Math.max(20, (foundDay.exercises?.length ?? 5) * 5)
 
   return {
     date: dateStr,
@@ -189,7 +206,7 @@ export function resolveSession(
     weekdayShortAr: weekdayInfo.shortAr,
     isToday,
     isRest: false,
-    isCardio: false,
+    isCardio: isCardioDay,
     programDay: foundDay,
     dayId: foundDay.id || String(foundDay.dayIndex),
     dayTitle,

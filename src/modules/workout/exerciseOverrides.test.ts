@@ -280,5 +280,35 @@ describe('exerciseOverrides', () => {
       const after = getExerciseOverride('bench_press')
       expect(after?.nameAr).not.toBe('اسم غير محفوظ')
     })
+
+    it('validates, saves, and applies measurementType override in selectEffectiveExercise', async () => {
+      const baseEx: Exercise = {
+        id: 'bench_press',
+        name: 'Bench Press',
+        nameAr: 'بنش بريس',
+        descriptionAr: 'تمرين بنش',
+        category: 'chest',
+        equipment: 'barbell',
+        difficulty: 'intermediate',
+        measurementType: 'weight',
+      }
+
+      await saveExerciseOverride({
+        exerciseId: 'bench_press',
+        measurementType: 'duration',
+      })
+
+      const effective = selectEffectiveExercise(baseEx)
+      expect(effective.measurementType).toBe('duration')
+      expect(effective.isModified).toBe(true)
+
+      // Test validation rejects invalid measurementType
+      const invalidRes = validateExerciseOverride({
+        exerciseId: 'bench_press',
+        measurementType: 'not_a_valid_type',
+      })
+      expect(invalidRes.valid).toBe(false)
+      expect(invalidRes.error).toBe('نوع قياس التمرين غير صالح')
+    })
   })
 })

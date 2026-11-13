@@ -244,9 +244,12 @@ check(
 // Take screenshot of Keep Edits choice
 await page.screenshot({ path: 'evidence/h2/green/m3-keep-edits-sheet.png' })
 
-// Click Confirm
-await confirmBtn.click()
-await page.waitForTimeout(1500)
+// Click Confirm and wait for factory reset reload
+await Promise.all([
+  page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+  confirmBtn.click(),
+])
+await page.waitForTimeout(500)
 
 // Verify storage after keep-edits reset
 const postKeepState = await page.evaluate(async () => {
@@ -307,18 +310,21 @@ check(
 // 3. Test Path 2: Reset with "امسح كل حاجة" (delete-all)
 console.log('\n--- Step 3: Testing Reset with "امسح كل حاجة" ---')
 
-// Seed profile back to access Settings
+// Seed profile back and navigate cleanly to Home -> Settings
 await page.evaluate(
   ({ p }) => {
     localStorage.setItem('maganis:profile.active', JSON.stringify(p))
   },
   { p: profileValue },
 )
+await page.goto(`${BASE}#/`, { waitUntil: 'domcontentloaded' })
 await page.reload({ waitUntil: 'domcontentloaded' })
-await page.goto(`${BASE}#/settings`, { waitUntil: 'domcontentloaded' })
-await page.waitForTimeout(600)
+const settingsTab = page.locator('[data-testid="tab-settings"]')
+await settingsTab.waitFor({ state: 'visible', timeout: 10000 })
+await settingsTab.click()
 
 const resetTrigger2 = page.locator('[data-testid="btn-trigger-reset"]')
+await resetTrigger2.waitFor({ state: 'visible', timeout: 10000 })
 await resetTrigger2.scrollIntoViewIfNeeded()
 await resetTrigger2.click()
 await page.waitForTimeout(400)
@@ -328,8 +334,11 @@ await page.locator('[data-testid="reset-option-delete-all"]').click()
 await page.locator('[data-testid="input-confirm-delete"]').fill('حذف')
 
 await page.screenshot({ path: 'evidence/h2/green/m3.png' })
-await page.locator('[data-testid="btn-confirm-factory-reset"]').click()
-await page.waitForTimeout(1500)
+await Promise.all([
+  page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+  page.locator('[data-testid="btn-confirm-factory-reset"]').click(),
+])
+await page.waitForTimeout(500)
 
 // Verify storage after delete-all reset
 const postDeleteAllState = await page.evaluate(async () => {

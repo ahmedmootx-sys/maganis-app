@@ -78,10 +78,23 @@ export function getExerciseMeasureType(
   if (!ex) return 'weight'
   if (
     ex.measurementType === 'duration' ||
+    ex.kind === 'isometric' ||
     ex.nameAr?.includes('بلانك') ||
     ex.name?.toLowerCase().includes('plank')
   ) {
     return 'timed'
+  }
+  if (ex.measurementType === 'cardio') {
+    return 'timed'
+  }
+  if (ex.measurementType === 'reps') {
+    return 'bodyweight'
+  }
+  if (ex.measurementType === 'bodyweight') {
+    return 'bodyweight'
+  }
+  if (ex.measurementType === 'weight') {
+    return 'weight'
   }
   const eq = (
     (ex.equipmentDetail as { db?: string } | undefined)?.db ||
@@ -402,9 +415,7 @@ export function ActiveWorkoutSession({
 
   function handleOpenExerciseDetail(exerciseId: string) {
     const ex = getEffectiveExercise(exerciseId, customExercises)
-    if (ex) {
-      setSelectedExerciseForDetail(ex)
-    }
+    setSelectedExerciseForDetail(ex || ({ id: exerciseId } as Exercise))
   }
 
   // Warmup Confirmation State for high-risk exercises
@@ -862,42 +873,64 @@ export function ActiveWorkoutSession({
         flexDirection: 'column',
         minHeight: '100vh',
         background: 'var(--bg)',
-        paddingBottom: '88px',
+        paddingBottom: 'calc(100px + var(--safe-area-bottom, 0px))',
       }}
     >
-      {/* TopBar with Timer, Overflow and Back Sheet */}
-      <TopBar
-        title={programDay.labelAr}
-        subtitle={programDay.focus}
-        onBack={() => setShowBackSheet(true)}
-        actions={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div
-              className="stopwatch-badge"
-              style={{
-                fontVariantNumeric: 'tabular-nums',
-                fontWeight: 700,
-                fontSize: '13.5px',
-                color: 'var(--color-accent-text, #b83a00)',
-                background: 'var(--card-subtle)',
-                padding: '4px 8px',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                margin: 0,
-              }}
-            >
-              <IconClock size={15} />
-              <span>{formatTime(elapsedSeconds)}</span>
-            </div>
-            {onMinimize && (
+      <div className="active-workout-sticky-header">
+        {/* TopBar with Timer, Overflow and Back Sheet */}
+        <TopBar
+          title={programDay.labelAr}
+          subtitle={programDay.focus}
+          onBack={() => setShowBackSheet(true)}
+          actions={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div
+                className="stopwatch-badge"
+                style={{
+                  fontVariantNumeric: 'tabular-nums',
+                  fontWeight: 700,
+                  fontSize: '13.5px',
+                  color: 'var(--color-accent-text, #b83a00)',
+                  background: 'var(--card-subtle)',
+                  padding: '4px 8px',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  margin: 0,
+                }}
+              >
+                <IconClock size={15} />
+                <span>{formatTime(elapsedSeconds)}</span>
+              </div>
+              {onMinimize && (
+                <button
+                  type="button"
+                  className="btn-icon"
+                  onClick={onMinimize}
+                  title="تصغير الجلسة ومتابعة التصفح"
+                  aria-label="تصغير الجلسة"
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: 'var(--card-subtle)',
+                    color: 'var(--ink)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <IconChevronDown size={20} />
+                </button>
+              )}
               <button
                 type="button"
                 className="btn-icon"
-                onClick={onMinimize}
-                title="تصغير الجلسة ومتابعة التصفح"
-                aria-label="تصغير الجلسة"
+                onClick={() => setShowOverflowSheet(true)}
+                aria-label="خيارات الجلسة"
                 style={{
                   width: '40px',
                   height: '40px',
@@ -911,32 +944,102 @@ export function ActiveWorkoutSession({
                   cursor: 'pointer',
                 }}
               >
-                <IconChevronDown size={20} />
+                <IconMoreVertical size={20} />
               </button>
-            )}
-            <button
-              type="button"
-              className="btn-icon"
-              onClick={() => setShowOverflowSheet(true)}
-              aria-label="خيارات الجلسة"
+            </div>
+          }
+        />
+
+        {/* Floating Rest Timer */}
+        {restSecondsLeft !== null && restSecondsLeft > 0 && (
+          <div
+            className="rest-timer-banner"
+            data-overlay="true"
+            style={{
+              margin: '8px 16px 6px',
+              padding: '10px 14px',
+              borderRadius: '12px',
+              background: 'var(--card-subtle)',
+              border: '1px solid var(--brand)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <div
               style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '8px',
-                border: 'none',
-                background: 'var(--card-subtle)',
-                color: 'var(--ink)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
+                gap: '8px',
+                fontSize: '13.5px',
+                fontWeight: 600,
               }}
             >
-              <IconMoreVertical size={20} />
-            </button>
+              <IconClock size={18} style={{ color: 'var(--brand)' }} />
+              <span
+                style={{ color: 'var(--color-text, #111)', fontWeight: 700 }}
+              >
+                فترة الراحة
+              </span>
+              <strong
+                style={{
+                  color: 'var(--brand)',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {restSecondsLeft} ثانية
+              </strong>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => {
+                  const currentEnds =
+                    restEndsAt && restEndsAt > Date.now()
+                      ? restEndsAt
+                      : Date.now()
+                  const nextEnds = currentEnds + 30 * 1000
+                  setRestEndsAt(nextEnds)
+                  persistSession({ restEndsAt: nextEnds })
+                  void syncSchedule()
+                }}
+                style={{
+                  padding: '6px 10px',
+                  fontSize: '12.5px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--line)',
+                  background: 'var(--card-bg)',
+                  cursor: 'pointer',
+                }}
+              >
+                +30ث
+              </button>
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => {
+                  setRestEndsAt(null)
+                  persistSession({ restEndsAt: null })
+                  void syncSchedule()
+                }}
+                aria-label="تخطي الراحة"
+                style={{
+                  padding: '6px 10px',
+                  fontSize: '12.5px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: 'var(--danger)',
+                  cursor: 'pointer',
+                }}
+              >
+                تخطي
+              </button>
+            </div>
           </div>
-        }
-      />
+        )}
+      </div>
 
       {/* Progress Strip: Single line + ProgressBar */}
       <div
@@ -979,93 +1082,6 @@ export function ActiveWorkoutSession({
           aria-label="تقدم الجلسة التدريبية"
         />
       </div>
-
-      {/* Floating Rest Timer */}
-      {restSecondsLeft !== null && restSecondsLeft > 0 && (
-        <div
-          className="rest-timer-banner"
-          style={{
-            margin: '8px 16px',
-            padding: '10px 14px',
-            borderRadius: '12px',
-            background: 'var(--card-subtle)',
-            border: '1px solid var(--brand)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '13.5px',
-              fontWeight: 600,
-            }}
-          >
-            <IconClock size={18} style={{ color: 'var(--brand)' }} />
-            <span style={{ color: 'var(--color-text, #111)', fontWeight: 700 }}>
-              فترة الراحة
-            </span>
-            <strong
-              style={{
-                color: 'var(--brand)',
-                fontVariantNumeric: 'tabular-nums',
-              }}
-            >
-              {restSecondsLeft} ثانية
-            </strong>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => {
-                const currentEnds =
-                  restEndsAt && restEndsAt > Date.now()
-                    ? restEndsAt
-                    : Date.now()
-                const nextEnds = currentEnds + 30 * 1000
-                setRestEndsAt(nextEnds)
-                persistSession({ restEndsAt: nextEnds })
-                void syncSchedule()
-              }}
-              style={{
-                padding: '6px 10px',
-                fontSize: '12.5px',
-                borderRadius: '8px',
-                border: '1px solid var(--line)',
-                background: 'var(--card-bg)',
-                cursor: 'pointer',
-              }}
-            >
-              +30ث
-            </button>
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => {
-                setRestEndsAt(null)
-                persistSession({ restEndsAt: null })
-                void syncSchedule()
-              }}
-              aria-label="تخطي الراحة"
-              style={{
-                padding: '6px 10px',
-                fontSize: '12.5px',
-                borderRadius: '8px',
-                border: 'none',
-                background: 'transparent',
-                color: 'var(--danger)',
-                cursor: 'pointer',
-              }}
-            >
-              تخطي
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Exercises List (Hevy / Strong Style) */}
       <main
@@ -1474,7 +1490,7 @@ export function ActiveWorkoutSession({
           padding: '10px 16px',
           background: 'var(--bg)',
           borderTop: '1px solid var(--line)',
-          zIndex: 900,
+          zIndex: 50,
           display: 'flex',
           justifyContent: 'center',
         }}
@@ -1487,16 +1503,18 @@ export function ActiveWorkoutSession({
           style={{
             maxWidth: '560px',
             width: '100%',
-            height: '50px',
+            minHeight: '50px',
+            height: 'auto',
+            padding: '8px 14px',
             borderRadius: '12px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '2px',
-            background: 'var(--brand)',
+            background: 'var(--btn-primary-bg, var(--brand))',
             border: 'none',
-            color: '#fff',
+            color: 'var(--btn-primary-fg, var(--on-accent, #14110e))',
             cursor: 'pointer',
           }}
         >
@@ -1521,9 +1539,9 @@ export function ActiveWorkoutSession({
             bottom: '76px',
             left: '50%',
             transform: 'translateX(-50%)',
-            zIndex: 1000,
-            background: 'var(--ink, #1f2937)',
-            color: '#fff',
+            zIndex: 1300,
+            background: 'var(--color-toast-bg, #181614)',
+            color: 'var(--color-toast-text, #ffffff)',
             padding: '10px 18px',
             borderRadius: '12px',
             fontSize: '13.5px',
@@ -1611,7 +1629,9 @@ export function ActiveWorkoutSession({
       {/* Exercise Detail Modal */}
       {selectedExerciseForDetail && (
         <ExerciseDetailModal
+          exerciseId={selectedExerciseForDetail.id}
           exercise={selectedExerciseForDetail}
+          programDay={programDay}
           onClose={() => setSelectedExerciseForDetail(null)}
         />
       )}
@@ -1668,7 +1688,9 @@ export function ActiveWorkoutSession({
                       onClick={() => setShowConfirmFinish(false)}
                       style={{
                         flex: 1,
-                        height: '36px',
+                        minHeight: '36px',
+                        height: 'auto',
+                        paddingBlock: '6px',
                         fontSize: '13px',
                         borderRadius: '8px',
                         border: '1px solid var(--line)',
@@ -1689,7 +1711,9 @@ export function ActiveWorkoutSession({
                       }}
                       style={{
                         flex: 1,
-                        height: '36px',
+                        minHeight: '36px',
+                        height: 'auto',
+                        paddingBlock: '6px',
                         fontSize: '13px',
                         borderRadius: '8px',
                         border: 'none',
@@ -1741,7 +1765,13 @@ export function ActiveWorkoutSession({
                   setShowConfirmFinish(false)
                   handleSaveAndFinish()
                 }}
-                style={{ height: '48px', fontSize: '16px', fontWeight: 700 }}
+                style={{
+                  minHeight: '48px',
+                  height: 'auto',
+                  paddingBlock: '10px',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                }}
               >
                 تأكيد وحفظ الجلسة
               </button>
@@ -1749,7 +1779,11 @@ export function ActiveWorkoutSession({
                 type="button"
                 className="ghost full-width"
                 onClick={() => setShowConfirmFinish(false)}
-                style={{ height: '44px' }}
+                style={{
+                  minHeight: '44px',
+                  height: 'auto',
+                  paddingBlock: '8px',
+                }}
               >
                 الرجوع للجلسة
               </button>
@@ -1788,7 +1822,13 @@ export function ActiveWorkoutSession({
             <button
               type="button"
               className="primary full-width"
-              style={{ height: '48px', fontSize: '15px', fontWeight: 700 }}
+              style={{
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '10px',
+                fontSize: '15px',
+                fontWeight: 700,
+              }}
               onClick={() => setShowBackSheet(false)}
             >
               كمّل التمرين
@@ -1797,7 +1837,13 @@ export function ActiveWorkoutSession({
             <button
               type="button"
               className="secondary full-width"
-              style={{ height: '48px', fontSize: '15px', fontWeight: 600 }}
+              style={{
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '10px',
+                fontSize: '15px',
+                fontWeight: 600,
+              }}
               onClick={() => {
                 setShowBackSheet(false)
                 if (onMinimize) {
@@ -1814,7 +1860,9 @@ export function ActiveWorkoutSession({
               type="button"
               className="ghost full-width"
               style={{
-                height: '44px',
+                minHeight: '44px',
+                height: 'auto',
+                paddingBlock: '8px',
                 fontSize: '14px',
                 color: 'var(--color-danger, #ef4444)',
                 fontWeight: 600,
@@ -1954,9 +2002,9 @@ export function ActiveWorkoutSession({
             bottom: '76px',
             left: '50%',
             transform: 'translateX(-50%)',
-            zIndex: 1000,
-            background: 'var(--ink, #1f2937)',
-            color: '#fff',
+            zIndex: 1300,
+            background: 'var(--color-toast-bg, #181614)',
+            color: 'var(--color-toast-text, #ffffff)',
             padding: '8px 16px',
             borderRadius: '12px',
             fontSize: '13.5px',
@@ -1997,9 +2045,9 @@ export function ActiveWorkoutSession({
             bottom: '140px',
             left: '50%',
             transform: 'translateX(-50%)',
-            zIndex: 1000,
-            background: 'var(--color-surface-2, #212429)',
-            color: 'var(--color-text, #f2f3f5)',
+            zIndex: 1300,
+            background: 'var(--color-surface-2, #262320)',
+            color: 'var(--color-text, #f6f2ea)',
             border: '1px solid var(--color-divider, #2b2f35)',
             padding: '8px 16px',
             borderRadius: '12px',

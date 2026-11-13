@@ -189,6 +189,19 @@ export interface MaganisNativePlugin {
     fileName: string
     fileSizeBytes: number
   }>
+  scheduleWorkoutAlarms(options: {
+    notifications: Array<{
+      id: number
+      triggerAt: number
+      channelId: string
+      title: string
+      body: string
+      route?: string
+      targetDate?: string
+      isExactNotification?: boolean
+    }>
+  }): Promise<{ success: boolean; scheduledCount: number }>
+  cancelWorkoutAlarms(options: { ids: number[] }): Promise<{ success: boolean }>
 }
 
 // In-memory web mock store for tests running without Capacitor
@@ -593,6 +606,15 @@ export const webMockImplementation: MaganisNativePlugin = {
       fileName: 'maganis-raw-export.json',
       fileSizeBytes: 4096,
     }
+  },
+  async scheduleWorkoutAlarms(options) {
+    return {
+      success: true,
+      scheduledCount: options.notifications?.length ?? 0,
+    }
+  },
+  async cancelWorkoutAlarms() {
+    return { success: true }
   },
 }
 

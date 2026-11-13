@@ -29,7 +29,11 @@ import { Ratio } from '../../ui/Ratio'
 import { computeEnergyPlan } from '../nutrition/computeEnergyPlan'
 import { ExerciseThumb } from '../../components/ExerciseThumb'
 import { BackupHealthBanner } from '../backup/BackupHealthBanner.tsx'
-import { resolveSession, formatPrescription } from '../workout/sessionResolver'
+import {
+  resolveSession,
+  formatPrescription,
+  cleanDayName,
+} from '../workout/sessionResolver'
 import {
   getOrDeriveSchedule,
   getNextSession,
@@ -45,6 +49,7 @@ export interface DashboardProps {
   recentSessions: TrackingSession[]
   bodyLog: BodyLogEntry[]
   onStartWorkout?: (day: ProgramDay) => void
+  onStartCardio?: (day?: ProgramDay | null) => void
   onViewDay?: (day: ProgramDay) => void
   onOpenNutrition?: () => void
   onSyncTrainingDays?: () => void
@@ -137,6 +142,7 @@ export function Dashboard({
   recentSessions,
   bodyLog,
   onStartWorkout,
+  onStartCardio,
   onViewDay,
   onOpenNutrition,
   onSyncTrainingDays,
@@ -190,7 +196,9 @@ export function Dashboard({
     [schedule, todayDayIndex, program, weekStartDay],
   )
   const nextWorkoutDay =
-    !todayProgramDay && nextSessionInfo ? nextSessionInfo.day : null
+    !todayProgramDay && !todaySession.isCardio && nextSessionInfo
+      ? nextSessionInfo.day
+      : null
 
   // Red Flag state & confirmation
   const [redFlagDismissed, setRedFlagDismissed] = useState(() => {
@@ -209,10 +217,10 @@ export function Dashboard({
     profile?.trainingDaysPerWeek ?? 4,
   )
 
-  // Verified safe mascot tips (excluding items marked NEEDS REVIEW in docs/tips-review.md)
+  // Verified safe motivational tips
   const coachTips = [
     'عاش يا وحش! الالتزام بالتحميل التصاعدي وزيادة الأوزان حبة حبة هو سر الفورمة.. البار بيستغيث والدهون بتعيط!',
-    'د. مجانص شايفك وانت بتبص على الشاورما! لو هتاكل، احسبها في الماكروز وسف السعرات بالتمرين، كل حاجة بالعلم بتتحل!',
+    'مدرب بُنْيَان شايفك وانت بتبص على الشاورما! لو هتاكل، احسبها في الماكروز وسف السعرات بالتمرين، كل حاجة بالعلم بتتحل!',
   ]
   const tipIndex =
     Math.abs(
@@ -274,8 +282,8 @@ export function Dashboard({
             }}
           >
             <img
-              src={assetUrl('branding/maganis-mascot-inner.png')}
-              alt="د. مجانص"
+              src={assetUrl('branding/bunyan-logo.png')}
+              alt="بُنْيَان"
               style={{
                 width: '36px',
                 height: '36px',
@@ -294,7 +302,7 @@ export function Dashboard({
                 whiteSpace: 'nowrap',
               }}
             >
-              <bdi dir="ltr">Maganis</bdi>
+              <bdi dir="ltr">Bunyan</bdi>
             </span>
           </div>
         }
@@ -416,9 +424,11 @@ export function Dashboard({
             program && program.days.length > 0 ? 'تمرين اليوم' : 'ابدأ برنامجك'
           }
           trailing={
-            todayProgramDay
-              ? `${todayProgramDay.exercises.length} تمارين`
-              : undefined
+            todaySession.isCardio
+              ? 'جلسة كارديو'
+              : todayProgramDay
+                ? `${todayProgramDay.exercises.length} تمارين`
+                : undefined
           }
         >
           <Card padding="md">
@@ -461,6 +471,65 @@ export function Dashboard({
                 >
                   بناء جدول يدوي
                 </Button>
+              </div>
+            ) : todaySession.isCardio ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '14px',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    justifyContent: 'space-between',
+                    gap: '8px',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: '17px',
+                      fontWeight: 800,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    {todaySession.dayTitle} — {todaySession.daySubtitle}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '13px',
+                      color: 'var(--color-text-2)',
+                      fontWeight: 600,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    ~{todaySession.estimatedMinutes} دقيقة
+                  </div>
+                </div>
+
+                {onStartCardio && (
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    fullWidth
+                    onClick={() => onStartCardio(todaySession.programDay)}
+                  >
+                    ابدأ جلسة الكارديو
+                  </Button>
+                )}
+
+                {todaySession.programDay && onViewDay && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    fullWidth
+                    onClick={() => onViewDay(todaySession.programDay!)}
+                  >
+                    تفاصيل جلسة الكارديو
+                  </Button>
+                )}
               </div>
             ) : todayProgramDay ? (
               <div
@@ -598,12 +667,14 @@ export function Dashboard({
                 >
                   لا يوجد تمرين اليوم (يوم راحة)
                 </div>
-                {nextWorkoutDay ? (
+                {nextWorkoutDay && nextSessionInfo ? (
                   <div
                     style={{ fontSize: '13px', color: 'var(--color-text-2)' }}
                   >
-                    الجلسة التالية — {nextWorkoutDay.labelAr} (
-                    {nextWorkoutDay.focus})
+                    الجلسة التالية — {nextSessionInfo.nameAr} ·{' '}
+                    {nextWorkoutDay.focus ||
+                      cleanDayName(nextWorkoutDay.labelAr) ||
+                      'جلسة تدريبية'}
                   </div>
                 ) : (
                   <div
@@ -612,18 +683,33 @@ export function Dashboard({
                     استمتع بالاستشفاء ونم جيداً لبناء الألياف العضلية
                   </div>
                 )}
-                {nextWorkoutDay && onStartWorkout && (
-                  <div style={{ marginTop: '6px' }}>
-                    <Button
-                      variant="subtle"
-                      size="md"
-                      fullWidth
-                      onClick={() => onStartWorkout(nextWorkoutDay)}
-                    >
-                      بدء تمرين مبكر ({nextWorkoutDay.labelAr})
-                    </Button>
-                  </div>
-                )}
+                {nextWorkoutDay &&
+                  nextSessionInfo &&
+                  (nextWorkoutDay.kind === 'cardio'
+                    ? onStartCardio && (
+                        <div style={{ marginTop: '6px' }}>
+                          <Button
+                            variant="subtle"
+                            size="md"
+                            fullWidth
+                            onClick={() => onStartCardio(nextWorkoutDay)}
+                          >
+                            بدء جلسة الكارديو مبكراً ({nextSessionInfo.nameAr})
+                          </Button>
+                        </div>
+                      )
+                    : onStartWorkout && (
+                        <div style={{ marginTop: '6px' }}>
+                          <Button
+                            variant="subtle"
+                            size="md"
+                            fullWidth
+                            onClick={() => onStartWorkout(nextWorkoutDay)}
+                          >
+                            بدء تمرين مبكر ({nextSessionInfo.nameAr})
+                          </Button>
+                        </div>
+                      ))}
               </div>
             )}
           </Card>
@@ -942,13 +1028,13 @@ export function Dashboard({
           )}
         </Section>
 
-        {/* Mascot Tip: Approved motivation */}
+        {/* Coach Tip */}
         <Callout
           variant="accent"
           avatar={
             <img
-              src={assetUrl('branding/maganis-mascot-inner.png')}
-              alt="د. مجانص"
+              src={assetUrl('branding/bunyan-logo.png')}
+              alt="بُنْيَان"
               style={{
                 width: '32px',
                 height: '32px',
@@ -957,7 +1043,7 @@ export function Dashboard({
               }}
             />
           }
-          title="نصيحة د. مجانص"
+          title="نصيحة بُنْيَان"
         >
           {dailyTip}
         </Callout>

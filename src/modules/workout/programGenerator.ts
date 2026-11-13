@@ -9,7 +9,8 @@ import type {
   WorkoutProgram,
   WorkoutSplitType,
 } from '../shared/types.ts'
-import { DAY_NAMES_AR, MUSCLE_GROUP_LABELS } from '../shared/types.ts'
+import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
+import { getOrderedWeekdays } from './scheduleManager.ts'
 import { EXERCISES, filterByInjuries } from './exercises.ts'
 import {
   deriveConstraints,
@@ -462,7 +463,9 @@ export function generateProgram(params: GenerateParams): WorkoutProgram {
       }
     }
 
-    const dayName = DAY_NAMES_AR[dayIdx] ?? `يوم ${dayIdx + 1}`
+    const weekStartDay = profile?.weekStartDay ?? 6
+    const orderedWeekdays = getOrderedWeekdays(weekStartDay)
+    const dayName = orderedWeekdays[dayIdx]?.nameAr ?? `يوم ${dayIdx + 1}`
     const focusLabel =
       dayLabels[dayIdx] ?? groups.map((g) => MUSCLE_GROUP_LABELS[g]).join(' و')
 

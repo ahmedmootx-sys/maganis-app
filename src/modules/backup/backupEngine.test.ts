@@ -33,6 +33,9 @@ describe('BackupEngine Pipeline, Retention and Verification (Task N3)', () => {
     expect(isValidBackupFileName('maganis-backup-2026-11-04-123045.json')).toBe(
       true,
     )
+    expect(isValidBackupFileName('bunyan-backup-2026-11-12-1030.json')).toBe(
+      true,
+    )
     expect(isValidBackupFileName('other-file.json')).toBe(false)
     expect(isValidBackupFileName('maganis-backup.json')).toBe(false)
     expect(isValidBackupFileName('')).toBe(false)

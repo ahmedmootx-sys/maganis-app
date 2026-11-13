@@ -18,7 +18,7 @@ import { appStorage } from './storage.ts'
 const GITHUB_REPO_OWNER = 'ahmedmootx-sys'
 const GITHUB_REPO_NAME = 'maganis-app'
 
-export const GITHUB_RELEASES_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`
+export const GITHUB_RELEASES_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases?per_page=5`
 
 export const GITHUB_DOWNLOAD_PREFIX = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/download/`
 
@@ -38,13 +38,12 @@ const GitHubAssetSchema = z.object({
 export const GitHubReleaseSchema = z.object({
   tag_name: z
     .string()
-    .regex(
-      /^v\d+\.\d+\.\d+$/,
-      'Tag must match semantic version pattern vX.Y.Z',
-    ),
+    .regex(/^v?\d+\.\d+.*$/, 'Tag must match semantic version pattern vX.Y.Z'),
   name: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
   published_at: z.string().optional().nullable(),
+  draft: z.boolean().optional().default(false),
+  prerelease: z.boolean().optional().default(false),
   assets: z.array(GitHubAssetSchema),
 })
 
@@ -87,10 +86,11 @@ export function compareSemver(v1: string, v2: string): number {
     .replace(/-debug$/i, '')
     .trim()
 
-  const parts1 = clean1.split('.').map((p) => parseInt(p, 10) || 0)
-  const parts2 = clean2.split('.').map((p) => parseInt(p, 10) || 0)
+  const parts1 = clean1.split(/[-.+]/).map((p) => parseInt(p, 10) || 0)
+  const parts2 = clean2.split(/[-.+]/).map((p) => parseInt(p, 10) || 0)
 
-  for (let i = 0; i < 3; i++) {
+  const maxLen = Math.max(parts1.length, parts2.length, 3)
+  for (let i = 0; i < maxLen; i++) {
     const a = parts1[i] ?? 0
     const b = parts2[i] ?? 0
     if (a > b) return 1
@@ -152,19 +152,7 @@ export async function checkForUpdates(
     `Checking updates for current=${currentVersionName} channel=${buildType}`,
   )
 
-  // 1. Debug builds notice
-  if (
-    buildType === 'debug' ||
-    currentVersionName.toLowerCase().includes('debug')
-  ) {
-    return {
-      status: 'debug_build',
-      currentVersion: currentVersionName,
-      messageAr: 'نسخة تجريبية، مفيش تحديثات عبر هذا المسار.',
-    }
-  }
-
-  // 2. Fetch latest release from GitHub API
+  // 1. Fetch releases list from GitHub API
   let response: Response
   try {
     response = await fetchFn(GITHUB_RELEASES_URL, {
@@ -185,7 +173,7 @@ export async function checkForUpdates(
     }
   }
 
-  // 3. Rate limiting check
+  // 2. Rate limiting check
   if (response.status === 403 || response.status === 429) {
     logger.warn(
       'UPDATE',
@@ -212,7 +200,7 @@ export async function checkForUpdates(
     }
   }
 
-  // 4. Strict response validation
+  // 3. Strict response validation
   let data: unknown
   try {
     data = await response.json()
@@ -224,8 +212,16 @@ export async function checkForUpdates(
     }
   }
 
-  const parsed = GitHubReleaseSchema.safeParse(data)
-  if (!parsed.success) {
+  const rawReleases = Array.isArray(data) ? data : [data]
+  const validReleases: GitHubRelease[] = []
+  for (const item of rawReleases) {
+    const p = GitHubReleaseSchema.safeParse(item)
+    if (p.success) {
+      validReleases.push(p.data)
+    }
+  }
+
+  if (validReleases.length === 0) {
     logger.error(
       'UPDATE',
       'SCHEMA_MISMATCH',
@@ -238,7 +234,19 @@ export async function checkForUpdates(
     }
   }
 
-  const release = parsed.data
+  const publishedReleases = validReleases.filter((r) => !r.draft)
+  const releaseWithApk =
+    publishedReleases.find((r) =>
+      r.assets.some(
+        (a) =>
+          a.name.endsWith('.apk') &&
+          a.browser_download_url.startsWith(GITHUB_DOWNLOAD_PREFIX),
+      ),
+    ) ||
+    publishedReleases[0] ||
+    validReleases[0]
+
+  const release = releaseWithApk
   const latestTag = release.tag_name
   const latestVersion = latestTag.replace(/^v/, '')
 
@@ -254,7 +262,7 @@ export async function checkForUpdates(
       status: 'up_to_date',
       currentVersion: currentVersionName,
       latestVersion,
-      messageAr: 'أنت بتستخدم أحدث إصدار بالفعل («مجانص» مستقر).',
+      messageAr: 'أنت بتستخدم أحدث إصدار بالفعل («بُنْيَان» مستقر).',
     }
   }
 

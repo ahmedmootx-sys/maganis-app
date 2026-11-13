@@ -200,3 +200,12 @@ Defined 4 versioned channels in `src/content/notificationCopy.ts` matching Andro
 6. **الاهتزاز النقي (Haptics)**: اضغط على زر إكمال مجموعة، أو تخطي الراحة، أو حفظ جلسة كارديو؛ هتلاحظ اهتزازة خفيفة ومريحة (Haptic feedback) بدون أي لاج.
 7. **كارت استئناف التمرين في الرئيسية**: وأنت في نص تمرينة، اضغط على زر تصغير الجلسة أو ارجع للرئيسية. هتلاقي كارت واضح في الرئيسية بيقولك «جلسة تمرين قيد التنفيذ» مع عداد وقت شغال وزر «استئناف» يرجعك للتمرينة في ثانية بدون ضياع أي بيانات.
 8. **ثبات العداد بعد القفل والفتح**: وأنت في نص التمرينة، اقفل التطبيق تماماً من شاشة التطبيقات الحديثة (Swipe away) وافتحه تاني. هتلاقي وقت التمرين اتحسب بالمللي من لحظة البداية، مفيش ثواني ضاعت ولا العداد رجع لصفر.
+
+---
+
+## Corrections after review of 5de1625
+
+The following claims in this report were audited during Task N6 (commit `5de1625`) and found to be false or overstated:
+
+1. **Notification E2E Test Labelling (F4):** Overstated. The tests in `scripts/native-e2e/suite-notifications.mjs` ran exclusively in Node against pure scheduling functions (`diffSchedule`, `generateNotificationId`) and pure math functions (`computeElapsedSeconds`), without calling Android's native AlarmManager or notification daemon. Renamed to `suite-notifications-node.mjs` with honest labelling `[node test (platform layer, mocked)]`.
+2. **CI JVM Test Verification Status (F1):** The report assumed native Android test suites were executing in CI. At commit `5de1625`, JVM tests were not executing in CI due to commit `3574a75`. Restored in Task N6.

@@ -10,6 +10,7 @@ export interface SegmentedProps<T extends string | number> {
   onChange: (value: T) => void
   className?: string
   name?: string
+  style?: React.CSSProperties
 }
 
 export function Segmented<T extends string | number>({
@@ -18,12 +19,14 @@ export function Segmented<T extends string | number>({
   onChange,
   className = '',
   name,
+  style,
 }: SegmentedProps<T>) {
   return (
     <div
       className={`segmented ${className}`.trim()}
       role="radiogroup"
       aria-label={name}
+      style={style}
     >
       {options.map((opt) => {
         const isSelected = opt.value === value

@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
-import type { Exercise } from '../shared/types.ts'
+import type { Exercise, ProgramDay, WorkoutProgram } from '../shared/types.ts'
+import { getEffectiveExercise } from './exerciseStore.ts'
 
 const ExerciseDetailView = lazy(() =>
   import('./ExerciseDetailView.tsx').then((m) => ({
@@ -8,17 +9,42 @@ const ExerciseDetailView = lazy(() =>
 )
 
 export interface ExerciseDetailModalProps {
-  exercise: Exercise | null
+  exercise?: Exercise | null
+  exerciseId?: string
+  programDay?: ProgramDay | null
+  program?: WorkoutProgram | null
   onClose: () => void
   onSwapClick?: () => void
 }
 
 export function ExerciseDetailModal({
   exercise,
+  exerciseId,
+  programDay,
+  program,
   onClose,
   onSwapClick,
 }: ExerciseDetailModalProps) {
-  if (!exercise) return null
+  const effectiveId = exerciseId || exercise?.id
+  if (!effectiveId) return null
+
+  // Check if it's a real catalog or saved custom exercise
+  const catalogExercise = exercise
+    ? getEffectiveExercise(effectiveId) || exercise
+    : getEffectiveExercise(effectiveId)
+  const isRealCatalog = Boolean(
+    catalogExercise &&
+    (catalogExercise.steps_ar ||
+      (catalogExercise as { stepsAr?: string[] }).stepsAr ||
+      catalogExercise.targetMusclesAr ||
+      (catalogExercise.category &&
+        catalogExercise.equipment &&
+        !catalogExercise.id?.startsWith('custom-') &&
+        catalogExercise.descriptionAr !== 'تمرين مضاف عبر الذكاء الاصطناعي')),
+  )
+
+  const effectiveExercise =
+    isRealCatalog && catalogExercise ? catalogExercise : undefined
 
   return (
     <div
@@ -39,8 +65,10 @@ export function ExerciseDetailModal({
       >
         <Suspense fallback={null}>
           <ExerciseDetailView
-            exerciseId={exercise.id}
-            exercise={exercise}
+            exerciseId={effectiveId}
+            exercise={effectiveExercise}
+            programDay={programDay}
+            program={program}
             onBack={onClose}
           />
         </Suspense>

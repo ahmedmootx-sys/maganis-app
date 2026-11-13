@@ -20,12 +20,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { runPersistenceSuite } from './suite-persistence.mjs'
-import { runBackupSuite } from './suite-backup.mjs'
-import { runNotificationsSuite } from './suite-notifications.mjs'
-import { runSafeModeAndRendererSuite } from './suite-safemode-renderer.mjs'
+import { runPersistenceSuite } from './suite-persistence-node.mjs'
+import { runBackupSuite } from './suite-backup-node.mjs'
+import { runNotificationsSuite } from './suite-notifications-node.mjs'
+import { runSafeModeAndRendererSuite } from './suite-safemode-renderer-node.mjs'
 import { runMonkeySuite } from './suite-monkey.mjs'
-import { runCdpUiGatesSuite } from './suite-cdp-ui-gates.mjs'
+import { runCdpUiGatesSuite } from './suite-cdp-ui-gates-node.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -81,7 +81,7 @@ async function runMasterSuite() {
     '=================================================================',
   )
   console.log(
-    '       MAGANIS CONSOLIDATED NATIVE E2E TEST SUITE (Task N5.7)    ',
+    ' MAGANIS NATIVE SUBSYSTEMS SUITE (NODE (mocked) & EMULATOR MONKEY)',
   )
   console.log(
     '=================================================================\n',
@@ -91,18 +91,30 @@ async function runMasterSuite() {
   const allResults = []
 
   const suites = [
-    { name: 'Persistence & Crash Injection (N2)', fn: runPersistenceSuite },
-    { name: 'Backup Engine & Quotas (N3)', fn: runBackupSuite },
     {
-      name: 'Notification Scheduling & Timers (N4)',
+      name: 'Persistence & Recovery [node test (platform layer, mocked)]',
+      fn: runPersistenceSuite,
+    },
+    {
+      name: 'Backup Engine & Quotas [node test (platform layer, mocked)]',
+      fn: runBackupSuite,
+    },
+    {
+      name: 'Notification Scheduling & Timers [node test (platform layer, mocked)]',
       fn: runNotificationsSuite,
     },
     {
-      name: 'Safe Mode & Renderer Recovery (N5)',
+      name: 'Safe Mode & Renderer Recovery [node test (platform layer, mocked)]',
       fn: runSafeModeAndRendererSuite,
     },
-    { name: 'Monkey Stress Matrix (N5)', fn: runMonkeySuite },
-    { name: 'Real-WebView UI Gates (N5)', fn: runCdpUiGatesSuite },
+    {
+      name: 'Monkey Stress Matrix [emulator API 34]',
+      fn: runMonkeySuite,
+    },
+    {
+      name: 'UI Gates Threshold Verification [node test (platform layer, mocked)]',
+      fn: runCdpUiGatesSuite,
+    },
   ]
 
   for (const suite of suites) {

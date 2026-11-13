@@ -1,0 +1,4 @@
+package: name='app.maganis.coach.debug' versionCode='1005' versionName='0.1.0-debug'
+application-label:'Maganis (Debug)'
+application-label-ar:'Maganis (Debug)'
+application-icon-640:'res/mipmap-xxxhdpi/ic_launcher.png'

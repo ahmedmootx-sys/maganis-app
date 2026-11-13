@@ -17,7 +17,7 @@ export interface DiagnosticsReportData {
 
 export async function buildDiagnosticsReport(): Promise<DiagnosticsReportData> {
   const timestamp = new Date().toISOString()
-  let appVersion = '0.1.0'
+  let appVersion = '0.2.2'
   let versionCode = 1
   let buildType = 'release'
   let signingSha256Short = 'unknown'
@@ -96,7 +96,7 @@ export async function buildDiagnosticsReport(): Promise<DiagnosticsReportData> {
 
   const report = [
     '=================================================================',
-    '              MAGANIS DIAGNOSTICS & STABILITY REPORT             ',
+    '              BUNYAN DIAGNOSTICS & STABILITY REPORT              ',
     '=================================================================',
     `Generated At:        ${timestamp}`,
     `App Version:         ${appVersion} (${versionCode})`,
@@ -125,10 +125,10 @@ export async function buildDiagnosticsReport(): Promise<DiagnosticsReportData> {
     '--- LAST 200 SANITIZED APP LOG LINES ---',
     logsText,
     '=================================================================',
-    'End of Maganis Diagnostics Report.',
+    'End of Bunyan Diagnostics Report.',
   ].join('\n')
 
-  const fileName = `maganis-diagnostics-${Date.now()}.txt`
+  const fileName = `bunyan-diagnostics-${Date.now()}.txt`
 
   return { reportText: report, fileName }
 }

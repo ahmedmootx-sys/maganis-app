@@ -19,7 +19,7 @@ const STATIC_ASSETS = [
   BASE + 'branding/app-icon.png',
   BASE + 'branding/app-icon-maskable.png',
   BASE + 'branding/app-icon-outer.png',
-  BASE + 'branding/maganis-mascot-inner.png',
+  BASE + 'branding/bunyan-logo.png',
   // Precache 3D anatomical atlas assets for offline viewing
   BASE + 'atlas/anterior.svg',
   BASE + 'atlas/posterior.svg',

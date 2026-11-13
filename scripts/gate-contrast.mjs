@@ -17,6 +17,7 @@ import { chromium } from 'playwright'
 import { preview } from 'vite'
 import path from 'node:path'
 import fs from 'node:fs'
+import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { openState } from '../qa/drive.ts'
 
@@ -267,6 +268,16 @@ async function run() {
   }
 
   fs.writeFileSync(path.join(evidenceDir, 'contrast.md'), mdContent, 'utf8')
+  try {
+    execSync(
+      `npx prettier --write "${path.join(evidenceDir, 'contrast.md')}"`,
+      {
+        stdio: 'ignore',
+      },
+    )
+  } catch {
+    // Non-fatal if prettier write fails
+  }
   console.log(`Saved contrast evidence table to evidence/g6-a/contrast.md`)
 
   console.log(`\nGate Run Complete:`)

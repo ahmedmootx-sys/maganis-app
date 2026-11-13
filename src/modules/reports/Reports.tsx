@@ -117,7 +117,7 @@ export function Reports({
           !Array.isArray(parsed.sessions)
         ) {
           showMessage(
-            'ملف غير صالح! يرجى اختيار ملف تقارير صالح تم تصديره من تطبيق Maganis.',
+            'ملف غير صالح! يرجى اختيار ملف تقارير صالح تم تصديره من تطبيق بُنْيَان.',
           )
           return
         }

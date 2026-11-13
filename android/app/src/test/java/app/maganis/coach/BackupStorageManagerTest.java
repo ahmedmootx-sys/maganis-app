@@ -41,6 +41,7 @@ public class BackupStorageManagerTest {
     public void testValidBackupFileName() {
         assertTrue(BackupStorageManager.isValidBackupFileName("maganis-backup-2026-11-04-1230.json"));
         assertTrue(BackupStorageManager.isValidBackupFileName("maganis-backup-2026-11-04-123045.json"));
+        assertTrue(BackupStorageManager.isValidBackupFileName("bunyan-backup-2026-11-12-1000.json"));
 
         // Invalid patterns and foreign names
         assertFalse(BackupStorageManager.isValidBackupFileName("maganis-backup.json"));

@@ -176,5 +176,154 @@ describe('Part 3 — AI Program Designer and Program Importer', () => {
       expect(res.diagnostics.length).toBe(1)
       expect(res.diagnostics[0].tags.length).toBeGreaterThan(0)
     })
+
+    it('handles AI generated JSON with string range reps, string sets, and notes alias', () => {
+      const aiJson = JSON.stringify({
+        title: 'برنامج الذكاء الاصطناعي',
+        days: [
+          {
+            labelAr: 'يوم الصدر والظهر',
+            exercises: [
+              {
+                exerciseId: null,
+                name: 'تمرين دفع مخصص بالدمبل',
+                nameEn: 'Custom Dumbbell Press',
+                sets: '4',
+                reps: '8-12',
+                notes: 'التركيز على النزول البطيء 3 ثواني',
+              },
+            ],
+          },
+        ],
+      })
+
+      const res = importProgramFromJson(aiJson)
+      expect(res.success).toBe(true)
+      expect(res.program).toBeDefined()
+      expect(res.program?.trainingDaysPerWeek).toBe(1)
+      expect(res.program?.days[0].labelAr).toBe('يوم الصدر والظهر')
+
+      const ex = res.program?.days[0].exercises[0]
+      expect(ex?.sets).toBe(4)
+      expect(ex?.repsMin).toBe(8)
+      expect(ex?.repsMax).toBe(12)
+      expect(ex?.reps).toBe(10)
+      expect(ex?.customName).toBe('تمرين دفع مخصص بالدمبل')
+      expect(ex?.nameEn).toBe('Custom Dumbbell Press')
+      expect(ex?.notes).toBe('التركيز على النزول البطيء 3 ثواني')
+    })
+
+    it('successfully imports programs exported between friends (WorkoutProgram shape)', () => {
+      const friendExport = JSON.stringify({
+        name: 'جدول أحمد للضخامة',
+        splitType: 'upper_lower',
+        days: [
+          {
+            id: 'day-1',
+            dayIndex: 0,
+            labelAr: 'علوي (أ)',
+            focus: 'صدر · ظهر',
+            exercises: [
+              {
+                exerciseId: 'bench',
+                sets: 3,
+                reps: 8,
+                restSeconds: 120,
+                notes: 'الثبات التام مع لمس الصدر',
+              },
+            ],
+          },
+          {
+            id: 'day-2',
+            dayIndex: 1,
+            labelAr: 'سفلي (أ)',
+            focus: 'أرجل',
+            exercises: [
+              {
+                exerciseId: 'squat',
+                sets: 4,
+                reps: 6,
+                restSeconds: 180,
+              },
+            ],
+          },
+        ],
+      })
+
+      const res = importProgramFromJson(friendExport)
+      expect(res.success).toBe(true)
+      expect(res.program?.title).toBe('جدول أحمد للضخامة')
+      expect(res.program?.trainingDaysPerWeek).toBe(2)
+      expect(res.program?.days.length).toBe(2)
+      expect(res.program?.days[0].exercises[0].notes).toBe(
+        'الثبات التام مع لمس الصدر',
+      )
+    })
+
+    it('roundtrip export and import does not duplicate warmup and cooldown exercises', () => {
+      const initialJson = JSON.stringify({
+        title: 'برنامج متكامل',
+        days: [
+          {
+            labelAr: 'اليوم الأول',
+            focus: 'صدر',
+            warmup: [
+              { exerciseId: 'push_up', sets: 2, reps: 10, notesAr: 'إحماء' },
+            ],
+            exercises: [
+              { exerciseId: 'bench', sets: 3, reps: 8, restSeconds: 120 },
+            ],
+            cooldown: [
+              { exerciseId: 'plank', sets: 2, reps: 30, unit: 'seconds' },
+            ],
+          },
+        ],
+      })
+
+      const res1 = importProgramFromJson(initialJson)
+      expect(res1.success).toBe(true)
+      const day1 = res1.program!.days[0]
+      expect(day1.exercises.length).toBe(3)
+      expect(day1.warmup?.length).toBe(1)
+      expect(day1.cooldown?.length).toBe(1)
+
+      // Export program as friend would share it
+      const exportedJson = JSON.stringify(res1.program)
+      const res2 = importProgramFromJson(exportedJson)
+      expect(res2.success).toBe(true)
+      const day2 = res2.program!.days[0]
+      // Must NOT duplicate exercises (3 items, not 5 or more)
+      expect(day2.exercises.length).toBe(3)
+      expect(day2.exercises.map((e) => e.exerciseId)).toEqual([
+        'push_up',
+        'bench',
+        'plank',
+      ])
+      // Cooldown section is preserved
+      const cooldownEx = day2.exercises.find((e) => e.exerciseId === 'plank')
+      expect(cooldownEx?.section).toBe('cooldown')
+    })
+
+    it('accepts cardio with high effort or Arabic effort level without validation error', () => {
+      const json = JSON.stringify({
+        title: 'برنامج مع كارديو عالي',
+        days: [
+          {
+            labelAr: 'يوم كارديو',
+            kind: 'cardio',
+            cardio: {
+              activity: 'ركض سريع',
+              plannedMinutes: 45,
+              effort: 'high',
+            },
+            exercises: [],
+          },
+        ],
+      })
+
+      const res = importProgramFromJson(json)
+      expect(res.success).toBe(true)
+      expect(res.program?.days[0].cardio?.effort).toBe('high')
+    })
   })
 })

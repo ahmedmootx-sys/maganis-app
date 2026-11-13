@@ -229,9 +229,20 @@ console.log('\n--- Step 4: Testing hostile imports via Settings ---')
 const settingsTab = page.locator('[data-testid="tab-settings"]')
 await settingsTab.waitFor({ state: 'visible', timeout: 5000 })
 await settingsTab.click()
-await page.waitForTimeout(500)
 
-const fileInput = await page.locator('input[type="file"]')
+const openBackupRow = page.locator('[data-testid="settings-open-backup"]')
+await openBackupRow.waitFor({ state: 'visible', timeout: 5000 })
+await openBackupRow.click()
+
+const backupSheet = page.locator('.sheet[aria-label="البيانات والمزامنة"]')
+await backupSheet.waitFor({ state: 'visible', timeout: 5000 })
+
+const fileInput = backupSheet.locator('input[type="file"]')
+await fileInput.waitFor({ state: 'attached', timeout: 5000 })
+
+const importConfirmSheet = page.locator(
+  '.sheet[aria-label="تأكيد استيراد البيانات"]',
+)
 
 // 4a. Hostile import: invalid types
 console.log('Testing hostile import: import-invalid-types.json')
@@ -239,12 +250,12 @@ const invalidTypesPath = path.resolve('qa/fixtures/import-invalid-types.json')
 await fileInput.setInputFiles(invalidTypesPath)
 await page.waitForTimeout(600)
 
-const sheetVisibleInvalid = await page.locator('.sheet').isVisible()
+const sheetVisibleInvalid = await importConfirmSheet.isVisible()
 check(
   !sheetVisibleInvalid,
   'ConfirmSheet is NOT shown for hostile invalid types',
 )
-const errorText1 = await page.locator('.callout--error').innerText()
+const errorText1 = await backupSheet.locator('.callout--error').innerText()
 check(
   errorText1.includes('أخطاء في بنية ملف النسخة'),
   'Error callout lists validation errors for invalid types',
@@ -256,9 +267,9 @@ const garbagePath = path.resolve('qa/fixtures/import-garbage.json')
 await fileInput.setInputFiles(garbagePath)
 await page.waitForTimeout(600)
 
-const sheetVisibleGarbage = await page.locator('.sheet').isVisible()
+const sheetVisibleGarbage = await importConfirmSheet.isVisible()
 check(!sheetVisibleGarbage, 'ConfirmSheet is NOT shown for garbage import')
-const errorText2 = await page.locator('.callout--error').innerText()
+const errorText2 = await backupSheet.locator('.callout--error').innerText()
 check(
   errorText2.includes('رقم إصدار'),
   'Error callout explains missing exportVersion for garbage import',
@@ -274,10 +285,9 @@ try {
   await fileInput.setInputFiles(tempBackupPath)
 
   // Wait for ConfirmSheet to appear with preview
-  const confirmSheet = page.locator('.sheet')
-  await confirmSheet.waitFor({ state: 'visible', timeout: 5000 })
+  await importConfirmSheet.waitFor({ state: 'visible', timeout: 5000 })
 
-  const sheetText = await confirmSheet.innerText()
+  const sheetText = await importConfirmSheet.innerText()
   check(
     sheetText.includes('هتستورد'),
     'ConfirmSheet shows import summary preview ("هتستورد: ...")',
@@ -289,7 +299,9 @@ try {
   )
 
   // Confirm import
-  const confirmBtn = page.locator('button:has-text("تأكيد واستيراد")')
+  const confirmBtn = importConfirmSheet.locator(
+    'button:has-text("تأكيد واستيراد")',
+  )
   await confirmBtn.click()
 
   // Wait for import completion

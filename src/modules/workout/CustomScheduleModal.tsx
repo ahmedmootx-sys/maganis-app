@@ -23,19 +23,21 @@ export function CustomScheduleModal({
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1)
   const [scheduleTitle, setScheduleTitle] = useState('جدولي التدريبي الخاص')
   const initialDays = useMemo(() => {
-    const defaultDaysByCount: Record<number, number[]> = {
-      1: [6],
-      2: [6, 2],
-      3: [6, 1, 3],
-      4: [6, 1, 3, 4],
-      5: [6, 0, 1, 3, 4],
-      6: [6, 0, 1, 2, 3, 4],
-      7: [6, 0, 1, 2, 3, 4, 5],
+    const offsetsByCount: Record<number, number[]> = {
+      1: [0],
+      2: [0, 3],
+      3: [0, 2, 4],
+      4: [0, 1, 3, 4],
+      5: [0, 1, 2, 4, 5],
+      6: [0, 1, 2, 3, 4, 5],
+      7: [0, 1, 2, 3, 4, 5, 6],
     }
-    return profileDays && defaultDaysByCount[profileDays]
-      ? defaultDaysByCount[profileDays]
-      : [6, 1, 3, 4]
-  }, [profileDays])
+    const offsets =
+      profileDays && offsetsByCount[profileDays]
+        ? offsetsByCount[profileDays]
+        : offsetsByCount[4]
+    return offsets.map((offset) => (weekStartDay + offset) % 7)
+  }, [profileDays, weekStartDay])
   const [selectedDayIndexes, setSelectedDayIndexes] =
     useState<number[]>(initialDays)
   const [dayFocuses, setDayFocuses] = useState<Record<number, string>>({
@@ -468,7 +470,12 @@ export function CustomScheduleModal({
               type="button"
               className="ghost-secondary"
               onClick={() => setCurrentStep((prev) => (prev === 3 ? 2 : 1))}
-              style={{ flex: 1, height: '44px' }}
+              style={{
+                flex: 1,
+                minHeight: '44px',
+                height: 'auto',
+                paddingBlock: '8px',
+              }}
             >
               رجوع
             </button>
@@ -476,7 +483,12 @@ export function CustomScheduleModal({
           <button
             type="button"
             className="button-primary"
-            style={{ flex: currentStep > 1 ? 2 : 1, height: '44px' }}
+            style={{
+              flex: currentStep > 1 ? 2 : 1,
+              minHeight: '44px',
+              height: 'auto',
+              paddingBlock: '8px',
+            }}
             disabled={currentStep === 2 && selectedDayIndexes.length === 0}
             onClick={() => {
               if (currentStep === 1) {

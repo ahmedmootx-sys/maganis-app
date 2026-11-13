@@ -1,4 +1,4 @@
-import { useState, useId, useMemo } from 'react'
+import { useState, useId, useMemo, useEffect } from 'react'
 import type { UserProfile } from '../onboarding/types.ts'
 import type { WorkoutProgram } from '../shared/types.ts'
 import { Sheet, Button, Toggle, Icon, Card, Field } from '../../ui'
@@ -65,6 +65,19 @@ export function AiDesignerModal({
 
   const promptTextareaId = useId()
   const importTextareaId = useId()
+
+  useEffect(() => {
+    if (showImportSection) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(importTextareaId)
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+          el.focus()
+        }
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [showImportSection, importTextareaId])
 
   // Construct effective profile from editable preview
   const effectiveProfile = useMemo<UserProfile | null>(() => {
@@ -147,13 +160,32 @@ export function AiDesignerModal({
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
-          title: 'برومبت تصميم جدول مجانص',
+          title: 'برومبت تصميم جدول بُنْيَان',
           text: promptInfo.prompt,
         })
         showToast('تمت مشاركة البرومبت بنجاح')
       } catch {
         // User cancelled or share failed
       }
+    }
+  }
+
+  async function handlePasteFromClipboard() {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
+        const text = await navigator.clipboard.readText()
+        if (text && text.trim()) {
+          setImportText(text)
+          setImportError(null)
+          showToast('تم لصق كود الجدول من الحافظة')
+        } else {
+          showToast('الحافظة فارغة، يرجى نسخ كود الجدول أولاً')
+        }
+      } else {
+        showToast('يرجى لصق النص يدوياً داخل المربع')
+      }
+    } catch {
+      showToast('تعذر الوصول للحافظة، يرجى لصق النص يدوياً')
     }
   }
 
@@ -438,7 +470,7 @@ export function AiDesignerModal({
                   if (onOpenImport) {
                     onOpenImport()
                   } else {
-                    setShowImportSection(true)
+                    setShowImportSection((prev) => !prev)
                   }
                 }}
               >
@@ -460,12 +492,38 @@ export function AiDesignerModal({
               >
                 <div
                   style={{
-                    fontSize: '13px',
-                    fontWeight: 700,
-                    color: 'var(--color-text)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '8px',
+                    flexWrap: 'wrap',
                   }}
                 >
-                  الصق كود JSON المستلم من المدرب:
+                  <div
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    الصق كود JSON المستلم من المدرب:
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handlePasteFromClipboard}
+                    style={{
+                      minHeight: '34px',
+                      height: 'auto',
+                      padding: '4px 10px',
+                      fontSize: '12px',
+                      gap: '6px',
+                    }}
+                  >
+                    <Icon name="copy" size={14} />
+                    <span>لصق من الحافظة</span>
+                  </Button>
                 </div>
                 <textarea
                   id={importTextareaId}

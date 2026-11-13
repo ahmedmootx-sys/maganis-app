@@ -48,14 +48,14 @@ export function StorageDiagnosticsSheet({
             style={{
               padding: '12px',
               borderRadius: '8px',
-              backgroundColor: 'var(--color-bg-base, #12171f)',
-              border: '1px solid var(--color-border-subtle, #2b3545)',
+              backgroundColor: 'var(--color-surface-2)',
+              border: '1px solid var(--color-divider)',
             }}
           >
             <div
               style={{
                 fontSize: '12px',
-                color: 'var(--color-text-secondary, #9ba3af)',
+                color: 'var(--color-text-2)',
               }}
             >
               حالة التخزين
@@ -74,14 +74,14 @@ export function StorageDiagnosticsSheet({
             style={{
               padding: '12px',
               borderRadius: '8px',
-              backgroundColor: 'var(--color-bg-base, #12171f)',
-              border: '1px solid var(--color-border-subtle, #2b3545)',
+              backgroundColor: 'var(--color-surface-2)',
+              border: '1px solid var(--color-divider)',
             }}
           >
             <div
               style={{
                 fontSize: '12px',
-                color: 'var(--color-text-secondary, #9ba3af)',
+                color: 'var(--color-text-2)',
               }}
             >
               المساحة المتبقية
@@ -97,14 +97,14 @@ export function StorageDiagnosticsSheet({
             style={{
               padding: '12px',
               borderRadius: '8px',
-              backgroundColor: 'var(--color-bg-base, #12171f)',
-              border: '1px solid var(--color-border-subtle, #2b3545)',
+              backgroundColor: 'var(--color-surface-2)',
+              border: '1px solid var(--color-divider)',
             }}
           >
             <div
               style={{
                 fontSize: '12px',
-                color: 'var(--color-text-secondary, #9ba3af)',
+                color: 'var(--color-text-2)',
               }}
             >
               عدد المفاتيح المحفوظة
@@ -120,14 +120,14 @@ export function StorageDiagnosticsSheet({
             style={{
               padding: '12px',
               borderRadius: '8px',
-              backgroundColor: 'var(--color-bg-base, #12171f)',
-              border: '1px solid var(--color-border-subtle, #2b3545)',
+              backgroundColor: 'var(--color-surface-2)',
+              border: '1px solid var(--color-divider)',
             }}
           >
             <div
               style={{
                 fontSize: '12px',
-                color: 'var(--color-text-secondary, #9ba3af)',
+                color: 'var(--color-text-2)',
               }}
             >
               آخر حفظ ناجح
@@ -145,15 +145,15 @@ export function StorageDiagnosticsSheet({
             style={{
               padding: '12px',
               borderRadius: '8px',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
+              backgroundColor: 'var(--color-danger-bg)',
+              border: '1px solid var(--color-danger-border)',
             }}
           >
             <div
               style={{
                 fontSize: '13px',
                 fontWeight: 'bold',
-                color: '#ef4444',
+                color: 'var(--color-danger)',
                 marginBottom: '6px',
               }}
             >
@@ -164,7 +164,7 @@ export function StorageDiagnosticsSheet({
                 margin: 0,
                 paddingRight: '18px',
                 fontSize: '12px',
-                color: 'var(--color-text-secondary)',
+                color: 'var(--color-text-2)',
               }}
             >
               {diagnostics.corruptKeys.map((k) => (
@@ -200,22 +200,22 @@ export function StorageDiagnosticsSheet({
                   style={{
                     padding: '8px',
                     borderRadius: '6px',
-                    backgroundColor: 'var(--color-bg-base, #12171f)',
+                    backgroundColor: 'var(--color-surface-2)',
                     fontSize: '12px',
-                    border: '1px solid var(--color-border-subtle, #2b3545)',
+                    border: '1px solid var(--color-divider)',
                   }}
                 >
                   <div
                     style={{
                       fontWeight: 'bold',
-                      color: 'var(--color-brand-primary, #F95700)',
+                      color: 'var(--color-accent-text)',
                     }}
                   >
                     {err.key}
                   </div>
                   <div
                     style={{
-                      color: 'var(--color-text-secondary, #9ba3af)',
+                      color: 'var(--color-text-2)',
                       marginTop: '2px',
                     }}
                   >
@@ -224,7 +224,7 @@ export function StorageDiagnosticsSheet({
                   <div
                     style={{
                       fontSize: '10px',
-                      color: 'var(--color-text-muted, #64748b)',
+                      color: 'var(--color-text-2)',
                       marginTop: '4px',
                     }}
                   >
@@ -239,7 +239,12 @@ export function StorageDiagnosticsSheet({
         <button
           type="button"
           className="btn btn--primary"
-          style={{ minHeight: '44px', width: '100%', marginTop: '8px' }}
+          style={{
+            minHeight: '44px',
+            height: 'auto',
+            width: '100%',
+            marginTop: '8px',
+          }}
           onClick={onClose}
         >
           إغلاق

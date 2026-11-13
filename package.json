@@ -1,7 +1,7 @@
 {
-  "name": "maganis",
+  "name": "bunyan",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.2",
   "type": "module",
   "engines": {
     "node": ">=20.19.0"
@@ -29,8 +29,9 @@
     "catalog:check": "node scripts/check-catalog.mjs",
     "android:keystore": "node scripts/android-keystore.mjs",
     "gate:base-path": "node scripts/gate-base-path.mjs",
+    "gate:brand-name": "node scripts/gate-brand-name.mjs",
     "verify": "node scripts/verify.mjs",
-    "gates": "node scripts/gate-no-personal-data.mjs && node scripts/gate-base-path.mjs && node scripts/gate-no-raw-vibrate.mjs && npm run check:emoji && npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && node scripts/check-coverage-ratchet.mjs && npm run build && node scripts/gate-raw-tokens.mjs && npm run check:ui && node qa/video-flow.mjs && node qa/media-everywhere.mjs && node qa/reset-flow.mjs && node qa/backup-restore.mjs",
+    "gates": "node scripts/gate-brand-name.mjs && node scripts/gate-no-personal-data.mjs && node scripts/gate-base-path.mjs && node scripts/gate-no-raw-vibrate.mjs && npm run check:emoji && npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && node scripts/check-coverage-ratchet.mjs && npm run build && node scripts/gate-raw-tokens.mjs && npm run check:ui && node qa/video-flow.mjs && node qa/media-everywhere.mjs && node qa/reset-flow.mjs && node qa/backup-restore.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
