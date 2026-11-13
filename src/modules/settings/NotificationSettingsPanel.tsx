@@ -751,10 +751,13 @@ export function NotificationSettingsPanel() {
                   fontSize: '12px',
                 }}
               >
-                <span>تحسين البطارية مفعّل (قد يؤخر تنبيهات الخلفية)</span>
+                <span style={{ flex: 1, minWidth: 0 }}>
+                  تحسين البطارية مفعّل (قد يؤخر تنبيهات الخلفية)
+                </span>
                 <Button
                   size="sm"
                   variant="subtle"
+                  style={{ flexShrink: 0, whiteSpace: 'nowrap' }}
                   onClick={() => openSettingsScreen('batteryOptimization')}
                 >
                   تعديل

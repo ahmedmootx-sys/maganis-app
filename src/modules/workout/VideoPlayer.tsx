@@ -7,7 +7,11 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react'
-import { parseVideoUrl, type ParsedVideoInfo } from './videoUtils'
+import {
+  parseVideoUrl,
+  resolvePinterestUrl,
+  type ParsedVideoInfo,
+} from './videoUtils'
 
 export interface VideoPlayerProps {
   videoUrl?: string | null
@@ -91,7 +95,12 @@ export class VideoErrorBoundary extends React.Component<
                 textDecoration: 'none',
               }}
             >
-              افتح في يوتيوب
+              {this.props.fallbackUrl.includes('pin.it') ||
+              this.props.fallbackUrl.includes('pinterest.com')
+                ? 'افتح في بينترست'
+                : this.props.fallbackUrl.includes('vimeo.com')
+                  ? 'افتح في فيميو'
+                  : 'افتح في يوتيوب'}
             </a>
             <button
               type="button"
@@ -125,6 +134,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [isMounted, setIsMounted] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const [loadTimedOut, setLoadTimedOut] = useState(false)
+  const [effectiveUrl, setEffectiveUrl] = useState<string>(videoUrl || '')
   const timerRef = useRef<number | null>(null)
 
   const isOnline =
@@ -134,7 +144,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         ? navigator.onLine
         : true
 
-  // Reset state when videoUrl changes
+  // Reset state when videoUrl changes and resolve Pinterest shortlinks
   useEffect(() => {
     setIsMounted(false)
     setIsLoaded(false)
@@ -142,6 +152,24 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (timerRef.current) {
       clearTimeout(timerRef.current)
       timerRef.current = null
+    }
+
+    let active = true
+    if (
+      videoUrl &&
+      (videoUrl.includes('pin.it') || videoUrl.includes('.pin.it'))
+    ) {
+      resolvePinterestUrl(videoUrl).then((resolved) => {
+        if (active && resolved) {
+          setEffectiveUrl(resolved)
+        }
+      })
+    } else {
+      setEffectiveUrl(videoUrl || '')
+    }
+
+    return () => {
+      active = false
     }
   }, [videoUrl])
 
@@ -211,7 +239,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     )
   }
 
-  const parsed: ParsedVideoInfo = parseVideoUrl(videoUrl)
+  const parsed: ParsedVideoInfo = parseVideoUrl(effectiveUrl)
 
   // 2. Unsupported host (e.g. Instagram, TikTok, Facebook)
   if (
@@ -448,9 +476,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     )
   }
 
-  // 6. Embedded IFrame (YouTube or Vimeo)
+  // 6. Embedded IFrame (YouTube, Pinterest, or Vimeo)
+  const isPinterest = parsed.sourceType === 'pinterest'
   const fallbackLabel =
-    parsed.sourceType === 'youtube' ? 'افتح في يوتيوب' : 'افتح في فيميو'
+    parsed.sourceType === 'youtube'
+      ? 'افتح في يوتيوب'
+      : isPinterest
+        ? 'افتح في بينترست'
+        : 'افتح في فيميو'
 
   if (loadTimedOut && !isLoaded) {
     return (
@@ -541,13 +574,33 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           width: '100%',
         }}
       >
+        {isPinterest && (
+          <div
+            style={{
+              padding: '6px 12px',
+              backgroundColor: 'var(--color-surface-2)',
+              borderBottom: '1px solid var(--color-divider)',
+              fontSize: '12px',
+              color: 'var(--color-text-2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+            }}
+          >
+            <span>اضغط على أيقونة الصوت داخل مشغل بينترست لتشغيل الصوت</span>
+          </div>
+        )}
+
         <div
           style={{
             position: 'relative',
             width: '100%',
-            aspectRatio: '16 / 9',
+            aspectRatio: isPinterest ? '9 / 16' : '16 / 9',
+            maxHeight: isPinterest ? '480px' : undefined,
             minHeight: '200px',
             backgroundColor: '#000000',
+            margin: isPinterest ? '0 auto' : undefined,
           }}
         >
           {!isLoaded && (
@@ -586,7 +639,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             data-testid="video-iframe-el"
             src={parsed.embedUrl}
             sandbox="allow-scripts allow-same-origin allow-presentation"
-            allow="autoplay; fullscreen; picture-in-picture"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
             allowFullScreen
             referrerPolicy="strict-origin-when-cross-origin"
             title={`فيديو شرح تمرين ${exerciseName}`}

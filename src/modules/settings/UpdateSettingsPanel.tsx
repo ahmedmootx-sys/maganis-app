@@ -18,7 +18,7 @@ import { Button } from '../../ui/Button.tsx'
 import { Icon } from '../../ui/Icon.tsx'
 
 export const UpdateSettingsPanel: React.FC = () => {
-  const [currentVersion, setCurrentVersion] = useState('0.2.0')
+  const [currentVersion, setCurrentVersion] = useState('0.2.1')
   const [buildType, setBuildType] = useState<'debug' | 'release'>('release')
   const [autoCheck, setAutoCheck] = useState(() => getAutoUpdateSetting())
   const [isChecking, setIsChecking] = useState(false)
@@ -31,7 +31,7 @@ export const UpdateSettingsPanel: React.FC = () => {
       if (isNative() && typeof MaganisNative.getInfo === 'function') {
         try {
           const info = await MaganisNative.getInfo()
-          setCurrentVersion(info.versionName || '0.2.0')
+          setCurrentVersion(info.versionName || '0.2.1')
           setBuildType(info.buildType === 'debug' ? 'debug' : 'release')
         } catch {
           // Fallback

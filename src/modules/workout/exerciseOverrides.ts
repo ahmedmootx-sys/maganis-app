@@ -9,7 +9,11 @@
  * - Strict validation, GIF magic bytes verification, first-frame extraction, and HTTPS external URL validation.
  */
 
-import type { Exercise, ExerciseMuscleTarget } from '../shared/types.ts'
+import type {
+  Exercise,
+  ExerciseMuscleTarget,
+  MeasurementType,
+} from '../shared/types.ts'
 import { appStorage } from '../../platform/storage.ts'
 import { recordStorageError } from '../../platform/storageHealth.ts'
 import {
@@ -43,6 +47,7 @@ export interface ExerciseOverride {
   mechanicsAr?: string
   howToStepsAr?: string[]
   muscles?: ExerciseMuscleTarget[]
+  measurementType?: MeasurementType
   personalNote?: string // max 500 chars
   videoUrl?: string
   updatedAt?: number
@@ -533,7 +538,13 @@ export function selectEffectiveExercise(
       ? ((isModified = true), override.muscles)
       : base.muscles
 
-  // 6. Personal Note
+  // 6. Measurement Type
+  const measurementType =
+    override.measurementType !== undefined
+      ? ((isModified = true), override.measurementType)
+      : base.measurementType
+
+  // 7. Personal Note
   const personalNote = override.personalNote
   if (personalNote) isModified = true
 
@@ -557,6 +568,7 @@ export function selectEffectiveExercise(
     mechanicsAr,
     howToStepsAr,
     muscles,
+    measurementType,
     personalNote,
     videoUrl,
     isModified,
@@ -797,6 +809,22 @@ export function validateExerciseOverride(obj: unknown): {
           error: `معرف العضلة "${m.id}" غير موجود في الأطلس`,
         }
       }
+    }
+  }
+
+  if (o.measurementType !== undefined) {
+    const validMeasurementTypes = [
+      'reps',
+      'duration',
+      'bodyweight',
+      'weight',
+      'cardio',
+    ]
+    if (
+      typeof o.measurementType !== 'string' ||
+      !validMeasurementTypes.includes(o.measurementType)
+    ) {
+      return { valid: false, error: 'نوع قياس التمرين غير صالح' }
     }
   }
 

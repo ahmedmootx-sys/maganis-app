@@ -1,4 +1,4 @@
-import type { Exercise } from '../shared/types.ts'
+import type { Exercise, MeasurementType } from '../shared/types.ts'
 import catalogData from '../../data/catalog-v1.json' with { type: 'json' }
 import legacyData from '../../data/legacy-exercises.json' with { type: 'json' }
 
@@ -58,6 +58,29 @@ function mapCatalogToExercise(item: CatalogExerciseItem): Exercise {
     .map((m) => m.id)
   const primaryMuscle = primaryMuscles[0] || ''
 
+  let measurementType: MeasurementType = 'weight'
+  if (item.kind === 'isometric') {
+    measurementType = 'duration'
+  } else if (item.kind === 'cardio') {
+    measurementType = 'cardio'
+  } else if (
+    item.equipment?.db === 'body only' ||
+    item.equipment?.db === 'none'
+  ) {
+    if (item.kind === 'stretch') {
+      measurementType = 'duration'
+    } else {
+      measurementType = 'bodyweight'
+    }
+  } else if (
+    item.equipment?.db === 'barbell' ||
+    item.equipment?.db === 'dumbbell' ||
+    item.equipment?.db === 'cable' ||
+    item.equipment?.db === 'machine'
+  ) {
+    measurementType = 'weight'
+  }
+
   return {
     id: item.key,
     key: item.key,
@@ -71,6 +94,7 @@ function mapCatalogToExercise(item: CatalogExerciseItem): Exercise {
     equipment: (item.equipment?.db || 'barbell') as Exercise['equipment'],
     equipmentDetail: item.equipment,
     levelDetail: item.level,
+    measurementType,
     target_ar: item.target_ar,
     targetMusclesAr: [item.target_ar],
     targetSubMuscleAr: primaryMuscle,

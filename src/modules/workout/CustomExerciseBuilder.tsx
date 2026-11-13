@@ -66,20 +66,40 @@ const EQUIPMENT_OPTIONS = Object.entries(EQUIPMENT_LABELS) as [
   string,
 ][]
 
-const MEASUREMENT_SEGMENTED_OPTIONS: {
-  value: 'reps' | 'duration'
+export const MEASUREMENT_SEGMENTED_OPTIONS: {
+  value: MeasurementType
   labelAr: string
   helperAr: string
 }[] = [
   {
-    value: 'reps',
-    labelAr: 'تكرارات',
-    helperAr: 'حساب التمرين بعدد المجموعات والتكرارات لكل مجموعة',
+    value: 'weight',
+    labelAr: 'أوزان وتكرارات',
+    helperAr:
+      'تسجيل الوزن (كجم) وعدد العدات لكل جولة (مثل تمارين البنش والسكوات بالأوزان).',
+  },
+  {
+    value: 'bodyweight',
+    labelAr: 'وزن الجسم',
+    helperAr:
+      'تمرين يعتمد على وزن الجسم مع إمكانية إضافة وزن إضافي وعدات (مثل العقلة والمتوازي والضغط).',
   },
   {
     value: 'duration',
-    labelAr: 'وقت',
-    helperAr: 'حساب التمرين بمدة الثبات بالثواني أو الدقائق (مثل البلانك)',
+    labelAr: 'وقت وثبات',
+    helperAr:
+      'تسجيل زمن الثبات بالثواني أو الدقائق (أيزومتريك، مثل البلانك وتعليق العقلة).',
+  },
+  {
+    value: 'reps',
+    labelAr: 'تكرارات فقط',
+    helperAr:
+      'تسجيل عدد التكرارات فقط بدون أوزان إضافية (مثل تمارين الإطالة والبطن الحرة).',
+  },
+  {
+    value: 'cardio',
+    labelAr: 'مسافة ووقت',
+    helperAr:
+      'تمارين الكارديو واللياقة التي تعتمد على قياس المسافة (كم) والمدة الزمنية (دقائق).',
   },
 ]
 
@@ -168,10 +188,9 @@ export function CustomExerciseBuilder({
   const [equipment, setEquipment] = useState<Equipment | ''>(
     initialExercise?.equipment ?? '',
   )
-  const [measurementType, setMeasurementType] = useState<'reps' | 'duration'>(
+  const [measurementType, setMeasurementType] = useState<MeasurementType>(
     () => {
-      const mt = initialExercise?.measurementType
-      return mt === 'duration' ? 'duration' : 'reps'
+      return initialExercise?.measurementType ?? 'weight'
     },
   )
   const [imageUrl, setImageUrl] = useState(initialExercise?.imageUrl ?? '')
@@ -546,14 +565,28 @@ export function CustomExerciseBuilder({
               padding: '16px',
             }}
           >
-            <Segmented
-              options={MEASUREMENT_SEGMENTED_OPTIONS.map((opt) => ({
-                value: opt.value,
-                label: opt.labelAr,
-              }))}
-              value={measurementType}
-              onChange={(val) => setMeasurementType(val as 'reps' | 'duration')}
-            />
+            <div
+              style={{
+                overflowX: 'auto',
+                scrollbarWidth: 'none',
+                borderRadius: 'var(--radius-control)',
+              }}
+            >
+              <Segmented
+                className="segmented--scrollable"
+                style={{
+                  width: 'max-content',
+                  minWidth: '100%',
+                  display: 'inline-flex',
+                }}
+                options={MEASUREMENT_SEGMENTED_OPTIONS.map((opt) => ({
+                  value: opt.value,
+                  label: opt.labelAr,
+                }))}
+                value={measurementType}
+                onChange={(val) => setMeasurementType(val as MeasurementType)}
+              />
+            </div>
 
             {selectedMeasurement && (
               <div

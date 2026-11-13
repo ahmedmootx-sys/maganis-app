@@ -189,7 +189,8 @@
   color: var(--color-text);
   line-height: var(--line-height-heading);
   white-space: normal;
-  overflow-wrap: anywhere;
+  word-break: keep-all;
+  overflow-wrap: normal;
   min-width: 0;
 }
 
@@ -198,7 +199,8 @@
   color: var(--color-text-2, var(--muted));
   white-space: normal;
   line-height: 1.35;
-  overflow-wrap: anywhere;
+  word-break: keep-all;
+  overflow-wrap: normal;
   min-width: 0;
 }
 
@@ -451,7 +453,7 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   white-space: normal;
-  word-break: break-word;
+  word-break: keep-all;
 }
 
 .btn:focus-visible {
@@ -481,6 +483,7 @@
     --btn-primary-gradient,
     linear-gradient(135deg, #f95700 0%, #ff7714 100%)
   ) !important;
+  background-color: var(--btn-primary-bg) !important;
   color: var(--btn-primary-fg) !important;
   border: none !important;
   border-radius: var(--radius-xl, 18px) !important;
@@ -853,7 +856,8 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden /* clip-ok: text ellipsis truncation */;
-  word-break: break-word;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 .list-row__subtitle {
@@ -951,7 +955,8 @@
 
 .key-value-item--stacked .key-value-item__val {
   text-align: start;
-  word-break: break-word;
+  word-break: keep-all;
+  overflow-wrap: normal;
   line-height: var(--line-height-body);
 }
 
@@ -1219,7 +1224,8 @@
   padding-block: 8px;
   white-space: normal;
   line-height: 1.3;
-  overflow-wrap: anywhere;
+  word-break: keep-all;
+  overflow-wrap: normal;
   box-sizing: border-box;
 }
 
@@ -1232,6 +1238,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
+.segmented--scrollable.segmented,
 .exercise-tabs-segmented.segmented {
   min-height: 44px;
   background-color: var(--color-surface-2);
@@ -1239,18 +1246,23 @@
   border: 1px solid var(--color-divider);
   padding: 4px;
   gap: 4px;
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
+  display: inline-flex;
 }
 
+.segmented--scrollable .segmented__item,
 .exercise-tabs-segmented .segmented__item {
   min-height: 44px;
   height: auto;
   font-size: 13px;
   font-weight: 600;
   border-radius: calc(var(--radius-control) - 2px);
-  padding-inline: 8px;
+  padding-inline: 14px;
   padding-block: 8px;
-  white-space: normal;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  word-break: keep-all;
   line-height: 1.3;
 }
 

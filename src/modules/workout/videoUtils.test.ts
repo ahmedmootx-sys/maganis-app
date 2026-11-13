@@ -194,6 +194,56 @@ describe('parseVideoUrl', () => {
       desc: 'case-insensitive extension (.MP4)',
     },
 
+    // 34-40: Pinterest Valid & Invalid
+    {
+      input: 'https://www.pinterest.com/pin/1036320439281729013/',
+      valid: true,
+      sourceType: 'pinterest',
+      embed:
+        'https://assets.pinterest.com/ext/embed.html?id=1036320439281729013',
+      desc: 'standard www.pinterest.com pin URL',
+    },
+    {
+      input: 'https://pinterest.com/pin/876543210987654321',
+      valid: true,
+      sourceType: 'pinterest',
+      embed:
+        'https://assets.pinterest.com/ext/embed.html?id=876543210987654321',
+      desc: 'apex pinterest.com pin URL',
+    },
+    {
+      input: 'https://ar.pinterest.com/pin/123456789012/',
+      valid: true,
+      sourceType: 'pinterest',
+      embed: 'https://assets.pinterest.com/ext/embed.html?id=123456789012',
+      desc: 'localized subdomain ar.pinterest.com pin URL',
+    },
+    {
+      input: 'https://assets.pinterest.com/ext/embed.html?id=999888777666',
+      valid: true,
+      sourceType: 'pinterest',
+      embed: 'https://assets.pinterest.com/ext/embed.html?id=999888777666',
+      desc: 'pinterest assets embed URL with id param',
+    },
+    {
+      input: 'https://pin.it/7mNkL2',
+      valid: true,
+      sourceType: 'pinterest',
+      embed: 'https://assets.pinterest.com/ext/embed.html?id=7mNkL2',
+      desc: 'short pin.it URL',
+    },
+    {
+      input: 'https://pinterest.com/pin/invalid-non-numeric',
+      valid: false,
+      desc: 'pinterest pin with non-numeric id',
+    },
+    {
+      input: 'https://pinterest.com.attacker.org/pin/123456789012',
+      valid: true,
+      sourceType: 'unsupported',
+      desc: 'lookalike domain pinterest.com.attacker.org (unsupported)',
+    },
+
     // 34-39: Lookalike and Unsupported Hosts
     {
       input: 'https://youtube.com.evil.com/watch?v=dQw4w9WgXcQ',

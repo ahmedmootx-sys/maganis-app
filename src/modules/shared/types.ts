@@ -9,7 +9,8 @@ export type Difficulty = 'beginner' | 'intermediate' | 'advanced' | 'expert'
 export type Equipment =
   'bodyweight' | 'dumbbell' | 'barbell' | 'machine' | 'band'
 
-export type MeasurementType = 'reps' | 'duration' | 'bodyweight' | 'weight'
+export type MeasurementType =
+  'reps' | 'duration' | 'bodyweight' | 'weight' | 'cardio'
 
 export interface Exercise {
   id: string

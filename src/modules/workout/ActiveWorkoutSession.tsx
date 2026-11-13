@@ -78,10 +78,23 @@ export function getExerciseMeasureType(
   if (!ex) return 'weight'
   if (
     ex.measurementType === 'duration' ||
+    ex.kind === 'isometric' ||
     ex.nameAr?.includes('بلانك') ||
     ex.name?.toLowerCase().includes('plank')
   ) {
     return 'timed'
+  }
+  if (ex.measurementType === 'cardio') {
+    return 'timed'
+  }
+  if (ex.measurementType === 'reps') {
+    return 'bodyweight'
+  }
+  if (ex.measurementType === 'bodyweight') {
+    return 'bodyweight'
+  }
+  if (ex.measurementType === 'weight') {
+    return 'weight'
   }
   const eq = (
     (ex.equipmentDetail as { db?: string } | undefined)?.db ||

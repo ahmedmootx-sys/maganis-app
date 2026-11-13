@@ -1812,7 +1812,7 @@ button.ghost-danger:hover {
 .button-success {
   background: var(--color-success, #15803d) !important;
   border-color: var(--color-success, #15803d) !important;
-  color: #ffffff !important;
+  color: var(--color-success-contrast, #ffffff) !important;
   font-weight: 700;
   cursor: pointer;
 }
@@ -3346,7 +3346,7 @@ input[type='url'],
   color: var(--ink);
   white-space: normal;
   line-height: 1.3;
-  overflow-wrap: anywhere;
+  word-break: keep-all;
   letter-spacing: -0.01em;
 }
 
@@ -3355,7 +3355,7 @@ input[type='url'],
   color: var(--muted);
   white-space: normal;
   line-height: 1.35;
-  overflow-wrap: anywhere;
+  word-break: keep-all;
   font-weight: 500;
 }
 
@@ -3475,7 +3475,8 @@ input[type='url'],
   font-weight: 700;
   color: var(--ink);
   line-height: 1.35;
-  word-break: break-word;
+  word-break: keep-all;
+  overflow-wrap: normal;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -3949,7 +3950,8 @@ input[type='url'],
   font-weight: 700;
   white-space: normal;
   line-height: 1.3;
-  overflow-wrap: anywhere;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 .sticky-bottom-bar--row button,
