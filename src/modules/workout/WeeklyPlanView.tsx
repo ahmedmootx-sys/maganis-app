@@ -25,7 +25,7 @@ import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
 import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { generateProgram } from './programGenerator.ts'
 import { convertDayToHomeWorkout } from './homeWorkoutConverter.ts'
-import { parseAndValidateRoutineJson } from './workoutUtils.ts'
+import { importProgramFromJson } from './programImporter.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import {
   TopBar,
@@ -1714,7 +1714,7 @@ export function WeeklyPlanView({
         rows.push([
           d.labelAr,
           d.focus,
-          def?.nameAr || ex.exerciseId,
+          def?.nameAr || ex.customName || ex.exerciseId,
           String(ex.sets),
           String(ex.reps),
           String(ex.restSeconds),
@@ -1793,18 +1793,51 @@ export function WeeklyPlanView({
     }
   }
 
+  async function handleCopyProgramCode() {
+    if (!program) return
+    try {
+      const json = JSON.stringify(program, null, 2)
+      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(json)
+        showToast('تم نسخ كود الجدول إلى الحافظة')
+      } else {
+        showToast('تعذر النسخ التلقائي')
+      }
+    } catch {
+      showToast('تعذر نسخ كود الجدول')
+    }
+  }
+
+  async function handleShareProgram() {
+    if (!program) return
+    const json = JSON.stringify(program, null, 2)
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: program.title || 'جدول تدريبي — بُنْيَان',
+          text: json,
+        })
+        showToast('تمت مشاركة الجدول بنجاح')
+      } catch {
+        // User cancelled share
+      }
+    } else {
+      await handleCopyProgramCode()
+    }
+  }
+
   function handleImportFile(file: File) {
     const reader = new FileReader()
     reader.onload = (e) => {
       try {
         const text = e.target?.result as string
-        const parsed = parseAndValidateRoutineJson(text)
-        if (parsed.success) {
+        const parsed = importProgramFromJson(text)
+        if (parsed.success && parsed.program) {
           const imported = parsed.program
           setReplaceConfirm({
             isOpen: true,
             title: 'تأكيد استيراد الجدول',
-            message: `سيتم استبدال جدولك الحالي بالجدول المستورد: "${parsed.title || (imported as WorkoutProgram & { title?: string }).title || 'جدول تمارين'}" (${imported.days.length} أيام). هل أنت متأكد؟`,
+            message: `سيتم استبدال جدولك الحالي بالجدول المستورد: "${imported.title || 'جدول تمارين'}" (${imported.days.length} أيام). هل أنت متأكد؟`,
             action: () => {
               onUpdateProgram?.(imported)
               setIsManageSheetOpen(false)
@@ -1812,7 +1845,9 @@ export function WeeklyPlanView({
             },
           })
         } else {
-          showToast(`خطأ في استيراد الملف: ${parsed.error}`)
+          showToast(
+            `خطأ في استيراد الملف: ${parsed.errors[0] || 'كود الجدول غير صالح'}`,
+          )
         }
       } catch {
         showToast('تعذر قراءة ملف الجدول التدريبي')
@@ -2015,7 +2050,7 @@ export function WeeklyPlanView({
       (e) => !e.section || e.section === 'primary',
     )
     const cooldownExercises = selectedDay.exercises.filter(
-      (e) => e.section === 'cooldown',
+      (e) => e.section === 'cooldown' || e.section === 'flexibility_core',
     )
 
     return (
@@ -2140,10 +2175,12 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName = ex?.nameAr ?? pe.exerciseId
+                  const arabicName =
+                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
+                    pe.nameEn ||
                     ''
                   const setsReps = formatPrescription(pe)
 
@@ -2344,10 +2381,12 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName = ex?.nameAr ?? pe.exerciseId
+                  const arabicName =
+                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
+                    pe.nameEn ||
                     ''
                   const setsReps = formatPrescription(pe)
 
@@ -2503,10 +2542,12 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName = ex?.nameAr ?? pe.exerciseId
+                  const arabicName =
+                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
+                    pe.nameEn ||
                     ''
                   const setsReps = formatPrescription(pe)
 
@@ -3709,6 +3750,42 @@ export function WeeklyPlanView({
               }}
               onClick={() => {
                 setIsManageSheetOpen(false)
+                void handleShareProgram()
+              }}
+            >
+              <Icon name="share-2" size={18} />
+              <span>مشاركة الجدول التدريبي</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
+                void handleCopyProgramCode()
+              }}
+            >
+              <Icon name="copy" size={18} />
+              <span>نسخ كود الجدول</span>
+            </button>
+            <button
+              type="button"
+              className="ghost-secondary full-width"
+              style={{
+                justifyContent: 'flex-start',
+                minHeight: '48px',
+                height: 'auto',
+                paddingBlock: '8px',
+                gap: '10px',
+              }}
+              onClick={() => {
+                setIsManageSheetOpen(false)
                 setIsExportSheetOpen(true)
               }}
             >
@@ -4040,7 +4117,7 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  return ex?.nameAr || pe.exerciseId
+                  return ex?.nameAr || pe.customName || pe.exerciseId
                 })
                 .join('، ')}). هل تود إكمال الجلسة بحذر؟`
             : '',

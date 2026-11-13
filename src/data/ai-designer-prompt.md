@@ -84,6 +84,10 @@ PART 2. Exactly ONE JSON code block that follows the SCHEMA below. Rules for the
 - It must be valid JSON: double quotes, no comments, no trailing commas, numbers as numbers, nothing outside the braces.
 - Use an `exerciseId` from the CATALOG whenever the exercise exists there. Never invent an id.
 - If the exercise is not in the CATALOG, set `exerciseId` to null and fill `customName` (Arabic) and `nameEn` (English). The app will ask the person to complete the missing details.
+- `sets` must be an integer (e.g. 3, never a string "3").
+- `reps` must be an integer (e.g. 10, never a string range like "8-12"). If recommending a rep range, set `repsMin` and `repsMax` as integers (e.g. "reps": 10, "repsMin": 8, "repsMax": 12).
+- Use `notesAr` for Arabic technical execution cues and form guidance for each exercise.
+- For each day in `days`, provide both `name` and `labelAr` in Arabic (e.g. "تمرين 1 — علوي").
 - Names, labels and notes are in Arabic, in simple everyday Egyptian wording.
 - The number of strength days must equal the days per week the person confirmed. A cardio or mobility day is extra only if they asked for it.
 

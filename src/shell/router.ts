@@ -42,10 +42,16 @@ export function parseHash(hash: string): RouteMatch {
     return { path: '/training', raw: '#/training', params: {} }
   }
   if (parts[0] === 'exercise' && parts[1]) {
+    let id = parts[1]
+    try {
+      id = decodeURIComponent(parts[1])
+    } catch {
+      id = parts[1]
+    }
     return {
       path: '/exercise/:id',
       raw: `#/exercise/${parts[1]}`,
-      params: { id: parts[1] },
+      params: { id },
     }
   }
   if (parts[0] === 'library') {

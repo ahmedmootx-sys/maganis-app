@@ -36,17 +36,77 @@ describe('Update Checker & Sideload Guidance (Task N5.5)', () => {
     expect(notes[2]).toBe('إصلاح عرض أسماء العضلات.')
   })
 
-  it('debug build: blocks update check with Arabic message', async () => {
-    const fetchMock = vi.fn()
+  it('debug build: checks updates and detects available newer release', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [
+        {
+          tag_name: 'v0.2.0',
+          body: '### ar\n- تحديث تجريبي.',
+          published_at: '2026-11-05T12:00:00Z',
+          assets: [
+            {
+              name: 'maganis-0.2.0.apk',
+              browser_download_url:
+                'https://github.com/ahmedmootx-sys/maganis-app/releases/download/v0.2.0/maganis-0.2.0.apk',
+              size: 15 * 1024 * 1024,
+            },
+          ],
+        },
+      ],
+    })
     const res = await checkForUpdates(
       '0.1.0-debug',
       'debug',
       fetchMock as unknown as typeof fetch,
     )
 
-    expect(fetchMock).not.toHaveBeenCalled()
-    expect(res.status).toBe('debug_build')
-    expect(res.messageAr).toContain('نسخة تجريبية')
+    expect(fetchMock).toHaveBeenCalled()
+    expect(res.status).toBe('update_available')
+    expect(res.latestVersion).toBe('0.2.0')
+  })
+
+  it('releases array: ignores draft releases and selects first published release', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [
+        {
+          tag_name: 'v0.3.0',
+          draft: true,
+          body: '### ar\n- مسودة غير منشورة',
+          assets: [],
+        },
+        {
+          tag_name: 'v0.2.2',
+          draft: false,
+          prerelease: true,
+          body: '### ar\n- إصدار تجريبي منشور.',
+          published_at: '2026-11-13T12:00:00Z',
+          assets: [
+            {
+              name: 'maganis-0.2.2.apk',
+              browser_download_url:
+                'https://github.com/ahmedmootx-sys/maganis-app/releases/download/v0.2.2/maganis-0.2.2.apk',
+              size: 16 * 1024 * 1024,
+            },
+          ],
+        },
+      ],
+    })
+
+    const res = await checkForUpdates(
+      '0.2.1',
+      'release',
+      fetchMock as unknown as typeof fetch,
+    )
+
+    expect(res.status).toBe('update_available')
+    expect(res.latestVersion).toBe('0.2.2')
+    expect(res.downloadUrl).toBe(
+      'https://github.com/ahmedmootx-sys/maganis-app/releases/download/v0.2.2/maganis-0.2.2.apk',
+    )
   })
 
   it('offline case: returns status offline when fetch throws network error', async () => {
@@ -160,5 +220,99 @@ describe('Update Checker & Sideload Guidance (Task N5.5)', () => {
     )
     expect(res.status).toBe('up_to_date')
     expect(res.messageAr).toContain('أنت بتستخدم أحدث إصدار بالفعل')
+  })
+
+  it('skips malformed non-semver release tags without failing valid releases', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [
+        {
+          tag_name: 'untagged-build-xyz',
+          assets: [],
+        },
+        {
+          tag_name: 'v0.2.5',
+          draft: false,
+          assets: [
+            {
+              name: 'maganis-0.2.5.apk',
+              browser_download_url:
+                'https://github.com/ahmedmootx-sys/maganis-app/releases/download/v0.2.5/maganis-0.2.5.apk',
+            },
+          ],
+        },
+      ],
+    })
+
+    const res = await checkForUpdates(
+      '0.2.0',
+      'release',
+      fetchMock as unknown as typeof fetch,
+    )
+    expect(res.status).toBe('update_available')
+    expect(res.latestVersion).toBe('0.2.5')
+  })
+
+  it('picks release with valid APK asset when newest release has no APK', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [
+        {
+          tag_name: 'v0.3.0',
+          draft: false,
+          assets: [], // notes only, no APK yet
+        },
+        {
+          tag_name: 'v0.2.3',
+          draft: false,
+          assets: [
+            {
+              name: 'maganis-0.2.3.apk',
+              browser_download_url:
+                'https://github.com/ahmedmootx-sys/maganis-app/releases/download/v0.2.3/maganis-0.2.3.apk',
+            },
+          ],
+        },
+      ],
+    })
+
+    const res = await checkForUpdates(
+      '0.2.0',
+      'release',
+      fetchMock as unknown as typeof fetch,
+    )
+    expect(res.status).toBe('update_available')
+    expect(res.latestVersion).toBe('0.2.3')
+    expect(res.downloadUrl).toContain('maganis-0.2.3.apk')
+  })
+
+  it('handles release tags without leading v prefix', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [
+        {
+          tag_name: '0.2.4',
+          draft: false,
+          assets: [
+            {
+              name: 'maganis-0.2.4.apk',
+              browser_download_url:
+                'https://github.com/ahmedmootx-sys/maganis-app/releases/download/v0.2.4/maganis-0.2.4.apk',
+            },
+          ],
+        },
+      ],
+    })
+
+    const res = await checkForUpdates(
+      '0.2.0',
+      'release',
+      fetchMock as unknown as typeof fetch,
+    )
+    expect(res.status).toBe('update_available')
+    expect(res.latestVersion).toBe('0.2.4')
   })
 })

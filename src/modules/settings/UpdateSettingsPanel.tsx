@@ -18,7 +18,7 @@ import { Button } from '../../ui/Button.tsx'
 import { Icon } from '../../ui/Icon.tsx'
 
 export const UpdateSettingsPanel: React.FC = () => {
-  const [currentVersion, setCurrentVersion] = useState('0.2.1')
+  const [currentVersion, setCurrentVersion] = useState('0.2.2')
   const [buildType, setBuildType] = useState<'debug' | 'release'>('release')
   const [autoCheck, setAutoCheck] = useState(() => getAutoUpdateSetting())
   const [isChecking, setIsChecking] = useState(false)
@@ -31,7 +31,7 @@ export const UpdateSettingsPanel: React.FC = () => {
       if (isNative() && typeof MaganisNative.getInfo === 'function') {
         try {
           const info = await MaganisNative.getInfo()
-          setCurrentVersion(info.versionName || '0.2.1')
+          setCurrentVersion(info.versionName || '0.2.2')
           setBuildType(info.buildType === 'debug' ? 'debug' : 'release')
         } catch {
           // Fallback
@@ -50,7 +50,24 @@ export const UpdateSettingsPanel: React.FC = () => {
     setIsChecking(true)
     setBackupWarning(null)
     try {
-      const res = await checkForUpdates(currentVersion, buildType)
+      let ver = currentVersion
+      let bType = buildType
+      if (isNative() && typeof MaganisNative.getInfo === 'function') {
+        try {
+          const info = await MaganisNative.getInfo()
+          if (info.versionName) {
+            ver = info.versionName
+            setCurrentVersion(info.versionName)
+          }
+          if (info.buildType) {
+            bType = info.buildType === 'debug' ? 'debug' : 'release'
+            setBuildType(bType)
+          }
+        } catch {
+          // ignore
+        }
+      }
+      const res = await checkForUpdates(ver, bType)
       setResult(res)
     } finally {
       setIsChecking(false)

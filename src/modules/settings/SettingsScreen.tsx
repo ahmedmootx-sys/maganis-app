@@ -484,7 +484,7 @@ export function SettingsScreen({
                     platformInfo?.versionName ||
                     (typeof __BUILD_ID__ !== 'undefined'
                       ? __BUILD_ID__
-                      : '0.2.1')
+                      : '0.2.2')
                   }، والتشخيص والدعم الفني`}
                   onClick={() => setShowAboutSheet(true)}
                   trailing={<Icon name="chevron-left" size={16} />}
@@ -695,7 +695,7 @@ export function SettingsScreen({
                     platformInfo?.versionName ||
                     (typeof __BUILD_ID__ !== 'undefined'
                       ? __BUILD_ID__
-                      : '0.2.1'),
+                      : '0.2.2'),
                   bdi: true,
                   stacked: true,
                 },

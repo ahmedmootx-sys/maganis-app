@@ -1710,10 +1710,6 @@ export function App({ config }: AppProps) {
                 setProgram(prog)
                 showToast('تم تفعيل البرنامج التدريبي بنجاح')
               }}
-              onOpenImport={() => {
-                setShowAiDesignerModal(false)
-                setActiveTab('workouts')
-              }}
               showToast={showToast}
             />
           </Suspense>

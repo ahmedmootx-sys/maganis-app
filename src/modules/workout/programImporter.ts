@@ -10,6 +10,8 @@ import type {
   ProgramExercise,
   WorkoutSplitType,
   Goal,
+  ExerciseSection,
+  CardioConfig,
 } from '../shared/types.ts'
 import {
   ALL_EXERCISES,
@@ -117,7 +119,9 @@ export function formatJsonSyntaxError(err: unknown, jsonText: string): string {
  * 3. Convert reps: 0 + amrap: true to reps: null
  * 4. Resolve exerciseId aliases and matching
  */
-function cleanItem(raw: Record<string, unknown>): Record<string, unknown> {
+export function cleanItem(
+  raw: Record<string, unknown>,
+): Record<string, unknown> {
   const item = { ...raw }
 
   // 1. Omit targetSubMuscleAr: "عضلة رئيسية"
@@ -128,7 +132,21 @@ function cleanItem(raw: Record<string, unknown>): Record<string, unknown> {
     delete item.targetSubMuscleAr
   }
 
-  // 2. Parse customName if it contains "(English)" or "[قيد المراجعة]"
+  // 2. Map name or exerciseName to customName if customName is absent
+  if (!item.customName) {
+    if (typeof item.name === 'string') {
+      item.customName = item.name
+    } else if (typeof item.exerciseName === 'string') {
+      item.customName = item.exerciseName
+    }
+  }
+
+  // 3. Map notes to notesAr if notesAr is absent
+  if (!item.notesAr && typeof item.notes === 'string') {
+    item.notesAr = item.notes
+  }
+
+  // 4. Parse customName if it contains "(English)" or "[قيد المراجعة]"
   if (typeof item.customName === 'string') {
     const compoundMatch = item.customName.match(
       /^(.+?)\s*\(([^)]+)\)(?:\s*\[([^\]]+)\])?$/,
@@ -147,7 +165,51 @@ function cleanItem(raw: Record<string, unknown>): Record<string, unknown> {
     }
   }
 
-  // 3. AMRAP with 0 or null reps, and zero repsMin
+  // 5. Parse string sets (e.g. "3" -> 3)
+  if (typeof item.sets === 'string') {
+    const parsed = parseInt(item.sets, 10)
+    if (!isNaN(parsed)) {
+      item.sets = parsed
+    }
+  } else if (typeof item.sets !== 'number') {
+    item.sets = 3
+  }
+
+  // 6. Parse string or range reps (e.g. "8-12", "10-12", "8")
+  if (typeof item.reps === 'string') {
+    const trimmed = (item.reps as string).trim()
+    const rangeMatch = trimmed.match(/^(\d+)\s*[-–—]\s*(\d+)$/)
+    if (rangeMatch) {
+      const min = parseInt(rangeMatch[1], 10)
+      const max = parseInt(rangeMatch[2], 10)
+      if (!isNaN(min) && !isNaN(max)) {
+        item.repsMin = typeof item.repsMin === 'number' ? item.repsMin : min
+        item.repsMax = typeof item.repsMax === 'number' ? item.repsMax : max
+        item.reps = Math.round((min + max) / 2)
+      }
+    } else {
+      const parsed = parseInt(trimmed, 10)
+      if (!isNaN(parsed)) {
+        item.reps = parsed
+      }
+    }
+  }
+
+  // 7. Parse string repsMin, repsMax, restSeconds
+  if (typeof item.repsMin === 'string') {
+    const p = parseInt(item.repsMin, 10)
+    if (!isNaN(p)) item.repsMin = p
+  }
+  if (typeof item.repsMax === 'string') {
+    const p = parseInt(item.repsMax, 10)
+    if (!isNaN(p)) item.repsMax = p
+  }
+  if (typeof item.restSeconds === 'string') {
+    const p = parseInt(item.restSeconds, 10)
+    if (!isNaN(p)) item.restSeconds = p
+  }
+
+  // 8. AMRAP with 0 or null reps, and zero repsMin
   if (item.amrap === true) {
     if (item.reps === 0 || item.reps === undefined || item.reps === '0') {
       item.reps = null
@@ -317,26 +379,39 @@ export function importProgramFromJson(
   }
 
   const preProcessed = { ...(candidateObject as Record<string, unknown>) }
+  preProcessed.title =
+    (preProcessed.title as string) ||
+    (preProcessed.name as string) ||
+    'برنامج تدريبي'
+  if (!preProcessed.trainingDaysPerWeek && Array.isArray(preProcessed.days)) {
+    preProcessed.trainingDaysPerWeek = preProcessed.days.length
+  }
   if (Array.isArray(preProcessed.days)) {
-    preProcessed.days = preProcessed.days.map((day: unknown) => {
-      if (!day || typeof day !== 'object') return day
-      const d = { ...(day as Record<string, unknown>) }
-      const itemArrays = [
-        'warmup',
-        'exercises',
-        'controlBlock',
-        'cooldown',
-        'pullPrep',
-      ] as const
-      for (const key of itemArrays) {
-        if (Array.isArray(d[key])) {
-          d[key] = (d[key] as Array<Record<string, unknown>>).map((item) =>
-            item && typeof item === 'object' ? cleanItem(item) : item,
-          )
+    preProcessed.days = preProcessed.days.map(
+      (day: unknown, dayIdx: number) => {
+        if (!day || typeof day !== 'object') return day
+        const d = { ...(day as Record<string, unknown>) }
+        d.name =
+          (d.name as string) || (d.labelAr as string) || `اليوم ${dayIdx + 1}`
+        d.labelAr =
+          (d.labelAr as string) || (d.name as string) || `اليوم ${dayIdx + 1}`
+        const itemArrays = [
+          'warmup',
+          'exercises',
+          'controlBlock',
+          'cooldown',
+          'pullPrep',
+        ] as const
+        for (const key of itemArrays) {
+          if (Array.isArray(d[key])) {
+            d[key] = (d[key] as Array<Record<string, unknown>>).map((item) =>
+              item && typeof item === 'object' ? cleanItem(item) : item,
+            )
+          }
         }
-      }
-      return d
-    })
+        return d
+      },
+    )
   }
 
   const zodResult = ProgramImportSchema.safeParse(preProcessed)
@@ -372,7 +447,7 @@ export function importProgramFromJson(
 
       const processItems = (
         items: ImportedItem[] | undefined,
-        defaultSection: 'warmup' | 'primary' | 'flexibility_core',
+        defaultSection: 'warmup' | 'primary' | 'cooldown' | 'flexibility_core',
       ): ProgramExercise[] => {
         if (!items || items.length === 0) return []
         return items.map((item, itemIdx) => {
@@ -436,7 +511,7 @@ export function importProgramFromJson(
             amrap: item.amrap,
             rpe: item.rpe,
             notes: item.notesAr,
-            section: defaultSection,
+            section: (item.section as ExerciseSection) || defaultSection,
             customName: item.customName,
             nameEn: item.nameEn,
             needsReview: item.needsReview || resolution.isCustom,
@@ -452,16 +527,33 @@ export function importProgramFromJson(
 
       const warmupExercises = processItems(day.warmup, 'warmup')
       const primaryExercises = processItems(day.exercises, 'primary')
-      const cooldownExercises = processItems(day.cooldown, 'flexibility_core')
+      const cooldownExercises = processItems(day.cooldown, 'cooldown')
       const pullPrepExercises = processItems(day.pullPrep, 'warmup')
       const controlExercises = processItems(day.controlBlock, 'primary')
 
+      // Avoid duplicating warmup or cooldown exercises if day.exercises is already a combined routine
+      const hasWarmupInExercises =
+        warmupExercises.length > 0 &&
+        primaryExercises.some(
+          (pe) =>
+            pe.section === 'warmup' ||
+            warmupExercises.some((w) => w.exerciseId === pe.exerciseId),
+        )
+      const hasCooldownInExercises =
+        cooldownExercises.length > 0 &&
+        primaryExercises.some(
+          (pe) =>
+            pe.section === 'cooldown' ||
+            pe.section === 'flexibility_core' ||
+            cooldownExercises.some((c) => c.exerciseId === pe.exerciseId),
+        )
+
       const combinedExercises: ProgramExercise[] = [
-        ...warmupExercises,
+        ...(hasWarmupInExercises ? [] : warmupExercises),
         ...pullPrepExercises,
         ...primaryExercises,
         ...controlExercises,
-        ...cooldownExercises,
+        ...(hasCooldownInExercises ? [] : cooldownExercises),
       ]
 
       const programDay: ProgramDay = {
@@ -475,8 +567,9 @@ export function importProgramFromJson(
         pullPrep: pullPrepExercises,
         controlBlock: controlExercises,
         cooldown: cooldownExercises,
-        cardio: day.cardio || day.cardioConfig,
-        cardioConfig: day.cardio || day.cardioConfig,
+        cardio: (day.cardio || day.cardioConfig) as CardioConfig | undefined,
+        cardioConfig: (day.cardio || day.cardioConfig) as
+          CardioConfig | undefined,
       }
 
       return programDay
@@ -486,7 +579,7 @@ export function importProgramFromJson(
   const finalProgram: WorkoutProgram = {
     id: rawProgram.id || `imported-${Date.now()}`,
     createdAt: rawProgram.createdAt || Date.now(),
-    title: rawProgram.title,
+    title: rawProgram.title || rawProgram.name || 'برنامج تدريبي',
     primaryGoal: (rawProgram.primaryGoal as Goal) || 'hypertrophy',
     trainingDaysPerWeek:
       rawProgram.trainingDaysPerWeek || normalizedDays.length,

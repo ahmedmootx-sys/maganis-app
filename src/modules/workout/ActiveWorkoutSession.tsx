@@ -415,9 +415,7 @@ export function ActiveWorkoutSession({
 
   function handleOpenExerciseDetail(exerciseId: string) {
     const ex = getEffectiveExercise(exerciseId, customExercises)
-    if (ex) {
-      setSelectedExerciseForDetail(ex)
-    }
+    setSelectedExerciseForDetail(ex || ({ id: exerciseId } as Exercise))
   }
 
   // Warmup Confirmation State for high-risk exercises
@@ -1631,7 +1629,9 @@ export function ActiveWorkoutSession({
       {/* Exercise Detail Modal */}
       {selectedExerciseForDetail && (
         <ExerciseDetailModal
+          exerciseId={selectedExerciseForDetail.id}
           exercise={selectedExerciseForDetail}
+          programDay={programDay}
           onClose={() => setSelectedExerciseForDetail(null)}
         />
       )}
