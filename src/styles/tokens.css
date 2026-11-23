@@ -171,11 +171,11 @@
   );
 
   /* Reserved Muscle Map Colors (Strictly Isolated to Anatomy Visuals, Delta E > 80) */
-  --atlas-primary: #e53935;
-  --atlas-primary-stroke: #b71c1c;
-  --atlas-secondary: #fdd835;
-  --atlas-secondary-stroke: #f9a825;
-  --atlas-approx-stroke: #b71c1c;
+  --atlas-primary: #d32f2f;
+  --atlas-primary-stroke: #9a0007;
+  --atlas-secondary: #ffb300;
+  --atlas-secondary-stroke: #c67c00;
+  --atlas-approx-stroke: #d32f2f;
   --atlas-dimmed: rgba(140, 145, 155, 0.25);
   --color-muscle-primary: var(--atlas-primary);
   --color-muscle-secondary: var(--atlas-secondary);
@@ -220,14 +220,14 @@
   --btn-primary-disabled-fg: #595147;
 
   /* Anatomical Atlas Tokens (Light Mode) */
-  --atlas-muscle: #d8dde4;
-  --atlas-muscle-highlight: #e9ecf2;
-  --atlas-muscle-shadow: #bcc2cc;
-  --atlas-line: #7d8592;
-  --atlas-silhouette-fill: rgba(140, 145, 155, 0.08);
-  --atlas-silhouette-stroke: rgba(125, 133, 146, 0.45);
-  --atlas-ghost-fill: rgba(180, 185, 195, 0.15);
-  --atlas-ghost-stroke: rgba(140, 145, 155, 0.25);
+  --atlas-muscle: #e2e8f0;
+  --atlas-muscle-highlight: #f1f5f9;
+  --atlas-muscle-shadow: #cbd5e1;
+  --atlas-line: #64748b;
+  --atlas-silhouette-fill: rgba(100, 116, 139, 0.08);
+  --atlas-silhouette-stroke: rgba(100, 116, 139, 0.55);
+  --atlas-ghost-fill: rgba(148, 163, 184, 0.18);
+  --atlas-ghost-stroke: rgba(100, 116, 139, 0.35);
   --atlas-accent-outline: var(--color-accent, #f95700);
 
   /* Semantic State Tokens */
@@ -281,9 +281,9 @@
   --z-content: 1;
   --z-sticky: 10;
   --z-nav: 50;
-  --z-sheet: 1200;
-  --z-toast: 1300;
-  --z-dialog: 1400;
+  --z-dialog: 9900;
+  --z-sheet: 10000;
+  --z-toast: 12000;
 
   /* Aliases for backwards compatibility */
   --z-index-sticky: var(--z-sticky);
@@ -291,7 +291,7 @@
   --z-index-bottom-nav: var(--z-nav);
   --z-index-sheet: var(--z-sheet);
   --z-index-toast: var(--z-toast);
-  --z-index-modal: var(--z-dialog);
+  --z-index-modal: var(--z-sheet);
 
   /* Unified bottom-inset variable used by nav bar and every sheet footer */
   --bottom-inset: env(safe-area-inset-bottom, 0px);
@@ -374,19 +374,19 @@
   --btn-primary-disabled-fg: #b4aca0;
 
   /* Anatomical Atlas Tokens (Dark Mode) */
-  --atlas-muscle: #2d323a;
-  --atlas-muscle-highlight: #3a404c;
-  --atlas-muscle-shadow: #20242b;
-  --atlas-line: #5a6270;
-  --atlas-silhouette-fill: rgba(240, 243, 248, 0.008);
-  --atlas-silhouette-stroke: rgba(180, 185, 195, 0.35);
-  --atlas-ghost-fill: rgba(100, 105, 115, 0.15);
-  --atlas-ghost-stroke: rgba(120, 125, 135, 0.25);
+  --atlas-muscle: #282e38;
+  --atlas-muscle-highlight: #333b47;
+  --atlas-muscle-shadow: #1c2128;
+  --atlas-line: #64748b;
+  --atlas-silhouette-fill: rgba(240, 243, 248, 0.015);
+  --atlas-silhouette-stroke: rgba(148, 163, 184, 0.45);
+  --atlas-ghost-fill: rgba(100, 105, 115, 0.18);
+  --atlas-ghost-stroke: rgba(120, 125, 135, 0.3);
   --atlas-accent-outline: var(--color-accent, #f58524);
   --atlas-primary: #ef5350;
   --atlas-primary-stroke: #b71c1c;
-  --atlas-secondary: #ffee58;
-  --atlas-secondary-stroke: #fdd835;
+  --atlas-secondary: #ffca28;
+  --atlas-secondary-stroke: #f57f17;
   --atlas-approx-stroke: #ef5350;
   --atlas-dimmed: rgba(180, 185, 195, 0.2);
 

@@ -17,9 +17,10 @@
  * - Focus support: focusField="video" jumps to video URL, focusField="media" / "image" jumps to media section.
  */
 
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import type {
   Exercise,
+  ExerciseEnvironment,
   ExerciseMuscleTarget,
   MeasurementType,
 } from '../shared/types.ts'
@@ -105,6 +106,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   const [nameEn, setNameEn] = useState('')
   const [measurementType, setMeasurementType] =
     useState<MeasurementType>('weight')
+  const [environment, setEnvironment] = useState<ExerciseEnvironment>('gym')
+  const [perSide, setPerSide] = useState<boolean>(false)
 
   // Form State: Media
   // Mode: 'original' | 'none' | 'custom' | 'external'
@@ -131,6 +134,9 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   // Form State: Video & Notes
   const [personalNote, setPersonalNote] = useState('')
   const [videoUrl, setVideoUrl] = useState('')
+  const [videoSourceMode, setVideoSourceMode] = useState<'url' | 'file'>('url')
+  const [videoFileUploading, setVideoFileUploading] = useState(false)
+  const [videoFileName, setVideoFileName] = useState('')
 
   const hasCatalogMedia = useMemo(() => {
     return Boolean(
@@ -142,20 +148,40 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
     )
   }, [exercise])
 
+  const openedExerciseIdRef = useRef<string | null>(null)
+  const prevIsOpenRef = useRef(false)
+
   // Sync state when opened
   useEffect(() => {
     if (isOpen) {
+      const isJustOpened = !prevIsOpenRef.current
+      const isDifferentExercise = openedExerciseIdRef.current !== exercise.id
+      prevIsOpenRef.current = true
+
+      if (!isJustOpened && !isDifferentExercise) {
+        return
+      }
+
+      openedExerciseIdRef.current = exercise.id
       setErrorMsg('')
       setShowOriginal(false)
       setActiveMusclePickerId(null)
       setIsSaving(false)
 
-      const ov = existingOverride
+      const ov = getExerciseOverride(exercise.id) || existingOverride
       setNameAr(ov?.nameAr ?? exercise.nameAr ?? '')
       setNameEn(ov?.nameEn ?? exercise.nameEn ?? exercise.name ?? '')
       setMeasurementType(
         ov?.measurementType || exercise.measurementType || 'weight',
       )
+      const defaultEnv: ExerciseEnvironment =
+        exercise.equipment === 'bodyweight' || exercise.equipment === 'band'
+          ? 'home'
+          : exercise.equipment === 'dumbbell'
+            ? 'both'
+            : 'gym'
+      setEnvironment(ov?.environment || exercise.environment || defaultEnv)
+      setPerSide(ov?.perSide ?? exercise.perSide ?? false)
 
       // Sync media mode
       const cachedMedia = getCustomExerciseMedia(exercise.id)
@@ -220,7 +246,18 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
       setMuscles([...initialMuscles])
 
       setPersonalNote(ov?.personalNote ?? '')
-      setVideoUrl(ov?.videoUrl ?? '')
+      const initialVideo = ov?.videoUrl ?? ''
+      setVideoUrl(initialVideo)
+      if (
+        initialVideo.startsWith('data:video/') ||
+        initialVideo.startsWith('blob:')
+      ) {
+        setVideoSourceMode('file')
+        setVideoFileName('فيديو مرفق من الهاتف')
+      } else {
+        setVideoSourceMode('url')
+        setVideoFileName('')
+      }
 
       // Handle focusField navigation
       if (focusField === 'video') {
@@ -230,8 +267,11 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
       } else {
         setActiveSection('data')
       }
+    } else {
+      prevIsOpenRef.current = false
+      openedExerciseIdRef.current = null
     }
-  }, [isOpen, exercise, existingOverride, focusField])
+  }, [isOpen, exercise.id, focusField])
 
   // Jump to field requested
   useEffect(() => {
@@ -279,9 +319,22 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
     const origMuscles = ov?.muscles ?? exercise.muscles ?? []
     const origPersonalNote = ov?.personalNote ?? ''
     const origVideoUrl = ov?.videoUrl ?? ''
+    const origMeasurementType =
+      ov?.measurementType || exercise.measurementType || 'weight'
+    const defaultEnv: ExerciseEnvironment =
+      exercise.equipment === 'bodyweight' || exercise.equipment === 'band'
+        ? 'home'
+        : exercise.equipment === 'dumbbell'
+          ? 'both'
+          : 'gym'
+    const origEnvironment = ov?.environment || exercise.environment || defaultEnv
+    const origPerSide = ov?.perSide ?? exercise.perSide ?? false
 
     if (nameAr !== origNameAr) return true
     if (nameEn !== origNameEn) return true
+    if (measurementType !== origMeasurementType) return true
+    if (environment !== origEnvironment) return true
+    if (perSide !== origPerSide) return true
     if (benefitAr !== origBenefitAr) return true
     if (mechanicsAr !== origMechanicsAr) return true
     if (personalNote !== origPersonalNote) return true
@@ -303,6 +356,7 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
   }, [
     nameAr,
     nameEn,
+    measurementType,
     mediaMode,
     customImageBlob,
     externalUrl,
@@ -467,11 +521,23 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
         }
       }
 
+      let finalVideoUrl = videoUrl.trim()
+      if (videoSourceMode === 'url' && finalVideoUrl.includes('pin.it')) {
+        try {
+          const resolved = await resolvePinterestUrl(finalVideoUrl)
+          if (resolved) finalVideoUrl = resolved
+        } catch {
+          // ignore
+        }
+      }
+
       const overrideData: ExerciseOverride = {
         exerciseId: exercise.id,
         nameAr: nameAr.trim() || undefined,
         nameEn: nameEn.trim() || undefined,
         measurementType,
+        environment,
+        perSide,
         imageMode: imageModeValue,
         media: mediaOverrideObj,
         benefitAr: benefitAr.trim() || undefined,
@@ -479,7 +545,7 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
         howToStepsAr: steps.length > 0 ? steps : undefined,
         muscles: muscles.length > 0 ? muscles : undefined,
         personalNote: personalNote.trim() || undefined,
-        videoUrl: videoUrl.trim() || undefined,
+        videoUrl: finalVideoUrl || undefined,
       }
 
       await saveExerciseOverride(overrideData, mediaPayload)
@@ -489,6 +555,8 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
         nameAr: overrideData.nameAr || exercise.nameAr,
         nameEn: overrideData.nameEn || exercise.nameEn,
         measurementType,
+        environment,
+        perSide,
         benefitAr: overrideData.benefitAr || exercise.benefitAr,
         mechanicsAr: overrideData.mechanicsAr || exercise.mechanicsAr,
         howToStepsAr: overrideData.howToStepsAr || exercise.howToStepsAr,
@@ -554,6 +622,37 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
     const maxHeight =
       typeof window !== 'undefined' ? window.innerHeight * 0.4 : 320
     el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
+  }
+
+  const handleVideoFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setErrorMsg('')
+    if (file.size > 50 * 1024 * 1024) {
+      setErrorMsg('حجم ملف الفيديو كبير (الحد الأقصى 50 ميجابايت)')
+      return
+    }
+    setVideoFileUploading(true)
+    try {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const dataUrl = reader.result as string
+        setVideoUrl(dataUrl)
+        setVideoFileName(file.name)
+        setVideoFileUploading(false)
+        setErrorMsg('')
+      }
+      reader.onerror = () => {
+        setErrorMsg('فشل في قراءة ملف الفيديو من الهاتف')
+        setVideoFileUploading(false)
+      }
+      reader.readAsDataURL(file)
+    } catch {
+      setErrorMsg('حدث خطأ أثناء تحميل الفيديو')
+      setVideoFileUploading(false)
+    }
   }
 
   const handleVideoUrlBlur = async () => {
@@ -1004,6 +1103,65 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                         </div>
                       )}
                     </div>
+
+                    {/* Environment Selector: Home / Gym / Both */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label
+                        style={{
+                          fontSize: 'var(--font-size-sm)',
+                          fontWeight: 'var(--font-weight-medium)',
+                          color: 'var(--color-text)',
+                        }}
+                      >
+                        مكان وتصنيف التمرين
+                      </label>
+                      <div style={{ width: '100%', overflowX: 'auto' }}>
+                        <Segmented
+                          style={{ minWidth: '100%' }}
+                          options={[
+                            { value: 'home', label: 'منزلي' },
+                            { value: 'gym', label: 'جيم' },
+                            { value: 'both', label: 'منزلي وجيم' },
+                          ]}
+                          value={environment}
+                          onChange={(val) => setEnvironment(val as ExerciseEnvironment)}
+                        />
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--color-text-2)' }}>
+                        {environment === 'home' && 'يمكن أداؤه في البيت بوزن الجسم أو حبال المقاومة'}
+                        {environment === 'gym' && 'يحتاج أجهزة أو أوزان تتوفر في الجيم'}
+                        {environment === 'both' && 'مناسب للجيم والبيت مع توفر دمبلز خفيفة'}
+                      </div>
+                    </div>
+
+                    {/* Unilateral / Per-Side Toggle */}
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        cursor: 'pointer',
+                        padding: '8px 10px',
+                        background: 'var(--color-surface-2)',
+                        borderRadius: 'var(--radius-control)',
+                        border: '1px solid var(--color-divider)',
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={perSide}
+                        onChange={(e) => setPerSide(e.target.checked)}
+                        style={{ width: '18px', height: '18px', accentColor: 'var(--color-accent)' }}
+                      />
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--color-text)' }}>
+                          تمرين لكل جهة / طرف (أحادي الجانب)
+                        </span>
+                        <span style={{ fontSize: '11.5px', color: 'var(--color-text-2)' }}>
+                          مثل البلانك الجانبي، يوفر عدادين منفصلين يمين ويسار
+                        </span>
+                      </div>
+                    </label>
                   </div>
                 )}
               </div>
@@ -2068,45 +2226,218 @@ export const ExerciseEditSheet: React.FC<ExerciseEditSheetProps> = ({
                       borderTop: '1px solid var(--color-divider)',
                     }}
                   >
-                    {/* Video URL */}
+                    {/* Video Source Mode Selector: URL vs Local File */}
                     <div
                       style={{
                         display: 'flex',
-                        flexDirection: 'column',
-                        gap: 'var(--space-1)',
+                        gap: 'var(--space-2)',
+                        marginBottom: 'var(--space-1)',
                       }}
                     >
-                      <label
-                        htmlFor="edit-video-url"
+                      <button
+                        type="button"
+                        data-testid="video-mode-url"
+                        onClick={() => setVideoSourceMode('url')}
                         style={{
-                          fontSize: 'var(--font-size-sm)',
+                          flex: 1,
+                          minHeight: '40px',
+                          borderRadius: 'var(--radius-control)',
+                          border: `1px solid ${videoSourceMode === 'url' ? 'var(--color-accent)' : 'var(--color-divider)'}`,
+                          backgroundColor:
+                            videoSourceMode === 'url'
+                              ? 'var(--color-accent-tint, rgba(235, 94, 40, 0.1))'
+                              : 'var(--color-surface)',
+                          color:
+                            videoSourceMode === 'url'
+                              ? 'var(--color-accent-text, #eb5e28)'
+                              : 'var(--color-text)',
                           fontWeight: 'var(--font-weight-semibold)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          fontSize: '13px',
                         }}
                       >
-                        رابط فيديو شرح (يوتيوب أو فيميو أو بينترست أو رابط
-                        مباشر)
-                      </label>
-                      <input
-                        id="edit-video-url"
-                        data-testid="input-video-url"
-                        type="url"
-                        dir="ltr"
-                        autoFocus={focusField === 'video'}
-                        placeholder="https://youtu.be/... أو https://pin.it/..."
-                        value={videoUrl}
-                        onChange={(e) => setVideoUrl(e.target.value)}
-                        onBlur={handleVideoUrlBlur}
+                        <Icon name="external-link" size={15} />
+                        <span>رابط إنترنت</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        data-testid="video-mode-file"
+                        onClick={() => setVideoSourceMode('file')}
                         style={{
-                          height: 'var(--control-height)',
-                          padding: '0 var(--space-3)',
+                          flex: 1,
+                          minHeight: '40px',
                           borderRadius: 'var(--radius-control)',
-                          border: '1px solid var(--color-divider)',
-                          backgroundColor: 'var(--color-surface)',
-                          color: 'var(--color-text)',
-                          fontSize: 'var(--font-size-md)',
+                          border: `1px solid ${videoSourceMode === 'file' ? 'var(--color-accent)' : 'var(--color-divider)'}`,
+                          backgroundColor:
+                            videoSourceMode === 'file'
+                              ? 'var(--color-accent-tint, rgba(235, 94, 40, 0.1))'
+                              : 'var(--color-surface)',
+                          color:
+                            videoSourceMode === 'file'
+                              ? 'var(--color-accent-text, #eb5e28)'
+                              : 'var(--color-text)',
+                          fontWeight: 'var(--font-weight-semibold)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          fontSize: '13px',
                         }}
-                      />
+                      >
+                        <Icon name="upload" size={15} />
+                        <span>فيديو من الهاتف</span>
+                      </button>
                     </div>
+
+                    {videoSourceMode === 'url' ? (
+                      /* Video URL */
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 'var(--space-1)',
+                        }}
+                      >
+                        <label
+                          htmlFor="edit-video-url"
+                          style={{
+                            fontSize: 'var(--font-size-sm)',
+                            fontWeight: 'var(--font-weight-semibold)',
+                          }}
+                        >
+                          رابط فيديو شرح (يوتيوب أو فيميو أو بينترست أو رابط
+                          مباشر)
+                        </label>
+                        <input
+                          id="edit-video-url"
+                          data-testid="input-video-url"
+                          type="url"
+                          dir="ltr"
+                          autoFocus={focusField === 'video'}
+                          placeholder="https://youtu.be/... أو https://pin.it/..."
+                          value={
+                            videoUrl.startsWith('data:video/') ||
+                            videoUrl.startsWith('blob:')
+                              ? ''
+                              : videoUrl
+                          }
+                          onChange={(e) => setVideoUrl(e.target.value)}
+                          onBlur={handleVideoUrlBlur}
+                          style={{
+                            height: 'var(--control-height)',
+                            padding: '0 var(--space-3)',
+                            borderRadius: 'var(--radius-control)',
+                            border: '1px solid var(--color-divider)',
+                            backgroundColor: 'var(--color-surface)',
+                            color: 'var(--color-text)',
+                            fontSize: 'var(--font-size-md)',
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      /* Video File Upload from Phone */
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 'var(--space-2)',
+                        }}
+                      >
+                        <label
+                          htmlFor="edit-video-file-input"
+                          style={{
+                            fontSize: 'var(--font-size-sm)',
+                            fontWeight: 'var(--font-weight-semibold)',
+                          }}
+                        >
+                          إرفاق فيديو شرح من الهاتف (MP4, WebM, MOV حتى 50
+                          ميجابايت)
+                        </label>
+                        <input
+                          id="edit-video-file-input"
+                          data-testid="input-video-file"
+                          type="file"
+                          accept="video/mp4,video/webm,video/quicktime,video/*"
+                          onChange={handleVideoFileChange}
+                          style={{
+                            fontSize: 'var(--font-size-sm)',
+                            padding: '6px 0',
+                          }}
+                        />
+                        {videoFileUploading && (
+                          <div
+                            style={{
+                              fontSize: '13px',
+                              color: 'var(--color-accent, #eb5e28)',
+                            }}
+                          >
+                            جارِ معالجة وتحميل الفيديو...
+                          </div>
+                        )}
+                        {videoUrl &&
+                          (videoUrl.startsWith('data:video/') ||
+                            videoUrl.startsWith('blob:')) && (
+                            <div
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '8px',
+                                padding: '10px',
+                                borderRadius: 'var(--radius-control)',
+                                backgroundColor: 'var(--color-surface-2)',
+                                border: '1px solid var(--color-divider)',
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: '12.5px',
+                                  fontWeight: 600,
+                                  color: 'var(--color-text)',
+                                }}
+                              >
+                                {videoFileName || 'فيديو مرفق من الهاتف'}
+                              </span>
+                              <video
+                                src={videoUrl}
+                                controls
+                                playsInline
+                                style={{
+                                  width: '100%',
+                                  maxHeight: '220px',
+                                  borderRadius: '6px',
+                                  backgroundColor: '#000000',
+                                }}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setVideoUrl('')
+                                  setVideoFileName('')
+                                }}
+                                style={{
+                                  alignSelf: 'flex-start',
+                                  padding: '4px 10px',
+                                  borderRadius: 'var(--radius-control)',
+                                  border:
+                                    '1px solid var(--color-danger, #ef4444)',
+                                  backgroundColor: 'transparent',
+                                  color: 'var(--color-danger, #ef4444)',
+                                  fontSize: '12px',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                حذف الفيديو المرفق
+                              </button>
+                            </div>
+                          )}
+                      </div>
+                    )}
 
                     {/* Personal Note */}
                     <div

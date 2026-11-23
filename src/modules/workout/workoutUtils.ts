@@ -1,8 +1,20 @@
 import type {
+  Exercise,
+  ExerciseEnvironment,
   ProgramDay,
   ProgramExercise,
   WorkoutProgram,
 } from '../shared/types.ts'
+
+/**
+ * Determines effective environment (home, gym, both) for an exercise.
+ */
+export function getExerciseEnvironment(e: Exercise): ExerciseEnvironment {
+  if (e.environment) return e.environment
+  if (e.equipment === 'bodyweight' || e.equipment === 'band') return 'home'
+  if (e.equipment === 'dumbbell') return 'both'
+  return 'gym'
+}
 
 /**
  * Workout and exercise helper utility functions.
@@ -205,6 +217,58 @@ export function parseAndValidateRoutineJson(
 export function healExerciseId(id: string): string {
   if (id === 'shoulder-2') return 'shoulder-15'
   return id
+}
+
+/**
+ * Resolves a human-readable display name for an exercise cleanly,
+ * preventing raw kebab-case IDs (e.g. 'placeholder-arm-circle') from showing.
+ */
+export function getExerciseDisplayName(
+  ex?: { nameAr?: string; name?: string; nameEn?: string } | null,
+  programEx?: {
+    customName?: string
+    nameAr?: string
+    nameEn?: string
+    exerciseId?: string
+  } | null,
+  fallbackId?: string,
+): string {
+  // 1. Specific Arabic name from catalog or custom exercise
+  if (ex?.nameAr && ex.nameAr.trim()) return ex.nameAr.trim()
+
+  // 2. Custom name on program exercise
+  if (programEx?.customName && programEx.customName.trim()) {
+    return programEx.customName.trim()
+  }
+
+  // 3. NameAr on program exercise
+  if (programEx?.nameAr && programEx.nameAr.trim()) {
+    return programEx.nameAr.trim()
+  }
+
+  // 4. English name from catalog or program
+  if (ex?.name && ex.name.trim()) return ex.name.trim()
+  if (programEx?.nameEn && programEx.nameEn.trim()) return programEx.nameEn.trim()
+
+  // 5. Clean fallback from exercise ID
+  const rawId = fallbackId || programEx?.exerciseId || ''
+  if (!rawId) return 'تمرين'
+
+  // Strip leading placeholder- or placeholder_
+  const stripped = rawId.replace(/^placeholder[-_]/i, '')
+  // Replace underscores and hyphens with spaces
+  const spaced = stripped.replace(/[-_]+/g, ' ').trim()
+  if (!spaced) return 'تمرين'
+
+  // If text already has Arabic characters, return as is
+  if (/[\u0600-\u06FF]/.test(spaced)) return spaced
+
+  // Convert to Title Case for English slugs (e.g. "arm circle" -> "Arm Circle")
+  return spaced
+    .split(' ')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
 }
 
 export function healProgram(

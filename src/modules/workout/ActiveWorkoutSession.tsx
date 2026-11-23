@@ -8,33 +8,48 @@ import {
   useNow,
 } from '../../platform/timerEngine.ts'
 import { haptics } from '../../platform/haptics.ts'
+import { soundEffects } from '../../platform/soundEffects.ts'
 import { useKeepAwake } from '../../platform/keepAwake.ts'
 import { onAppPause } from '../../platform/lifecycle.ts'
 import { syncSchedule } from '../../platform/notifications/notificationEngine.ts'
 import { storageHealth } from '../../platform/storageHealth.ts'
 import type {
   Exercise,
+  ProgramExercise,
   ProgramDay,
   SessionExercise,
   TrackingSession,
+  WorkoutProgram,
+  Equipment,
+  MuscleGroup,
+  MeasurementType,
 } from '../shared/types.ts'
 import { getEffectiveExercise } from './exerciseStore.ts'
+import {
+  getExerciseOverride,
+  saveExerciseOverride,
+} from './exerciseOverrides.ts'
 import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import { ExerciseDetailModal } from './ExerciseDetailModal.tsx'
+import { ExerciseSwapModal } from './ExerciseSwapModal.tsx'
 import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import { formatPrescription, cleanDayName } from './sessionResolver.ts'
-import { formatTime } from './workoutUtils.ts'
-import { TopBar, ProgressBar, Sheet, ConfirmSheet } from '../../ui/index.ts'
+import { formatTime, getExerciseDisplayName } from './workoutUtils.ts'
+import { ProgressBar, Sheet, ConfirmSheet } from '../../ui/index.ts'
 import { plural } from '../../utils/plural.ts'
 import exerciseFlagsData from '../../data/exercise-flags.json'
 import {
   IconClock,
   IconMoreVertical,
   IconChevronDown,
+  IconChevronRight,
   IconInfo,
   IconClose,
+  IconDumbbell,
+  IconTrendingUp,
 } from '../../components/Icons.tsx'
+import { openExternalUrl } from '../../utils/urlHelper.ts'
 import {
   computeExerciseSuggestions,
   type CellState,
@@ -47,6 +62,7 @@ export interface ActiveWorkoutSessionProps {
   programDay: ProgramDay
   customExercises?: Exercise[]
   previousSessions?: TrackingSession[]
+  program?: WorkoutProgram | null
   onFinish: (session: TrackingSession) => void
   onCancel: () => void
   onMinimize?: () => void
@@ -59,6 +75,8 @@ export interface ActiveSet {
   weightKg: number
   reps: number
   durationSeconds?: number
+  durationSecondsSideA?: number
+  durationSecondsSideB?: number
   isCompleted: boolean
   hasMissingWeight?: boolean
   weightState: CellState
@@ -74,13 +92,63 @@ export interface ActiveExerciseState {
 
 export function getExerciseMeasureType(
   ex?: Exercise | null,
+  overrideType?: 'weight' | 'bodyweight' | 'timed' | null,
+  programEx?: ProgramExercise | null,
+  exerciseId?: string,
 ): 'weight' | 'bodyweight' | 'timed' {
-  if (!ex) return 'weight'
+  if (overrideType) return overrideType
+
+  const effId = exerciseId || ex?.id
+  if (effId) {
+    try {
+      const userOverride = getExerciseOverride(effId)
+      if (userOverride?.measurementType) {
+        const mt = userOverride.measurementType
+        if (mt === 'duration' || mt === 'time') return 'timed'
+        if (mt === 'bodyweight' || mt === 'reps') return 'bodyweight'
+        if (mt === 'weight') return 'weight'
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   if (
-    ex.measurementType === 'duration' ||
+    programEx?.measurementType === 'time' ||
+    programEx?.measurementType === 'duration'
+  ) {
+    return 'timed'
+  }
+  if (
+    programEx?.measurementType === 'bodyweight' ||
+    programEx?.measurementType === 'reps'
+  ) {
+    return 'bodyweight'
+  }
+  if (programEx?.measurementType === 'weight') {
+    return 'weight'
+  }
+  const idStr = (exerciseId || ex?.id || '').toLowerCase()
+  if (
+    idStr.includes('plank') ||
+    idStr.includes('hold') ||
+    idStr.includes('wall-sit') ||
+    idStr.includes('timed')
+  ) {
+    return 'timed'
+  }
+  if (!ex) return 'weight'
+  const exMeasure = (ex.measurementType as string | undefined)
+  if (
+    exMeasure === 'duration' ||
+    exMeasure === 'time' ||
     ex.kind === 'isometric' ||
     ex.nameAr?.includes('بلانك') ||
-    ex.name?.toLowerCase().includes('plank')
+    ex.name?.toLowerCase().includes('plank') ||
+    ex.nameAr?.includes('ثبات') ||
+    ex.name?.toLowerCase().includes('hold') ||
+    ex.nameAr?.includes('تعليق') ||
+    ex.nameAr?.includes('تثبيت')
   ) {
     return 'timed'
   }
@@ -108,8 +176,7 @@ export function getExerciseMeasureType(
     eq === 'body only' ||
     eq === 'bodyweight' ||
     eq === 'none' ||
-    ex.equipment === 'bodyweight' ||
-    ex.measurementType === 'bodyweight'
+    ex.equipment === 'bodyweight'
   ) {
     return 'bodyweight'
   }
@@ -124,7 +191,11 @@ export function isSetReadyToComplete(
     return set.reps >= 1
   }
   if (measureType === 'timed') {
-    return (set.durationSeconds ?? set.reps) >= 1
+    return (
+      (set.durationSecondsSideA !== undefined && set.durationSecondsSideA >= 1) ||
+      (set.durationSecondsSideB !== undefined && set.durationSecondsSideB >= 1) ||
+      (set.durationSeconds ?? set.reps) >= 1
+    )
   }
   return set.weightKg > 0 && set.reps >= 1
 }
@@ -150,12 +221,21 @@ export interface SavedSessionState {
   lastSeenAt: number
   elapsedSeconds?: number
   savedAt: number
+  exerciseMeasureOverrides?: Record<string, 'weight' | 'bodyweight' | 'timed'>
+  activeTimedSet?: {
+    exIdx: number
+    setIdx: number
+    side?: 'A' | 'B'
+    startTime: number
+    elapsedSeconds: number
+  } | null
 }
 
 export function ActiveWorkoutSession({
   programDay,
   customExercises = [],
   previousSessions = [],
+  program,
   onFinish,
   onCancel,
   onMinimize,
@@ -200,9 +280,29 @@ export function ActiveWorkoutSession({
   const [pausedMs, setPausedMs] = useState<number>(
     () => initialSavedState?.pausedMs || 0,
   )
-  const [pausedAt] = useState<number | null>(
+  const [pausedAt, setPausedAt] = useState<number | null>(
     () => initialSavedState?.pausedAt || null,
   )
+
+  const isWorkoutPaused = pausedAt !== null && pausedAt > 0
+
+  const handleToggleWorkoutPause = () => {
+    if (isWorkoutPaused) {
+      // Resume
+      const additionalPause = pausedAt ? Math.max(0, Date.now() - pausedAt) : 0
+      const nextPausedMs = pausedMs + additionalPause
+      setPausedMs(nextPausedMs)
+      setPausedAt(null)
+      persistSession({ pausedMs: nextPausedMs, pausedAt: null })
+      void haptics.impactLight()
+    } else {
+      // Pause
+      const nowTs = Date.now()
+      setPausedAt(nowTs)
+      persistSession({ pausedAt: nowTs })
+      void haptics.impactLight()
+    }
+  }
   const [restEndsAt, setRestEndsAt] = useState<number | null>(() => {
     if (
       initialSavedState?.restEndsAt &&
@@ -243,18 +343,34 @@ export function ActiveWorkoutSession({
     onElapsedSecondsUpdate?.(elapsedSeconds)
   }, [elapsedSeconds, onElapsedSecondsUpdate])
 
-  // Rest timer completion alert in foreground
+  // Rest timer completion alert in foreground with persistent repeating loop
+  const [restAlertActive, setRestAlertActive] = useState(false)
   const restAlertFiredRef = useRef<number | null>(null)
   useEffect(() => {
     if (restEndsAt !== null && now >= restEndsAt) {
       if (restAlertFiredRef.current !== restEndsAt) {
         restAlertFiredRef.current = restEndsAt
-        void haptics.notifySuccess()
         setRestEndsAt(null)
+        setRestAlertActive(true)
         void syncSchedule()
+        void haptics.vibrateIntense()
+        soundEffects.playRestCompleteChime()
       }
     }
   }, [restEndsAt, now])
+
+  // Repeating vibration & chime loop every 2.5s until dismissed or set completed
+  useEffect(() => {
+    if (!restAlertActive) return
+    const interval = setInterval(() => {
+      void haptics.vibrateIntense()
+      soundEffects.playRestCompleteChime()
+    }, 2500)
+    return () => {
+      clearInterval(interval)
+      haptics.cancelVibration()
+    }
+  }, [restAlertActive])
 
   // --- Initialize Exercises & Sets with Refresh Recovery ---
   const [exercisesState, setExercisesState] = useState<ActiveExerciseState[]>(
@@ -415,7 +531,42 @@ export function ActiveWorkoutSession({
 
   function handleOpenExerciseDetail(exerciseId: string) {
     const ex = getEffectiveExercise(exerciseId, customExercises)
-    setSelectedExerciseForDetail(ex || ({ id: exerciseId } as Exercise))
+    if (ex) {
+      setSelectedExerciseForDetail(ex)
+      return
+    }
+    const dayItem = programDay?.exercises?.find(
+      (e) =>
+        e.exerciseId === exerciseId ||
+        e.customName === exerciseId ||
+        e.nameEn === exerciseId,
+    )
+    if (dayItem) {
+      const syntheticEx: Exercise = {
+        id: exerciseId,
+        nameAr: (dayItem.customName ||
+          dayItem.nameAr ||
+          dayItem.name ||
+          exerciseId) as string,
+        name: (dayItem.nameEn || dayItem.name || exerciseId) as string,
+        equipment: (dayItem.equipment || 'bodyweight') as Equipment,
+        category: (dayItem.category || 'core') as MuscleGroup,
+        difficulty: 'intermediate',
+        target: (dayItem.targetMuscle || dayItem.target || 'other') as string,
+        target_ar: (dayItem.target_ar ||
+          dayItem.targetMuscle ||
+          'عضلات عامة') as string,
+        descriptionAr: (dayItem.notes as string) || '',
+        steps_ar: [],
+        targetMusclesAr: dayItem.targetMuscle
+          ? [dayItem.targetMuscle as string]
+          : [],
+        muscles: [],
+      }
+      setSelectedExerciseForDetail(syntheticEx)
+      return
+    }
+    setSelectedExerciseForDetail({ id: exerciseId } as Exercise)
   }
 
   // Warmup Confirmation State for high-risk exercises
@@ -428,6 +579,8 @@ export function ActiveWorkoutSession({
   >({})
 
   function executeToggleSet(exerciseIndex: number, setIndex: number) {
+    setRestAlertActive(false)
+    haptics.cancelVibration()
     setExercisesState((prev) => {
       const next = [...prev]
       const currentEx = { ...next[exerciseIndex] }
@@ -470,6 +623,155 @@ export function ActiveWorkoutSession({
   const [showPropagationToast, setShowPropagationToast] = useState(false)
   const propagationTimerRef = useRef<number | null>(null)
 
+  // Per-exercise measurement type overrides in active session
+  const [exerciseMeasureOverrides, setExerciseMeasureOverrides] = useState<
+    Record<string, 'weight' | 'bodyweight' | 'timed'>
+  >(() => initialSavedState?.exerciseMeasureOverrides || {})
+
+  // Timed set live stopwatch state (Requirement 7 & 10)
+  const [activeTimedSet, setActiveTimedSet] = useState<{
+    exIdx: number
+    setIdx: number
+    side?: 'A' | 'B'
+    startTime: number
+    elapsedSeconds: number
+  } | null>(() => {
+    if (initialSavedState?.activeTimedSet) {
+      const elapsed = Math.max(
+        1,
+        Math.floor(
+          (Date.now() - initialSavedState.activeTimedSet.startTime) / 1000,
+        ),
+      )
+      return {
+        ...initialSavedState.activeTimedSet,
+        elapsedSeconds: elapsed,
+      }
+    }
+    return null
+  })
+
+  // In-session toggles for unilateral perSide exercises
+  const [perSideOverrides, setPerSideOverrides] = useState<Record<string, boolean>>({})
+
+  const handleToggleExercisePerSide = (exId: string) => {
+    const existing = getExerciseOverride(exId) || { exerciseId: exId }
+    const currentVal = perSideOverrides[exId] ?? existing.perSide ?? false
+    const nextVal = !currentVal
+    setPerSideOverrides((prev) => ({ ...prev, [exId]: nextVal }))
+    void saveExerciseOverride({
+      ...existing,
+      exerciseId: exId,
+      perSide: nextVal,
+    })
+    void haptics.impactLight()
+  }
+
+  // Track which sets have already fired their target alert so it only fires ONCE and never repeats (Req 4)
+  const alertedTargetSetsRef = useRef<Set<string>>(new Set())
+
+  const activeTimedSetStartTime = activeTimedSet?.startTime
+  useEffect(() => {
+    if (!activeTimedSetStartTime) return
+    const interval = setInterval(() => {
+      const elapsed = Math.max(
+        1,
+        Math.floor((Date.now() - activeTimedSetStartTime) / 1000),
+      )
+      setActiveTimedSet((prev) =>
+        prev ? { ...prev, elapsedSeconds: elapsed } : null,
+      )
+
+      // Alert when target time reached (Requirement 4: vibrate once + play ping, do not stop timer)
+      if (activeTimedSet) {
+        const setKey = `${activeTimedSet.exIdx}-${activeTimedSet.setIdx}-${activeTimedSet.side || 'all'}`
+        if (!alertedTargetSetsRef.current.has(setKey)) {
+          const pe = programDay.exercises?.[activeTimedSet.exIdx]
+          const currentSet = exercisesState[activeTimedSet.exIdx]?.sets[activeTimedSet.setIdx]
+          const target = Number(pe?.durationSeconds ?? currentSet?.durationSeconds ?? currentSet?.reps ?? 30)
+          if (elapsed >= target && target > 0) {
+            alertedTargetSetsRef.current.add(setKey)
+            void haptics.vibrate(200)
+            soundEffects.playTimedSetPing()
+          }
+        }
+      }
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [activeTimedSetStartTime, activeTimedSet, programDay.exercises, exercisesState])
+
+  const handleStartSetTimer = (
+    exIdx: number,
+    setIdx: number,
+    initialElapsed = 0,
+    side?: 'A' | 'B',
+  ) => {
+    if (restAlertActive) {
+      setRestAlertActive(false)
+      haptics.cancelVibration()
+    }
+    const timerObj = {
+      exIdx,
+      setIdx,
+      side,
+      startTime: Date.now() - initialElapsed * 1000,
+      elapsedSeconds: initialElapsed,
+    }
+    setActiveTimedSet(timerObj)
+    persistSession({ activeTimedSet: timerObj })
+    void haptics.impactLight()
+  }
+
+  const handleStopSetTimer = (
+    exIdx: number,
+    setIdx: number,
+    side?: 'A' | 'B',
+  ) => {
+    if (!activeTimedSet) return
+    const elapsed = Math.max(
+      1,
+      Math.floor((Date.now() - activeTimedSet.startTime) / 1000),
+    )
+    if (side === 'A') {
+      handleUpdateSetField(exIdx, setIdx, 'durationSecondsSideA', elapsed)
+    } else if (side === 'B') {
+      handleUpdateSetField(exIdx, setIdx, 'durationSecondsSideB', elapsed)
+    } else {
+      handleUpdateSetField(exIdx, setIdx, 'reps', elapsed)
+    }
+    setActiveTimedSet(null)
+    persistSession({ activeTimedSet: null })
+    void haptics.notifySuccess()
+    soundEffects.playTimedSetPing()
+    // Auto-record set and mark as completed only if single timer
+    if (!side) {
+      executeToggleSet(exIdx, setIdx)
+    }
+  }
+
+  const handleSetExerciseMeasureType = (
+    exId: string,
+    type: 'weight' | 'bodyweight' | 'timed',
+  ) => {
+    setExerciseMeasureOverrides((prev) => {
+      const next = { ...prev, [exId]: type }
+      persistSession({ exerciseMeasureOverrides: next })
+      return next
+    })
+    const existing = getExerciseOverride(exId) || { exerciseId: exId }
+    const mappedType: MeasurementType =
+      type === 'timed'
+        ? 'duration'
+        : type === 'bodyweight'
+          ? 'bodyweight'
+          : 'weight'
+    void saveExerciseOverride({
+      ...existing,
+      exerciseId: exId,
+      measurementType: mappedType,
+    })
+  }
+
   // Undo delete state
   const [deletedSetInfo, setDeletedSetInfo] = useState<{
     exerciseIndex: number
@@ -483,8 +785,40 @@ export function ActiveWorkoutSession({
     const exState = exercisesState[exerciseIndex]
     const exId = exState?.exerciseId
     const exercise = getEffectiveExercise(exId, customExercises)
-    const measureType = getExerciseMeasureType(exercise)
+    const measureType = getExerciseMeasureType(
+      exercise,
+      exerciseMeasureOverrides[exId],
+    )
     const currentSet = exState.sets[setIndex]
+
+    // If timer is currently running on this set, clicking the checkmark automatically stops timer and logs elapsed time!
+    if (
+      activeTimedSet?.exIdx === exerciseIndex &&
+      activeTimedSet?.setIdx === setIndex
+    ) {
+      const elapsed = Math.max(
+        1,
+        Math.floor((Date.now() - activeTimedSet.startTime) / 1000),
+      )
+      if (activeTimedSet.side === 'A') {
+        handleUpdateSetField(exerciseIndex, setIndex, 'durationSecondsSideA', elapsed)
+        currentSet.durationSecondsSideA = elapsed
+        currentSet.reps = Math.max(elapsed, currentSet.durationSecondsSideB || 0)
+        currentSet.durationSeconds = currentSet.reps
+      } else if (activeTimedSet.side === 'B') {
+        handleUpdateSetField(exerciseIndex, setIndex, 'durationSecondsSideB', elapsed)
+        currentSet.durationSecondsSideB = elapsed
+        currentSet.reps = Math.max(currentSet.durationSecondsSideA || 0, elapsed)
+        currentSet.durationSeconds = currentSet.reps
+      } else {
+        handleUpdateSetField(exerciseIndex, setIndex, 'reps', elapsed)
+        currentSet.reps = elapsed
+        currentSet.durationSeconds = elapsed
+      }
+      setActiveTimedSet(null)
+      persistSession({ activeTimedSet: null })
+      soundEffects.playTimedSetPing()
+    }
 
     // If set is not yet completed, enforce completion readiness rule (A1)
     if (!currentSet.isCompleted) {
@@ -525,10 +859,63 @@ export function ActiveWorkoutSession({
     setWarmupConfirmationPending(null)
   }
 
+  // In-session swap and note states
+  const [sessionSwapTarget, setSessionSwapTarget] = useState<{
+    exerciseIndex: number
+    exercise: Exercise
+  } | null>(null)
+
+  const [sessionNoteTarget, setSessionNoteTarget] = useState<{
+    exerciseId: string
+    exerciseName: string
+    noteText: string
+  } | null>(null)
+
+  function handleSessionSwap(newExercise: Exercise) {
+    if (!sessionSwapTarget) return
+    const { exerciseIndex } = sessionSwapTarget
+    setExercisesState((prev) => {
+      const next = [...prev]
+      next[exerciseIndex] = {
+        ...next[exerciseIndex],
+        exerciseId: newExercise.id,
+      }
+      return next
+    })
+    if (programDay?.exercises?.[exerciseIndex]) {
+      programDay.exercises[exerciseIndex].exerciseId = newExercise.id
+      programDay.exercises[exerciseIndex].nameAr = newExercise.nameAr
+      programDay.exercises[exerciseIndex].nameEn = newExercise.nameEn
+    }
+    setSessionSwapTarget(null)
+    void haptics.notifySuccess()
+  }
+
+  const handleSaveSessionNote = useCallback(
+    async (text: string) => {
+      if (!sessionNoteTarget) return
+      const existing = getExerciseOverride(sessionNoteTarget.exerciseId) || {
+        exerciseId: sessionNoteTarget.exerciseId,
+      }
+      await saveExerciseOverride({
+        ...existing,
+        exerciseId: sessionNoteTarget.exerciseId,
+        personalNote: text.trim() || undefined,
+      })
+      setSessionNoteTarget(null)
+      void haptics.notifySuccess()
+    },
+    [sessionNoteTarget],
+  )
+
+  const handleCloseSessionNote = useCallback(() => {
+    setSessionNoteTarget(null)
+  }, [])
+
   function handleUpdateSetField(
     exerciseIndex: number,
     setIndex: number,
-    field: 'weightKg' | 'reps',
+    field: 'weightKg' | 'reps' | 'durationSecondsSideA' | 'durationSecondsSideB',
     value: number,
   ) {
     setExercisesState((prev) => {
@@ -539,10 +926,22 @@ export function ActiveWorkoutSession({
 
       const targetSet = nextSets[setIndex]
       const numVal = Math.max(0, value)
-      targetSet[field] = numVal
-      if (field === 'weightKg')
-        targetSet.weightState = numVal > 0 ? 'user' : 'empty'
-      if (field === 'reps') targetSet.repsState = numVal > 0 ? 'user' : 'empty'
+      if (field === 'durationSecondsSideA') {
+        targetSet.durationSecondsSideA = numVal
+        targetSet.reps = Math.max(numVal, targetSet.durationSecondsSideB || 0)
+        targetSet.durationSeconds = targetSet.reps
+        targetSet.repsState = targetSet.reps > 0 ? 'user' : 'empty'
+      } else if (field === 'durationSecondsSideB') {
+        targetSet.durationSecondsSideB = numVal
+        targetSet.reps = Math.max(targetSet.durationSecondsSideA || 0, numVal)
+        targetSet.durationSeconds = targetSet.reps
+        targetSet.repsState = targetSet.reps > 0 ? 'user' : 'empty'
+      } else {
+        targetSet[field] = numVal
+        if (field === 'weightKg')
+          targetSet.weightState = numVal > 0 ? 'user' : 'empty'
+        if (field === 'reps') targetSet.repsState = numVal > 0 ? 'user' : 'empty'
+      }
 
       let propagatedCount = 0
 
@@ -567,6 +966,20 @@ export function ActiveWorkoutSession({
               s.repsState === 'auto'
             ) {
               s.reps = numVal
+              s.repsState = 'auto'
+              propagatedCount++
+            }
+          } else if (field === 'durationSecondsSideA') {
+            if (s.repsState === 'empty' || s.repsState === 'suggested' || s.repsState === 'auto') {
+              s.durationSecondsSideA = numVal
+              s.reps = Math.max(numVal, s.durationSecondsSideB || 0)
+              s.repsState = 'auto'
+              propagatedCount++
+            }
+          } else if (field === 'durationSecondsSideB') {
+            if (s.repsState === 'empty' || s.repsState === 'suggested' || s.repsState === 'auto') {
+              s.durationSecondsSideB = numVal
+              s.reps = Math.max(s.durationSecondsSideA || 0, numVal)
               s.repsState = 'auto'
               propagatedCount++
             }
@@ -744,7 +1157,10 @@ export function ActiveWorkoutSession({
   const totalVolumeKg = useMemo(() => {
     return exercisesState.reduce((acc, ex) => {
       const exercise = getEffectiveExercise(ex.exerciseId, customExercises)
-      const measureType = getExerciseMeasureType(exercise)
+      const measureType = getExerciseMeasureType(
+        exercise,
+        exerciseMeasureOverrides[ex.exerciseId],
+      )
       if (measureType !== 'weight') return acc
 
       return (
@@ -754,12 +1170,15 @@ export function ActiveWorkoutSession({
           .reduce((sAcc, s) => sAcc + s.weightKg * s.reps, 0)
       )
     }, 0)
-  }, [exercisesState, customExercises])
+  }, [exercisesState, customExercises, exerciseMeasureOverrides])
 
   const unweightedCompletedSetsCount = useMemo(() => {
     return exercisesState.reduce((acc, ex) => {
       const exercise = getEffectiveExercise(ex.exerciseId, customExercises)
-      const measureType = getExerciseMeasureType(exercise)
+      const measureType = getExerciseMeasureType(
+        exercise,
+        exerciseMeasureOverrides[ex.exerciseId],
+      )
       if (measureType !== 'weight') return acc
 
       return (
@@ -768,7 +1187,7 @@ export function ActiveWorkoutSession({
           .length
       )
     }, 0)
-  }, [exercisesState, customExercises])
+  }, [exercisesState, customExercises, exerciseMeasureOverrides])
 
   const [showBackSheet, setShowBackSheet] = useState(false)
 
@@ -816,13 +1235,19 @@ export function ActiveWorkoutSession({
           exState.exerciseId,
           customExercises,
         )
-        const measureType = getExerciseMeasureType(exercise)
+        const measureType = getExerciseMeasureType(
+          exercise,
+          exerciseMeasureOverrides[exState.exerciseId],
+        )
 
         const completedSets = exState.sets
           .filter((s) => s.isCompleted)
           .map((s) => ({
             reps: s.reps,
             weightKg: s.weightKg,
+            durationSeconds: s.durationSeconds ?? s.reps,
+            durationSecondsSideA: s.durationSecondsSideA,
+            durationSecondsSideB: s.durationSecondsSideB,
             hasMissingWeight:
               measureType === 'weight' && (!s.weightKg || s.weightKg <= 0),
           }))
@@ -835,6 +1260,9 @@ export function ActiveWorkoutSession({
               : exState.sets.map((s) => ({
                   reps: s.reps,
                   weightKg: s.weightKg,
+                  durationSeconds: s.durationSeconds ?? s.reps,
+                  durationSecondsSideA: s.durationSecondsSideA,
+                  durationSecondsSideB: s.durationSecondsSideB,
                   hasMissingWeight:
                     measureType === 'weight' &&
                     (!s.weightKg || s.weightKg <= 0),
@@ -876,64 +1304,146 @@ export function ActiveWorkoutSession({
         paddingBottom: 'calc(100px + var(--safe-area-bottom, 0px))',
       }}
     >
-      <div className="active-workout-sticky-header">
-        {/* TopBar with Timer, Overflow and Back Sheet */}
-        <TopBar
-          title={programDay.labelAr}
-          subtitle={programDay.focus}
-          onBack={() => setShowBackSheet(true)}
-          actions={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div
-                className="stopwatch-badge"
+      <div
+        className="active-workout-sticky-header"
+        style={{
+          background: 'var(--card-bg)',
+          borderBottom: '1px solid var(--line)',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '8px 12px',
+            minHeight: '48px',
+            gap: '8px',
+          }}
+        >
+          {/* Right: Back & Title */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              minWidth: 0,
+              flex: 1,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setShowBackSheet(true)}
+              aria-label="رجوع من الجلسة"
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'var(--card-subtle)',
+                color: 'var(--ink)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+            >
+              <IconChevronRight size={20} />
+            </button>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                minWidth: 0,
+                overflow: 'hidden',
+                flex: 1,
+              }}
+            >
+              <h1
                 style={{
-                  fontVariantNumeric: 'tabular-nums',
-                  fontWeight: 700,
-                  fontSize: '13.5px',
-                  color: 'var(--color-accent-text, #b83a00)',
-                  background: 'var(--card-subtle)',
-                  padding: '4px 8px',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
                   margin: 0,
+                  fontSize: '14.5px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                  lineHeight: 1.35,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  wordBreak: 'break-word',
                 }}
               >
-                <IconClock size={15} />
-                <span>{formatTime(elapsedSeconds)}</span>
-              </div>
-              {onMinimize && (
-                <button
-                  type="button"
-                  className="btn-icon"
-                  onClick={onMinimize}
-                  title="تصغير الجلسة ومتابعة التصفح"
-                  aria-label="تصغير الجلسة"
+                {programDay.labelAr}
+              </h1>
+              {programDay.focus && (
+                <span
                   style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: 'var(--card-subtle)',
-                    color: 'var(--ink)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
+                    fontSize: '11px',
+                    color: 'var(--muted)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    lineHeight: 1.3,
+                    marginTop: '1px',
                   }}
                 >
-                  <IconChevronDown size={20} />
-                </button>
+                  {programDay.focus}
+                </span>
               )}
+            </div>
+          </div>
+
+          {/* Left: Stopwatch & Actions */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              flexShrink: 0,
+            }}
+          >
+            <button
+              type="button"
+              className="stopwatch-badge"
+              onClick={handleToggleWorkoutPause}
+              aria-label={isWorkoutPaused ? 'استئناف التمرين' : 'إيقاف مؤقت للتمرين'}
+              title={isWorkoutPaused ? 'استئناف التمرين' : 'إيقاف مؤقت للتمرين'}
+              style={{
+                fontVariantNumeric: 'tabular-nums',
+                fontWeight: 700,
+                fontSize: '12px',
+                color: isWorkoutPaused ? '#ffffff' : 'var(--color-accent-text, #b83a00)',
+                background: isWorkoutPaused ? 'var(--color-accent, #f95700)' : 'var(--card-subtle)',
+                padding: '4px 7px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                margin: 0,
+                border: isWorkoutPaused
+                  ? '1px solid var(--color-accent, #f95700)'
+                  : '1px solid var(--line)',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+              }}
+            >
+              <IconClock size={13} />
+              <span>{formatTime(elapsedSeconds)}</span>
+              <span style={{ fontSize: '11px', fontWeight: 800 }}>
+                {isWorkoutPaused ? '▶ استئناف' : '⏸'}
+              </span>
+            </button>
+            {onMinimize && (
               <button
                 type="button"
                 className="btn-icon"
-                onClick={() => setShowOverflowSheet(true)}
-                aria-label="خيارات الجلسة"
+                onClick={onMinimize}
+                title="تصغير الجلسة ومتابعة التصفح"
+                aria-label="تصغير الجلسة"
                 style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '36px',
+                  height: '36px',
                   borderRadius: '8px',
                   border: 'none',
                   background: 'var(--card-subtle)',
@@ -944,11 +1454,32 @@ export function ActiveWorkoutSession({
                   cursor: 'pointer',
                 }}
               >
-                <IconMoreVertical size={20} />
+                <IconChevronDown size={18} />
               </button>
-            </div>
-          }
-        />
+            )}
+            <button
+              type="button"
+              className="btn-icon"
+              onClick={() => setShowOverflowSheet(true)}
+              aria-label="خيارات الجلسة"
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'var(--card-subtle)',
+                color: 'var(--ink)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <IconMoreVertical size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
 
         {/* Floating Rest Timer */}
         {restSecondsLeft !== null && restSecondsLeft > 0 && (
@@ -1039,7 +1570,104 @@ export function ActiveWorkoutSession({
             </div>
           </div>
         )}
-      </div>
+
+        {/* Workout Paused Banner */}
+        {isWorkoutPaused && (
+          <div
+            className="workout-paused-banner"
+            style={{
+              margin: '8px 16px',
+              padding: '12px 14px',
+              borderRadius: '12px',
+              background: 'var(--card-subtle)',
+              border: '1.5px dashed var(--color-accent, #f95700)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px',
+            }}
+          >
+            <div>
+              <strong style={{ display: 'block', fontSize: '13.5px', color: 'var(--ink)' }}>
+                التمرين متوقف مؤقتاً ⏸
+              </strong>
+              <span style={{ fontSize: '11.5px', color: 'var(--muted)' }}>
+                الوقت والمجموعات محفوظة، انقر استئناف لمتابعة التمرين
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleToggleWorkoutPause}
+              style={{
+                padding: '7px 14px',
+                fontSize: '12.5px',
+                fontWeight: 700,
+                borderRadius: '8px',
+                border: 'none',
+                background: 'var(--color-accent, #f95700)',
+                color: '#ffffff',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              ▶ استئناف
+            </button>
+          </div>
+        )}
+
+        {/* Rest Timer Expiration Alert (Heavy vibration + chime loop) - Floating with user */}
+        {restAlertActive && (
+          <div
+            className="rest-timer-expired-banner"
+            style={{
+              position: 'fixed',
+              bottom: '88px',
+              left: '16px',
+              right: '16px',
+              zIndex: 1000,
+              padding: '12px 14px',
+              borderRadius: '14px',
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+              color: '#ffffff',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              boxShadow: '0 8px 24px rgba(220, 38, 38, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.25)',
+              animation: 'slideUpRestBanner 0.25s ease-out',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              <div>
+                <strong style={{ fontSize: '14px', display: 'block', fontWeight: 800 }}>انتهى وقت الراحة!</strong>
+                <span style={{ fontSize: '11.5px', opacity: 0.95 }}>ابدأ مجموعتك التالية الآن</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setRestAlertActive(false)
+                haptics.cancelVibration()
+              }}
+              style={{
+                border: 'none',
+                background: '#ffffff',
+                color: '#dc2626',
+                borderRadius: '8px',
+                padding: '7px 14px',
+                fontWeight: 800,
+                fontSize: '12.5px',
+                cursor: 'pointer',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+              }}
+            >
+              إيقاف التنبيه
+            </button>
+          </div>
+        )}
 
       {/* Progress Strip: Single line + ProgressBar */}
       <div
@@ -1097,386 +1725,1488 @@ export function ActiveWorkoutSession({
           boxSizing: 'border-box',
         }}
       >
-        {exercisesState.map((exState, exIdx) => {
-          const exercise = getEffectiveExercise(
-            exState.exerciseId,
-            customExercises,
-          )
-          const exerciseName = exercise?.nameAr ?? exState.exerciseId
+        {(() => {
+          // Group exercises into sections: warmup, primary, cooldown (Requirement 6)
+          const groupedSections: Record<
+            'warmup' | 'primary' | 'cooldown',
+            Array<{ exState: (typeof exercisesState)[0]; exIdx: number }>
+          > = {
+            warmup: [],
+            primary: [],
+            cooldown: [],
+          }
 
-          return (
-            <div
-              key={exState.exerciseId}
-              className="active-exercise-card card"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-                padding: '16px',
-                borderRadius: '16px',
-                background: 'var(--card-bg)',
-                border: '1px solid var(--line)',
-              }}
-            >
-              {/* Exercise Header Row */}
+          exercisesState.forEach((exState, exIdx) => {
+            const exercise = getEffectiveExercise(
+              exState.exerciseId,
+              customExercises,
+            )
+            const pe = programDay.exercises.find(
+              (p) => p.exerciseId === exState.exerciseId,
+            )
+            let sec: 'warmup' | 'primary' | 'cooldown' = 'primary'
+            const rawPe = pe as Record<string, unknown> | undefined
+            const exCat = (exercise?.category as string | undefined)
+            const exNameLower = String(
+              exercise?.nameAr ||
+              pe?.customName ||
+              pe?.nameAr ||
+              exState.exerciseId ||
+              '',
+            ).toLowerCase()
+            const isWarmupName =
+              exNameLower.includes('إحماء') ||
+              exNameLower.includes('تسخين') ||
+              exNameLower.includes('warmup') ||
+              exNameLower.includes('warm-up')
+            const isCooldownName =
+              exNameLower.includes('إطالة') ||
+              exNameLower.includes('استطالة') ||
+              exNameLower.includes('تهدئة') ||
+              exNameLower.includes('مرونة') ||
+              exNameLower.includes('استشفاء') ||
+              exNameLower.includes('cooldown') ||
+              exNameLower.includes('cool-down') ||
+              exNameLower.includes('stretch')
+
+            if (
+              pe?.section === 'warmup' ||
+              rawPe?.warmup === true ||
+              rawPe?.isWarmup === true ||
+              exCat === 'warmup' ||
+              exState.exerciseId.toLowerCase().includes('warmup') ||
+              isWarmupName
+            ) {
+              sec = 'warmup'
+            } else if (
+              pe?.section === 'cooldown' ||
+              pe?.section === 'flexibility_core' ||
+              rawPe?.cooldown === true ||
+              rawPe?.isCooldown === true ||
+              exCat === 'cardio' ||
+              exCat === 'mobility' ||
+              exCat === 'stretching' ||
+              exState.exerciseId.toLowerCase().includes('cooldown') ||
+              isCooldownName
+            ) {
+              sec = 'cooldown'
+            }
+            groupedSections[sec].push({ exState, exIdx })
+          })
+
+          const hasMultipleSections =
+            (groupedSections.warmup.length > 0 ? 1 : 0) +
+            (groupedSections.primary.length > 0 ? 1 : 0) +
+            (groupedSections.cooldown.length > 0 ? 1 : 0) > 1
+
+          const sectionMetadata: Record<
+            'warmup' | 'primary' | 'cooldown',
+            { labelAr: string; icon: React.ReactNode }
+          > = {
+            warmup: {
+              labelAr: 'تمارين الإحماء',
+              icon: (
+                <IconTrendingUp size={16} style={{ color: 'var(--brand)' }} />
+              ),
+            },
+            primary: {
+              labelAr: 'التمارين الأساسية',
+              icon: (
+                <IconDumbbell
+                  size={16}
+                  style={{ color: 'var(--color-primary, #2563eb)' }}
+                />
+              ),
+            },
+            cooldown: {
+              labelAr: 'تمارين الإطالة والتهدئة',
+              icon: <IconClock size={16} style={{ color: '#10b981' }} />,
+            },
+          }
+
+          return (['warmup', 'primary', 'cooldown'] as const).map((secKey) => {
+            const secItems = groupedSections[secKey]
+            if (secItems.length === 0) return null
+
+            return (
               <div
-                className="exercise-card-header"
+                key={secKey}
                 style={{
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '12px',
+                  flexDirection: 'column',
+                  gap: '14px',
                 }}
               >
-                <div
-                  className="exercise-title-group"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    minWidth: 0,
-                  }}
-                >
-                  <ExerciseThumb
-                    exercise={exercise}
-                    exerciseId={exState.exerciseId}
-                    size={52}
-                    fullAnimation={
-                      typeof window !== 'undefined' &&
-                      typeof window.matchMedia === 'function'
-                        ? !window.matchMedia('(prefers-reduced-motion: reduce)')
-                            .matches
-                        : true
-                    }
-                  />
-                  <div style={{ minWidth: 0 }}>
-                    <h3
-                      className="exercise-name"
+                {hasMultipleSections && (
+                  <div
+                    className="workout-section-divider"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      borderRadius: '10px',
+                      background: 'var(--card-subtle)',
+                      border: '1px solid var(--line)',
+                      margin: '2px 0',
+                    }}
+                  >
+                    <span style={{ fontSize: '15px' }}>
+                      {sectionMetadata[secKey].icon}
+                    </span>
+                    <span
                       style={{
-                        margin: 0,
-                        fontSize: '15.5px',
+                        fontSize: '13.5px',
                         fontWeight: 700,
                         color: 'var(--ink)',
-                        lineHeight: 1.5,
-                        overflowWrap: 'anywhere',
-                        wordBreak: 'break-word',
                       }}
                     >
-                      {exerciseName}
-                      <ExerciseMarks
-                        hasVideo={exercise?.hasVideo}
-                        hasCustomMedia={exercise?.hasCustomMedia}
-                      />
-                    </h3>
-                    {exercise && (
+                      {sectionMetadata[secKey].labelAr}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '11.5px',
+                        color: 'var(--muted)',
+                        marginRight: 'auto',
+                      }}
+                    >
+                      {plural(secItems.length, 'exercise')}
+                    </span>
+                  </div>
+                )}
+                {secItems.map(({ exState, exIdx }) => {
+                  const exercise = getEffectiveExercise(
+                    exState.exerciseId,
+                    customExercises,
+                  )
+                  const pe = programDay.exercises.find(
+                    (p) => p.exerciseId === exState.exerciseId,
+                  )
+                  const exerciseName = getExerciseDisplayName(
+                    exercise,
+                    pe,
+                    exState.exerciseId,
+                  )
+                  const cardMeasureType = getExerciseMeasureType(
+                    exercise,
+                    exerciseMeasureOverrides[exState.exerciseId],
+                    pe,
+                    exState.exerciseId,
+                  )
+                  const isBodyweight = cardMeasureType === 'bodyweight'
+                  const isTimed = cardMeasureType === 'timed'
+                  const userOv = getExerciseOverride(exState.exerciseId)
+                  const isPerSide = Boolean(
+                    perSideOverrides[exState.exerciseId] ??
+                      userOv?.perSide ??
+                      exercise?.perSide,
+                  )
+
+                  return (
+                    <div
+                      key={exState.exerciseId}
+                      className="active-exercise-card card"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px',
+                        padding: '16px',
+                        borderRadius: '16px',
+                        background: 'var(--card-bg)',
+                        border: '1px solid var(--line)',
+                      }}
+                    >
+                      {/* Exercise Header Row */}
                       <div
+                        className="exercise-card-header"
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '8px',
+                          gap: '10px',
+                          width: '100%',
+                        }}
+                      >
+                        <div
+                          className="exercise-title-group"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            minWidth: 0,
+                            flex: 1,
+                          }}
+                        >
+                          <ExerciseThumb
+                            exercise={exercise}
+                            exerciseId={exState.exerciseId}
+                            size={48}
+                            fullAnimation={
+                              typeof window !== 'undefined' &&
+                              typeof window.matchMedia === 'function'
+                                ? !window.matchMedia(
+                                    '(prefers-reduced-motion: reduce)',
+                                  ).matches
+                                : true
+                            }
+                          />
+                          <div style={{ minWidth: 0, flex: 1 }}>
+                            <h3
+                              className="exercise-name"
+                              style={{
+                                margin: 0,
+                                fontSize: '15px',
+                                fontWeight: 700,
+                                color: 'var(--ink)',
+                                lineHeight: 1.35,
+                                overflowWrap: 'anywhere',
+                                wordBreak: 'break-word',
+                              }}
+                            >
+                              {exerciseName}
+                              <ExerciseMarks
+                                hasVideo={exercise?.hasVideo}
+                                hasCustomMedia={exercise?.hasCustomMedia}
+                              />
+                            </h3>
+                            {exercise && (
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '6px',
+                                  marginTop: '3px',
+                                  flexWrap: 'wrap',
+                                }}
+                              >
+                                <span
+                                  className="muscle-badge"
+                                  style={{
+                                    fontSize: '11.5px',
+                                    color: 'var(--muted)',
+                                  }}
+                                >
+                                  {MUSCLE_GROUP_LABELS[exercise.category] ||
+                                    exercise.category}
+                                </span>
+                                {pe && (
+                                  <span
+                                    style={{
+                                      fontSize: '11.5px',
+                                      fontWeight: 700,
+                                      color: 'var(--ink)',
+                                      fontVariantNumeric: 'tabular-nums',
+                                    }}
+                                  >
+                                    · <bdi dir="ltr">{formatPrescription(pe)}</bdi>
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Exercise Action Buttons: Explainer Video, Google Search, and Exercise Detail */}
+                      <div
+                        className="exercise-actions-group"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          flexWrap: 'wrap',
                           marginTop: '2px',
                         }}
                       >
-                        <span
-                          className="muscle-badge"
-                          style={{
-                            fontSize: '12px',
-                            color: 'var(--muted)',
-                          }}
-                        >
-                          {MUSCLE_GROUP_LABELS[exercise.category] ||
-                            exercise.category}
-                        </span>
-                        {(() => {
-                          const pe = programDay.exercises.find(
-                            (p) => p.exerciseId === exState.exerciseId,
-                          )
-                          if (!pe) return null
-                          return (
-                            <span
+                          <button
+                            type="button"
+                            className="ghost-secondary tiny"
+                            onClick={() => {
+                              if (exercise?.videoUrl) {
+                                void openExternalUrl(exercise.videoUrl)
+                                return
+                              }
+                              const q = encodeURIComponent(
+                                exerciseName + ' exercise form tutorial',
+                              )
+                              void openExternalUrl(
+                                `https://www.youtube.com/results?search_query=${q}`,
+                              )
+                            }}
+                            title="فيديو الشرح على YouTube"
+                            aria-label={`فيديو الشرح تمرين ${exerciseName}`}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              height: '36px',
+                              padding: '0 8px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--line)',
+                              background: 'var(--card-subtle)',
+                              color: 'var(--ink)',
+                              fontSize: '11.5px',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              flexShrink: 0,
+                            }}
+                          >
+                            <svg
+                              width="13"
+                              height="13"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                            <span>فيديو</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ghost-secondary tiny"
+                            onClick={() => {
+                              const q = encodeURIComponent(
+                                exerciseName + ' exercise technique',
+                              )
+                              void openExternalUrl(
+                                `https://www.google.com/search?q=${q}`,
+                              )
+                            }}
+                            title="بحث Google عن التمرين"
+                            aria-label={`بحث Google عن تمرين ${exerciseName}`}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              height: '36px',
+                              padding: '0 8px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--line)',
+                              background: 'var(--card-subtle)',
+                              color: 'var(--ink)',
+                              fontSize: '11.5px',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              flexShrink: 0,
+                            }}
+                          >
+                            <svg
+                              width="13"
+                              height="13"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="11" cy="11" r="8" />
+                              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            <span>جوجل</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ghost-primary tiny info-btn"
+                            onClick={() =>
+                              handleOpenExerciseDetail(exState.exerciseId)
+                            }
+                            title="شرح التمرين والتفاصيل"
+                            aria-label={`شرح تفاصيل تمرين ${exerciseName}`}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              height: '36px',
+                              padding: '0 8px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--line)',
+                              background: 'var(--card-subtle)',
+                              color: 'var(--ink)',
+                              fontSize: '11.5px',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              flexShrink: 0,
+                            }}
+                          >
+                            <IconInfo size={15} />
+                            <span>شرح</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ghost-secondary tiny"
+                            onClick={() => {
+                              const resolvedEx =
+                                exercise ||
+                                ({
+                                  id: exState.exerciseId,
+                                  nameAr: exerciseName,
+                                  nameEn: exState.exerciseId,
+                                  category: 'chest',
+                                  equipment: 'bodyweight',
+                                  targetMuscle: 'chest',
+                                  targetSubMuscleAr: '',
+                                  descriptionAr: '',
+                                  executionCuesAr: [],
+                                  mistakesAr: [],
+                                  difficulty: 'beginner',
+                                } as Exercise)
+                              setSessionSwapTarget({
+                                exerciseIndex: exIdx,
+                                exercise: resolvedEx,
+                              })
+                            }}
+                            title="تبديل التمرين بتمرين آخر"
+                            aria-label={`تبديل تمرين ${exerciseName}`}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              height: '36px',
+                              padding: '0 8px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--line)',
+                              background: 'var(--card-subtle)',
+                              color: 'var(--ink)',
+                              fontSize: '11.5px',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              flexShrink: 0,
+                            }}
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="17 1 21 5 17 9" />
+                              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                              <polyline points="7 23 3 19 7 15" />
+                              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                            </svg>
+                            <span>تبديل</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="ghost-secondary tiny"
+                            onClick={() => {
+                              setSessionNoteTarget({
+                                exerciseId: exState.exerciseId,
+                                exerciseName,
+                                noteText: exercise?.personalNote || '',
+                              })
+                            }}
+                            title="كتابة ملاحظة على هذا التمرين"
+                            aria-label={`ملاحظة تمرين ${exerciseName}`}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              height: '36px',
+                              padding: '0 8px',
+                              borderRadius: '8px',
+                              border: exercise?.personalNote
+                                ? '1px solid var(--color-accent)'
+                                : '1px solid var(--line)',
+                              background: exercise?.personalNote
+                                ? 'var(--color-accent-subtle, rgba(235,94,40,0.1))'
+                                : 'var(--card-subtle)',
+                              color: exercise?.personalNote
+                                ? 'var(--color-accent-text, #eb5e28)'
+                                : 'var(--ink)',
+                              fontSize: '11.5px',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              flexShrink: 0,
+                            }}
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            <span>ملاحظة</span>
+                          </button>
+
+                          {isTimed && (
+                            <button
+                              type="button"
+                              className="ghost-secondary tiny"
+                              onClick={() => handleToggleExercisePerSide(exState.exerciseId)}
+                              title={isPerSide ? 'تغيير إلى مؤقت واحد لكامل التمرين' : 'تقسيم المؤقت إلى مؤقتين (لكل جانب)'}
+                              aria-label={isPerSide ? 'مؤقت لكل جانب مفعل' : 'تفعيل مؤقت لكل جانب'}
                               style={{
-                                fontSize: '12px',
-                                fontWeight: 700,
-                                color: 'var(--ink)',
-                                fontVariantNumeric: 'tabular-nums',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                height: '36px',
+                                padding: '0 8px',
+                                borderRadius: '8px',
+                                border: isPerSide
+                                  ? '1px solid var(--color-accent)'
+                                  : '1px solid var(--line)',
+                                background: isPerSide
+                                  ? 'var(--color-accent-subtle, rgba(235,94,40,0.1))'
+                                  : 'var(--card-subtle)',
+                                color: isPerSide
+                                  ? 'var(--color-accent-text, #eb5e28)'
+                                  : 'var(--ink)',
+                                fontSize: '11.5px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                flexShrink: 0,
                               }}
                             >
-                              · <bdi dir="ltr">{formatPrescription(pe)}</bdi>
-                            </span>
-                          )
-                        })()}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className="ghost-primary tiny info-btn"
-                  onClick={() => handleOpenExerciseDetail(exState.exerciseId)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    height: '38px',
-                    padding: '0 10px',
-                    borderRadius: '8px',
-                    border: '1px solid var(--line)',
-                    background: 'var(--card-subtle)',
-                    color: 'var(--ink)',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconInfo size={16} />
-                  <span>شرح التمرين</span>
-                </button>
-              </div>
-
-              {/* Suggestions Hint Claim */}
-              {exState.hintClaimId && (
-                <div style={{ margin: '4px 0 10px', padding: '0 4px' }}>
-                  <Claim id={exState.hintClaimId} />
-                </div>
-              )}
-
-              {/* Sets Table */}
-              {(() => {
-                const cardMeasureType = getExerciseMeasureType(exercise)
-                const isBodyweight = cardMeasureType === 'bodyweight'
-                const isTimed = cardMeasureType === 'timed'
-
-                return (
-                  <div
-                    className="sets-table-wrapper"
-                    style={{ overflowX: 'auto' }}
-                  >
-                    <table className="sets-table" style={{ width: '100%' }}>
-                      <thead>
-                        <tr>
-                          <th className="col-set">المجموعة</th>
-                          <th className="col-prev">السابق</th>
-                          {!isBodyweight && !isTimed && (
-                            <th className="col-input">الوزن</th>
+                              <span>{isPerSide ? 'طرفين' : 'طرف واحد'}</span>
+                            </button>
                           )}
-                          <th className="col-input">
-                            {isTimed ? 'المدة' : 'التكرارات'}
-                          </th>
-                          <th className="col-check">تم</th>
-                          <th className="col-action"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {exState.sets.map((set, sIdx) => {
-                          const measureType = cardMeasureType
-                          const prevExSets =
-                            previousHistoryMap[exState.exerciseId]
-                          const prevSet = prevExSets?.[sIdx]
-                          const prevText = prevSet
-                            ? isBodyweight
-                              ? `${prevSet.reps}\u00A0عدات`
-                              : isTimed
-                                ? `${(prevSet as { durationSeconds?: number; reps?: number }).durationSeconds ?? prevSet.reps}\u00A0ثانية`
-                                : `${prevSet.weightKg}\u00A0كجم × ${prevSet.reps}`
-                            : '—'
-                          const isReady = isSetReadyToComplete(set, measureType)
+                        </div>
 
-                          return (
-                            <React.Fragment key={set.id}>
-                              <tr
-                                className={`set-row ${set.isCompleted ? 'set-completed' : ''}`}
+                        {/* Exercise Personal Note Callout */}
+                        {exercise?.personalNote && (
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'flex-start',
+                              gap: '6px',
+                              padding: '6px 10px',
+                              background: 'var(--color-accent-subtle, rgba(235,94,40,0.08))',
+                              border: '1px solid var(--color-accent-border, rgba(235,94,40,0.2))',
+                              borderRadius: '8px',
+                              marginTop: '6px',
+                              fontSize: '12px',
+                              color: 'var(--ink)',
+                            }}
+                          >
+                            <span style={{ fontWeight: 700, color: 'var(--color-accent-text, #eb5e28)', whiteSpace: 'nowrap' }}>
+                              ملاحظتك:
+                            </span>
+                            <span>{exercise.personalNote}</span>
+                          </div>
+                        )}
+
+                      {/* Measurement Type Switcher Bar */}
+                      <div
+                        className="exercise-measure-bar"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          marginTop: '4px',
+                          marginBottom: '8px',
+                          padding: '4px 8px',
+                          borderRadius: '8px',
+                          background: 'var(--card-subtle, rgba(255, 255, 255, 0.03))',
+                          border: '1px solid var(--line)',
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            color: 'var(--muted)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          نوع القياس:
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleSetExerciseMeasureType(
+                              exState.exerciseId,
+                              'weight',
+                            )
+                          }
+                          style={{
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            border: '1px solid var(--line)',
+                            background:
+                              cardMeasureType === 'weight'
+                                ? 'var(--color-surface-2)'
+                                : 'transparent',
+                            color:
+                              cardMeasureType === 'weight'
+                                ? 'var(--color-accent, #f95700)'
+                                : 'var(--muted)',
+                            fontSize: '11.5px',
+                            fontWeight:
+                              cardMeasureType === 'weight' ? 700 : 500,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          أوزان
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleSetExerciseMeasureType(
+                              exState.exerciseId,
+                              'timed',
+                            )
+                          }
+                          style={{
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            border: '1px solid var(--line)',
+                            background:
+                              cardMeasureType === 'timed'
+                                ? 'var(--color-surface-2)'
+                                : 'transparent',
+                            color:
+                              cardMeasureType === 'timed'
+                                ? 'var(--color-accent, #f95700)'
+                                : 'var(--muted)',
+                            fontSize: '11.5px',
+                            fontWeight:
+                              cardMeasureType === 'timed' ? 700 : 500,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          وقت وثبات
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleSetExerciseMeasureType(
+                              exState.exerciseId,
+                              'bodyweight',
+                            )
+                          }
+                          style={{
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            border: '1px solid var(--line)',
+                            background:
+                              cardMeasureType === 'bodyweight'
+                                ? 'var(--color-surface-2)'
+                                : 'transparent',
+                            color:
+                              cardMeasureType === 'bodyweight'
+                                ? 'var(--color-accent, #f95700)'
+                                : 'var(--muted)',
+                            fontSize: '11.5px',
+                            fontWeight:
+                              cardMeasureType === 'bodyweight' ? 700 : 500,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          وزن الجسم
+                        </button>
+                      </div>
+
+                      {/* Suggestions Hint Claim */}
+                      {exState.hintClaimId && (
+                        <div
+                          style={{
+                            margin: '4px 0 10px',
+                            padding: '8px 12px',
+                            background: 'var(--color-surface-2, rgba(255, 255, 255, 0.04))',
+                            borderRadius: '8px',
+                            border: '1px solid var(--line)',
+                            fontSize: '12px',
+                            lineHeight: 1.45,
+                            color: 'var(--ink-secondary, var(--muted))',
+                          }}
+                        >
+                          <Claim id={exState.hintClaimId} showSource={false} />
+                        </div>
+                      )}
+
+                      {/* Sets Table */}
+                      <div
+                        className="sets-table-wrapper"
+                        style={{ overflowX: 'auto' }}
+                      >
+                        <table
+                          className="sets-table"
+                          style={{ width: '100%' }}
+                        >
+                          <thead>
+                            <tr>
+                              <th className="col-set">المجموعة</th>
+                              <th className="col-prev">السابق</th>
+                              {!isBodyweight && !isTimed && (
+                                <th className="col-input">الوزن</th>
+                              )}
+                              <th
+                                className={`col-input ${isTimed ? 'col-duration' : ''}`}
+                                style={isTimed ? { minWidth: '115px' } : undefined}
                               >
-                                <td className="col-set">
-                                  <span className="set-number-badge">
-                                    {set.setNum}
-                                  </span>
-                                </td>
-                                <td className="col-prev">
-                                  <button
-                                    type="button"
-                                    data-testid={`prev-set-btn-${exIdx}-${sIdx}`}
-                                    className="set-prev-badge set-prev-btn"
-                                    onClick={() =>
-                                      handleCopyPrevious(exIdx, sIdx)
-                                    }
-                                    title={
-                                      prevSet
-                                        ? 'نسخ قيم الجلسة السابقة'
-                                        : 'لا توجد بيانات سابقة'
-                                    }
-                                    disabled={!prevSet}
+                                {isTimed ? 'المدة' : 'التكرارات'}
+                              </th>
+                              <th className="col-check">تم</th>
+                              <th className="col-action"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {exState.sets.map((set, sIdx) => {
+                              const measureType = cardMeasureType
+                              const prevExSets =
+                                previousHistoryMap[exState.exerciseId]
+                              const prevSet = prevExSets?.[sIdx]
+                              const prevHasSides = Boolean(
+                                (prevSet as { durationSecondsSideA?: number })?.durationSecondsSideA ||
+                                  (prevSet as { durationSecondsSideB?: number })?.durationSecondsSideB,
+                              )
+                              const prevText = prevSet
+                                ? isBodyweight
+                                  ? `${prevSet.reps}\u00A0عدات`
+                                  : isTimed
+                                    ? prevHasSides
+                                      ? `${(prevSet as { durationSecondsSideA?: number }).durationSecondsSideA ?? '—'}ث | ${(prevSet as { durationSecondsSideB?: number }).durationSecondsSideB ?? '—'}ث`
+                                      : `${(prevSet as { durationSeconds?: number; reps?: number }).durationSeconds ?? prevSet.reps}\u00A0ثانية`
+                                    : `${prevSet.weightKg}\u00A0كجم × ${prevSet.reps}`
+                                : '—'
+                              const isReady = isSetReadyToComplete(
+                                set,
+                                measureType,
+                              )
+
+                              return (
+                                <React.Fragment key={set.id}>
+                                  <tr
+                                    className={`set-row ${set.isCompleted ? 'set-completed' : ''}`}
                                   >
-                                    {prevText}
-                                  </button>
-                                </td>
-                                {!isBodyweight && !isTimed && (
-                                  <td className="col-input">
-                                    <input
-                                      type="number"
-                                      min="0"
-                                      step="0.5"
-                                      value={
-                                        set.weightKg === 0 ? '' : set.weightKg
-                                      }
-                                      placeholder="كجم"
-                                      onChange={(e) =>
-                                        handleUpdateSetField(
-                                          exIdx,
-                                          sIdx,
-                                          'weightKg',
-                                          parseFloat(e.target.value) || 0,
+                                    <td className="col-set">
+                                      <span className="set-number-badge">
+                                        {set.setNum}
+                                      </span>
+                                    </td>
+                                    <td className="col-prev">
+                                      <button
+                                        type="button"
+                                        data-testid={`prev-set-btn-${exIdx}-${sIdx}`}
+                                        className="set-prev-badge set-prev-btn"
+                                        onClick={() =>
+                                          handleCopyPrevious(exIdx, sIdx)
+                                        }
+                                        title={
+                                          prevSet
+                                            ? 'نسخ قيم الجلسة السابقة'
+                                            : 'لا توجد بيانات سابقة'
+                                        }
+                                        disabled={!prevSet}
+                                      >
+                                        {prevText}
+                                      </button>
+                                    </td>
+                                    {!isBodyweight && !isTimed && (
+                                      <td className="col-input">
+                                        <input
+                                          type="number"
+                                          min="0"
+                                          step="0.5"
+                                          value={
+                                            set.weightKg === 0
+                                              ? ''
+                                              : set.weightKg
+                                          }
+                                          placeholder="كجم"
+                                          onChange={(e) =>
+                                            handleUpdateSetField(
+                                              exIdx,
+                                              sIdx,
+                                              'weightKg',
+                                              parseFloat(e.target.value) || 0,
+                                            )
+                                          }
+                                          className="set-field-input"
+                                          style={{
+                                            border:
+                                              set.weightState === 'auto'
+                                                ? '1.5px dashed var(--color-accent, #f95700)'
+                                                : set.weightState ===
+                                                    'suggested'
+                                                  ? '1px dashed var(--color-divider)'
+                                                  : undefined,
+                                            fontWeight:
+                                              set.weightState === 'auto'
+                                                ? 700
+                                                : undefined,
+                                          }}
+                                          aria-label={`وزن المجموعة ${set.setNum}`}
+                                        />
+                                      </td>
+                                    )}
+                                    <td className={`col-input ${isTimed ? 'col-duration' : ''}`} style={isTimed ? { minWidth: '115px' } : undefined}>
+                                      {isTimed && isPerSide ? (
+                                        <div
+                                          style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: '4px',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            width: '100%',
+                                          }}
+                                        >
+                                          {/* الجهة الأولى */}
+                                          <div
+                                            style={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              gap: '3px',
+                                              justifyContent: 'center',
+                                            }}
+                                          >
+                                            <span
+                                              style={{
+                                                fontSize: '10px',
+                                                fontWeight: 700,
+                                                color: 'var(--muted)',
+                                                minWidth: '18px',
+                                              }}
+                                            >
+                                              ج١
+                                            </span>
+                                            {activeTimedSet?.exIdx === exIdx &&
+                                            activeTimedSet?.setIdx === sIdx &&
+                                            activeTimedSet?.side === 'A' ? (
+                                              <div
+                                                style={{
+                                                  display: 'inline-flex',
+                                                  alignItems: 'center',
+                                                  gap: '4px',
+                                                  background: 'rgba(239, 68, 68, 0.12)',
+                                                  border: '1.5px solid var(--danger, #ef4444)',
+                                                  borderRadius: '6px',
+                                                  padding: '2px 5px',
+                                                }}
+                                              >
+                                                <span
+                                                  style={{
+                                                    fontSize: '12px',
+                                                    fontWeight: 800,
+                                                    fontVariantNumeric: 'tabular-nums',
+                                                    color: 'var(--danger, #ef4444)',
+                                                    minWidth: '40px',
+                                                    textAlign: 'center',
+                                                  }}
+                                                >
+                                                  ⏱ {activeTimedSet.elapsedSeconds} ث
+                                                </span>
+                                                <button
+                                                  type="button"
+                                                  onClick={() => handleStopSetTimer(exIdx, sIdx, 'A')}
+                                                  className="btn-set-timer-stop"
+                                                  aria-label={`إيقاف مؤقت الجهة الأولى للمجموعة ${set.setNum}`}
+                                                  style={{
+                                                    background: 'var(--danger, #ef4444)',
+                                                    color: '#ffffff',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    padding: '3px 6px',
+                                                    fontSize: '10.5px',
+                                                    fontWeight: 700,
+                                                    cursor: 'pointer',
+                                                    whiteSpace: 'nowrap',
+                                                  }}
+                                                  title="إيقاف وقت الجهة الأولى"
+                                                >
+                                                  <span>إيقاف</span>
+                                                </button>
+                                              </div>
+                                            ) : (
+                                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                                                <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                                                  <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="1"
+                                                    value={
+                                                      !set.durationSecondsSideA
+                                                        ? ''
+                                                        : set.durationSecondsSideA
+                                                    }
+                                                    placeholder="0"
+                                                    onChange={(e) =>
+                                                      handleUpdateSetField(
+                                                        exIdx,
+                                                        sIdx,
+                                                        'durationSecondsSideA',
+                                                        parseInt(e.target.value, 10) || 0,
+                                                      )
+                                                    }
+                                                    className="set-field-input"
+                                                    style={{
+                                                      width: '42px',
+                                                      padding: '4px 10px 4px 2px',
+                                                      fontSize: '11px',
+                                                      textAlign: 'center',
+                                                      fontWeight: set.durationSecondsSideA ? 700 : 500,
+                                                    }}
+                                                    aria-label={`ثواني الجهة الأولى للمجموعة ${set.setNum}`}
+                                                  />
+                                                  <span
+                                                    style={{
+                                                      position: 'absolute',
+                                                      left: '3px',
+                                                      fontSize: '9px',
+                                                      color: 'var(--muted)',
+                                                      pointerEvents: 'none',
+                                                      fontWeight: 700,
+                                                    }}
+                                                  >
+                                                    ث
+                                                  </span>
+                                                </div>
+                                                {set.durationSecondsSideA && set.durationSecondsSideA > 0 ? (
+                                                  <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                      handleStartSetTimer(
+                                                        exIdx,
+                                                        sIdx,
+                                                        set.durationSecondsSideA,
+                                                        'A',
+                                                      )
+                                                    }
+                                                    className="btn-set-timer-resume"
+                                                    aria-label={`استكمال مؤقت الجهة الأولى للمجموعة ${set.setNum}`}
+                                                    style={{
+                                                      background: 'var(--card-subtle)',
+                                                      color: 'var(--color-accent-text, #f95700)',
+                                                      border: '1px solid var(--line)',
+                                                      borderRadius: '5px',
+                                                      padding: '3px 5px',
+                                                      fontSize: '10px',
+                                                      fontWeight: 700,
+                                                      cursor: 'pointer',
+                                                      whiteSpace: 'nowrap',
+                                                    }}
+                                                    title="استكمال عد الجهة الأولى"
+                                                  >
+                                                    <span>+ استكمال</span>
+                                                  </button>
+                                                ) : (
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => handleStartSetTimer(exIdx, sIdx, 0, 'A')}
+                                                    className="btn-set-timer-start"
+                                                    aria-label={`بدء مؤقت الجهة الأولى للمجموعة ${set.setNum}`}
+                                                    style={{
+                                                      background: 'var(--card-subtle)',
+                                                      color: 'var(--color-accent-text, #f95700)',
+                                                      border: '1px solid var(--line)',
+                                                      borderRadius: '5px',
+                                                      padding: '3px 6px',
+                                                      fontSize: '10.5px',
+                                                      fontWeight: 700,
+                                                      cursor: 'pointer',
+                                                      whiteSpace: 'nowrap',
+                                                    }}
+                                                    title="بدء عداد الجهة الأولى"
+                                                  >
+                                                    <span>بدء</span>
+                                                  </button>
+                                                )}
+                                              </div>
+                                            )}
+                                          </div>
+
+                                          {/* الجهة الثانية */}
+                                          <div
+                                            style={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              gap: '3px',
+                                              justifyContent: 'center',
+                                            }}
+                                          >
+                                            <span
+                                              style={{
+                                                fontSize: '10px',
+                                                fontWeight: 700,
+                                                color: 'var(--muted)',
+                                                minWidth: '18px',
+                                              }}
+                                            >
+                                              ج٢
+                                            </span>
+                                            {activeTimedSet?.exIdx === exIdx &&
+                                            activeTimedSet?.setIdx === sIdx &&
+                                            activeTimedSet?.side === 'B' ? (
+                                              <div
+                                                style={{
+                                                  display: 'inline-flex',
+                                                  alignItems: 'center',
+                                                  gap: '4px',
+                                                  background: 'rgba(239, 68, 68, 0.12)',
+                                                  border: '1.5px solid var(--danger, #ef4444)',
+                                                  borderRadius: '6px',
+                                                  padding: '2px 5px',
+                                                }}
+                                              >
+                                                <span
+                                                  style={{
+                                                    fontSize: '12px',
+                                                    fontWeight: 800,
+                                                    fontVariantNumeric: 'tabular-nums',
+                                                    color: 'var(--danger, #ef4444)',
+                                                    minWidth: '40px',
+                                                    textAlign: 'center',
+                                                  }}
+                                                >
+                                                  ⏱ {activeTimedSet.elapsedSeconds} ث
+                                                </span>
+                                                <button
+                                                  type="button"
+                                                  onClick={() => handleStopSetTimer(exIdx, sIdx, 'B')}
+                                                  className="btn-set-timer-stop"
+                                                  aria-label={`إيقاف مؤقت الجهة الثانية للمجموعة ${set.setNum}`}
+                                                  style={{
+                                                    background: 'var(--danger, #ef4444)',
+                                                    color: '#ffffff',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    padding: '3px 6px',
+                                                    fontSize: '10.5px',
+                                                    fontWeight: 700,
+                                                    cursor: 'pointer',
+                                                    whiteSpace: 'nowrap',
+                                                  }}
+                                                  title="إيقاف وقت الجهة الثانية"
+                                                >
+                                                  <span>إيقاف</span>
+                                                </button>
+                                              </div>
+                                            ) : (
+                                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                                                <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                                                  <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="1"
+                                                    value={
+                                                      !set.durationSecondsSideB
+                                                        ? ''
+                                                        : set.durationSecondsSideB
+                                                    }
+                                                    placeholder="0"
+                                                    onChange={(e) =>
+                                                      handleUpdateSetField(
+                                                        exIdx,
+                                                        sIdx,
+                                                        'durationSecondsSideB',
+                                                        parseInt(e.target.value, 10) || 0,
+                                                      )
+                                                    }
+                                                    className="set-field-input"
+                                                    style={{
+                                                      width: '42px',
+                                                      padding: '4px 10px 4px 2px',
+                                                      fontSize: '11px',
+                                                      textAlign: 'center',
+                                                      fontWeight: set.durationSecondsSideB ? 700 : 500,
+                                                    }}
+                                                    aria-label={`ثواني الجهة الثانية للمجموعة ${set.setNum}`}
+                                                  />
+                                                  <span
+                                                    style={{
+                                                      position: 'absolute',
+                                                      left: '3px',
+                                                      fontSize: '9px',
+                                                      color: 'var(--muted)',
+                                                      pointerEvents: 'none',
+                                                      fontWeight: 700,
+                                                    }}
+                                                  >
+                                                    ث
+                                                  </span>
+                                                </div>
+                                                {set.durationSecondsSideB && set.durationSecondsSideB > 0 ? (
+                                                  <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                      handleStartSetTimer(
+                                                        exIdx,
+                                                        sIdx,
+                                                        set.durationSecondsSideB,
+                                                        'B',
+                                                      )
+                                                    }
+                                                    className="btn-set-timer-resume"
+                                                    aria-label={`استكمال مؤقت الجهة الثانية للمجموعة ${set.setNum}`}
+                                                    style={{
+                                                      background: 'var(--card-subtle)',
+                                                      color: 'var(--color-accent-text, #f95700)',
+                                                      border: '1px solid var(--line)',
+                                                      borderRadius: '5px',
+                                                      padding: '3px 5px',
+                                                      fontSize: '10px',
+                                                      fontWeight: 700,
+                                                      cursor: 'pointer',
+                                                      whiteSpace: 'nowrap',
+                                                    }}
+                                                    title="استكمال عد الجهة الثانية"
+                                                  >
+                                                    <span>+ استكمال</span>
+                                                  </button>
+                                                ) : (
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => handleStartSetTimer(exIdx, sIdx, 0, 'B')}
+                                                    className="btn-set-timer-start"
+                                                    aria-label={`بدء مؤقت الجهة الثانية للمجموعة ${set.setNum}`}
+                                                    style={{
+                                                      background: 'var(--card-subtle)',
+                                                      color: 'var(--color-accent-text, #f95700)',
+                                                      border: '1px solid var(--line)',
+                                                      borderRadius: '5px',
+                                                      padding: '3px 6px',
+                                                      fontSize: '10.5px',
+                                                      fontWeight: 700,
+                                                      cursor: 'pointer',
+                                                      whiteSpace: 'nowrap',
+                                                    }}
+                                                    title="بدء عداد الجهة الثانية"
+                                                  >
+                                                    <span>بدء</span>
+                                                  </button>
+                                                )}
+                                              </div>
+                                            )}
+                                          </div>
+                                        </div>
+                                      ) : isTimed ? (
+                                        activeTimedSet?.exIdx === exIdx &&
+                                        activeTimedSet?.setIdx === sIdx ? (
+                                          <div
+                                            className="timed-set-active-pill"
+                                            style={{
+                                              display: 'inline-flex',
+                                              alignItems: 'center',
+                                              gap: '6px',
+                                              background: 'rgba(239, 68, 68, 0.12)',
+                                              border: '1.5px solid var(--danger, #ef4444)',
+                                              borderRadius: '8px',
+                                              padding: '3px 8px',
+                                            }}
+                                          >
+                                            <span
+                                              style={{
+                                                fontSize: '15px',
+                                                fontWeight: 800,
+                                                fontVariantNumeric: 'tabular-nums',
+                                                color: 'var(--danger, #ef4444)',
+                                                letterSpacing: '0.5px',
+                                                minWidth: '52px',
+                                                textAlign: 'center',
+                                              }}
+                                              aria-live="polite"
+                                            >
+                                              ⏱ {activeTimedSet.elapsedSeconds} ث
+                                            </span>
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                handleStopSetTimer(
+                                                  exIdx,
+                                                  sIdx,
+                                                )
+                                              }
+                                              className="btn-set-timer-stop"
+                                              aria-label={`إيقاف عداد وقت المجموعة ${set.setNum}`}
+                                              style={{
+                                                background: 'var(--danger, #ef4444)',
+                                                color: '#ffffff',
+                                                border: 'none',
+                                                borderRadius: '6px',
+                                                padding: '5px 9px',
+                                                fontSize: '12px',
+                                                fontWeight: 700,
+                                                cursor: 'pointer',
+                                                whiteSpace: 'nowrap',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '3px',
+                                                boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)',
+                                              }}
+                                              title="إيقاف وتسجيل الوقت"
+                                            >
+                                              <span>إيقاف</span>
+                                            </button>
+                                          </div>
+                                        ) : (
+                                          <div
+                                            style={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              gap: '4px',
+                                              justifyContent: 'center',
+                                            }}
+                                          >
+                                            <div
+                                              style={{
+                                                position: 'relative',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                              }}
+                                            >
+                                              <input
+                                                type="number"
+                                                min="0"
+                                                step="1"
+                                                value={set.reps === 0 ? '' : set.reps}
+                                                placeholder="0"
+                                                onChange={(e) =>
+                                                  handleUpdateSetField(
+                                                    exIdx,
+                                                    sIdx,
+                                                    'reps',
+                                                    parseInt(e.target.value, 10) || 0,
+                                                  )
+                                                }
+                                                className="set-field-input"
+                                                style={{
+                                                  width: '56px',
+                                                  textAlign: 'center',
+                                                  paddingLeft: '14px',
+                                                  fontSize: '13.5px',
+                                                  fontWeight: set.reps > 0 ? 700 : 500,
+                                                }}
+                                                aria-label={`تكرار المجموعة ${set.setNum}`}
+                                              />
+                                              <span
+                                                style={{
+                                                  position: 'absolute',
+                                                  left: '5px',
+                                                  fontSize: '10px',
+                                                  color: 'var(--muted)',
+                                                  pointerEvents: 'none',
+                                                  fontWeight: 700,
+                                                }}
+                                              >
+                                                ث
+                                              </span>
+                                            </div>
+                                            {set.reps > 0 ? (
+                                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                                                <button
+                                                  type="button"
+                                                  onClick={() =>
+                                                    handleStartSetTimer(
+                                                      exIdx,
+                                                      sIdx,
+                                                      set.reps,
+                                                    )
+                                                  }
+                                                  className="btn-set-timer-resume"
+                                                  aria-label={`استكمال عداد وقت المجموعة ${set.setNum}`}
+                                                  style={{
+                                                    background: 'var(--card-subtle)',
+                                                    color: 'var(--color-accent-text, #f95700)',
+                                                    border: '1px solid var(--line)',
+                                                    borderRadius: '6px',
+                                                    padding: '6px 7px',
+                                                    fontSize: '11px',
+                                                    fontWeight: 700,
+                                                    cursor: 'pointer',
+                                                    whiteSpace: 'nowrap',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '2px',
+                                                  }}
+                                                  title="استكمال العد من حيث توقف"
+                                                >
+                                                  <span>+ استكمال</span>
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  onClick={() =>
+                                                    handleStartSetTimer(
+                                                      exIdx,
+                                                      sIdx,
+                                                      0,
+                                                    )
+                                                  }
+                                                  className="btn-set-timer-start"
+                                                  aria-label={`بدء عداد وقت المجموعة ${set.setNum} من الصفر`}
+                                                  style={{
+                                                    background: 'var(--card-subtle)',
+                                                    color: 'var(--muted)',
+                                                    border: '1px solid var(--line)',
+                                                    borderRadius: '6px',
+                                                    padding: '6px 6px',
+                                                    fontSize: '10.5px',
+                                                    fontWeight: 600,
+                                                    cursor: 'pointer',
+                                                    whiteSpace: 'nowrap',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                  }}
+                                                  title="إعادة البدء من الصفر"
+                                                >
+                                                  <span>بدء</span>
+                                                </button>
+                                              </div>
+                                            ) : (
+                                              <button
+                                                type="button"
+                                                onClick={() =>
+                                                  handleStartSetTimer(
+                                                    exIdx,
+                                                    sIdx,
+                                                    0,
+                                                  )
+                                                }
+                                                className="btn-set-timer-start"
+                                                aria-label={`بدء عداد وقت المجموعة ${set.setNum}`}
+                                                style={{
+                                                  background: 'var(--card-subtle)',
+                                                  color: 'var(--color-accent-text, #f95700)',
+                                                  border: '1px solid var(--line)',
+                                                  borderRadius: '6px',
+                                                  padding: '6px 9px',
+                                                  fontSize: '11.5px',
+                                                  fontWeight: 700,
+                                                  cursor: 'pointer',
+                                                  whiteSpace: 'nowrap',
+                                                  display: 'inline-flex',
+                                                  alignItems: 'center',
+                                                  gap: '3px',
+                                                }}
+                                                title="تشغيل عداد الوقت للثبات"
+                                              >
+                                                <span>بدء</span>
+                                              </button>
+                                            )}
+                                          </div>
                                         )
-                                      }
-                                      className="set-field-input"
-                                      style={{
-                                        border:
-                                          set.weightState === 'auto'
-                                            ? '1.5px dashed var(--color-accent, #f95700)'
-                                            : set.weightState === 'suggested'
-                                              ? '1px dashed var(--color-divider)'
-                                              : undefined,
-                                        fontWeight:
-                                          set.weightState === 'auto'
-                                            ? 700
-                                            : undefined,
-                                      }}
-                                      aria-label={`وزن المجموعة ${set.setNum}`}
-                                    />
-                                  </td>
-                                )}
-                                <td className="col-input">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    step="1"
-                                    value={set.reps === 0 ? '' : set.reps}
-                                    placeholder={
-                                      measureType === 'timed'
-                                        ? 'ثوانٍ'
-                                        : 'تكرار'
-                                    }
-                                    onChange={(e) =>
-                                      handleUpdateSetField(
-                                        exIdx,
-                                        sIdx,
-                                        'reps',
-                                        parseInt(e.target.value, 10) || 0,
-                                      )
-                                    }
-                                    className="set-field-input"
-                                    style={{
-                                      border:
-                                        set.repsState === 'auto'
-                                          ? '1.5px dashed var(--color-accent, #f95700)'
-                                          : set.repsState === 'suggested'
-                                            ? '1px dashed var(--color-divider)'
-                                            : undefined,
-                                      fontWeight:
-                                        set.repsState === 'auto'
-                                          ? 700
-                                          : undefined,
-                                    }}
-                                    aria-label={
-                                      measureType === 'timed'
-                                        ? `ثواني المجموعة ${set.setNum}`
-                                        : `تكرار المجموعة ${set.setNum}`
-                                    }
-                                  />
-                                </td>
-                                <td className="col-check">
-                                  <button
-                                    type="button"
-                                    className={`set-check-btn ${set.isCompleted ? 'checked' : ''} ${!isReady && !set.isCompleted ? 'disabled' : ''}`}
-                                    onClick={() =>
-                                      handleToggleSetCompleted(exIdx, sIdx)
-                                    }
-                                    aria-pressed={set.isCompleted}
-                                    title={
-                                      set.isCompleted
-                                        ? 'إلغاء التحديد'
-                                        : isReady
-                                          ? 'تأكيد إنهاء المجموعة'
-                                          : measureType === 'bodyweight'
+                                      ) : (
+                                        <input
+                                          type="number"
+                                          min="0"
+                                          step="1"
+                                          value={
+                                            set.reps === 0 ? '' : set.reps
+                                          }
+                                          placeholder="تكرار"
+                                          onChange={(e) =>
+                                            handleUpdateSetField(
+                                              exIdx,
+                                              sIdx,
+                                              'reps',
+                                              parseInt(e.target.value, 10) || 0,
+                                            )
+                                          }
+                                          className="set-field-input"
+                                          style={{
+                                            border:
+                                              set.repsState === 'auto'
+                                                ? '1.5px dashed var(--color-accent, #f95700)'
+                                                : set.repsState ===
+                                                    'suggested'
+                                                  ? '1px dashed var(--color-divider)'
+                                                  : undefined,
+                                            fontWeight:
+                                              set.repsState === 'auto'
+                                                ? 700
+                                                : undefined,
+                                          }}
+                                          aria-label={`تكرار المجموعة ${set.setNum}`}
+                                        />
+                                      )}
+                                    </td>
+                                    <td className="col-check">
+                                      <button
+                                        type="button"
+                                        className={`set-check-btn ${set.isCompleted ? 'checked' : ''} ${!isReady && !set.isCompleted ? 'disabled' : ''}`}
+                                        onClick={() =>
+                                          handleToggleSetCompleted(exIdx, sIdx)
+                                        }
+                                        aria-pressed={set.isCompleted}
+                                        title={
+                                          set.isCompleted
+                                            ? 'إلغاء التحديد'
+                                            : isReady
+                                              ? 'تأكيد إنهاء المجموعة'
+                                              : measureType === 'bodyweight'
+                                                ? 'اكتب التكرارات أولًا'
+                                                : measureType === 'timed'
+                                                  ? 'اكتب عدد الثواني أولًا'
+                                                  : 'اكتب الوزن والتكرارات أولًا'
+                                        }
+                                        aria-label={
+                                          set.isCompleted
+                                            ? 'مكتملة'
+                                            : 'تأكيد إنهاء المجموعة'
+                                        }
+                                      >
+                                        {set.isCompleted ? '✓' : ''}
+                                      </button>
+                                    </td>
+                                    <td className="col-action">
+                                      {exState.sets.length > 1 && (
+                                        <button
+                                          type="button"
+                                          className="ghost-danger tiny remove-set-btn"
+                                          onClick={() =>
+                                            handleRemoveSet(exIdx, sIdx)
+                                          }
+                                          title="حذف هذه المجموعة"
+                                          aria-label="حذف المجموعة"
+                                        >
+                                          <IconClose size={14} />
+                                        </button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                  {inlineHintSetId === set.id && (
+                                    <tr className="set-hint-row">
+                                      <td
+                                        colSpan={
+                                          isBodyweight || isTimed ? 5 : 6
+                                        }
+                                        style={{ padding: '0 4px 8px' }}
+                                      >
+                                        <div
+                                          className="set-row-hint"
+                                          role="alert"
+                                        >
+                                          {measureType === 'bodyweight'
                                             ? 'اكتب التكرارات أولًا'
                                             : measureType === 'timed'
                                               ? 'اكتب عدد الثواني أولًا'
-                                              : 'اكتب الوزن والتكرارات أولًا'
-                                    }
-                                    aria-label={
-                                      set.isCompleted
-                                        ? 'مكتملة'
-                                        : 'تأكيد إنهاء المجموعة'
-                                    }
-                                  >
-                                    {set.isCompleted ? '✓' : ''}
-                                  </button>
-                                </td>
-                                <td className="col-action">
-                                  {exState.sets.length > 1 && (
-                                    <button
-                                      type="button"
-                                      className="ghost-danger tiny remove-set-btn"
-                                      onClick={() =>
-                                        handleRemoveSet(exIdx, sIdx)
-                                      }
-                                      title="حذف هذه المجموعة"
-                                      aria-label="حذف المجموعة"
-                                    >
-                                      <IconClose size={14} />
-                                    </button>
+                                              : 'اكتب الوزن والتكرارات أولًا'}
+                                        </div>
+                                      </td>
+                                    </tr>
                                   )}
-                                </td>
-                              </tr>
-                              {inlineHintSetId === set.id && (
-                                <tr className="set-hint-row">
-                                  <td
-                                    colSpan={isBodyweight || isTimed ? 5 : 6}
-                                    style={{ padding: '0 4px 8px' }}
-                                  >
-                                    <div className="set-row-hint" role="alert">
-                                      {measureType === 'bodyweight'
-                                        ? 'اكتب التكرارات أولًا'
-                                        : measureType === 'timed'
-                                          ? 'اكتب عدد الثواني أولًا'
-                                          : 'اكتب الوزن والتكرارات أولًا'}
-                                    </div>
-                                  </td>
-                                </tr>
-                              )}
-                            </React.Fragment>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )
-              })()}
+                                </React.Fragment>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
 
-              {/* Add Set Button */}
-              <div className="exercise-card-footer">
-                <button
-                  type="button"
-                  className="ghost-primary tiny add-set-btn"
-                  onClick={() => handleAddSet(exIdx)}
-                  style={{
-                    height: '42px',
-                    width: '100%',
-                    borderRadius: '10px',
-                    border: '1px dashed var(--line)',
-                    background: 'var(--card-subtle)',
-                    color: 'var(--color-accent-text, #b83a00)',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                  }}
-                >
-                  + إضافة مجموعة جديدة
-                </button>
+                      {/* Add Set Button */}
+                      <div className="exercise-card-footer">
+                        <button
+                          type="button"
+                          className="ghost-primary tiny add-set-btn"
+                          onClick={() => handleAddSet(exIdx)}
+                          style={{
+                            height: '42px',
+                            width: '100%',
+                            borderRadius: '10px',
+                            border: '1px dashed var(--line)',
+                            background: 'var(--card-subtle)',
+                            color: 'var(--color-accent-text, #b83a00)',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          + إضافة مجموعة جديدة
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
-            </div>
-          )
-        })}
+            )
+          })
+        })()}
       </main>
 
       {/* Bottom Sticky Action Bar: EXACTLY ONE finish button */}
@@ -1632,6 +3362,8 @@ export function ActiveWorkoutSession({
           exerciseId={selectedExerciseForDetail.id}
           exercise={selectedExerciseForDetail}
           programDay={programDay}
+          program={program}
+          customExercises={customExercises}
           onClose={() => setSelectedExerciseForDetail(null)}
         />
       )}
@@ -2078,6 +3810,132 @@ export function ActiveWorkoutSession({
           </button>
         </div>
       )}
+
+      {/* In-Session Exercise Swap Modal */}
+      {sessionSwapTarget && (
+        <ExerciseSwapModal
+          currentExercise={sessionSwapTarget.exercise}
+          customExercises={customExercises}
+          onSelectSwap={handleSessionSwap}
+          onClose={() => setSessionSwapTarget(null)}
+        />
+      )}
+
+      {/* In-Session Note Modal (Isolated component prevents interval re-render clobbering typing) */}
+      <SessionNoteModal
+        key={sessionNoteTarget?.exerciseId || 'none'}
+        target={sessionNoteTarget}
+        onSave={handleSaveSessionNote}
+        onClose={handleCloseSessionNote}
+      />
     </div>
   )
 }
+
+interface SessionNoteModalProps {
+  target: { exerciseId: string; exerciseName: string; noteText: string } | null
+  onSave: (noteText: string) => Promise<void>
+  onClose: () => void
+}
+
+const SessionNoteModal = React.memo(function SessionNoteModal({
+  target,
+  onSave,
+  onClose,
+}: SessionNoteModalProps) {
+  const [localText, setLocalText] = useState(() => target?.noteText || '')
+
+  if (!target) return null
+
+  return (
+    <Sheet
+      isOpen={Boolean(target)}
+      onClose={onClose}
+      title={`ملاحظة: ${target.exerciseName}`}
+    >
+      <div
+        style={{
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontSize: '13px',
+            color: 'var(--color-text-2)',
+            lineHeight: 1.5,
+          }}
+        >
+          اكتب ملاحظتك على هذا التمرين (مثل: إعداد الجهاز، التكنيك، أو الوزن المناسب).
+          ستظهر هذه الملاحظة تلقائياً في جميع الجلسات القادمة لهذا التمرين.
+        </p>
+        <textarea
+          dir="rtl"
+          value={localText}
+          onChange={(e) => setLocalText(e.target.value)}
+          maxLength={500}
+          placeholder="اكتب ملاحظتك هنا (مثل: إعداد المقعد على رقم 4، كوعي زاوية 45)..."
+          rows={4}
+          style={{
+            width: '100%',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            border: '1px solid var(--line)',
+            background: 'var(--card-subtle)',
+            color: 'var(--ink)',
+            fontSize: '14px',
+            fontFamily: 'inherit',
+            resize: 'vertical',
+            boxSizing: 'border-box',
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            gap: '8px',
+            justifyContent: 'flex-end',
+            marginTop: '8px',
+          }}
+        >
+          <button
+            type="button"
+            className="btn btn--subtle"
+            onClick={onClose}
+            style={{
+              minHeight: '40px',
+              padding: '6px 14px',
+              borderRadius: '8px',
+              border: '1px solid var(--line)',
+              background: 'transparent',
+              color: 'var(--ink)',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            إلغاء
+          </button>
+          <button
+            type="button"
+            className="btn btn--primary"
+            onClick={() => void onSave(localText)}
+            style={{
+              minHeight: '40px',
+              padding: '6px 16px',
+              borderRadius: '8px',
+              border: 'none',
+              background: 'var(--color-accent, #eb5e28)',
+              color: '#ffffff',
+              cursor: 'pointer',
+              fontWeight: 700,
+            }}
+          >
+            حفظ الملاحظة
+          </button>
+        </div>
+      </div>
+    </Sheet>
+  )
+})

@@ -76,10 +76,10 @@ export function SvgLineChart({
       />
 
       {/* Y ticks */}
-      {yTickValues.map((v) => {
+      {yTickValues.map((v, i) => {
         const y = padding.top + chartH - ((v - yMin) / yRange) * chartH
         return (
-          <g key={v}>
+          <g key={`ytick-${i}-${v}`}>
             <line
               x1={padding.left}
               y1={y}
@@ -108,7 +108,7 @@ export function SvgLineChart({
         const show = i % step === 0 || i === data.length - 1
         return show ? (
           <text
-            key={d.label}
+            key={`xlabel-${i}-${d.label}`}
             x={x}
             y={padding.top + chartH + 16}
             textAnchor="middle"

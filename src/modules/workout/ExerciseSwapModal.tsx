@@ -257,14 +257,58 @@ export function ExerciseSwapModal({
                       >
                         {exercise.descriptionAr}
                       </p>
-                      <div className="chips-row" style={{ gap: '4px' }}>
-                        <span className="chip">
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          flexWrap: 'wrap',
+                          marginTop: '4px',
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                            background: 'var(--color-surface-2, #262a33)',
+                            color: 'var(--color-text-2, #9ca3af)',
+                            border: '1px solid var(--color-divider, #374151)',
+                            lineHeight: 1.3,
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
                           {MUSCLE_GROUP_LABELS[exercise.category]}
                         </span>
-                        <span className="chip highlight">
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                            background: 'rgba(235, 94, 40, 0.12)',
+                            color: 'var(--color-accent-text, #f95700)',
+                            border: '1px solid rgba(235, 94, 40, 0.25)',
+                            lineHeight: 1.3,
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
                           {EQUIPMENT_LABELS[exercise.equipment]}
                         </span>
-                        <span className="chip">
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                            background: 'var(--color-surface-2, #262a33)',
+                            color: 'var(--color-text-2, #9ca3af)',
+                            border: '1px solid var(--color-divider, #374151)',
+                            lineHeight: 1.3,
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
                           {DIFFICULTY_LABELS[exercise.difficulty]}
                         </span>
                       </div>
@@ -276,6 +320,16 @@ export function ExerciseSwapModal({
                     onClick={(e) => {
                       e.stopPropagation()
                       onSelectSwap(exercise)
+                    }}
+                    style={{
+                      flexShrink: 0,
+                      minHeight: '44px',
+                      padding: '0 14px',
+                      borderRadius: '8px',
+                      fontWeight: 700,
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     ✓ اختيار

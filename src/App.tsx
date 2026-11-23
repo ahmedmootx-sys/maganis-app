@@ -49,6 +49,8 @@ import { formatTime } from './modules/workout/workoutUtils.ts'
 import { SessionLogger } from './modules/tracking/SessionLogger.tsx'
 import { Toast } from './components/Toast.tsx'
 import { updateManager } from './utils/updateManager.ts'
+import { autoUpdater, useAutoUpdater } from './platform/autoUpdater.ts'
+import { UpdatePromptSheet } from './modules/settings/UpdatePromptSheet.tsx'
 import { isNative } from './platform/runtime.ts'
 import { backButtonManager } from './platform/backStack.ts'
 import { initLifecycleCoordinator } from './platform/lifecycle.ts'
@@ -425,6 +427,24 @@ export function App({ config }: AppProps) {
   const [backToastMessage, setBackToastMessage] = useState<string | null>(null)
   const [hasAppUpdate, setHasAppUpdate] = useState(false)
 
+  const {
+    updateAvailable: hasNativeUpdate,
+    showPrompt: showNativeUpdatePrompt,
+    result: nativeUpdateResult,
+    isDownloading: isDownloadingNativeUpdate,
+    backupWarning: nativeUpdateBackupWarning,
+    downloadAndInstall: handleDownloadNativeUpdate,
+    dismissPrompt: handleDismissNativeUpdatePrompt,
+    openPrompt: handleOpenNativeUpdatePrompt,
+  } = useAutoUpdater()
+
+  useEffect(() => {
+    const cleanupAutoUpdate = autoUpdater.init()
+    return () => {
+      cleanupAutoUpdate()
+    }
+  }, [])
+
   const showToast = useCallback((msg: string) => {
     setBackToastMessage(msg)
     setTimeout(() => setBackToastMessage(null), 3000)
@@ -590,6 +610,10 @@ export function App({ config }: AppProps) {
       } catch {
         // ignore
       }
+      setProfile(null)
+      setProgram(null)
+      setSessions([])
+      setBodyLog([])
       await executeFactoryReset(mode)
     },
     [liveSyncManager],
@@ -893,7 +917,11 @@ export function App({ config }: AppProps) {
   function renderContent() {
     if (route.path === '/exercise/:id' && route.params.id) {
       return (
-        <div className="exercise-route-page screen-container" dir="rtl">
+        <div
+          className="exercise-route-page"
+          style={{ height: '100%', minHeight: 0, overflow: 'hidden' }}
+          dir="rtl"
+        >
           <ExerciseDetailView
             exerciseId={route.params.id}
             profile={profile}
@@ -1192,6 +1220,12 @@ export function App({ config }: AppProps) {
               onOpenSessionLogger={() => setShowLogger(true)}
               onGenerateProgram={handleGenerateProgram}
               onOpenAiDesigner={() => setShowAiDesignerModal(true)}
+              sessions={sessions}
+              onDeleteSession={(sessionId) => {
+                trackingStore.deleteSession(sessionId)
+                const updated = trackingStore.loadSessions()
+                setSessions(updated)
+              }}
             />
           </div>
         )
@@ -1222,6 +1256,11 @@ export function App({ config }: AppProps) {
             onDeleteBodyWeight={handleDeleteWeight}
             onAddDayNote={handleAddNote}
             onDeleteDayNote={handleDeleteNote}
+            onDeleteSession={(sessionId) => {
+              trackingStore.deleteSession(sessionId)
+              const updated = trackingStore.loadSessions()
+              setSessions(updated)
+            }}
             onUpdateSessions={(updated) => {
               setSessions(updated)
               storage.set('tracking.sessions', updated)
@@ -1268,6 +1307,7 @@ export function App({ config }: AppProps) {
             programDay={activeWorkoutDay}
             customExercises={workoutStore.getCustomExercises()}
             previousSessions={sessions}
+            program={program}
             onFinish={(session) => {
               handleSaveSession(session)
               setActiveWorkoutDay(null)
@@ -1391,11 +1431,11 @@ export function App({ config }: AppProps) {
           </div>
         )}
 
-        {hasAppUpdate && !activeWorkoutDay && !isNative() && (
+        {hasNativeUpdate && !showNativeUpdatePrompt && !activeWorkoutDay && (
           <div
             role="status"
             aria-live="polite"
-            data-testid="app-update-banner"
+            data-testid="native-app-update-banner"
             style={{
               background:
                 'var(--color-primary-surface, rgba(14, 165, 233, 0.12))',
@@ -1422,13 +1462,14 @@ export function App({ config }: AppProps) {
                   color: 'var(--color-text)',
                 }}
               >
-                تحديث جديد جاهز للتطبيق
+                يتوفر تحديث جديد لـ «بُنْيَان» (
+                <bdi dir="ltr">{nativeUpdateResult?.latestVersion}</bdi>)
               </span>
             </div>
             <button
               type="button"
               className="btn btn--primary btn--small"
-              onClick={() => updateManager.applyUpdate()}
+              onClick={handleOpenNativeUpdatePrompt}
               style={{
                 fontSize: '12.5px',
                 padding: '6px 14px',
@@ -1437,10 +1478,66 @@ export function App({ config }: AppProps) {
                 whiteSpace: 'nowrap',
               }}
             >
-              تحديث الآن
+              عرض التحديث
             </button>
           </div>
         )}
+
+        {!hasNativeUpdate &&
+          hasAppUpdate &&
+          !activeWorkoutDay &&
+          !isNative() && (
+            <div
+              role="status"
+              aria-live="polite"
+              data-testid="app-update-banner"
+              style={{
+                background:
+                  'var(--color-primary-surface, rgba(14, 165, 233, 0.12))',
+                borderBottom: '1px solid var(--color-primary, #0ea5e9)',
+                padding: '10px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px',
+                width: '100%',
+                boxSizing: 'border-box',
+              }}
+            >
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <Icon
+                  name="refresh-cw"
+                  size={18}
+                  style={{ color: 'var(--color-primary)' }}
+                />
+                <span
+                  style={{
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    color: 'var(--color-text)',
+                  }}
+                >
+                  تحديث جديد جاهز للتطبيق
+                </span>
+              </div>
+              <button
+                type="button"
+                className="btn btn--primary btn--small"
+                onClick={() => updateManager.applyUpdate()}
+                style={{
+                  fontSize: '12.5px',
+                  padding: '6px 14px',
+                  cursor: 'pointer',
+                  borderRadius: 'var(--radius-control)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                تحديث الآن
+              </button>
+            </div>
+          )}
 
         <main className="app-main">
           <ErrorBoundary
@@ -1714,6 +1811,15 @@ export function App({ config }: AppProps) {
             />
           </Suspense>
         )}
+
+        <UpdatePromptSheet
+          isOpen={hasNativeUpdate && showNativeUpdatePrompt}
+          onClose={handleDismissNativeUpdatePrompt}
+          result={nativeUpdateResult}
+          isDownloading={isDownloadingNativeUpdate}
+          backupWarning={nativeUpdateBackupWarning}
+          onDownloadAndInstall={handleDownloadNativeUpdate}
+        />
 
         <Toast
           message={backToastMessage}

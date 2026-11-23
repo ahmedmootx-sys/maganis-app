@@ -8,10 +8,12 @@ import type {
   BodyLogEntry,
   WorkoutProgram,
   ProgramDay,
+  ProgramExercise,
 } from '../shared/types'
 import type { UserProfile } from '../onboarding/types'
 import { GOALS } from '../onboarding/types'
 import { getEffectiveExercise } from '../workout/exerciseStore'
+import { getExerciseDisplayName } from '../workout/workoutUtils'
 import { ExerciseMarks } from '../../components/ExerciseMarks'
 import {
   TopBar,
@@ -386,10 +388,14 @@ export function Dashboard({
                   style={{
                     fontSize: '13px',
                     fontWeight: 700,
-                    color: 'var(--color-accent, #10B981)',
+                    color: activeWorkoutSession.pausedAt
+                      ? 'var(--color-accent, #f95700)'
+                      : 'var(--color-accent, #10B981)',
                   }}
                 >
-                  تمرين قيد التقدم الآن
+                  {activeWorkoutSession.pausedAt
+                    ? 'تمرين متوقف مؤقتاً ⏸'
+                    : 'تمرين قيد التقدم الآن'}
                 </span>
                 <span
                   style={{
@@ -402,7 +408,9 @@ export function Dashboard({
                     activeWorkoutSession.programDay.labelAr}
                 </span>
                 <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>
-                  جلستك ومجموعاتك محفوظة بأمان. يمكنك المتابعة في أي وقت.
+                  {activeWorkoutSession.pausedAt
+                    ? 'تم إيقاف المؤقت وحفظ مكان توقفك ومجموعاتك. انقر استئناف لمتابعة التمرين.'
+                    : 'جلستك ومجموعاتك محفوظة بأمان. يمكنك المتابعة في أي وقت.'}
                 </span>
               </div>
               <Button
@@ -412,7 +420,7 @@ export function Dashboard({
                   onStartWorkout?.(activeWorkoutSession.programDay)
                 }
               >
-                استكمال التمرين
+                {activeWorkoutSession.pausedAt ? 'استئناف التمرين' : 'استكمال التمرين'}
               </Button>
             </div>
           </Card>
@@ -589,11 +597,11 @@ export function Dashboard({
                 >
                   {todayProgramDay.exercises.slice(0, 3).map((pe, idx) => {
                     const ex = getEffectiveExercise(pe.exerciseId)
-                    const arabicName =
-                      ex?.nameAr ??
-                      ((pe as unknown as Record<string, unknown>).customName as
-                        string | undefined) ??
-                      'تمرين مخصص'
+                    const arabicName = getExerciseDisplayName(
+                      ex,
+                      pe as ProgramExercise,
+                      pe.exerciseId,
+                    )
                     const englishName = ex?.name ?? ''
                     const setsReps = formatPrescription(pe)
                     return (
@@ -609,8 +617,9 @@ export function Dashboard({
                         title={
                           <span
                             style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
+                              display: 'inline',
+                              lineHeight: 1.35,
+                              wordBreak: 'break-word',
                             }}
                           >
                             <span>{arabicName}</span>

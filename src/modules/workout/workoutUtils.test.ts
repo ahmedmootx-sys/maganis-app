@@ -3,6 +3,7 @@ import {
   formatTime,
   exportRoutineToJson,
   parseAndValidateRoutineJson,
+  getExerciseDisplayName,
 } from './workoutUtils.ts'
 
 describe('workoutUtils', () => {
@@ -124,6 +125,34 @@ describe('workoutUtils', () => {
     Object.defineProperty(navigator, 'canShare', {
       value: originalCanShare,
       configurable: true,
+    })
+  })
+
+  describe('getExerciseDisplayName', () => {
+    it('prefers catalog exercise nameAr when present', () => {
+      const ex = { nameAr: 'ضغط صدري بالبار', name: 'Barbell Bench Press' }
+      expect(getExerciseDisplayName(ex, null, 'bench-press')).toBe('ضغط صدري بالبار')
+    })
+
+    it('falls back to program exercise customName when catalog nameAr is missing', () => {
+      const pe = { customName: 'دوائر الذراعين للإحماء', exerciseId: 'placeholder-arm-circle' }
+      expect(getExerciseDisplayName(null, pe, 'placeholder-arm-circle')).toBe('دوائر الذراعين للإحماء')
+    })
+
+    it('falls back to program exercise nameAr when present', () => {
+      const pe = { nameAr: 'تمرين مخصص بالأشرطة', exerciseId: 'band-pull' }
+      expect(getExerciseDisplayName(null, pe, 'band-pull')).toBe('تمرين مخصص بالأشرطة')
+    })
+
+    it('cleans placeholder- and kebab-case IDs without leaking raw strings', () => {
+      expect(getExerciseDisplayName(null, null, 'placeholder-arm-circle')).toBe('Arm Circle')
+      expect(getExerciseDisplayName(null, null, 'placeholder_incline_press')).toBe('Incline Press')
+      expect(getExerciseDisplayName(null, null, 'lateral-raise')).toBe('Lateral Raise')
+    })
+
+    it('handles empty or missing inputs gracefully', () => {
+      expect(getExerciseDisplayName(null, null, '')).toBe('تمرين')
+      expect(getExerciseDisplayName(null, null)).toBe('تمرين')
     })
   })
 })

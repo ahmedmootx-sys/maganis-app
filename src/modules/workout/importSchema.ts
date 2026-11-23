@@ -25,6 +25,19 @@ export const ItemSchema = z.object({
   targetSubMuscleAr: z.string().max(200).optional(),
   needsReview: z.boolean().optional(),
   section: z.string().optional(),
+  imageUrl: z.string().max(500000).optional(),
+  image: z.string().max(500000).optional(),
+  gifUrl: z.string().max(500000).optional(),
+  videoUrl: z.string().max(2000).optional(),
+  stepsAr: z.array(z.string().max(1000)).optional(),
+  execution: z.union([z.array(z.string().max(1000)), z.string().max(2000)]).optional(),
+  targetMusclesAr: z.array(z.string().max(200)).optional(),
+  muscles: z.array(z.any()).optional(),
+  targetMuscle: z.string().max(200).optional(),
+  understandingAr: z.string().max(2000).optional(),
+  benefitAr: z.string().max(2000).optional(),
+  personalNote: z.string().max(2000).optional(),
+  measurementType: z.enum(['weight', 'bodyweight', 'duration', 'reps', 'cardio']).optional(),
 })
 
 export const CardioConfigSchema = z.object({
@@ -108,7 +121,14 @@ export const PROMPT_SCHEMA_TEXT = `{
           "unit": "reps | seconds",
           "rpe": "number (1-10, optional)",
           "restSeconds": "number (0-600)",
-          "notesAr": "string (optional Arabic coaching cue)"
+          "notesAr": "string (optional Arabic coaching cue)",
+          "imageUrl": "string URL/data of exercise picture or GIF (optional)",
+          "videoUrl": "string URL for tutorial video (optional)",
+          "stepsAr": ["خطوات أداء التمرين بالتفصيل: 1. الإعداد والوضعية 2. مسار النزول والتحكم 3. الصعود والتنفس"],
+          "targetMusclesAr": ["العضلات المستهدفة تشريحياً بدقة، مثال: صدر علوي، ترايسبس"],
+          "understandingAr": "شرح الفهم وآلية عمل التمرين وتفعيله",
+          "personalNote": "ملاحظة مخصصة لحالة المستخدم وتفاصيل بدنه",
+          "measurementType": "weight | bodyweight | duration | reps | cardio"
         }
       ],
       "cooldown": [

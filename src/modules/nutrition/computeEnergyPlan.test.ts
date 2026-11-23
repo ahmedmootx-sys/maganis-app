@@ -148,7 +148,8 @@ describe('computeEnergyPlan Single Source of Truth & Fixtures', () => {
         lifestyle: 2,
       },
     }
-    const bodyLog = [{ date: '2026-10-18', weightKg: 65 }]
+    const today = new Date().toISOString().slice(0, 10)
+    const bodyLog = [{ date: today, weightKg: 65 }]
     const plan = computeEnergyPlan(profile, bodyLog)
     expect(plan).not.toBeNull()
     if (!plan) return

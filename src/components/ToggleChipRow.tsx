@@ -86,7 +86,7 @@ export function ToggleChipRow<T = string | number>({
           gridAutoColumns: '1fr',
           gridTemplateColumns: `repeat(${options.length > 4 ? 7 : options.length}, minmax(0, 1fr))`,
           width: '100%',
-          gap: '4px',
+          gap: '3px',
           boxSizing: 'border-box',
         }}
       >
@@ -106,10 +106,10 @@ export function ToggleChipRow<T = string | number>({
               style={{
                 minHeight: '44px',
                 height: 'auto',
-                padding: '6px 2px',
+                padding: '6px 0px',
                 borderRadius: '8px',
                 fontWeight: isSelected ? 700 : 600,
-                fontSize: '11.5px',
+                fontSize: 'clamp(9px, 2.5vw, 10.5px)',
                 cursor: isOptionDisabled ? 'not-allowed' : 'pointer',
                 border: isSelected
                   ? '2px solid var(--accent)'
@@ -140,10 +140,10 @@ export function ToggleChipRow<T = string | number>({
                 style={{
                   lineHeight: 1.2,
                   textAlign: 'center',
-                  fontSize: '11px',
-                  whiteSpace: 'normal',
-                  overflowWrap: 'anywhere',
-                  wordBreak: 'break-word',
+                  fontSize: 'clamp(9px, 2.5vw, 10.5px)',
+                  whiteSpace: 'nowrap',
+                  wordBreak: 'keep-all',
+                  letterSpacing: '-0.3px',
                 }}
               >
                 {option.label}

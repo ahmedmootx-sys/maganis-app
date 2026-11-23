@@ -12,7 +12,13 @@ import type {
   Goal,
   ExerciseSection,
   CardioConfig,
+  MeasurementType,
+  ExerciseMuscleTarget,
 } from '../shared/types.ts'
+import {
+  saveExerciseOverride,
+  type ExerciseOverride,
+} from './exerciseOverrides.ts'
 import {
   ALL_EXERCISES,
   CATALOG_EXERCISES,
@@ -499,6 +505,45 @@ export function importProgramFromJson(
             tags,
           })
 
+          const catalogMatch = ALL_EXERCISES.find(e => e.id === effectiveId)
+
+          let executionSteps =
+            item.stepsAr ||
+            (typeof item.execution === 'string'
+              ? [item.execution]
+              : item.execution)
+          if ((!executionSteps || executionSteps.length === 0) && catalogMatch?.steps_ar && catalogMatch.steps_ar.length > 0) {
+            executionSteps = catalogMatch.steps_ar
+          } else if ((!executionSteps || executionSteps.length === 0) && catalogMatch?.howToStepsAr && catalogMatch.howToStepsAr.length > 0) {
+            executionSteps = catalogMatch.howToStepsAr
+          }
+          if (!executionSteps || executionSteps.length === 0) {
+            executionSteps = [
+              '1. اضبط الجهاز والوضعية الابتدائية وثبّت الجذع واستقامة الظهر.',
+              '2. تحكّم في مرحلة النزول بمدى حركي كامل دون تأرجح أو اهتزاز.',
+              '3. ادفع/اسحب بقوة مع زفير مركز واعتصر العضلة المستهدفة في قمة الحركة.'
+            ]
+          }
+
+          let targetMuscles =
+            item.targetMusclesAr ||
+            (item.targetMuscle ? [item.targetMuscle] : undefined)
+          if ((!targetMuscles || targetMuscles.length === 0) && catalogMatch?.targetMusclesAr && catalogMatch.targetMusclesAr.length > 0) {
+            targetMuscles = catalogMatch.targetMusclesAr
+          } else if ((!targetMuscles || targetMuscles.length === 0) && catalogMatch?.target_ar) {
+            targetMuscles = [catalogMatch.target_ar]
+          } else if (catalogMatch?.targetMusclesAr && catalogMatch.targetMusclesAr.length > 0) {
+            // Enforce verified anatomical catalog targets over AI hallucinations
+            targetMuscles = catalogMatch.targetMusclesAr
+          }
+          const mediaUrl = item.imageUrl || item.image || item.gifUrl
+          const targetExerciseSearch =
+            item.nameEn || item.customName || item.name || effectiveId
+          const effectiveVideoUrl =
+            item.videoUrl && item.videoUrl.trim() !== ''
+              ? item.videoUrl.trim()
+              : `https://www.youtube.com/results?search_query=${encodeURIComponent(targetExerciseSearch + ' exercise form tutorial')}`
+
           const exObj: ProgramExercise = {
             exerciseId: effectiveId,
             sets: item.sets,
@@ -510,16 +555,51 @@ export function importProgramFromJson(
             perSide: item.perSide,
             amrap: item.amrap,
             rpe: item.rpe,
-            notes: item.notesAr,
+            notes: item.notesAr || item.notes,
             section: (item.section as ExerciseSection) || defaultSection,
-            customName: item.customName,
+            customName: item.customName || item.name,
             nameEn: item.nameEn,
             needsReview: item.needsReview || resolution.isCustom,
+            imageUrl: item.imageUrl || item.image,
+            gifUrl: item.gifUrl,
+            videoUrl: effectiveVideoUrl,
+            stepsAr: executionSteps,
+            targetMusclesAr: targetMuscles,
+            understandingAr: item.understandingAr || item.benefitAr,
+            benefitAr: item.benefitAr,
+            personalNote: item.personalNote,
+            measurementType: item.measurementType as MeasurementType,
           }
 
           if (item.targetSubMuscleAr) {
             exObj.targetSubMuscleAr = item.targetSubMuscleAr
           }
+
+          // Automatically preserve full rich data in exercise overrides for 100% data fidelity
+          const overrideData: ExerciseOverride = {
+            exerciseId: effectiveId,
+            nameAr: item.customName || item.name,
+            nameEn: item.nameEn,
+            measurementType: item.measurementType as MeasurementType,
+            videoUrl: effectiveVideoUrl,
+            benefitAr: item.understandingAr || item.benefitAr,
+            howToStepsAr: executionSteps,
+            personalNote: item.personalNote,
+            muscles: Array.isArray(item.muscles)
+              ? (item.muscles as ExerciseMuscleTarget[])
+              : undefined,
+            media: mediaUrl
+              ? {
+                  kind:
+                    item.gifUrl || mediaUrl.endsWith('.gif')
+                      ? 'external-gif'
+                      : 'external-image',
+                  url: mediaUrl,
+                  updatedAt: Date.now(),
+                }
+              : undefined,
+          }
+          void saveExerciseOverride(overrideData).catch(() => {})
 
           return exObj
         })

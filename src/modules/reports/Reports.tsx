@@ -3,6 +3,7 @@ import { appStorage } from '../../platform/storage.ts'
 import type { TrackingSession, BodyLogEntry } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { getEffectiveExercise } from '../workout/exerciseStore.ts'
+import { getExerciseDisplayName } from '../workout/workoutUtils.ts'
 import { calculateCalorieMacroTargets } from '../nutrition/calorieCalculator.ts'
 import { SvgLineChart } from './SvgLineChart.tsx'
 import { ConfirmSheet } from '../../ui/index.ts'
@@ -345,7 +346,7 @@ export function Reports({
   for (const session of sessions) {
     for (const ex of session.exercises) {
       const info = getEffectiveExercise(ex.exerciseId)
-      const name = info?.nameAr ?? ex.exerciseId
+      const name = getExerciseDisplayName(info, null, ex.exerciseId)
       const maxWeight = Math.max(...ex.sets.map((s) => s.weightKg), 0)
       if (maxWeight > 0) {
         if (!prMap[ex.exerciseId] || maxWeight > prMap[ex.exerciseId].weight) {

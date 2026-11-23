@@ -12,6 +12,8 @@ import {
   resolvePinterestUrl,
   type ParsedVideoInfo,
 } from './videoUtils'
+import { openExternalUrl } from '../../utils/urlHelper.ts'
+import { getMediaItem } from '../../lib/indexedStorage.ts'
 
 export interface VideoPlayerProps {
   videoUrl?: string | null
@@ -96,7 +98,7 @@ export class VideoErrorBoundary extends React.Component<
               }}
             >
               {this.props.fallbackUrl.includes('pin.it') ||
-              this.props.fallbackUrl.includes('pinterest.com')
+                this.props.fallbackUrl.includes('pinterest.com')
                 ? 'افتح في بينترست'
                 : this.props.fallbackUrl.includes('vimeo.com')
                   ? 'افتح في فيميو'
@@ -162,6 +164,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       resolvePinterestUrl(videoUrl).then((resolved) => {
         if (active && resolved) {
           setEffectiveUrl(resolved)
+        }
+      })
+    } else if (videoUrl && videoUrl.startsWith('media:')) {
+      const key = videoUrl.replace(/^media:/, '')
+      getMediaItem<{ dataUrl?: string; mime?: string }>(key).then((item) => {
+        if (active && item && item.dataUrl) {
+          setEffectiveUrl(item.dataUrl)
         }
       })
     } else {
@@ -430,10 +439,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           src={parsed.embedUrl}
           controls
           playsInline
-          preload="none"
+          preload="metadata"
           style={{
             width: '100%',
-            maxHeight: '360px',
+            maxHeight: '380px',
             backgroundColor: '#000000',
           }}
         />
@@ -577,18 +586,46 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         {isPinterest && (
           <div
             style={{
-              padding: '6px 12px',
+              padding: '10px 14px',
               backgroundColor: 'var(--color-surface-2)',
               borderBottom: '1px solid var(--color-divider)',
-              fontSize: '12px',
-              color: 'var(--color-text-2)',
+              fontSize: '12.5px',
+              color: 'var(--color-text)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
+              justifyContent: 'space-between',
+              gap: '8px',
+              flexWrap: 'wrap',
             }}
           >
-            <span>اضغط على أيقونة الصوت داخل مشغل بينترست لتشغيل الصوت</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>اضغط على أيقونة الصوت داخل مشغل بينترست لتشغيل الصوت</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                void openExternalUrl(parsed.rawUrl)
+              }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 14px',
+                borderRadius: '8px',
+                backgroundColor: 'var(--color-accent, #eb5e28)',
+                color: 'var(--on-accent, #ffffff)',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '12.5px',
+                cursor: 'pointer',
+              }}
+            >
+              <span>فتح في تطبيق Pinterest</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7" />
+                <polyline points="7 7 17 7 17 17" />
+              </svg>
+            </button>
           </div>
         )}
 
@@ -599,7 +636,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             aspectRatio: isPinterest ? '9 / 16' : '16 / 9',
             maxHeight: isPinterest ? '480px' : undefined,
             minHeight: '200px',
-            backgroundColor: '#000000',
+            backgroundColor: isPinterest ? 'var(--color-surface-2, #18181b)' : '#000000',
             margin: isPinterest ? '0 auto' : undefined,
           }}
         >
@@ -638,10 +675,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <iframe
             data-testid="video-iframe-el"
             src={parsed.embedUrl}
-            sandbox="allow-scripts allow-same-origin allow-presentation"
+            sandbox={
+              isPinterest
+                ? undefined
+                : 'allow-scripts allow-same-origin allow-presentation'
+            }
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
             allowFullScreen
-            referrerPolicy="strict-origin-when-cross-origin"
+            referrerPolicy={isPinterest ? 'no-referrer' : 'strict-origin-when-cross-origin'}
             title={`فيديو شرح تمرين ${exerciseName}`}
             onLoad={() => setIsLoaded(true)}
             onError={() => setLoadTimedOut(true)}
@@ -656,6 +697,40 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               transition: 'opacity 0.2s ease',
             }}
           />
+
+          {isPinterest && (
+            <button
+              type="button"
+              onClick={() => void openExternalUrl(parsed.rawUrl)}
+              style={{
+                position: 'absolute',
+                bottom: '10px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 10,
+                backgroundColor: 'rgba(24, 24, 27, 0.85)',
+                color: '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                backdropFilter: 'blur(6px)',
+                padding: '6px 14px',
+                borderRadius: '20px',
+                fontSize: '11.5px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+              }}
+            >
+              <span>مشاهدة الفيديو في تطبيق Pinterest</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7" />
+                <polyline points="7 7 17 7 17 17" />
+              </svg>
+            </button>
+          )}
         </div>
 
         <div

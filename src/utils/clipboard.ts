@@ -6,10 +6,23 @@
  * and selectable textarea fallback for mobile environments.
  */
 
+import { isNative } from '../platform/runtime.ts'
+import { MaganisNative } from '../platform/native/maganisNative.ts'
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   if (!text) return false
 
-  // 1. Try Modern Async Clipboard API
+  // 1. Try Native Android Clipboard on APK
+  if (isNative()) {
+    try {
+      const res = await MaganisNative.copyToClipboard({ text })
+      if (res && res.success) return true
+    } catch {
+      // Fall through to browser clipboard
+    }
+  }
+
+  // 2. Try Modern Async Clipboard API
   if (
     typeof navigator !== 'undefined' &&
     navigator.clipboard &&
@@ -28,11 +41,11 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     try {
       const textarea = document.createElement('textarea')
       textarea.value = text
-      textarea.setAttribute('readonly', '')
       // Position offscreen but keep visible to browser selection
       textarea.style.position = 'fixed'
       textarea.style.left = '-9999px'
       textarea.style.top = '0'
+      textarea.style.opacity = '0'
       textarea.style.fontSize = '16px' // Prevent iOS auto-zoom
       document.body.appendChild(textarea)
 

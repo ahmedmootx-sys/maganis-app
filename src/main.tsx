@@ -4,6 +4,7 @@ import { ConfigError, loadConfig } from './config/appConfig.ts'
 import { ConfigErrorView } from './components/ConfigError.tsx'
 import { updateManager } from './utils/updateManager.ts'
 import { isNative } from './platform/runtime.ts'
+import { openExternalUrl } from './utils/urlHelper.ts'
 import { bootstrapPlatform } from './platform/bootstrap.ts'
 import { storageHealth } from './platform/storageHealth.ts'
 import { RecoveryModeScreen } from './components/RecoveryModeScreen.tsx'
@@ -98,7 +99,7 @@ async function init() {
               !href.startsWith(window.location.origin)
             ) {
               e.preventDefault()
-              window.open(href, '_system')
+              void openExternalUrl(href)
             }
           }
         },

@@ -49,6 +49,24 @@ public class MainActivity extends BridgeActivity {
 
         // Step 3: Install WebViewClient for onRenderProcessGone recovery
         setupWebViewRendererRecovery();
+
+        // Step 4: Configure WebView settings for media playback & storage
+        configureWebViewSettings();
+    }
+
+    private void configureWebViewSettings() {
+        try {
+            WebView webView = getBridge() != null ? getBridge().getWebView() : null;
+            if (webView != null) {
+                android.webkit.WebSettings settings = webView.getSettings();
+                settings.setDomStorageEnabled(true);
+                settings.setDatabaseEnabled(true);
+                settings.setMediaPlaybackRequiresUserGesture(false);
+                settings.setJavaScriptCanOpenWindowsAutomatically(true);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to configure WebView settings", e);
+        }
     }
 
     private void installUncaughtExceptionHandler() {

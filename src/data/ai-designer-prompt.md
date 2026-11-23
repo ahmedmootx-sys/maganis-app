@@ -83,7 +83,15 @@ PART 2. Exactly ONE JSON code block that follows the SCHEMA below. Rules for the
 
 - It must be valid JSON: double quotes, no comments, no trailing commas, numbers as numbers, nothing outside the braces.
 - Use an `exerciseId` from the CATALOG whenever the exercise exists there. Never invent an id.
-- If the exercise is not in the CATALOG, set `exerciseId` to null and fill `customName` (Arabic) and `nameEn` (English). The app will ask the person to complete the missing details.
+- If the exercise is not in the CATALOG, set `exerciseId` to null and fill `customName` (Arabic) and `nameEn` (English). Always provide all core exercise details:
+  * `stepsAr` IS STRICTLY MANDATORY for every exercise: You MUST provide an array of 3 to 5 clear, numbered Egyptian Arabic execution steps explaining: 1. الإعداد والوضعية الابتدائية وضبط الجهاز (Setup), 2. مسار الحركة والنزول بالتحكم والمدى الكامل (Execution & ROM), 3. الصعود والتنفس والسلامة وتجنب الإصابة (Breathing & Safety). NEVER leave `stepsAr` empty!
+  * `targetMusclesAr` IS STRICTLY VERIFIED ANATOMICALLY: You MUST specify the exact, anatomically accurate targeted muscles in Arabic (e.g. ["صدر علوي", "ترايسبس"] or ["فخذ أمامي (كوادز)"]). NEVER assign leg muscles to upper body exercises or upper body muscles to leg exercises!
+  * `understandingAr` IS MANDATORY: 1-2 plain sentences explaining the functional role and mechanics of the movement (الفهم: why this exercise and what muscle activation to feel).
+  * `imageUrl` or `gifUrl` (direct illustration / GIF URL if available)
+  * `videoUrl` (YouTube / video tutorial link if available)
+  * `personalNote` (مع حالتي: personal coaching note adapted to the user's bodily condition/limitations)
+  * `measurementType` ("weight" | "bodyweight" | "duration" | "reps" | "cardio")
+  (Note: السجل / exercise history is calculated automatically by the app during sessions).
 - `sets` must be an integer (e.g. 3, never a string "3").
 - `reps` must be an integer (e.g. 10, never a string range like "8-12"). If recommending a rep range, set `repsMin` and `repsMax` as integers (e.g. "reps": 10, "repsMin": 8, "repsMax": 12).
 - Use `notesAr` for Arabic technical execution cues and form guidance for each exercise.

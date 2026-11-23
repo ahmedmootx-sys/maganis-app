@@ -48,6 +48,7 @@ import { CopyExerciseNameButton } from './CopyExerciseNameButton.tsx'
 import { VideoPlayer } from './VideoPlayer.tsx'
 import { Toast } from '../../components/Toast.tsx'
 import { Claim, type ClaimStatus } from '../../content/Claim.tsx'
+import { openExternalUrl } from '../../utils/urlHelper.ts'
 
 interface AuthoredExerciseContent {
   whyThisExerciseAr?: string
@@ -73,8 +74,10 @@ export interface ExerciseDetailViewProps {
   program?: WorkoutProgram | null
   programDay?: ProgramDay | null
   sessions?: TrackingSession[]
+  customExercises?: Exercise[]
   onSwapExercise?: (oldExerciseId: string, newExerciseId: string) => void
   onNavigateSettings?: () => void
+  isModal?: boolean
 }
 
 /**
@@ -141,6 +144,7 @@ export function ExerciseDetailView({
   sessions = [],
   onSwapExercise,
   onNavigateSettings,
+  isModal = false,
 }: ExerciseDetailViewProps) {
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     if (typeof window !== 'undefined') {
@@ -584,15 +588,15 @@ export function ExerciseDetailView({
     const item = programExerciseInfo?.item
     const rawPassed = passedExercise as
       | (Partial<Exercise> & {
-          customName?: string
-          notes?: string
-          repsMin?: number
-          repsMax?: number
-          sets?: number
-          reps?: number
-          restSeconds?: number
-          targetSubMuscleAr?: string
-        })
+        customName?: string
+        notes?: string
+        repsMin?: number
+        repsMax?: number
+        sets?: number
+        reps?: number
+        restSeconds?: number
+        targetSubMuscleAr?: string
+      })
       | undefined
 
     let nameAr =
@@ -754,13 +758,38 @@ export function ExerciseDetailView({
               )}
             </div>
 
-            {/* Copy button */}
-            <div>
+            {/* Actions: Copy and Edit */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <CopyExerciseNameButton
                 nameAr={cleanAr}
                 nameEn={cleanEn}
                 onToast={(msg) => setToastMsg(msg)}
               />
+              <button
+                type="button"
+                data-testid="edit-exercise-btn"
+                onClick={() => {
+                  setEditFocus(null)
+                  setShowEditSheet(true)
+                }}
+                style={{
+                  minHeight: 'var(--touch-target-min)',
+                  padding: 'var(--space-2) var(--space-3)',
+                  borderRadius: 'var(--radius-control)',
+                  border: '1px solid var(--color-divider)',
+                  backgroundColor: 'var(--color-surface)',
+                  color: 'var(--color-text)',
+                  fontSize: 'var(--font-size-sm)',
+                  fontWeight: 'var(--font-weight-semibold)',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <Icon name="pencil" size={15} />
+                <span>تعديل التمرين</span>
+              </button>
             </div>
           </div>
         </Card>
@@ -800,6 +829,10 @@ export function ExerciseDetailView({
                 href={`https://www.google.com/search?q=${googleQuery}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault()
+                  void openExternalUrl(`https://www.google.com/search?q=${googleQuery}`)
+                }}
                 className="btn btn--secondary"
                 style={{
                   display: 'flex',
@@ -827,6 +860,10 @@ export function ExerciseDetailView({
                 href={`https://www.youtube.com/results?search_query=${youtubeQuery}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault()
+                  void openExternalUrl(`https://www.youtube.com/results?search_query=${youtubeQuery}`)
+                }}
                 className="btn btn--secondary"
                 style={{
                   display: 'flex',
@@ -854,6 +891,10 @@ export function ExerciseDetailView({
                 href={`https://www.pinterest.com/search/pins/?q=${pinterestQuery}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault()
+                  void openExternalUrl(`https://www.pinterest.com/search/pins/?q=${pinterestQuery}`)
+                }}
                 className="btn btn--secondary"
                 style={{
                   display: 'flex',
@@ -926,29 +967,29 @@ export function ExerciseDetailView({
                 )}
                 {(aiExercise.reps ||
                   (aiExercise.repsMin && aiExercise.repsMax)) && (
-                  <div
-                    style={{
-                      padding: '8px 10px',
-                      borderRadius: 'var(--radius-control)',
-                      backgroundColor: 'var(--color-surface-2)',
-                      fontSize: '0.82rem',
-                    }}
-                  >
                     <div
                       style={{
-                        color: 'var(--color-text-2)',
-                        marginBottom: '2px',
+                        padding: '8px 10px',
+                        borderRadius: 'var(--radius-control)',
+                        backgroundColor: 'var(--color-surface-2)',
+                        fontSize: '0.82rem',
                       }}
                     >
-                      التكرارات
+                      <div
+                        style={{
+                          color: 'var(--color-text-2)',
+                          marginBottom: '2px',
+                        }}
+                      >
+                        التكرارات
+                      </div>
+                      <div style={{ fontWeight: 700 }}>
+                        {aiExercise.repsMin && aiExercise.repsMax
+                          ? `${aiExercise.repsMin} - ${aiExercise.repsMax} تكرار`
+                          : `${aiExercise.reps} تكرار`}
+                      </div>
                     </div>
-                    <div style={{ fontWeight: 700 }}>
-                      {aiExercise.repsMin && aiExercise.repsMax
-                        ? `${aiExercise.repsMin} - ${aiExercise.repsMax} تكرار`
-                        : `${aiExercise.reps} تكرار`}
-                    </div>
-                  </div>
-                )}
+                  )}
                 {aiExercise.restSeconds && (
                   <div
                     style={{
@@ -1048,6 +1089,26 @@ export function ExerciseDetailView({
 
         {toastMsg && (
           <Toast message={toastMsg} onDismiss={() => setToastMsg('')} />
+        )}
+
+        {showEditSheet && (
+          <ExerciseEditSheet
+            isOpen={showEditSheet}
+            onClose={() => {
+              setShowEditSheet(false)
+              setEditFocus(null)
+            }}
+            focusField={editFocus}
+            exercise={
+              (passedExercise as Exercise) || {
+                id: exerciseId,
+                nameAr: cleanAr,
+                nameEn: cleanEn,
+              }
+            }
+            onSaved={() => setRefreshKey((k) => k + 1)}
+            onResetOriginal={() => setRefreshKey((k) => k + 1)}
+          />
         )}
       </div>
     )
@@ -1421,14 +1482,14 @@ export function ExerciseDetailView({
           </div>
         )}
 
-        {/* Sticky Tabs Header (44px height, container inherits border radius, no square dark backdrop) */}
+        {/* Sticky Tabs Header (44px height, container inherits border radius, solid background) */}
         <div
           className="exercise-detail-tabs-header"
           style={{
             position: 'sticky',
-            top: 'calc(var(--top-bar-height) + var(--safe-area-top))',
-            zIndex: 15,
-            background: 'var(--color-bg)',
+            top: isModal ? '0px' : 'calc(var(--top-bar-height) + var(--safe-area-top))',
+            zIndex: 20,
+            background: 'var(--color-surface, var(--card-bg, #1e222b))',
             paddingBlock: '6px',
             width: '100%',
           }}
@@ -1586,128 +1647,128 @@ export function ExerciseDetailView({
                 {/* ليه التمرين ده؟ */}
                 {(!isBoilerplateOrEmpty(exercise.benefitAr) ||
                   !isBoilerplateOrEmpty(exercise.benefit)) && (
-                  <Card padding="md">
-                    <h3
-                      style={{
-                        fontSize: '15px',
-                        fontWeight: 700,
-                        margin: '0 0 8px 0',
-                        color: 'var(--color-text)',
-                      }}
-                    >
-                      ليه التمرين ده؟
-                    </h3>
-                    <Claim
-                      id={`ex_benefit.${exercise.id || exercise.key}`}
-                      status={
-                        (exercise.content_status as ClaimStatus) ||
-                        'coach_authored'
-                      }
-                      as="p"
-                      style={{
-                        margin: 0,
-                        fontSize: '14px',
-                        lineHeight: 1.6,
-                        color: 'var(--color-text)',
-                      }}
-                    >
-                      {exercise.benefitAr || exercise.benefit}
-                    </Claim>
-                  </Card>
-                )}
-
-                {/* إزاي بيشتغل */}
-                {(!isBoilerplateOrEmpty(exercise.mechanicsAr) ||
-                  !isBoilerplateOrEmpty(exercise.mechanics) ||
-                  !isBoilerplateOrEmpty(exercise.descriptionAr)) && (
-                  <Card padding="md">
-                    <h3
-                      style={{
-                        fontSize: '15px',
-                        fontWeight: 700,
-                        margin: '0 0 8px 0',
-                        color: 'var(--color-text)',
-                      }}
-                    >
-                      إزاي بيشتغل
-                    </h3>
-                    <Claim
-                      id={`ex_mechanics.${exercise.id || exercise.key}`}
-                      status={
-                        (exercise.content_status as ClaimStatus) ||
-                        'coach_authored'
-                      }
-                      as="p"
-                      style={{
-                        margin: 0,
-                        fontSize: '14px',
-                        lineHeight: 1.6,
-                        color: 'var(--color-text)',
-                      }}
-                    >
-                      {exercise.mechanicsAr ||
-                        exercise.mechanics ||
-                        exercise.descriptionAr}
-                    </Claim>
-                  </Card>
-                )}
-
-                {/* بيستهدف إيه */}
-                {(exercise.target ||
-                  (exercise.targetMusclesAr &&
-                    exercise.targetMusclesAr.length > 0)) && (
-                  <Card padding="md">
-                    <h3
-                      style={{
-                        fontSize: '15px',
-                        fontWeight: 700,
-                        margin: '0 0 8px 0',
-                        color: 'var(--color-text)',
-                      }}
-                    >
-                      بيستهدف إيه
-                    </h3>
-                    {exercise.target && (
-                      <p
+                    <Card padding="md">
+                      <h3
                         style={{
+                          fontSize: '15px',
+                          fontWeight: 700,
                           margin: '0 0 8px 0',
+                          color: 'var(--color-text)',
+                        }}
+                      >
+                        ليه التمرين ده؟
+                      </h3>
+                      <Claim
+                        id={`ex_benefit.${exercise.id || exercise.key}`}
+                        status={
+                          (exercise.content_status as ClaimStatus) ||
+                          'coach_authored'
+                        }
+                        as="p"
+                        style={{
+                          margin: 0,
                           fontSize: '14px',
                           lineHeight: 1.6,
                           color: 'var(--color-text)',
                         }}
                       >
-                        {exercise.target}
-                      </p>
-                    )}
-                    {exercise.targetMusclesAr &&
-                      exercise.targetMusclesAr.length > 0 && (
-                        <div
+                        {exercise.benefitAr || exercise.benefit}
+                      </Claim>
+                    </Card>
+                  )}
+
+                {/* إزاي بيشتغل */}
+                {(!isBoilerplateOrEmpty(exercise.mechanicsAr) ||
+                  !isBoilerplateOrEmpty(exercise.mechanics) ||
+                  !isBoilerplateOrEmpty(exercise.descriptionAr)) && (
+                    <Card padding="md">
+                      <h3
+                        style={{
+                          fontSize: '15px',
+                          fontWeight: 700,
+                          margin: '0 0 8px 0',
+                          color: 'var(--color-text)',
+                        }}
+                      >
+                        إزاي بيشتغل
+                      </h3>
+                      <Claim
+                        id={`ex_mechanics.${exercise.id || exercise.key}`}
+                        status={
+                          (exercise.content_status as ClaimStatus) ||
+                          'coach_authored'
+                        }
+                        as="p"
+                        style={{
+                          margin: 0,
+                          fontSize: '14px',
+                          lineHeight: 1.6,
+                          color: 'var(--color-text)',
+                        }}
+                      >
+                        {exercise.mechanicsAr ||
+                          exercise.mechanics ||
+                          exercise.descriptionAr}
+                      </Claim>
+                    </Card>
+                  )}
+
+                {/* بيستهدف إيه */}
+                {(exercise.target ||
+                  (exercise.targetMusclesAr &&
+                    exercise.targetMusclesAr.length > 0)) && (
+                    <Card padding="md">
+                      <h3
+                        style={{
+                          fontSize: '15px',
+                          fontWeight: 700,
+                          margin: '0 0 8px 0',
+                          color: 'var(--color-text)',
+                        }}
+                      >
+                        بيستهدف إيه
+                      </h3>
+                      {exercise.target && (
+                        <p
                           style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: '6px',
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            lineHeight: 1.6,
+                            color: 'var(--color-text)',
                           }}
                         >
-                          {exercise.targetMusclesAr.map(
-                            (m: string, i: number) => (
-                              <span
-                                key={i}
-                                style={{
-                                  fontSize: '12px',
-                                  padding: '3px 9px',
-                                  borderRadius: 'var(--radius-full)',
-                                  background: 'var(--color-surface-2)',
-                                  color: 'var(--color-text)',
-                                }}
-                              >
-                                {formatMuscleLabel(m)}
-                              </span>
-                            ),
-                          )}
-                        </div>
+                          {exercise.target}
+                        </p>
                       )}
-                  </Card>
-                )}
+                      {exercise.targetMusclesAr &&
+                        exercise.targetMusclesAr.length > 0 && (
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexWrap: 'wrap',
+                              gap: '6px',
+                            }}
+                          >
+                            {exercise.targetMusclesAr.map(
+                              (m: string, i: number) => (
+                                <span
+                                  key={i}
+                                  style={{
+                                    fontSize: '12px',
+                                    padding: '3px 9px',
+                                    borderRadius: 'var(--radius-full)',
+                                    background: 'var(--color-surface-2)',
+                                    color: 'var(--color-text)',
+                                  }}
+                                >
+                                  {formatMuscleLabel(m)}
+                                </span>
+                              ),
+                            )}
+                          </div>
+                        )}
+                    </Card>
+                  )}
 
                 {/* المصدر العلمي */}
                 {(exercise.medicalSource || exercise.reference) && (
@@ -1738,9 +1799,9 @@ export function ExerciseDetailView({
                       {(exercise.medicalSource || exercise.reference || '')
                         .toLowerCase()
                         .includes('gray') ||
-                      (exercise.medicalSource || exercise.reference || '')
-                        .toLowerCase()
-                        .includes('kendall')
+                        (exercise.medicalSource || exercise.reference || '')
+                          .toLowerCase()
+                          .includes('kendall')
                         ? 'مرجع عام'
                         : 'دراسة محددة'}
                     </span>

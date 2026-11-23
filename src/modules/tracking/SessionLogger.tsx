@@ -1,6 +1,12 @@
 import { useState, useMemo } from 'react'
 import { appStorage } from '../../platform/storage.ts'
-import type { ProgramDay, TrackingSession, Exercise } from '../shared/types.ts'
+import type {
+  ProgramDay,
+  TrackingSession,
+  Exercise,
+  Equipment,
+  MuscleGroup,
+} from '../shared/types.ts'
 import { CATALOG_INDEX } from '../workout/exerciseIndex.ts'
 import { getEffectiveExercise } from '../workout/exerciseStore.ts'
 import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
@@ -18,6 +24,7 @@ import {
 } from './setPropagation.ts'
 import { Claim } from '../../content/Claim.tsx'
 import { Toast } from '../../components/Toast.tsx'
+import { getExerciseDisplayName } from '../workout/workoutUtils.ts'
 
 export interface SessionLoggerProps {
   programDay: ProgramDay | null
@@ -440,17 +447,19 @@ export function SessionLogger({
                             size="medium"
                           />
                         </div>
-                        <div style={{ minWidth: 0 }}>
+                        <div style={{ minWidth: 0, flex: 1 }}>
                           <h3
                             style={{
                               margin: 0,
                               fontSize: '15.5px',
                               fontWeight: 700,
                               color: 'var(--ink)',
-                              lineHeight: 1.3,
+                              lineHeight: 1.35,
+                              overflowWrap: 'anywhere',
+                              wordBreak: 'break-word',
                             }}
                           >
-                            {exInfo?.nameAr ?? se.exerciseId}
+                            {getExerciseDisplayName(exInfo, null, se.exerciseId)}
                             <ExerciseMarks
                               hasVideo={
                                 (exInfo as { hasVideo?: boolean })?.hasVideo
@@ -488,15 +497,52 @@ export function SessionLogger({
                         <button
                           type="button"
                           className="btn-icon"
-                          onClick={() =>
-                            setSelectedExerciseForDetail(
-                              exInfo ||
-                                ({
-                                  id: se.exerciseId,
-                                  nameAr: se.exerciseId,
-                                } as Exercise),
+                          onClick={() => {
+                            if (exInfo) {
+                              setSelectedExerciseForDetail(exInfo)
+                              return
+                            }
+                            const dayItem = programDay?.exercises?.find(
+                              (e) =>
+                                e.exerciseId === se.exerciseId ||
+                                e.customName === se.exerciseId ||
+                                e.nameEn === se.exerciseId,
                             )
-                          }
+                            if (dayItem) {
+                              setSelectedExerciseForDetail({
+                                id: se.exerciseId,
+                                nameAr: (dayItem.customName ||
+                                  dayItem.nameAr ||
+                                  dayItem.name ||
+                                  se.exerciseId) as string,
+                                name: (dayItem.nameEn ||
+                                  dayItem.name ||
+                                  se.exerciseId) as string,
+                                equipment: (dayItem.equipment ||
+                                  'bodyweight') as Equipment,
+                                category: (dayItem.category ||
+                                  'core') as MuscleGroup,
+                                difficulty: 'intermediate',
+                                target: (dayItem.targetMuscle ||
+                                  dayItem.target ||
+                                  'other') as string,
+                                target_ar: (dayItem.target_ar ||
+                                  dayItem.targetMuscle ||
+                                  'عضلات عامة') as string,
+                                descriptionAr: (dayItem.notes as string) || '',
+                                steps_ar: [],
+                                targetMusclesAr: dayItem.targetMuscle
+                                  ? [dayItem.targetMuscle as string]
+                                  : [],
+                                muscles: [],
+                              } as Exercise)
+                              return
+                            }
+                            setSelectedExerciseForDetail({
+                              id: se.exerciseId,
+                              nameAr: se.exerciseId,
+                            } as Exercise)
+                          }}
                           aria-label={`شرح تمرين ${exInfo?.nameAr ?? ''}`}
                           style={{
                             width: '40px',
@@ -736,7 +782,7 @@ export function SessionLogger({
                           marginTop: 'var(--space-2)',
                         }}
                       >
-                        <Claim id={se.hintClaimId} />
+                        <Claim id={se.hintClaimId} showSource={false} />
                       </div>
                     )}
                   </div>
@@ -966,6 +1012,7 @@ export function SessionLogger({
           exerciseId={selectedExerciseForDetail.id}
           exercise={selectedExerciseForDetail}
           programDay={programDay}
+          customExercises={customExercises}
           onClose={() => setSelectedExerciseForDetail(null)}
         />
       )}

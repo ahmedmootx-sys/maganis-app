@@ -151,6 +151,17 @@ export interface MaganisNativePlugin {
     kind: 'appNotifications' | 'channel' | 'exactAlarm' | 'batteryOptimization'
     channelId?: string
   }): Promise<{ success: boolean }>
+  openExternalUrl(options: { url: string }): Promise<{ success: boolean }>
+  copyToClipboard(options: { text: string }): Promise<{ success: boolean }>
+  resolveRedirect(options: {
+    url: string
+  }): Promise<{ success: boolean; finalUrl: string }>
+  downloadAndInstallApk(options: { url: string; fileName?: string }): Promise<{
+    success: boolean
+    downloadId?: number
+    fileName?: string
+    method?: string
+  }>
   getPowerStatus(): Promise<{ ignoringBatteryOptimizations: boolean }>
   getChannelStatus(options: {
     channelId: string
@@ -541,6 +552,37 @@ export const webMockImplementation: MaganisNativePlugin = {
   // Task N4 Mocks
   async openSettings() {
     return { success: true }
+  },
+  async openExternalUrl(options: { url: string }) {
+    if (typeof window !== 'undefined') {
+      window.open(options.url, '_blank', 'noopener,noreferrer')
+    }
+    return { success: true }
+  },
+  async copyToClipboard(options: { text: string }) {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(options.text)
+        return { success: true }
+      }
+    } catch {
+      // fallback
+    }
+    return { success: true }
+  },
+  async resolveRedirect(options: { url: string }) {
+    return { success: true, finalUrl: options.url }
+  },
+  async downloadAndInstallApk(options: { url: string; fileName?: string }) {
+    if (typeof window !== 'undefined') {
+      window.open(options.url, '_blank', 'noopener,noreferrer')
+    }
+    return {
+      success: true,
+      downloadId: 1,
+      fileName: options.fileName || 'bunyan-update.apk',
+      method: 'download_manager',
+    }
   },
   async getPowerStatus() {
     return { ignoringBatteryOptimizations: mockPowerIgnoring }

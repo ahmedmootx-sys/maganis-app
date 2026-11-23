@@ -26,6 +26,7 @@ import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { generateProgram } from './programGenerator.ts'
 import { convertDayToHomeWorkout } from './homeWorkoutConverter.ts'
 import { importProgramFromJson } from './programImporter.ts'
+import { getExerciseDisplayName } from './workoutUtils.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import {
   TopBar,
@@ -104,6 +105,8 @@ export interface WeeklyPlanViewProps {
   onGenerateProgram?: () => void
   onOpenAiDesigner?: () => void
   initialSelectedDayIndex?: number | null
+  sessions?: TrackingSession[]
+  onDeleteSession?: (sessionId: string) => void
 }
 
 const SPLIT_TYPE_OPTIONS: {
@@ -919,6 +922,8 @@ export function WeeklyPlanView({
   onGenerateProgram,
   onOpenAiDesigner,
   initialSelectedDayIndex = null,
+  sessions = [],
+  onDeleteSession,
 }: WeeklyPlanViewProps) {
   // Navigation: null = Week overview; number = Day screen
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(
@@ -982,6 +987,8 @@ export function WeeklyPlanView({
   const [dayMenuTarget, setDayMenuTarget] = useState<ProgramDay | null>(null)
   const [renamingDay, setRenamingDay] = useState<ProgramDay | null>(null)
   const [renameInputValue, setRenameInputValue] = useState('')
+  const [sessionToDeleteFromDay, setSessionToDeleteFromDay] =
+    useState<TrackingSession | null>(null)
 
   // B2 Duplicate Day States
   const [isDuplicatePickerOpen, setIsDuplicatePickerOpen] = useState(false)
@@ -1664,10 +1671,12 @@ export function WeeklyPlanView({
 
   function handleChangeSplit(newSplit: WorkoutSplitType) {
     if (!program || !onUpdateProgram) return
+    const daysCount =
+      program.trainingDaysPerWeek || program.days?.length || 4
     const doChange = () => {
       const newProg = generateProgram({
-        goal: program.primaryGoal,
-        trainingDaysPerWeek: program.trainingDaysPerWeek,
+        goal: program.primaryGoal || 'hypertrophy',
+        trainingDaysPerWeek: daysCount,
         splitType: newSplit,
         injuries: userInjuries,
         customExercises,
@@ -1675,26 +1684,39 @@ export function WeeklyPlanView({
       })
       onUpdateProgram(newProg)
       setIsManageSheetOpen(false)
-      showToast('تم تغيير النظام التدريبي التلقائي بنجاح')
+      showToast(
+        `تم تحويل البرنامج إلى نظام (${WORKOUT_SPLIT_LABELS[newSplit]}) وتوزيع التمارين على ${daysCount} أيام بنجاح`,
+      )
     }
 
     setReplaceConfirm({
       isOpen: true,
       title: 'تغيير النظام التدريبي',
-      message: `سيتم استبدال جدولك التدريبي الحالي بالنظام الجديد (${WORKOUT_SPLIT_LABELS[newSplit]}). هل تود المتابعة؟`,
+      message: `سيتم إعادة توزيع تمارين جدولك على ${daysCount} أيام بالنظام الجديد (${WORKOUT_SPLIT_LABELS[newSplit]}). هل تود المتابعة؟`,
       action: doChange,
     })
   }
 
   function handleConvertToHome() {
     if (!selectedDay || !program || !onUpdateProgram) return
-    const converted = convertDayToHomeWorkout(selectedDay)
+    const converted = convertDayToHomeWorkout(
+      selectedDay,
+      customExercises,
+      userInjuries,
+    )
     const newDays = program.days.map((d) =>
       d.dayIndex === selectedDay.dayIndex ? converted : d,
     )
     onUpdateProgram({ ...program, days: newDays })
     setIsDayOverflowOpen(false)
-    showToast('تم تحويل تمارين اليوم إلى بدائل منزلية')
+    const insufficient = converted.insufficientMuscles
+    if (insufficient && insufficient.length > 0) {
+      showToast(
+        `تم تحويل التمارين المتاحة. تنبيه: لا تتوفر تمارين كافية للبدائل المنزلية لعضلة (${insufficient.join('، ')}) اليوم`,
+      )
+    } else {
+      showToast('تم تحويل جميع تمارين اليوم إلى بدائل منزلية بنجاح')
+    }
   }
 
   function exportProgramToCsv(p: WorkoutProgram): string {
@@ -1714,7 +1736,7 @@ export function WeeklyPlanView({
         rows.push([
           d.labelAr,
           d.focus,
-          def?.nameAr || ex.customName || ex.exerciseId,
+          getExerciseDisplayName(def, ex, ex.exerciseId),
           String(ex.sets),
           String(ex.reps),
           String(ex.restSeconds),
@@ -1970,6 +1992,36 @@ export function WeeklyPlanView({
                 <Icon name="dumbbell" size={16} />
                 <span>تحويل إلى يوم مقاومة (قوة)</span>
               </button>
+              {onDeleteSession && (() => {
+                const matchingSession = sessions.find(
+                  (s) =>
+                    s.programDayIndex === selectedDay.dayIndex ||
+                    (s as { dayIndex?: number }).dayIndex === selectedDay.dayIndex ||
+                    (Boolean(selectedDay.id) && (s as { programDayId?: string }).programDayId === selectedDay.id) ||
+                    (Boolean(selectedDay.id) && s.id === selectedDay.id),
+                )
+                if (!matchingSession) return null
+                return (
+                  <button
+                    type="button"
+                    className="ghost-danger full-width"
+                    style={{
+                      justifyContent: 'flex-start',
+                      minHeight: '48px',
+                      height: 'auto',
+                      paddingBlock: '8px',
+                      gap: '10px',
+                    }}
+                    onClick={() => {
+                      setIsDayOverflowOpen(false)
+                      setSessionToDeleteFromDay(matchingSession)
+                    }}
+                  >
+                    <IconTrash size={16} />
+                    <span>حذف جلسة التمرين المسجلة لهذا اليوم</span>
+                  </button>
+                )
+              })()}
               <button
                 type="button"
                 className="ghost-danger full-width"
@@ -2175,8 +2227,11 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName =
-                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
+                  const arabicName = getExerciseDisplayName(
+                    ex,
+                    pe,
+                    pe.exerciseId,
+                  )
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
@@ -2203,8 +2258,9 @@ export function WeeklyPlanView({
                       title={
                         <span
                           style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
+                            display: 'inline',
+                            lineHeight: 1.35,
+                            wordBreak: 'break-word',
                           }}
                         >
                           <span>{arabicName}</span>
@@ -2258,6 +2314,44 @@ export function WeeklyPlanView({
                               aria-label="تحريك لأسفل"
                             >
                               <Icon name="chevron-down" size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              className="ghost tiny"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                const resolvedEx: Exercise =
+                                  ex ||
+                                  EXERCISES.find(
+                                    (cand) => cand.id === pe.exerciseId,
+                                  ) ||
+                                  ({
+                                    id: pe.exerciseId,
+                                    nameAr: String(
+                                      pe.nameAr ||
+                                        pe.customName ||
+                                        pe.exerciseId,
+                                    ),
+                                    nameEn: String(
+                                      pe.nameEn || pe.name || pe.exerciseId,
+                                    ),
+                                    category: 'chest',
+                                    equipment: 'bodyweight',
+                                    targetMuscle: 'chest',
+                                    targetSubMuscleAr: '',
+                                    descriptionAr: '',
+                                    difficulty: 'beginner',
+                                  } as Exercise)
+                                setSwapTarget({
+                                  dayIndex: selectedDay.dayIndex,
+                                  exerciseIndex: globalIdx,
+                                  exercise: resolvedEx,
+                                })
+                              }}
+                              aria-label="تبديل التمرين"
+                              title="تبديل التمرين من المكتبة"
+                            >
+                              <Icon name="refresh-cw" size={14} />
                             </button>
                             <button
                               type="button"
@@ -2381,8 +2475,11 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName =
-                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
+                  const arabicName = getExerciseDisplayName(
+                    ex,
+                    pe,
+                    pe.exerciseId,
+                  )
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
@@ -2409,8 +2506,9 @@ export function WeeklyPlanView({
                       title={
                         <span
                           style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
+                            display: 'inline',
+                            lineHeight: 1.35,
+                            wordBreak: 'break-word',
                           }}
                         >
                           <span>{arabicName}</span>
@@ -2464,6 +2562,44 @@ export function WeeklyPlanView({
                               aria-label="تحريك لأسفل"
                             >
                               <Icon name="chevron-down" size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              className="ghost tiny"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                const resolvedEx: Exercise =
+                                  ex ||
+                                  EXERCISES.find(
+                                    (cand) => cand.id === pe.exerciseId,
+                                  ) ||
+                                  ({
+                                    id: pe.exerciseId,
+                                    nameAr: String(
+                                      pe.nameAr ||
+                                        pe.customName ||
+                                        pe.exerciseId,
+                                    ),
+                                    nameEn: String(
+                                      pe.nameEn || pe.name || pe.exerciseId,
+                                    ),
+                                    category: 'chest',
+                                    equipment: 'bodyweight',
+                                    targetMuscle: 'chest',
+                                    targetSubMuscleAr: '',
+                                    descriptionAr: '',
+                                    difficulty: 'beginner',
+                                  } as Exercise)
+                                setSwapTarget({
+                                  dayIndex: selectedDay.dayIndex,
+                                  exerciseIndex: globalIdx,
+                                  exercise: resolvedEx,
+                                })
+                              }}
+                              aria-label="تبديل التمرين"
+                              title="تبديل التمرين من المكتبة"
+                            >
+                              <Icon name="refresh-cw" size={14} />
                             </button>
                             <button
                               type="button"
@@ -2542,8 +2678,11 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  const arabicName =
-                    ex?.nameAr ?? pe.customName ?? pe.exerciseId
+                  const arabicName = getExerciseDisplayName(
+                    ex,
+                    pe,
+                    pe.exerciseId,
+                  )
                   const englishName =
                     (ex as { nameEn?: string; name?: string })?.nameEn ||
                     ex?.name ||
@@ -2570,8 +2709,9 @@ export function WeeklyPlanView({
                       title={
                         <span
                           style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
+                            display: 'inline',
+                            lineHeight: 1.35,
+                            wordBreak: 'break-word',
                           }}
                         >
                           <span>{arabicName}</span>
@@ -2924,6 +3064,36 @@ export function WeeklyPlanView({
                   : 'إضافة كارديو بعد التمرين'}
               </span>
             </button>
+            {onDeleteSession && (() => {
+              const matchingSession = sessions.find(
+                (s) =>
+                  s.programDayIndex === selectedDay.dayIndex ||
+                  (s as { dayIndex?: number }).dayIndex === selectedDay.dayIndex ||
+                  (Boolean(selectedDay.id) && (s as { programDayId?: string }).programDayId === selectedDay.id) ||
+                  (Boolean(selectedDay.id) && s.id === selectedDay.id),
+              )
+              if (!matchingSession) return null
+              return (
+                <button
+                  type="button"
+                  className="ghost-danger full-width"
+                  style={{
+                    justifyContent: 'flex-start',
+                    minHeight: '48px',
+                    height: 'auto',
+                    paddingBlock: '8px',
+                    gap: '10px',
+                  }}
+                  onClick={() => {
+                    setIsDayOverflowOpen(false)
+                    setSessionToDeleteFromDay(matchingSession)
+                  }}
+                >
+                  <IconTrash size={16} />
+                  <span>حذف جلسة التمرين المسجلة لهذا اليوم</span>
+                </button>
+              )
+            })()}
             <button
               type="button"
               className="ghost-danger full-width"
@@ -2947,6 +3117,7 @@ export function WeeklyPlanView({
         {selectedExercise && (
           <ExerciseDetailModal
             exercise={selectedExercise}
+            customExercises={customExercises}
             onClose={() => setSelectedExercise(null)}
             onSwapClick={() => {
               const currentExIdx = selectedDay.exercises.findIndex(
@@ -3207,17 +3378,45 @@ export function WeeklyPlanView({
         {/* Week ListRows */}
         <section className="screen-section">
           <div
-            className="section-title"
+            className="section-title days-section-header"
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '10px',
+              flexWrap: 'wrap',
+              marginBottom: '12px',
+              gap: '8px',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>أيام الجدول التدريبي</span>
-              <span className="section-title-counter">
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                minWidth: '150px',
+              }}
+            >
+              <span
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
+                أيام الجدول التدريبي
+              </span>
+              <span
+                style={{
+                  fontSize: '11.5px',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: 'var(--card-subtle)',
+                  color: 'var(--color-accent-text, #f95700)',
+                  border: '1px solid var(--line)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
                 {program.days.length} أيام
               </span>
             </div>
@@ -3226,25 +3425,59 @@ export function WeeklyPlanView({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                flexWrap: 'wrap',
+                flexShrink: 0,
               }}
             >
               {onOpenScheduleModal && (
-                <Button
-                  size="sm"
-                  variant="ghost"
+                <button
+                  type="button"
                   onClick={() => onOpenScheduleModal()}
+                  className="btn-ghost"
+                  style={{
+                    minHeight: '40px',
+                    height: '40px',
+                    padding: '0 10px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    borderRadius: '8px',
+                    border: '1px solid var(--line)',
+                    background: 'var(--card-bg)',
+                    color: 'var(--ink)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                  }}
                 >
-                  تعديل الجدول/الأيام
-                </Button>
+                  <Icon name="calendar" size={14} />
+                  <span>تعديل الأيام</span>
+                </button>
               )}
-              <Button
-                size="sm"
-                variant="secondary"
+              <button
+                type="button"
                 onClick={() => setIsAddDaySheetOpen(true)}
+                className="btn-secondary"
+                style={{
+                  minHeight: '40px',
+                  height: '40px',
+                  padding: '0 12px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  borderRadius: '8px',
+                  background: 'var(--color-surface-2)',
+                  color: 'var(--color-accent, #f95700)',
+                  border: '1px solid var(--line)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                }}
               >
-                + إضافة يوم
-              </Button>
+                <Icon name="plus" size={14} />
+                <span>إضافة يوم</span>
+              </button>
             </div>
           </div>
 
@@ -3327,9 +3560,7 @@ export function WeeklyPlanView({
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'space-between',
                         gap: '6px',
-                        flexWrap: 'wrap',
                         minWidth: 0,
                         width: '100%',
                       }}
@@ -3338,65 +3569,52 @@ export function WeeklyPlanView({
                         style={{
                           minWidth: 0,
                           flex: '1 1 auto',
-                          lineHeight: 1.4,
+                          lineHeight: 1.35,
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
-                          overflow:
-                            displayTitle.length >= 60 ? 'hidden' : 'visible',
-                          textOverflow:
-                            displayTitle.length >= 60 ? 'ellipsis' : 'clip',
-                          whiteSpace: 'normal',
+                          overflow: 'hidden',
                           wordBreak: 'break-word',
                         }}
                       >
                         {displayTitle}
                       </span>
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          flexShrink: 0,
-                        }}
-                      >
-                        {isCardio && (
-                          <span
-                            className="badge"
-                            style={{
-                              fontSize: '11px',
-                              fontWeight: 700,
-                              color: 'var(--color-info)',
-                              background:
-                                'var(--color-info-surface, rgba(96, 165, 250, 0.12))',
-                              padding: '2px 6px',
-                              borderRadius: '6px',
-                              whiteSpace: 'nowrap',
-                              flex: 'none',
-                            }}
-                          >
-                            كارديو
-                          </span>
-                        )}
-                        {isToday && (
-                          <span
-                            className="badge"
-                            style={{
-                              fontSize: '11px',
-                              fontWeight: 700,
-                              color: 'var(--color-accent-text)',
-                              background:
-                                'var(--color-accent-soft, rgba(235, 94, 40, 0.15))',
-                              padding: '2px 6px',
-                              borderRadius: '6px',
-                              whiteSpace: 'nowrap',
-                              flex: 'none',
-                            }}
-                          >
-                            اليوم
-                          </span>
-                        )}
-                      </div>
+                      {isCardio && (
+                        <span
+                          className="badge"
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            color: 'var(--color-info)',
+                            background:
+                              'var(--color-info-surface, rgba(96, 165, 250, 0.12))',
+                            padding: '2px 6px',
+                            borderRadius: '6px',
+                            whiteSpace: 'nowrap',
+                            flexShrink: 0,
+                          }}
+                        >
+                          كارديو
+                        </span>
+                      )}
+                      {isToday && (
+                        <span
+                          className="badge"
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            color: 'var(--color-accent-text)',
+                            background:
+                              'var(--color-accent-soft, rgba(235, 94, 40, 0.15))',
+                            padding: '2px 6px',
+                            borderRadius: '6px',
+                            whiteSpace: 'nowrap',
+                            flexShrink: 0,
+                          }}
+                        >
+                          اليوم
+                        </span>
+                      )}
                     </div>
                   }
                   secondary={
@@ -3406,26 +3624,31 @@ export function WeeklyPlanView({
                         : 'جلسة كارديو ولياقة'
                       : deriveDayMuscleSummary(day.exercises)
                   }
+                  tertiary={
+                    !isCardio ? (
+                      <span
+                        style={{
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          color: 'var(--muted)',
+                          fontVariantNumeric: 'tabular-nums',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
+                      >
+                        <span>{exerciseCount} تمارين</span>
+                      </span>
+                    ) : undefined
+                  }
                   trailing={
                     <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
+                        gap: '4px',
                       }}
                     >
-                      {!isCardio && (
-                        <span
-                          style={{
-                            fontSize: '12.5px',
-                            fontWeight: 600,
-                            color: 'var(--muted)',
-                            fontVariantNumeric: 'tabular-nums',
-                          }}
-                        >
-                          {exerciseCount} تمارين
-                        </span>
-                      )}
                       <button
                         type="button"
                         className="ghost tiny day-menu-btn"
@@ -3838,67 +4061,65 @@ export function WeeklyPlanView({
             }}
           />
 
-          {/* Change split as radio list if not custom */}
-          {!program.isCustom && (
+          {/* Change training split */}
+          <div
+            style={{
+              marginTop: '4px',
+              borderTop: '1px solid var(--color-divider)',
+              paddingTop: '10px',
+            }}
+          >
             <div
               style={{
-                marginTop: '4px',
-                borderTop: '1px solid var(--color-divider)',
-                paddingTop: '10px',
+                fontSize: '12px',
+                fontWeight: 700,
+                color: 'var(--color-text-2)',
+                marginBottom: '8px',
+                paddingInline: '4px',
               }}
             >
-              <div
-                style={{
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  color: 'var(--color-text-2)',
-                  marginBottom: '8px',
-                  paddingInline: '4px',
-                }}
-              >
-                تغيير النظام التلقائي
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                {SPLIT_TYPE_OPTIONS.map((opt) => {
-                  const isSelected = program.splitType === opt.value
-                  return (
-                    <div
-                      key={opt.value}
-                      className={`list-row ${isSelected ? 'list-row--active' : ''}`}
-                      style={{ padding: '10px 12px', cursor: 'pointer' }}
-                      onClick={() => handleChangeSplit(opt.value)}
-                    >
-                      <div className="list-row__content">
-                        <div className="list-row__title">{opt.labelAr}</div>
-                        <div
-                          className="list-row__secondary"
-                          dir="ltr"
-                          style={{ textAlign: 'left' }}
-                        >
-                          {opt.labelEn}
-                        </div>
-                      </div>
-                      <div className="list-row__trailing">
-                        <input
-                          type="radio"
-                          name="splitTypeRadio"
-                          checked={isSelected}
-                          onChange={() => handleChangeSplit(opt.value)}
-                          aria-label={opt.labelAr}
-                        />
+              تغيير النظام التدريبي (توزيع التمارين تلقائياً)
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
+              {SPLIT_TYPE_OPTIONS.map((opt) => {
+                const isSelected = program.splitType === opt.value
+                return (
+                  <div
+                    key={opt.value}
+                    className={`list-row ${isSelected ? 'list-row--active' : ''}`}
+                    style={{ padding: '10px 12px', cursor: 'pointer' }}
+                    onClick={() => handleChangeSplit(opt.value)}
+                  >
+                    <div className="list-row__content">
+                      <div className="list-row__title">{opt.labelAr}</div>
+                      <div
+                        className="list-row__secondary"
+                        dir="ltr"
+                        style={{ textAlign: 'left' }}
+                      >
+                        {opt.labelEn}
                       </div>
                     </div>
-                  )
-                })}
-              </div>
+                    <div className="list-row__trailing">
+                      <input
+                        type="radio"
+                        name="splitTypeRadio"
+                        checked={isSelected}
+                        onChange={() => handleChangeSplit(opt.value)}
+                        aria-label={opt.labelAr}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-          )}
+          </div>
 
           {/* Destructive Delete Button Separated Last */}
           {onDeleteProgram && (
@@ -4117,7 +4338,7 @@ export function WeeklyPlanView({
                     pe.exerciseId,
                     customExercises,
                   )
-                  return ex?.nameAr || pe.customName || pe.exerciseId
+                  return getExerciseDisplayName(ex, pe, pe.exerciseId)
                 })
                 .join('، ')}). هل تود إكمال الجلسة بحذر؟`
             : '',
@@ -4371,6 +4592,37 @@ export function WeeklyPlanView({
                 </span>
               </button>
             )}
+            {onDeleteSession && (() => {
+              const matchingSession = sessions.find(
+                (s) =>
+                  s.programDayIndex === dayMenuTarget.dayIndex ||
+                  (s as { dayIndex?: number }).dayIndex === dayMenuTarget.dayIndex ||
+                  (Boolean(dayMenuTarget.id) && (s as { programDayId?: string }).programDayId === dayMenuTarget.id) ||
+                  (Boolean(dayMenuTarget.id) && s.id === dayMenuTarget.id),
+              )
+              if (!matchingSession) return null
+              return (
+                <button
+                  type="button"
+                  className="ghost-danger full-width"
+                  style={{
+                    justifyContent: 'flex-start',
+                    minHeight: '48px',
+                    height: 'auto',
+                    paddingBlock: '8px',
+                    gap: '10px',
+                  }}
+                  onClick={() => {
+                    const targetSession = matchingSession
+                    setDayMenuTarget(null)
+                    setSessionToDeleteFromDay(targetSession)
+                  }}
+                >
+                  <IconTrash size={16} />
+                  <span>حذف جلسة التمرين المسجلة لهذا اليوم</span>
+                </button>
+              )
+            })()}
             <button
               type="button"
               className="ghost-danger full-width"
@@ -4382,11 +4634,31 @@ export function WeeklyPlanView({
               onClick={() => handleDeleteDay(dayMenuTarget.dayIndex)}
             >
               <IconTrash size={16} />
-              <span>حذف هذا اليوم</span>
+              <span>حذف هذا اليوم من الجدول</span>
             </button>
           </div>
         )}
       </Sheet>
+
+      {/* Confirm Session Delete from Day */}
+      {sessionToDeleteFromDay && (
+        <ConfirmSheet
+          isOpen={true}
+          onClose={() => setSessionToDeleteFromDay(null)}
+          onConfirm={() => {
+            if (sessionToDeleteFromDay && onDeleteSession) {
+              onDeleteSession(sessionToDeleteFromDay.id)
+              setSessionToDeleteFromDay(null)
+              showToast('تم حذف جلسة التمرين المسجلة وإزالتها من التقارير')
+            }
+          }}
+          title="تأكيد حذف جلسة التمرين"
+          message={`هل أنت متأكد من رغبتك في حذف جلسة التمرين المسجلة ليوم (${sessionToDeleteFromDay.date})؟ سيتم إزالة جميع بياناتها وأوزانها من التقارير والسجلات.`}
+          confirmLabel="نعم، حذف الجلسة"
+          cancelLabel="إلغاء"
+          isDestructive={true}
+        />
+      )}
 
       {/* Sheet: Duplicate Day Picker */}
       <Sheet

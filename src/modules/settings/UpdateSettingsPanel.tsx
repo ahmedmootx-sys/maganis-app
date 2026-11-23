@@ -5,26 +5,36 @@
 
 import React, { useState, useEffect } from 'react'
 import {
-  checkForUpdates,
   getAutoUpdateSetting,
   setAutoUpdateSetting,
   type UpdateCheckResult,
 } from '../../platform/updateChecker.ts'
 import { isNative } from '../../platform/runtime.ts'
 import { MaganisNative } from '../../platform/native/maganisNative.ts'
-import { backupEngine } from '../backup/backupEngine.ts'
+import { autoUpdater, useAutoUpdater } from '../../platform/autoUpdater.ts'
+import { openExternalUrl } from '../../utils/urlHelper.ts'
 import { Toggle } from '../../ui/Toggle.tsx'
 import { Button } from '../../ui/Button.tsx'
 import { Icon } from '../../ui/Icon.tsx'
 
 export const UpdateSettingsPanel: React.FC = () => {
+  const {
+    isChecking,
+    isDownloading,
+    result: updaterResult,
+    backupWarning: updaterBackupWarning,
+  } = useAutoUpdater()
+
   const [currentVersion, setCurrentVersion] = useState('0.2.2')
   const [buildType, setBuildType] = useState<'debug' | 'release'>('release')
   const [autoCheck, setAutoCheck] = useState(() => getAutoUpdateSetting())
-  const [isChecking, setIsChecking] = useState(false)
-  const [result, setResult] = useState<UpdateCheckResult | null>(null)
-  const [isDownloading, setIsDownloading] = useState(false)
-  const [backupWarning, setBackupWarning] = useState<string | null>(null)
+  const [localResult, setLocalResult] = useState<UpdateCheckResult | null>(null)
+  const [localBackupWarning, setLocalBackupWarning] = useState<string | null>(
+    null,
+  )
+
+  const result = localResult ?? updaterResult
+  const backupWarning = localBackupWarning ?? updaterBackupWarning
 
   useEffect(() => {
     async function loadVersionInfo() {
@@ -47,58 +57,22 @@ export const UpdateSettingsPanel: React.FC = () => {
   }
 
   const handleCheck = async () => {
-    setIsChecking(true)
-    setBackupWarning(null)
-    try {
-      let ver = currentVersion
-      let bType = buildType
-      if (isNative() && typeof MaganisNative.getInfo === 'function') {
-        try {
-          const info = await MaganisNative.getInfo()
-          if (info.versionName) {
-            ver = info.versionName
-            setCurrentVersion(info.versionName)
-          }
-          if (info.buildType) {
-            bType = info.buildType === 'debug' ? 'debug' : 'release'
-            setBuildType(bType)
-          }
-        } catch {
-          // ignore
-        }
-      }
-      const res = await checkForUpdates(ver, bType)
-      setResult(res)
-    } finally {
-      setIsChecking(false)
-    }
+    setLocalBackupWarning(null)
+    const res = await autoUpdater.checkForUpdates(true)
+    setLocalResult(res)
   }
 
   const handleDownload = async () => {
-    if (!result?.downloadUrl) return
-
-    setIsDownloading(true)
-    setBackupWarning(null)
-
-    // Pre-download verified backup guarantee (Rule N5.5)
-    try {
-      const backupRes = await backupEngine.runBackup('pre-update')
-      if (!backupRes.success) {
-        setBackupWarning(
-          `تنبيه: فشل إنشاء نسخة احتياطية مسبقة (${backupRes.errorAr || 'خطأ غير معروف'}). يُفضل التأكد من حفظ بياناتك أولاً.`,
-        )
-      }
-    } catch (err) {
-      setBackupWarning(
-        `تنبيه: لم نتمكن من التحقق من النسخة الاحتياطية (${String(err)}).`,
-      )
-    } finally {
-      setIsDownloading(false)
+    setLocalBackupWarning(null)
+    const res = await autoUpdater.downloadAndInstall()
+    if (!res.success && res.error) {
+      setLocalBackupWarning(res.error)
     }
+  }
 
-    // Open verified download URL in system browser
-    if (typeof window !== 'undefined') {
-      window.open(result.downloadUrl, '_system')
+  const handleOpenBrowser = () => {
+    if (result?.downloadUrl) {
+      void openExternalUrl(result.downloadUrl)
     }
   }
 
@@ -304,23 +278,42 @@ export const UpdateSettingsPanel: React.FC = () => {
                 </div>
               )}
 
-              <Button
-                variant="primary"
-                onClick={handleDownload}
-                disabled={isDownloading}
-                style={{ width: '100%', marginTop: '6px' }}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  marginTop: '6px',
+                }}
               >
-                <Icon name="download" size={16} />
-                <span>
-                  {isDownloading ? (
-                    'جاري التحقق من النسخ...'
-                  ) : (
-                    <>
-                      تنزيل التحديث (<bdi dir="ltr">APK</bdi>)
-                    </>
-                  )}
-                </span>
-              </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  style={{ width: '100%' }}
+                >
+                  <Icon name="download" size={16} />
+                  <span>
+                    {isDownloading ? (
+                      'جاري التحقق والتنزيل...'
+                    ) : (
+                      <>
+                        تنزيل وتثبيت التحديث (<bdi dir="ltr">APK</bdi>)
+                      </>
+                    )}
+                  </span>
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  onClick={handleOpenBrowser}
+                  disabled={isDownloading}
+                  style={{ width: '100%' }}
+                >
+                  <Icon name="external-link" size={16} />
+                  <span>فتح رابط الإصدار بالمتصفح</span>
+                </Button>
+              </div>
 
               {/* Plain Arabic install guidance */}
               <div

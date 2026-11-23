@@ -9,8 +9,21 @@ export type Difficulty = 'beginner' | 'intermediate' | 'advanced' | 'expert'
 export type Equipment =
   'bodyweight' | 'dumbbell' | 'barbell' | 'machine' | 'band'
 
+export type ExerciseEnvironment = 'home' | 'gym' | 'both'
+
+export const ENVIRONMENT_LABELS: Record<ExerciseEnvironment, string> = {
+  home: 'منزلي',
+  gym: 'جيم',
+  both: 'منزلي وجيم',
+}
+
 export type MeasurementType =
-  'reps' | 'duration' | 'bodyweight' | 'weight' | 'cardio'
+  | 'reps'
+  | 'duration'
+  | 'bodyweight'
+  | 'weight'
+  | 'cardio'
+  | 'time'
 
 export interface Exercise {
   id: string
@@ -28,6 +41,8 @@ export interface Exercise {
   target_ar?: string
   avoidForInjuries?: string[]
   archived?: boolean
+  environment?: ExerciseEnvironment
+  perSide?: boolean
   media?: {
     gif?: {
       display?: boolean
@@ -167,6 +182,15 @@ export interface ProgramExercise {
   nameEn?: string
   needsReview?: boolean
   prescription?: string
+  imageUrl?: string
+  gifUrl?: string
+  videoUrl?: string
+  stepsAr?: string[]
+  targetMusclesAr?: string[]
+  understandingAr?: string
+  benefitAr?: string
+  personalNote?: string
+  measurementType?: MeasurementType
   [key: string]: unknown
 }
 
@@ -249,7 +273,13 @@ export interface SavedWorkoutProgram {
 
 export interface SessionExercise {
   exerciseId: string
-  sets: { reps: number; weightKg: number }[]
+  sets: {
+    reps: number
+    weightKg: number
+    durationSeconds?: number
+    durationSecondsSideA?: number
+    durationSecondsSideB?: number
+  }[]
   completed: boolean
 }
 

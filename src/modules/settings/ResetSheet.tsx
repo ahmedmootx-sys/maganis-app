@@ -12,6 +12,7 @@ import React, { useState, useMemo } from 'react'
 import { Sheet } from '../../ui/Sheet.tsx'
 import { Button } from '../../ui/Button.tsx'
 import { getExerciseEditsStats } from './resetService.ts'
+import { copyToClipboard } from '../../utils/clipboard.ts'
 import type { CustomExercise } from '../shared/types.ts'
 
 export interface ResetSheetProps {
@@ -44,15 +45,23 @@ export const ResetSheet: React.FC<ResetSheetProps> = ({
     return getExerciseEditsStats(customExercises, deletedExerciseIds)
   }, [customExercises, deletedExerciseIds, isOpen])
 
-  const isConfirmed =
-    selectedMode !== null && typedWord.trim() === 'حذف' && !isResetting
+  const normalizeWord = (w: string) =>
+    w
+      .replace(/[«»"'״]/g, '')
+      .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+      .replace(/[\u2000-\u200F\u2028-\u202F\uFEFF]/g, '')
+      .trim()
+
+  const isWordMatching = normalizeWord(typedWord) === 'حذف'
+  const effectiveMode = selectedMode || 'delete-all'
+  const isConfirmed = isWordMatching && !isResetting
 
   const handleExecute = async () => {
-    if (!selectedMode || typedWord.trim() !== 'حذف') return
+    if (!isWordMatching || isResetting) return
     setIsResetting(true)
     setErrorMsg('')
     try {
-      await onConfirm(selectedMode)
+      await onConfirm(effectiveMode)
     } catch (err: unknown) {
       setErrorMsg((err as Error).message || 'حدث خطأ أثناء تنفيذ إعادة الضبط')
       setIsResetting(false)
@@ -108,7 +117,7 @@ export const ResetSheet: React.FC<ResetSheetProps> = ({
           >
             {isResetting
               ? 'جارِ المسح...'
-              : selectedMode === 'keep-edits'
+              : effectiveMode === 'keep-edits'
                 ? 'إعادة الضبط والاحتفاظ بالتعديلات'
                 : 'مسح كل شيء نهائياً'}
           </Button>
@@ -188,11 +197,10 @@ export const ResetSheet: React.FC<ResetSheetProps> = ({
             textAlign: 'right',
             padding: 'var(--space-3)',
             borderRadius: 'var(--radius-card)',
-            border: `2px solid ${
-              selectedMode === 'keep-edits'
-                ? 'var(--color-accent, #ff6b00)'
-                : 'var(--color-divider)'
-            }`,
+            border: `2px solid ${selectedMode === 'keep-edits'
+              ? 'var(--color-accent, #ff6b00)'
+              : 'var(--color-divider)'
+              }`,
             backgroundColor:
               selectedMode === 'keep-edits'
                 ? 'var(--color-accent-tint, rgba(255, 107, 0, 0.08))'
@@ -224,11 +232,10 @@ export const ResetSheet: React.FC<ResetSheetProps> = ({
                 width: '18px',
                 height: '18px',
                 borderRadius: '50%',
-                border: `2px solid ${
-                  selectedMode === 'keep-edits'
-                    ? 'var(--color-accent, #ff6b00)'
-                    : 'var(--color-divider)'
-                }`,
+                border: `2px solid ${selectedMode === 'keep-edits'
+                  ? 'var(--color-accent, #ff6b00)'
+                  : 'var(--color-divider)'
+                  }`,
                 backgroundColor:
                   selectedMode === 'keep-edits'
                     ? 'var(--color-accent, #ff6b00)'
@@ -286,11 +293,10 @@ export const ResetSheet: React.FC<ResetSheetProps> = ({
             textAlign: 'right',
             padding: 'var(--space-3)',
             borderRadius: 'var(--radius-card)',
-            border: `2px solid ${
-              selectedMode === 'delete-all'
-                ? 'var(--color-danger, #ef4444)'
-                : 'var(--color-divider)'
-            }`,
+            border: `2px solid ${selectedMode === 'delete-all'
+              ? 'var(--color-danger, #ef4444)'
+              : 'var(--color-divider)'
+              }`,
             backgroundColor:
               selectedMode === 'delete-all'
                 ? 'var(--color-danger-bg, rgba(239, 68, 68, 0.08))'
@@ -325,11 +331,10 @@ export const ResetSheet: React.FC<ResetSheetProps> = ({
                 width: '18px',
                 height: '18px',
                 borderRadius: '50%',
-                border: `2px solid ${
-                  selectedMode === 'delete-all'
-                    ? 'var(--color-danger, #ef4444)'
-                    : 'var(--color-divider)'
-                }`,
+                border: `2px solid ${selectedMode === 'delete-all'
+                  ? 'var(--color-danger, #ef4444)'
+                  : 'var(--color-divider)'
+                  }`,
                 backgroundColor:
                   selectedMode === 'delete-all'
                     ? 'var(--color-danger, #ef4444)'
@@ -373,32 +378,69 @@ export const ResetSheet: React.FC<ResetSheetProps> = ({
             marginTop: 'var(--space-2)',
           }}
         >
-          <label
-            htmlFor="confirm-delete-input"
+          <div
             style={{
-              fontSize: '13px',
-              fontWeight: 700,
-              color: 'var(--color-text)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '8px',
             }}
           >
-            لتأكيد المسح، اكتب كلمة «حذف» في المربع:
-          </label>
+            <label
+              htmlFor="confirm-delete-input"
+              style={{
+                fontSize: '13px',
+                fontWeight: 700,
+                color: 'var(--color-text)',
+              }}
+            >
+              لتأكيد المسح، اكتب كلمة «حذف» في المربع:
+            </label>
+            <button
+              type="button"
+              data-testid="btn-copy-fill-delete"
+              onClick={() => {
+                setTypedWord('حذف')
+                if (errorMsg) setErrorMsg('')
+                void copyToClipboard('حذف')
+              }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                borderRadius: '6px',
+                border: '1px solid var(--color-divider)',
+                backgroundColor: 'var(--color-surface-2, rgba(0,0,0,0.05))',
+                fontSize: '11px',
+                fontWeight: 600,
+                color: 'var(--color-accent, #ff6b00)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              نسخ وإدراج «حذف»
+            </button>
+          </div>
           <input
             id="confirm-delete-input"
             data-testid="input-confirm-delete"
             type="text"
             placeholder="حذف"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             value={typedWord}
             onChange={(e) => setTypedWord(e.target.value)}
             style={{
               height: 'var(--control-height)',
               padding: '0 var(--space-3)',
               borderRadius: 'var(--radius-control)',
-              border: `1px solid ${
-                typedWord.trim() === 'حذف'
-                  ? 'var(--color-accent)'
-                  : 'var(--color-divider)'
-              }`,
+              border: `1px solid ${isWordMatching
+                ? 'var(--color-accent)'
+                : 'var(--color-divider)'
+                }`,
               backgroundColor: 'var(--color-surface)',
               color: 'var(--color-text)',
               fontSize: 'var(--font-size-md)',

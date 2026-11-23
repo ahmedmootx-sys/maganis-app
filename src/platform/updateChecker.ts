@@ -18,6 +18,7 @@ import { appStorage } from './storage.ts'
 const GITHUB_REPO_OWNER = 'ahmedmootx-sys'
 const GITHUB_REPO_NAME = 'maganis-app'
 
+export const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`
 export const GITHUB_RELEASES_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases?per_page=5`
 
 export const GITHUB_DOWNLOAD_PREFIX = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/download/`
@@ -41,6 +42,7 @@ export const GitHubReleaseSchema = z.object({
     .regex(/^v?\d+\.\d+.*$/, 'Tag must match semantic version pattern vX.Y.Z'),
   name: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
+  html_url: z.string().optional().nullable(),
   published_at: z.string().optional().nullable(),
   draft: z.boolean().optional().default(false),
   prerelease: z.boolean().optional().default(false),
@@ -67,6 +69,7 @@ export interface UpdateCheckResult {
   downloadUrl?: string
   apkSizeMb?: number
   releaseDate?: string
+  hasApkAsset?: boolean
 }
 
 /**
@@ -152,14 +155,21 @@ export async function checkForUpdates(
     `Checking updates for current=${currentVersionName} channel=${buildType}`,
   )
 
-  // 1. Fetch releases list from GitHub API
+  // 1. Fetch releases list from GitHub API: Try /releases/latest first, fall back to /releases list on 404
   let response: Response
   try {
-    response = await fetchFn(GITHUB_RELEASES_URL, {
+    response = await fetchFn(GITHUB_LATEST_RELEASE_URL, {
       headers: {
         Accept: 'application/vnd.github.v3+json',
       },
     })
+    if (response.status === 404) {
+      response = await fetchFn(GITHUB_RELEASES_URL, {
+        headers: {
+          Accept: 'application/vnd.github.v3+json',
+        },
+      })
+    }
   } catch (netErr) {
     logger.warn(
       'UPDATE',
@@ -273,54 +283,48 @@ export async function checkForUpdates(
       a.browser_download_url.startsWith(GITHUB_DOWNLOAD_PREFIX),
   )
 
-  if (!apkAsset) {
-    logger.warn(
-      'UPDATE',
-      'NO_APK_ASSET',
-      `Release ${latestTag} found but lacks valid APK asset`,
-    )
-    return {
-      status: 'error',
-      currentVersion: currentVersionName,
-      latestVersion,
-      messageAr: 'تم العثور على إصدار جديد ولكن ملف التثبيت غير متوفر حالياً.',
-    }
-  }
-
   const releaseNotes = extractArabicReleaseNotes(release.body)
-  const sizeMb = apkAsset.size
+  const sizeMb = apkAsset?.size
     ? Math.round((apkAsset.size / (1024 * 1024)) * 10) / 10
     : undefined
+
+  const fallbackUrl =
+    release.html_url ||
+    `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/tag/${latestTag}`
+  const finalDownloadUrl = apkAsset
+    ? apkAsset.browser_download_url
+    : fallbackUrl
 
   logger.info(
     'UPDATE',
     'AVAILABLE',
-    `New version available: ${latestVersion} url=${apkAsset.browser_download_url}`,
+    `New version available: ${latestVersion} url=${finalDownloadUrl}`,
   )
 
   return {
     status: 'update_available',
     currentVersion: currentVersionName,
     latestVersion,
-    downloadUrl: apkAsset.browser_download_url,
+    downloadUrl: finalDownloadUrl,
     apkSizeMb: sizeMb,
     releaseDate: release.published_at
       ? release.published_at.slice(0, 10)
       : undefined,
     releaseNotesAr: releaseNotes,
     messageAr: `يتوفر تحديث جديد (${latestTag}).`,
+    hasApkAsset: Boolean(apkAsset),
   }
 }
 
 /**
- * Auto update check preference (Default: OFF per Rule R8 local-first).
+ * Auto update check preference (Default: true on app launch, opt-out available).
  */
 export function getAutoUpdateSetting(): boolean {
   try {
     const val = appStorage.getItem(STORAGE_KEY_AUTO_UPDATE)
-    return val === 'true' // Default false (opt-in only)
+    return val === null ? true : val === 'true'
   } catch {
-    return false
+    return true
   }
 }
 

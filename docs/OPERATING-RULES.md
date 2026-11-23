@@ -14,6 +14,13 @@ R11. Never show formal Arabic muscle names (for example الدالية, المس
 R12. Plural forms: use `Intl.PluralRules('ar')` with the full six-category table (zero, one, two, few 3-10, many 11-99, other 100+). No "1 تمارين" and no "4 سعرة".
 R13. No raw hex colours in components. Colours come from design tokens that exist for both themes. Text must pass WCAG AA (4.5:1 normal, 3:1 large text and meaningful icons/borders).
 R14. Before you finish, run the full gate suite and the existing tests. Do not report success with any red gate.
+R15. Mobile Anti-Stacking & Text Wrapping Invariants:
+- Never squeeze titles: Any card header must give the title at least 65% of the card width on 360px viewports. Action buttons must either occupy a dedicated action row below the title or be placed in a fixed-width trailing container.
+- Line-clamp safety: Never nest `flex-wrap: wrap` inside an element styled with `display: -webkit-box` / `-webkit-box-orient: vertical`.
+- Arabic title wrapping: Primary item titles must allow 2 lines of wrap (`-webkit-line-clamp: 2`, `line-height: 1.35`, `word-break: break-word`). Never apply single-line `white-space: nowrap` to primary entity names.
+- Badge & Marks flow: Wrappers containing title text and badges (e.g. `ExerciseMarks`) must use `display: inline` to preserve native bidirectional text wrap.
+- Clean in-session contexts: In fast-paced tracking views (e.g. active workout sessions, set loggers), never render multi-line bibliographic citations or academic sources directly in the set card; use `showSource={false}` or a collapsible sheet.
+- Gate enforcement: `scripts/check-ui.mjs` must inspect text node bounding boxes at 360x780 DPR 2 to guarantee zero overlapping text boxes (`gate-overlap`).
 
 # PROCESS RULES (Task G6 Mandatory)
 

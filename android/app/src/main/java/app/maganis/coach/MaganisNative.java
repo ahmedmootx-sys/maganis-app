@@ -3,6 +3,7 @@ package app.maganis.coach;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ApplicationExitInfo;
+import android.app.DownloadManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
@@ -19,6 +20,7 @@ import android.content.pm.SigningInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -1734,5 +1736,108 @@ public class MaganisNative extends Plugin {
         JSObject ret = new JSObject();
         ret.put("success", true);
         call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void copyToClipboard(PluginCall call) {
+        String text = call.getString("text", "");
+        try {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("text", text);
+            clipboard.setPrimaryClip(clip);
+            JSObject ret = new JSObject();
+            ret.put("success", true);
+            call.resolve(ret);
+        } catch (Exception e) {
+            call.reject("Failed to copy to clipboard: " + e.getMessage(), e);
+        }
+    }
+
+    @PluginMethod
+    public void resolveRedirect(PluginCall call) {
+        String url = call.getString("url");
+        if (url == null || url.trim().isEmpty()) {
+            call.reject("URL is empty");
+            return;
+        }
+        writeExecutor.submit(() -> {
+            try {
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) new java.net.URL(url.trim()).openConnection();
+                conn.setInstanceFollowRedirects(true);
+                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36");
+                conn.setConnectTimeout(8000);
+                conn.setReadTimeout(8000);
+                conn.connect();
+                java.net.URL finalUrl = conn.getURL();
+                JSObject ret = new JSObject();
+                ret.put("success", true);
+                ret.put("finalUrl", finalUrl.toString());
+                call.resolve(ret);
+            } catch (Exception e) {
+                JSObject ret = new JSObject();
+                ret.put("success", false);
+                ret.put("finalUrl", url);
+                call.resolve(ret);
+            }
+        });
+    }
+
+    @PluginMethod
+    public void openExternalUrl(PluginCall call) {
+        String url = call.getString("url");
+        if (url == null || url.trim().isEmpty()) {
+            call.reject("URL is empty");
+            return;
+        }
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.trim()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(intent);
+            JSObject ret = new JSObject();
+            ret.put("success", true);
+            call.resolve(ret);
+        } catch (Exception e) {
+            call.reject("Failed to open external URL: " + e.getMessage(), e);
+        }
+    }
+
+    @PluginMethod
+    public void downloadAndInstallApk(PluginCall call) {
+        String url = call.getString("url");
+        String fileName = call.getString("fileName", "bunyan-update.apk");
+        if (url == null || url.trim().isEmpty()) {
+            call.reject("URL is empty");
+            return;
+        }
+        try {
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url.trim()));
+            request.setTitle("تحديث بُنْيَان");
+            request.setDescription("جارِ تحميل التحديث الجديد...");
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+            request.setMimeType("application/vnd.android.package-archive");
+
+            DownloadManager manager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+            if (manager != null) {
+                long downloadId = manager.enqueue(request);
+                JSObject ret = new JSObject();
+                ret.put("success", true);
+                ret.put("downloadId", downloadId);
+                ret.put("fileName", fileName);
+                ret.put("method", "download_manager");
+                call.resolve(ret);
+                return;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.trim()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(intent);
+            JSObject ret = new JSObject();
+            ret.put("success", true);
+            ret.put("method", "intent_view");
+            call.resolve(ret);
+        } catch (Exception e) {
+            call.reject("Failed to download APK: " + e.getMessage(), e);
+        }
     }
 }

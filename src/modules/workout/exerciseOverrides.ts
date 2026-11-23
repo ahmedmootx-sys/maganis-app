@@ -11,6 +11,7 @@
 
 import type {
   Exercise,
+  ExerciseEnvironment,
   ExerciseMuscleTarget,
   MeasurementType,
 } from '../shared/types.ts'
@@ -48,6 +49,8 @@ export interface ExerciseOverride {
   howToStepsAr?: string[]
   muscles?: ExerciseMuscleTarget[]
   measurementType?: MeasurementType
+  environment?: ExerciseEnvironment
+  perSide?: boolean
   personalNote?: string // max 500 chars
   videoUrl?: string
   updatedAt?: number
@@ -138,12 +141,20 @@ if (typeof window !== 'undefined') {
       if (dbMedia && typeof dbMedia === 'object') {
         for (const [k, v] of Object.entries(dbMedia)) {
           if (v) {
+            const dataUrl =
+              typeof v === 'string' ? v : (v as { dataUrl?: string }).dataUrl
             if (typeof v === 'string') {
               inMemoryMedia[k] = { dataUrl: v }
             } else if (typeof v === 'object') {
               inMemoryMedia[k] = v as {
                 dataUrl?: string
                 firstFrameUrl?: string
+              }
+            }
+            if (k.startsWith('video_') && dataUrl) {
+              const exId = k.replace('video_', '')
+              if (inMemoryOverrides[exId]) {
+                inMemoryOverrides[exId].videoUrl = dataUrl
               }
             }
           }
@@ -260,6 +271,16 @@ export async function saveExerciseOverride(
     await removeMediaItem(override.exerciseId)
   }
 
+  // 1.5. Video file storage in IndexedDB (if data URL)
+  if (override.videoUrl?.startsWith('data:video/')) {
+    await setMediaItem('video_' + override.exerciseId, {
+      mime: 'video/mp4',
+      dataUrl: override.videoUrl,
+    })
+  } else if (!override.videoUrl) {
+    await removeMediaItem('video_' + override.exerciseId)
+  }
+
   const updated: ExerciseOverride = {
     ...override,
     updatedAt: Date.now(),
@@ -276,6 +297,9 @@ export async function saveExerciseOverride(
     const item = { ...v }
     if (item.customImageBlob && item.customImageBlob.length > 512) {
       delete item.customImageBlob
+    }
+    if (item.videoUrl && item.videoUrl.startsWith('data:video/')) {
+      item.videoUrl = `media:video_${item.exerciseId}`
     }
     storageOverrides[k] = item
   }
@@ -391,9 +415,11 @@ export async function deleteExerciseOverride(
       throw new StorageSaveError()
     }
     await removeMediaItem(exerciseId)
+    await removeMediaItem('video_' + exerciseId)
 
     inMemoryOverrides = nextOverrides
     delete inMemoryMedia[exerciseId]
+    delete inMemoryMedia['video_' + exerciseId]
     notifyOverridesChanged()
   }
 }
@@ -569,6 +595,14 @@ export function selectEffectiveExercise(
     howToStepsAr,
     muscles,
     measurementType,
+    environment:
+      override.environment !== undefined
+        ? override.environment
+        : base.environment,
+    perSide:
+      override.perSide !== undefined
+        ? override.perSide
+        : base.perSide,
     personalNote,
     videoUrl,
     isModified,

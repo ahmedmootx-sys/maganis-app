@@ -153,6 +153,11 @@ export async function executeFactoryReset(
 
     // 6. Reload page to ensure clean initial state
     if (typeof window !== 'undefined') {
+      try {
+        window.location.hash = ''
+      } catch {
+        // ignore
+      }
       window.location.reload()
     }
     return
@@ -237,6 +242,11 @@ export async function executeFactoryReset(
 
   // Step 5: Reload page
   if (typeof window !== 'undefined') {
+    try {
+      window.location.hash = ''
+    } catch {
+      // ignore
+    }
     window.location.reload()
   }
 }

@@ -26,16 +26,29 @@ export const Sheet: React.FC<SheetProps> = ({
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLElement | null>(null)
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
 
   // Esc key closes, focus trap, return focus & background inert/aria-hidden
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      if (
+        triggerRef.current &&
+        typeof triggerRef.current.focus === 'function' &&
+        typeof document !== 'undefined' &&
+        document.contains(triggerRef.current)
+      ) {
+        triggerRef.current.focus()
+        triggerRef.current = null
+      }
+      return
+    }
 
     triggerRef.current = document.activeElement as HTMLElement | null
 
     // Register with native back-button stack so back press dismisses open sheet first
     const unregisterBack = backButtonManager.register(() => {
-      onClose()
+      onCloseRef.current()
       return true
     }, 100)
 
@@ -48,7 +61,7 @@ export const Sheet: React.FC<SheetProps> = ({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose()
+        onCloseRef.current()
         return
       }
       if (e.key === 'Tab' && sheetRef.current) {
@@ -115,16 +128,22 @@ export const Sheet: React.FC<SheetProps> = ({
         rootEl.removeAttribute('aria-hidden')
         rootEl.inert = false
       }
+    }
+  }, [isOpen])
 
-      // Return focus to trigger element
+  // Restore focus to trigger when sheet unmounts completely
+  useEffect(() => {
+    return () => {
       if (
         triggerRef.current &&
-        typeof triggerRef.current.focus === 'function'
+        typeof triggerRef.current.focus === 'function' &&
+        typeof document !== 'undefined' &&
+        document.contains(triggerRef.current)
       ) {
         triggerRef.current.focus()
       }
     }
-  }, [isOpen, onClose])
+  }, [])
 
   if (!isOpen) return null
 

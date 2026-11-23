@@ -1226,7 +1226,7 @@ button.ghost-danger:hover {
   align-items: center;
   justify-content: center;
   padding: 16px;
-  z-index: 9999;
+  z-index: 9990;
   box-sizing: border-box;
   animation: fadeIn 0.2s ease-out;
 }
@@ -1999,6 +1999,10 @@ button.ghost-danger:hover {
   width: 90px;
 }
 
+.col-duration {
+  min-width: 115px;
+}
+
 .col-check {
   width: 46px;
 }
@@ -2287,6 +2291,27 @@ button.ghost-danger:hover {
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+
+.exercise-detail-card .screen-container,
+.exercise-detail-card .exercise-detail-page {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  display: block !important;
+}
+
+.exercise-detail-card .screen-content,
+.exercise-detail-card .exercise-detail-container {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  padding: 0 !important;
 }
 
 .exercise-detail-card .modal-body {
@@ -3483,6 +3508,10 @@ input[type='url'],
   overflow: hidden /* clip-ok: text ellipsis truncation */;
 }
 
+.list-row__title:has(> *) {
+  display: block;
+}
+
 .list-row__secondary {
   font-size: 12.5px;
   color: var(--muted);
@@ -3979,6 +4008,17 @@ body.with-cardio-mini-bar .maganis-toast-portal {
   bottom: calc(
     var(--bottom-nav-height, 68px) + 96px + 12px + var(--bottom-inset)
   ) !important;
+}
+
+@keyframes slideUpRestBanner {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* --- B2: Accessibility & Reduced Motion --- */

@@ -37,6 +37,7 @@ import {
   MUSCLE_GROUP_MAP,
   DIFFICULTY_MAP,
 } from '../../utils/labels.ts'
+import { getExerciseEnvironment } from './workoutUtils.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import {
   deriveConstraints,
@@ -96,6 +97,7 @@ export function ExerciseLibraryModal({
   const [subMuscleFilter, setSubMuscleFilter] = useState<string>('all')
   const [equipmentFilter, setEquipmentFilter] = useState<string>('all')
   const [levelFilter, setLevelFilter] = useState<string>('all')
+  const [environmentFilter, setEnvironmentFilter] = useState<'all' | 'home' | 'gym'>('all')
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false)
 
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
@@ -161,8 +163,14 @@ export function ExerciseLibraryModal({
     if (levelFilter !== 'all') {
       list.push({ id: 'level', label: getDifficultyLabel(levelFilter) })
     }
+    if (environmentFilter !== 'all') {
+      list.push({
+        id: 'env' as unknown as 'category',
+        label: environmentFilter === 'home' ? 'منزلي' : 'جيم',
+      })
+    }
     return list
-  }, [categoryFilter, subMuscleFilter, equipmentFilter, levelFilter])
+  }, [categoryFilter, subMuscleFilter, equipmentFilter, levelFilter, environmentFilter])
 
   // Filtered exercises
   const currentPool = activeTab === 'all' ? activeExercises : deletedExercises
@@ -175,6 +183,13 @@ export function ExerciseLibraryModal({
       if (equipmentFilter !== 'all' && e.equipment !== equipmentFilter)
         return false
       if (levelFilter !== 'all' && e.difficulty !== levelFilter) return false
+      if (environmentFilter !== 'all') {
+        const env = getExerciseEnvironment(e)
+        if (environmentFilter === 'home' && env !== 'home' && env !== 'both')
+          return false
+        if (environmentFilter === 'gym' && env !== 'gym' && env !== 'both')
+          return false
+      }
       if (filterSuitableOnly && hasConstraints) {
         if (!isExerciseAllowed(e, effectiveConstraints)) return false
       }
@@ -333,6 +348,59 @@ export function ExerciseLibraryModal({
               margin: '2px 0 4px',
             }}
           >
+            {/* Environment Selector Pills */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '2px',
+                background: 'var(--card-subtle)',
+                borderRadius: 'var(--radius-control, 8px)',
+                padding: '2px',
+                border: '1px solid var(--line)',
+                flexShrink: 0,
+              }}
+            >
+              {(
+                [
+                  { id: 'all', label: 'الكل' },
+                  { id: 'home', label: 'منزلي' },
+                  { id: 'gym', label: 'جيم' },
+                ] as const
+              ).map((tab) => {
+                const isSelected = environmentFilter === tab.id
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setEnvironmentFilter(tab.id)}
+                    style={{
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '0 12px',
+                      minHeight: '44px',
+                      minWidth: '44px',
+                      fontSize: '12px',
+                      fontWeight: isSelected ? 700 : 500,
+                      background: isSelected
+                        ? 'var(--color-accent, #eb5e28)'
+                        : 'transparent',
+                      color: isSelected
+                        ? 'var(--color-accent-on, #ffffff)'
+                        : 'var(--ink)',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                )
+              })}
+            </div>
+
             <button
               type="button"
               className={`chip-btn ${activeFilters.length > 0 ? 'selected' : ''}`}
@@ -536,9 +604,9 @@ export function ExerciseLibraryModal({
                   title={
                     <span
                       style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
+                        display: 'inline',
+                        lineHeight: 1.35,
+                        wordBreak: 'break-word',
                       }}
                     >
                       <span>{formatBdiText(ex.nameAr)}</span>
@@ -590,6 +658,7 @@ export function ExerciseLibraryModal({
       {selectedExercise && (
         <ExerciseDetailModal
           exercise={selectedExercise}
+          customExercises={customExercises}
           onClose={() => setSelectedExercise(null)}
         />
       )}

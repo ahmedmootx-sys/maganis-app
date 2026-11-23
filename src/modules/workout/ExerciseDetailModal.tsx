@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import { createPortal } from 'react-dom'
 import type { Exercise, ProgramDay, WorkoutProgram } from '../shared/types.ts'
 import { getEffectiveExercise } from './exerciseStore.ts'
 
@@ -13,6 +14,7 @@ export interface ExerciseDetailModalProps {
   exerciseId?: string
   programDay?: ProgramDay | null
   program?: WorkoutProgram | null
+  customExercises?: Exercise[]
   onClose: () => void
   onSwapClick?: () => void
 }
@@ -22,6 +24,7 @@ export function ExerciseDetailModal({
   exerciseId,
   programDay,
   program,
+  customExercises = [],
   onClose,
   onSwapClick,
 }: ExerciseDetailModalProps) {
@@ -30,27 +33,17 @@ export function ExerciseDetailModal({
 
   // Check if it's a real catalog or saved custom exercise
   const catalogExercise = exercise
-    ? getEffectiveExercise(effectiveId) || exercise
-    : getEffectiveExercise(effectiveId)
-  const isRealCatalog = Boolean(
-    catalogExercise &&
-    (catalogExercise.steps_ar ||
-      (catalogExercise as { stepsAr?: string[] }).stepsAr ||
-      catalogExercise.targetMusclesAr ||
-      (catalogExercise.category &&
-        catalogExercise.equipment &&
-        !catalogExercise.id?.startsWith('custom-') &&
-        catalogExercise.descriptionAr !== 'تمرين مضاف عبر الذكاء الاصطناعي')),
-  )
+    ? getEffectiveExercise(effectiveId, customExercises) || exercise
+    : getEffectiveExercise(effectiveId, customExercises)
 
-  const effectiveExercise =
-    isRealCatalog && catalogExercise ? catalogExercise : undefined
+  const effectiveExercise = catalogExercise || exercise || undefined
 
-  return (
+  const modalContent = (
     <div
       className="modal-backdrop"
       onClick={onClose}
       data-testid="exercise-detail-modal"
+      style={{ zIndex: 9990 }}
     >
       <div
         className="modal-content card exercise-detail-card"
@@ -58,6 +51,9 @@ export function ExerciseDetailModal({
         style={{
           maxHeight: '90vh',
           overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          touchAction: 'pan-y',
+          overscrollBehavior: 'contain',
           padding: '16px',
           width: '100%',
           maxWidth: '640px',
@@ -69,7 +65,9 @@ export function ExerciseDetailModal({
             exercise={effectiveExercise}
             programDay={programDay}
             program={program}
+            customExercises={customExercises}
             onBack={onClose}
+            isModal={true}
           />
         </Suspense>
         {onSwapClick && (
@@ -87,4 +85,10 @@ export function ExerciseDetailModal({
       </div>
     </div>
   )
+
+  if (typeof document !== 'undefined') {
+    return createPortal(modalContent, document.body)
+  }
+
+  return modalContent
 }

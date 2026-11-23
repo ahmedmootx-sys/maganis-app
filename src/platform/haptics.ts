@@ -70,4 +70,34 @@ export const haptics = {
       // Non-fatal
     }
   },
+
+  /**
+   * Heavy intense vibration pattern (for repeating rest expiry loop)
+   */
+  async vibrateIntense(): Promise<void> {
+    const settings = getNotificationSettings()
+    if (!settings.hapticsEnabled) return
+    try {
+      if (isNative()) {
+        await Haptics.vibrate({ duration: 600 })
+      } else if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        navigator.vibrate([400, 150, 400, 150, 600])
+      }
+    } catch {
+      // Non-fatal
+    }
+  },
+
+  /**
+   * Cancel any ongoing vibration immediately
+   */
+  cancelVibration(): void {
+    try {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        navigator.vibrate(0)
+      }
+    } catch {
+      // Non-fatal
+    }
+  },
 }

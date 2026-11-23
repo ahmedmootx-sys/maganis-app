@@ -8,6 +8,7 @@ import type {
 import { MUSCLE_GROUP_LABELS } from '../shared/types.ts'
 import type { UserProfile } from '../onboarding/types.ts'
 import { getEffectiveExercise } from '../workout/exerciseStore.ts'
+import { getExerciseDisplayName } from '../workout/workoutUtils.ts'
 import { ExerciseMarks } from '../../components/ExerciseMarks.tsx'
 import { ExerciseThumb } from '../../components/ExerciseThumb.tsx'
 import { SvgLineChart } from '../reports/SvgLineChart.tsx'
@@ -40,6 +41,7 @@ export interface ProgressScreenProps {
   onDeleteBodyWeight?: (date: string) => void
   onAddDayNote: (note: DayNote) => void
   onDeleteDayNote?: (date: string, text: string) => void
+  onDeleteSession?: (sessionId: string) => void
   onUpdateSessions?: (sessions: TrackingSession[]) => void
   onUpdateBodyLog?: (bodyLog: BodyLogEntry[]) => void
   initialSubTab?: 'log' | 'reports'
@@ -102,6 +104,8 @@ export function ProgressScreen({
   onDeleteBodyWeight,
   onAddDayNote,
   onDeleteDayNote,
+  onDeleteSession,
+  onUpdateSessions,
   initialSubTab = 'log',
 }: ProgressScreenProps) {
   const [activeTab, setActiveTab] = useState<'log' | 'reports'>(initialSubTab)
@@ -111,6 +115,17 @@ export function ProgressScreen({
   const [weightDate, setWeightDate] = useState(() => todayStr())
   const [weightError, setWeightError] = useState('')
   const [weightToDelete, setWeightToDelete] = useState<string | null>(null)
+  const [sessionToDelete, setSessionToDelete] = useState<TrackingSession | null>(
+    null,
+  )
+
+  function handleDeleteSession(sessionId: string) {
+    if (onDeleteSession) {
+      onDeleteSession(sessionId)
+    } else if (onUpdateSessions) {
+      onUpdateSessions(sessions.filter((s) => s.id !== sessionId))
+    }
+  }
 
   // --- LOG TAB: Calendar State ---
   const now = new Date()
@@ -307,6 +322,19 @@ export function ProgressScreen({
       .sort((a, b) => b.sets - a.sets)
   }, [filteredSessions])
 
+  const maxMuscleSets = useMemo(
+    () => Math.max(...weeklyMuscleSets.map((m) => m.sets), 1),
+    [weeklyMuscleSets],
+  )
+
+  const avgVolumePerSession = useMemo(
+    () =>
+      filteredSessions.length > 0
+        ? Math.round(totalVolumeInRange / filteredSessions.length)
+        : 0,
+    [filteredSessions.length, totalVolumeInRange],
+  )
+
   // Personal Records
   const personalRecords = useMemo(() => {
     const map: Record<
@@ -321,7 +349,7 @@ export function ProgressScreen({
     for (const s of sessions) {
       for (const ex of s.exercises) {
         const info = getEffectiveExercise(ex.exerciseId)
-        const name = info?.nameAr ?? ex.exerciseId
+        const name = getExerciseDisplayName(info, null, ex.exerciseId)
         const maxWeight = Math.max(...ex.sets.map((set) => set.weightKg), 0)
         if (maxWeight > 0) {
           if (!map[ex.exerciseId] || maxWeight > map[ex.exerciseId].weight) {
@@ -1031,14 +1059,46 @@ export function ProgressScreen({
                             >
                               جلسة كارديو: {cd.activityNameAr}
                             </span>
-                            <span
+                            <div
                               style={{
-                                fontSize: '12px',
-                                color: 'var(--color-text-2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
                               }}
                             >
-                              الشدة: {lvlLabel}
-                            </span>
+                              <span
+                                style={{
+                                  fontSize: '12px',
+                                  color: 'var(--color-text-2)',
+                                }}
+                              >
+                                الشدة: {lvlLabel}
+                              </span>
+                              {(onDeleteSession || onUpdateSessions) && (
+                                <button
+                                  type="button"
+                                  onClick={() => setSessionToDelete(s)}
+                                  aria-label={`حذف جلسة ${s.date}`}
+                                  title="حذف هذه الجلسة التدريبية"
+                                  style={{
+                                    width: '44px',
+                                    height: '44px',
+                                    minWidth: '44px',
+                                    minHeight: '44px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    background: 'transparent',
+                                    color: 'var(--danger)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                  }}
+                                >
+                                  <IconTrash size={15} />
+                                </button>
+                              )}
+                            </div>
                           </div>
                           <div
                             style={{
@@ -1094,14 +1154,46 @@ export function ProgressScreen({
                           >
                             جلسة تدريب قوة
                           </span>
-                          <span
+                          <div
                             style={{
-                              fontSize: '12px',
-                              color: 'var(--color-text-2)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
                             }}
                           >
-                            {plural(s.exercises.length, 'exercise')}
-                          </span>
+                            <span
+                              style={{
+                                fontSize: '12px',
+                                color: 'var(--color-text-2)',
+                              }}
+                            >
+                              {plural(s.exercises.length, 'exercise')}
+                            </span>
+                            {(onDeleteSession || onUpdateSessions) && (
+                              <button
+                                type="button"
+                                onClick={() => setSessionToDelete(s)}
+                                aria-label={`حذف جلسة ${s.date}`}
+                                title="حذف هذه الجلسة التدريبية"
+                                style={{
+                                  width: '44px',
+                                  height: '44px',
+                                  minWidth: '44px',
+                                  minHeight: '44px',
+                                  borderRadius: '8px',
+                                  border: 'none',
+                                  background: 'transparent',
+                                  color: 'var(--danger)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                <IconTrash size={15} />
+                              </button>
+                            )}
+                          </div>
                         </div>
                         <div
                           style={{
@@ -1138,8 +1230,11 @@ export function ProgressScreen({
                                 <span
                                   style={{ fontSize: '13px', fontWeight: 600 }}
                                 >
-                                  {getEffectiveExercise(ex.exerciseId)
-                                    ?.nameAr ?? ex.exerciseId}
+                                  {getExerciseDisplayName(
+                                    getEffectiveExercise(ex.exerciseId),
+                                    null,
+                                    ex.exerciseId,
+                                  )}
                                 </span>
                               </div>
                             ))}
@@ -1336,11 +1431,11 @@ export function ProgressScreen({
               ))}
             </div>
 
-            {/* Overview Stats */}
+            {/* Overview Stats (4 Cards Grid) */}
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
+                gridTemplateColumns: 'repeat(2, 1fr)',
                 gap: '12px',
               }}
             >
@@ -1353,6 +1448,24 @@ export function ProgressScreen({
                 label="إجمالي الحمل المرفوع"
                 value={`${totalVolumeInRange.toLocaleString()} كجم`}
                 secondary="مجموع التكرارات بالأوزان"
+              />
+              <Stat
+                label="معدل الحمل لكل جلسة"
+                value={`${avgVolumePerSession.toLocaleString()} كجم`}
+                secondary="متوسط الحمل المرفوع"
+              />
+              <Stat
+                label="أعلى وزن مسجل"
+                value={
+                  personalRecords.length > 0
+                    ? `${personalRecords[0].weight} كجم`
+                    : '—'
+                }
+                secondary={
+                  personalRecords.length > 0
+                    ? personalRecords[0].name
+                    : 'لا توجد أرقام بعد'
+                }
               />
             </div>
 
@@ -1434,25 +1547,52 @@ export function ProgressScreen({
                       key={item.muscle}
                       style={{
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '8px 12px',
+                        flexDirection: 'column',
+                        gap: '6px',
+                        padding: '10px 12px',
                         background: 'var(--card-subtle)',
                         borderRadius: '10px',
                       }}
                     >
-                      <span style={{ fontSize: '13.5px', fontWeight: 600 }}>
-                        {item.muscle}
-                      </span>
-                      <span
+                      <div
                         style={{
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          color: 'var(--accent)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
                         }}
                       >
-                        {item.sets} مجموعات
-                      </span>
+                        <span style={{ fontSize: '13.5px', fontWeight: 600 }}>
+                          {item.muscle}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: '13px',
+                            fontWeight: 700,
+                            color: 'var(--accent)',
+                          }}
+                        >
+                          {item.sets} مجموعات
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '6px',
+                          borderRadius: '3px',
+                          background: 'var(--color-divider, rgba(0,0,0,0.06))',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${Math.min(100, Math.round((item.sets / maxMuscleSets) * 100))}%`,
+                            height: '100%',
+                            borderRadius: '3px',
+                            background:
+                              'linear-gradient(90deg, var(--color-primary, #2563eb), #38bdf8)',
+                          }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1542,28 +1682,68 @@ export function ProgressScreen({
                         padding: '10px 14px',
                         borderRadius: '10px',
                         background: 'var(--card-subtle)',
+                        border:
+                          '1px solid var(--color-divider, rgba(0,0,0,0.05))',
                       }}
                     >
-                      <span
+                      <div
                         style={{
-                          fontSize: '14.5px',
-                          fontWeight: 600,
-                          color: 'var(--ink)',
-                          display: 'inline-flex',
+                          display: 'flex',
                           alignItems: 'center',
+                          gap: '10px',
+                          minWidth: 0,
                         }}
                       >
-                        <span>{pr.name}</span>
-                        <ExerciseMarks
-                          hasVideo={pr.hasVideo}
-                          hasCustomMedia={pr.hasCustomMedia}
-                        />
-                      </span>
+                        <span
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            minWidth: '24px',
+                            borderRadius: '50%',
+                            background:
+                              idx === 0
+                                ? '#f59e0b'
+                                : idx === 1
+                                  ? '#94a3b8'
+                                  : idx === 2
+                                    ? '#b45309'
+                                    : 'var(--color-surface-2)',
+                            color: idx < 3 ? '#fff' : 'var(--muted)',
+                            fontSize: '11.5px',
+                            fontWeight: 700,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          {idx + 1}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: 'var(--ink)',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          <span>{pr.name}</span>
+                          <ExerciseMarks
+                            hasVideo={pr.hasVideo}
+                            hasCustomMedia={pr.hasCustomMedia}
+                          />
+                        </span>
+                      </div>
                       <strong
                         style={{
                           fontSize: '15px',
                           color: 'var(--brand)',
                           fontVariantNumeric: 'tabular-nums',
+                          flexShrink: 0,
+                          paddingInlineStart: '8px',
                         }}
                       >
                         {pr.weight} كجم
@@ -1628,18 +1808,53 @@ export function ProgressScreen({
                         style={{
                           display: 'flex',
                           justifyContent: 'space-between',
+                          alignItems: 'center',
                           fontSize: '13.5px',
                         }}
                       >
                         <span style={{ fontWeight: 700 }}>
                           {s.exercises.length} تمرين
                         </span>
-                        <span style={{ color: 'var(--muted)' }}>
-                          {new Date(s.createdAt).toLocaleTimeString('ar-EG', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </span>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                          }}
+                        >
+                          <span
+                            style={{ color: 'var(--muted)', fontSize: '12px' }}
+                          >
+                            {new Date(s.createdAt).toLocaleTimeString('ar-EG', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                          {(onDeleteSession || onUpdateSessions) && (
+                            <button
+                              type="button"
+                              onClick={() => setSessionToDelete(s)}
+                              aria-label={`حذف جلسة ${s.date}`}
+                              title="حذف هذه الجلسة التدريبية"
+                              style={{
+                                width: '44px',
+                                height: '44px',
+                                minWidth: '44px',
+                                minHeight: '44px',
+                                borderRadius: '8px',
+                                border: 'none',
+                                background: 'transparent',
+                                color: 'var(--danger)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              <IconTrash size={14} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                       {s.exercises && s.exercises.length > 0 && (
                         <div
@@ -1668,8 +1883,11 @@ export function ProgressScreen({
                               <span
                                 style={{ fontSize: '13px', fontWeight: 600 }}
                               >
-                                {getEffectiveExercise(ex.exerciseId)?.nameAr ??
-                                  ex.exerciseId}
+                                {getExerciseDisplayName(
+                                  getEffectiveExercise(ex.exerciseId),
+                                  null,
+                                  ex.exerciseId,
+                                )}
                               </span>
                             </div>
                           ))}
@@ -1865,6 +2083,26 @@ export function ProgressScreen({
             `هل أنت متأكد من حذف هذه الملاحظة المسجلة في ${formatArabicDate(noteToDelete.date)}؟`,
           ]}
           confirmLabel="نعم، حذف"
+          cancelLabel="إلغاء"
+          isDestructive={true}
+        />
+      )}
+
+      {/* Delete Session Confirm Sheet */}
+      {sessionToDelete && (
+        <ConfirmSheet
+          isOpen={true}
+          onClose={() => setSessionToDelete(null)}
+          onConfirm={() => {
+            handleDeleteSession(sessionToDelete.id)
+            setSessionToDelete(null)
+          }}
+          title="حذف جلسة التمرين؟"
+          consequences={[
+            `هل أنت متأكد من حذف هذه الجلسة التدريبية المسجلة في ${formatArabicDate(sessionToDelete.date)}؟`,
+            'سيتم حذف بيانات هذه الجلسة بالكامل وإزالتها من التقارير والأرقام القياسية فوراً.',
+          ]}
+          confirmLabel="نعم، حذف الجلسة"
           cancelLabel="إلغاء"
           isDestructive={true}
         />

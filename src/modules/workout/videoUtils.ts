@@ -5,6 +5,9 @@
  * Strict video URL parsing, validation, and embed URL normalization.
  */
 
+import { isNative } from '../../platform/runtime.ts'
+import { MaganisNative } from '../../platform/native/maganisNative.ts'
+
 export type VideoSourceType =
   'youtube' | 'vimeo' | 'pinterest' | 'direct_file' | 'unsupported'
 
@@ -20,7 +23,7 @@ export interface ParsedVideoInfo {
 const YOUTUBE_ID_REGEX = /^[A-Za-z0-9_-]{11}$/
 const VIMEO_ID_REGEX = /^\d{6,12}$/
 const PINTEREST_ID_REGEX = /^\d{6,25}$/
-const DIRECT_MEDIA_EXT_REGEX = /\.(mp4|webm|m4v)$/i
+const DIRECT_MEDIA_EXT_REGEX = /\.(mp4|webm|m4v|mov)$/i
 
 /**
  * Resolves a shortlink (e.g. https://pin.it/xyz) to its canonical Pinterest URL.
@@ -40,6 +43,18 @@ export async function resolvePinterestUrl(input: string): Promise<string> {
   const hostname = url.hostname.toLowerCase()
   if (hostname !== 'pin.it' && !hostname.endsWith('.pin.it')) {
     return trimmed
+  }
+
+  // 1. Android Native redirect resolution via HttpURLConnection (bypasses CORS)
+  if (isNative()) {
+    try {
+      const res = await MaganisNative.resolveRedirect({ url: trimmed })
+      if (res && res.finalUrl && res.finalUrl !== trimmed) {
+        return res.finalUrl
+      }
+    } catch {
+      // Fall through to CapacitorHttp / fetch
+    }
   }
 
   try {
@@ -89,7 +104,21 @@ export function parseVideoUrl(input: string): ParsedVideoInfo {
     return { isValid: false, rawUrl: trimmed, error: 'الرابط فارغ' }
   }
 
-  // Reject javascript:, data:, or any non-https protocols
+  // Support local attached video files (data:video/ or blob: or media:)
+  if (
+    trimmed.toLowerCase().startsWith('data:video/') ||
+    trimmed.toLowerCase().startsWith('blob:') ||
+    trimmed.toLowerCase().startsWith('media:')
+  ) {
+    return {
+      isValid: true,
+      sourceType: 'direct_file',
+      embedUrl: trimmed,
+      rawUrl: trimmed,
+    }
+  }
+
+  // Reject javascript:, non-video data:, or any non-https protocols
   if (!trimmed.toLowerCase().startsWith('https://')) {
     return {
       isValid: false,
@@ -201,6 +230,20 @@ export function parseVideoUrl(input: string): ParsedVideoInfo {
     hostname.endsWith('.pin.it')
 
   if (isPinterestHost) {
+    // Direct video stream from Pinterest CDN (v.pinimg.com or .mp4)
+    if (
+      url.pathname.endsWith('.mp4') ||
+      hostname.startsWith('v.pinimg.com') ||
+      hostname.includes('pinimg.com')
+    ) {
+      return {
+        isValid: true,
+        sourceType: 'direct_file',
+        embedUrl: trimmed,
+        rawUrl: trimmed,
+      }
+    }
+
     let id: string | null = null
 
     if (hostname === 'pin.it' || hostname.endsWith('.pin.it')) {

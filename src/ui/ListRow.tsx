@@ -37,9 +37,11 @@ export const ListRow: React.FC<ListRowProps> = ({
   const isInteractive = Boolean(onClick || onLongPress)
 
   const effectiveSubtitle =
-    subtitle ??
-    (secondary || tertiary ? (
+    subtitle || secondary || tertiary ? (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        {subtitle && (
+          <div style={{ lineHeight: 1.35 }}>{subtitle}</div>
+        )}
         {secondary && (
           <bdi
             dir={secondaryIsLtr ? 'ltr' : undefined}
@@ -48,6 +50,7 @@ export const ListRow: React.FC<ListRowProps> = ({
               textAlign: secondaryIsLtr ? 'start' : undefined,
               fontSize: '12.5px',
               color: 'var(--muted)',
+              lineHeight: 1.35,
             }}
           >
             {secondary}
@@ -56,15 +59,17 @@ export const ListRow: React.FC<ListRowProps> = ({
         {tertiary && (
           <span
             style={{
+              display: 'block',
               fontSize: '11.5px',
               color: 'var(--muted-strong, var(--muted))',
+              lineHeight: 1.35,
             }}
           >
             {tertiary}
           </span>
         )}
       </div>
-    ) : undefined)
+    ) : undefined
 
   return (
     <div
@@ -98,7 +103,12 @@ export const ListRow: React.FC<ListRowProps> = ({
         </div>
       )}
       <div className="list-row__content">
-        <div className="list-row__title">{title}</div>
+        <div
+          className="list-row__title"
+          style={typeof title !== 'string' ? { display: 'block' } : undefined}
+        >
+          {title}
+        </div>
         {effectiveSubtitle && (
           <div className="list-row__subtitle">{effectiveSubtitle}</div>
         )}

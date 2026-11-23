@@ -231,10 +231,21 @@ async function run() {
 
     const page = await context.newPage()
 
+    // Mock GitHub Releases API during local UI checks to avoid 404 console errors
+    await page.route('https://api.github.com/**', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ tag_name: 'v0.2.2', assets: [] }),
+      }),
+    )
+
     // Listen for console errors
     const consoleErrors = []
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
+        const loc = msg.location()?.url || ''
+        if (loc.includes('api.github.com')) return
         consoleErrors.push(msg.text())
       }
     })

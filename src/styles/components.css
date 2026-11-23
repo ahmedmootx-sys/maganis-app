@@ -80,6 +80,7 @@
   overflow-y: auto;
   overflow-x: hidden /* clip-ok: prevent horizontal drift */;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
   flex: 1 1 auto;
   min-height: 0;
   height: 100%;
@@ -860,6 +861,10 @@
   overflow-wrap: normal;
 }
 
+.list-row__title:has(> *) {
+  display: block;
+}
+
 .list-row__subtitle {
   font-size: var(--font-size-sm);
   color: var(--color-text-2);
@@ -1404,7 +1409,7 @@
   position: fixed;
   inset: 0;
   background-color: var(--color-overlay);
-  z-index: var(--z-index-modal);
+  z-index: var(--z-sheet, 10000);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -1476,6 +1481,7 @@
   padding: var(--space-4);
   overflow-y: auto;
   flex: 1 1 auto;
+  min-height: 0;
 }
 
 .sheet:has(.sheet__footer) {
@@ -1657,6 +1663,7 @@ body[data-sheet-open='true'] .bottom-nav {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--space-2);
+  margin-top: 10px;
 }
 
 .atlas-container {
@@ -2239,4 +2246,11 @@ input::placeholder {
   min-height: 44px;
   display: block;
   pointer-events: none;
+}
+
+/* Modal sticky tabs header override: stick to modal top (0px) rather than page top bar */
+.modal-content .exercise-detail-tabs-header,
+.exercise-detail-card .exercise-detail-tabs-header {
+  top: 0 !important;
+  background: var(--color-surface, var(--card-bg, #1e222b)) !important;
 }

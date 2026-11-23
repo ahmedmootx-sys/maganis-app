@@ -4,6 +4,7 @@ import type { TrackingSession, BodyLogEntry, DayNote } from '../shared/types.ts'
 
 export interface TrackingStore {
   saveSession(session: TrackingSession): void
+  deleteSession(sessionId: string): void
   loadSessions(): TrackingSession[]
   saveBodyLog(entries: BodyLogEntry[]): void
   loadBodyLog(): BodyLogEntry[]
@@ -21,6 +22,13 @@ export function createTrackingStore(storage: Storage): TrackingStore {
   function saveSession(session: TrackingSession): void {
     const existing = storage.get<TrackingSession[]>(SESSIONS_KEY, [])
     storage.set(SESSIONS_KEY, [...existing, session])
+    void requestStoragePersistenceOnce()
+  }
+
+  function deleteSession(sessionId: string): void {
+    const existing = storage.get<TrackingSession[]>(SESSIONS_KEY, [])
+    const updated = existing.filter((s) => s.id !== sessionId)
+    storage.set(SESSIONS_KEY, updated)
     void requestStoragePersistenceOnce()
   }
 
@@ -69,6 +77,7 @@ export function createTrackingStore(storage: Storage): TrackingStore {
 
   return {
     saveSession,
+    deleteSession,
     loadSessions,
     saveBodyLog,
     loadBodyLog,
@@ -85,6 +94,7 @@ export const trackingStore: TrackingStore = (function () {
   } catch {
     return {
       saveSession: () => {},
+      deleteSession: () => {},
       loadSessions: () => [],
       saveBodyLog: () => {},
       loadBodyLog: () => [],

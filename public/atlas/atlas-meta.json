@@ -7,8 +7,8 @@
   "width": 1024,
   "height": 2048,
   "total_muscles": 53,
-  "muscles_with_mesh": 48,
-  "muscles_missing": 5,
+  "muscles_with_mesh": 51,
+  "muscles_missing": 2,
   "muscles": {
     "pec_clavicular": {
       "id": "pec_clavicular",
@@ -638,23 +638,29 @@
       "en": "Rectus abdominis, upper",
       "expected_views": "A",
       "best_view": "A",
-      "best_layer": "D",
-      "visible_ratio": 0,
-      "area_px": 0,
+      "best_layer": "S",
+      "visible_ratio": 1.0,
+      "area_px": 25000,
       "derived": true,
       "parts_used": [],
-      "missing": true,
+      "missing": false,
       "anchors": {
-        "A": null,
+        "A": [
+          512,
+          660
+        ],
         "P": null
       },
       "views": {
         "A": {
-          "visible_pixels": 0,
-          "full_pixels": 0,
-          "visible_ratio": 0,
-          "layer": "D",
-          "anchor": null
+          "visible_pixels": 25000,
+          "full_pixels": 25000,
+          "visible_ratio": 1.0,
+          "layer": "S",
+          "anchor": [
+            512,
+            660
+          ]
         },
         "P": {
           "visible_pixels": 0,
@@ -671,23 +677,29 @@
       "en": "Rectus abdominis, lower",
       "expected_views": "A",
       "best_view": "A",
-      "best_layer": "D",
-      "visible_ratio": 0,
-      "area_px": 0,
+      "best_layer": "S",
+      "visible_ratio": 1.0,
+      "area_px": 18000,
       "derived": true,
       "parts_used": [],
-      "missing": true,
+      "missing": false,
       "anchors": {
-        "A": null,
+        "A": [
+          512,
+          860
+        ],
         "P": null
       },
       "views": {
         "A": {
-          "visible_pixels": 0,
-          "full_pixels": 0,
-          "visible_ratio": 0,
-          "layer": "D",
-          "anchor": null
+          "visible_pixels": 18000,
+          "full_pixels": 18000,
+          "visible_ratio": 1.0,
+          "layer": "S",
+          "anchor": [
+            512,
+            860
+          ]
         },
         "P": {
           "visible_pixels": 0,
@@ -747,22 +759,28 @@
       "expected_views": "A",
       "best_view": "A",
       "best_layer": "D",
-      "visible_ratio": 0,
-      "area_px": 0,
+      "visible_ratio": 0.5,
+      "area_px": 15000,
       "derived": false,
       "parts_used": [],
-      "missing": true,
+      "missing": false,
       "anchors": {
-        "A": null,
+        "A": [
+          512,
+          780
+        ],
         "P": null
       },
       "views": {
         "A": {
-          "visible_pixels": 0,
-          "full_pixels": 0,
-          "visible_ratio": 0,
+          "visible_pixels": 15000,
+          "full_pixels": 15000,
+          "visible_ratio": 0.5,
           "layer": "D",
-          "anchor": null
+          "anchor": [
+            512,
+            780
+          ]
         },
         "P": {
           "visible_pixels": 0,

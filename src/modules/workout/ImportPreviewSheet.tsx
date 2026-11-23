@@ -29,14 +29,49 @@ export function ImportPreviewSheet({
   const { program, stats, warnings, diagnostics } = importResult
 
   return (
-    <Sheet isOpen={isOpen} onClose={onClose} title="معاينة الجدول المستورد">
+    <Sheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title="معاينة الجدول المستورد"
+      footer={
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            width: '100%',
+          }}
+        >
+          <Button
+            variant="primary"
+            onClick={() => {
+              onSaveAndActivate(program)
+              onClose()
+            }}
+            fullWidth
+          >
+            حفظ وتفعيل الجدول الآن
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              onSaveDraft(program)
+              onClose()
+            }}
+            fullWidth
+          >
+            حفظ كمسودة في خزانة البرامج
+          </Button>
+        </div>
+      }
+    >
       <div
         className="import-preview-container"
         style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          paddingBottom: '24px',
+          paddingBottom: '60px',
         }}
       >
         {/* Header Summary */}
@@ -338,41 +373,6 @@ export function ImportPreviewSheet({
               </Card>
             )
           })}
-        </div>
-
-        {/* Action Buttons */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-            marginTop: '8px',
-            position: 'sticky',
-            bottom: 0,
-            background: 'var(--bg-card, #1e222b)',
-            paddingTop: '8px',
-          }}
-        >
-          <Button
-            variant="primary"
-            onClick={() => {
-              onSaveAndActivate(program)
-              onClose()
-            }}
-            fullWidth
-          >
-            حفظ وتفعيل الجدول الآن
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              onSaveDraft(program)
-              onClose()
-            }}
-            fullWidth
-          >
-            حفظ كمسودة في خزانة البرامج
-          </Button>
         </div>
       </div>
     </Sheet>
